@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparative Reader v2 — Atomic Habits · Don Quixote</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a2028; --text: #e6edf3; --muted: #8b949e;
+    --accent: #58a6ff; --border: #30363d;
+    --hl-1: #d29922; --hl-2: #a371f7; --hl-3: #3fb950; --hl-4: #f778ba;
+    --hl-bg-1: rgba(210,153,34,0.18); --hl-bg-2: rgba(163,113,247,0.18);
+    --hl-bg-3: rgba(63,185,80,0.18); --hl-bg-4: rgba(247,120,186,0.18);
+    --hl-active: rgba(88,166,255,0.35);
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --panel: #f6f8fa; --text: #1f2328; --muted: #656d76;
+    --accent: #0969da; --border: #d0d7de;
+    --hl-bg-1: rgba(210,153,34,0.25); --hl-bg-2: rgba(130,80,223,0.20);
+    --hl-bg-3: rgba(26,127,55,0.20); --hl-bg-4: rgba(207,34,114,0.20);
+    --hl-active: rgba(9,105,218,0.30);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  .header-left h1 { font-size: 16px; font-weight: 600; }
+  .header-left .subtitle { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .toolbar { display: flex; gap: 6px; }
+  .icon-btn {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .icon-btn:hover, .icon-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .topbar {
+    display: flex; gap: 12px; align-items: center; padding: 8px 16px;
+    border-bottom: 1px solid var(--border); font-size: 13px; flex-wrap: wrap;
+  }
+  .topbar select {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 5px 10px; border-radius: 6px; font-size: 13px;
+  }
+  .legend { display: flex; gap: 10px; margin-left: auto; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  .legend-swatch { width: 12px; height: 12px; border-radius: 2px; border: 1px solid var(--border); }
+  .legend-item[data-tag="g1"] .legend-swatch { background: var(--hl-bg-1); border-color: var(--hl-1); }
+  .legend-item[data-tag="g2"] .legend-swatch { background: var(--hl-bg-2); border-color: var(--hl-2); }
+  .legend-item[data-tag="g3"] .legend-swatch { background: var(--hl-bg-3); border-color: var(--hl-3); }
+  .legend-item[data-tag="g4"] .legend-swatch { background: var(--hl-bg-4); border-color: var(--hl-4); }
+
+  .reader {
+    flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border); overflow: hidden;
+  }
+  .pane {
+    background: var(--bg); overflow-y: auto; padding: 20px 24px;
+    display: flex; flex-direction: column;
+  }
+  .pane-header {
+    position: sticky; top: -20px; background: var(--bg); padding: 8px 0 10px;
+    margin-bottom: 12px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px; z-index: 10;
+  }
+  .cefr {
+    display: inline-block; font-size: 11px; padding: 3px 8px;
+    background: var(--accent); color: var(--bg); border-radius: 4px;
+    font-weight: 700;
+  }
+  .cefr.a2 { background: #3fb950; }
+  .cefr.b1 { background: #d29922; }
+  .pane-title { font-size: 14px; font-weight: 600; }
+  .pane-source { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+  .chapter-label {
+    font-size: 11px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 6px; margin-top: 16px;
+    border-bottom: 1px solid var(--border); padding-bottom: 4px;
+  }
+  .chapter-label:first-child { margin-top: 0; }
+
+  .pane p {
+    font-size: 16px; line-height: 1.8; margin-bottom: 14px;
+  }
+  .pane.right p { font-size: 17px; }
+
+  .seg {
+    cursor: pointer; border-radius: 3px; padding: 1px 2px;
+    transition: background 0.15s, outline 0.1s;
+  }
+  .seg[data-tag="g1"] { background: var(--hl-bg-1); border-bottom: 1.5px solid var(--hl-1); }
+  .seg[data-tag="g2"] { background: var(--hl-bg-2); border-bottom: 1.5px solid var(--hl-2); }
+  .seg[data-tag="g3"] { background: var(--hl-bg-3); border-bottom: 1.5px solid var(--hl-3); }
+  .seg[data-tag="g4"] { background: var(--hl-bg-4); border-bottom: 1.5px solid var(--hl-4); }
+  .seg.active { background: var(--hl-active) !important; outline: 2px solid var(--accent); }
+  .seg.tag-hidden { background: transparent !important; border-bottom: none !important; }
+
+  .footer-bar {
+    border-top: 1px solid var(--border); padding: 10px 16px;
+    background: var(--panel); font-size: 13px;
+    display: flex; gap: 12px; align-items: center; min-height: 52px; flex-wrap: wrap;
+  }
+  .seg-info { color: var(--muted); flex: 1; }
+  .seg-info strong { color: var(--accent); }
+  .seg-info em { color: var(--text); font-style: normal; }
+  .seg-counter { font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 720px) {
+    .reader { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    .legend { display: none; }
+  }
+  @media print {
+    .toolbar, .topbar, .footer-bar { display: none; }
+    .reader { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>📑 Comparative Reader v2</h1>
+    <div class="subtitle">B1 orijinal ↔ A2 uyarlama · Daha uzun metinler · Tıklanan yapı her iki panelde vurgulanır</div>
+  </div>
+  <div class="toolbar">
+    <button class="icon-btn" id="syncBtn" title="Senkron scroll (S)">🔗 Sync</button>
+    <button class="icon-btn" id="themeBtn" title="Tema (T)">🌓</button>
+    <button class="icon-btn" id="exportBtn" title="JSON indir (E)">📥</button>
+  </div>
+</header>
+
+<div class="topbar">
+  <label>Metin: <select id="textSel"></select></label>
+  <label>Vurgu: <select id="tagSel">
+    <option value="">Tümü</option>
+    <option value="g1">Sadece g1</option>
+    <option value="g2">Sadece g2</option>
+    <option value="g3">Sadece g3</option>
+    <option value="g4">Sadece g4</option>
+  </select></label>
+  <div class="legend" id="legend"></div>
+</div>
+
+<div class="reader">
+  <div class="pane left" id="paneLeft">
+    <div class="pane-header">
+      <span class="cefr b1" id="leftCefr">B1</span>
+      <span class="pane-title">Orijinal</span>
+      <span class="pane-source" id="leftSrc">—</span>
+    </div>
+    <div id="leftBody"></div>
+  </div>
+  <div class="pane right" id="paneRight">
+    <div class="pane-header">
+      <span class="cefr a2" id="rightCefr">A2</span>
+      <span class="pane-title">A2 Uyarlama</span>
+      <span class="pane-source" id="rightSrc">—</span>
+    </div>
+    <div id="rightBody"></div>
+  </div>
+</div>
+
+<div class="footer-bar">
+  <div class="seg-info" id="segInfo">Vurgulu bir kelime/yapıya tıkla → her iki panelde eş segment aydınlanır · keyboard: ← → gezilebilir</div>
+  <div class="seg-counter" id="segCounter"></div>
+</div>
+
+<script>
+'use strict';
+
+// ===================== DATA =====================
+// Tag legend: g1=tense/grammar-structure, g2=key-vocabulary, g3=collocation/phrasal, g4=clause-type
+const TEXTS = {
+
+  // ────────────────────────────────────────────────────────────────
+  // TEXT 1: Atomic Habits — The Aggregation of Marginal Gains
+  // ────────────────────────────────────────────────────────────────
+  atomic: {
+    title: "Atomic Habits — The 1% Rule",
+    source: "Based on James Clear · Atomic Habits Ch.1",
+    leftCefr: "B1",
+    rightCefr: "A2",
+    legend: {
+      g1: "Past Perfect tense",
+      g2: "Key B1 vocabulary",
+      g3: "Collocation / chunk",
+      g4: "Result / purpose clause"
+    },
+    chapters: [
+      { label: "Background" },
+      { label: "The Philosophy" },
+      { label: "Small Changes" },
+      { label: "The Results" },
+      { label: "The Principle" }
+    ],
+    pairs: [
+      // ── Chapter: Background ──
+      {
+        chapter: 0,
+        left: [
+          { text: "When Dave Brailsford " },
+          { id: 1, text: "took over", tag: "g3" },
+          { text: " as head coach of the British cycling team in 2003, the sport " },
+          { id: 2, text: "had been considered", tag: "g1" },
+          { text: " a near-hopeless case. British cyclists " },
+          { id: 3, text: "had never won", tag: "g1" },
+          { text: " the Tour de France in over 110 years of competition." }
+        ],
+        right: [
+          { text: "Dave Brailsford " },
+          { id: 1, text: "became", tag: "g3" },
+          { text: " the head coach of the British cycling team in 2003. Before that, the team was not famous for winning. British cyclists " },
+          { id: 3, text: "had never won", tag: "g1" },
+          { text: " the Tour de France. The race was more than 110 years old." }
+        ]
+      },
+      {
+        chapter: 0,
+        left: [
+          { text: "Professional cyclists " },
+          { id: 4, text: "were reluctant", tag: "g2" },
+          { text: " to join the team, and top equipment manufacturers " },
+          { id: 5, text: "refused to sell", tag: "g3" },
+          { text: " them their best bikes, " },
+          { id: 6, text: "fearing", tag: "g4" },
+          { text: " it would damage their reputations." }
+        ],
+        right: [
+          { text: "Good cyclists did not want to join the team. Some companies " },
+          { id: 5, text: "would not sell", tag: "g3" },
+          { text: " them their best bicycles. They thought it would be bad for their image." }
+        ]
+      },
+      // ── Chapter: The Philosophy ──
+      {
+        chapter: 1,
+        left: [
+          { text: "Brailsford " },
+          { id: 7, text: "introduced a philosophy", tag: "g3" },
+          { text: " he called 'the " },
+          { id: 8, text: "aggregation", tag: "g2" },
+          { text: " of " },
+          { id: 9, text: "marginal gains", tag: "g2" },
+          { text: ".' He argued that if you broke down everything you could think of that goes into riding a bike, and then " },
+          { id: 10, text: "improved each area by just 1%", tag: "g3" },
+          { text: ", those small gains would " },
+          { id: 11, text: "add up to", tag: "g3" },
+          { text: " a remarkable result." }
+        ],
+        right: [
+          { text: "Brailsford had a new idea. He called it the '" },
+          { id: 8, text: "collection", tag: "g2" },
+          { text: " of small improvements.' His idea was simple: find all the things that go into cycling. Then " },
+          { id: 10, text: "make each one 1% better", tag: "g3" },
+          { text: ". All those small improvements would " },
+          { id: 11, text: "come together", tag: "g3" },
+          { text: " to make a big difference." }
+        ]
+      },
+      // ── Chapter: Small Changes ──
+      {
+        chapter: 2,
+        left: [
+          { text: "The changes started with the " },
+          { id: 12, text: "obvious", tag: "g2" },
+          { text: " improvements: better nutrition plans, more " },
+          { id: 13, text: "effective", tag: "g2" },
+          { text: " training schedules, and lighter equipment. But Brailsford also " },
+          { id: 14, text: "focused on", tag: "g3" },
+          { text: " things that seemed almost too small " },
+          { id: 15, text: "to matter", tag: "g4" },
+          { text: "." }
+        ],
+        right: [
+          { text: "His team started with the easy changes — better food, better training plans, and better equipment. But Brailsford's team also looked at very small things that most people thought " },
+          { id: 15, text: "were not important", tag: "g4" },
+          { text: "." }
+        ]
+      },
+      {
+        chapter: 2,
+        left: [
+          { text: "They tested " },
+          { id: 16, text: "different types of massage gel", tag: "g3" },
+          { text: " to find which one helped muscles " },
+          { id: 17, text: "recover", tag: "g2" },
+          { text: " most effectively. They " },
+          { id: 18, text: "repainted the inside of the team truck white", tag: "g3" },
+          { text: " so that mechanics could spot dust more easily and keep the bikes perfectly clean. They even brought their own mattresses and pillows " },
+          { id: 19, text: "in order to ensure", tag: "g4" },
+          { text: " the best possible sleep each night." }
+        ],
+        right: [
+          { text: "They tried different massage creams to help tired muscles " },
+          { id: 17, text: "get better", tag: "g2" },
+          { text: " faster. They painted the inside of the truck white " },
+          { id: 18, text: "so they could see dust", tag: "g3" },
+          { text: " on the bikes. They also brought their own pillows and mattresses everywhere " },
+          { id: 19, text: "to sleep better", tag: "g4" },
+          { text: " every night." }
+        ]
+      },
+      // ── Chapter: The Results ──
+      {
+        chapter: 3,
+        left: [
+          { text: "The results were " },
+          { id: 20, text: "stunning", tag: "g2" },
+          { text: ". Just five years after Brailsford " },
+          { id: 21, text: "had taken charge", tag: "g1" },
+          { text: ", the British team " },
+          { id: 22, text: "dominated", tag: "g2" },
+          { text: " the 2008 Beijing Olympics, " },
+          { id: 23, text: "winning 60 percent", tag: "g3" },
+          { text: " of all the gold medals available in cycling." }
+        ],
+        right: [
+          { text: "The results were " },
+          { id: 20, text: "amazing", tag: "g2" },
+          { text: ". Five years later, the British team was " },
+          { id: 22, text: "the best", tag: "g2" },
+          { text: " at the 2008 Beijing Olympics. They " },
+          { id: 23, text: "won 60 percent", tag: "g3" },
+          { text: " of all the cycling gold medals." }
+        ]
+      },
+      // ── Chapter: The Principle ──
+      {
+        chapter: 4,
+        left: [
+          { text: "The lesson " },
+          { id: 24, text: "underlying", tag: "g2" },
+          { text: " this story is both simple and powerful: habits are like " },
+          { id: 25, text: "compound interest", tag: "g2" },
+          { text: ". A 1% improvement every day for one year " },
+          { id: 26, text: "results in being", tag: "g4" },
+          { text: " 37 times better at the end of that year. A 1% " },
+          { id: 27, text: "deterioration", tag: "g2" },
+          { text: ", however, will " },
+          { id: 28, text: "send you nearly to zero", tag: "g3" },
+          { text: "." }
+        ],
+        right: [
+          { text: "This story teaches us something important. Good habits " },
+          { id: 25, text: "grow bigger", tag: "g2" },
+          { text: " over time — like money in a bank. If you get 1% better every day for one year, you will be 37 times better at the end of the year. But if you get 1% " },
+          { id: 27, text: "worse", tag: "g2" },
+          { text: " every day, the " },
+          { id: 26, text: "result will be terrible", tag: "g4" },
+          { text: "." }
+        ]
+      },
+    ]
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  // TEXT 2: Don Quixote — The Windmills (A2-B1 narrative)
+  // ────────────────────────────────────────────────────────────────
+  quixote: {
+    title: "Don Quixote — The Windmills",
+    source: "Adapted from Cervantes · Don Quixote Ch.2",
+    leftCefr: "B1",
+    rightCefr: "A2",
+    legend: {
+      g1: "Past Perfect / narrative tense",
+      g2: "Key vocabulary (B1→A2)",
+      g3: "Phrasal verb / chunk",
+      g4: "Reported speech / clause"
+    },
+    chapters: [
+      { label: "The Plain" },
+      { label: "The Challenge" },
+      { label: "Sancho's Warning" },
+      { label: "The Attack" },
+      { label: "The Crash" },
+      { label: "Aftermath" }
+    ],
+    pairs: [
+      // ── Chapter: The Plain ──
+      {
+        chapter: 0,
+        left: [
+          { text: "Don Quixote and Sancho Panza " },
+          { id: 1, text: "had been riding", tag: "g1" },
+          { text: " across the dry plains of La Mancha for three days when, in the far distance, they spotted thirty or forty windmills. Their enormous arms were " },
+          { id: 2, text: "turning slowly", tag: "g3" },
+          { text: " in the morning breeze." }
+        ],
+        right: [
+          { text: "Don Quixote and his friend Sancho Panza " },
+          { id: 1, text: "were riding", tag: "g1" },
+          { text: " across a flat, dry land. They rode for three days. Then, far away, they saw thirty or forty windmills. Their big arms were " },
+          { id: 2, text: "moving slowly", tag: "g3" },
+          { text: " in the wind." }
+        ]
+      },
+      // ── Chapter: The Challenge ──
+      {
+        chapter: 1,
+        left: [
+          { text: "The old knight " },
+          { id: 3, text: "straightened himself", tag: "g3" },
+          { text: " in his saddle and turned to his companion with great " },
+          { id: 4, text: "excitement", tag: "g2" },
+          { text: ". 'Fortune is guiding our affairs better than we could have " },
+          { id: 5, text: "wished for", tag: "g3" },
+          { text: ",' he declared. 'Do you see those " },
+          { id: 6, text: "giants", tag: "g2" },
+          { text: " over there?'" }
+        ],
+        right: [
+          { text: "Don Quixote " },
+          { id: 3, text: "sat up straight", tag: "g3" },
+          { text: " on his horse. He was very " },
+          { id: 4, text: "excited", tag: "g2" },
+          { text: ". He spoke to Sancho Panza: 'We are very lucky today. Can you see those " },
+          { id: 6, text: "big enemies", tag: "g2" },
+          { text: " over there?'" }
+        ]
+      },
+      {
+        chapter: 1,
+        left: [
+          { text: "'I count thirty or forty of them,' Don Quixote continued. 'I " },
+          { id: 7, text: "intend to", tag: "g4" },
+          { text: " do " },
+          { id: 8, text: "battle against", tag: "g3" },
+          { text: " them and take all their lives. With their " },
+          { id: 9, text: "spoils", tag: "g2" },
+          { text: " we shall begin to grow rich, for this is a " },
+          { id: 10, text: "righteous war", tag: "g2" },
+          { text: " and it is a great service to God to " },
+          { id: 11, text: "wipe out such an evil breed", tag: "g3" },
+          { text: " from the earth.'" }
+        ],
+        right: [
+          { text: "'I can see thirty or forty of them,' Don Quixote said. 'I " },
+          { id: 7, text: "want to", tag: "g4" },
+          { text: " fight them. When I " },
+          { id: 8, text: "win", tag: "g3" },
+          { text: ", we will become rich. It is good to fight against bad things. God will be happy.'" }
+        ]
+      },
+      // ── Chapter: Sancho's Warning ──
+      {
+        chapter: 2,
+        left: [
+          { text: "'Look, your " },
+          { id: 12, text: "worship", tag: "g2" },
+          { text: ",' replied Sancho Panza, " },
+          { id: 13, text: "squinting at the horizon", tag: "g3" },
+          { text: ". 'Those are not giants but windmills, and what " },
+          { id: 14, text: "appear to be", tag: "g4" },
+          { text: " their arms are the sails, which the wind turns to make the millstone grind.'" }
+        ],
+        right: [
+          { text: "Sancho Panza " },
+          { id: 13, text: "looked carefully", tag: "g3" },
+          { text: " at the windmills. 'No, sir,' he said. 'Those are not " },
+          { id: 12, text: "enemies", tag: "g2" },
+          { text: ". They are windmills. The long things " },
+          { id: 14, text: "are", tag: "g4" },
+          { text: " sails. The wind moves them to make flour.'" }
+        ]
+      },
+      // ── Chapter: The Attack ──
+      {
+        chapter: 3,
+        left: [
+          { text: "Don Quixote did not listen. He " },
+          { id: 15, text: "had already spurred", tag: "g1" },
+          { text: " his horse into a " },
+          { id: 16, text: "gallop", tag: "g2" },
+          { text: " and was riding straight towards the windmills, crying out: 'Do not " },
+          { id: 17, text: "flee", tag: "g2" },
+          { text: ", you cowards and vile creatures! It is a single knight who " },
+          { id: 18, text: "attacks you", tag: "g4" },
+          { text: "!'" }
+        ],
+        right: [
+          { text: "Don Quixote did not listen to his friend. He " },
+          { id: 15, text: "had already started", tag: "g1" },
+          { text: " riding fast towards the windmills. He shouted: 'Don't " },
+          { id: 17, text: "run away", tag: "g2" },
+          { text: "! I am only one knight, but I will fight all of you!'" }
+        ]
+      },
+      {
+        chapter: 3,
+        left: [
+          { text: "At that moment, a strong wind " },
+          { id: 19, text: "picked up", tag: "g3" },
+          { text: " across the plain. The great sails " },
+          { id: 20, text: "began to turn faster", tag: "g3" },
+          { text: ". Quixote " },
+          { id: 21, text: "drove his lance", tag: "g3" },
+          { text: " into one of the spinning arms with all his might." }
+        ],
+        right: [
+          { text: "At that moment, the wind " },
+          { id: 19, text: "got stronger", tag: "g3" },
+          { text: ". The big sails turned faster and faster. Quixote " },
+          { id: 21, text: "pushed his long stick", tag: "g3" },
+          { text: " into one of the moving arms." }
+        ]
+      },
+      // ── Chapter: The Crash ──
+      {
+        chapter: 4,
+        left: [
+          { text: "The arm " },
+          { id: 22, text: "swept the lance", tag: "g3" },
+          { text: " clean out of his hands, " },
+          { id: 23, text: "lifted", tag: "g2" },
+          { text: " both the knight and his horse off the ground, and " },
+          { id: 24, text: "hurled", tag: "g2" },
+          { text: " them a considerable distance away. Don Quixote lay " },
+          { id: 25, text: "motionless on the ground", tag: "g3" },
+          { text: " for a long moment." }
+        ],
+        right: [
+          { text: "The arm " },
+          { id: 22, text: "took the stick", tag: "g3" },
+          { text: " from his hands. It " },
+          { id: 23, text: "picked up", tag: "g2" },
+          { text: " Don Quixote and his horse. Then it " },
+          { id: 24, text: "threw them", tag: "g2" },
+          { text: " far away through the air. Don Quixote " },
+          { id: 25, text: "lay on the ground and did not move", tag: "g3" },
+          { text: "." }
+        ]
+      },
+      // ── Chapter: Aftermath ──
+      {
+        chapter: 5,
+        left: [
+          { text: "Sancho Panza " },
+          { id: 26, text: "hurried over", tag: "g3" },
+          { text: " to help his master. 'Did I not " },
+          { id: 27, text: "warn you", tag: "g4" },
+          { text: "?' he cried. 'Those were windmills, and only someone " },
+          { id: 28, text: "who had windmills in their head", tag: "g4" },
+          { text: " could have made such a terrible mistake!'" }
+        ],
+        right: [
+          { text: "Sancho Panza " },
+          { id: 26, text: "ran to help", tag: "g3" },
+          { text: " Don Quixote. 'I told you!' he said. 'They were windmills! Only a person " },
+          { id: 28, text: "who does not think carefully", tag: "g4" },
+          { text: " could make this mistake!'" }
+        ]
+      },
+      {
+        chapter: 5,
+        left: [
+          { text: "'Peace, friend Sancho,' " },
+          { id: 29, text: "replied", tag: "g4" },
+          { text: " Don Quixote, who was already " },
+          { id: 30, text: "struggling to his feet", tag: "g3" },
+          { text: ". 'The affairs of war are, more than any others, " },
+          { id: 31, text: "subject to", tag: "g2" },
+          { text: " constant change. And besides, I think that a certain " },
+          { id: 32, text: "sage", tag: "g2" },
+          { text: " — my enemy — has " },
+          { id: 33, text: "transformed", tag: "g2" },
+          { text: " those giants into windmills in order to " },
+          { id: 34, text: "rob me of the glory", tag: "g3" },
+          { text: " of the victory.'" }
+        ],
+        right: [
+          { text: "'It's OK, Sancho,' " },
+          { id: 29, text: "said", tag: "g4" },
+          { text: " Don Quixote. He was slowly " },
+          { id: 30, text: "getting up", tag: "g3" },
+          { text: " from the ground. 'War always changes. And I think my enemy — a " },
+          { id: 32, text: "wise man", tag: "g2" },
+          { text: " — " },
+          { id: 33, text: "changed", tag: "g2" },
+          { text: " those giants into windmills. He wanted to " },
+          { id: 34, text: "take away my win", tag: "g3" },
+          { text: ".'" }
+        ]
+      }
+    ]
+  }
+};
+
+// ===================== STATE =====================
+const KEY = 'comparative-reader-v2';
+let state = loadState();
+
+function loadState() {
+  try {
+    return Object.assign({
+      textKey: 'atomic', tagFilter: '', sync: true,
+      theme: 'dark', activeId: null, segClicks: {}
+    }, JSON.parse(localStorage.getItem(KEY) || '{}'));
+  } catch { return { textKey: 'atomic', tagFilter: '', sync: true, theme: 'dark', activeId: null, segClicks: {} }; }
+}
+function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+function esc(s) { return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+// ===================== RENDER =====================
+function renderTextSelect() {
+  const sel = document.getElementById('textSel');
+  sel.innerHTML = Object.entries(TEXTS).map(([k, t]) =>
+    `<option value="${k}" ${k === state.textKey ? 'selected' : ''}>${t.title}</option>`
+  ).join('');
+}
+
+function renderLegend() {
+  const t = TEXTS[state.textKey];
+  document.getElementById('legend').innerHTML = Object.entries(t.legend).map(([k, label]) =>
+    `<span class="legend-item" data-tag="${k}" title="Filtrele: ${esc(label)}"><span class="legend-swatch"></span>${esc(label)}</span>`
+  ).join('');
+}
+
+function renderText() {
+  const t = TEXTS[state.textKey];
+  document.getElementById('leftCefr').textContent = t.leftCefr;
+  document.getElementById('rightCefr').textContent = t.rightCefr;
+  document.getElementById('leftSrc').textContent = t.source;
+  document.getElementById('rightSrc').textContent = `A2 Uyarlama`;
+  renderLegend();
+
+  let lastChapterLeft = -1, lastChapterRight = -1;
+  let leftHtml = '', rightHtml = '';
+
+  t.pairs.forEach(p => {
+    // Chapter label
+    if (p.chapter !== undefined && p.chapter !== lastChapterLeft) {
+      lastChapterLeft = p.chapter;
+      leftHtml += `<div class="chapter-label">${esc(t.chapters[p.chapter]?.label || '')}</div>`;
+    }
+    leftHtml += '<p>' + p.left.map(s => renderSeg(s)).join('') + '</p>';
+  });
+
+  t.pairs.forEach(p => {
+    if (p.chapter !== undefined && p.chapter !== lastChapterRight) {
+      lastChapterRight = p.chapter;
+      rightHtml += `<div class="chapter-label">${esc(t.chapters[p.chapter]?.label || '')}</div>`;
+    }
+    rightHtml += '<p>' + p.right.map(s => renderSeg(s)).join('') + '</p>';
+  });
+
+  document.getElementById('leftBody').innerHTML = leftHtml;
+  document.getElementById('rightBody').innerHTML = rightHtml;
+
+  // Seg counter
+  const total = document.querySelectorAll('.seg[data-id]').length / 2;
+  document.getElementById('segCounter').textContent = `${total} yapı · ${t.pairs.length} paragraf çifti`;
+
+  attachSegEvents();
+  applyTagFilter();
+}
+
+function renderSeg(s) {
+  if (!s.id) return esc(s.text);
+  const tagAttr = s.tag ? ` data-tag="${s.tag}"` : '';
+  return `<span class="seg" data-id="${s.id}"${tagAttr}>${esc(s.text)}</span>`;
+}
+
+function attachSegEvents() {
+  document.querySelectorAll('.seg').forEach(el => {
+    el.onclick = () => activateSeg(parseInt(el.dataset.id));
+  });
+  if (state.activeId !== null) highlightActive();
+}
+
+function applyTagFilter() {
+  document.querySelectorAll('.seg').forEach(el => {
+    const tag = el.dataset.tag;
+    if (state.tagFilter && tag !== state.tagFilter) {
+      el.classList.add('tag-hidden');
+    } else {
+      el.classList.remove('tag-hidden');
+    }
+  });
+}
+
+function activateSeg(id) {
+  state.activeId = (state.activeId === id) ? null : id;
+  const k = `${state.textKey}:${id}`;
+  state.segClicks[k] = (state.segClicks[k] || 0) + 1;
+  save();
+  highlightActive();
+  updateSegInfo(id);
+  if (state.sync && state.activeId !== null) scrollPairIntoView(id);
+}
+
+function highlightActive() {
+  document.querySelectorAll('.seg.active').forEach(e => e.classList.remove('active'));
+  if (state.activeId === null) { clearSegInfo(); return; }
+  document.querySelectorAll(`.seg[data-id="${state.activeId}"]`).forEach(e => e.classList.add('active'));
+}
+
+function clearSegInfo() {
+  document.getElementById('segInfo').textContent = 'Vurgulu bir kelime/yapıya tıkla → her iki panelde eş segment aydınlanır · keyboard: ← → gezilebilir';
+}
+
+function updateSegInfo(id) {
+  const t = TEXTS[state.textKey];
+  let leftText = '', rightText = '', tag = '', tagLabel = '';
+
+  for (const p of t.pairs) {
+    for (const s of p.left) { if (s.id === id) { leftText = s.text; tag = s.tag || ''; } }
+    for (const s of p.right) { if (s.id === id) { rightText = s.text; } }
+  }
+  if (tag) tagLabel = t.legend[tag] ? ` [${t.legend[tag]}]` : '';
+
+  const info = document.getElementById('segInfo');
+  if (leftText) {
+    info.innerHTML = `<strong>${esc(tag.toUpperCase())}${esc(tagLabel)}</strong> &nbsp; B1: <em>"${esc(leftText)}"</em> &nbsp;↔&nbsp; A2: <em>"${esc(rightText)}"</em>`;
+  }
+}
+
+function scrollPairIntoView(id) {
+  ['paneLeft','paneRight'].forEach(pid => {
+    const pane = document.getElementById(pid);
+    const el = pane.querySelector(`.seg[data-id="${id}"]`);
+    if (el) {
+      const r = el.getBoundingClientRect(), pr = pane.getBoundingClientRect();
+      if (r.top < pr.top + 40 || r.bottom > pr.bottom - 20) {
+        el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }
+  });
+}
+
+// Keyboard navigation across segments
+let allSegIds = [];
+function buildSegIds() {
+  const t = TEXTS[state.textKey];
+  const seen = new Set();
+  allSegIds = [];
+  t.pairs.forEach(p => p.left.forEach(s => { if (s.id && !seen.has(s.id)) { seen.add(s.id); allSegIds.push(s.id); } }));
+}
+
+// ===================== EVENTS =====================
+document.getElementById('textSel').addEventListener('change', e => {
+  state.textKey = e.target.value; state.activeId = null; save();
+  buildSegIds(); renderText();
+});
+document.getElementById('tagSel').addEventListener('change', e => {
+  state.tagFilter = e.target.value; save(); applyTagFilter();
+  document.getElementById('tagSel').value = state.tagFilter;
+});
+document.getElementById('syncBtn').addEventListener('click', () => {
+  state.sync = !state.sync; save();
+  document.getElementById('syncBtn').classList.toggle('active', state.sync);
+});
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const t = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t); state.theme = t; save();
+});
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify({ version: 'comparative-reader-v2', texts: TEXTS, state }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `comparative-reader-v2-${Date.now()}.json`; a.click();
+});
+document.querySelectorAll('.legend-item').forEach(li => {
+  li.addEventListener('click', () => {
+    const tag = li.dataset.tag;
+    state.tagFilter = (state.tagFilter === tag) ? '' : tag;
+    document.getElementById('tagSel').value = state.tagFilter;
+    save(); applyTagFilter();
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'T' || e.key === 't') document.getElementById('themeBtn').click();
+  if (e.key === 'S' || e.key === 's') document.getElementById('syncBtn').click();
+  if (e.key === 'ArrowRight') {
+    const cur = allSegIds.indexOf(state.activeId);
+    const next = allSegIds[cur + 1] || allSegIds[0];
+    activateSeg(next);
+  }
+  if (e.key === 'ArrowLeft') {
+    const cur = allSegIds.indexOf(state.activeId);
+    const prev = allSegIds[cur - 1] || allSegIds[allSegIds.length - 1];
+    activateSeg(prev);
+  }
+});
+
+// Sync scroll
+['paneLeft','paneRight'].forEach(pid => {
+  document.getElementById(pid).addEventListener('scroll', function() {
+    if (!state.sync) return;
+    const other = pid === 'paneLeft' ? 'paneRight' : 'paneLeft';
+    const otherEl = document.getElementById(other);
+    const ratio = this.scrollTop / (this.scrollHeight - this.clientHeight);
+    otherEl.scrollTop = ratio * (otherEl.scrollHeight - otherEl.clientHeight);
+  });
+});
+
+// ===================== INIT =====================
+if (state.theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+if (state.sync) document.getElementById('syncBtn').classList.add('active');
+document.getElementById('tagSel').value = state.tagFilter;
+renderTextSelect();
+buildSegIds();
+renderText();
+</script>
+</body>
+</html>

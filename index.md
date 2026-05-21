@@ -86,9 +86,12 @@ Bu dosya tüm wiki içeriğinin haritasıdır. Her ingest ve güncelleme sonras�
 |-------|----------|----------|
 | [[YazAkademik]] | 1 dosya | Akademik yazma, chunk-based |
 | [[writing-atelier-001-bloomsday]] | 1 dosya | ⭐ Writing Atelier 001 — Joyce/Ulysses Bloomsday; B1, 5 narrative past tense, pause-aware ghost text, hint butonu, rewrite challenge, sentence builder, streak+XP |
-| [[confusable-drill]] | 1 dosya | 🆕 (2026-05-20) Confusable Drill — 20 minimal pair (say/tell, much/many…), 8 sn timer, fossilization önleme, JSON bridge → errors/confusables |
-| [[collocation-heatmap]] | 1 dosya | 🆕 (2026-05-20) Collocation Heatmap — 3 matris (Verb+Noun, Adj+Noun, Adv+Adj) görsel strength gradient + 10 cümlelik drill sekmesi |
-| [[comparative-reader]] | 1 dosya | 🆕 (2026-05-20) Comparative Reader — orijinal (C1/B2) ↔ A2 uyarlama yan yana; tıklanan segment her iki tarafta vurgulanır; sync scroll; Naval + Paul Graham seed |
+| [[confusable-drill]] | 1 dosya | (2026-05-20) Confusable Drill v1 — 20 minimal pair (say/tell, much/many…), 8 sn timer, JSON bridge |
+| [[confusable-drill-v2]] | 1 dosya | 🆕 (2026-05-21) Confusable Drill v2 — 20 YENİ çift (Modals, Adverb pairs, Adj confusables, Prepositions, Structure); category filter; B1 odak |
+| [[collocation-heatmap]] | 1 dosya | (2026-05-20) Collocation Heatmap v1 — 3 matris (Verb+Noun, Adj+Noun, Adv+Adj) görsel strength gradient |
+| [[collocation-heatmap-v2]] | 1 dosya | 🆕 (2026-05-21) Collocation Heatmap v2 — 3 YENİ matris (Adj+Prep, Verb+Prep, Adv+Adj yeni set); "yanlış" hücre notları; B1 odak |
+| [[comparative-reader]] | 1 dosya | (2026-05-20) Comparative Reader v1 — C1/B2↔A2 yan yana; Naval + Paul Graham seed (3'er paragraf) |
+| [[comparative-reader-v2]] | 1 dosya | 🆕 (2026-05-21) Comparative Reader v2 — B1↔A2 uzun metin; Atomic Habits (7 çift) + Don Quixote Windmills (9 çift); chapter labels; ← → keyboard nav |
 | [[daily-writing-loop]] | 1 dosya | 🆕 Daily Writing Loop — günlük üretim döngüsü; TR referans → Box A (real-time kırmızı diff + placeholder hint) → Box B (hafızadan, hibrit TR preview) → Check (word-level LCS); 16 hazır tema + Custom mod; PV tracker + 30 PV bağımsız drill; 5 görsel tema; streak; L1 Production Cell'in interaktif aracı |
 
 ### 📚 Guides
