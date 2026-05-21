@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Report Grammar — Tam Öğrenme Deneyimi</title>
+<style>
+:root{
+  --bg:#f2f1ec;--bg2:#e8e5de;--bg3:#dbd8d0;
+  --surf:#fff;--surf2:#f7f5f0;
+  --bd:#ccc9c0;--bd2:#b5b2a8;
+  --txt:#16150e;--mu:#6a6760;--mu2:#a09d95;
+  --pass:#174a99;--pass-l:#eaf0fc;--pass-b:#88a8dd;
+  --caus:#b83025;--caus-l:#fceeec;--caus-b:#e0a09a;
+  --let:#16703f;--let-l:#eaf5ee;--let-b:#7ec49a;
+  --modal:#7a4d00;--modal-l:#fdf3e4;--modal-b:#c9a056;
+  --cond:#553399;--cond-l:#f0ebfc;--cond-b:#b094e0;
+  --perf:#1a6b6b;--perf-l:#e8f6f6;--perf-b:#7ec4c4;
+  --rep:#8a2060;--rep-l:#faeaf4;--rep-b:#d088b8;
+  --rel:#3d5a00;--rel-l:#eef5e0;--rel-b:#92b840;
+  --cleft:#5a3000;--cleft-l:#fdf0e0;--cleft-b:#c8902a;
+  --ok:#16703f;--ok-l:#eaf5ee;--ok-b:#7ec49a;
+  --er:#b83025;--er-l:#fceeec;--er-b:#e0a09a;
+  --acc:#2650d8;--acc-l:#eaf0fc;
+  --f:Verdana,Geneva,Tahoma,sans-serif;--r:10px;
+}
+[data-theme=dark]{
+  --bg:#0d0c09;--bg2:#171612;--bg3:#1e1d18;
+  --surf:#1a1916;--surf2:#1e1d18;
+  --bd:#2a2924;--bd2:#383730;
+  --txt:#edecea;--mu:#888680;--mu2:#504e48;
+  --pass:#5a88d8;--pass-l:#0e1828;--pass-b:#183060;
+  --caus:#e0685a;--caus-l:#2a1512;--caus-b:#582018;
+  --let:#40a868;--let-l:#0e2016;--let-b:#184d28;
+  --modal:#d4902a;--modal-l:#201608;--modal-b:#4a3008;
+  --cond:#9970e0;--cond-l:#1a1030;--cond-b:#4a2898;
+  --perf:#30a8a8;--perf-l:#0a2020;--perf-b:#185050;
+  --rep:#d060a0;--rep-l:#28101e;--rep-b:#682048;
+  --rel:#70a820;--rel-l:#141e06;--rel-b:#304808;
+  --cleft:#c88030;--cleft-l:#1e1006;--cleft-b:#483010;
+  --ok:#40a868;--ok-l:#0e2016;--ok-b:#184d28;
+  --er:#e0685a;--er-l:#2a1512;--er-b:#582018;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--f);background:var(--bg);color:var(--txt);font-size:13px;line-height:1.65;min-height:100vh;transition:background .3s,color .3s}
+
+.nav{background:var(--surf);border-bottom:1px solid var(--bd);padding:0 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;height:48px;gap:8px}
+.nav-logo{font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.nav-scroll{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;padding:4px 0}
+.nav-scroll::-webkit-scrollbar{display:none}
+.nb{padding:5px 10px;border-radius:7px;border:1px solid var(--bd);background:var(--bg2);color:var(--mu);font-family:var(--f);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.nb:hover{background:var(--bg3)}.nb.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.tb{padding:5px 9px;border-radius:7px;border:1px solid var(--bd);background:var(--bg2);color:var(--mu);font-family:var(--f);font-size:12px;cursor:pointer;flex-shrink:0}
+
+.pg{display:none;max-width:820px;margin:0 auto;padding:24px 16px 72px}
+.pg.on{display:block}
+
+.card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:22px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.ctitle{font-size:15px;font-weight:700;margin-bottom:4px}
+.csub{font-size:11px;color:var(--mu);margin-bottom:16px;line-height:1.6}
+
+.btn{padding:9px 20px;border-radius:9px;border:none;font-family:var(--f);font-size:12px;font-weight:700;cursor:pointer;transition:all .18s;display:inline-block}
+.ba{background:var(--acc);color:#fff}.ba:hover{opacity:.9;transform:translateY(-1px)}
+.bg{background:var(--bg2);border:1px solid var(--bd2);color:var(--txt)}.bg:hover{background:var(--bg3)}
+.bsm{padding:6px 13px;font-size:11px}
+.bok{background:var(--ok);color:#fff}.ber{background:var(--er);color:#fff}
+
+.fb{border-radius:9px;padding:10px 14px;font-size:12px;line-height:1.65;margin-top:8px}
+.fb.ok{background:var(--ok-l);border:1px solid var(--ok-b);color:var(--ok)}
+.fb.er{background:var(--er-l);border:1px solid var(--er-b);color:var(--er)}
+.fb.hi{background:var(--modal-l);border:1px solid var(--modal-b);color:var(--modal)}
+
+.vchip{display:inline-block;padding:3px 10px;border-radius:14px;font-size:11px;font-weight:700;border:1.5px solid}
+
+@keyframes pop{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.pop{animation:pop .18s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-5px)}70%{transform:translateX(5px)}}
+
+/* ── HOME ── */
+.hero{text-align:center;padding:32px 16px 24px}
+.hero h1{font-size:24px;font-weight:700;line-height:1.2;margin-bottom:8px}
+.hero p{font-size:12px;color:var(--mu);max-width:480px;margin:0 auto 24px}
+.sent-hero{display:inline-flex;border-radius:10px;overflow:hidden;border:1px solid var(--bd);font-size:16px;font-weight:700;margin-bottom:18px}
+.sh{padding:8px 14px;border-right:1px solid var(--bd)}
+.sh:last-child{border-right:none}
+.sh-s{background:var(--let-l);color:var(--let)}
+.sh-v{background:var(--caus-l);color:var(--caus)}
+.sh-o{background:var(--pass-l);color:var(--pass)}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:11px;margin-bottom:24px}
+.gc{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:16px 14px;cursor:pointer;transition:all .22s;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.gc:hover{border-color:var(--acc);transform:translateY(-3px);box-shadow:0 6px 20px rgba(38,80,216,.13)}
+.gc .gi{font-size:28px;margin-bottom:8px}.gc .gt{font-size:13px;font-weight:700;margin-bottom:3px}.gc .gd{font-size:11px;color:var(--mu);line-height:1.5}
+.refgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px}
+.rc{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:13px;border-left:4px solid}
+.rv{font-size:15px;font-weight:700;margin-bottom:3px}
+.rtr{font-size:10px;color:var(--mu);margin-bottom:5px}
+.rs{font-size:10px;background:var(--bg2);padding:3px 7px;border-radius:5px;font-weight:700;display:inline-block;margin-bottom:5px}
+.rex{font-size:10px;color:var(--mu);font-style:italic}
+
+/* ── WHEEL ── */
+#wcanvas{display:block;margin:0 auto 14px;cursor:pointer}
+.wresult{text-align:center;padding:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg2);margin-bottom:12px;min-height:50px}
+.wverb{font-size:26px;font-weight:700;margin-bottom:2px}
+
+/* ── SCRAMBLE ── */
+.sdrop{min-height:46px;border:2px dashed var(--bd2);border-radius:9px;padding:7px 10px;display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px;align-items:center;background:var(--bg2);transition:border-color .2s}
+.spool{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px;min-height:42px}
+.wt{padding:6px 11px;border-radius:7px;background:var(--surf);border:1.5px solid var(--bd2);font-size:12px;font-weight:700;cursor:pointer;transition:all .16s;user-select:none}
+.wt:hover{border-color:var(--acc);background:var(--acc-l);color:var(--acc)}
+.wt.ind{background:var(--pass-l);border-color:var(--pass-b);color:var(--pass)}
+
+/* highlighted word in wt */
+.wt .hl-s{color:var(--let)}.wt .hl-v{color:var(--caus)}.wt .hl-o{color:var(--pass)}.wt .hl-m{color:var(--modal)}
+
+/* ── CROC ── */
+.cscene{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:14px;margin-bottom:12px;overflow:hidden;position:relative}
+.criver{display:flex;align-items:center;height:50px;gap:3px;position:relative}
+.clog{flex:1;height:26px;border-radius:13px;background:#8B6914;border:2px solid #6b5010;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;transition:all .2s;flex-shrink:0;min-width:0}
+.clog.safe{background:var(--ok);border-color:#125e30}
+.clog.cur{box-shadow:0 0 0 3px var(--acc),0 0 0 6px rgba(38,80,216,.2)}
+.clog.past{opacity:.38}
+.clog.shk{animation:shake .32s ease}
+.cgator{font-size:26px;position:absolute;right:6px;bottom:2px;animation:sw 2.2s ease-in-out infinite}
+@keyframes sw{0%,100%{transform:translateX(0)}50%{transform:translateX(-7px)}}
+.copts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.co{padding:9px 12px;border-radius:8px;border:1.5px solid var(--bd2);background:var(--surf);font-family:var(--f);font-size:12px;cursor:pointer;transition:all .17s;text-align:left;color:var(--txt);font-weight:700}
+.co:hover:not(:disabled){border-color:var(--acc);background:var(--acc-l);color:var(--acc)}
+.co:disabled{cursor:default}
+.co.cok{background:var(--ok-l);border-color:var(--ok-b);color:var(--ok)}
+.co.cer{background:var(--er-l);border-color:var(--er-b);color:var(--er)}
+.rbox{text-align:center;padding:28px 16px}
+.ri{font-size:44px;margin-bottom:10px}.rt{font-size:18px;font-weight:700;margin-bottom:6px}
+.rm{font-size:12px;color:var(--mu);margin-bottom:18px;line-height:1.65;max-width:360px;margin-left:auto;margin-right:auto}
+
+/* ── TRANSFORM GAME ── */
+.tg-sent{font-size:15px;font-weight:700;text-align:center;margin-bottom:16px;padding:12px;background:var(--bg2);border-radius:9px;line-height:1.7}
+.tg-target{font-size:12px;color:var(--mu);text-align:center;margin-bottom:12px}
+.tg-hint-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;justify-content:center}
+.tg-hint-chip{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;border:1.5px solid;cursor:pointer;transition:all .15s}
+.tg-textarea{width:100%;padding:12px 14px;border-radius:9px;border:1.5px solid var(--bd2);background:var(--surf);color:var(--txt);font-family:var(--f);font-size:13px;resize:none;min-height:52px;line-height:1.65;transition:border-color .2s}
+.tg-textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(38,80,216,.1)}
+.tg-textarea.correct-b{border-color:var(--ok)}
+.tg-textarea.wrong-b{border-color:var(--er)}
+.attempt-dots{display:flex;gap:5px;margin-bottom:8px}
+.adot{width:8px;height:8px;border-radius:50%;background:var(--bd2);transition:background .2s}
+.adot.ok{background:var(--ok)}.adot.er{background:var(--er)}
+
+/* ── AI PAGE ── */
+.ai-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ai-select{padding:9px 12px;border-radius:8px;border:1px solid var(--bd2);background:var(--surf);color:var(--txt);font-family:var(--f);font-size:12px;appearance:none;cursor:pointer;width:100%}
+.ai-range-wrap{display:flex;align-items:center;gap:8px}
+.ai-range{flex:1;accent-color:var(--acc)}
+.ai-out{background:var(--surf2);border:1px solid var(--bd);border-radius:var(--r);padding:18px 20px;min-height:120px;font-size:13px;line-height:2;white-space:pre-wrap;word-break:break-word}
+.ai-loading{text-align:center;color:var(--mu);font-size:12px;padding:24px}
+.ai-loading .dots{display:inline-flex;gap:4px}
+.ai-loading .dot{width:7px;height:7px;border-radius:50%;background:var(--acc);animation:bounce .9s ease-in-out infinite}
+.ai-loading .dot:nth-child(2){animation-delay:.18s}
+.ai-loading .dot:nth-child(3){animation-delay:.36s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* highlighted spans in AI output */
+.hl-pass{background:var(--pass-l);color:var(--pass);padding:1px 4px;border-radius:3px;font-weight:700}
+.hl-caus{background:var(--caus-l);color:var(--caus);padding:1px 4px;border-radius:3px;font-weight:700}
+.hl-let{background:var(--let-l);color:var(--let);padding:1px 4px;border-radius:3px;font-weight:700}
+.hl-modal{background:var(--modal-l);color:var(--modal);padding:1px 4px;border-radius:3px;font-weight:700}
+.hl-cond{background:var(--cond-l);color:var(--cond);padding:1px 4px;border-radius:3px;font-weight:700}
+.hl-perf{background:var(--perf-l);color:var(--perf);padding:1px 4px;border-radius:3px;font-weight:700}
+.hl-rep{background:var(--rep-l);color:var(--rep);padding:1px 4px;border-radius:3px;font-weight:700}
+.hl-rel{background:var(--rel-l);color:var(--rel);padding:1px 4px;border-radius:3px;font-weight:700}
+.hl-cleft{background:var(--cleft-l);color:var(--cleft);padding:1px 4px;border-radius:3px;font-weight:700}
+
+.legend-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.ls-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mu)}
+.ls-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sb{font-size:11px;color:var(--mu);margin-bottom:8px}
+.sec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--mu2);margin-bottom:10px;margin-top:20px}
+.divl{border:none;border-top:1px solid var(--bd);margin:16px 0}
+.prog-bar{height:4px;background:var(--bg3);border-radius:999px;overflow:hidden;margin-bottom:5px}
+.prog-fill{height:100%;border-radius:999px;background:var(--acc);transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+@media(max-width:560px){
+  .copts{grid-template-columns:1fr}
+  .ai-controls{grid-template-columns:1fr}
+  .refgrid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body data-theme="light">
+
+<div class="nav">
+  <div class="nav-logo">📄 Report Grammar</div>
+  <div class="nav-scroll">
+    <button class="nb on" onclick="go('home')">🏠 Ana</button>
+    <button class="nb" onclick="go('wheel')">🎡 Çark</button>
+    <button class="nb" onclick="go('scramble')">🔤 Sırala</button>
+    <button class="nb" onclick="go('croc')">🐊 Timsah</button>
+    <button class="nb" onclick="go('transform')">🔄 Dönüştür</button>
+    <button class="nb" onclick="go('ai')">🤖 AI Metin</button>
+  </div>
+  <button class="tb" id="tBtn" onclick="toggleTheme()">🌙</button>
+</div>
+
+<!-- HOME -->
+<div class="pg on" id="pg-home">
+<div class="hero">
+  <h1>Report Grammar<br>Tam Öğrenme Deneyimi</h1>
+  <div class="sent-hero">
+    <span class="sh sh-s">My assistant</span>
+    <span class="sh sh-v">wrote</span>
+    <span class="sh sh-o">the report</span>
+  </div>
+  <p>Bu üç kelimeden 9 farklı gramer yapısı türüyor. 5 aktivite ile hepsini kavra, uygula, içselleştir.</p>
+</div>
+<div class="ggrid">
+  <div class="gc" onclick="go('wheel')"><div class="gi">🎡</div><div class="gt">Çarkıfelek</div><div class="gd">Çarkı çevir → yapı gelir → cümle kur!</div></div>
+  <div class="gc" onclick="go('scramble')"><div class="gi">🔤</div><div class="gt">Kelime Sırala</div><div class="gd">Karışık kelimeleri doğru sıraya diz!</div></div>
+  <div class="gc" onclick="go('croc')"><div class="gi">🐊</div><div class="gt">Timsah Nehri</div><div class="gd">Doğru cevap ver, nehri geç!</div></div>
+  <div class="gc" onclick="go('transform')"><div class="gi">🔄</div><div class="gt">Yapı Dönüştür</div><div class="gd">Active → Passive → Causative çevir!</div></div>
+  <div class="gc" onclick="go('ai')"><div class="gi">🤖</div><div class="gt">AI Metin Üretici</div><div class="gd">Yapıları vurgulayan metin oluştur!</div></div>
+</div>
+<div class="card">
+  <div class="ctitle">📋 Hızlı Başvuru</div>
+  <div class="csub">9 yapı — formül + örnek. Oynarken unutursan buraya bak!</div>
+  <div class="refgrid" id="refGrid"></div>
+</div>
+</div>
+
+<!-- WHEEL -->
+<div class="pg" id="pg-wheel">
+<div class="card">
+  <div class="ctitle">🎡 Çarkıfelek</div>
+  <div class="csub">Çarka tıkla → hangi yapı gelirse o yapıyla Türkçeyi İngilizceye çevir! Gizli ipucu ve yapı butonu mevcut.</div>
+  <canvas id="wcanvas" width="280" height="280"></canvas>
+  <div class="wresult" id="wresult"><span style="font-size:12px;color:var(--mu)">Çarka tıkla veya butona bas ↓</span></div>
+  <div class="row" style="justify-content:center;margin-bottom:12px">
+    <button class="btn ba bsm" id="spinBtn" onclick="spinWheel()">🎡 Çevir!</button>
+    <button class="btn bg bsm" onclick="newWTask()">🔄 Yeni Görev</button>
+  </div>
+  <div id="wtaskArea" style="display:none">
+    <div class="card" style="background:var(--bg2);border-style:dashed;margin-bottom:0">
+      <div class="sb" id="wtLabel"></div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.7" id="wtTr"></div>
+      <div class="attempt-dots" id="wDots"></div>
+      <div class="fb hi" id="wHintBox" style="display:none;margin-bottom:10px"></div>
+      <textarea id="winput" class="tg-textarea" placeholder="İngilizce cümlenizi yazın…" rows="2"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ba bsm" onclick="checkWTask()">✓ Kontrol</button>
+        <button class="btn bg bsm" onclick="showWHint()">💡 İpucu</button>
+        <button class="btn bg bsm" onclick="showWStruct()">🏗 Yapı</button>
+        <button class="btn bg bsm" id="wResetBtn" onclick="resetWInput()" style="display:none">↺ Sıfırla</button>
+      </div>
+      <div id="wfb" class="fb" style="display:none;margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SCRAMBLE -->
+<div class="pg" id="pg-scramble">
+<div class="card">
+  <div class="ctitle">🔤 Kelime Sırala</div>
+  <div class="csub">Kelimelere tıkla → doğru gramer yapısını oluştur! Her renk farklı yapı ailesi.</div>
+  <div class="prog-bar"><div class="prog-fill" id="sprFill" style="width:0%"></div></div>
+  <div class="row" style="justify-content:space-between;margin-bottom:10px">
+    <div class="sb">Soru <strong id="sqNum">1</strong>/12 &nbsp;·&nbsp; Puan: <strong id="sqScore" style="color:var(--acc)">0</strong></div>
+    <button class="btn bg bsm" onclick="initScramble()">↺ Yeniden</button>
+  </div>
+  <div style="font-size:12px;color:var(--mu);margin-bottom:10px;font-style:italic;line-height:1.6" id="strTr"></div>
+  <div style="font-size:11px;color:var(--mu2);margin-bottom:5px">📥 Cümle alanı <span style="font-size:10px">(tıklayarak kaldır)</span>:</div>
+  <div class="sdrop" id="sdrop"></div>
+  <div style="font-size:11px;color:var(--mu2);margin-bottom:5px">🔤 Havuz:</div>
+  <div class="spool" id="spool"></div>
+  <div id="sfb" class="fb" style="display:none"></div>
+  <div class="row" style="margin-top:8px">
+    <button class="btn ba bsm" onclick="checkScr()">✓ Kontrol</button>
+    <button class="btn bg bsm" onclick="clearDrop()">✕ Temizle</button>
+    <button class="btn bg bsm" onclick="scrHint()">💡 İpucu</button>
+  </div>
+</div>
+</div>
+
+<!-- CROC -->
+<div class="pg" id="pg-croc">
+<div class="card">
+  <div class="ctitle">🐊 Timsah Nehri</div>
+  <div class="csub">Her doğru cevap = bir adım ileri. 3 yanlış = timsah yakalar! 12 soruyu geç.</div>
+  <div class="cscene">
+    <div class="criver" id="criver"></div>
+    <div class="cgator">🐊</div>
+  </div>
+  <div class="row" style="margin-bottom:10px">
+    <div style="font-size:13px" id="clives"></div>
+    <div class="sb" style="margin:0" id="cstep"></div>
+  </div>
+  <div id="cfb" class="fb" style="display:none;margin-bottom:10px"></div>
+  <div id="cqArea">
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.65" id="cq"></div>
+    <div class="sb" style="margin-bottom:10px" id="ctr"></div>
+    <div class="copts" id="copts"></div>
+  </div>
+  <div id="cresult" style="display:none" class="rbox">
+    <div class="ri" id="cri"></div><div class="rt" id="crt"></div><div class="rm" id="crm"></div>
+    <button class="btn ba" onclick="initCroc()">↺ Tekrar</button>
+    <button class="btn bg" onclick="go('home')" style="margin-left:8px">Ana Sayfa</button>
+  </div>
+</div>
+</div>
+
+<!-- TRANSFORM -->
+<div class="pg" id="pg-transform">
+<div class="card">
+  <div class="ctitle">🔄 Yapı Dönüştür</div>
+  <div class="csub">Verilen cümleyi istenen yapıya çevir. 3 deneme hakkın var. 10 soru.</div>
+  <div class="prog-bar"><div class="prog-fill" id="tprFill" style="width:0%"></div></div>
+  <div class="row" style="justify-content:space-between;margin-bottom:12px">
+    <div class="sb">Soru <strong id="tqNum">1</strong>/10 &nbsp;·&nbsp; Puan: <strong id="tqScore" style="color:var(--acc)">0</strong></div>
+    <button class="btn bg bsm" onclick="initTransform()">↺ Yeniden</button>
+  </div>
+  <div class="tg-sent" id="tqSrc"></div>
+  <div class="tg-target" id="tqTarget"></div>
+  <div class="tg-hint-bar" id="tqHintBar"></div>
+  <div class="attempt-dots" id="tDots"></div>
+  <textarea id="tinput" class="tg-textarea" placeholder="Dönüştürülmüş cümlenizi yazın…" rows="2"></textarea>
+  <div class="row" style="margin-top:8px">
+    <button class="btn ba bsm" onclick="checkTransform()">✓ Kontrol</button>
+    <button class="btn bg bsm" onclick="showTHint()">💡 İpucu</button>
+    <button class="btn bg bsm" id="tResetBtn" onclick="resetTInput()" style="display:none">↺ Sıfırla</button>
+    <button class="btn bg bsm" id="tNextBtn" onclick="nextTransform()" style="display:none">Sonraki →</button>
+  </div>
+  <div id="tfb" class="fb" style="display:none;margin-top:8px"></div>
+</div>
+</div>
+
+<!-- AI -->
+<div class="pg" id="pg-ai">
+<div class="card">
+  <div class="ctitle">🤖 AI Metin Üretici</div>
+  <div class="csub">Yapıyı seç, kelime sayısını ayarla — AI seçilen gramer yapısını vurgulayan, renkli etiketli bir metin oluşturur.</div>
+
+  <div class="ai-controls">
+    <div>
+      <div class="sec" style="margin-top:0">Konu</div>
+      <select class="ai-select" id="aiTopic">
+        <option value="office">Ofis ve iş hayatı</option>
+        <option value="travel">Seyahat ve tatil</option>
+        <option value="cooking">Yemek ve mutfak</option>
+        <option value="tech">Teknoloji ve dijital dünya</option>
+        <option value="city">Şehir hayatı</option>
+        <option value="education">Eğitim ve okul</option>
+        <option value="health">Sağlık ve spor</option>
+        <option value="nature">Doğa ve çevre</option>
+      </select>
+    </div>
+    <div>
+      <div class="sec" style="margin-top:0">Odak Yapı</div>
+      <select class="ai-select" id="aiStructure">
+        <option value="all">Tümü (karışık)</option>
+        <option value="passive">Passive Voice</option>
+        <option value="causative">Causative (HAVE/GET/MAKE/LET)</option>
+        <option value="perfect">Perfect Tenses</option>
+        <option value="modal">Modal Verbs</option>
+        <option value="conditional">Conditionals</option>
+        <option value="reported">Reported Speech</option>
+        <option value="relative">Relative Clauses</option>
+        <option value="cleft">Cleft Sentences</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="sec">Kelime Sayısı</div>
+  <div class="ai-range-wrap" style="margin-bottom:16px">
+    <span class="sb" style="margin:0;width:32px">80</span>
+    <input type="range" class="ai-range" id="aiWords" min="80" max="300" value="150" step="10" oninput="document.getElementById('aiWordsVal').textContent=this.value">
+    <span class="sb" style="margin:0;width:32px">300</span>
+    <strong style="font-size:13px;color:var(--acc);min-width:36px;text-align:right" id="aiWordsVal">150</strong>
+    <span class="sb" style="margin:0">kelime</span>
+  </div>
+
+  <div class="legend-strip" id="aiLegend"></div>
+
+  <button class="btn ba" id="aiGenBtn" onclick="generateAI()" style="width:100%;margin-bottom:14px;font-size:13px;padding:12px">
+    ✨ Metin Oluştur
+  </button>
+
+  <div class="ai-out" id="aiOut">
+    <span style="color:var(--mu2);font-size:12px">Yukarıdan konu ve yapı seçip "Metin Oluştur" butonuna bas. AI seçilen gramer yapılarını <span class="hl-pass">renkli</span> olarak vurgulayacak.</span>
+  </div>
+
+  <div id="aiExplain" style="display:none;margin-top:12px">
+    <div class="sec">Yapı Açıklamaları</div>
+    <div id="aiExplainContent" style="font-size:12px;color:var(--mu);line-height:1.8"></div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── THEME & NAV ──
+function toggleTheme(){
+  const t=document.body.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.body.setAttribute('data-theme',t);
+  document.getElementById('tBtn').textContent=t==='dark'?'☀️':'🌙';
+}
+const _inited={};
+function go(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  const nbs=document.querySelectorAll('.nb');
+  const idx={home:0,wheel:1,scramble:2,croc:3,transform:4,ai:5};
+  if(nbs[idx[id]])nbs[idx[id]].classList.add('on');
+  window.scrollTo(0,0);
+  const inits={wheel:initWheel,scramble:initScramble,croc:initCroc,transform:initTransform,ai:initAI};
+  if(inits[id]&&!_inited[id]){_inited[id]=1;inits[id]();}
+}
+
+// ── REF DATA ──
+const REFS=[
+  {name:'Passive',color:'--pass',formula:'S + be + V3',ex:'The report was written.',tr:'Rapor yazıldı.'},
+  {name:'Causative HAVE',color:'--caus',formula:'S + had + O + bare/V3',ex:'I had him write it.',tr:'Yazdırdım.'},
+  {name:'Causative GET',color:'--caus',formula:'S + got + O + TO + inf.',ex:'I got him to write it.',tr:'İkna ettim.'},
+  {name:'Causative MAKE',color:'--caus',formula:'S + made + O + bare inf.',ex:'I made him write it.',tr:'Zorladım.'},
+  {name:'Causative LET',color:'--let',formula:'S + let + O + bare inf.',ex:'I let him write it.',tr:'İzin verdim.'},
+  {name:'Pres. Perfect',color:'--perf',formula:'S + have + V3',ex:'He has written the report.',tr:'Yazmış (bitti).'},
+  {name:'Past Perfect',color:'--perf',formula:'S + had + V3',ex:'He had written it by then.',tr:'O zamana kadar yazmıştı.'},
+  {name:'Modals',color:'--modal',formula:'S + modal + bare inf.',ex:'He should write the report.',tr:'Yazmalı.'},
+  {name:'Conditionals',color:'--cond',formula:'If + past, … would + V',ex:'If he wrote it, we\'d win.',tr:'Yazsaydı kazanırdık.'},
+];
+function buildRefGrid(){
+  document.getElementById('refGrid').innerHTML=REFS.map(r=>`
+    <div class="rc" style="border-left-color:var(${r.color})">
+      <div class="rv" style="color:var(${r.color})">${r.name}</div>
+      <div class="rtr">${r.tr}</div>
+      <div class="rs">${r.formula}</div>
+      <div class="rex">${r.ex}</div>
+    </div>`).join('');
+}
+buildRefGrid();
+
+// ═══ WHEEL ═══
+const WSEGS=[
+  {v:'Passive',c:'#174a99',vk:'pass'},{v:'HAVE',c:'#b83025',vk:'caus'},
+  {v:'GET',c:'#b83025',vk:'caus'},{v:'MAKE',c:'#b83025',vk:'caus'},
+  {v:'LET',c:'#16703f',vk:'let'},{v:'Perfect',c:'#1a6b6b',vk:'perf'},
+  {v:'Modal',c:'#7a4d00',vk:'modal'},{v:'Conditional',c:'#553399',vk:'cond'},
+];
+const WTASKS={
+  Passive:[
+    {tr:'Rapor asistanım tarafından yazıldı.',en:'The report was written by my assistant.',hint:'be + V3 (past participle)'},
+    {tr:'Rapor şu an yazılıyor.',en:'The report is being written.',hint:'is being + V3'},
+    {tr:'Rapor teslim edilmişti.',en:'The report had been submitted.',hint:'had been + V3'},
+  ],
+  HAVE:[
+    {tr:'Asistanıma raporu yazdırdım.',en:'I had my assistant write the report.',hint:'had + assistant + bare infinitive (to yok!)'},
+    {tr:'Raporumu düzelttirdim.',en:'I had my report corrected.',hint:'had + report + V3 (pasif anlam)'},
+    {tr:'Raporu Cuma\'ya kadar hazırlatacağım.',en:'I will have the report prepared by Friday.',hint:'will have + V3'},
+  ],
+  GET:[
+    {tr:'Asistanımı raporu yazmaya ikna ettim.',en:'I got my assistant to write the report.',hint:'got + assistant + TO + infinitive'},
+    {tr:'Onu erken bitirmesini sağladım.',en:'I got him to finish it early.',hint:'got + him + TO + finish'},
+  ],
+  MAKE:[
+    {tr:'Asistanımı raporu yeniden yazmaya zorladım.',en:'I made my assistant rewrite the report.',hint:'made + assistant + bare inf. (to yok!)'},
+    {tr:'Onu geç saate kadar çalıştırdım.',en:'I made him work until late.',hint:'made + him + work'},
+  ],
+  LET:[
+    {tr:'Asistanımın raporu yazmasına izin verdim.',en:'I let my assistant write the report.',hint:'let + assistant + bare inf. (to yok!)'},
+    {tr:'Onu kendi yöntemiyle yapmakta serbest bıraktım.',en:'I let him do it his own way.',hint:'let + him + do'},
+  ],
+  Perfect:[
+    {tr:'Asistanım raporu yazmış (bitti, hazır).',en:'My assistant has written the report.',hint:'have/has + V3'},
+    {tr:'Toplantı başlamadan önce rapor yazılmıştı.',en:'The report had been written before the meeting started.',hint:'had been + V3 (past perfect passive)'},
+    {tr:'O zamana kadar raporu bitirmişti.',en:'He had written the report by then.',hint:'had + V3'},
+  ],
+  Modal:[
+    {tr:'Asistanım raporu yazmalıydı (ama yazmadı).',en:'My assistant should have written the report.',hint:'should have + V3 — geçmişe dönük'},
+    {tr:'Rapor bugün yazılabilir.',en:'The report can be written today.',hint:'can be + V3 — modal passive'},
+    {tr:'Raporu kim yazacak? Sen yazmalısın.',en:'Who will write the report? You must write it.',hint:'must + bare infinitive'},
+  ],
+  Conditional:[
+    {tr:'Asistanım raporu yazsaydı, toplantıda başarılı olurduk.',en:'If my assistant had written the report, we would have succeeded in the meeting.',hint:'Type 3: If + had + V3, … would have + V3'},
+    {tr:'Raporu şimdi yazsa, zamanında bitirirdi.',en:'If he wrote the report now, he would finish it on time.',hint:'Type 2: If + past simple, … would + base'},
+  ],
+};
+let wAngle=0,wSpinning=false,wVerb='',wTask=null,wAttempts=0;
+function initWheel(){drawWheel(0);const c=document.getElementById('wcanvas');if(c)c.onclick=spinWheel;}
+function drawWheel(a){
+  const cvs=document.getElementById('wcanvas');if(!cvs)return;
+  const ctx=cvs.getContext('2d'),cx=140,cy=140,r=128,n=WSEGS.length,arc=2*Math.PI/n;
+  ctx.clearRect(0,0,280,280);
+  WSEGS.forEach((s,i)=>{
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a+arc*i,a+arc*(i+1));ctx.closePath();
+    ctx.fillStyle=s.c;ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(a+arc*i+arc/2);
+    ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 11px Verdana,sans-serif';
+    ctx.fillText(s.v,r-8,4);ctx.restore();
+  });
+  ctx.beginPath();ctx.arc(cx,cy,18,0,2*Math.PI);
+  ctx.fillStyle='var(--surf)';ctx.fill();ctx.strokeStyle='var(--bd2)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx+r+2,cy);ctx.lineTo(cx+r+18,cy-8);ctx.lineTo(cx+r+18,cy+8);ctx.closePath();
+  ctx.fillStyle='#f0c030';ctx.fill();
+}
+function spinWheel(){
+  if(wSpinning)return;wSpinning=true;
+  const sb=document.getElementById('spinBtn');sb.disabled=true;
+  const spins=(5+Math.random()*6)*2*Math.PI,dur=2600,start=performance.now(),sa=wAngle;
+  function af(now){
+    const t=Math.min((now-start)/dur,1),e=1-Math.pow(1-t,3);
+    wAngle=sa+spins*e;drawWheel(wAngle);
+    if(t<1)requestAnimationFrame(af);
+    else{
+      wSpinning=false;sb.disabled=false;
+      const n=WSEGS.length,arc=2*Math.PI/n;
+      const norm=((wAngle%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+      const idx=Math.floor(((2*Math.PI-norm)%(2*Math.PI))/arc)%n;
+      showWResult(WSEGS[idx]);
+    }
+  }
+  requestAnimationFrame(af);
+}
+function showWResult(seg){
+  wVerb=seg.v;
+  const cc={pass:'var(--pass)',caus:'var(--caus)',let:'var(--let)',perf:'var(--perf)',modal:'var(--modal)',cond:'var(--cond)'};
+  document.getElementById('wresult').innerHTML=`<div class="wverb" style="color:${cc[seg.vk]||'var(--acc)'}">${seg.v}</div><div style="font-size:11px;color:var(--mu)">${{Passive:'edilgen yapı',HAVE:'yaptırmak',GET:'ikna etmek',MAKE:'zorlamak',LET:'izin vermek',Perfect:'perfect tense',Modal:'modal fiil',Conditional:'koşul cümlesi'}[seg.v]||''}</div>`;
+  newWTask();
+}
+function newWTask(){
+  if(!wVerb){spinWheel();return;}
+  const tasks=WTASKS[wVerb];if(!tasks)return;
+  wTask=tasks[Math.floor(Math.random()*tasks.length)];
+  wAttempts=0;
+  document.getElementById('wtLabel').innerHTML=`<span style="color:var(--acc);font-weight:700">${wVerb}</span> yapısını kullanarak çevir:`;
+  document.getElementById('wtTr').textContent=wTask.tr;
+  document.getElementById('winput').value='';
+  document.getElementById('winput').className='tg-textarea';
+  document.getElementById('winput').disabled=false;
+  document.getElementById('wHintBox').style.display='none';
+  document.getElementById('wfb').style.display='none';
+  document.getElementById('wfb').className='fb';
+  document.getElementById('wResetBtn').style.display='none';
+  renderWDots();
+  document.getElementById('wtaskArea').style.display='block';
+}
+function renderWDots(){
+  document.getElementById('wDots').innerHTML=Array(3).fill(0).map((_,i)=>`<div class="adot" id="wdot${i}"></div>`).join('');
+}
+function showWHint(){const h=document.getElementById('wHintBox');h.style.display='block';h.innerHTML='💡 <strong>İpucu:</strong> '+wTask.hint;}
+function showWStruct(){const h=document.getElementById('wHintBox');h.style.display='block';h.innerHTML='🏗 <strong>Yapı:</strong> '+wTask.hint+'<br><em>Model:</em> '+wTask.en;}
+function resetWInput(){
+  document.getElementById('winput').value='';
+  document.getElementById('winput').className='tg-textarea';
+  document.getElementById('winput').disabled=false;
+  document.getElementById('wfb').style.display='none';
+  document.getElementById('wResetBtn').style.display='none';
+  document.getElementById('winput').focus();
+}
+function checkWTask(){
+  const val=document.getElementById('winput').value.trim().toLowerCase();
+  const fb=document.getElementById('wfb');
+  if(!val){document.getElementById('winput').focus();return;}
+  const model=wTask.en.toLowerCase();
+  const words=model.replace(/[^a-z ]/g,'').split(' ').filter(w=>w.length>2);
+  const hits=words.filter(w=>val.includes(w)).length;
+  // structure checks
+  const vc={Passive:()=>val.match(/\b(was|were|is|are|been|being)\b/)&&val.match(/\b(written|submitted|prepared|corrected|finished)\b/),
+    HAVE:()=>val.match(/\b(had|have|has|will have)\b/)&&!val.match(/had to\b/),
+    GET:()=>val.match(/\bgot\b/)&&val.includes(' to '),
+    MAKE:()=>val.match(/\bmade\b/)&&!val.match(/made \w+ to /),
+    LET:()=>val.match(/\blet\b/)&&!val.match(/let \w+ to /),
+    Perfect:()=>val.match(/\b(has|have|had)\b/)&&val.match(/\b(written|submitted|prepared|been)\b/),
+    Modal:()=>val.match(/\b(should|could|must|can|would|might)\b/),
+    Conditional:()=>val.match(/\bif\b/)&&val.match(/\b(would|had)\b/),
+  };
+  const structOk=vc[wVerb]?vc[wVerb]():true;
+  const isOk=hits>=Math.ceil(words.length*.6)&&structOk;
+  const dot=document.getElementById('wdot'+wAttempts);
+  if(dot)dot.classList.add(isOk?'ok':'er');
+  wAttempts++;
+  if(isOk){
+    document.getElementById('winput').className='tg-textarea correct-b';
+    document.getElementById('winput').disabled=true;
+    fb.className='fb ok pop';fb.style.display='block';
+    fb.innerHTML='✓ Harika! Model: <strong>'+wTask.en+'</strong>';
+    document.getElementById('wResetBtn').style.display='none';
+  }else if(wAttempts>=3){
+    document.getElementById('winput').className='tg-textarea wrong-b';
+    document.getElementById('winput').disabled=true;
+    fb.className='fb er pop';fb.style.display='block';
+    fb.innerHTML='✗ 3 deneme bitti. Doğru: <strong>'+wTask.en+'</strong><br><em>'+wTask.hint+'</em>';
+    document.getElementById('wResetBtn').style.display='none';
+  }else{
+    document.getElementById('winput').className='tg-textarea wrong-b';
+    fb.className='fb er pop';fb.style.display='block';
+    fb.innerHTML='✗ Tekrar dene. İpucu: <em>'+wTask.hint+'</em>';
+    document.getElementById('wResetBtn').style.display='inline-block';
+    document.getElementById('wHintBox').style.display='block';
+    document.getElementById('wHintBox').innerHTML='💡 '+wTask.hint;
+  }
+}
+
+// ═══ SCRAMBLE ═══
+const SCRQS=[
+  {ws:['The','report','was','written','by','my','assistant'],ans:'The report was written by my assistant',tr:'Rapor asistanım tarafından yazıldı.',hint:'be + V3 — Passive Voice',cat:'pass'},
+  {ws:['I','had','my','assistant','write','the','report'],ans:'I had my assistant write the report',tr:'Asistanıma raporu yazdırdım.',hint:'HAVE + object + bare infinitive (to yok!)',cat:'caus'},
+  {ws:['I','got','my','assistant','to','write','the','report'],ans:'I got my assistant to write the report',tr:'Asistanımı raporu yazmaya ikna ettim.',hint:'GET + object + TO + infinitive',cat:'caus'},
+  {ws:['My','assistant','should','write','the','report'],ans:'My assistant should write the report',tr:'Asistanım raporu yazmalı.',hint:'Modal + bare infinitive',cat:'modal'},
+  {ws:['If','he','had','written','the','report','we','would','have','won'],ans:'If he had written the report we would have won',tr:'Raporu yazsaydı kazanırdık.',hint:'Type 3 Conditional: If + had + V3, would have + V3',cat:'cond'},
+  {ws:['My','assistant','has','written','the','report'],ans:'My assistant has written the report',tr:'Asistanım raporu yazdı (tamamlandı, hazır).',hint:'Present Perfect: have/has + V3',cat:'perf'},
+  {ws:['The','report','had','been','written','before','the','meeting'],ans:'The report had been written before the meeting',tr:'Rapor toplantıdan önce yazılmıştı.',hint:'Past Perfect Passive: had been + V3',cat:'perf'},
+  {ws:['I','made','my','assistant','rewrite','the','report'],ans:'I made my assistant rewrite the report',tr:'Asistanımı raporu yeniden yazmaya zorladım.',hint:'MAKE + object + bare infinitive (to yok!)',cat:'caus'},
+  {ws:['It','was','my','assistant','who','wrote','the','report'],ans:'It was my assistant who wrote the report',tr:'Raporu yazan benim asistanımdı.',hint:'Cleft sentence: It was … who …',cat:'cleft'},
+  {ws:['He','said','he','had','written','the','report'],ans:'He said he had written the report',tr:'"Raporu yazdım" dedi.',hint:'Reported Speech: wrote → had written (backshift)',cat:'rep'},
+  {ws:['The','report','that','my','assistant','wrote','is','excellent'],ans:'The report that my assistant wrote is excellent',tr:'Asistanımın yazdığı rapor mükemmel.',hint:'Relative Clause: that + subject + verb',cat:'rel'},
+  {ws:['I','let','my','assistant','write','the','report'],ans:'I let my assistant write the report',tr:'Asistanımın raporu yazmasına izin verdim.',hint:'LET + object + bare infinitive (to yok!)',cat:'let'},
+];
+const CAT_COLOR={pass:'--pass',caus:'--caus',let:'--let',modal:'--modal',cond:'--cond',perf:'--perf',rep:'--rep',rel:'--rel',cleft:'--cleft'};
+let sCur=0,sScore=0,sDropped=[],sPool=[];
+function initScramble(){sCur=0;sScore=0;renderScrQ();document.getElementById('sqScore').textContent='0';}
+function renderScrQ(){
+  if(sCur>=SCRQS.length){showScrFinal();return;}
+  const q=SCRQS[sCur];
+  const pct=Math.round(sCur/SCRQS.length*100);
+  document.getElementById('sprFill').style.width=pct+'%';
+  document.getElementById('sqNum').textContent=sCur+1;
+  const cc=CAT_COLOR[q.cat]||'--acc';
+  document.getElementById('strTr').innerHTML=`<span class="vchip" style="background:var(${cc}22);color:var(${cc});border-color:var(${cc}55)">${q.cat.toUpperCase()}</span> &nbsp;${q.tr}`;
+  sDropped=[];sPool=[...q.ws].sort(()=>Math.random()-.5);
+  const fb=document.getElementById('sfb');fb.style.display='none';fb.className='fb';
+  renderScrParts();
+}
+function renderScrParts(){
+  const cc=SCRQS[sCur]?CAT_COLOR[SCRQS[sCur].cat]||'--acc':'--acc';
+  document.getElementById('sdrop').innerHTML=sDropped.map((w,i)=>`<span class="wt ind" style="border-color:var(${cc}55);color:var(${cc})" onclick="s2pool(${i})">${w}</span>`).join('');
+  document.getElementById('spool').innerHTML=sPool.map((w,i)=>`<span class="wt" onclick="s2drop(${i})">${w}</span>`).join('');
+}
+function s2drop(i){sDropped.push(sPool.splice(i,1)[0]);renderScrParts();}
+function s2pool(i){sPool.push(sDropped.splice(i,1)[0]);renderScrParts();}
+function clearDrop(){sPool=[...sPool,...sDropped];sDropped=[];renderScrParts();const fb=document.getElementById('sfb');fb.style.display='none';}
+function scrHint(){const q=SCRQS[sCur];const fb=document.getElementById('sfb');fb.className='fb hi';fb.style.display='block';fb.innerHTML='💡 <strong>İpucu:</strong> '+q.hint;}
+function checkScr(){
+  const q=SCRQS[sCur];const att=sDropped.join(' ');const fb=document.getElementById('sfb');
+  if(!att){return;}
+  if(att===q.ans){
+    sScore++;document.getElementById('sqScore').textContent=sScore;
+    fb.className='fb ok pop';fb.style.display='block';
+    fb.innerHTML='✓ Doğru! <em style="color:var(--mu)">'+q.ans+'</em><br><span style="font-size:11px">'+q.hint+'</span>';
+    setTimeout(()=>{sCur++;renderScrQ();},1600);
+  }else{
+    fb.className='fb er pop';fb.style.display='block';
+    fb.innerHTML='✗ Yanlış sıra.<br><span style="font-size:11px">Doğru: <strong>'+q.ans+'</strong></span>';
+  }
+}
+function showScrFinal(){
+  document.getElementById('spool').innerHTML='';document.getElementById('sdrop').innerHTML='';
+  document.getElementById('sprFill').style.width='100%';
+  const fb=document.getElementById('sfb');fb.className='fb ok';fb.style.display='block';
+  fb.innerHTML=`<div style="text-align:center;padding:10px"><div style="font-size:36px">🏆</div><div style="font-size:16px;font-weight:700;margin:8px 0">Tamamlandı!</div><div>${sScore}/12 doğru &nbsp;·&nbsp; ${sScore>=10?'Olağanüstü! 🌟':sScore>=7?'Çok iyi! 👍':'Devam et! 💪'}</div><button class="btn ba bsm" style="margin-top:10px" onclick="initScramble()">↺ Tekrar</button></div>`;
+}
+
+// ═══ CROC ═══
+const CQALL=[
+  {q:'The report _____ written by my assistant.',tr:'Rapor asistanım tarafından yazıldı.',o:['was','is','had','were'],a:0,fb:'"was written" → Passive: be + V3. Özne eylemden etkileniyor.'},
+  {q:'I had my assistant _____ the report.',tr:'Asistanıma raporu yazdırdım.',o:['write','to write','wrote','writing'],a:0,fb:'"had … write" → HAVE causative + bare infinitive. "to" gelmez!'},
+  {q:'I got my assistant _____ the report.',tr:'Asistanımı ikna ettim.',o:['write','writing','to write','wrote'],a:2,fb:'"got … to write" → GET causative + TO + infinitive. TO zorunlu!'},
+  {q:'My assistant should _____ the report.',tr:'Asistanım raporu yazmalıydı.',o:['write','to write','writing','wrote'],a:0,fb:'"should write" → Modal + bare infinitive. Modal sonrası to gelmez.'},
+  {q:'If he had written the report, we _____ have won.',tr:'Yazsaydı kazanırdık. (Type 3)',o:['would','could','should','might'],a:0,fb:'"would have" → Type 3 Conditional: If + past perf, would have + V3.'},
+  {q:'My assistant _____ written the report. (şu an hazır)',tr:'Rapor tamamlandı ve hazır.',o:['has','had','was','is'],a:0,fb:'"has written" → Present Perfect: have/has + V3. Şimdiye bağlı sonuç.'},
+  {q:'I made my assistant _____ the report again.',tr:'Onu yeniden yazmaya zorladım.',o:['rewrite','to rewrite','rewrote','rewriting'],a:0,fb:'"made … rewrite" → MAKE + bare infinitive. "to" kullanılmaz!'},
+  {q:'"It was MY ASSISTANT who wrote the report." Bu hangi yapı?',tr:'Kimin yazdığını vurguluyor.',o:['Cleft sentence','Passive voice','Reported speech','Relative clause'],a:0,fb:'"It was … who …" → Cleft sentence. Belirli bir unsuru vurgulamak için kullanılır.'},
+  {q:'He said he _____ written the report. (reported)',tr:'"Raporu yazdım" dedi.',o:['had','has','was','did'],a:0,fb:'"had written" → Reported speech backshift: has/wrote → had written.'},
+  {q:'I let my assistant _____ the report.',tr:'Raporu yazmasına izin verdim.',o:['write','to write','wrote','writing'],a:0,fb:'"let … write" → LET + bare infinitive. GET ve MAKE\'den farklı!'},
+  {q:'The report _____ been written before the meeting.',tr:'Toplantıdan önce yazılmıştı.',o:['had','has','was','were'],a:0,fb:'"had been written" → Past Perfect Passive. Geçmişte daha önce tamamlanan bir passive eylem.'},
+  {q:'The report that my assistant _____ is excellent.',tr:'Asistanımın yazdığı rapor mükemmel.',o:['wrote','written','write','had written'],a:0,fb:'"that my assistant wrote" → Relative clause. "that" + subject + past tense verb.'},
+];
+const CSTEPS=12;
+let cPos=0,cLives=3,cQIdx=0,cShuffled=[];
+function initCroc(){
+  cPos=0;cLives=3;cQIdx=0;cShuffled=[...CQALL].sort(()=>Math.random()-.5);
+  document.getElementById('cresult').style.display='none';
+  document.getElementById('cqArea').style.display='block';
+  document.getElementById('cfb').style.display='none';
+  renderCR();renderCLives();renderCQ();
+}
+function renderCR(){
+  const r=document.getElementById('criver');r.innerHTML='';
+  for(let i=0;i<=CSTEPS;i++){
+    const log=document.createElement('div');
+    log.className='clog'+(i<cPos?' past safe':(i===cPos?' cur':''));
+    log.style.flex='1';
+    if(i===cPos)log.textContent='🧑';
+    else if(i===CSTEPS)log.textContent='🏁';
+    else if(i<cPos)log.textContent='✓';
+    r.appendChild(log);
+  }
+}
+function renderCLives(){
+  document.getElementById('clives').innerHTML='❤️'.repeat(cLives)+'🖤'.repeat(3-cLives);
+  document.getElementById('cstep').textContent=`Adım ${cPos}/${CSTEPS}`;
+}
+function renderCQ(){
+  const q=cShuffled[cQIdx%cShuffled.length];
+  document.getElementById('cq').innerHTML=q.q.replace('_____','<span style="color:var(--acc);font-weight:700">_____</span>');
+  document.getElementById('ctr').textContent=q.tr;
+  document.getElementById('cfb').style.display='none';
+  document.getElementById('copts').innerHTML=q.o.map((o,i)=>`<button class="co" onclick="ansC(${i},${q.a},'${q.fb.replace(/'/g,"\\'")}')">${['A','B','C','D'][i]}. ${o}</button>`).join('');
+}
+function ansC(i,correct,fb){
+  document.querySelectorAll('.co').forEach(o=>o.disabled=true);
+  document.querySelectorAll('.co')[correct].classList.add('cok');
+  const fbEl=document.getElementById('cfb');
+  if(i===correct){
+    cPos++;fbEl.className='fb ok pop';fbEl.style.display='block';fbEl.innerHTML='✓ Doğru! '+fb;
+    renderCR();if(cPos>=CSTEPS){setTimeout(showCWin,700);return;}
+  }else{
+    document.querySelectorAll('.co')[i].classList.add('cer');
+    cLives--;fbEl.className='fb er pop';fbEl.style.display='block';fbEl.innerHTML='✗ Yanlış! '+fb;
+    const logs=document.querySelectorAll('.clog');if(logs[cPos])logs[cPos].classList.add('shk');
+    if(cLives<=0){setTimeout(showCLose,700);return;}
+  }
+  renderCLives();cQIdx++;
+  setTimeout(()=>renderCQ(),1500);
+}
+function showCWin(){document.getElementById('cqArea').style.display='none';document.getElementById('cresult').style.display='block';document.getElementById('cri').textContent='🎉';document.getElementById('crt').textContent='Nehri Geçtin!';document.getElementById('crm').textContent=`Tebrikler! ${3-cLives===0?'Hiç can kaybetmeden geçtin!':cLives+' canla karşıya ulaştın!'}`;}
+function showCLose(){document.getElementById('cqArea').style.display='none';document.getElementById('cresult').style.display='block';document.getElementById('cri').textContent='🐊';document.getElementById('crt').textContent='Timsah Yakaladı!';document.getElementById('crm').textContent=`${cPos} adım ilerledin. Yapıları tekrar gözden geçir ve yeniden dene!`;}
+
+// ═══ TRANSFORM GAME ═══
+const TQALL=[
+  {src:'My assistant wrote the report.',target:'→ Passive Voice\'e çevir',hint:'be + V3. Özne nesne olur.',models:['The report was written by my assistant.','The report was written.'],check:v=>v.includes('report')&&v.match(/was\s+written/)},
+  {src:'The report was written by my assistant.',target:'→ Causative HAVE\'e çevir (ben yaptırdım)',hint:'I + had + assistant + bare inf.',models:['I had my assistant write the report.'],check:v=>v.match(/had/)&&v.includes('write')&&v.includes('assistant')&&!v.match(/had \w+ to write/)},
+  {src:'I told my assistant to write the report. (present)',target:'→ Reported Speech\'e çevir (he said)',hint:'said + he had written / told him to write',models:['He said he had written the report.','He told his assistant to write the report.'],check:v=>v.match(/said|told/)&&v.match(/written|write/)},
+  {src:'My assistant wrote the report.',target:'→ Present Perfect\'e çevir',hint:'have/has + V3 (written)',models:['My assistant has written the report.'],check:v=>v.match(/has written/)},
+  {src:'My assistant will write the report.',target:'→ Modal Passive\'e çevir (should)',hint:'The report should be written.',models:['The report should be written.','The report should be written by my assistant.'],check:v=>v.match(/should\s+be\s+written/)},
+  {src:'My assistant wrote the report.',target:'→ Type 2 Conditional\'e çevir (if / would)',hint:'If he wrote..., ... would + base',models:['If my assistant wrote the report, we would succeed.','If he wrote it, we would win.'],check:v=>v.match(/if/)&&v.match(/would/)&&v.match(/write|wrote/)},
+  {src:'I had my assistant write the report.',target:'→ GET causative\'e çevir',hint:'GET + object + TO + infinitive',models:['I got my assistant to write the report.'],check:v=>v.match(/got/)&&v.includes(' to write')},
+  {src:'My assistant wrote the report. (vurgula: KİM)',target:'→ Cleft sentence yap',hint:'It was … who wrote the report.',models:['It was my assistant who wrote the report.'],check:v=>v.match(/it was/)&&v.match(/who wrote/)},
+  {src:'My assistant has written the report.',target:'→ Passive Perfect\'e çevir',hint:'The report has been written.',models:['The report has been written.','The report has been written by my assistant.'],check:v=>v.match(/has been written/)},
+  {src:'My assistant wrote the report.',target:'→ Relative Clause ile genişlet',hint:'The report that/which my assistant wrote…',models:['The report that my assistant wrote is excellent.','The report which my assistant wrote is ready.'],check:v=>v.match(/report (that|which)/)&&v.match(/wrote|written/)},
+];
+let tCur=0,tScore=0,tAttempts=0,tDone=false;
+function initTransform(){tCur=0;tScore=0;renderTQ();}
+function renderTQ(){
+  if(tCur>=TQALL.length){showTFinal();return;}
+  const q=TQALL[tCur];tAttempts=0;tDone=false;
+  const pct=Math.round(tCur/TQALL.length*100);
+  document.getElementById('tprFill').style.width=pct+'%';
+  document.getElementById('tqNum').textContent=tCur+1;
+  document.getElementById('tqSrc').innerHTML=q.src;
+  document.getElementById('tqTarget').innerHTML=`<span style="color:var(--acc);font-weight:700">${q.target}</span>`;
+  document.getElementById('tinput').value='';
+  document.getElementById('tinput').className='tg-textarea';
+  document.getElementById('tinput').disabled=false;
+  document.getElementById('tfb').style.display='none';
+  document.getElementById('tResetBtn').style.display='none';
+  document.getElementById('tNextBtn').style.display='none';
+  // hint chips
+  const keys=q.hint.split('.');
+  document.getElementById('tqHintBar').innerHTML=`<span class="tg-hint-chip" style="background:var(--modal-l);color:var(--modal);border-color:var(--modal-b)" onclick="showTHint()">💡 İpucu</span>`;
+  renderTDots();
+}
+function renderTDots(){
+  document.getElementById('tDots').innerHTML=Array(3).fill(0).map((_,i)=>`<div class="adot" id="tdot${i}"></div>`).join('');
+}
+function showTHint(){const q=TQALL[tCur];const fb=document.getElementById('tfb');fb.className='fb hi';fb.style.display='block';fb.innerHTML='💡 <strong>İpucu:</strong> '+q.hint;}
+function resetTInput(){
+  document.getElementById('tinput').value='';
+  document.getElementById('tinput').className='tg-textarea';
+  document.getElementById('tinput').disabled=false;
+  document.getElementById('tfb').style.display='none';
+  document.getElementById('tResetBtn').style.display='none';
+  document.getElementById('tinput').focus();
+}
+function checkTransform(){
+  if(tDone)return;
+  const val=document.getElementById('tinput').value.trim().toLowerCase();
+  const q=TQALL[tCur];const fb=document.getElementById('tfb');
+  if(!val){document.getElementById('tinput').focus();return;}
+  const isOk=q.check(val);
+  const dot=document.getElementById('tdot'+tAttempts);
+  if(dot)dot.classList.add(isOk?'ok':'er');
+  tAttempts++;
+  if(isOk){
+    tScore++;tDone=true;
+    document.getElementById('tqScore').textContent=tScore;
+    document.getElementById('tinput').className='tg-textarea correct-b';
+    document.getElementById('tinput').disabled=true;
+    fb.className='fb ok pop';fb.style.display='block';
+    fb.innerHTML='✓ Mükemmel! Model: <strong>'+q.models[0]+'</strong>';
+    document.getElementById('tNextBtn').style.display='inline-block';
+    document.getElementById('tResetBtn').style.display='none';
+  }else if(tAttempts>=3){
+    tDone=true;
+    document.getElementById('tinput').className='tg-textarea wrong-b';
+    document.getElementById('tinput').disabled=true;
+    fb.className='fb er pop';fb.style.display='block';
+    fb.innerHTML='✗ 3 hak bitti. Doğru: <strong>'+q.models[0]+'</strong><br><em>'+q.hint+'</em>';
+    document.getElementById('tNextBtn').style.display='inline-block';
+    document.getElementById('tResetBtn').style.display='none';
+  }else{
+    document.getElementById('tinput').className='tg-textarea wrong-b';
+    fb.className='fb er pop';fb.style.display='block';
+    fb.innerHTML='✗ Tekrar dene. '+q.hint;
+    document.getElementById('tResetBtn').style.display='inline-block';
+  }
+}
+function nextTransform(){tCur++;renderTQ();}
+function showTFinal(){
+  document.getElementById('tinput').value='';
+  document.getElementById('tprFill').style.width='100%';
+  document.getElementById('tqSrc').textContent='';
+  document.getElementById('tqTarget').textContent='';
+  document.getElementById('tqHintBar').innerHTML='';
+  document.getElementById('tDots').innerHTML='';
+  const fb=document.getElementById('tfb');fb.className='fb ok';fb.style.display='block';
+  fb.innerHTML=`<div style="text-align:center;padding:12px"><div style="font-size:36px">🏆</div><div style="font-size:16px;font-weight:700;margin:8px 0">Tamamlandı!</div><div>${tScore}/10 doğru &nbsp;·&nbsp; ${tScore>=9?'Olağanüstü! Tüm yapıları kavradın! 🌟':tScore>=7?'Çok iyi! 👍':tScore>=5?'İyi gidiyorsun! 💪':'Alıştırmaları tekrar dene!'}</div><button class="btn ba bsm" style="margin-top:12px" onclick="initTransform()">↺ Tekrar</button></div>`;
+}
+
+// ═══ AI TEXT GENERATOR ═══
+const STRUCT_COLORS={
+  passive:{cls:'hl-pass',label:'Passive Voice',color:'--pass'},
+  causative:{cls:'hl-caus',label:'Causative',color:'--caus'},
+  perfect:{cls:'hl-perf',label:'Perfect Tenses',color:'--perf'},
+  modal:{cls:'hl-modal',label:'Modal Verbs',color:'--modal'},
+  conditional:{cls:'hl-cond',label:'Conditionals',color:'--cond'},
+  reported:{cls:'hl-rep',label:'Reported Speech',color:'--rep'},
+  relative:{cls:'hl-rel',label:'Relative Clauses',color:'--rel'},
+  cleft:{cls:'hl-cleft',label:'Cleft Sentences',color:'--cleft'},
+};
+function buildAILegend(){
+  const el=document.getElementById('aiLegend');
+  if(!el)return;
+  el.innerHTML=Object.values(STRUCT_COLORS).map(s=>`
+    <div class="ls-item">
+      <div class="ls-dot" style="background:var(${s.color})"></div>
+      <span>${s.label}</span>
+    </div>`).join('');
+}
+function initAI(){buildAILegend();}
+
+async function generateAI(){
+  const topic=document.getElementById('aiTopic').value;
+  const structure=document.getElementById('aiStructure').value;
+  const words=document.getElementById('aiWords').value;
+  const btn=document.getElementById('aiGenBtn');
+  const out=document.getElementById('aiOut');
+  const explain=document.getElementById('aiExplain');
+
+  btn.disabled=true;btn.textContent='⏳ Oluşturuluyor…';
+  out.innerHTML=`<div class="ai-loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div style="margin-top:12px;font-size:12px">AI metni oluşturuyor…</div></div>`;
+  explain.style.display='none';
+
+  const topicMap={office:'ofis ve iş hayatı (rapor yazma, toplantılar, yöneticiler)',travel:'seyahat (otel, uçuş, organizasyon)',cooking:'yemek ve mutfak (tarif, restoran, şef)',tech:'teknoloji (yazılım, uygulama, ekip)',city:'şehir hayatı (trafik, alışveriş, sokak)',education:'eğitim (öğretmen, öğrenci, ders)',health:'sağlık ve spor (doktor, egzersiz, beslenme)',nature:'doğa (orman, iklim, keşif)'};
+  const structMap={all:'passive voice (was/were+V3), causative (had/got/made/let+object+verb), perfect tenses (has/have/had+V3), modal verbs (should/could/must+verb), conditionals (if...would), reported speech (said+backshift), relative clauses (that/which/who), cleft sentences (it was...who)',passive:'passive voice: was/were+V3, is/are being+V3, has been+V3',causative:'causative verbs: had+object+bare infinitive, got+object+to+infinitive, made+object+bare infinitive, let+object+bare infinitive',perfect:'perfect tenses: has/have+V3 (present perfect), had+V3 (past perfect), will have+V3 (future perfect)',modal:'modal verbs: should/could/must/might/would+base verb, modal+have+V3 (past modal)',conditional:'conditionals: Type 1 (if+present,will+base), Type 2 (if+past,would+base), Type 3 (if+past perfect,would have+V3)',reported:'reported speech: said+(that)+backshifted clause, told+object+to+inf, asked+if/whether+clause',relative:'relative clauses: who/which/that+clause, whose+noun, where+clause, reduced relatives (V3+phrase)',cleft:'cleft sentences: it was/is+X+who/that+clause, what+clause+is/was+X'};
+
+  const structFocus=structure==='all'?structMap.all:structMap[structure]||structMap.all;
+  const selectedStructures=structure==='all'?Object.keys(STRUCT_COLORS):[structure==='causative'?'causative':'passive',...(structure!=='all'?[structure]:[])];
+
+  const systemPrompt=`Sen bir İngilizce dil öğretmenisin. Görevin: verilen konuda, belirtilen gramer yapılarını YOĞUN biçimde kullanan İngilizce bir metin yazmak.
+
+ZORUNLU KURALLAR:
+1. Metin tam olarak ${words} kelime olmalı (±10 kelime tolerans)
+2. Konu: ${topicMap[topic]||topic}
+3. Kullan: ${structFocus}
+4. Her cümlenin sonuna köşeli parantez içinde hangi yapıyı kullandığını yaz:
+   - Passive için: [PASSIVE]
+   - Causative HAVE için: [HAVE-CAUS]  
+   - Causative GET için: [GET-CAUS]
+   - Causative MAKE için: [MAKE-CAUS]
+   - Causative LET için: [LET-CAUS]
+   - Present/Past Perfect için: [PERFECT]
+   - Modal için: [MODAL]
+   - Conditional için: [COND]
+   - Reported Speech için: [REPORTED]
+   - Relative Clause için: [RELATIVE]
+   - Cleft için: [CLEFT]
+   - Normal active cümle için: etiket koyma
+5. Akıcı, doğal İngilizce yaz. Zoraki görünmesin.
+6. Sadece metni döndür, başka hiçbir şey yazma.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:systemPrompt,
+        messages:[{role:'user',content:`Write the text now. Topic: ${topicMap[topic]}. Word count: ${words}. Focus on: ${structFocus}`}]
+      })
+    });
+    const data=await resp.json();
+    const rawText=data.content&&data.content[0]&&data.content[0].text?data.content[0].text:'Metin oluşturulamadı.';
+    renderAIOutput(rawText);
+  }catch(e){
+    out.innerHTML=`<div style="color:var(--er);font-size:12px;padding:12px">Hata: ${e.message}</div>`;
+  }
+  btn.disabled=false;btn.textContent='✨ Metin Oluştur';
+}
+
+function renderAIOutput(raw){
+  const out=document.getElementById('aiOut');
+  const explain=document.getElementById('aiExplain');
+  const explainContent=document.getElementById('aiExplainContent');
+
+  // Tag to highlight class mapping
+  const tagMap={
+    '[PASSIVE]':{cls:'hl-pass',label:'Passive Voice',exp:'be + V3 — özne eylemin nesnesi'},
+    '[HAVE-CAUS]':{cls:'hl-caus',label:'Causative HAVE',exp:'had + object + bare infinitive — yaptırmak'},
+    '[GET-CAUS]':{cls:'hl-caus',label:'Causative GET',exp:'got + object + to + infinitive — ikna etmek'},
+    '[MAKE-CAUS]':{cls:'hl-caus',label:'Causative MAKE',exp:'made + object + bare infinitive — zorlamak'},
+    '[LET-CAUS]':{cls:'hl-let',label:'Causative LET',exp:'let + object + bare infinitive — izin vermek'},
+    '[PERFECT]':{cls:'hl-perf',label:'Perfect Tense',exp:'have/has/had + V3 — geçmişe bağlı eylem'},
+    '[MODAL]':{cls:'hl-modal',label:'Modal Verb',exp:'modal + bare infinitive — zorunluluk/ihtimal'},
+    '[COND]':{cls:'hl-cond',label:'Conditional',exp:'if + tense, would/will + verb — koşul'},
+    '[REPORTED]':{cls:'hl-rep',label:'Reported Speech',exp:'said/told + backshifted clause'},
+    '[RELATIVE]':{cls:'hl-rel',label:'Relative Clause',exp:'who/which/that + clause — isim niteleyen'},
+    '[CLEFT]':{cls:'hl-cleft',label:'Cleft Sentence',exp:'It was … who … — vurgu cümlesi'},
+  };
+
+  // Find which tags were used
+  const usedTags={};
+  Object.keys(tagMap).forEach(tag=>{if(raw.includes(tag))usedTags[tag]=tagMap[tag];});
+
+  // Process sentences — highlight the whole sentence that contains a tag
+  let html=raw;
+  // Replace tags with visible badges and highlight surrounding sentence
+  Object.entries(tagMap).forEach(([tag,info])=>{
+    const re=new RegExp(escapeRE(tag),'g');
+    html=html.replace(re,`<span class="${info.cls}" style="font-size:10px;padding:1px 6px;border-radius:3px;font-style:normal;font-weight:700">${info.label}</span>`);
+  });
+
+  // Wrap sentences that have a highlight
+  html=html.replace(/([^.!?]+[.!?])\s*/g,(match)=>{
+    const hasTag=Object.values(tagMap).some(i=>match.includes(i.label));
+    if(hasTag)return`<span style="background:rgba(38,80,216,.05);border-radius:4px;padding:1px 3px">${match}</span>`;
+    return match;
+  });
+
+  out.innerHTML=`<div style="line-height:2.2">${html}</div>`;
+
+  // Show explanation panel
+  if(Object.keys(usedTags).length>0){
+    explainContent.innerHTML=Object.entries(usedTags).map(([tag,info])=>`
+      <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:8px">
+        <span class="${info.cls}" style="font-size:11px;padding:2px 8px;border-radius:5px;flex-shrink:0;font-weight:700">${info.label}</span>
+        <span>${info.exp}</span>
+      </div>`).join('');
+    explain.style.display='block';
+  }
+}
+function escapeRE(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+
+</script></body></html>

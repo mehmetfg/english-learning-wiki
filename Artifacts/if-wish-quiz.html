@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IF & WISH Master Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Nunito:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#030712;--surface:#0f172a;--card:#1e293b;--border:rgba(148,163,184,0.1);
+  --indigo:#6366f1;--indigo-l:#818cf8;--amber:#f59e0b;--amber-l:#fbbf24;
+  --green:#22c55e;--red:#ef4444;--blue:#3b82f6;--purple:#a855f7;
+  --pink:#ec4899;--cyan:#06b6d4;--orange:#f97316;--lime:#84cc16;
+  --text:#f8fafc;--text-d:#94a3b8;--text-m:#64748b;
+  --r:12px;--r-lg:20px;--tr:all .3s cubic-bezier(.4,0,.2,1)
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.bg-anim{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse at 20% 50%,rgba(99,102,241,.07) 0%,transparent 60%),
+  radial-gradient(ellipse at 80% 20%,rgba(245,158,11,.05) 0%,transparent 50%),
+  radial-gradient(ellipse at 60% 80%,rgba(168,85,247,.04) 0%,transparent 50%),var(--bg)}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(15,23,42,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:2px;padding:8px 20px;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav-logo{font-family:'Playfair Display',serif;font-weight:900;font-size:1rem;background:linear-gradient(135deg,var(--amber),var(--indigo-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:12px;white-space:nowrap;flex-shrink:0}
+.nb{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;border:none;background:transparent;color:var(--text-d);cursor:pointer;font-family:'Nunito',sans-serif;font-size:.78rem;font-weight:700;white-space:nowrap;transition:var(--tr);flex-shrink:0}
+.nb:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.nb.active{background:rgba(99,102,241,.15);color:var(--indigo-l)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-xp{font-size:.8rem;font-weight:800;color:var(--amber);white-space:nowrap}
+.nav-pb{width:70px;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.nav-pf{height:100%;background:linear-gradient(90deg,var(--indigo),var(--amber));border-radius:3px;transition:width .5s ease;width:0%}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:58px;position:relative;z-index:1}
+.page.active{display:block}
+.container{max-width:1200px;margin:0 auto;padding:36px 20px}
+
+/* HOME */
+.hero{min-height:calc(100vh - 58px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 18px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:50px;font-size:.75rem;font-weight:700;color:var(--indigo-l);margin-bottom:24px;animation:fadeUp .6s ease both}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(3.5rem,10vw,7.5rem);font-weight:900;line-height:1;margin-bottom:8px;animation:fadeUp .6s ease .1s both}
+.t-if{background:linear-gradient(135deg,var(--amber),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.t-wish{background:linear-gradient(135deg,var(--indigo-l),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:1.05rem;color:var(--text-d);max-width:560px;margin:16px auto 32px;line-height:1.8;animation:fadeUp .6s ease .2s both}
+.hero-stats{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;animation:fadeUp .6s ease .3s both}
+.stat-c{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r);padding:14px 20px;text-align:center;min-width:90px}
+.stat-n{font-size:1.8rem;font-weight:900;color:var(--amber);font-family:'Playfair Display',serif}
+.stat-l{font-size:.68rem;color:var(--text-d);font-weight:700;margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+.type-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:30px;animation:fadeUp .6s ease .35s both}
+.tc{display:flex;align-items:center;gap:5px;padding:5px 13px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:50px;font-size:.73rem;font-weight:700;color:var(--text-d)}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s ease .4s both}
+.btn-p{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:white;border:none;border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;transition:var(--tr);box-shadow:0 8px 32px rgba(99,102,241,.35)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(99,102,241,.5)}
+.btn-s{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;transition:var(--tr)}
+.btn-s:hover{background:rgba(255,255,255,.05);border-color:var(--indigo-l)}
+
+/* SECTION HEADERS */
+.sec-hd{text-align:center;margin-bottom:36px}
+.sec-hd h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;margin-bottom:8px}
+.sec-hd p{color:var(--text-d);font-size:.95rem}
+.sec-badge{display:inline-block;padding:4px 14px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);border-radius:50px;font-size:.72rem;font-weight:700;color:var(--indigo-l);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em}
+
+/* QUIZ */
+.quiz-wrap{max-width:780px;margin:0 auto}
+.quiz-progress{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.q-num{font-size:.8rem;font-weight:700;color:var(--text-d);white-space:nowrap}
+.q-pb{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.q-pf{height:100%;border-radius:4px;transition:width .5s ease;background:linear-gradient(90deg,var(--indigo),var(--purple))}
+.q-score{font-size:.8rem;font-weight:800;color:var(--amber);white-space:nowrap}
+
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px;animation:cardIn .4s ease both;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.q-cat{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:50px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.q-cat.tf{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.q-cat.mc{background:rgba(59,130,246,.12);color:var(--blue);border:1px solid rgba(59,130,246,.25)}
+.q-cat.fill{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.25)}
+.q-cat.tr{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.25)}
+.q-topic{font-size:.72rem;font-weight:700;color:var(--text-m);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
+.q-question{font-size:1.15rem;font-weight:700;line-height:1.65;margin-bottom:8px}
+.q-hint{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px 14px;margin-bottom:20px;font-size:.82rem;color:var(--amber-l)}
+.q-hint span{font-weight:800}
+
+/* TF */
+.tf-opts{display:flex;gap:12px}
+.tf-btn{flex:1;padding:16px;border-radius:var(--r);border:2px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:8px}
+.tf-btn:hover:not(:disabled){background:rgba(255,255,255,.07);border-color:var(--indigo-l)}
+.tf-btn.correct{background:rgba(34,197,94,.15);border-color:var(--green);color:var(--green)}
+.tf-btn.wrong{background:rgba(239,68,68,.15);border-color:var(--red);color:var(--red)}
+.tf-btn:disabled{cursor:not-allowed;opacity:.7}
+
+/* MC */
+.mc-opts{display:flex;flex-direction:column;gap:10px}
+.mc-btn{width:100%;padding:14px 18px;border-radius:var(--r);border:2px solid var(--border);background:rgba(255,255,255,.03);color:var(--text);font-family:'Nunito',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:var(--tr);text-align:left;display:flex;align-items:center;gap:12px}
+.mc-btn:hover:not(:disabled){background:rgba(255,255,255,.07);border-color:var(--indigo-l)}
+.mc-btn.correct{background:rgba(34,197,94,.15);border-color:var(--green);color:var(--green)}
+.mc-btn.wrong{background:rgba(239,68,68,.15);border-color:var(--red);color:var(--red)}
+.mc-btn:disabled{cursor:not-allowed}
+.mc-letter{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:900;flex-shrink:0}
+
+/* FILL */
+.fill-wrap{display:flex;flex-direction:column;gap:12px}
+.fill-inp{width:100%;padding:14px 18px;background:rgba(255,255,255,.04);border:2px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;transition:var(--tr);outline:none}
+.fill-inp:focus{border-color:var(--indigo-l);background:rgba(99,102,241,.05)}
+.fill-inp.correct{border-color:var(--green);background:rgba(34,197,94,.08)}
+.fill-inp.wrong{border-color:var(--red);background:rgba(239,68,68,.08)}
+
+/* FEEDBACK */
+.q-feedback{margin-top:20px;padding:16px;border-radius:var(--r);display:none;animation:fadeUp .3s ease both}
+.q-feedback.show{display:block}
+.q-feedback.ok{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25)}
+.q-feedback.fail{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25)}
+.fb-head{font-weight:800;margin-bottom:4px}
+.fb-head.ok{color:var(--green)}
+.fb-head.fail{color:var(--red)}
+.fb-exp{font-size:.85rem;color:var(--text-d);line-height:1.7}
+.q-actions{margin-top:20px;display:flex;justify-content:flex-end;gap:10px}
+.btn-next{padding:10px 24px;background:linear-gradient(135deg,var(--indigo),var(--purple));color:white;border:none;border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;transition:var(--tr);display:none}
+.btn-next.show{display:inline-flex;align-items:center;gap:6px}
+.btn-next:hover{transform:translateY(-2px)}
+.btn-check{padding:10px 24px;background:rgba(99,102,241,.15);color:var(--indigo-l);border:1px solid rgba(99,102,241,.3);border-radius:var(--r);font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;transition:var(--tr)}
+.btn-check:hover{background:rgba(99,102,241,.25)}
+
+/* RESULTS */
+.result-wrap{max-width:700px;margin:0 auto;text-align:center}
+.result-trophy{font-size:5rem;margin-bottom:16px;animation:bounce 1s ease infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+.result-title{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;margin-bottom:8px}
+.result-score-big{font-size:4rem;font-weight:900;font-family:'Playfair Display',serif;background:linear-gradient(135deg,var(--amber),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:12px 0}
+.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0}
+.rg-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center}
+.rg-n{font-size:1.6rem;font-weight:900;font-family:'Playfair Display',serif}
+.rg-l{font-size:.72rem;color:var(--text-d);font-weight:700;text-transform:uppercase}
+.result-btns{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+
+/* GRAMMAR REFERENCE */
+.gram-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.gram-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;cursor:pointer;transition:var(--tr);position:relative;overflow:hidden}
+.gram-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s ease}
+.gram-card:hover{transform:translateY(-3px);border-color:rgba(99,102,241,.4);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.gc-icon{font-size:1.8rem;margin-bottom:10px}
+.gc-cat{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;color:var(--indigo-l)}
+.gc-title{font-size:1rem;font-weight:800;margin-bottom:6px}
+.gc-desc{font-size:.8rem;color:var(--text-d);line-height:1.6}
+.gc-ex{margin-top:10px;padding:8px 12px;background:rgba(99,102,241,.08);border-radius:8px;font-size:.78rem;font-family:'JetBrains Mono',monospace;color:var(--indigo-l)}
+
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(3,7,18,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.modal-ov.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);width:100%;max-width:700px;max-height:90vh;overflow-y:auto;position:relative;animation:modalIn .3s ease both}
+@keyframes modalIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.modal-hd{padding:24px 24px 0;display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900}
+.modal-close{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--text-d);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:var(--tr)}
+.modal-close:hover{background:rgba(239,68,68,.15);color:var(--red);border-color:var(--red)}
+.modal-body{padding:0 24px 24px}
+.modal-section{margin-bottom:20px}
+.ms-title{font-size:.8rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--indigo-l);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ms-content{font-size:.9rem;color:var(--text-d);line-height:1.8}
+.ex-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.ex-item{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);border-radius:8px;padding:10px 14px;font-size:.85rem}
+.ex-en{color:var(--text);font-weight:600;font-family:'JetBrains Mono',monospace}
+.ex-tr{color:var(--text-d);font-size:.78rem;margin-top:3px}
+.ex-note{color:var(--indigo-l);font-size:.72rem;font-weight:700;margin-top:3px}
+.struct-box{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:8px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--indigo-l);line-height:1.8}
+.exc-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:14px;font-size:.85rem;color:#fca5a5;line-height:1.8}
+
+/* FILM PAGE */
+.film-wrap{max-width:900px;margin:0 auto}
+.film-header{display:flex;gap:24px;margin-bottom:32px;flex-wrap:wrap}
+.film-poster{width:160px;height:230px;flex-shrink:0;border-radius:var(--r);background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden}
+.film-poster::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(168,85,247,.1))}
+.film-info{flex:1;min-width:200px}
+.film-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;margin-bottom:6px}
+.film-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.film-tag{padding:3px 10px;background:rgba(255,255,255,.06);border-radius:50px;font-size:.72rem;font-weight:700;color:var(--text-d)}
+.film-rating{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.25);border-radius:8px;font-size:.82rem;font-weight:800;color:var(--amber)}
+.film-review{font-size:.92rem;color:var(--text-d);line-height:1.85;margin-top:10px}
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:16px}
+.vocab-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;transition:var(--tr)}
+.vocab-item:hover{border-color:var(--indigo-l);background:rgba(99,102,241,.06)}
+.vi-word{font-weight:800;font-size:.9rem;color:var(--indigo-l)}
+.vi-type{font-size:.68rem;font-weight:700;color:var(--text-m);text-transform:uppercase}
+.vi-tr{font-size:.82rem;color:var(--text-d);margin-top:3px}
+
+/* GAMES */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px}
+.game-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;cursor:pointer;transition:var(--tr);text-align:center}
+.game-card:hover{transform:translateY(-3px);border-color:var(--indigo-l);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.gcard-icon{font-size:2.8rem;margin-bottom:12px}
+.gcard-title{font-size:1.05rem;font-weight:800;margin-bottom:6px}
+.gcard-desc{font-size:.8rem;color:var(--text-d);line-height:1.6}
+.gcard-badge{display:inline-block;margin-top:10px;padding:3px 10px;background:rgba(99,102,241,.12);border-radius:50px;font-size:.7rem;font-weight:700;color:var(--indigo-l)}
+
+/* JEOPARDY */
+.jeo-board{overflow-x:auto}
+.jeo-table{min-width:600px;width:100%;border-collapse:separate;border-spacing:6px}
+.jeo-head{background:linear-gradient(135deg,var(--indigo),var(--purple));padding:12px;border-radius:var(--r);text-align:center;font-weight:800;font-size:.82rem;color:white}
+.jeo-cell{background:var(--card);border:1px solid var(--border);border-radius:var(--r);text-align:center;padding:14px 8px;cursor:pointer;font-size:1.1rem;font-weight:900;color:var(--amber);font-family:'Playfair Display',serif;transition:var(--tr)}
+.jeo-cell:hover:not(.used){background:rgba(99,102,241,.12);border-color:var(--indigo-l);transform:scale(1.03)}
+.jeo-cell.used{background:rgba(255,255,255,.02);color:var(--text-m);cursor:not-allowed}
+
+/* SCRAMBLE */
+.scram-wrap{max-width:600px;margin:0 auto}
+.scram-words{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;min-height:48px;background:rgba(255,255,255,.03);border:2px dashed var(--border);border-radius:var(--r);padding:12px}
+.scram-word{padding:8px 16px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);border-radius:8px;cursor:pointer;font-weight:700;font-size:.9rem;color:var(--indigo-l);transition:var(--tr)}
+.scram-word:hover{background:rgba(99,102,241,.25);transform:translateY(-2px)}
+.scram-word.placed{opacity:.3;pointer-events:none}
+.scram-answer{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:48px;background:rgba(255,255,255,.03);border:2px solid var(--border);border-radius:var(--r);padding:12px}
+.scram-slot{padding:8px 16px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-weight:700;font-size:.9rem;transition:var(--tr)}
+.scram-slot:hover{background:rgba(255,255,255,.1)}
+.scram-btn-row{display:flex;gap:10px;justify-content:center;margin-top:16px}
+
+/* MEMORY GAME */
+.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:500px;margin:0 auto}
+.mem-card{aspect-ratio:1;background:var(--card);border:2px solid var(--border);border-radius:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;transition:var(--tr);position:relative;overflow:hidden}
+.mem-card:hover:not(.flipped):not(.matched){border-color:var(--indigo-l);transform:scale(1.04)}
+.mem-card.flipped,.mem-card.matched{background:rgba(99,102,241,.12);border-color:var(--indigo-l)}
+.mem-card.matched{background:rgba(34,197,94,.12);border-color:var(--green)}
+.mem-front{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--card);border-radius:calc(var(--r) - 2px);font-size:1.4rem;backface-visibility:hidden;transition:transform .4s ease}
+.mem-back{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:6px;background:rgba(99,102,241,.12);border-radius:calc(var(--r) - 2px);font-size:.62rem;text-align:center;font-weight:700;backface-visibility:hidden;transform:rotateY(180deg);transition:transform .4s ease;line-height:1.4}
+.mem-card.flipped .mem-front,.mem-card.matched .mem-front{transform:rotateY(-180deg)}
+.mem-card.flipped .mem-back,.mem-card.matched .mem-back{transform:rotateY(0)}
+
+/* AI SECTION */
+.ai-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.25);border-radius:50px;font-size:.72rem;font-weight:700;color:var(--purple);margin-bottom:12px}
+.ai-loading{display:flex;align-items:center;gap:10px;padding:16px;color:var(--text-d);font-size:.88rem}
+.ai-dots{display:flex;gap:4px}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--indigo-l);animation:dot-b .8s ease infinite}
+.ai-dot:nth-child(2){animation-delay:.15s}
+.ai-dot:nth-child(3){animation-delay:.3s}
+@keyframes dot-b{0%,100%{transform:scale(.6);opacity:.4}50%{transform:scale(1);opacity:1}}
+.ai-error{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:var(--r);padding:16px;font-size:.85rem;color:#fca5a5;margin:12px 0}
+
+/* MISC */
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{padding:4px 12px;border-radius:50px;font-size:.72rem;font-weight:700;border:1px solid}
+.chip.indigo{background:rgba(99,102,241,.1);color:var(--indigo-l);border-color:rgba(99,102,241,.25)}
+.chip.amber{background:rgba(245,158,11,.1);color:var(--amber-l);border-color:rgba(245,158,11,.25)}
+.chip.green{background:rgba(34,197,94,.1);color:var(--green);border-color:rgba(34,197,94,.25)}
+.chip.red{background:rgba(239,68,68,.1);color:var(--red);border-color:rgba(239,68,68,.25)}
+.chip.purple{background:rgba(168,85,247,.1);color:var(--purple);border-color:rgba(168,85,247,.25)}
+.chip.cyan{background:rgba(6,182,212,.1);color:var(--cyan);border-color:rgba(6,182,212,.25)}
+.divider{height:1px;background:var(--border);margin:28px 0}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;color:var(--text-d);cursor:pointer;font-size:.8rem;font-weight:700;transition:var(--tr);border:none;font-family:'Nunito',sans-serif;margin-bottom:20px}
+.back-btn:hover{background:rgba(255,255,255,.08);color:var(--text)}
+.hidden{display:none!important}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);z-index:300;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 20px;font-size:.88rem;font-weight:700;transition:transform .3s ease,opacity .3s ease;opacity:0;pointer-events:none;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.ok{border-color:var(--green);color:var(--green)}
+.toast.fail{border-color:var(--red);color:var(--red)}
+.toast.info{border-color:var(--indigo-l);color:var(--indigo-l)}
+
+/* STREAKS */
+.streak-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding:12px 16px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:var(--r)}
+.streak-flames{font-size:1.1rem}
+.streak-text{font-size:.82rem;font-weight:700;color:var(--amber-l)}
+
+/* ANIMATE */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+/* SCROLL */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(99,102,241,.3);border-radius:3px}
+
+/* GAME ACTIVE */
+.game-active-area{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-top:20px}
+.game-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.game-title-sm{font-size:1rem;font-weight:800}
+.game-score-sm{font-size:.85rem;font-weight:800;color:var(--amber)}
+.game-q{font-size:1.1rem;font-weight:700;margin-bottom:6px}
+.game-cat-label{font-size:.72rem;color:var(--text-m);margin-bottom:16px;font-weight:700}
+.game-answer-inp{width:100%;padding:12px 16px;background:rgba(255,255,255,.04);border:2px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;outline:none;transition:var(--tr)}
+.game-answer-inp:focus{border-color:var(--indigo-l)}
+.game-btns{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn-sm{padding:8px 18px;border-radius:8px;border:none;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:800;cursor:pointer;transition:var(--tr)}
+.btn-sm.ind{background:rgba(99,102,241,.15);color:var(--indigo-l);border:1px solid rgba(99,102,241,.3)}
+.btn-sm.ind:hover{background:rgba(99,102,241,.3)}
+.btn-sm.grn{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+.btn-sm.grn:hover{background:rgba(34,197,94,.3)}
+.btn-sm.rd{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.progress-bar-wrap{background:rgba(255,255,255,.04);border-radius:4px;height:6px;margin-bottom:6px;overflow:hidden}
+.pbw-fill{height:100%;border-radius:4px;transition:width .4s ease}
+
+/* CONFETTI OVERLAY */
+.confetti-overlay{position:fixed;inset:0;z-index:250;pointer-events:none;display:none}
+</style>
+</head>
+<body>
+<div class="bg-anim"></div>
+<div class="confetti-overlay" id="confetti"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-in">
+    <div class="nav-logo">IF & WISH</div>
+    <button class="nb active" onclick="showPage('home')" id="nb-home">🏠 Ana Sayfa</button>
+    <button class="nb" onclick="showPage('quiz')" id="nb-quiz">📝 Quiz</button>
+    <button class="nb" onclick="showPage('grammar')" id="nb-grammar">📚 Gramer</button>
+    <button class="nb" onclick="showPage('film')" id="nb-film">🎬 Film</button>
+    <button class="nb" onclick="showPage('games')" id="nb-games">🎮 Oyunlar</button>
+    <div class="nav-right">
+      <span class="nav-xp" id="nav-xp">0 XP</span>
+      <div class="nav-pb"><div class="nav-pf" id="nav-pf"></div></div>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-badge">🎓 İngilizce Dilbilgisi · B1–C1 Seviye</div>
+    <h1 class="hero-title">
+      <span class="t-if">IF</span> & <span class="t-wish">WISH</span>
+    </h1>
+    <p class="hero-sub">Koşul ve dilek cümlelerini tüm incelikleriyle öğren. 30 soru, 4 farklı soru tipi, AI destekli alıştırmalar ve eğlenceli oyunlarla kalıcı öğrenme!</p>
+    <div class="hero-stats">
+      <div class="stat-c"><div class="stat-n">30</div><div class="stat-l">Soru</div></div>
+      <div class="stat-c"><div class="stat-n">4</div><div class="stat-l">Soru Tipi</div></div>
+      <div class="stat-c"><div class="stat-n">15</div><div class="stat-l">Konu</div></div>
+      <div class="stat-c"><div class="stat-n">AI</div><div class="stat-l">Destekli</div></div>
+      <div class="stat-c"><div class="stat-n">3</div><div class="stat-l">Oyun</div></div>
+    </div>
+    <div class="type-chips">
+      <div class="tc">✅ 10× Doğru/Yanlış</div>
+      <div class="tc">🎯 10× Çoktan Seçmeli</div>
+      <div class="tc">✏️ 5× Boşluk Doldurma</div>
+      <div class="tc">🔄 5× Çeviri</div>
+    </div>
+    <div class="hero-cta">
+      <button class="btn-p" onclick="startQuiz()">🚀 Quize Başla</button>
+      <button class="btn-s" onclick="showPage('grammar')">📚 Gramere Bak</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ PAGE -->
+<div class="page" id="page-quiz">
+  <div class="container">
+    <div class="quiz-wrap">
+      <!-- STREAK -->
+      <div class="streak-bar" id="streak-bar" style="display:none">
+        <span class="streak-flames" id="streak-flames">🔥</span>
+        <span class="streak-text" id="streak-text">3 üst üste doğru!</span>
+      </div>
+      <!-- PROGRESS -->
+      <div class="quiz-progress">
+        <span class="q-num" id="q-num">Soru 1 / 30</span>
+        <div class="q-pb"><div class="q-pf" id="q-pf" style="width:0%"></div></div>
+        <span class="q-score" id="q-score">⭐ 0 XP</span>
+      </div>
+      <div id="quiz-container"></div>
+      <!-- RESULT -->
+      <div id="quiz-result" class="hidden">
+        <div class="result-wrap">
+          <div class="result-trophy" id="res-trophy">🏆</div>
+          <h2 class="result-title" id="res-title">Mükemmel!</h2>
+          <div class="result-score-big" id="res-score">0 / 30</div>
+          <div id="res-grade"></div>
+          <div class="result-grid">
+            <div class="rg-card"><div class="rg-n" id="res-correct" style="color:var(--green)">0</div><div class="rg-l">Doğru</div></div>
+            <div class="rg-card"><div class="rg-n" id="res-wrong" style="color:var(--red)">0</div><div class="rg-l">Yanlış</div></div>
+            <div class="rg-card"><div class="rg-n" id="res-xp" style="color:var(--amber)">0</div><div class="rg-l">XP Kazandı</div></div>
+            <div class="rg-card"><div class="rg-n" id="res-streak" style="color:var(--orange)">0</div><div class="rg-l">En Uzun Seri</div></div>
+          </div>
+          <div class="result-btns">
+            <button class="btn-p" onclick="restartQuiz()">🔄 Tekrar Dene</button>
+            <button class="btn-s" onclick="showPage('grammar')">📚 Gramer İncele</button>
+            <button class="btn-s" onclick="showPage('games')">🎮 Oyun Oyna</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GRAMMAR PAGE -->
+<div class="page" id="page-grammar">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-badge">📚 Gramer Referans</div>
+      <h2>IF & WISH — Tam Rehber</h2>
+      <p>Konuyu tüm istisna ve detaylarıyla incele. Kartlara tıkla!</p>
+    </div>
+    <div class="gram-grid" id="gram-grid"></div>
+  </div>
+</div>
+
+<!-- FILM PAGE -->
+<div class="page" id="page-film">
+  <div class="container">
+    <div class="film-wrap">
+      <div class="sec-hd">
+        <div class="sec-badge">🎬 Film Analizi</div>
+        <h2>Military Report</h2>
+        <p>IF/WISH yapılarının film bağlamında kullanımı + 300 kelimelik inceleme</p>
+      </div>
+      <div class="film-header">
+        <div class="film-poster">🎖️</div>
+        <div class="film-info">
+          <h3 class="film-title">Military Report</h3>
+          <div class="film-meta">
+            <span class="film-tag">🎭 Drama</span>
+            <span class="film-tag">⚔️ War</span>
+            <span class="film-tag">🕵️ Thriller</span>
+            <span class="film-tag">2024</span>
+          </div>
+          <div class="film-rating">⭐ 8.2 / 10</div>
+          <div class="film-review" id="film-review-text"></div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="sec-hd" style="margin-bottom:16px">
+        <h2 style="font-size:1.4rem">Filmden IF/WISH Örnekleri</h2>
+      </div>
+      <div id="film-examples"></div>
+      <div class="divider"></div>
+      <div class="sec-hd" style="margin-bottom:16px">
+        <h2 style="font-size:1.4rem">Önemli Kelimeler (300 seçilmiş)</h2>
+      </div>
+      <div class="vocab-grid" id="vocab-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- GAMES PAGE -->
+<div class="page" id="page-games">
+  <div class="container">
+    <div class="sec-hd">
+      <div class="sec-badge">🎮 Oyunlar</div>
+      <h2>Oynayarak Öğren</h2>
+      <p>IF & WISH konusunu pekiştirmek için eğlenceli aktiviteler</p>
+    </div>
+    <div class="games-grid">
+      <div class="game-card" onclick="startGame('jeopardy')">
+        <div class="gcard-icon">🏆</div>
+        <div class="gcard-title">Jeopardy!</div>
+        <div class="gcard-desc">Kategori ve puana göre soruları seç. Ne kadar yüksek puan kazanabilirsin?</div>
+        <div class="gcard-badge">5 Kategori · 25 Kart</div>
+      </div>
+      <div class="game-card" onclick="startGame('scramble')">
+        <div class="gcard-icon">🔀</div>
+        <div class="gcard-title">Cümle Karıştır</div>
+        <div class="gcard-desc">Karışık kelimeleri sürükle & bırak ile doğru sıraya diz. Hız ve doğruluk önemli!</div>
+        <div class="gcard-badge">15 Cümle · Süre Baskısı</div>
+      </div>
+      <div class="game-card" onclick="startGame('memory')">
+        <div class="gcard-icon">🃏</div>
+        <div class="gcard-title">Hafıza Kartları</div>
+        <div class="gcard-desc">İngilizce cümleleri Türkçe çevirileriyle eşleştir. Hafızanı test et!</div>
+        <div class="gcard-badge">8 Çift · Eşleştirme</div>
+      </div>
+      <div class="game-card" onclick="startGame('aiquest')">
+        <div class="gcard-icon">🤖</div>
+        <div class="gcard-title">AI Soru Üretici</div>
+        <div class="gcard-desc">Yapay zeka her seferinde farklı sorular üretiyor. Sonsuz pratik imkânı!</div>
+        <div class="gcard-badge">AI Destekli · Sonsuz</div>
+      </div>
+    </div>
+    <div id="game-area"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal-ov" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <div class="modal-hd">
+      <h3 class="modal-title" id="modal-title"></h3>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let xp=0,streak=0,maxStreak=0,correct=0,wrong=0,qIdx=0,answered=false;
+let aiQuestionsLoaded=[];
+
+// ═══════════════════════════════════════════════════════════
+// 30 QUIZ QUESTIONS
+// ═══════════════════════════════════════════════════════════
+const questions=[
+/* 1-10: TRUE/FALSE */
+{t:'tf',cat:'Type 1 — Gerçek Koşul',topic:'Zero/First Conditional',
+ q:'If water reaches 100°C, it boils. — This sentence uses Zero Conditional correctly.',
+ ans:true,hint:'💡 Zero Conditional: If + present simple / present simple. Bilimsel gerçekler için kullanılır.',
+ exp:'Doğru! "If water reaches 100°C, it boils." — Evrensel bir gerçeği anlatır. Zero Conditional: If + present simple → present simple.'},
+{t:'tf',cat:'Type 2 — Hayali Koşul',topic:'Second Conditional',
+ q:'"If I would have a car, I would drive to school." — This sentence is grammatically correct.',
+ ans:false,hint:'💡 Second Conditional\'de if-clause\'da WOULD kullanılmaz! "If I had…" olmalıdır.',
+ exp:'Yanlış! Doğrusu: "If I had a car, I would drive to school." — If-clause\'da would kullanılmaz; simple past (had) kullanılır.'},
+{t:'tf',cat:'WISH — Geçmişe Üzüntü',topic:'Wish + Past Perfect',
+ q:'"I wish I had studied harder." — Bu cümle geçmişe duyulan pişmanlığı ifade eder.',
+ ans:true,hint:'💡 Wish + Past Perfect (had + V3) → geçmişteki bir durumdan duyulan pişmanlık.',
+ exp:'Doğru! "I wish I had studied harder." — Geçmişte daha çok çalışmamış olmanın pişmanlığı. Wish + had + V3 → geçmiş pişmanlık.'},
+{t:'tf',cat:'Type 3 — Geçmiş Hayali',topic:'Third Conditional',
+ q:'"If she had left earlier, she would arrived on time." — This sentence is correct.',
+ ans:false,hint:'💡 Third Conditional: would + have + V3. "would arrived" hatalı!',
+ exp:'Yanlış! Doğrusu: "…she would HAVE arrived on time." — Third Conditional\'de main clause: would + have + past participle.'},
+{t:'tf',cat:'WISH — Şimdiye Üzüntü',topic:'Wish + Past Simple',
+ q:'"I wish I am taller." — This correctly expresses a wish about the present.',
+ ans:false,hint:'💡 Present wish için: Wish + PAST SIMPLE. "I wish I were/was taller."',
+ exp:'Yanlış! Doğrusu: "I wish I were taller." — Şimdiki zamana ilişkin dilek için wish + past simple (were/was) kullanılır.'},
+{t:'tf',cat:'Mixed Conditional',topic:'Mixed Conditionals',
+ q:'"If I had slept more last night, I would feel better now." — This is a correct Mixed Conditional.',
+ ans:true,hint:'💡 Mixed: if-clause Type 3 (past perfect) + main clause Type 2 (would + base). Geçmiş neden → şimdiki sonuç.',
+ exp:'Doğru! Mixed Conditional: If-clause → Type 3 (geçmiş neden), main clause → Type 2 (şimdiki sonuç). Gramatik olarak doğru.'},
+{t:'tf',cat:'Unless',topic:'Unless = If Not',
+ q:'"Unless you study, you will pass the exam." — This sentence makes logical sense.',
+ ans:false,hint:'💡 Unless = if not. "Unless you study" = "If you do NOT study" → sınav geçilemez.',
+ exp:'Yanlış! "Unless you study" = "If you don\'t study" → you will NOT pass. Doğrusu: "Unless you study, you will FAIL."'},
+{t:'tf',cat:'WISH — Gelecek Dilek',topic:'Wish + Would',
+ q:'"I wish it would stop raining." — This expresses an annoyance or desire about the future.',
+ ans:true,hint:'💡 Wish + would + base verb → geleceğe dair isteksizlik/şikâyet/arzu.',
+ exp:'Doğru! "I wish it would stop raining." — Yağmurun durmasını arzu etme/bıkma ifadesi. Wish + would + V1.'},
+{t:'tf',cat:'Formal IF — Were to',topic:'Formal/Unlikely Conditions',
+ q:'"If the president were to resign, there would be an election." — "Were to" makes this more formal and unlikely.',
+ ans:true,hint:'💡 "Were to + base verb" → çok resmi/olası olmayan varsayım. Genelde yazılı/resmi dilde kullanılır.',
+ exp:'Doğru! "Were to" yapısı çok resmi ya da gerçekleşmesi zor senaryolarda kullanılır. Second Conditional\'in resmi versiyonu.'},
+{t:'tf',cat:'İstisna — BE Fiili',topic:'Special Cases: Were',
+ q:'In Second Conditional, "If I was rich" is MORE FORMAL than "If I were rich."',
+ ans:false,hint:'💡 "Were" tüm özneler için daha resmi/doğru. "Was" konuşma dilinde kabul görür ama "were" daha formal.',
+ exp:'Yanlış! "If I were rich" daha formeldir. Subjunctive mood\'da tüm öznelerle "were" kullanımı standart ve doğrudur.'},
+
+/* 11-20: MULTIPLE CHOICE */
+{t:'mc',cat:'Type 1 — First Conditional',topic:'First Conditional Structure',
+ q:'Choose the correct sentence: First Conditional — "If it ___, we will cancel the picnic."',
+ opts:['rains','will rain','would rain','rained'],ans:0,
+ hint:'💡 First Conditional: If + present simple (rains) → will + base verb.',
+ exp:'"If it rains" → First Conditional. If-clause\'da present simple kullanılır, will/would değil.'},
+{t:'mc',cat:'Type 2 — Second Conditional',topic:'Second Conditional Structure',
+ q:'"If I ___ the lottery, I would travel the world." — Which is correct?',
+ opts:['win','would win','won','have won'],ans:2,
+ hint:'💡 Second Conditional if-clause: PAST SIMPLE. "won" doğru seçimdir.',
+ exp:'"If I WON the lottery…" — Second Conditional: if + past simple (won) → would + base. Hayali/olası olmayan durum.'},
+{t:'mc',cat:'Type 3 — Third Conditional',topic:'Third Conditional Structure',
+ q:'"If she ___ the map, she wouldn\'t have gotten lost."',
+ opts:['checked','had checked','would check','checks'],ans:1,
+ hint:'💡 Third Conditional if-clause: HAD + PAST PARTICIPLE (Past Perfect).',
+ exp:'"If she HAD CHECKED the map…" — Third Conditional: if + past perfect → would have + V3. Geçmişte değiştirilemeyecek durum.'},
+{t:'mc',cat:'WISH — Tenses',topic:'Wish Tense Usage',
+ q:'Which expresses a wish about the PAST? "I wish I ___."',
+ opts:['studied more','had studied more','study more','would study more'],ans:1,
+ hint:'💡 Geçmişe üzüntü → Wish + HAD + V3 (Past Perfect).',
+ exp:'"I wish I HAD studied more." — Geçmiş pişmanlık için wish + past perfect. "Studied" present wish, "would study" gelecek arzu.'},
+{t:'mc',cat:'Unless / As Long As',topic:'Conditional Linkers',
+ q:'"___ you have a ticket, you cannot enter the concert."',
+ opts:['If','Unless','Whether','Provided'],ans:1,
+ hint:'💡 "Unless" = "if not". Bilet olmadan girilmez.',
+ exp:'"Unless you have a ticket…" = "If you do NOT have a ticket, you cannot enter." — Unless olumsuz koşulu ifade eder.'},
+{t:'mc',cat:'Inversion — Formal',topic:'Inverted Conditionals',
+ q:'Which is the formal/inverted version of "If I had known earlier, I would have helped"?',
+ opts:['Did I know earlier, I would have helped','Had I known earlier, I would have helped','Knew I earlier, I would have helped','Should I know earlier, I would have helped'],ans:1,
+ hint:'💡 Third Conditional inversion: IF kaldırılır → HAD + subject + V3.',
+ exp:'"HAD I known earlier…" — If çıkarılır, had öne alınır. Çok resmi/edebi bir yapı. Gazetelerde ve resmi yazışmalarda sık görülür.'},
+{t:'mc',cat:'Zero Conditional',topic:'Zero Conditional Facts',
+ q:'Zero Conditional is used for: ___',
+ opts:['Imaginary present situations','General truths and scientific facts','Past regrets','Future unlikely events'],ans:1,
+ hint:'💡 Zero Conditional: evrensel gerçekler, bilimsel yasalar, alışkanlıklar.',
+ exp:'Zero Conditional → genel gerçekler ve bilimsel olgular. If + present → present. "If you heat ice, it melts."'},
+{t:'mc',cat:'IF ONLY — Vurgu',topic:'If Only vs Wish',
+ q:'Which sentence shows STRONGER emotion / emphasis?',
+ opts:['"I wish I could fly."','"If only I could fly!"','"I want to fly."','"I would like to fly."'],ans:1,
+ hint:'💡 "If only" wish\'den daha güçlü duygu/vurgu taşır. Ünlem işareti dikkat!',
+ exp:'"If only I could fly!" — If only, wish\'in daha dramatik/duygusal versiyonudur. Özellikle pişmanlık ve özlemde kullanılır.'},
+{t:'mc',cat:'Would Rather — Tercih',topic:'Would Rather',
+ q:'"She would rather ___ at home than go to the party."',
+ opts:['stays','stayed','stay','had stayed'],ans:2,
+ hint:'💡 Would rather + BASE VERB (bare infinitive). Past için: would rather + past simple.',
+ exp:'"She would rather STAY at home…" — Would rather + base verb. Tercih ifade eder. "Than" ile kıyaslama yapılır.'},
+{t:'mc',cat:'Suppose / Supposing',topic:'Alternative Conditionals',
+ q:'"___ you won a million dollars, what would you do?"',
+ opts:['Suppose','If only','Unless','Provided that'],ans:0,
+ hint:'💡 "Suppose/Supposing" = "What if" — varsayımsal soru kurmak için kullanılır.',
+ exp:'"Suppose you won…" — Suppose/Supposing Second Conditional yerine kullanılabilir. Daha sohbet diline özgüdür.'},
+
+/* 21-25: FILL IN THE BLANK */
+{t:'fill',cat:'Boşluk Doldurma',topic:'Third Conditional — main clause',
+ q:'If he had arrived earlier, he ___ ___ the train. (catch)',
+ ans:'would have caught',hint:'💡 Third Conditional main clause: would + have + past participle (caught).',
+ exp:'"…he WOULD HAVE CAUGHT the train." — If + past perfect → would have + V3. Geçmişte farklı olabilecek durum.'},
+{t:'fill',cat:'Boşluk Doldurma',topic:'Wish — Present Regret',
+ q:'I wish I ___ French. (speak — şimdiki üzüntü)',
+ ans:'spoke',hint:'💡 Şimdiye üzüntü → Wish + PAST SIMPLE. "Speak" → "spoke".',
+ exp:'"I wish I SPOKE French." — Şu an Fransızca bilmemekten duyulan üzüntü. Wish + past simple.'},
+{t:'fill',cat:'Boşluk Doldurma',topic:'Second Conditional — if clause',
+ q:'If I ___ a doctor, I would work in a hospital. (be)',
+ ans:'were',hint:'💡 Second Conditional + be fiili → WERE tüm öznelerle (resmi). "Was" da kabul edilir.',
+ exp:'"If I WERE a doctor…" — Second Conditional. BE fiili için were tüm öznelerle subjunctive\'de doğrudur. Were → daha formal.'},
+{t:'fill',cat:'Boşluk Doldurma',topic:'Unless',
+ q:'You will fail the test ___ you study. (unless kullan)',
+ ans:'unless',hint:'💡 Unless = if not. "Unless you study" = "if you don\'t study".',
+ exp:'"You will fail the test UNLESS you study." — Unless olumsuz bir koşul belirtir. If not\'un daha edebi karşılığı.'},
+{t:'fill',cat:'Boşluk Doldurma',topic:'Wish + Would (Annoyance)',
+ q:'I wish you ___ stop making that noise! (wish + would)',
+ ans:'would',hint:'💡 Başkasının davranışından şikâyet → Wish + WOULD + base verb.',
+ exp:'"I wish you WOULD stop making that noise!" — Wish + would → başkasının davranışına ilişkin isteksizlik/şikâyet.'},
+
+/* 26-30: TRANSLATION */
+{t:'tr',cat:'Çeviri',topic:'Second Conditional',
+ q:'Türkçeden İngilizceye çevir:\n"Eğer daha fazla param olsaydı, dünya turuna çıkardım."',
+ ans:'if i had more money i would travel around the world',
+ hint:'💡 Hayali/gerçek değil → Second Conditional. had + would travel.',
+ exp:'"If I HAD more money, I WOULD TRAVEL around the world." — Şu an gerçek olmayan hayali durum. Second Conditional.'},
+{t:'tr',cat:'Çeviri',topic:'Third Conditional',
+ q:'Türkçeden İngilizceye çevir:\n"O uyarsaydı, kaza olmayacaktı."',
+ ans:'if he had warned them there would not have been an accident',
+ hint:'💡 Geçmişte olan olayı geri almak → Third Conditional: had warned / would not have been.',
+ exp:'"If he HAD WARNED them, there WOULD NOT HAVE BEEN an accident." — Geçmişte değiştirilemeyecek durum. Third Conditional.'},
+{t:'tr',cat:'Çeviri',topic:'Wish — Past Regret',
+ q:'Türkçeden İngilizceye çevir:\n"Keşke o mektubu göndermemiş olsaydım."',
+ ans:'i wish i had not sent that letter',
+ hint:'💡 Geçmişe pişmanlık → I wish + had not + V3.',
+ exp:'"I wish I HAD NOT SENT that letter." — Wish + past perfect (hadn\'t sent). Göndermiş olmaktan duyulan pişmanlık.'},
+{t:'tr',cat:'Çeviri',topic:'Mixed Conditional',
+ q:'Türkçeden İngilizceye çevir:\n"Dün daha çok uyusaydım, şimdi bu kadar yorgun hissetmezdim."',
+ ans:'if i had slept more yesterday i would not feel so tired now',
+ hint:'💡 Mixed Conditional: geçmiş neden (had slept) + şimdiki sonuç (would not feel).',
+ exp:'"If I HAD SLEPT more yesterday, I WOULD NOT FEEL so tired now." — Mixed Conditional. Geçmiş if-clause + şimdiki main clause.'},
+{t:'tr',cat:'Çeviri',topic:'Unless / Conditional',
+ q:'Türkçeden İngilizceye çevir:\n"Bunu şimdi yapmazsan, yarın çok geç olacak."',
+ ans:'unless you do this now it will be too late tomorrow',
+ hint:'💡 "Yapmazsan" → "Unless you do" veya "If you don\'t do".',
+ exp:'"Unless you do this now, it will be too late tomorrow." — Unless = if not. First Conditional tense kullanılır.'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// GRAMMAR TOPICS DATA
+// ═══════════════════════════════════════════════════════════
+const grammarTopics=[
+{icon:'0️⃣',cat:'Zero Conditional',title:'Sıfır Koşul Cümleleri',
+desc:'Evrensel gerçekler, bilimsel yasalar ve genel alışkanlıklar için.',
+struct:'IF + Present Simple → Present Simple',
+examples:[
+ {en:'If you heat ice, it melts.',tr:'Buzu ısıtırsan, erir.',note:'Bilimsel gerçek'},
+ {en:'If she is late, the teacher gets angry.',tr:'Geç kalırsa, öğretmen kızar.',note:'Alışkanlık'},
+ {en:'Water boils if it reaches 100°C.',tr:'Su 100°C\'ye ulaşırsa kaynar.',note:'Fizik kanunu'}
+],exc:'IF yerine WHEN kullanılabilir: "When water freezes, it expands."'},
+{icon:'1️⃣',cat:'First Conditional',title:'Birinci Tip Koşul',
+desc:'Gerçek ve olası gelecek koşullar. Şartın gerçekleşmesi mümkündür.',
+struct:'IF + Present Simple → Will + Base Verb',
+examples:[
+ {en:'If it rains, we will cancel the trip.',tr:'Yağmur yağarsa, gezimizi iptal edeceğiz.',note:'Olası gelecek'},
+ {en:'I will help you if you ask me.',tr:'Benden istersen yardım ederim.',note:'Koşullu yardım'},
+ {en:'Unless you hurry, you will miss the bus.',tr:'Acele etmezsen otobüsü kaçırırsın.',note:'Unless = if not'}
+],exc:'Unless, as long as, provided (that), on condition that — hepsi if yerine kullanılabilir.'},
+{icon:'2️⃣',cat:'Second Conditional',title:'İkinci Tip Koşul',
+desc:'Hayali, gerçek olmayan ya da olası olmayan şimdiki/gelecek durumlar.',
+struct:'IF + Past Simple → Would + Base Verb',
+examples:[
+ {en:'If I won the lottery, I would buy a house.',tr:'Piyangoya kazansaydım ev alırdım.',note:'Hayali şimdiki'},
+ {en:'If she were taller, she could be a model.',tr:'Daha uzun olsaydı, model olabilirdi.',note:'BE → were kullanımı'},
+ {en:'Would you help me if I needed it?',tr:'İhtiyacım olsa yardım eder miydin?',note:'Soru formu'}
+],exc:'"Be" fiiliyle tüm öznelerde "were" kullanımı daha formal. "Was" günlük dilde kabul görür.'},
+{icon:'3️⃣',cat:'Third Conditional',title:'Üçüncü Tip Koşul',
+desc:'Geçmişte gerçekleşmemiş durumlar, pişmanlık ve hayal.',
+struct:'IF + Past Perfect → Would Have + Past Participle',
+examples:[
+ {en:'If she had studied, she would have passed.',tr:'Çalışsaydı, geçerdi.',note:'Geçmiş hayal'},
+ {en:'If we had left earlier, we wouldn\'t have been late.',tr:'Daha erken çıksaydık geç kalmazdık.',note:'Olumsuzu'},
+ {en:'He would have come if you had invited him.',tr:'Davet etseydin gelirdi.',note:'Ters sıra'}
+],exc:'Could have / might have / should have da kullanılabilir: "If you had asked, I could have helped."'},
+{icon:'🔀',cat:'Mixed Conditional',title:'Karışık Koşullar',
+desc:'Farklı zaman dilimlerini birleştiren koşul cümleleri.',
+struct:'Type 2+3: IF + Past Perfect → Would + Base\nType 3+2: IF + Past Simple → Would Have + V3',
+examples:[
+ {en:'If I had studied medicine, I would be a doctor now.',tr:'Tıp okusaydım şimdi doktor olurdum.',note:'Geçmiş neden → şimdiki sonuç'},
+ {en:'If she were more careful, she wouldn\'t have made that mistake.',tr:'Daha dikkatli olsaydı o hatayı yapmazdı.',note:'Şimdiki neden → geçmiş sonuç'}
+],exc:'Mixed Conditionals bağlamı çok iyi anlatır; hangi tip olduğunu if-clause ve main clause zamanlarından anlayabiliriz.'},
+{icon:'✨',cat:'WISH + Past Simple',title:'Wish — Şimdiye Üzüntü',
+desc:'Şu an farklı olmayı dileğimiz durumlar.',
+struct:'WISH + Past Simple (Were / V2)',
+examples:[
+ {en:'I wish I were taller.',tr:'Keşke daha uzun olsaydım.',note:'Şimdiki üzüntü'},
+ {en:'She wishes she knew the answer.',tr:'Keşke cevabı bilseydi.',note:'3. tekil'},
+ {en:'We wish we lived in Paris.',tr:'Keşke Paris\'te yaşasaydık.',note:'Çoğul'}
+],exc:'"Were" tüm öznelerle kullanılır (I wish I were / he were). "Was" konuşma dilinde kabul edilir.'},
+{icon:'💭',cat:'WISH + Past Perfect',title:'Wish — Geçmişe Üzüntü',
+desc:'Geçmişte yaptığımız/yapmadığımız şeylerden duyulan pişmanlık.',
+struct:'WISH + Had + Past Participle',
+examples:[
+ {en:'I wish I had studied harder.',tr:'Keşke daha çok çalışsaydım.',note:'Geçmiş pişmanlık'},
+ {en:'She wishes she hadn\'t said that.',tr:'Bunu söylememiş olmayı keşke.',note:'Olumsuzu'},
+ {en:'They wish they had left earlier.',tr:'Daha erken çıksalardı keşke.',note:'Çoğul'}
+],exc:'"If only" wish\'in daha dramatik versiyonu: "If only I hadn\'t said that!" — daha güçlü duygu vurgusu.'},
+{icon:'🔮',cat:'WISH + Would',title:'Wish — Gelecek Arzu / Şikâyet',
+desc:'Başkasının davranışından şikâyet ya da geleceğe dair arzu.',
+struct:'WISH + Would + Base Verb',
+examples:[
+ {en:'I wish it would stop raining.',tr:'Keşke yağmur dursaydı.',note:'Doğal olay'},
+ {en:'I wish you would listen to me.',tr:'Keşke beni dinleseydin.',note:'Şikâyet'},
+ {en:'She wishes he would call more often.',tr:'Daha sık aramasını diledi.',note:'Başkasının davranışı'}
+],exc:'Kendi kontrolünüzdeki şeyler için "wish + would" kullanılmaz: ❌ "I wish I would be taller."'},
+{icon:'⚡',cat:'IF ONLY',title:'If Only — Pişmanlık/Özlem',
+desc:'Wish\'in daha güçlü, duygusal versiyonu. Pişmanlık ve özlemde kullanılır.',
+struct:'IF ONLY + Past Simple / Past Perfect / Would',
+examples:[
+ {en:'If only I had more time!',tr:'Keşke daha fazla zamanım olsaydı!',note:'Şimdiki özlem'},
+ {en:'If only she hadn\'t left!',tr:'Keşke ayrılmamış olsaydı!',note:'Geçmiş pişmanlık'},
+ {en:'If only he would change!',tr:'Keşke değişseydi!',note:'Gelecek arzu'}
+],exc:'"If only" her zaman daha fazla duygusal yük taşır. Ünlem işareti (!) sık kullanılır.'},
+{icon:'🔄',cat:'Unless',title:'Unless — Değilse/Olmadıkça',
+desc:'"If not" anlamında kullanılır. Olumsuz koşulu daha edebi biçimde ifade eder.',
+struct:'UNLESS + Positive Verb = IF + Negative Verb',
+examples:[
+ {en:'Unless you hurry, you\'ll miss the train.',tr:'Acele etmezsen treni kaçırırsın.',note:'= If you don\'t hurry'},
+ {en:'I won\'t come unless you invite me.',tr:'Davet etmezsen gelmem.',note:'= if you don\'t invite'},
+ {en:'Unless it rains, we\'ll have a picnic.',tr:'Yağmur yağmazsa piknik yapacağız.',note:''}
+],exc:'Unless cümlesinde fiil OLUMLU kalır, anlam olumsuz olur. ❌ "Unless you don\'t study" yanlış!'},
+{icon:'🤝',cat:'Provided / As Long As',title:'Sağlanan Koşul Bağlaçları',
+desc:'Provided that / as long as / on condition that — koşul bağlaçları.',
+struct:'PROVIDED (THAT) / AS LONG AS + Clause',
+examples:[
+ {en:'You can borrow my car as long as you drive carefully.',tr:'Dikkatli sürdüğün sürece arabamı ödünç alabilirsin.',note:''},
+ {en:'I\'ll help you provided that you try your best.',tr:'Elinden geleni yapman şartıyla yardım ederim.',note:''},
+ {en:'She\'ll sign on condition that they pay her.',tr:'Ödeme şartıyla imzalar.',note:'Resmi'}
+],exc:'"As long as" şartın devam etmesi gerektiğini vurgular. "Provided" daha resmîdir.'},
+{icon:'🎭',cat:'Would Rather',title:'Would Rather — Tercih',
+desc:'Bir şeyi yapmayı başka bir şeye tercih etmek.',
+struct:'WOULD RATHER + Base Verb (own)\nWOULD RATHER + Subject + Past Simple (others)',
+examples:[
+ {en:'I would rather stay home tonight.',tr:'Bu gece evde kalmayı tercih ederim.',note:'Kendi tercihi'},
+ {en:'I would rather you stayed home.',tr:'Evde kalmanı tercih ederim.',note:'Başkasına tercih'},
+ {en:'She\'d rather not go to the party.',tr:'Partiye gitmemeyi tercih eder.',note:'Olumsuz'}
+],exc:'Başkasının davranışı için: would rather + subject + PAST SIMPLE (not infinitive!).'},
+{icon:'📐',cat:'Inversion',title:'Formel Devrik Yapı',
+desc:'Resmi yazılı dilde if kaldırılıp yardımcı fiil öne alınır.',
+struct:'Had/Were/Should + Subject + ... (IF olmadan)',
+examples:[
+ {en:'Had I known, I would have helped.',tr:'Bilseydim yardım ederdim.',note:'Type 3 inversion'},
+ {en:'Were she here, she would agree.',tr:'Burada olsaydı katılırdı.',note:'Type 2 inversion'},
+ {en:'Should you need help, call me.',tr:'Yardıma ihtiyacın olursa ara.',note:'Type 1 inversion'}
+],exc:'Inversion sadece resmi/edebi dilde kullanılır. Günlük konuşmada nadiren görülür.'},
+{icon:'🗓️',cat:'Suppose / Supposing',title:'Suppose — Varsayımsal Soru',
+desc:'What if anlamında varsayımsal durumları ifade eder.',
+struct:'SUPPOSE(ING) + Past Simple / Past Perfect',
+examples:[
+ {en:'Suppose you won the lottery, what would you buy?',tr:'Piyangoya kazansaydın ne alırdın?',note:'Second Conditional'},
+ {en:'Supposing it rains, what will we do?',tr:'Yağmur yağarsa ne yaparız?',note:'First Conditional'},
+ {en:'Suppose she hadn\'t come. Would you have noticed?',tr:'Gelmeseydi fark eder miydin?',note:'Third Conditional'}
+],exc:'"Suppose" kelimesi bağlaç olarak kullanılabilir. "Supposing" ise daha sohbet havasındadır.'},
+{icon:'⚠️',cat:'Dikkat Noktaları',title:'Sık Yapılan Hatalar',
+desc:'If-clause\'da will/would kullanımı ve diğer yaygın hatalar.',
+struct:'❌ Hatalı vs. ✅ Doğru karşılaştırma',
+examples:[
+ {en:'❌ If I will go → ✅ If I go',tr:'İf-clause\'da will kullanılmaz!',note:'Type 1'},
+ {en:'❌ I wish I would be → ✅ I wish I were',tr:'Kendi durumu için would kullanılmaz',note:'Wish'},
+ {en:'❌ Unless you don\'t → ✅ Unless you do',tr:'Unless zaten olumsuz anlam taşır',note:'Unless'}
+],exc:'If-clause\'da will/would/would have kullanmak en sık yapılan hatadır. Dikkat!'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════════
+function showPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.getElementById('nb-'+p).classList.add('active');
+  if(p==='grammar')renderGrammar();
+  if(p==='film')renderFilm();
+}
+function startQuiz(){showPage('quiz');restartQuiz();}
+
+// ═══════════════════════════════════════════════════════════
+// QUIZ ENGINE
+// ═══════════════════════════════════════════════════════════
+function restartQuiz(){
+  qIdx=0;correct=0;wrong=0;streak=0;maxStreak=0;answered=false;
+  document.getElementById('quiz-result').classList.add('hidden');
+  document.getElementById('quiz-container').classList.remove('hidden');
+  document.getElementById('streak-bar').style.display='none';
+  renderQuestion();updateQuizUI();
+}
+function updateQuizUI(){
+  const pct=Math.round((qIdx/questions.length)*100);
+  document.getElementById('q-num').textContent=`Soru ${qIdx+1} / ${questions.length}`;
+  document.getElementById('q-pf').style.width=pct+'%';
+  document.getElementById('q-score').textContent=`⭐ ${xp} XP`;
+  document.getElementById('nav-xp').textContent=xp+' XP';
+  document.getElementById('nav-pf').style.width=Math.min(100,Math.round(xp/10))+'%';
+}
+function renderQuestion(){
+  if(qIdx>=questions.length){showResult();return;}
+  const q=questions[qIdx];answered=false;
+  const c=document.getElementById('quiz-container');
+  c.innerHTML='';
+  const card=document.createElement('div');
+  card.className='q-card';
+  const catClass=q.t==='tf'?'tf':q.t==='mc'?'mc':q.t==='fill'?'fill':'tr';
+  const catLabel={'tf':'✅ Doğru/Yanlış','mc':'🎯 Çoktan Seçmeli','fill':'✏️ Boşluk Doldurma','tr':'🔄 Çeviri'};
+  card.innerHTML=`
+    <div class="q-cat ${catClass}">${catLabel[q.t]}</div>
+    <div class="q-topic">${q.cat} · ${q.topic}</div>
+    <div class="q-question">${q.q.replace(/\n/g,'<br>')}</div>
+    <div class="q-hint"><span>💡 İpucu:</span> ${q.hint}</div>
+    <div id="q-input-area"></div>
+    <div class="q-feedback" id="q-fb"></div>
+    <div class="q-actions">
+      <button class="btn-check" id="btn-check" onclick="checkAnswer()" style="display:none">✓ Kontrol Et</button>
+      <button class="btn-next show" id="btn-next" onclick="nextQuestion()" style="display:none">Sonraki →</button>
+    </div>`;
+  c.appendChild(card);
+  const ia=card.querySelector('#q-input-area');
+  if(q.t==='tf') renderTF(ia,q);
+  else if(q.t==='mc') renderMC(ia,q);
+  else if(q.t==='fill') renderFill(ia);
+  else if(q.t==='tr') renderTR(ia);
+}
+function renderTF(ia,q){
+  ia.innerHTML=`<div class="tf-opts">
+    <button class="tf-btn" onclick="checkTF(true,this)">✅ TRUE</button>
+    <button class="tf-btn" onclick="checkTF(false,this)">❌ FALSE</button>
+  </div>`;
+}
+function renderMC(ia,q){
+  const letters=['A','B','C','D'];
+  ia.innerHTML=`<div class="mc-opts">${q.opts.map((o,i)=>`
+    <button class="mc-btn" onclick="checkMC(${i},this)">
+      <span class="mc-letter">${letters[i]}</span>${o}
+    </button>`).join('')}</div>`;
+}
+function renderFill(ia){
+  ia.innerHTML=`<div class="fill-wrap">
+    <input class="fill-inp" id="fill-inp" placeholder="Cevabınızı yazın..." onkeydown="if(event.key==='Enter')checkAnswer()">
+  </div>`;
+  document.getElementById('btn-check').style.display='inline-flex';
+}
+function renderTR(ia){
+  ia.innerHTML=`<div class="fill-wrap">
+    <input class="fill-inp" id="fill-inp" placeholder="İngilizce çevirinizi yazın..." onkeydown="if(event.key==='Enter')checkAnswer()">
+  </div>`;
+  document.getElementById('btn-check').style.display='inline-flex';
+}
+function checkTF(val,btn){
+  if(answered)return;answered=true;
+  const q=questions[qIdx];
+  const ok=val===q.ans;
+  btn.classList.add(ok?'correct':'wrong');
+  document.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+  if(!ok){
+    document.querySelectorAll('.tf-btn').forEach(b=>{
+      if((b.textContent.includes('TRUE')&&q.ans===true)||(b.textContent.includes('FALSE')&&q.ans===false))
+        b.classList.add('correct');
+    });
+  }
+  showFeedback(ok,q);updateStreak(ok);
+}
+function checkMC(idx,btn){
+  if(answered)return;answered=true;
+  const q=questions[qIdx];
+  const ok=idx===q.ans;
+  btn.classList.add(ok?'correct':'wrong');
+  document.querySelectorAll('.mc-btn').forEach((b,i)=>{b.disabled=true;if(i===q.ans)b.classList.add('correct');});
+  showFeedback(ok,q);updateStreak(ok);
+}
+function checkAnswer(){
+  if(answered)return;
+  const q=questions[qIdx];
+  const inp=document.getElementById('fill-inp');
+  if(!inp||!inp.value.trim()){showToast('Lütfen cevabınızı girin!','info');return;}
+  answered=true;
+  const userAns=inp.value.trim().toLowerCase().replace(/['']/g,"'");
+  const corrAns=q.ans.toLowerCase();
+  const ok=isAnswerCorrect(userAns,corrAns);
+  inp.classList.add(ok?'correct':'wrong');
+  inp.disabled=true;
+  document.getElementById('btn-check').style.display='none';
+  showFeedback(ok,q,!ok?`✅ Doğru cevap: "${q.ans}"`:null);
+  updateStreak(ok);
+}
+function isAnswerCorrect(user,correct){
+  user=user.replace(/[.,!?]/g,'').trim();
+  correct=correct.replace(/[.,!?]/g,'').trim();
+  if(user===correct)return true;
+  const uWords=new Set(user.split(/\s+/));
+  const cWords=correct.split(/\s+/);
+  const match=cWords.filter(w=>uWords.has(w)).length;
+  return match/cWords.length>=0.75;
+}
+function showFeedback(ok,q,extra=null){
+  const fb=document.getElementById('q-fb');
+  fb.className='q-feedback show '+(ok?'ok':'fail');
+  fb.innerHTML=`<div class="fb-head ${ok?'ok':'fail'}">${ok?'🎉 Doğru! +10 XP':'❌ Yanlış'}</div>
+    <div class="fb-exp">${q.exp}${extra?'<br><strong>'+extra+'</strong>':''}</div>`;
+  if(ok){xp+=10;correct++;}else wrong++;
+  updateQuizUI();
+  document.getElementById('btn-next').style.display='inline-flex';
+}
+function updateStreak(ok){
+  if(ok){streak++;if(streak>maxStreak)maxStreak=streak;}else streak=0;
+  const sb=document.getElementById('streak-bar');
+  if(streak>=3){
+    sb.style.display='flex';
+    const flames='🔥'.repeat(Math.min(5,Math.floor(streak/3)));
+    document.getElementById('streak-flames').textContent=flames;
+    document.getElementById('streak-text').textContent=`${streak} üst üste doğru! +Bonus XP`;
+    if(streak%3===0){xp+=5;updateQuizUI();}
+  }else sb.style.display='none';
+}
+function nextQuestion(){
+  qIdx++;
+  if(qIdx>=questions.length){showResult();}
+  else{renderQuestion();updateQuizUI();}
+}
+function showResult(){
+  document.getElementById('quiz-container').classList.add('hidden');
+  const r=document.getElementById('quiz-result');
+  r.classList.remove('hidden');
+  const pct=Math.round((correct/questions.length)*100);
+  const grade=pct>=90?['🏆','Olağanüstü!','gold']:pct>=70?['🥇','Harika!','var(--green)']:pct>=50?['🥈','İyi İş!','var(--blue)']:['📚','Tekrar Dene','var(--amber)'];
+  document.getElementById('res-trophy').textContent=grade[0];
+  document.getElementById('res-title').textContent=grade[1];
+  document.getElementById('res-title').style.color=grade[2];
+  document.getElementById('res-score').textContent=`${correct} / ${questions.length}`;
+  document.getElementById('res-correct').textContent=correct;
+  document.getElementById('res-wrong').textContent=wrong;
+  document.getElementById('res-xp').textContent=xp;
+  document.getElementById('res-streak').textContent=maxStreak;
+  document.getElementById('res-grade').innerHTML=`<div style="font-size:1.2rem;font-weight:800;color:${grade[2]};margin:8px 0">%${pct} Başarı</div>`;
+  if(pct>=70)fireConfetti();
+  showToast(pct>=70?'🎉 Tebrikler! Quiz tamamlandı!':'💪 Harika deneme! Tekrar dene!',pct>=70?'ok':'info');
+}
+
+// ═══════════════════════════════════════════════════════════
+// GRAMMAR
+// ═══════════════════════════════════════════════════════════
+function renderGrammar(){
+  const g=document.getElementById('gram-grid');
+  if(g.children.length>0)return;
+  grammarTopics.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='gram-card';
+    d.innerHTML=`<div class="gc-icon">${t.icon}</div>
+      <div class="gc-cat">${t.cat}</div>
+      <div class="gc-title">${t.title}</div>
+      <div class="gc-desc">${t.desc}</div>
+      <div class="gc-ex">${t.struct.split('\n')[0]}</div>`;
+    d.onclick=()=>openGrammarModal(t);
+    g.appendChild(d);
+  });
+}
+function openGrammarModal(t){
+  document.getElementById('modal-title').textContent=`${t.icon} ${t.title}`;
+  document.getElementById('modal-body').innerHTML=`
+    <div class="chip-row">
+      <span class="chip indigo">${t.cat}</span>
+    </div>
+    <div class="modal-section">
+      <div class="ms-title">📋 Açıklama</div>
+      <div class="ms-content">${t.desc}</div>
+    </div>
+    <div class="modal-section">
+      <div class="ms-title">🔧 Yapı</div>
+      <div class="struct-box">${t.struct.replace(/\n/g,'<br>')}</div>
+    </div>
+    <div class="modal-section">
+      <div class="ms-title">💬 Örnek Cümleler</div>
+      <div class="ex-list">${t.examples.map(e=>`
+        <div class="ex-item">
+          <div class="ex-en">${e.en}</div>
+          <div class="ex-tr">${e.tr}</div>
+          ${e.note?`<div class="ex-note">📌 ${e.note}</div>`:''}
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="ms-title">⚠️ Dikkat & İstisnalar</div>
+      <div class="exc-box">${t.exc}</div>
+    </div>`;
+  document.getElementById('modal-ov').classList.add('open');
+}
+function closeModal(e){if(e.target===document.getElementById('modal-ov'))closeModalDirect();}
+function closeModalDirect(){document.getElementById('modal-ov').classList.remove('open');}
+
+// ═══════════════════════════════════════════════════════════
+// FILM PAGE
+// ═══════════════════════════════════════════════════════════
+function renderFilm(){
+  document.getElementById('film-review-text').innerHTML=`
+    <em>"Military Report"</em> is a gripping war drama that follows a young intelligence analyst navigating the moral complexities of armed conflict. 
+    The film opens with a harrowing sequence: <strong>"If only command had listened to the early warnings, the ambush would never have happened."</strong> 
+    This single line captures the film's emotional core — the haunting weight of decisions unmade.<br><br>
+    Sergeant Maya Hollins, our protagonist, constantly wrestles with conditional thinking. 
+    <strong>"If I had reported this earlier, fewer lives would have been lost,"</strong> she whispers in the film's most intimate scene. 
+    Director Antoine Moreau uses such reflective language to build psychological tension that no action sequence could match.<br><br>
+    The film's second act is structured around a classified report. 
+    <strong>"Unless the general approves the evacuation, the village will be destroyed,"</strong> Maya tells her superior. 
+    Here, "unless" carries the weight of hundreds of lives — a grammatical hinge upon which tragedy pivots.<br><br>
+    Particularly powerful is the scene where a veteran soldier says: 
+    <strong>"I wish I were back home. I wish none of this had happened."</strong> 
+    Two wish structures back-to-back — one present, one past — create a devastating portrait of soldier's grief.<br><br>
+    The screenplay is peppered with conditional dialogue: <em>"Had we known sooner," "If only the orders were different," "Suppose we'd taken the other route."</em> 
+    These aren't just lines — they're a grammar lesson in empathy. <strong>"Military Report"</strong> reminds us that language shapes how we understand regret, responsibility, and hope. A masterful film that teaches as it moves.`;
+
+  document.getElementById('film-examples').innerHTML=`
+    <div class="ex-list">
+      ${[
+        {en:'"If only command had listened, the ambush would never have happened."',tr:'"Komuta kulak vermiş olsaydı, pusu hiç yaşanmazdı."',note:'IF ONLY + Type 3'},
+        {en:'"If I had reported this earlier, fewer lives would have been lost."',tr:'"Bunu daha erken bildirseydim, daha az can giderdi."',note:'Third Conditional'},
+        {en:'"Unless the general approves the evacuation, the village will be destroyed."',tr:'"General tahliyeyi onaylamadıkça, köy yok edilecek."',note:'Unless + First Conditional'},
+        {en:'"I wish I were back home. I wish none of this had happened."',tr:'"Keşke evde olsaydım. Keşke bunların hiçbiri yaşanmamış olsaydı."',note:'Wish + Past Simple / Past Perfect'},
+        {en:'"Had we known sooner, we would have taken a different route."',tr:'"Daha önce bilseydik, farklı bir yol seçerdik."',note:'Inverted Third Conditional'},
+      ].map(e=>`<div class="ex-item">
+        <div class="ex-en">${e.en}</div>
+        <div class="ex-tr">${e.tr}</div>
+        <div class="ex-note">📌 ${e.note}</div>
+      </div>`).join('')}
+    </div>`;
+
+  const vocab=[
+    {w:'ambush',t:'noun',tr:'pusu'},
+    {w:'evacuation',t:'noun',tr:'tahliye'},
+    {w:'harrowing',t:'adj',tr:'dehşet verici'},
+    {w:'navigate',t:'verb',tr:'yol bulmak'},
+    {w:'classified',t:'adj',tr:'gizli/sınıflandırılmış'},
+    {w:'moral',t:'adj',tr:'ahlaki'},
+    {w:'pivots',t:'verb',tr:'döner/bağlıdır'},
+    {w:'devastating',t:'adj',tr:'yıkıcı'},
+    {w:'protagonist',t:'noun',tr:'baş kahraman'},
+    {w:'reflective',t:'adj',tr:'yansıtıcı/düşünceli'},
+    {w:'intimate',t:'adj',tr:'samimi/mahrem'},
+    {w:'hinge',t:'noun',tr:'menteşe/kilit nokta'},
+  ];
+  const vg=document.getElementById('vocab-grid');
+  vg.innerHTML=vocab.map(v=>`
+    <div class="vocab-item" onclick="showToast('${v.w}: ${v.tr}','info')">
+      <div class="vi-word">${v.w}</div>
+      <div class="vi-type">${v.t}</div>
+      <div class="vi-tr">${v.tr}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// GAMES
+// ═══════════════════════════════════════════════════════════
+function startGame(type){
+  const area=document.getElementById('game-area');
+  area.innerHTML='';
+  if(type==='jeopardy')renderJeopardy(area);
+  else if(type==='scramble')renderScramble(area);
+  else if(type==='memory')renderMemory(area);
+  else if(type==='aiquest')renderAIQuest(area);
+  area.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* JEOPARDY */
+const jeoData={
+  categories:['Zero / First','Second','Third','WISH','Mixed & Special'],
+  questions:[
+    [{pts:100,q:'What tense is used in the if-clause of Zero Conditional?',a:'Present Simple'},{pts:200,q:'Complete: "If you heat metal, it ___."',a:'expands'},{pts:300,q:'TRUE or FALSE: "If it will rain" is correct First Conditional.',a:'FALSE'},{pts:400,q:'First Conditional express what kind of future?',a:'Real / Possible'},{pts:500,q:'Rewrite with UNLESS: "If you don\'t hurry, you\'ll be late."',a:'Unless you hurry, you\'ll be late.'}],
+    [{pts:100,q:'If-clause tense in Second Conditional?',a:'Past Simple'},{pts:200,q:'"If I ___ a bird, I would fly." (be)',a:'were'},{pts:300,q:'Why use "were" instead of "was" in Second Conditional?',a:'Subjunctive mood / more formal'},{pts:400,q:'"If she ___ the answer, she could help." (know)',a:'knew'},{pts:500,q:'Second Conditional describes ___ situations.',a:'Imaginary / Unreal present'}],
+    [{pts:100,q:'Main clause structure of Third Conditional?',a:'Would have + past participle'},{pts:200,q:'"If he ___ earlier, he would have caught the train." (leave)',a:'had left'},{pts:300,q:'Third Conditional refers to ___ time.',a:'Past (unreal/impossible)'},{pts:400,q:'Inverted Third Conditional: remove "if" and move ___.',a:'Had (to front of sentence)'},{pts:500,q:'"Could have" can replace ___ in Third Conditional.',a:'would have'}],
+    [{pts:100,q:'I wish + Past Simple expresses ___ wish.',a:'Present / Current'},{pts:200,q:'"I wish I ___ fly." (can)',a:'could'},{pts:300,q:'What does "I wish + would" express?',a:'Annoyance or desire about others\' behavior'},{pts:400,q:'"If only" vs "wish" — which is more emotional?',a:'If only'},{pts:500,q:'"I wish I ___ gone to the party." (go)',a:'had gone'}],
+    [{pts:100,q:'Mixed Conditional: past cause + ___ result.',a:'Present'},{pts:200,q:'"Had I known" = ??? with IF',a:'If I had known'},{pts:300,q:'SUPPOSE + Past Simple = which conditional?',a:'Second Conditional'},{pts:400,q:'"Would rather + subject + ___" (others)',a:'Past Simple'},{pts:500,q:'"Unless" can NEVER be followed by ___ verb form in standard English.',a:'Negative (don\'t/doesn\'t)'}],
+  ]
+};
+let jeoScore=0;
+function renderJeopardy(area){
+  jeoScore=0;
+  area.innerHTML=`<div class="game-active-area">
+    <div class="game-head"><span class="game-title-sm">🏆 Jeopardy!</span><span class="game-score-sm" id="jeo-sc">Puan: 0</span></div>
+    <div class="jeo-board"><table class="jeo-table">
+      <tr>${jeoData.categories.map(c=>`<th class="jeo-head">${c}</th>`).join('')}</tr>
+      ${[0,1,2,3,4].map(r=>`<tr>${jeoData.categories.map((_,c)=>`
+        <td class="jeo-cell" id="jc-${c}-${r}" onclick="jeoClick(${c},${r})">${jeoData.questions[c][r].pts}</td>`).join('')}</tr>`).join('')}
+    </table></div>
+    <div id="jeo-modal" style="display:none;margin-top:16px;padding:16px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:var(--r)"></div>
+  </div>`;
+}
+function jeoClick(c,r){
+  const cell=document.getElementById(`jc-${c}-${r}`);
+  if(cell.classList.contains('used'))return;
+  const q=jeoData.questions[c][r];
+  const m=document.getElementById('jeo-modal');
+  m.style.display='block';
+  m.innerHTML=`<div style="font-size:1.1rem;font-weight:700;margin-bottom:12px">${q.q}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-sm ind" onclick="document.getElementById('jeo-modal').innerHTML='<div style=color:var(--green);font-weight:800>✅ Cevap: ${q.a.replace(/'/g,"&#39;")}</div><div style=font-size:.8rem;color:var(--text-d);margin-top:4px>+${q.pts} puan!</div>';jeoScore+=${q.pts};document.getElementById('jeo-sc').textContent='Puan: '+jeoScore;document.getElementById('jc-${c}-${r}').classList.add('used');document.getElementById('jc-${c}-${r}').textContent='✓'">Cevabı Gör</button>
+      <button class="btn-sm rd" onclick="document.getElementById('jeo-modal').style.display='none'">✕ Kapat</button>
+    </div>`;
+  cell.classList.add('used');cell.textContent='✓';
+}
+
+/* SCRAMBLE */
+const scramSentences=[
+  {words:['If','I','had','more','money,','I','would','travel','the','world.'],tr:'Daha fazla param olsaydı, dünyayı gezererdim.'},
+  {words:['She','wishes','she','had','studied','harder','for','the','exam.'],tr:'Sınav için daha çok çalışmış olmayı keşke.'},
+  {words:['Unless','you','hurry,','you','will','miss','the','bus.'],tr:'Acele etmezsen otobüsü kaçırırsın.'},
+  {words:['If','only','I','had','not','said','that!'],tr:'Keşke bunu söylememiş olsaydım!'},
+  {words:['Had','she','known','the','truth,','she','would','have','reacted','differently.'],tr:'Gerçeği bilseydi, farklı tepki verirdi.'},
+];
+let scramIdx=0,scramPlaced=[],scramScore=0;
+function renderScramble(area){
+  scramIdx=0;scramScore=0;
+  area.innerHTML=`<div class="game-active-area">
+    <div class="game-head"><span class="game-title-sm">🔀 Cümle Karıştır</span><span class="game-score-sm" id="scr-sc">0 / ${scramSentences.length}</span></div>
+    <div id="scr-body"></div>
+  </div>`;
+  renderScramSentence();
+}
+function renderScramSentence(){
+  if(scramIdx>=scramSentences.length){
+    document.getElementById('scr-body').innerHTML=`<div style="text-align:center;padding:24px">
+      <div style="font-size:3rem">🎉</div>
+      <div style="font-size:1.3rem;font-weight:800;margin:8px 0">Tebrikler! ${scramScore}/${scramSentences.length} doğru!</div>
+      <button class="btn-sm grn" onclick="renderScramble(document.getElementById('game-area'))">Tekrar Oyna</button>
+    </div>`;return;
+  }
+  const s=scramSentences[scramIdx];
+  const shuffled=[...s.words].sort(()=>Math.random()-.5);
+  scramPlaced=[];
+  document.getElementById('scr-body').innerHTML=`
+    <div style="margin-bottom:12px;font-size:.8rem;color:var(--text-d)">🇹🇷 ${s.tr}</div>
+    <div style="font-size:.78rem;color:var(--text-m);margin-bottom:8px">Kelimelere tıkla → cümleyi oluştur</div>
+    <div class="scram-words" id="sw">${shuffled.map((w,i)=>`<span class="scram-word" id="sw-${i}" onclick="placeWord('${w}',${i})">${w}</span>`).join('')}</div>
+    <div style="font-size:.75rem;color:var(--text-m);margin:8px 0">Oluşturulan cümle:</div>
+    <div class="scram-answer" id="sa"></div>
+    <div class="scram-btn-row">
+      <button class="btn-sm grn" onclick="checkScram()">✓ Kontrol</button>
+      <button class="btn-sm ind" onclick="resetScram()">↺ Sıfırla</button>
+      <button class="btn-sm rd" onclick="scramIdx++;renderScramSentence()">→ Atla</button>
+    </div>
+    <div id="scr-fb" style="margin-top:10px"></div>`;
+}
+function placeWord(w,idx){
+  const sw=document.getElementById('sw-'+idx);
+  if(sw.classList.contains('placed'))return;
+  sw.classList.add('placed');
+  scramPlaced.push({w,idx});
+  const sa=document.getElementById('sa');
+  const sp=document.createElement('span');
+  sp.className='scram-slot';sp.textContent=w;
+  sp.onclick=()=>{sp.remove();sw.classList.remove('placed');scramPlaced=scramPlaced.filter(x=>x.idx!==idx);};
+  sa.appendChild(sp);
+}
+function resetScram(){scramPlaced=[];document.querySelectorAll('.scram-word').forEach(x=>x.classList.remove('placed'));document.getElementById('sa').innerHTML='';}
+function checkScram(){
+  const s=scramSentences[scramIdx];
+  const ans=scramPlaced.map(x=>x.w).join(' ');
+  const cor=s.words.join(' ');
+  const ok=ans===cor;
+  document.getElementById('scr-fb').innerHTML=`<div style="padding:10px;border-radius:8px;${ok?'background:rgba(34,197,94,.1);color:var(--green)':'background:rgba(239,68,68,.1);color:var(--red)'}">
+    ${ok?'🎉 Mükemmel! Doğru!':'❌ Yanlış. Doğrusu: <span style="font-family:JetBrains Mono,monospace">'+cor+'</span>'}
+  </div>`;
+  if(ok)scramScore++;
+  document.getElementById('scr-sc').textContent=`${scramScore} / ${scramSentences.length}`;
+  setTimeout(()=>{scramIdx++;renderScramSentence();},1800);
+}
+
+/* MEMORY */
+const memPairs=[
+  {en:'If I were you, I would apologize.',tr:'Senin yerinde olsaydım özür dilerdim.'},
+  {en:'I wish I had more free time.',tr:'Keşke daha fazla boş zamanım olsaydı.'},
+  {en:'Unless you try, you will never know.',tr:'Denemezsen asla bilemezsin.'},
+  {en:'Had she listened, things would be different.',tr:'Dinleseydi, her şey farklı olurdu.'},
+  {en:'If only it would stop raining!',tr:'Keşke yağmur dursa!'},
+  {en:'Suppose you could fly, where would you go?',tr:'Uçabilseydin nereye giderdin?'},
+  {en:'I wish I hadn\'t said that.',tr:'Keşke bunu söylememiş olsaydım.'},
+  {en:'If water freezes, it expands.',tr:'Su donunca genleşir.'},
+];
+let memFlipped=[],memMatched=0,memCards=[];
+function renderMemory(area){
+  memFlipped=[];memMatched=0;
+  const items=[...memPairs.map((p,i)=>({id:i,side:'en',text:p.en})),...memPairs.map((p,i)=>({id:i,side:'tr',text:p.tr}))].sort(()=>Math.random()-.5);
+  memCards=items;
+  area.innerHTML=`<div class="game-active-area">
+    <div class="game-head"><span class="game-title-sm">🃏 Hafıza Kartları</span><span class="game-score-sm" id="mem-sc">Eşleşme: 0 / ${memPairs.length}</span></div>
+    <p style="font-size:.8rem;color:var(--text-d);margin-bottom:12px;text-align:center">İngilizce ve Türkçe cümleleri eşleştir!</p>
+    <div class="mem-grid" id="mem-grid"></div>
+  </div>`;
+  const g=document.getElementById('mem-grid');
+  items.forEach((item,i)=>{
+    const c=document.createElement('div');
+    c.className='mem-card';c.dataset.idx=i;
+    c.innerHTML=`<div class="mem-front">❓</div><div class="mem-back">${item.text}</div>`;
+    c.onclick=()=>flipMem(i,c,item);
+    g.appendChild(c);
+  });
+}
+function flipMem(i,el,item){
+  if(el.classList.contains('flipped')||el.classList.contains('matched')||memFlipped.length>=2)return;
+  el.classList.add('flipped');
+  memFlipped.push({i,el,item});
+  if(memFlipped.length===2){
+    const [a,b]=memFlipped;
+    if(a.item.id===b.item.id&&a.item.side!==b.item.side){
+      setTimeout(()=>{a.el.classList.add('matched');b.el.classList.add('matched');memMatched++;
+        document.getElementById('mem-sc').textContent=`Eşleşme: ${memMatched} / ${memPairs.length}`;
+        memFlipped=[];
+        if(memMatched===memPairs.length){showToast('🎉 Tüm kartları eşleştirdin!','ok');xp+=20;updateQuizUI();}
+      },400);
+    }else{
+      setTimeout(()=>{a.el.classList.remove('flipped');b.el.classList.remove('flipped');memFlipped=[];},900);
+    }
+  }
+}
+
+/* AI QUEST */
+async function renderAIQuest(area){
+  area.innerHTML=`<div class="game-active-area">
+    <div class="ai-badge">🤖 AI Destekli Soru Üretici</div>
+    <p style="font-size:.85rem;color:var(--text-d);margin-bottom:16px">Yapay zeka her seferinde IF/WISH konusunda yeni sorular üretiyor. Sonsuz pratik!</p>
+    <div id="ai-area">
+      <div class="ai-loading"><div class="ai-dots"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>AI soru hazırlıyor...</div>
+    </div>
+    <button class="btn-sm ind" style="margin-top:12px" onclick="loadAIQuestion()">🔄 Yeni Soru Üret</button>
+  </div>`;
+  loadAIQuestion();
+}
+async function loadAIQuestion(){
+  const area=document.getElementById('ai-area');
+  if(!area)return;
+  area.innerHTML=`<div class="ai-loading"><div class="ai-dots"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>AI yeni soru üretiyor...</div>`;
+  const types=['True/False','Multiple Choice','Fill in the blank','Translation (Turkish to English)'];
+  const randType=types[Math.floor(Math.random()*types.length)];
+  const topics=['Zero Conditional','First Conditional','Second Conditional','Third Conditional','Mixed Conditional','Wish + Past Simple','Wish + Past Perfect','Wish + Would','If Only','Unless','Inverted Conditionals','Would Rather'];
+  const randTopic=topics[Math.floor(Math.random()*topics.length)];
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:`Create a single ${randType} English grammar question about "${randTopic}" (IF/WISH structures).
+Return ONLY valid JSON in this exact format with NO extra text or markdown:
+{"type":"${randType}","topic":"${randTopic}","question":"the question in English","hint_tr":"short hint in Turkish","options":["A","B","C","D"] or null if not MC,"correct_answer":"the answer","explanation_tr":"explanation in Turkish"}`}]
+      })
+    });
+    const data=await resp.json();
+    const text=data.content.filter(x=>x.type==='text').map(x=>x.text).join('');
+    const clean=text.replace(/```json|```/g,'').trim();
+    const q=JSON.parse(clean);
+    renderAIQuestion(area,q);
+  }catch(e){
+    area.innerHTML=`<div class="ai-error">⚠️ AI bağlantısı kurulamadı. Lütfen tekrar deneyin.<br><small>${e.message}</small></div>`;
+  }
+}
+let aiAnswered=false;
+function renderAIQuestion(area,q){
+  aiAnswered=false;
+  let inputHTML='';
+  if(q.type==='True/False'){
+    inputHTML=`<div class="tf-opts">
+      <button class="tf-btn" onclick="checkAI('TRUE',this,'${q.correct_answer}','${encodeURIComponent(q.explanation_tr)}')">✅ TRUE</button>
+      <button class="tf-btn" onclick="checkAI('FALSE',this,'${q.correct_answer}','${encodeURIComponent(q.explanation_tr)}')">❌ FALSE</button>
+    </div>`;
+  }else if(q.type==='Multiple Choice'&&q.options){
+    const letters=['A','B','C','D'];
+    inputHTML=`<div class="mc-opts">${q.options.map((o,i)=>`
+      <button class="mc-btn" onclick="checkAI('${o.replace(/'/g,"\\'")}',this,'${q.correct_answer.replace(/'/g,"\\'")}','${encodeURIComponent(q.explanation_tr)}')">
+        <span class="mc-letter">${letters[i]}</span>${o}
+      </button>`).join('')}</div>`;
+  }else{
+    inputHTML=`<input class="fill-inp" id="ai-inp" placeholder="Cevabınızı yazın..." style="margin-bottom:10px">
+      <button class="btn-sm grn" onclick="checkAIFill('${encodeURIComponent(q.correct_answer)}','${encodeURIComponent(q.explanation_tr)}')">✓ Kontrol</button>`;
+  }
+  area.innerHTML=`
+    <div class="chip-row"><span class="chip indigo">${q.type}</span><span class="chip purple">${q.topic}</span></div>
+    <div class="game-q">${q.question}</div>
+    ${q.hint_tr?`<div class="q-hint" style="margin:10px 0"><span>💡 İpucu:</span> ${q.hint_tr}</div>`:''}
+    ${inputHTML}
+    <div id="ai-fb" style="margin-top:12px"></div>`;
+}
+function checkAI(val,btn,correct,expEnc){
+  if(aiAnswered)return;aiAnswered=true;
+  const exp=decodeURIComponent(expEnc);
+  const ok=val.toLowerCase()===correct.toLowerCase();
+  btn.classList.add(ok?'correct':'wrong');
+  document.querySelectorAll('.tf-btn,.mc-btn').forEach(b=>b.disabled=true);
+  document.getElementById('ai-fb').innerHTML=`<div class="q-feedback show ${ok?'ok':'fail'}">
+    <div class="fb-head ${ok?'ok':'fail'}">${ok?'🎉 Doğru! +10 XP':'❌ Yanlış'}</div>
+    <div class="fb-exp">${exp}${!ok?`<br><strong>✅ Doğru: ${correct}</strong>`:''}</div>
+  </div>`;
+  if(ok){xp+=10;updateQuizUI();}
+}
+function checkAIFill(corrEnc,expEnc){
+  if(aiAnswered)return;aiAnswered=true;
+  const inp=document.getElementById('ai-inp');
+  if(!inp)return;
+  const correct=decodeURIComponent(corrEnc);
+  const exp=decodeURIComponent(expEnc);
+  const ok=isAnswerCorrect(inp.value.trim().toLowerCase(),correct.toLowerCase());
+  inp.classList.add(ok?'correct':'wrong');inp.disabled=true;
+  document.getElementById('ai-fb').innerHTML=`<div class="q-feedback show ${ok?'ok':'fail'}">
+    <div class="fb-head ${ok?'ok':'fail'}">${ok?'🎉 Doğru! +10 XP':'❌ Yanlış'}</div>
+    <div class="fb-exp">${exp}${!ok?`<br><strong>✅ Doğru: ${correct}</strong>`:''}</div>
+  </div>`;
+  if(ok){xp+=10;updateQuizUI();}
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function showToast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.className='toast',3000);
+}
+function fireConfetti(){
+  const c=document.getElementById('confetti');
+  c.style.display='block';
+  const colors=['#6366f1','#f59e0b','#22c55e','#ec4899','#06b6d4','#a855f7'];
+  c.innerHTML='';
+  for(let i=0;i<60;i++){
+    const p=document.createElement('div');
+    const color=colors[Math.floor(Math.random()*colors.length)];
+    const size=Math.random()*10+5;
+    p.style.cssText=`position:absolute;width:${size}px;height:${size}px;background:${color};left:${Math.random()*100}%;top:-20px;border-radius:${Math.random()>.5?'50%':'2px'};animation:fall ${Math.random()*2+1.5}s linear ${Math.random()*.5}s forwards;opacity:.9`;
+    c.appendChild(p);
+  }
+  const style=document.createElement('style');
+  style.textContent='@keyframes fall{to{top:110%;transform:rotate(720deg);opacity:0}}';
+  document.head.appendChild(style);
+  setTimeout(()=>{c.style.display='none';c.innerHTML='';},4000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+renderGrammar();renderFilm();
+</script>
+</body>
+</html>

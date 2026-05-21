@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İngilizce Rehber – Bölüm 2</title>
+<style>
+  :root {
+    --bg:#0d1219;--bg2:#141b26;--bg3:#1b2333;--card:#182030;--card2:#1e2a3a;
+    --accent:#38bdf8;--accent2:#818cf8;--accent3:#fbbf24;--green:#34d399;--red:#f87171;--pink:#f472b6;
+    --text:#dde3f0;--text2:#8896b0;--border:#243050;--font:'Verdana',Geneva,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;}
+
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(13,18,25,0.97);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;padding:0 20px;height:54px;gap:2px;
+  }
+  .nav-logo{font-size:14px;font-weight:bold;color:var(--accent);margin-right:24px;letter-spacing:1px;white-space:nowrap;}
+  .nav-btn{
+    background:none;border:none;color:var(--text2);font-family:var(--font);font-size:11px;
+    padding:6px 12px;cursor:pointer;border-radius:6px;transition:all .2s;
+    text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;
+  }
+  .nav-btn:hover,.nav-btn.active{background:var(--accent);color:#0d1219;}
+
+  .page{display:none;padding-top:66px;min-height:100vh;}
+  .page.active{display:block;animation:fadeUp .3s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* HOME */
+  .hero{
+    text-align:center;padding:44px 24px 28px;
+    background:linear-gradient(135deg,#0d1219 0%,#162035 50%,#0d1219 100%);
+    border-bottom:1px solid var(--border);
+  }
+  .hero h1{font-size:24px;color:var(--accent);letter-spacing:2px;margin-bottom:8px;}
+  .hero p{color:var(--text2);font-size:12px;max-width:520px;margin:0 auto;line-height:1.8;}
+  .hero-badge{display:inline-block;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);color:var(--accent);border-radius:20px;padding:3px 14px;font-size:11px;margin-top:10px;}
+  .home-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;padding:22px;max-width:1200px;margin:0 auto;}
+  .topic-card{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:18px 18px 16px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;
+  }
+  .topic-card::after{
+    content:'';position:absolute;inset:0;border-radius:12px;
+    background:linear-gradient(135deg,rgba(56,189,248,.04),transparent);
+    opacity:0;transition:opacity .3s;
+  }
+  .topic-card:hover::after{opacity:1;}
+  .topic-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 28px rgba(56,189,248,.12);}
+  .tc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .tc-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+  .tc-num{font-size:10px;color:var(--accent);font-weight:bold;text-transform:uppercase;letter-spacing:1px;}
+  .tc-title{font-size:14px;font-weight:bold;color:var(--text);margin-bottom:3px;}
+  .tc-en{font-size:11px;color:var(--accent3);margin-bottom:7px;}
+  .tc-desc{font-size:12px;color:var(--text2);line-height:1.65;}
+  .tc-arr{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--accent);opacity:0;transition:opacity .2s;font-size:16px;}
+  .topic-card:hover .tc-arr{opacity:1;}
+
+  /* MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.78);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:16px;}
+  .modal-overlay.open{display:flex;animation:fadeUp .22s ease;}
+  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:700px;max-height:88vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+  .modal-header{position:sticky;top:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0;z-index:1;}
+  .modal-header h2{font-size:16px;color:var(--accent);}
+  .modal-close{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px;}
+  .modal-close:hover{background:var(--border);color:var(--text);}
+  .modal-body{padding:22px;}
+  .m-tag{display:inline-block;background:rgba(56,189,248,.12);color:var(--accent);border:1px solid rgba(56,189,248,.25);border-radius:20px;padding:3px 14px;font-size:11px;margin-bottom:16px;}
+  .m-sec{margin-bottom:18px;}
+  .m-sec h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent3);margin-bottom:9px;}
+  .m-sec p{font-size:13px;color:var(--text);line-height:1.8;}
+  .ex-box{background:var(--card2);border-left:3px solid var(--accent2);border-radius:0 8px 8px 0;padding:10px 14px;margin:7px 0;}
+  .ex-box .en{color:var(--accent);font-size:13px;margin-bottom:3px;font-style:italic;}
+  .ex-box .tr{color:var(--text2);font-size:12px;}
+  .rule-pill{display:inline-block;background:rgba(251,191,36,.1);color:var(--accent3);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:2px 9px;font-size:11px;margin:2px;}
+  .modal-quiz-btn{width:100%;margin-top:18px;padding:12px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0d1219;border:none;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:bold;cursor:pointer;transition:all .2s;letter-spacing:.5px;}
+  .modal-quiz-btn:hover{opacity:.88;transform:translateY(-1px);}
+
+  /* QUIZ SHARED */
+  .quiz-page-inner{max-width:680px;margin:0 auto;padding:22px;}
+  .quiz-page-inner h2{font-size:19px;color:var(--accent);margin-bottom:6px;}
+  .quiz-page-inner>p{color:var(--text2);font-size:12px;margin-bottom:18px;}
+  .qtopic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:24px;}
+  .qtopic-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;}
+  .qtopic-item:hover,.qtopic-item.sel{border-color:var(--accent);background:rgba(56,189,248,.07);}
+  .qtopic-item .qt{font-size:12px;font-weight:bold;color:var(--text);}
+  .qtopic-item .qe{font-size:11px;color:var(--accent3);margin-top:3px;}
+  .start-btn{padding:11px 28px;background:var(--accent);color:#0d1219;border:none;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:bold;cursor:pointer;transition:all .2s;margin-bottom:28px;}
+  .start-btn:hover{background:var(--accent2);color:#fff;}
+
+  /* QUIZ RUNNER */
+  .qrunner{display:none;}
+  .qrunner.active{display:block;}
+  .qhdr{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+  .qprog{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+  .qprog-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .4s ease;}
+  .qctr{font-size:11px;color:var(--text2);white-space:nowrap;}
+  .qsc{font-size:11px;color:var(--accent3);white-space:nowrap;}
+  .qcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:14px;}
+  .qtype{font-size:10px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+  .qtext{font-size:14px;color:var(--text);line-height:1.75;margin-bottom:18px;}
+  .opts{display:grid;gap:9px;}
+  .opt-btn{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;transition:all .18s;}
+  .opt-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(56,189,248,.09);}
+  .opt-btn.correct{background:rgba(52,211,153,.13);border-color:var(--green);color:var(--green);}
+  .opt-btn.wrong{background:rgba(248,113,113,.13);border-color:var(--red);color:var(--red);}
+  .tf-row{display:flex;gap:10px;}
+  .tf-btn{flex:1;padding:13px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--text);font-family:var(--font);font-size:14px;font-weight:bold;cursor:pointer;transition:all .2s;}
+  .tf-btn:hover:not(:disabled){border-color:var(--accent);}
+  .tf-btn.correct{background:rgba(52,211,153,.13);border-color:var(--green);color:var(--green);}
+  .tf-btn.wrong{background:rgba(248,113,113,.13);border-color:var(--red);color:var(--red);}
+  .fill-inp{width:100%;padding:11px 14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:14px;margin-bottom:9px;outline:none;transition:border-color .2s;}
+  .fill-inp:focus{border-color:var(--accent);}
+  .fill-inp.correct{border-color:var(--green);background:rgba(52,211,153,.07);}
+  .fill-inp.wrong{border-color:var(--red);background:rgba(248,113,113,.07);}
+  .sub-btn{padding:9px 22px;background:var(--accent);color:#0d1219;border:none;border-radius:8px;font-family:var(--font);font-size:12px;font-weight:bold;cursor:pointer;transition:all .2s;}
+  .sub-btn:hover{background:var(--accent2);color:#fff;}
+  .feedback{margin-top:11px;padding:9px 13px;border-radius:8px;font-size:12px;line-height:1.65;display:none;}
+  .feedback.show{display:block;animation:fadeUp .2s ease;}
+  .feedback.good{background:rgba(52,211,153,.09);border:1px solid rgba(52,211,153,.28);color:var(--green);}
+  .feedback.bad{background:rgba(248,113,113,.09);border:1px solid rgba(248,113,113,.28);color:var(--red);}
+  .next-btn{display:none;margin-top:11px;padding:9px 22px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:12px;cursor:pointer;transition:all .2s;}
+  .next-btn.show{display:inline-block;}
+  .next-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .qresult{display:none;text-align:center;padding:44px 22px;background:var(--card);border:1px solid var(--border);border-radius:16px;}
+  .qresult.show{display:block;animation:fadeUp .4s ease;}
+  .res-score{font-size:54px;font-weight:bold;color:var(--accent);margin-bottom:7px;animation:pulse .6s ease;}
+  .res-msg{font-size:15px;color:var(--text);margin-bottom:20px;}
+  .res-sub{font-size:12px;color:var(--text2);margin-bottom:28px;}
+  .res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .res-btn{padding:10px 22px;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:bold;cursor:pointer;transition:all .2s;}
+  .res-btn.pri{background:var(--accent);color:#0d1219;border:none;}
+  .res-btn.sec{background:none;color:var(--text2);border:1px solid var(--border);}
+  .res-btn:hover{transform:translateY(-2px);}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  /* STORY */
+  .story-wrap{max-width:800px;margin:0 auto;padding:22px;}
+  .story-hdr{text-align:center;margin-bottom:28px;}
+  .story-hdr h2{font-size:21px;color:var(--accent);margin-bottom:7px;}
+  .story-hdr p{font-size:12px;color:var(--text2);}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px;padding:13px;background:var(--card);border-radius:10px;border:1px solid var(--border);}
+  .leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);}
+  .leg-dot{width:10px;height:10px;border-radius:2px;}
+  .story-body{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:30px;font-size:14px;line-height:2.3;color:var(--text);}
+  .gm{cursor:pointer;border-radius:3px;padding:1px 3px;border-bottom:2px solid transparent;transition:filter .2s;}
+  .gm:hover{filter:brightness(1.25);}
+  .g0{background:rgba(56,189,248,.18);border-color:var(--accent);}
+  .g1{background:rgba(129,140,248,.18);border-color:var(--accent2);}
+  .g2{background:rgba(251,191,36,.18);border-color:var(--accent3);}
+  .g3{background:rgba(52,211,153,.18);border-color:var(--green);}
+  .g4{background:rgba(244,114,182,.18);border-color:var(--pink);}
+  .vm{border-bottom:1px dashed var(--text2);cursor:pointer;color:var(--text2);}
+  .vm:hover{color:var(--text);}
+  .gtt,.vtt{
+    display:none;position:fixed;z-index:300;
+    background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+    padding:11px 15px;max-width:270px;font-size:12px;pointer-events:none;
+    box-shadow:0 8px 32px rgba(0,0,0,.6);
+  }
+  .gtt .ttt{color:var(--accent);font-weight:bold;margin-bottom:4px;}
+  .gtt .ttd{color:var(--text2);line-height:1.6;}
+  .vtt .vtw{color:var(--accent3);font-weight:bold;margin-bottom:3px;}
+  .vtt .vtr{color:var(--text);}
+  .sq-sec{margin-top:30px;}
+  .sq-sec h3{font-size:16px;color:var(--accent);margin-bottom:18px;}
+
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🇬🇧 ENG·2</div>
+  <button class="nav-btn active" onclick="showPage('home')">Ana Sayfa</button>
+  <button class="nav-btn" onclick="showPage('quiz')">Konu Quizleri</button>
+  <button class="nav-btn" onclick="showPage('karma')">Karma Quiz</button>
+  <button class="nav-btn" onclick="showPage('story')">Hikaye</button>
+</nav>
+
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h1>📗 İngilizce Rehber – Bölüm 2</h1>
+    <p>12 yeni pratik konu · Günlük hayatta işe yarayan kalıplar · Quizler · İnteraktif hikaye</p>
+    <span class="hero-badge">Bölüm 1'in devamı · Yeni konular</span>
+  </div>
+  <div class="home-grid" id="topicGrid"></div>
+</div>
+
+<div class="page" id="page-quiz">
+  <div class="quiz-page-inner">
+    <h2>📝 Konu Bazlı Quizler</h2>
+    <p>Bir konu seçin, 5 soruluk quiz başlasın.</p>
+    <div class="qtopic-grid" id="qtopicList"></div>
+    <button class="start-btn" onclick="startTopicQuiz()">Seçili Konuyu Sına →</button>
+    <div class="qrunner" id="tqRunner"></div>
+  </div>
+</div>
+
+<div class="page" id="page-karma">
+  <div class="quiz-page-inner">
+    <h2>🎯 Karma Quiz</h2>
+    <p>Tüm 12 konudan karma · çoktan seçmeli · doğru/yanlış · boşluk doldurma · çeviri</p>
+    <button class="start-btn" onclick="startKarmaQuiz()">Karma Quiz Başlat →</button>
+    <div class="qrunner" id="kqRunner"></div>
+  </div>
+</div>
+
+<div class="page" id="page-story">
+  <div class="story-wrap">
+    <div class="story-hdr">
+      <h2>📖 Mert'in Londra'da İkinci Sezonu</h2>
+      <p>~500 kelime · İşaretli dilbilgisi · Kelime çevirileri · 10 soruluk quiz</p>
+    </div>
+    <div class="legend">
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(56,189,248,.6)"></div>Used to / Would rather</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(129,140,248,.6)"></div>Too…to / Enough to</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(251,191,36,.6)"></div>Present Perfect / Since-For</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(52,211,153,.6)"></div>Passive Voice / Reported Speech</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(244,114,182,.6)"></div>Conditionals / Wish</div>
+      <div class="leg-item"><div class="leg-dot" style="background:rgba(200,200,200,.2);border:1px dashed #8896b0"></div>&nbsp;<span style="border-bottom:1px dashed var(--text2)">kelime</span>&nbsp;= çeviri hover</div>
+    </div>
+    <div class="story-body" id="storyBody"></div>
+    <div class="sq-sec">
+      <h3>📝 Hikaye Quizi (10 Soru)</h3>
+      <div class="qrunner active" id="sqRunner"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="mOverlay" onclick="closeMOut(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header"><h2 id="mTitle"></h2><button class="modal-close" onclick="closeM()">✕</button></div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<div class="gtt" id="gtt"><div class="ttt" id="tttitle"></div><div class="ttd" id="ttdesc"></div></div>
+<div class="vtt" id="vtt"><div class="vtw" id="vtword"></div><div class="vtr" id="vttr"></div></div>
+
+<script>
+// ===================== TOPICS =====================
+const topics = [
+  {
+    id:0,icon:'🔄',color:'#0e3a5e',
+    tr:'Geçmişteki Alışkanlıklar',en:'used to / would',
+    desc:'Geçmişte düzenli yapılan ama artık yapılmayan eylemleri anlatır.',
+    detail:'<b>Used to</b> hem durum hem eylem için, <b>would</b> yalnızca tekrarlanan eylemler için kullanılır. Her ikisi de artık yapılmayan geçmiş alışkanlıkları ifade eder.',
+    form:['Özne + used to + fiil (yalın)','Özne + would + fiil (yalnızca eylemler)','Olumsuz: didn\'t use to + fiil'],
+    examples:[
+      {en:'I used to live in a small village.',tr:'Küçük bir köyde yaşardım (artık yaşamıyorum).'},
+      {en:'She used to be very shy.',tr:'Eskiden çok utangaçtı (artık değil).'},
+      {en:'We would go fishing every weekend.',tr:'Her hafta sonu balığa giderdik.'},
+      {en:'He didn\'t use to like vegetables.',tr:'Eskiden sebzelerden hoşlanmazdı.'}
+    ],
+    notes:'Would durum fiilleriyle kullanılamaz: "I would know him" yanlış. Used to her ikisiyle de çalışır.'
+  },
+  {
+    id:1,icon:'⚖️',color:'#1a2e5e',
+    tr:'Tercih İfade Etme',en:"would rather / prefer",
+    desc:"'Daha çok isterim / tercih ederim' anlamında kullanılan yapılar.",
+    detail:'<b>Would rather</b> kısa bir yapıyla tercih belirtir. <b>Prefer</b> daha geniş cümlelerde kullanılabilir. Her ikisi de iki seçenek arasında birini tercih etmeyi ifade eder.',
+    form:["Özne + would rather + fiil (yalın) + than + fiil","Özne + prefer + -ing/isim + to + -ing/isim","Would rather + özne + past simple (başkasının yapmasını istemek)"],
+    examples:[
+      {en:"I'd rather stay home than go out tonight.",tr:'Bu gece çıkmaktansa evde kalmayı tercih ederim.'},
+      {en:"She prefers reading to watching TV.",tr:'TV izlemek yerine kitap okumayı tercih eder.'},
+      {en:"Would you rather have tea or coffee?",tr:'Çay mı yoksa kahve mi içersiniz?'},
+      {en:"I'd rather you didn't smoke here.",tr:'Burada sigara içmemenizi tercih ederim.'}
+    ],
+    notes:"Would rather'ın kısaltması: I'd rather. Başkasının eylemini değiştirmek istediğimizde 'd rather + özne + past simple kullanılır."
+  },
+  {
+    id:2,icon:'📏',color:'#1e3a2e',
+    tr:'Yeterlilik ve Aşırılık',en:'too…to / enough to',
+    desc:'"Çok…-mek için" ve "…-mek için yeterince" anlamında kullanılan yapılar.',
+    detail:'<b>Too + sıfat/zarf + to</b> bir eylemin gerçekleşemeyeceğini, <b>sıfat/zarf + enough + to</b> ise bir şeyin yeterli derecede olduğunu ifade eder.',
+    form:['too + sıfat/zarf + to + fiil','sıfat/zarf + enough + to + fiil','not + sıfat/zarf + enough + to + fiil'],
+    examples:[
+      {en:'The coffee is too hot to drink.',tr:'Kahve içmek için çok sıcak.'},
+      {en:'She is old enough to vote.',tr:'Oy vermek için yeterince yaşlı.'},
+      {en:'He ran too slowly to catch the bus.',tr:'Otobüsü yetişmek için çok yavaş koştu.'},
+      {en:"I'm not strong enough to lift this box.",tr:'Bu kutuyu kaldırmak için yeterince güçlü değilim.'}
+    ],
+    notes:'Dikkat: too olumsuz anlam taşır (yapılamaz), enough olumlu anlam taşır (yapılabilir). "Enough" sıfattan sonra gelir ama isimden önce: enough money.'
+  },
+  {
+    id:3,icon:'⏱️',color:'#2e1e3a',
+    tr:'Present Perfect',en:'have/has + V3',
+    desc:'Geçmişte gerçekleşmiş ama bugünle bağlantılı olayları anlatır.',
+    detail:'Present Perfect, geçmişte ne zaman olduğu bilinmeyen ya da önemi olan olaylar için veya hâlâ devam eden durumlar için kullanılır.',
+    form:['have/has + past participle (V3)','Olumsuz: haven\'t / hasn\'t + V3','Soru: Have/Has + özne + V3?'],
+    examples:[
+      {en:"I've visited London three times.",tr:'Londra\'yı üç kez ziyaret ettim (hayatım boyunca).'},
+      {en:"She hasn't finished her homework yet.",tr:'Ödevini henüz bitirmedi.'},
+      {en:'Have you ever eaten sushi?',tr:'Hiç sushi yediniz mi?'},
+      {en:"They've just arrived at the airport.",tr:'Az önce havalimanına ulaştılar.'}
+    ],
+    notes:'Anahtar kelimeler: already, yet, just, ever, never, recently, so far. Since + nokta zaman; for + süre ile kullanılır.'
+  },
+  {
+    id:4,icon:'📅',color:'#0e3a2e',
+    tr:'Since ve For',en:'since / for (duration)',
+    desc:"'Since' başlangıç noktası, 'for' ise süreyi belirtir. Present Perfect ile kullanılır.",
+    detail:"<b>Since</b> bir eylemin ne zaman başladığını (belirli bir an), <b>for</b> ise ne kadar sürdüğünü (süre) belirtir. İkisi de genellikle Present Perfect ile kullanılır.",
+    form:['have/has + V3 + for + süre','have/has + V3 + since + başlangıç noktası'],
+    examples:[
+      {en:"I've lived here for five years.",tr:'Beş yıldır burada yaşıyorum.'},
+      {en:"She has worked here since 2019.",tr:'2019\'dan beri burada çalışıyor.'},
+      {en:"We haven't spoken for months.",tr:'Aylardır konuşmadık.'},
+      {en:'He has been ill since Monday.',tr:'Pazartesiden beri hasta.'}
+    ],
+    notes:'For ile: for two hours, for a week, for ages. Since ile: since 2010, since Monday, since I was a child. "How long" sorusu her ikisiyle de kullanılır.'
+  },
+  {
+    id:5,icon:'🔇',color:'#3a1e1e',
+    tr:'Edilgen Çatı (Passive Voice)',en:'be + past participle',
+    desc:'Eylemin kim tarafından yapıldığından çok ne yapıldığına odaklanmak için kullanılır.',
+    detail:'Edilgen cümlede özne eylemi yapan değil, eyleme maruz kalan kişi veya nesnedir. Yapan kişi bilinmiyorsa, önemli değilse veya açıkça belli ise kullanılır.',
+    form:['am/is/are + V3 (geniş zaman)','was/were + V3 (geçmiş zaman)','will be + V3 (gelecek zaman)','have/has been + V3 (present perfect)'],
+    examples:[
+      {en:'The letter was written by Mary.',tr:'Mektup Mary tarafından yazıldı.'},
+      {en:'English is spoken all over the world.',tr:'İngilizce dünyanın her yerinde konuşulur.'},
+      {en:'The building will be renovated next year.',tr:'Bina gelecek yıl yenilenecek.'},
+      {en:'My wallet has been stolen.',tr:'Cüzdanım çalındı (az önce veya yakın geçmişte).'}
+    ],
+    notes:'Yapan kişiyi söylemek istiyorsak "by" kullanırız. Soru ve olumsuzlarda yardımcı fiil (be) değişir: Was it finished? / It wasn\'t finished.'
+  },
+  {
+    id:6,icon:'💬',color:'#1e2e3a',
+    tr:'Dolaylı Anlatım',en:'Reported Speech',
+    desc:'Birinin söylediklerini aktarırken zaman ve zamir değişimlerini içerir.',
+    detail:'Birinin söylediklerini aktarırken (reported speech) fiil zamanı bir adım geçmişe kayar ve zamirler değişir. Soru ve istek cümlelerinde özel kurallar uygulanır.',
+    form:['say → said: "I am tired." → He said he was tired.','tell → told + kişi: She told me she was leaving.','Soru: asked + if/whether / soru kelimesi'],
+    examples:[
+      {en:'"I live in London." → She said she lived in London.',tr:'"Londra\'da yaşıyorum." → Londra\'da yaşadığını söyledi.'},
+      {en:'"Are you coming?" → He asked if I was coming.',tr:'"Geliyor musun?" → Gelip gelmediğimi sordu.'},
+      {en:'"Close the door!" → She told me to close the door.',tr:'"Kapıyı kapat!" → Kapıyı kapatmamı söyledi.'},
+      {en:'"I will help." → He said he would help.',tr:'"Yardım edeceğim." → Yardım edeceğini söyledi.'}
+    ],
+    notes:'Zaman kayması: am/is → was, will → would, can → could, have → had. Reporting verb geçmişte ise zaman kayması zorunludur.'
+  },
+  {
+    id:7,icon:'🔀',color:'#1a3a1e',
+    tr:'Koşul Cümleleri (Conditionals)',en:'If Clauses (Type 0,1,2,3)',
+    desc:'Dört tip koşul cümlesi: gerçek, olası, hayali ve imkânsız geçmiş.',
+    detail:'Koşul cümlecikleri (if clauses) dört ana tipte gelir ve her biri farklı bir gerçeklik düzeyi ifade eder.',
+    form:['Type 0: If + present, present (genel gerçek)','Type 1: If + present, will + fiil (gerçek olası)','Type 2: If + past, would + fiil (hayali/olasılıksız)','Type 3: If + past perfect, would have + V3 (geçmiş hayali)'],
+    examples:[
+      {en:'If you heat water to 100°C, it boils. (Type 0)',tr:'Suyu 100°C\'ye ısıtırsan kaynar.'},
+      {en:"If it rains, I'll take an umbrella. (Type 1)",tr:'Yağmur yağarsa şemsiye alırım.'},
+      {en:'If I had more money, I would travel. (Type 2)',tr:'Daha fazla param olsaydı seyahat ederdim.'},
+      {en:'If she had studied, she would have passed. (Type 3)',tr:'Çalışsaydı geçerdi (ama çalışmadı).'}
+    ],
+    notes:'Type 2 ve 3 gerçek olmayan / hayali durumlar için kullanılır. If I were you... kalıbı çok yaygındır (were tüm öznelerle kullanılır).'
+  },
+  {
+    id:8,icon:'🌙',color:'#2e1e3a',
+    tr:'Dilek ve Pişmanlık',en:'wish / if only',
+    desc:"Mevcut durumdan memnun olmamayı veya geçmişe duyulan pişmanlığı ifade eder.",
+    detail:"<b>Wish</b> ve <b>if only</b> gerçek olmayan, hayal edilen durumları ifade eder. Şimdiki duruma üzülmek için past simple, geçmişe pişman olmak için past perfect kullanılır.",
+    form:['wish + past simple (şimdiki durum hakkında dilek)','wish + past perfect (geçmiş pişmanlık)','wish + would (birinin davranışını değiştirme isteği)'],
+    examples:[
+      {en:'I wish I spoke better English.',tr:'Daha iyi İngilizce konuşabilseydim.'},
+      {en:'She wishes she had studied harder.',tr:'Daha çok çalışmış olsaydı diye üzülüyor.'},
+      {en:'I wish you would stop making noise.',tr:'Keşke gürültü yapmayı bıraksaydın.'},
+      {en:'If only I had more time!',tr:'Keşke daha çok zamanım olsaydı!'}
+    ],
+    notes:'If only daha duygusal ve güçlü bir anlam taşır. Wish + would yalnızca şikâyet/dilek için kullanılır, wish + will kullanılmaz.'
+  },
+  {
+    id:9,icon:'🔗',color:'#1e3a3a',
+    tr:'Bağlaçlar & Zıtlık',en:'although / however / despite',
+    desc:'İki zıt fikri bir arada ifade etmek için kullanılan bağlaçlar.',
+    detail:'Zıtlık bağlaçları bir cümle veya düşünce içindeki karşıtlığı bağlar. Her birinin cümle yapısı farklıdır.',
+    form:['although / even though + cümle','however + virgül (cümle başında)','despite / in spite of + isim / -ing'],
+    examples:[
+      {en:'Although it was raining, we went for a walk.',tr:'Yağmur yağmasına rağmen yürüyüşe çıktık.'},
+      {en:"It was cold. However, we enjoyed the trip.",tr:'Soğuktu. Yine de geziden keyif aldık.'},
+      {en:'Despite being tired, she finished the project.',tr:'Yorgun olmasına rağmen projeyi bitirdi.'},
+      {en:'In spite of the traffic, he arrived on time.',tr:'Trafiğe rağmen zamanında geldi.'}
+    ],
+    notes:'Despite/in spite of her zaman isim veya -ing alır, cümle almaz! Despite of yanlıştır. Although/even though cümle bağlar.'
+  },
+  {
+    id:10,icon:'🎯',color:'#3a2e1e',
+    tr:'Sıfat Cümlecikleri (Relative Clauses)',en:'who / which / that / whose',
+    desc:'Bir ismi tanımlamak veya hakkında bilgi vermek için kullanılan yan cümleler.',
+    detail:'Relative clauses bir ismi veya zamiri niteler. Defining (tanımlayıcı) cümlecikler kişi/nesneyi belirler; non-defining (tanımlamasız) cümlecikler ek bilgi verir.',
+    form:['who → insanlar için','which → nesneler/hayvanlar için','that → defining cümleciklerde ikisi yerine','whose → iyelik (kimin)'],
+    examples:[
+      {en:'The woman who called me is my teacher.',tr:'Beni arayan kadın öğretmenim.'},
+      {en:'The book which I bought is fascinating.',tr:'Satın aldığım kitap büyüleyici.'},
+      {en:'The man whose car was stolen went to the police.',tr:'Arabası çalınan adam polise gitti.'},
+      {en:'London, which is the capital of England, is beautiful.',tr:'İngiltere\'nin başkenti olan Londra güzel.'}
+    ],
+    notes:'Non-defining cümlelerde that kullanılamaz ve virgül zorunludur. Defining cümlelerde virgül kullanılmaz. Object olarak who/which kaldırılabilir.'
+  },
+  {
+    id:11,icon:'🚀',color:'#1e1e3a',
+    tr:'Gerund ve İnfinitif',en:'verb + -ing / to + verb',
+    desc:'Bazı fiiller -ing, bazıları to+fiil, bazıları her ikisini de alır.',
+    detail:'İngilizce\'de bazı fiiller yalnızca gerund (-ing), bazıları yalnızca infinitive (to+fiil), bazıları ise her ikisini de alır. Bunları ezberlemek çok önemlidir.',
+    form:['enjoy / avoid / mind / consider / finish / suggest + -ing','want / decide / hope / plan / refuse / manage + to-fiil','like / love / hate / prefer + her ikisi (anlam değişebilir)'],
+    examples:[
+      {en:'I enjoy swimming in the sea.',tr:'Denizde yüzmeyi severim.'},
+      {en:'She decided to study abroad.',tr:'Yurt dışında okumaya karar verdi.'},
+      {en:'He stopped smoking last year.',tr:'Geçen yıl sigara içmeyi bıraktı.'},
+      {en:'I remembered to call her. / I remembered calling her.',tr:'Aramayı hatırladım (ve aradım). / Aradığımı hatırladım.'}
+    ],
+    notes:'Stop, remember, forget, try gibi fiiller her ikisini de alır ama anlam değişir! Stop smoking = bırakmak; stop to smoke = durup içmek.'
+  }
+];
+
+// ===================== QUIZ DATA =====================
+const topicQs = [
+  // 0 used to
+  [{type:'mc',q:"'I ___ live in Ankara' (eskiden yaşardım, artık değil)",opts:['use to','used to','would','was using'],ans:1,exp:'Geçmiş durum için used to.'},
+   {type:'tf',q:"'She would be shy' doğru bir geçmiş alışkanlık ifadesidir.",ans:false,exp:'Would yalnızca eylemler için; durum bildiren fiillerle kullanılamaz. Doğrusu: She used to be shy.'},
+   {type:'fill',q:"We ___ to go fishing every Sunday.",ans:'used',exp:'used to + fiil = eskiden yapardık.'},
+   {type:'mc',q:"'Did you use to play football?' sorusuna doğru yanıt?",opts:['Yes, I used.','Yes, I used to.','Yes, I did use.','Yes, I would.'],ans:1,exp:'Did ile soru kurulur, kısa cevap: Yes, I used to.'},
+   {type:'tf',q:"'I didn't use to like coffee' artık kahveyi sevdiğini ima eder.",ans:true,exp:'Used to olumsuz → artık öyle olmadığını ima eder.'}],
+  // 1 would rather
+  [{type:'mc',q:"'I'd rather ___ home tonight.'",opts:['staying','to stay','stay','stayed'],ans:2,exp:'Would rather + fiil (yalın).'},
+   {type:'tf',q:"'She prefers reading to watch TV' doğrudur.",ans:false,exp:'Prefer + -ing to + -ing: prefers reading to watching TV.'},
+   {type:'fill',q:"Would you rather have tea ___ coffee?",ans:'or',exp:'Would you rather … or … = tercih sorusu.'},
+   {type:'mc',q:"'I'd rather you didn't smoke' ne anlama gelir?",opts:["Sigara içmeni tercih ederim","Sigara içmemeni tercih ederim","Sigara içeceksin","Sigara içerdim"],ans:1,exp:"I'd rather + özne + past simple → başkasının yapmasını istemek."},
+   {type:'tf',q:"'Would rather' ve 'prefer' tamamen aynı yapıyı kullanır.",ans:false,exp:'Would rather + infinitive; prefer + -ing/isim.'}],
+  // 2 too/enough
+  [{type:'mc',q:"'The box is ___ heavy to carry.' (çok ağır)",opts:['enough','too','very','so'],ans:1,exp:'Too + sıfat + to = yapılamaz anlamı.'},
+   {type:'tf',q:"'She is enough old to drive' doğrudur.",ans:false,exp:'Enough sıfattan SONRA gelir: old enough to drive.'},
+   {type:'fill',q:"He ran too slowly ___ catch the bus.",ans:'to',exp:'too + zarf + to + fiil.'},
+   {type:'mc',q:"'Not strong enough to lift' ne anlama gelir?",opts:['Kaldırabilir','Kaldıramaz','Kaldırmalı','Kaldırmamalı'],ans:1,exp:'Not enough = yetersiz = yapılamaz.'},
+   {type:'tf',q:"'Too tired to think' bir eylemin gerçekleşemeyeceğini anlatır.",ans:true,exp:"Too + sıfat + to = yapılamaz/çok … -mek için."}],
+  // 3 present perfect
+  [{type:'mc',q:"'She ___ visited Paris three times.'",opts:['has','is','was','did'],ans:0,exp:'Present perfect: have/has + V3.'},
+   {type:'tf',q:"'I have seen him yesterday' doğrudur.",ans:false,exp:"Yesterday kesin zaman → past simple: I saw him yesterday."},
+   {type:'fill',q:"Have you ___ eaten sushi? (hiç)",ans:'ever',exp:'Ever: soru cümlelerinde deneyim sorar.'},
+   {type:'mc',q:"'They've just arrived' ne anlama gelir?",opts:['Geçen hafta geldiler','Az önce geldiler','Yakında gelecekler','Çoktan geldiler'],ans:1,exp:'Just = az önce, present perfect ile.'},
+   {type:'tf',q:"'Yet' olumsuz ve soru cümlelerinde kullanılır.",ans:true,exp:"Yet genellikle olumsuz (hasn't finished yet) ve sorularda (Have you finished yet?) gelir."}],
+  // 4 since/for
+  [{type:'mc',q:"'I've lived here ___ 2018.'",opts:['for','since','during','from'],ans:1,exp:'Since + başlangıç noktası (yıl, gün vb.).'},
+   {type:'tf',q:"'I've worked here for Monday' doğrudur.",ans:false,exp:"Monday bir başlangıç noktası → since Monday. For süre gerektirir."},
+   {type:'fill',q:"We haven't spoken ___ months.",ans:'for',exp:"For + süre: for months, for years."},
+   {type:'mc',q:"'How long have you studied English?' sorusunun yanıtı?",opts:['Since three years.','For three years.','During three years.','Three years ago.'],ans:1,exp:'Süre → for + süre.'},
+   {type:'tf',q:"'She has been ill since Monday' Pazartesiden beri hasta olduğunu anlatır.",ans:true,exp:'Since Monday = Pazartesi başlangıç noktası, hâlâ devam ediyor.'}],
+  // 5 passive
+  [{type:'mc',q:"'The cake ___ (bake) by my mother.'",opts:['baked','was baked','is baking','has bake'],ans:1,exp:'Geçmiş edilgen: was/were + V3.'},
+   {type:'tf',q:"'English speaks all over the world' doğrudur.",ans:false,exp:"Edilgen: English is spoken all over the world."},
+   {type:'fill',q:"The building will ___ renovated next year.",ans:'be',exp:'Gelecek edilgen: will be + V3.'},
+   {type:'mc',q:"'By' nasıl kullanılır?",opts:['Eylemi yapanı belirtir','Nesneyi belirtir','Zamanı belirtir','Yeri belirtir'],ans:0,exp:"By + yapan kişi: written by Hemingway."},
+   {type:'tf',q:"Edilgen cümlede özne eylemi yapandır.",ans:false,exp:'Edilgen cümlede özne eylemi yapmaz, eyleme maruz kalır.'}],
+  // 6 reported speech
+  [{type:'mc',q:'"I am happy" → She said she ___ happy.',opts:['is','was','were','has been'],ans:1,exp:'Present simple → past simple (zaman kayması).'},
+   {type:'tf',q:'"Will" reported speech\'te "would"ya dönüşür.',ans:true,exp:'will → would: "I will help" → He said he would help.'},
+   {type:'fill',q:'"Are you coming?" → He asked if I ___ coming.',ans:'was',exp:'Am/is/are → was/were (zaman kayması).'},
+   {type:'mc',q:'"Close the door!" nasıl aktarılır?',opts:['She said close the door.','She told me to close the door.','She asked close the door.','She said me close the door.'],ans:1,exp:'Emir: told + kişi + to + fiil.'},
+   {type:'tf',q:"Reported speech'te zamirler değişmez.",ans:false,exp:"I → he/she, you → I/he/she (bağlama göre değişir)."}],
+  // 7 conditionals
+  [{type:'mc',q:"Type 2: If I ___ you, I would apologise.",opts:['am','were','will be','have been'],ans:1,exp:'Type 2 if + past simple; were tüm öznelerle.'},
+   {type:'tf',q:"'If it rains, I would take an umbrella' Type 1 için doğrudur.",ans:false,exp:"Type 1: If + present simple, will + fiil."},
+   {type:'fill',q:"If she had studied, she would ___ passed.",ans:'have',exp:"Type 3: would have + V3."},
+   {type:'mc',q:"'If you heat ice, it melts.' hangi tip?",opts:['Type 1','Type 2','Type 3','Type 0'],ans:3,exp:"Type 0 = genel gerçek/bilimsel gerçek."},
+   {type:'tf',q:"Type 3 geçmişte olmayan hayali durumları anlatır.",ans:true,exp:"Type 3: If + past perfect → koşul gerçekleşmedi."}],
+  // 8 wish
+  [{type:'mc',q:"'I wish I ___ speak better English.' (şimdiki dilek)",opts:['can','could','will','would'],ans:1,exp:'Wish + past simple (could = can\'ın geçmişi).'},
+   {type:'tf',q:"'I wish I had studied harder' geçmiş pişmanlık ifadesidir.",ans:true,exp:'Wish + past perfect = geçmiş pişmanlık.'},
+   {type:'fill',q:"I wish you ___ stop making noise! (would)",ans:'would',exp:"Wish + would = birinin davranışını değiştirme isteği."},
+   {type:'mc',q:"'If only I had more time' ne anlama gelir?",opts:['Zamanım olacak','Zamanım olsa keşke','Zamanım oldu','Zamanım olmayacak'],ans:1,exp:'If only = wish\'in duygusal, güçlü biçimi.'},
+   {type:'tf',q:"'I wish I will go to Paris' doğrudur.",ans:false,exp:"Wish + will kullanılmaz; wish + would veya wish + past simple."}],
+  // 9 connectors
+  [{type:'mc',q:"'___ being tired, she finished the project.' (despite)",opts:['Despite','Although','However','In spite'],ans:0,exp:"Despite + -ing (cümle değil)."},
+   {type:'tf',q:"'Despite of the rain' doğru kullanımdır.",ans:false,exp:"'Despite of' yanlış. Sadece 'despite' veya 'in spite of'."},
+   {type:'fill',q:"It was cold. ___, we enjoyed the trip. (however)",ans:'However',exp:"However virgülle cümle başında zıtlık bağlar."},
+   {type:'mc',q:"Hangisi cümle değil, isim/gerund alır?",opts:['although','even though','despite','because'],ans:2,exp:"Despite + isim / -ing."},
+   {type:'tf',q:"'Although' ve 'even though' aynı yapıyı kullanır.",ans:true,exp:"Her ikisi de + cümle alır ve zıtlık ifade eder."}],
+  // 10 relative
+  [{type:'mc',q:"'The woman ___ called me is my teacher.'",opts:['which','whose','who','what'],ans:2,exp:'İnsanlar için who.'},
+   {type:'tf',q:"Non-defining relative clause'da that kullanılabilir.",ans:false,exp:'Non-defining (ekstra bilgi) cümlelerde that kullanılmaz, virgül zorunludur.'},
+   {type:'fill',q:"The man ___ car was stolen went to the police.",ans:'whose',exp:"Whose = kimin (iyelik)."},
+   {type:'mc',q:"'The book which I bought is great' — cümleciği kaldırırsak ne olur?",opts:['Cümle anlamsız kalır','Kitabın hangisi olduğu belirsiz kalır','Anlam değişmez','Yanlış olur'],ans:1,exp:'Defining relative clause nesneyi belirler; çıkarınca hangisi olduğu belirsiz kalır.'},
+   {type:'tf',q:"'Which' nesneler ve hayvanlar için kullanılır.",ans:true,exp:"Which → nesneler ve hayvanlar; who → insanlar."}],
+  // 11 gerund/infinitive
+  [{type:'mc',q:"'She enjoys ___ (swim) in the sea.'",opts:['to swim','swim','swimming','swum'],ans:2,exp:"Enjoy + -ing."},
+   {type:'tf',q:"'I stopped to smoke' sigara içmeyi bıraktım anlamına gelir.",ans:false,exp:"Stop + -ing = bırakmak. Stop to + fiil = durup yapmak (durdu ve içti)."},
+   {type:'fill',q:"He decided ___ study abroad.",ans:'to',exp:"Decide + to + fiil."},
+   {type:'mc',q:"'I remembered calling her' ne anlama gelir?",opts:['Aramayı hatırladım ve aradım','Aradığımı hatırladım','Aramayı unutmadım','Aramayı unuttu'],ans:1,exp:"Remember + -ing = yapıldığını hatırlamak."},
+   {type:'tf',q:"'Suggest' fiili to+infinitive alır.",ans:false,exp:"Suggest + -ing: suggest going, not suggest to go."}]
+];
+
+// KARMA
+const karmaQs = [
+  {type:'mc',q:"'She ___ to be shy but now she's confident.'",opts:['would','is used','used','use'],ans:2,exp:'Used to + fiil: geçmiş durum.',topic:'Used To'},
+  {type:'tf',q:"'The coffee is too hot to drink' içilemez anlamındadır.",ans:true,exp:"Too + sıfat + to = yapılamaz.",topic:'Too/Enough'},
+  {type:'fill',q:"I've lived here ___ 2020.",ans:'since',exp:"Since + başlangıç noktası.",topic:'Since/For'},
+  {type:'mc',q:"'If I were rich, I ___ travel the world.' (Type 2)",opts:['will','would','could have','had'],ans:1,exp:"Type 2: would + fiil.",topic:'Conditionals'},
+  {type:'tf',q:"'The letter was written by Mary' → Mary mektubu yazdı.",ans:true,exp:"by + yapan kişi; Mary yazdı.",topic:'Passive'},
+  {type:'mc',q:"'I wish I ___ more time.' (şimdiki dilek)",opts:['have','had','will have','am having'],ans:1,exp:"Wish + past simple → şimdiki dilek.",topic:'Wish'},
+  {type:'fill',q:"She said she ___ happy. (reported: 'I am happy')",ans:'was',exp:"Am → was (zaman kayması).",topic:'Reported Speech'},
+  {type:'mc',q:"'___ being tired, she worked all night.'",opts:['Although','Despite','However','Even though'],ans:1,exp:"Despite + -ing (cümle değil).",topic:'Connectors'},
+  {type:'tf',q:"'The man whose car was stolen' → iyelik relative clause.",ans:true,exp:"Whose = kimin; iyelik için.",topic:'Relative Clauses'},
+  {type:'mc',q:"'I'd rather ___ home.' Hangisi doğru?",opts:['staying','to stay','stay','stayed'],ans:2,exp:"Would rather + yalın fiil.",topic:'Would Rather'},
+  {type:'fill',q:"He avoided ___ (make) eye contact.",ans:'making',exp:"Avoid + -ing.",topic:'Gerund/Infinitive'},
+  {type:'tf',q:"'Have you ever been to Italy?' present perfect soru.",ans:true,exp:"Ever ile deneyim sorusu → present perfect.",topic:'Present Perfect'},
+  {type:'mc',q:"'If she had studied, she would ___ passed.'",opts:['have','has','had','be'],ans:0,exp:"Type 3: would have + V3.",topic:'Conditionals'},
+  {type:'fill',q:"English ___ spoken all over the world. (passive)",ans:'is',exp:"Geniş zaman edilgen: is/are + V3.",topic:'Passive'},
+  {type:'mc',q:"'She enjoys ___ (cook) Italian food.'",opts:['to cook','cook','cooking','cooked'],ans:2,exp:"Enjoy + -ing.",topic:'Gerund/Infinitive'},
+  {type:'tf',q:"'Despite of the rain' doğru bir yapıdır.",ans:false,exp:"Despite of yanlış → despite the rain / in spite of the rain.",topic:'Connectors'},
+  {type:'mc',q:"'I've worked here ___ five years.'",opts:['since','for','during','from'],ans:1,exp:"For + süre.",topic:'Since/For'},
+  {type:'fill',q:"I wish you ___ stop making noise!",ans:'would',exp:"Wish + would = davranış değiştirme isteği.",topic:'Wish'},
+  {type:'mc',q:"'The book ___ I bought is great.'",opts:['who','whose','which','whom'],ans:2,exp:"Nesne için which.",topic:'Relative Clauses'},
+  {type:'tf',q:"'Not old enough to vote' oy kullanamaz anlamındadır.",ans:true,exp:"Not + sıfat + enough + to = yetersiz.",topic:'Too/Enough'}
+];
+
+// STORY QUIZ
+const storyQs = [
+  {type:'mc',q:"Mert eskiden nasıl biriydi?",opts:['Kendinden emin','Utangaç ve sessiz','Sosyal ve konuşkan','Tembel'],ans:1,exp:"Used to be shy → eskiden utangaçtı."},
+  {type:'tf',q:"Mert, yeterince iyi İngilizce konuşamadığı için mülakata geç kaldı.",ans:false,exp:"Too nervous to speak → konuşamadı; geç kaldığından söz edilmez."},
+  {type:'mc',q:"Mert çalışmaktan ziyade ne tercih ederdi?",opts:['Sinemaya gitmek','Uyumak','Yemek pişirmek','Gaziantep\'e dönmek'],ans:0,exp:"Would rather go to the cinema than study."},
+  {type:'fill',q:"Mert has lived in London ___ two years.",ans:'for',exp:"For + süre."},
+  {type:'tf',q:"Röportajda Mert'e 'Have you ever managed a team?' sorusu soruldu.",ans:true,exp:"Hikayede bu deneyim sorusu geçer."},
+  {type:'mc',q:"Mert teklifi alınca ne hissetti?",opts:['Hayal kırıklığı','Şaşkınlık ve mutluluk','Korku','İlgisizlik'],ans:1,exp:"Overwhelmed with joy → neşeyle dolup taştı."},
+  {type:'mc',q:"Eski patronunun söylediği ne aktarıldı?",opts:["He said Mert was talented","He told Mert will succeed","He said you are great","He told he succeed"],ans:0,exp:"Reported speech: said + past → was talented."},
+  {type:'tf',q:"Mert keşke daha önce İngiltere'ye gelseydi diye düşünüyordu.",ans:true,exp:"Wish + past perfect → geçmiş pişmanlık/dilek."},
+  {type:'fill',q:"The city which ___ never sleep amazed him.",ans:'does',exp:"Which + fiil → defining relative clause."},
+  {type:'mc',q:"Hikayenin ana mesajı nedir?",opts:['İngiltere çok pahalı','Dil öğrenmek kolaydır','Cesaret ve dil bilgisi hayatı değiştirir','Londra soğuk bir şehirdir'],ans:2,exp:"Hikaye dil ve azmin gücünü vurgular."}
+];
+
+// ===================== STORY =====================
+function buildStory() {
+  document.getElementById('storyBody').innerHTML = `
+<p>Mert <span class="gm g0" data-t="Used To" data-d="'used to be shy' → eskiden utangaçtı (artık değil). Used to + durum fiili.">used to be</span> a quiet, <span class="vm" data-w="reserved" data-r="içe dönük, çekingen">reserved</span> young man from Gaziantep. He <span class="gm g0" data-t="Would (Alışkanlık)" data-d="'would spend' → her gece geçirerdi. Would + eylem fiili, tekrarlanan geçmiş alışkanlık.">would spend</span> every evening studying English grammar instead of watching television, though he <span class="gm g0" data-t="Would Rather" data-d="'would rather have gone' → tercih ederdi. Would rather = tercih ifadesi.">would rather have gone</span> to the cinema. Now, two years into his London <span class="vm" data-w="stint" data-r="süre, görev dönemi">stint</span>, everything had changed.</p>
+
+<p>He <span class="gm g2" data-t="Present Perfect" data-d="'has learned' → hayatı boyunca öğrendi ve hâlâ geçerli. Have/has + V3.">has learned</span> that London is never <span class="gm g1" data-t="Too…To" data-d="'too big to explore' → keşfetmek için çok büyük. Too + sıfat + to yapısı.">too big to explore</span> if you are <span class="gm g1" data-t="Enough To" data-d="'curious enough to try' → denemek için yeterince meraklı. Sıfat + enough + to.">curious enough to try</span>. He had lived in the city <span class="gm g2" data-t="Present Perfect + For" data-d="'for two years' → iki yıldır. For + süre, present perfect ile.">for two years</span> and had loved it <span class="gm g2" data-t="Present Perfect + Since" data-d="'since his very first day' → ilk gününden beri. Since + başlangıç noktası.">since his very first day</span>.</p>
+
+<p>Last month, Mert had a job interview at a <span class="vm" data-w="prestigious" data-r="prestijli, saygın">prestigious</span> engineering firm. He was <span class="gm g1" data-t="Too…To" data-d="'too nervous to speak clearly' → açıkça konuşamayacak kadar gergin. Too + sıfat + to.">too nervous to speak clearly</span> at first, but he took a deep breath and began. "Have you <span class="gm g2" data-t="Present Perfect (Ever)" data-d="'Have you ever managed a team?' → Hiç bir ekip yönettiniz mi? Ever ile deneyim sorusu.">ever managed a team?</span>" the interviewer asked. "Yes, I have," Mert replied confidently.</p>
+
+<p>The results came two days later. <span class="gm g3" data-t="Passive Voice" data-d="'was offered' → teklif edildi (edilgen). was + V3 → kimin teklif ettiği önemli değil.">He was offered</span> the position. His <span class="vm" data-w="flatmate" data-r="daire arkadaşı">flatmate</span> James <span class="gm g3" data-t="Reported Speech" data-d="'told him he was talented' → ona yetenekli olduğunu söyledi. Tell + kişi + that + past simple (zaman kayması).">told him he was talented</span> and that the company <span class="gm g3" data-t="Reported Speech (Would)" data-d="'would be lucky to have him' → onu istihdam etmek şans olur. Will → would (zaman kayması).">would be lucky to have him</span>. His old professor back in Turkey <span class="gm g3" data-t="Reported Speech" data-d="'said he had always believed' → her zaman inandığını söyledi. Have always believed → had always believed.">said he had always believed</span> in him.</p>
+
+<p><span class="gm g4" data-t="Wish + Past Perfect (Pişmanlık)" data-d="'wished he had come to London sooner' → daha önce gelseydi keşke. Wish + past perfect = geçmiş pişmanlık/dilek.">He wished he had come to London sooner</span>, but then again — <span class="gm g4" data-t="Type 2 Conditional" data-d="'If he had come earlier, he would not have appreciated it' → earlier = Type 3 geçiş. If + past perfect, would have.">if he had come earlier, he might not have appreciated it</span> as much. He <span class="vm" data-w="strolled" data-r="yavaşça yürüdü, gezindi">strolled</span> through the city that evening, past the <span class="vm" data-w="glittering" data-r="parlayan, ışıltılı">glittering</span> Thames.</p>
+
+<p>London — <span class="gm g0" data-t="Relative Clause (Which)" data-d="'which never seemed to sleep' → hiç uyumayan (şehri niteleyen). Non-defining relative clause, virgülle ayrılır.">which never seemed to sleep</span> — amazed him every day. The people <span class="gm g0" data-t="Relative Clause (Who)" data-d="'who worked alongside him' → yanında çalışanlar. Defining relative clause, insanlar için 'who'.">who worked alongside him</span> came from every corner of the world. His colleague <span class="vm" data-w="Priya" data-r="Hintli meslektaşı">Priya</span>, <span class="gm g0" data-t="Relative Clause (Whose)" data-d="'whose English was perfect' → İngilizcesi mükemmel olan. Whose = iyelik relative clause.">whose English was perfect</span>, taught him British <span class="vm" data-w="slang" data-r="argo, günlük dil ifadeleri">slang</span>. "<span class="gm g4" data-t="Type 1 Conditional" data-d="'If you say that, they'll laugh' → şart gerçekleşebilir. If + present simple, will + fiil.">If you say that in a meeting, they'll laugh!</span>" she warned, grinning.</p>
+
+<p>Mert <span class="gm g2" data-t="Gerund: Enjoyed" data-d="'enjoyed learning' → öğrenmekten zevk aldı. Enjoy + -ing (gerund).">enjoyed learning</span> these little details. He had <span class="vm" data-w="ceased" data-r="bırakmak, son vermek">ceased</span> <span class="gm g2" data-t="Gerund: Stopped" data-d="'to worry' → endişelenmeyi bıraktı. Stop/cease + -ing.">to worry</span> about making mistakes. <span class="gm g3" data-t="Passive Voice (Present)" data-d="'Mistakes are made' → hatalar yapılır. Geniş zaman edilgen: are + V3.">Mistakes are made</span>, he told himself, <span class="gm g3" data-t="Passive Voice (Passive + By)" data-d="'and then corrected' → ve düzeltilir. Edilgen devam; by yoksa yapan bilinmiyor/önemsiz.">and then corrected</span>.</p>
+
+<p>That night, he wrote to his mother: <span class="gm g4" data-t="Wish (Şimdiki Dilek)" data-d="'I wish you could see this city' → keşke görebilseydin. Wish + past simple (could).">I wish you could see this city, anne.</span> <span class="gm g4" data-t="Type 1 Conditional" data-d="'If you visit, I will show you everything' → gerçekleşme ihtimali var. If + present, will.">If you visit, I will show you everything.</span> <span class="gm g1" data-t="Enough To" data-d="'good enough to stay' → kalmak için yeterince iyi. Sıfat + enough + to.">I am good enough to stay</span>, and <span class="gm g1" data-t="Too…To" data-d="'too in love to leave' → ayrılmak için çok âşık. Too + sıfat + to.">too in love with London to leave</span>.</p>`;
+}
+
+// ===================== UI =====================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const map={home:0,quiz:1,karma:2,story:3};
+  document.querySelectorAll('.nav-btn')[map[id]]?.classList.add('active');
+}
+
+function buildHome() {
+  const grid = document.getElementById('topicGrid');
+  topics.forEach((t,i)=>{
+    const c = document.createElement('div');
+    c.className = 'topic-card';
+    c.innerHTML = `
+      <div class="tc-top">
+        <div class="tc-icon" style="background:${t.color}">${t.icon}</div>
+        <div><div class="tc-num">Konu ${i+1}</div><div class="tc-title">${t.tr}</div></div>
+      </div>
+      <div class="tc-en">${t.en}</div>
+      <div class="tc-desc">${t.desc}</div>
+      <div class="tc-arr">→</div>`;
+    c.onclick = ()=>openModal(i);
+    grid.appendChild(c);
+  });
+}
+
+function openModal(i) {
+  const t = topics[i];
+  document.getElementById('mTitle').textContent = t.tr;
+  let h = `<span class="m-tag">${t.en}</span>`;
+  h += `<div class="m-sec"><h3>📖 Açıklama</h3><p>${t.detail}</p></div>`;
+  h += `<div class="m-sec"><h3>📐 Yapı</h3>`;
+  t.form.forEach(f=>h+=`<span class="rule-pill">${f}</span>`);
+  h += `</div><div class="m-sec"><h3>💬 Örnekler</h3>`;
+  t.examples.forEach(e=>h+=`<div class="ex-box"><div class="en">🇬🇧 ${e.en}</div><div class="tr">🇹🇷 ${e.tr}</div></div>`);
+  h += `</div>`;
+  if(t.notes) h += `<div class="m-sec"><h3>💡 Not</h3><p>${t.notes}</p></div>`;
+  h += `<button class="modal-quiz-btn" onclick="closeM();showPage('quiz');selTopic(${i})">Bu Konuyu Sına →</button>`;
+  document.getElementById('mBody').innerHTML = h;
+  document.getElementById('mOverlay').classList.add('open');
+}
+function closeM(){document.getElementById('mOverlay').classList.remove('open');}
+function closeMOut(e){if(e.target===document.getElementById('mOverlay'))closeM();}
+
+let selTIdx=0;
+function buildQTopics(){
+  const list=document.getElementById('qtopicList');
+  topics.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='qtopic-item'+(i===0?' sel':'');
+    d.innerHTML=`<div class="qt">${t.tr}</div><div class="qe">${t.en}</div>`;
+    d.onclick=()=>{document.querySelectorAll('.qtopic-item').forEach(x=>x.classList.remove('sel'));d.classList.add('sel');selTIdx=i;};
+    list.appendChild(d);
+  });
+}
+function selTopic(i){selTIdx=i;document.querySelectorAll('.qtopic-item').forEach((x,j)=>x.classList.toggle('sel',j===i));}
+function startTopicQuiz(){const c=document.getElementById('tqRunner');c.classList.add('active');runQuiz(topicQs[selTIdx],c,()=>{});}
+function startKarmaQuiz(){const c=document.getElementById('kqRunner');c.classList.add('active');runQuiz(karmaQs,c,()=>{});}
+function buildStoryQuiz(){runQuiz(storyQs,document.getElementById('sqRunner'),()=>{});}
+
+function runQuiz(questions,container,onDone){
+  let cur=0,score=0;
+  function render(){
+    if(cur>=questions.length){showResult();return;}
+    const q=questions[cur];
+    const pct=(cur/questions.length)*100;
+    let h=`<div class="qhdr"><div class="qprog"><div class="qprog-bar" id="qpb" style="width:${pct}%"></div></div><span class="qctr">${cur+1}/${questions.length}</span><span class="qsc">✓ ${score}</span></div>
+    <div class="qcard" id="qcard"><div class="qtype">${typeLabel(q.type)}${q.topic?' · '+q.topic:''}</div><div class="qtext">${q.q}</div>`;
+    if(q.type==='mc'){
+      h+=`<div class="opts">`;
+      q.opts.forEach((o,i)=>h+=`<button class="opt-btn" onclick="doMC(this,${i},${q.ans},'${esc(q.exp)}')">${o}</button>`);
+      h+=`</div>`;
+    } else if(q.type==='tf'){
+      h+=`<div class="tf-row"><button class="tf-btn" onclick="doTF(this,true,${q.ans},'${esc(q.exp)}')">✓ Doğru</button><button class="tf-btn" onclick="doTF(this,false,${q.ans},'${esc(q.exp)}')">✗ Yanlış</button></div>`;
+    } else {
+      h+=`<input type="text" class="fill-inp" id="fi" placeholder="Cevabınızı yazın..."><button class="sub-btn" onclick="doFill('${esc(q.ans)}','${esc(q.exp)}')">Kontrol Et</button>`;
+    }
+    h+=`<div class="feedback" id="fb"></div><button class="next-btn" id="nb" onclick="nxt()">İleri →</button></div>`;
+    container.innerHTML=h;
+    if(q.type==='fill') document.getElementById('fi').addEventListener('keydown',e=>{if(e.key==='Enter')doFill(q.ans,q.exp);});
+  }
+  function doMC(btn,ch,cor,exp){
+    container.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
+    container.querySelectorAll('.opt-btn')[cor].classList.add('correct');
+    const ok=ch===cor; if(!ok)btn.classList.add('wrong'); else score++;
+    fb(ok,exp); document.getElementById('nb').classList.add('show');
+  }
+  function doTF(btn,ch,cor,exp){
+    container.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+    const ok=ch===cor; btn.classList.add(ok?'correct':'wrong');
+    if(!ok) container.querySelectorAll('.tf-btn').forEach(b=>{if((b.textContent.includes('Doğru')&&cor)||(b.textContent.includes('Yanlış')&&!cor))b.classList.add('correct');});
+    if(ok)score++;
+    fb(ok,exp); document.getElementById('nb').classList.add('show');
+  }
+  function doFill(ans,exp){
+    const inp=document.getElementById('fi'); if(!inp)return;
+    const ok=inp.value.trim().toLowerCase()===ans.toLowerCase();
+    inp.classList.add(ok?'correct':'wrong'); inp.disabled=true;
+    if(!ok){const h=document.createElement('div');h.style.cssText='font-size:11px;color:var(--accent3);margin-top:5px;';h.textContent='Doğru: '+ans;inp.after(h);}
+    if(ok)score++;
+    fb(ok,exp); document.getElementById('nb').classList.add('show');
+  }
+  function fb(ok,exp){const e=document.getElementById('fb');e.className='feedback show '+(ok?'good':'bad');e.textContent=(ok?'✓ Doğru! ':'✗ Yanlış. ')+exp;}
+  function nxt(){cur++;render();}
+  function showResult(){
+    const pct=Math.round(score/questions.length*100);
+    const msg=pct>=80?'🎉 Mükemmel!':pct>=60?'👍 İyi gidiyor!':'📚 Tekrar çalış!';
+    container.innerHTML=`<div class="qresult show"><div class="res-score">${pct}%</div><div class="res-msg">${msg}</div><div class="res-sub">${score} / ${questions.length} doğru</div><div class="res-btns"><button class="res-btn pri" onclick="location.reload()">Tekrar</button><button class="res-btn sec" onclick="showPage('home')">Ana Sayfa</button></div></div>`;
+    onDone();
+  }
+  render();
+  window.doMC=doMC; window.doTF=doTF; window.doFill=doFill; window.nxt=nxt;
+}
+function typeLabel(t){return{mc:'🔘 Çoktan Seçmeli',tf:'✅ Doğru/Yanlış',fill:'✏️ Boşluk Doldurma'}[t]||t;}
+function esc(s){return String(s).replace(/'/g,'\\x27').replace(/"/g,'\\x22');}
+
+// TOOLTIPS
+document.addEventListener('mousemove',e=>{
+  const gt=document.getElementById('gtt'),vt=document.getElementById('vtt');
+  [gt,vt].forEach(el=>{if(el.style.display==='block'){let x=e.clientX+14,y=e.clientY+14;if(x+290>innerWidth)x=e.clientX-290;if(y+90>innerHeight)y=e.clientY-90;el.style.left=x+'px';el.style.top=y+'px';}});
+});
+document.addEventListener('mouseover',e=>{
+  const gm=e.target.closest('.gm'),vm=e.target.closest('.vm');
+  if(gm){document.getElementById('tttitle').textContent=gm.dataset.t;document.getElementById('ttdesc').textContent=gm.dataset.d;document.getElementById('gtt').style.display='block';document.getElementById('vtt').style.display='none';}
+  else if(vm){document.getElementById('vtword').textContent=vm.dataset.w;document.getElementById('vttr').textContent='🇹🇷 '+vm.dataset.r;document.getElementById('vtt').style.display='block';document.getElementById('gtt').style.display='none';}
+  else if(!e.target.closest('.gtt')&&!e.target.closest('.vtt')){document.getElementById('gtt').style.display='none';document.getElementById('vtt').style.display='none';}
+});
+
+buildHome();
+buildQTopics();
+buildStory();
+buildStoryQuiz();
+</script>
+</body>
+</html>

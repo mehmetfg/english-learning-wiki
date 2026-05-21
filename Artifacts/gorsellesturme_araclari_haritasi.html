@@ -1,0 +1,272 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1.5rem 0}
+.section-title{font-size:11px;font-weight:500;letter-spacing:.08em;color:var(--color-text-tertiary);text-transform:uppercase;margin-bottom:10px}
+.grid{display:grid;gap:10px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 16px;cursor:pointer;transition:border-color .15s,background .15s;position:relative}
+.card:hover{background:var(--color-background-primary);border-color:var(--color-border-secondary)}
+.card.active{border-color:var(--color-border-primary);background:var(--color-background-primary)}
+.card-icon{font-size:22px;margin-bottom:6px;display:block}
+.card-name{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.card-tagline{font-size:12px;color:var(--color-text-secondary);line-height:1.4}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-top:6px;font-weight:500}
+.tag-overview{background:var(--color-background-info);color:var(--color-text-info)}
+.tag-flow{background:var(--color-background-success);color:var(--color-text-success)}
+.tag-deep{background:var(--color-background-warning);color:var(--color-text-warning)}
+.tag-learn{background:var(--color-background-danger);color:var(--color-text-danger)}
+
+.detail{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:18px 20px;margin-top:16px;display:none}
+.detail.show{display:block}
+.detail-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.detail-icon{font-size:28px}
+.detail-title{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.detail-sub{font-size:13px;color:var(--color-text-secondary);margin-top:1px}
+.detail-body{font-size:13px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:12px}
+.usecase-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.usecase{font-size:12px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:3px 10px;color:var(--color-text-primary)}
+.example-box{background:var(--color-background-secondary);border-left:3px solid var(--color-border-secondary);border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:10px 14px}
+.example-label{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.example-text{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.ask-btn{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:7px 14px;font-size:13px;cursor:pointer;color:var(--color-text-primary);transition:background .15s}
+.ask-btn:hover{background:var(--color-background-secondary)}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:20px 0}
+</style>
+
+<div class="wrap">
+
+<div class="section-title">Genel bakış — alan tarama</div>
+<div class="grid grid-3">
+  <div class="card" onclick="show('mindmap')">
+    <span class="card-icon">🗺</span>
+    <div class="card-name">Mind map</div>
+    <div class="card-tagline">Bir konunun tüm dallarını tek bakışta görmek</div>
+    <span class="tag tag-overview">Genel bakış</span>
+  </div>
+  <div class="card" onclick="show('concept')">
+    <span class="card-icon">🔗</span>
+    <div class="card-name">Kavram haritası</div>
+    <div class="card-tagline">Fikirler arası ilişkileri ve bağlantıları görmek</div>
+    <span class="tag tag-overview">Genel bakış</span>
+  </div>
+  <div class="card" onclick="show('tree')">
+    <span class="card-icon">🌳</span>
+    <div class="card-name">Hiyerarşi ağacı</div>
+    <div class="card-tagline">Üst-alt ilişkilerini, taksonomiyi görmek</div>
+    <span class="tag tag-overview">Genel bakış</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-title">Süreç ve akış — "nasıl işler" sorusu</div>
+<div class="grid grid-3">
+  <div class="card" onclick="show('flowchart')">
+    <span class="card-icon">⬇</span>
+    <div class="card-name">Akış diyagramı</div>
+    <div class="card-tagline">Adımlar, kararlar, dallanmalar</div>
+    <span class="tag tag-flow">Süreç</span>
+  </div>
+  <div class="card" onclick="show('timeline')">
+    <span class="card-icon">📅</span>
+    <div class="card-name">Zaman çizelgesi</div>
+    <div class="card-tagline">Kronolojik sıra, aşamalar, dönüm noktaları</div>
+    <span class="tag tag-flow">Süreç</span>
+  </div>
+  <div class="card" onclick="show('roadmap')">
+    <span class="card-icon">🛣</span>
+    <div class="card-name">Yol haritası</div>
+    <div class="card-tagline">Hedef odaklı ilerleme, fazlar, öncelik</div>
+    <span class="tag tag-flow">Süreç</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-title">Derinlik — yapı ve ilişkiler</div>
+<div class="grid grid-2">
+  <div class="card" onclick="show('venn')">
+    <span class="card-icon">⭕</span>
+    <div class="card-name">Venn / örtüşme diyagramı</div>
+    <div class="card-tagline">Kesişimler, benzerlikler, farklar</div>
+    <span class="tag tag-deep">Yapı</span>
+  </div>
+  <div class="card" onclick="show('matrix')">
+    <span class="card-icon">⊞</span>
+    <div class="card-name">2×2 Matris / kadran</div>
+    <div class="card-tagline">İki eksen arasında konumlandırma</div>
+    <span class="tag tag-deep">Yapı</span>
+  </div>
+  <div class="card" onclick="show('spectrum')">
+    <span class="card-icon">↔</span>
+    <div class="card-name">Spektrum / süreklilik</div>
+    <div class="card-tagline">Kavramları bir eksen üzerinde sıralamak</div>
+    <span class="tag tag-deep">Yapı</span>
+  </div>
+  <div class="card" onclick="show('layered')">
+    <span class="card-icon">📚</span>
+    <div class="card-name">Katmanlı yapı</div>
+    <div class="card-tagline">İç içe geçmiş seviyeleri, tabakaları görmek</div>
+    <span class="tag tag-deep">Yapı</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section-title">Öğrenme — didaktik ve sistematik</div>
+<div class="grid grid-2">
+  <div class="card" onclick="show('stepper')">
+    <span class="card-icon">🪜</span>
+    <div class="card-name">Adım adım stepper</div>
+    <div class="card-tagline">Basamak basamak, her adımda bir şey</div>
+    <span class="tag tag-learn">Öğrenme</span>
+  </div>
+  <div class="card" onclick="show('kanban')">
+    <span class="card-icon">🗂</span>
+    <div class="card-name">Öğrenme panosu</div>
+    <div class="card-tagline">Konuları aşamalara göre taşımak</div>
+    <span class="tag tag-learn">Öğrenme</span>
+  </div>
+</div>
+
+<div id="detail" class="detail">
+  <div class="detail-header">
+    <span class="detail-icon" id="d-icon"></span>
+    <div>
+      <div class="detail-title" id="d-title"></div>
+      <div class="detail-sub" id="d-sub"></div>
+    </div>
+  </div>
+  <div class="detail-body" id="d-body"></div>
+  <div class="section-title">Kullanım alanları</div>
+  <div class="usecase-list" id="d-cases"></div>
+  <div class="example-box">
+    <div class="example-label">Yazarlık örneği</div>
+    <div class="example-text" id="d-example"></div>
+  </div>
+  <button class="ask-btn" id="d-btn" onclick="">↗ Bu araçla örnek göster</button>
+</div>
+
+</div>
+
+<script>
+const data = {
+  mindmap: {
+    icon:'🗺', name:'Mind map',
+    sub:'Merkezi konu → dallar → alt dallar',
+    body:'En güçlü "alanı tarama" aracı. Bir konuya başlamadan önce, o alanda ne olduğunu, hangi alt başlıkların var olduğunu, hangi yönlerin seni ilgilendirebileceğini görmek için kullanılır. Yazarlık gibi geniş bir alanı orta noktaya koyar, tek çekimde tüm topoğrafyayı ortaya serer.',
+    cases:['Yazarlık alanı tarama','Felsefe akımları','Sanat tarihi dönemleri','İnsan anatomisi sistemleri','Bir romanın yapısı'],
+    example:'"Yazarlık" merkeze koyulur. Dallar: roman yazımı, senaryo, şiir, eleştiri yazısı, deneme. Roman yazımı dalında: karakter, olay örgüsü, bakış açısı, diyalog, düzenleme. Her dal tıklandığında detay açılır.',
+    prompt:'Yazarlık konusunu merkeze alarak interaktif bir mind map göster. Her ana dal tıklanabilir olsun.'
+  },
+  concept: {
+    icon:'🔗', name:'Kavram haritası',
+    sub:'Fikirler arası ilişkiler, bağlantı etiketleri',
+    body:'Mind maptan farkı şu: sadece hiyerarşi değil, herhangi iki kavram arasındaki ilişki türünü de gösterir. "A, B\'yi doğurur", "A, B\'nin karşıtıdır", "A, B olmadan varolamaz" gibi bağlantı etiketleri olur.',
+    cases:['Felsefe akımları arası etki','Sanat tarihi dönemleri ilişkisi','Anlatı teknikleri ve etkiler','Roman türleri ve özellikleri'],
+    example:'"Realizm" → (tepki olarak doğdu) → "Natüralizm" → (bunun karşısında) → "Modernizm". Bağlantıların kendisi öğreticidir.',
+    prompt:'Yazarlık akımları arasındaki ilişkileri bir kavram haritası olarak göster. Bağlantı etiketleri olsun.'
+  },
+  tree: {
+    icon:'🌳', name:'Hiyerarşi ağacı',
+    sub:'Taksonomi, üst-alt ilişkileri',
+    body:'Bir alanın sınıflandırma yapısını görmek için idealdir. "Bu alanda kaç tür var, bunlar nasıl ayrışıyor?" sorusuna görsel cevap verir. Yazarlıkta tür taksonomisin, anatomide sistemlerin alt gruplarını görmek gibi.',
+    cases:['Yazı türleri taksonomisi','İnsan anatomisi sistemler-organlar','Felsefe dalları','Sanat akımları ve dönemleri'],
+    example:'Roman → (Gerçekçi, Fantastik, Tarihi, Distopik) → Gerçekçi → (Psikolojik, Sosyal, Otobiyografik)',
+    prompt:'Yazı türlerini kapsamlı bir hiyerarşi ağacı olarak göster. Tıklayınca alt dallar açılsın.'
+  },
+  flowchart: {
+    icon:'⬇', name:'Akış diyagramı',
+    sub:'Adımlar, kararlar, dallanmalar',
+    body:'"Bir şey nasıl işler?" veya "nasıl yapılır?" sorusuna cevap verir. Bir roman yazma sürecinin aşamaları, düzenleme döngüsü, veya bir sanat eserini analiz etme adımları için mükemmeldir.',
+    cases:['Roman yazma süreci','Taslak → revizyon döngüsü','Sanat eseri analiz adımları','Felsefe argümanı inşası'],
+    example:'"Roman yazma akışı": Fikir → Karakter geliştirme → Taslak → Birinci taslak → Geri bildirim almak → Revizyon → Final',
+    prompt:'Bir roman yazma sürecini baştan sona bir akış diyagramı olarak göster. Karar noktaları da olsun.'
+  },
+  timeline: {
+    icon:'📅', name:'Zaman çizelgesi',
+    sub:'Kronoloji, dönüm noktaları, evrim',
+    body:'Sanat tarihi ve edebiyat tarihi için çok güçlü. Bir akımın veya türün nasıl evrildiğini, hangi eserlerin hangi dönemde çıktığını, dönemler arası geçişleri gösterir.',
+    cases:['Edebiyat akımları tarihi','Bir yazarın eser kronolojisi','Sanat tarihi dönemleri','Felsefe tarihindeki dönüm noktaları'],
+    example:'"Avrupa romanının evrimi": 1600lar pikaresk → 1700ler epistolar roman → 1800ler realizm → 1900ler modernizm → akım özellikleri her noktada görünür.',
+    prompt:'Dünya edebiyatı akımlarını 1600\'den bugüne interaktif bir zaman çizelgesi olarak göster.'
+  },
+  roadmap: {
+    icon:'🛣', name:'Yol haritası',
+    sub:'Hedef odaklı ilerleme, fazlar',
+    body:'Öğrenme planlamak için en işlevsel araç. "Yazarlığı öğrenmek istiyorum, nereye baksam, hangi sırayla gitsem?" sorusuna cevap verir. Faz faz, öncelik sırasıyla düzenlenebilir.',
+    cases:['Yazarlık öğrenme yol haritası','Felsefe okuma planı','Anatomi öğrenme sırası','Sanat tarihi çalışma planı'],
+    example:'Faz 1: Temel kavramlar (anlatı, bakış açısı, karakter) → Faz 2: Tür bilgisi → Faz 3: Teknik ustalık → Faz 4: Kendi sesini bulmak',
+    prompt:'Sıfırdan yazarlık öğrenmek için faz faz, tıklanabilir bir yol haritası oluştur.'
+  },
+  venn: {
+    icon:'⭕', name:'Venn / örtüşme diyagramı',
+    sub:'Kesişimler, benzerlikler, farklar',
+    body:'İki veya üç kavramı karşılaştırmak için mükemmel. Modernizm ile postmodernizm arasındaki fark nedir? Roman ile novella nerede ayrışır? Kesişim bölgesi ikisi için de geçerli olanı gösterir.',
+    cases:['Yazı türleri karşılaştırma','Felsefi akımlar farkları','Anlatı teknikleri örtüşmesi','Sanat ve yazarlık ilişkisi'],
+    example:'"Roman vs. Senaryo" Venn: Ortak → anlatı, karakter, çatışma. Yalnızca roman → iç monolog, tasvir. Yalnızca senaryo → sahne yönü, diyalog dominansı.',
+    prompt:'Roman yazımı ile senaryo yazımını karşılaştıran interaktif bir Venn diyagramı göster.'
+  },
+  matrix: {
+    icon:'⊞', name:'2×2 Matris',
+    sub:'İki eksende konumlandırma',
+    body:'Kavramları iki boyuta göre yerleştirerek karşılaştırır. Yazı türlerini "karmaşıklık × kitleye ulaşım" ekseninde görmek gibi. Öncelik belirleme ve karar vermede güçlüdür.',
+    cases:['Yazı türleri: kural × özgürlük ekseni','Felsefi yaklaşımlar: rasyonel × deneyimci','Sanat akımları: figüratif × soyut'],
+    example:'"Anlatı türleri" matrisi: X ekseni = biçim özgürlüğü (kısıtlı → serbest), Y ekseni = iç dünya derinliği (az → çok). Deneme sağ üstte, haber sol altta.',
+    prompt:'Yazı türlerini "biçim özgürlüğü" ve "iç dünya derinliği" eksenlerine göre bir 2x2 matrise yerleştir.'
+  },
+  spectrum: {
+    icon:'↔', name:'Spektrum / süreklilik',
+    sub:'Bir eksen üzerinde kavramları sıralamak',
+    body:'Kavramların birbirinden nasıl uzaklaştığını veya yaklaştığını lineer olarak gösterir. "Gerçekçilik → fantastik" gibi bir eksende türleri sıralamak, ya da "nesnel → öznel" ekseninde yazı türlerini konumlandırmak.',
+    cases:['Anlatı türleri gerçekçilik ekseni','Felsefe: ampirizm-rasyonalizm','Sanat: figüratif-soyut','Üslup: sade-karmaşık'],
+    example:'"Gerçekçilik spektrumu": Gazetecilik → Otobiyografi → Gerçekçi kurgu → Büyülü gerçekçilik → Fantastik → Saf fantezi',
+    prompt:'Yazı türlerini gerçekçilikten fantaziye uzanan bir spektrum üzerinde interaktif olarak göster.'
+  },
+  layered: {
+    icon:'📚', name:'Katmanlı yapı',
+    sub:'İç içe seviyeler, bütünden parçaya',
+    body:'Bir şeyin katmanlarını görmek için idealdir. Bir romanın yapısı: temasal katman, anlatısal katman, cümle düzeyi. İnsan anatomisinde: vücut → sistem → organ → doku → hücre. Bütünden içe doğru drill-down.',
+    cases:['Roman yapısının katmanları','Anatomi: bütünden hücreye','Felsefi argüman yapısı','Sanat eserinin okunma katmanları'],
+    example:'"Romanı okuma katmanları": En dış → olay örgüsü (ne oldu?). İçerisi → karakter motivasyonu (neden?). Daha içerisi → tema (ne anlıyor?). En iç → dil ve biçim (nasıl söylüyor?)',
+    prompt:'Bir romanı analiz etmenin katmanlarını, bütünden içeriye doğru bir katmanlı yapı diyagramı olarak göster.'
+  },
+  stepper: {
+    icon:'🪜', name:'Adım adım stepper',
+    sub:'Her adımda bir şey, basamak basamak',
+    body:'Didaktik öğrenmenin en temiz aracı. Konuyu bölünmüş adımlara ayırır, her adımda sadece o adım görünür, ilerleme hissi verir. Anatomi öğrenirken "önce iskelet, sonra kaslar, sonra organlar" gibi.',
+    cases:['Yazarlık tekniklerini adım adım','Anatomi sistemleri sırayla','Felsefi kavram geliştirme','Sanat eseri analiz adımları'],
+    example:'"Karakter geliştirme" stepperi: 1-Dış görünüş ve fizik → 2-Geçmiş ve kırılmalar → 3-İstek ve korku → 4-Ses ve dil → 5-Diğer karakterlerle ilişki',
+    prompt:'Karakter geliştirme sürecini, her adımın interaktif örnekler içerdiği bir stepper olarak göster.'
+  },
+  kanban: {
+    icon:'🗂', name:'Öğrenme panosu',
+    sub:'Konuları aşamalara göre taşımak',
+    body:'Öğrendiğin konuları görsel olarak takip etmek için. "Henüz öğrenmedim → Öğreniyorum → Kavradım → Pratiğe döktüm" gibi kolonlar. Büyük bir alanı böldükten sonra nerede olduğunu görmek için güçlü.',
+    cases:['Yazarlık konuları takibi','Felsefe metinleri okuma panosu','Anatomi konuları ilerleme','Sanat tarihi çalışma panosu'],
+    example:'"Yazarlık öğrenme panosu": Kolonlar → Keşfedilecek / Çalışılıyor / Kavrandı / Uygulandı. Kartlar → bakış açısı, diyalog, tempo, imgelem...',
+    prompt:'Yazarlık konularını takip edebileceğim, sürükle-bırak özellikli bir öğrenme panosu oluştur.'
+  }
+};
+
+function show(key) {
+  const d = data[key];
+  document.getElementById('d-icon').textContent = d.icon;
+  document.getElementById('d-title').textContent = d.name;
+  document.getElementById('d-sub').textContent = d.sub;
+  document.getElementById('d-body').textContent = d.body;
+  const cases = document.getElementById('d-cases');
+  cases.innerHTML = d.cases.map(c => `<span class="usecase">${c}</span>`).join('');
+  document.getElementById('d-example').textContent = d.example;
+  const btn = document.getElementById('d-btn');
+  btn.onclick = () => sendPrompt(d.prompt);
+  const det = document.getElementById('detail');
+  det.classList.add('show');
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  setTimeout(() => det.scrollIntoView({behavior:'smooth',block:'nearest'}), 50);
+}
+</script>

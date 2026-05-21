@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fantine's Story — Study Workbook</title>
+<style>
+  /* ── CSS Variables ── */
+  :root {
+    --bg:        #f5f3ee;
+    --bg2:       #ede9e0;
+    --bg3:       #ffffff;
+    --border:    #d0c9bc;
+    --text:      #2c2416;
+    --text2:     #5c4f3a;
+    --text3:     #8a7a62;
+    --accent:    #8b4513;
+    --accent2:   #b05a20;
+    --accent-bg: #fdf0e6;
+    --correct:   #2d6a3f;
+    --correct-bg:#e8f5ec;
+    --wrong:     #9b2226;
+    --wrong-bg:  #fce8e8;
+    --warn:      #7b5e00;
+    --warn-bg:   #fff8e1;
+    --tab-active:#8b4513;
+    --shadow:    rgba(0,0,0,0.08);
+    --radius:    10px;
+    --transition: 0.25s ease;
+  }
+  [data-theme="dark"] {
+    --bg:        #1a1612;
+    --bg2:       #252018;
+    --bg3:       #2e2820;
+    --border:    #3d3428;
+    --text:      #e8dfc8;
+    --text2:     #b8a98a;
+    --text3:     #7a6a52;
+    --accent:    #d4843a;
+    --accent2:   #e8a060;
+    --accent-bg: #2a1e10;
+    --correct:   #4caf72;
+    --correct-bg:#0f2a18;
+    --wrong:     #e05555;
+    --wrong-bg:  #2a0f0f;
+    --warn:      #d4b84a;
+    --warn-bg:   #1e1800;
+    --shadow:    rgba(0,0,0,0.3);
+  }
+
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    background: var(--bg);
+    color: var(--text);
+    transition: background var(--transition), color var(--transition);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--accent);
+    color: #fff;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.02em; }
+  .header-left p  { font-size: 12px; opacity: 0.82; margin-top: 2px; }
+  .header-right   { display: flex; align-items: center; gap: 14px; }
+
+  /* Progress */
+  .progress-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-label { font-size: 12px; white-space: nowrap; }
+  .progress-bar-outer {
+    width: 140px; height: 8px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 99px; overflow: hidden;
+  }
+  .progress-bar-inner {
+    height: 100%; width: 0%;
+    background: #fff;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  /* Theme toggle */
+  .theme-btn {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-family: Verdana, sans-serif;
+    font-size: 13px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,0.28); }
+
+  /* ── Tab Nav ── */
+  .tab-nav {
+    display: flex;
+    overflow-x: auto;
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    gap: 0;
+    scrollbar-width: none;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    padding: 12px 18px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--text2);
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all var(--transition);
+    letter-spacing: 0.02em;
+  }
+  .tab-btn:hover  { color: var(--accent); background: var(--bg3); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    background: var(--bg3);
+  }
+
+  /* ── Main ── */
+  main { max-width: 860px; margin: 0 auto; padding: 30px 20px 80px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Section Cards ── */
+  .section {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .section hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+  /* ── Story Quote Box ── */
+  .quote-box {
+    background: var(--accent-bg);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--text);
+    font-style: italic;
+  }
+  .quote-box strong { font-style: normal; color: var(--accent); }
+
+  /* ── T/F/N Exercise ── */
+  .tfn-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .tfn-item:last-child { border-bottom: none; }
+  .tfn-num { color: var(--text3); font-size: 12px; min-width: 22px; padding-top: 2px; }
+  .tfn-text { flex: 1; font-size: 14px; }
+  .tfn-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .tfn-btn {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: var(--bg2);
+    color: var(--text2);
+    font-family: Verdana, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tfn-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .tfn-btn.selected-T { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+  .tfn-btn.selected-F { background: var(--wrong-bg);   border-color: var(--wrong);   color: var(--wrong);   }
+  .tfn-btn.selected-N { background: var(--warn-bg);    border-color: var(--warn);    color: var(--warn);    }
+  .tfn-btn.correct-flash { animation: flash-correct 0.5s; }
+  .tfn-btn.wrong-flash   { animation: flash-wrong   0.5s; }
+  @keyframes flash-correct { 0%,100%{} 50%{background:var(--correct);color:#fff;} }
+  @keyframes flash-wrong   { 0%,100%{} 50%{background:var(--wrong);color:#fff;}   }
+
+  /* ── Check / Show Answer Button ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: none;
+    font-family: Verdana, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 14px;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-secondary {
+    background: var(--bg2);
+    color: var(--text2);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+
+  /* ── Score Badge ── */
+  .score-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 12px;
+  }
+  .score-good  { background: var(--correct-bg); color: var(--correct); }
+  .score-ok    { background: var(--warn-bg);    color: var(--warn);    }
+  .score-bad   { background: var(--wrong-bg);   color: var(--wrong);   }
+
+  /* ── Feedback ── */
+  .feedback {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: none;
+  }
+  .feedback.correct { background: var(--correct-bg); color: var(--correct); display: block; }
+  .feedback.wrong   { background: var(--wrong-bg);   color: var(--wrong);   display: block; }
+  .feedback.info    { background: var(--accent-bg);  color: var(--accent);  display: block; }
+
+  /* ── MC Options ── */
+  .mc-options { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+  .mc-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--bg2);
+    font-size: 14px;
+  }
+  .mc-opt:hover { border-color: var(--accent); background: var(--accent-bg); }
+  .mc-opt.selected { border-color: var(--accent); background: var(--accent-bg); }
+  .mc-opt.correct  { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); }
+  .mc-opt.wrong    { border-color: var(--wrong);   background: var(--wrong-bg);   color: var(--wrong);   }
+  .mc-opt input[type="radio"] { accent-color: var(--accent); flex-shrink: 0; }
+  .mc-label { font-weight: 700; font-size: 12px; color: var(--text3); min-width: 18px; }
+
+  /* ── Fill-in-the-blank inputs ── */
+  .gap-input {
+    border: none;
+    border-bottom: 2px solid var(--accent);
+    background: transparent;
+    color: var(--text);
+    font-family: Verdana, sans-serif;
+    font-size: 14px;
+    padding: 2px 4px;
+    min-width: 120px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .gap-input:focus { border-bottom-color: var(--accent2); }
+  .gap-input.correct { border-bottom-color: var(--correct); color: var(--correct); }
+  .gap-input.wrong   { border-bottom-color: var(--wrong);   color: var(--wrong);   }
+
+  /* ── Textarea ── */
+  .write-area {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--bg2);
+    color: var(--text);
+    font-family: Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-top: 10px;
+  }
+  .write-area:focus { border-color: var(--accent); }
+  .word-count { font-size: 11px; color: var(--text3); text-align: right; margin-top: 4px; }
+
+  /* ── Ordering ── */
+  .order-list { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; }
+  .order-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .order-item:hover { border-color: var(--accent); }
+  .order-item.placed { border-color: var(--accent); background: var(--accent-bg); }
+  .order-item.correct-place { border-color: var(--correct); background: var(--correct-bg); }
+  .order-item.wrong-place   { border-color: var(--wrong);   background: var(--wrong-bg);   }
+  .order-badge {
+    min-width: 26px; height: 26px;
+    background: var(--border);
+    color: var(--text2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    transition: all 0.15s;
+  }
+  .order-item.placed .order-badge { background: var(--accent); color: #fff; }
+
+  /* ── Select Dropdown ── */
+  .styled-select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: var(--bg2);
+    color: var(--text);
+    font-family: Verdana, sans-serif;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .styled-select:focus { border-color: var(--accent); }
+  .styled-select.correct { border-color: var(--correct); color: var(--correct); }
+  .styled-select.wrong   { border-color: var(--wrong);   color: var(--wrong);   }
+
+  /* ── Table ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+  .data-table th {
+    background: var(--accent);
+    color: #fff;
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 700;
+  }
+  .data-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .data-table tr:nth-child(even) td { background: var(--bg2); }
+
+  /* ── Compass ── */
+  .compass-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .compass-card {
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .compass-dir {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  /* ── Answer Reveal ── */
+  .answer-block {
+    background: var(--correct-bg);
+    border: 1px solid var(--correct);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--correct);
+    display: none;
+  }
+  .answer-block.visible { display: block; }
+  .answer-block strong { display: block; margin-bottom: 4px; font-size: 12px; letter-spacing: 0.04em; }
+
+  /* ── Vocabulary Ladder ── */
+  .ladder { display: flex; flex-direction: column; gap: 4px; margin: 12px 0; }
+  .ladder-rung {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+  }
+  .ladder-level {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 4px;
+    min-width: 32px;
+    text-align: center;
+  }
+  .ladder-level.a1 { background: #e8f5ec; color: #2d6a3f; }
+  .ladder-level.a2 { background: #e3f0ff; color: #1a5fa0; }
+  .ladder-level.b1 { background: #fdf0e6; color: #8b4513; }
+  .ladder-word { font-weight: 700; min-width: 100px; font-size: 14px; }
+  .ladder-meaning { font-size: 12px; color: var(--text2); flex: 1; }
+
+  /* ── Quiz Timer ── */
+  .quiz-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: var(--text3);
+  }
+  .quiz-score-display {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ── Before/After Table ── */
+  .ba-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+  .ba-table th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .ba-table th:first-child { background: var(--wrong-bg); color: var(--wrong); }
+  .ba-table th:last-child  { background: var(--correct-bg); color: var(--correct); }
+  .ba-table td { padding: 8px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .ba-table td:first-child { color: var(--text2); }
+
+  /* ── Part intro banner ── */
+  .part-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .part-icon { font-size: 28px; }
+  .part-banner h2 { font-size: 15px; color: var(--accent); margin-bottom: 2px; }
+  .part-banner p  { font-size: 13px; color: var(--text2); }
+
+  /* ── Collocation matching ── */
+  .colloc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .colloc-row:last-child { border-bottom: none; }
+  .colloc-verb { font-weight: 700; min-width: 60px; color: var(--accent); }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    header { flex-direction: column; gap: 10px; align-items: flex-start; }
+    .header-right { flex-wrap: wrap; }
+    .tab-btn { padding: 10px 12px; font-size: 11px; }
+    .section { padding: 18px; }
+    .compass-grid { grid-template-columns: 1fr; }
+    .progress-bar-outer { width: 100px; }
+  }
+</style>
+</head>
+<body data-theme="light">
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <h1>📖 Fantine's Story — Study Workbook</h1>
+    <p>Les Misérables · Chapter 4 · A2/B1 Interactive Edition</p>
+  </div>
+  <div class="header-right">
+    <div class="progress-wrap">
+      <span class="progress-label" id="progressLabel">0 / 0 answered</span>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progressBar"></div>
+      </div>
+    </div>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+  </div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" onclick="switchTab(0)">📖 Part 1<br><span style="font-weight:400;font-size:10px">Comprehension</span></button>
+  <button class="tab-btn" onclick="switchTab(1)">📚 Part 2<br><span style="font-weight:400;font-size:10px">Vocabulary</span></button>
+  <button class="tab-btn" onclick="switchTab(2)">🔧 Part 3<br><span style="font-weight:400;font-size:10px">Grammar</span></button>
+  <button class="tab-btn" onclick="switchTab(3)">🧠 Part 4<br><span style="font-weight:400;font-size:10px">Memory</span></button>
+  <button class="tab-btn" onclick="switchTab(4)">✍️ Part 5<br><span style="font-weight:400;font-size:10px">Writing Lab</span></button>
+  <button class="tab-btn" onclick="switchTab(5)">💬 Part 6<br><span style="font-weight:400;font-size:10px">Discussion</span></button>
+  <button class="tab-btn" onclick="switchTab(6)">🏆 Part 7<br><span style="font-weight:400;font-size:10px">Final Quiz</span></button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════════
+     PART 1 — COMPREHENSION
+══════════════════════════════════════════════ -->
+<div class="tab-panel active" id="panel-0">
+  <div class="part-banner">
+    <div class="part-icon">📖</div>
+    <div>
+      <h2>Part 1 — Story Comprehension</h2>
+      <p>Test how well you understood Fantine's story. Three sections: True/False/Not in the text, event ordering, and short answers.</p>
+    </div>
+  </div>
+
+  <!-- 1.1 T/F/N -->
+  <div class="section">
+    <div class="section-title">1.1 — True, False, or Not in the Text?</div>
+    <div class="section-subtitle">Click T, F, or N for each statement. Then press "Check Answers" to see your score.</div>
+    <div id="tfn-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkTFN()">✓ Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetTFN()">↺ Reset</button>
+    </div>
+    <div id="tfn-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 1.2 Ordering -->
+  <div class="section">
+    <div class="section-title">1.2 — Put the Events in Order</div>
+    <div class="section-subtitle">Click the events in the correct story order (1 → 12). Click a placed item to unplace it.</div>
+    <div class="order-list" id="order-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkOrder()">✓ Check Order</button>
+      <button class="btn btn-secondary" onclick="resetOrder()">↺ Reset</button>
+    </div>
+    <div id="order-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 1.3 Short Answer -->
+  <div class="section">
+    <div class="section-title">1.3 — Short Answer Questions</div>
+    <div class="section-subtitle">Write your answers in the boxes. Use Past Simple. Click "Show Answer" to compare.</div>
+    <div id="short-answers"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PART 2 — VOCABULARY
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-1">
+  <div class="part-banner">
+    <div class="part-icon">📚</div>
+    <div>
+      <h2>Part 2 — Vocabulary Deep Dive</h2>
+      <p>Six vocabulary exercises: context clues, word families, fill-in-the-blank, collocations, and more.</p>
+    </div>
+  </div>
+
+  <!-- 2.1 Multiple Choice -->
+  <div class="section">
+    <div class="section-title">2.1 — Words in Context</div>
+    <div class="section-subtitle">Each sentence uses a word from Chapter 4. Choose the best meaning.</div>
+    <div id="mc-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkMC()">✓ Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetMC()">↺ Reset</button>
+    </div>
+    <div id="mc-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 2.4 Fill in the Gaps -->
+  <div class="section">
+    <div class="section-title">2.4 — Fill in the Gaps</div>
+    <div class="section-subtitle">Use each word once: <strong>abandoned · calculation · dignity · excursion · legitimate · prejudice · reputation · scarce · temporary · witnessed</strong></div>
+    <div id="gap-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkGaps()">✓ Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetGaps()">↺ Reset</button>
+      <button class="btn btn-secondary" onclick="showGapAnswers()">👁 Show Answers</button>
+    </div>
+    <div id="gap-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 2.5 Collocations -->
+  <div class="section">
+    <div class="section-title">2.5 — Collocations — Words That Go Together</div>
+    <div class="section-subtitle">Match each verb with the correct noun phrase using the dropdown.</div>
+    <div id="colloc-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkColloc()">✓ Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetColloc()">↺ Reset</button>
+    </div>
+    <div id="colloc-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 2.6 Vocabulary Ladder -->
+  <div class="section">
+    <div class="section-title">2.6 — Vocabulary Ladder: Ways to Feel Sad</div>
+    <div class="section-subtitle">These words all describe sadness — from simple (A1) to more specific (B1). Which best describes Fantine at each moment?</div>
+    <div class="ladder" id="ladder-display"></div>
+    <hr>
+    <p style="font-size:13px;font-weight:700;margin-bottom:10px;">Which word fits Fantine best at each moment?</p>
+    <div id="ladder-moments"></div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="showLadderAnswers()">👁 Show Suggested Answers</button>
+    </div>
+    <div id="ladder-answer-block" class="answer-block"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PART 3 — GRAMMAR
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-2">
+  <div class="part-banner">
+    <div class="part-icon">🔧</div>
+    <div>
+      <h2>Part 3 — Grammar Workshop</h2>
+      <p>Five grammar exercises covering Past Simple / Continuous, modals, linking words, and reported thought.</p>
+    </div>
+  </div>
+
+  <!-- 3.1a PS vs PC Identify -->
+  <div class="section">
+    <div class="section-title">3.1a — Past Simple or Past Continuous?</div>
+    <div class="section-subtitle">Click PS or PC for each sentence.</div>
+    <div id="pspc-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkPSPC()">✓ Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetPSPC()">↺ Reset</button>
+    </div>
+    <div id="pspc-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 3.1b PS vs PC Complete -->
+  <div class="section">
+    <div class="section-title">3.1b — Complete with Past Simple or Past Continuous</div>
+    <div class="section-subtitle">Type the correct form of the verb in brackets.</div>
+    <div id="pspc2-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkPSPC2()">✓ Check</button>
+      <button class="btn btn-secondary" onclick="showPSPC2Answers()">👁 Show Answers</button>
+      <button class="btn btn-secondary" onclick="resetPSPC2()">↺ Reset</button>
+    </div>
+    <div id="pspc2-feedback" class="feedback"></div>
+  </div>
+
+  <!-- 3.2a Could / Had to -->
+  <div class="section">
+    <div class="section-title">3.2a — Could, Couldn't, or Had to?</div>
+    <div class="section-subtitle">Choose the correct modal for each sentence.</div>
+    <div id="modal-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkModals()">✓ Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetModals()">↺ Reset</button>
+    </div>
+    <div id="modal-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 3.3a Linking Words -->
+  <div class="section">
+    <div class="section-title">3.3a — Choose the Right Connective</div>
+    <div class="section-subtitle">Select the better linking word for each sentence.</div>
+    <div id="link-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkLinks()">✓ Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetLinks()">↺ Reset</button>
+    </div>
+    <div id="link-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 3.4a Reported Thought -->
+  <div class="section">
+    <div class="section-title">3.4a — Convert to Reported Thought</div>
+    <div class="section-subtitle">Change each direct thought into reported thought. The first word is given.</div>
+    <div class="quote-box">
+      <strong>Remember:</strong> Direct → <em>"I will come back."</em> &nbsp;|&nbsp; Reported → <em>She told herself that she would come back.</em>
+    </div>
+    <div id="reported-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="showReportedAnswers()">👁 Show Answers</button>
+    </div>
+    <div id="reported-answer-block" class="answer-block"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PART 4 — MEMORY ANCHORS
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-3">
+  <div class="part-banner">
+    <div class="part-icon">🧠</div>
+    <div>
+      <h2>Part 4 — Memory Anchors</h2>
+      <p>Connect vocabulary to emotions, compare before/after, and use the Character Compass technique.</p>
+    </div>
+  </div>
+
+  <!-- Emotion-Word -->
+  <div class="section">
+    <div class="section-title">4.1 — The Emotion-Word Method</div>
+    <div class="section-subtitle">For each emotion, write the vocabulary word from Chapter 4 that connects to it most strongly. Then write a sentence.</div>
+    <div id="emotion-list"></div>
+  </div>
+
+  <!-- Before / After -->
+  <div class="section">
+    <div class="section-title">4.2 — The Before / After Method</div>
+    <div class="section-subtitle">Compare Fantine at the start and end of Chapter 4. Fill in the right column.</div>
+    <table class="ba-table">
+      <thead><tr><th>At the START of Chapter 4</th><th>At the END of Chapter 4</th></tr></thead>
+      <tbody id="ba-tbody"></tbody>
+    </table>
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="showBAAnswers()">👁 Show Answers</button>
+    </div>
+    <div id="ba-answer-block" class="answer-block"></div>
+    <hr>
+    <p style="font-size:13px;font-weight:700;margin:12px 0 6px;">Now write a Before/After paragraph using: <em>however, but, although</em></p>
+    <textarea class="write-area" id="ba-write" placeholder="At the beginning of Chapter 4, Fantine..." onkeyup="countWords('ba-write','ba-wc')"></textarea>
+    <div class="word-count" id="ba-wc">0 words</div>
+  </div>
+
+  <!-- Character Compass -->
+  <div class="section">
+    <div class="section-title">4.3 — The Character Compass</div>
+    <div class="section-subtitle">Each direction represents a quality. Fill in the compass for Fantine and Tholomyès.</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">⬆ NORTH = Strength &nbsp;|&nbsp; ⬇ SOUTH = Weakness &nbsp;|&nbsp; ➡ EAST = What they show &nbsp;|&nbsp; ⬅ WEST = What they hide</p>
+    <p style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px;">FANTINE</p>
+    <div class="compass-grid" id="compass-fantine"></div>
+    <p style="font-size:13px;font-weight:700;color:var(--accent);margin:16px 0 10px;">THOLOMYÈS</p>
+    <div class="compass-grid" id="compass-tholom"></div>
+  </div>
+
+  <!-- Vocabulary Ladder moments -->
+  <div class="section">
+    <div class="section-title">4.4 — Sentence Reconstruction</div>
+    <div class="section-subtitle">These words are in the wrong order. Type the correct sentence.</div>
+    <div id="recon-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkRecon()">✓ Check</button>
+      <button class="btn btn-secondary" onclick="showReconAnswers()">👁 Show Answers</button>
+    </div>
+    <div id="recon-feedback" class="feedback"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PART 5 — WRITING LAB
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-4">
+  <div class="part-banner">
+    <div class="part-icon">✍️</div>
+    <div>
+      <h2>Part 5 — Creative Writing Lab</h2>
+      <p>Three writing tasks that put you inside the story. Use the grammar you practised in Part 3.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5.1 — Write Fantine's Letter to Tholomyès</div>
+    <div class="section-subtitle">Fantine never wrote this letter — but imagine she did, two years after he left. Use: Past Simple · could / had to · although or however. Target: 150–200 words.</div>
+    <div class="quote-box"><strong>Checklist:</strong> ☐ Past Simple for past events &nbsp; ☐ could / had to for difficulty &nbsp; ☐ although or however &nbsp; ☐ 150–200 words</div>
+    <p style="font-size:13px;color:var(--text2);margin:10px 0 2px;">Dear Tholomyès,</p>
+    <textarea class="write-area" id="letter-write" style="min-height:200px" placeholder="Write your letter here..." onkeyup="countWords('letter-write','letter-wc')"></textarea>
+    <div class="word-count" id="letter-wc">0 words</div>
+    <p style="font-size:13px;color:var(--text2);margin-top:8px;">Fantine</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5.2 — Cosette's Thoughts at Night</div>
+    <div class="section-subtitle">Cosette is 4 years old at the inn. Imagine she could think in English. What does she think at night, in the cold? Use simple present tense. Use: want / miss / afraid / wonder / hope. Target: 80–120 words.</div>
+    <div class="quote-box"><strong>Remember:</strong> This is a child's mind — keep sentences very short and simple.</div>
+    <textarea class="write-area" id="cosette-write" style="min-height:160px" placeholder="Cosette's thoughts, late at night at the inn..." onkeyup="countWords('cosette-write','cosette-wc')"></textarea>
+    <div class="word-count" id="cosette-wc">0 words</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">5.3 — Rewrite the Ending of the Picnic Scene</div>
+    <div class="section-subtitle">What if Tholomyès had stayed? Rewrite the Saint-Cloud picnic scene ending — Tholomyès comes back. What does he say? What does Fantine feel? Target: 100–150 words.</div>
+    <textarea class="write-area" id="rewrite-write" style="min-height:180px" placeholder="The women were waiting when..." onkeyup="countWords('rewrite-write','rewrite-wc')"></textarea>
+    <div class="word-count" id="rewrite-wc">0 words</div>
+  </div>
+
+  <div class="section" style="background:var(--accent-bg);border-color:var(--accent);">
+    <div class="section-title">Self-Evaluation Checklist</div>
+    <div class="section-subtitle">After you finish writing, check your own work.</div>
+    <div id="checklist-items"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PART 6 — DISCUSSION
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-5">
+  <div class="part-banner">
+    <div class="part-icon">💬</div>
+    <div>
+      <h2>Part 6 — Speaking & Thinking Prompts</h2>
+      <p>No right or wrong answers here. Think deeply. Write 3–5 sentences, or discuss with someone else.</p>
+    </div>
+  </div>
+
+  <div id="discussion-list"></div>
+
+  <div class="section">
+    <div class="section-title">6.2 — Agree or Disagree?</div>
+    <div class="section-subtitle">Read each statement. Choose your position and write 2–3 sentences.</div>
+    <div id="agree-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PART 7 — FINAL QUIZ
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="panel-6">
+  <div class="part-banner">
+    <div class="part-icon">🏆</div>
+    <div>
+      <h2>Part 7 — Final Review Quiz</h2>
+      <p>Mixed grammar, vocabulary fill-in, and error correction. See how much you've learned!</p>
+    </div>
+  </div>
+
+  <!-- 7.1 Grammar MC -->
+  <div class="section">
+    <div class="section-title">7.1 — Mixed Grammar Quiz</div>
+    <div class="section-subtitle">Choose the correct option for each question.</div>
+    <div id="final-mc-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkFinalMC()">✓ Check Answers</button>
+      <button class="btn btn-secondary" onclick="resetFinalMC()">↺ Reset</button>
+    </div>
+    <div id="final-mc-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 7.2 Vocab first-letter -->
+  <div class="section">
+    <div class="section-title">7.2 — Vocabulary Final Check</div>
+    <div class="section-subtitle">Write the correct word. The first letter is given as a hint.</div>
+    <div id="firstletter-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkFirstLetter()">✓ Check</button>
+      <button class="btn btn-secondary" onclick="showFirstLetterAnswers()">👁 Show Answers</button>
+    </div>
+    <div id="firstletter-score" style="margin-top:12px;"></div>
+  </div>
+
+  <!-- 7.3 Error correction -->
+  <div class="section">
+    <div class="section-title">7.3 — Error Correction</div>
+    <div class="section-subtitle">Each sentence has ONE grammar mistake. Type the corrected sentence in the box.</div>
+    <div id="error-list"></div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="showErrorAnswers()">👁 Show All Answers</button>
+    </div>
+    <div id="error-answers" class="answer-block"></div>
+  </div>
+
+  <!-- Overall score -->
+  <div class="section" style="text-align:center;">
+    <div class="section-title" style="text-align:center;">Your Overall Progress</div>
+    <div id="overall-score" style="font-size:32px;font-weight:700;color:var(--accent);margin:16px 0;">—</div>
+    <p style="color:var(--text2);font-size:14px;">Complete all sections to see your final score.</p>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="calcOverall()">📊 Calculate Total Score</button>
+  </div>
+</div>
+
+</main>
+
+<script>
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+const tfnData = [
+  {q:"Fantine had long, golden hair and blue eyes.", a:"T"},
+  {q:"Tholomyès was from Paris.", a:"F"},
+  {q:"There were four young men and four young women in the group.", a:"T"},
+  {q:"Fantine and Tholomyès were married.", a:"F"},
+  {q:"Cosette was born in the winter.", a:"T"},
+  {q:"Tholomyès loved holding baby Cosette.", a:"F"},
+  {q:"The men sent a funny letter before they left.", a:"T"},
+  {q:"Fantine cried immediately when she read the letter.", a:"F"},
+  {q:"Fantine sold her glass bead collection before she left Paris.", a:"T"},
+  {q:"The Thénardier inn was in a village called Montfermeil.", a:"T"},
+  {q:"Madame Thénardier was kind to Cosette when Fantine arrived.", a:"N"},
+  {q:"Cosette played with a doll in the inn yard.", a:"T"},
+  {q:"Fantine paid for one month in advance at the inn.", a:"T"},
+  {q:"Cosette slept in a warm bed at the inn.", a:"F"},
+  {q:"A guard named Madame Victurnien reported Fantine's secret.", a:"F"},
+  {q:"Fantine was fired by Mayor Madeleine personally.", a:"F"},
+  {q:"Fantine sold her hair to send money to Montfermeil.", a:"T"},
+  {q:"Javert gave Fantine a prison sentence of six months.", a:"T"},
+  {q:"Madeleine brought Cosette to Fantine at the hospital.", a:"F"},
+  {q:"Fantine dies at the end of Chapter 4.", a:"N"}
+];
+
+const orderData = [
+  {text:"Fantine leaves Paris and walks north with Cosette.", order:4},
+  {text:"Tholomyès sends a joke letter and disappears.", order:3},
+  {text:"Fantine sells her hair.", order:9},
+  {text:"Fantine arrives at the Thénardier inn.", order:5},
+  {text:"Fantine and Tholomyès go on a picnic to Saint-Cloud.", order:2},
+  {text:"Fantine starts work at Madeleine's factory.", order:7},
+  {text:"Fantine says goodbye to Cosette at the inn gate.", order:6},
+  {text:"The factory supervisor fires Fantine.", order:8},
+  {text:"Mayor Madeleine takes Fantine to the hospital.", order:12},
+  {text:"Cosette is born.", order:1},
+  {text:"Javert arrests Fantine on the street.", order:11},
+  {text:"Fantine sells her front teeth.", order:10}
+];
+
+const shortAnswers = [
+  {q:"Why did Fantine need to leave Cosette with someone else?",
+   a:"She needed to go north to find work at a factory, but no employer would hire a woman with a young child. She had to leave Cosette somewhere safe so she could look like a worker without complications."},
+  {q:"What made the Thénardier inn look like a good place for Cosette?",
+   a:"When Fantine arrived, she saw two healthy, happy little girls playing outside with a doll. Their mother seemed capable and solid. The inn looked like a real, working family home. It all looked normal and safe."},
+  {q:"How did the Thénardiers treat Cosette differently from their own daughters?",
+   a:"Their daughters wore good dresses, ate proper meals, and had toys and warm beds. Cosette wore old hand-me-downs, ate leftovers, slept in a cold corner, and was put to work sweeping, scrubbing, and carrying water."},
+  {q:"What did Madame Victurnien do, and why was it so harmful to Fantine?",
+   a:"She discovered that Fantine had an illegitimate child and reported this to the factory supervisor. The supervisor fired Fantine without telling the mayor. This destroyed Fantine's only source of income and started her downward spiral."},
+  {q:"What two things did Fantine sell, and why?",
+   a:"She sold her long golden hair and two of her front teeth. She sold them because she had no other way to raise money to send to the Thénardiers for Cosette's care."},
+  {q:"What happened on the street that led to Fantine's arrest?",
+   a:"A rich young man made cruel comments about her on the street. She scratched him in self-defence. Javert saw this and arrested her, sentencing her to six months in prison."},
+  {q:"What did Fantine ask Madeleine at the hospital?",
+   a:"She asked him to go to Montfermeil and bring Cosette to her. She wanted to see her daughter before she died."}
+];
+
+const mcData = [
+  {sentence:'"The four young men were <b>carefree</b> and happy."',
+   word:"carefree",
+   options:["careful and responsible","without worries or problems","unfriendly and cold"],
+   correct:1},
+  {sentence:'"Tholomyès sent an <b>elaborate</b> letter. It used long words and complicated phrases."',
+   word:"elaborate",
+   options:["short and simple","very detailed and complex","honest and direct"],
+   correct:1},
+  {sentence:'"The letter said that the men were going home — back to their <b>obligations</b>."',
+   word:"obligations",
+   options:["things you enjoy doing for pleasure","things you must do because of responsibility","places where you feel comfortable"],
+   correct:1},
+  {sentence:'"She counted every coin. She was <b>managing</b>."',
+   word:"managing",
+   options:["giving up and asking for help","succeeding in a difficult situation with what you have","complaining loudly"],
+   correct:1},
+  {sentence:'"The supervisor said her situation was <b>incompatible</b> with the factory\'s standards."',
+   word:"incompatible",
+   options:["perfect for the situation","not able to exist together with something else","very impressive and unusual"],
+   correct:1},
+  {sentence:'"The supervisor was a small, <b>officious</b> man who believed strongly in rules."',
+   word:"officious",
+   options:["too eager to give orders and use authority","quiet and modest","creative and flexible"],
+   correct:0},
+  {sentence:'"Fantine tried to <b>suppress</b> her cough, but she could not hide it completely."',
+   word:"suppress",
+   options:["make louder and more obvious","stop yourself from showing or doing something","share with others openly"],
+   correct:1},
+  {sentence:'"Fantine listened to all of this with a calm face and a <b>frightened</b> heart."',
+   word:"frightened",
+   options:["happy and excited","angry and resentful","afraid and worried"],
+   correct:2}
+];
+
+const gapData = [
+  {sentence:"The Thénardiers made a simple ___: Cosette cost very little to keep, but Fantine's money was more than enough.", answer:"calculation"},
+  {sentence:"The trip to Saint-Cloud was an ___. Everyone was in good spirits.", answer:"excursion"},
+  {sentence:"After Tholomyès left, Fantine felt completely ___. She had nobody.", answer:"abandoned"},
+  {sentence:"Fantine told herself that leaving Cosette was ___. Just for now. Just until things were better.", answer:"temporary"},
+  {sentence:"In Paris in 1817, an unmarried mother with an illegitimate child had very little ___.", answer:"dignity"},
+  {sentence:"The witnesses against the accused man had a shared ___. They expected to see Valjean, so they did.", answer:"prejudice"},
+  {sentence:"Food became ___ in Fantine's life. She ate once a day, sometimes less.", answer:"scarce"},
+  {sentence:"Fantine worked hard and paid everyone on time. She had a good ___ — until Madame Victurnien got involved.", answer:"reputation"},
+  {sentence:"The child Cosette had no ___ father. This was how society described her situation.", answer:"legitimate"},
+  {sentence:"The old woman in the square had ___ the mayor giving boots to Bernard.", answer:"witnessed"}
+];
+
+const collocData = [
+  {verb:"fall",    options:["in love","a promise","a living","a decision","someone's trust","your heart","a habit","your dignity"], answer:"in love"},
+  {verb:"break",   options:["in love","a promise","a living","a decision","someone's trust","your heart","a habit","your dignity"], answer:"a promise"},
+  {verb:"earn",    options:["in love","a promise","a living","a decision","someone's trust","your heart","a habit","your dignity"], answer:"a living"},
+  {verb:"make",    options:["in love","a promise","a living","a decision","someone's trust","your heart","a habit","your dignity"], answer:"a decision"},
+  {verb:"keep",    options:["in love","a promise","a living","a decision","someone's trust","your heart","a habit","your dignity"], answer:"a promise"},
+  {verb:"lose",    options:["in love","a promise","a living","a decision","someone's trust","your heart","a habit","your dignity"], answer:"your dignity"},
+  {verb:"give",    options:["in love","a promise","a living","a decision","someone's trust","your heart","a habit","your dignity"], answer:"your heart"},
+  {verb:"build",   options:["in love","a promise","a living","a decision","someone's trust","your heart","a habit","your dignity"], answer:"someone's trust"}
+];
+
+const ladderWords = [
+  {level:"A1",cls:"a1",word:"sad",      meaning:"unhappy"},
+  {level:"A2",cls:"a2",word:"upset",    meaning:"sad and disturbed"},
+  {level:"A2",cls:"a2",word:"lonely",   meaning:"sad because you are alone"},
+  {level:"B1",cls:"b1",word:"desperate",meaning:"so worried you will do anything"},
+  {level:"B1",cls:"b1",word:"heartbroken",meaning:"very deeply sad, especially after losing love"},
+  {level:"B1",cls:"b1",word:"devastated",meaning:"extremely sad and shocked"},
+  {level:"B1",cls:"b1",word:"desolate", meaning:"sad, alone, and without hope"}
+];
+
+const ladderMoments = [
+  "When Tholomyès left →",
+  "When she left Cosette →",
+  "When she lost her factory job →",
+  "At the hospital →"
+];
+
+const pspcData = [
+  {s:"Fantine had long, golden hair and blue eyes.", a:"PS"},
+  {s:"The women were sitting inside the carriage.", a:"PC"},
+  {s:"Tholomyès chose Fantine.", a:"PS"},
+  {s:"The machines were going on working.", a:"PC"},
+  {s:"She sold her glass bead collection.", a:"PS"},
+  {s:"Snow was beginning to fall outside.", a:"PC"},
+  {s:"She worked at the factory for two years.", a:"PS"},
+  {s:"The candle was burning beside him.", a:"PC"},
+  {s:"Javert arrested her.", a:"PS"},
+  {s:"The children were playing with a ball in the yard.", a:"PC"}
+];
+
+const pspc2Data = [
+  {template:"The group of friends ___ (have) a picnic when the men said they had a surprise.", answer:"were having"},
+  {template:"Fantine ___ (sit) very still after she heard the letter.", answer:"sat"},
+  {template:"While the Thénardier daughters ___ (wear) silk dresses, Cosette wore old rags.", answer:"were wearing"},
+  {template:"Fantine ___ (walk) home when Javert suddenly stopped her.", answer:"was walking"},
+  {template:"She ___ (count) her money every two weeks.", answer:"counted"},
+  {template:"Madame Thénardier ___ (sew) a child's dress when Fantine arrived.", answer:"was sewing"}
+];
+
+const modalData = [
+  {s:"Fantine ___ afford new clothes, so she mended the old ones.", opts:["could","couldn't","had to"], a:1},
+  {s:"She ___ see that Tholomyès was becoming impatient.", opts:["could","couldn't","had to"], a:0},
+  {s:"She ___ leave Cosette with someone — there was no other option.", opts:["could","couldn't","had to"], a:2},
+  {s:"Cosette ___ carry the heavy water bucket alone. It was too big for her.", opts:["could","couldn't","had to"], a:1},
+  {s:"Fantine ___ pay for everything — rent, food, coal, and Montfermeil.", opts:["could","couldn't","had to"], a:2},
+  {s:"She ___ stop the cough. It came back every morning.", opts:["could","couldn't","had to"], a:1},
+  {s:"After she lost her job, Fantine ___ look for other work every day.", opts:["could","couldn't","had to"], a:2},
+  {s:"The workers ___ hear the machines all day. The factory was very loud.", opts:["could","couldn't","had to"], a:0}
+];
+
+const linkData = [
+  {template:"Fantine worked hard ___ she needed money for Cosette.", opts:["because","although"], a:0},
+  {template:"She sent money every month. ___ the demands kept growing.", opts:["However","So"], a:0},
+  {template:"___ the rich daughters played, Cosette swept the floor.", opts:["While","Until"], a:0},
+  {template:"Fantine did not cry immediately ___ she heard the letter.", opts:["when","before"], a:0},
+  {template:"She kept sending money ___ she had almost nothing left.", opts:["although","until"], a:1},
+  {template:"___ Fantine lost her job, she tried every other workshop.", opts:["Before","After"], a:1},
+  {template:"She was thin, ___ not because she was sick.", opts:["but","so"], a:0},
+  {template:"___ the supervisor called her in, she already felt afraid.", opts:["When","While"], a:0}
+];
+
+const reportedData = [
+  {direct:'"This is temporary. I will come back soon."',
+   starter:"She told herself that...",
+   answer:"She told herself that it was temporary and that she would come back soon."},
+  {direct:'"Cosette is safe. She is growing well."',
+   starter:"She thought that...",
+   answer:"She thought that Cosette was safe and that she was growing well."},
+  {direct:'"I cannot stop sending money."',
+   starter:"She knew that...",
+   answer:"She knew that she could not stop sending money."},
+  {direct:'"Things will get better."',
+   starter:"She believed that...",
+   answer:"She believed that things would get better."}
+];
+
+const reconData = [
+  {words:"loved / quickly / and / completely / Fantine / him", answer:"Fantine loved him quickly and completely."},
+  {words:"she / enough / could / never / make / the numbers / balance", answer:"She could never make the numbers balance."},
+  {words:"told / herself / temporary / she / was / it", answer:"She told herself it was temporary."},
+  {words:"back / without / she / walked / turning", answer:"She walked without turning back."},
+  {words:"into / the room / she / something / when / changed / walked", answer:"When she walked into the room, something changed."}
+];
+
+const finalMCData = [
+  {q:"When Fantine arrived at the inn, the children ___ with a doll.",
+   opts:["played","were playing","play","had play"], a:1},
+  {q:"She ___ stop sending money. Cosette depended on it.",
+   opts:["can't","couldn't","doesn't","hasn't"], a:1},
+  {q:"___ Tholomyès was charming, he was also selfish.",
+   opts:["Because","So","Although","Until"], a:2},
+  {q:"She told herself ___ everything would be fine.",
+   opts:["than","when","that","as"], a:2},
+  {q:"Fantine ___ sell her hair. She had no other choice.",
+   opts:["could","had to","was","should"], a:1},
+  {q:"The machines ___ making a constant noise when Fantine arrived.",
+   opts:["are","was","were","had been"], a:2},
+  {q:"She waited ___ she had almost nothing left.",
+   opts:["while","so","although","until"], a:3},
+  {q:"Madame Thénardier asked for more money ___ Cosette needed a doctor.",
+   opts:["although","while","because","so"], a:2}
+];
+
+const firstLetterData = [
+  {hint:"s", clue:"A woman who sews clothes for a living. (Fantine was one.)", answer:"seamstress"},
+  {hint:"e", clue:"A short trip for pleasure. (The group went on one to Saint-Cloud.)", answer:"excursion"},
+  {hint:"s", clue:"To stop yourself from showing something. (Fantine tried to do this with her cough.)", answer:"suppress"},
+  {hint:"i", clue:"Not able to exist with something else. (The supervisor used this word about Fantine's situation.)", answer:"incompatible"},
+  {hint:"d", clue:"The feeling of being respected and having self-worth. (Fantine slowly lost this.)", answer:"dignity"},
+  {hint:"c", clue:"The ability to be sure about yourself. (Tholomyès had too much of this.)", answer:"confidence"},
+  {hint:"a", clue:"Left alone with no help or support. (Fantine felt this after the letter.)", answer:"abandoned"},
+  {hint:"e", clue:"Very detailed and complex. (The farewell letter was written in this style.)", answer:"elaborate"}
+];
+
+const errorData = [
+  {wrong:"Fantine was walked along the road with Cosette in her arms.", right:"Fantine was walking along the road with Cosette in her arms."},
+  {wrong:"She could not to stop thinking about her daughter.", right:"She could not stop thinking about her daughter."},
+  {wrong:"Although she was worked hard, the money was never enough.", right:"Although she worked hard, the money was never enough."},
+  {wrong:"Tholomyès left, but Fantine she had no one to help her.", right:"Tholomyès left, but Fantine had no one to help her."},
+  {wrong:"She tell herself that things will get better.", right:"She told herself that things would get better."},
+  {wrong:"The children were played when Fantine arrived at the inn.", right:"The children were playing when Fantine arrived at the inn."}
+];
+
+const checklistItems = [
+  "I used Past Simple for past actions.",
+  "I used Past Continuous for background situations.",
+  "I used 'could' or 'couldn't' correctly.",
+  "I used 'had to' for obligation.",
+  "I used at least one linking word (although, because, however, while...).",
+  "My sentences are clear and not too long.",
+  "I checked my spelling.",
+  "I reread my text and it makes sense."
+];
+
+const discussionData = [
+  {n:"1", q:"Fantine trusted Tholomyès completely. Was she foolish? Or was she simply young and inexperienced? Is there a difference?"},
+  {n:"2", q:"Fantine chose to leave Cosette with the Thénardiers so she could work and send money. Was this the right decision? What would you have done?"},
+  {n:"3", q:"Madame Victurnien reported Fantine to the supervisor. She believed she was protecting the factory's reputation. Do you think she was wrong? Can doing the 'right thing' for one reason be the wrong thing for another?"},
+  {n:"4", q:"Javert arrested Fantine for defending herself against a man who was cruel to her. He believed he was following the law. But was justice served? What is the difference between law and justice?"},
+  {n:"5", q:"Hugo shows that Fantine's beauty did not protect her and did not help her. What does the story suggest about beauty and power in society?"}
+];
+
+const agreeData = [
+  "Society, not Tholomyès, was the real enemy of Fantine.",
+  "Fantine was strong. Most people in her situation would have given up sooner.",
+  "The Thénardiers were evil.",
+  "Madeleine should have done more to help Fantine before she lost her job."
+];
+
+const baData = [
+  ["She has: long golden hair", "She has: short hair (she sold it)"],
+  ["She lives in: Paris", "She lives in: a shared room in Montreuil"],
+  ["She feels: happy and carefree", "She feels: exhausted, desperate, and ill"],
+  ["She works as: a seamstress", "She works as: nothing — she has been dismissed"],
+  ["She has: four close friends", "She has: nobody"],
+  ["Cosette is: with her", "Cosette is: at the Thénardier inn, far away"]
+];
+
+const emotionWords = [
+  {emotion:"Hope",       placeholder:"Which word? e.g. 'temporary'"},
+  {emotion:"Betrayal",   placeholder:"Which word?"},
+  {emotion:"Desperation",placeholder:"Which word?"},
+  {emotion:"Shame",      placeholder:"Which word? (Think about Fantine's situation in Paris)"},
+  {emotion:"Love",       placeholder:"Which word?"},
+  {emotion:"Resignation",placeholder:"Which word?"}
+];
+
+const compassDirs = [
+  {dir:"⬆ NORTH — Strength",  key:"N"},
+  {dir:"⬇ SOUTH — Weakness",  key:"S"},
+  {dir:"➡ EAST — What she shows the world", key:"E"},
+  {dir:"⬅ WEST — What she hides inside",    key:"W"}
+];
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let tfnState   = {};
+let orderState = {}; // idx -> placed number
+let orderClick = 1;
+let scores     = {};
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  loadTheme();
+  buildTFN();
+  buildOrder();
+  buildShortAnswers();
+  buildMC();
+  buildGaps();
+  buildColloc();
+  buildLadder();
+  buildPSPC();
+  buildPSPC2();
+  buildModals();
+  buildLinks();
+  buildReported();
+  buildRecon();
+  buildCompass();
+  buildEmotions();
+  buildBA();
+  buildChecklist();
+  buildDiscussion();
+  buildAgree();
+  buildFinalMC();
+  buildFirstLetter();
+  buildErrors();
+  updateProgress();
+});
+
+/* ── Theme ── */
+function toggleTheme() {
+  const body = document.body;
+  const dark = body.getAttribute('data-theme') === 'dark';
+  body.setAttribute('data-theme', dark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = dark ? '🌙 Dark' : '☀️ Light';
+  localStorage.setItem('workbook-theme', dark ? 'light' : 'dark');
+}
+function loadTheme() {
+  const saved = localStorage.getItem('workbook-theme') || 'light';
+  document.body.setAttribute('data-theme', saved);
+  document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️ Light' : '🌙 Dark';
+}
+
+/* ── Tabs ── */
+function switchTab(idx) {
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ── Progress ── */
+function updateProgress() {
+  const total = tfnData.length + orderData.length + finalMCData.length + modalData.length + pspcData.length + linkData.length;
+  const done  = Object.keys(tfnState).length +
+                Object.values(orderState).filter(v=>v).length +
+                document.querySelectorAll('.final-mc-opt.selected').length +
+                document.querySelectorAll('.modal-select').length +
+                document.querySelectorAll('.pspc-btn.selected-PS,.pspc-btn.selected-PC').length +
+                document.querySelectorAll('.link-select').length;
+  const pct = Math.round(Math.min(100, done/total*100));
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% done';
+}
+
+/* ══════════════════════════════════════════
+   PART 1 — T/F/N
+══════════════════════════════════════════ */
+function buildTFN() {
+  const c = document.getElementById('tfn-list');
+  tfnData.forEach((item,i) => {
+    c.innerHTML += `<div class="tfn-item">
+      <span class="tfn-num">${i+1}.</span>
+      <span class="tfn-text">${item.q}</span>
+      <div class="tfn-btns">
+        <button class="tfn-btn" id="tfn-${i}-T" onclick="selectTFN(${i},'T')">T</button>
+        <button class="tfn-btn" id="tfn-${i}-F" onclick="selectTFN(${i},'F')">F</button>
+        <button class="tfn-btn" id="tfn-${i}-N" onclick="selectTFN(${i},'N')">N</button>
+      </div>
+    </div>`;
+  });
+}
+function selectTFN(i, val) {
+  ['T','F','N'].forEach(v => {
+    const b = document.getElementById(`tfn-${i}-${v}`);
+    b.className = 'tfn-btn' + (v===val ? ` selected-${v}` : '');
+  });
+  tfnState[i] = val;
+  updateProgress();
+}
+function checkTFN() {
+  let right=0, total=tfnData.length;
+  tfnData.forEach((item,i) => {
+    const chosen = tfnState[i];
+    if (!chosen) return;
+    const isCorrect = chosen === item.a;
+    if (isCorrect) right++;
+    ['T','F','N'].forEach(v => {
+      const b = document.getElementById(`tfn-${i}-${v}`);
+      b.className = 'tfn-btn' + (v===chosen ? ` selected-${v}` : '');
+      if (v===item.a && !isCorrect) b.style.outline = '2px solid var(--correct)';
+      else b.style.outline = '';
+    });
+  });
+  const answered = Object.keys(tfnState).length;
+  showScore('tfn-score', right, answered, `(${total} total questions)`);
+  scores.tfn = {right, total: answered};
+}
+function resetTFN() {
+  tfnState = {};
+  tfnData.forEach((_,i) => ['T','F','N'].forEach(v => {
+    const b = document.getElementById(`tfn-${i}-${v}`);
+    b.className = 'tfn-btn';
+    b.style.outline = '';
+  }));
+  document.getElementById('tfn-score').innerHTML = '';
+}
+
+/* ── Ordering ── */
+function buildOrder() {
+  const shuffled = [...orderData].sort(() => Math.random()-0.5);
+  const c = document.getElementById('order-list');
+  shuffled.forEach((item,i) => {
+    c.innerHTML += `<div class="order-item" id="order-item-${i}" onclick="clickOrder(${i}, ${item.order})">
+      <div class="order-badge" id="order-badge-${i}">?</div>
+      <span>${item.text}</span>
+    </div>`;
+  });
+}
+function clickOrder(i, correctOrder) {
+  const item = document.getElementById(`order-item-${i}`);
+  const badge = document.getElementById(`order-badge-${i}`);
+  if (item.classList.contains('placed')) {
+    // Unplace
+    const num = parseInt(badge.textContent);
+    delete orderState[i];
+    item.classList.remove('placed');
+    badge.textContent = '?';
+    // decrease counter if was last
+    orderClick = Math.min(orderClick, num);
+    updateProgress();
+    return;
+  }
+  if (orderClick > orderData.length) return;
+  orderState[i] = orderClick;
+  badge.textContent = orderClick;
+  item.classList.add('placed');
+  orderClick++;
+  updateProgress();
+}
+function checkOrder() {
+  let right=0;
+  orderData.forEach((_,i) => {
+    // find item with this shuffled index
+  });
+  // Instead, check by reading data attrs we stored
+  document.querySelectorAll('.order-item').forEach((el, i) => {
+    const badge = el.querySelector('.order-badge');
+    const placed = parseInt(badge.textContent);
+    const correctForThisEl = parseInt(el.getAttribute('data-correct'));
+    // We need to get correct order from JS
+  });
+  // Simpler: re-read from orderState
+  const items = document.querySelectorAll('.order-item');
+  // Build map: element index -> correct order (stored in onclick)
+  // Extract from onclick attr
+  let total = Object.keys(orderState).length;
+  items.forEach((el,i) => {
+    const onclick = el.getAttribute('onclick');
+    const match = onclick.match(/clickOrder\((\d+),\s*(\d+)\)/);
+    if (!match) return;
+    const elIdx = parseInt(match[1]);
+    const correctOrder = parseInt(match[2]);
+    const placed = orderState[elIdx];
+    if (placed === undefined) { el.className='order-item'; return; }
+    if (placed === correctOrder) { el.className='order-item correct-place'; right++; }
+    else el.className='order-item wrong-place';
+  });
+  showScore('order-score', right, total);
+  scores.order = {right, total};
+}
+function resetOrder() {
+  orderState = {};
+  orderClick = 1;
+  document.querySelectorAll('.order-item').forEach(el => {
+    el.className = 'order-item';
+    el.querySelector('.order-badge').textContent = '?';
+  });
+  document.getElementById('order-score').innerHTML = '';
+}
+
+/* ── Short Answers ── */
+function buildShortAnswers() {
+  const c = document.getElementById('short-answers');
+  shortAnswers.forEach((item,i) => {
+    c.innerHTML += `<div style="margin-bottom:20px;">
+      <p style="font-size:14px;font-weight:700;margin-bottom:6px;">${i+1}. ${item.q}</p>
+      <textarea class="write-area" style="min-height:80px" placeholder="Write your answer here..." onkeyup="countWords('sa-${i}','sa-wc-${i}')" id="sa-${i}"></textarea>
+      <div class="word-count" id="sa-wc-${i}">0 words</div>
+      <button class="btn btn-secondary" style="margin-top:8px" onclick="toggleAnswer('sa-ans-${i}')">👁 Show Answer</button>
+      <div class="answer-block" id="sa-ans-${i}"><strong>Suggested Answer:</strong>${item.a}</div>
+    </div>`;
+  });
+}
+
+/* ══════════════════════════════════════════
+   PART 2 — VOCABULARY
+══════════════════════════════════════════ */
+function buildMC() {
+  const c = document.getElementById('mc-list');
+  mcData.forEach((item,i) => {
+    const opts = item.options.map((o,j) => `
+      <label class="mc-opt" id="mc-opt-${i}-${j}" onclick="selectMC(${i},${j})">
+        <input type="radio" name="mc-${i}" value="${j}">
+        <span class="mc-label">${String.fromCharCode(65+j)}</span>
+        <span>${o}</span>
+      </label>`).join('');
+    c.innerHTML += `<div style="margin-bottom:22px;">
+      <div class="quote-box" style="margin-bottom:10px;">${item.sentence}</div>
+      <div class="mc-options">${opts}</div>
+    </div>`;
+  });
+}
+function selectMC(i,j) {
+  mcData[i].options.forEach((_,k) => {
+    document.getElementById(`mc-opt-${i}-${k}`).classList.toggle('selected', k===j);
+  });
+}
+function checkMC() {
+  let right=0, answered=0;
+  mcData.forEach((item,i) => {
+    const sel = document.querySelector(`input[name="mc-${i}"]:checked`);
+    if (!sel) return;
+    answered++;
+    const j = parseInt(sel.value);
+    if (j===item.correct) right++;
+    item.options.forEach((_,k) => {
+      const el = document.getElementById(`mc-opt-${i}-${k}`);
+      el.classList.remove('selected','correct','wrong');
+      if (k===item.correct) el.classList.add('correct');
+      else if (k===j && j!==item.correct) el.classList.add('wrong');
+    });
+  });
+  showScore('mc-score', right, answered);
+  scores.mc = {right, total: answered};
+}
+function resetMC() {
+  mcData.forEach((_,i) => {
+    const sel = document.querySelector(`input[name="mc-${i}"]:checked`);
+    if (sel) sel.checked = false;
+    mcData[i].options.forEach((_,k) => document.getElementById(`mc-opt-${i}-${k}`).className='mc-opt');
+  });
+  document.getElementById('mc-score').innerHTML='';
+}
+
+/* ── Gaps ── */
+function buildGaps() {
+  const c = document.getElementById('gap-list');
+  gapData.forEach((item,i) => {
+    const text = item.sentence.replace('___',
+      `<input class="gap-input" id="gap-${i}" placeholder="..." data-answer="${item.answer}">`);
+    c.innerHTML += `<p style="font-size:14px;margin:12px 0;line-height:2;">${i+1}. ${text}</p>`;
+  });
+}
+function checkGaps() {
+  let right=0, total=0;
+  gapData.forEach((_,i) => {
+    const inp = document.getElementById(`gap-${i}`);
+    if (!inp.value.trim()) return;
+    total++;
+    const correct = inp.getAttribute('data-answer').toLowerCase();
+    if (inp.value.trim().toLowerCase() === correct) { inp.className='gap-input correct'; right++; }
+    else inp.className='gap-input wrong';
+  });
+  showScore('gap-score', right, total);
+  scores.gaps = {right, total};
+}
+function resetGaps() {
+  gapData.forEach((_,i) => { const inp=document.getElementById(`gap-${i}`); inp.value=''; inp.className='gap-input'; });
+  document.getElementById('gap-score').innerHTML='';
+}
+function showGapAnswers() {
+  gapData.forEach((item,i) => { document.getElementById(`gap-${i}`).value = item.answer; document.getElementById(`gap-${i}`).className='gap-input correct'; });
+}
+
+/* ── Collocations ── */
+function buildColloc() {
+  const c = document.getElementById('colloc-list');
+  collocData.forEach((item,i) => {
+    const opts = item.options.map(o=>`<option value="${o}">${o}</option>`).join('');
+    c.innerHTML += `<div class="colloc-row">
+      <span class="colloc-verb">${item.verb}</span>
+      <span>→</span>
+      <select class="styled-select" id="colloc-${i}">
+        <option value="">— choose —</option>
+        ${opts}
+      </select>
+    </div>`;
+  });
+}
+function checkColloc() {
+  let right=0, total=0;
+  collocData.forEach((item,i) => {
+    const sel = document.getElementById(`colloc-${i}`);
+    if (!sel.value) return;
+    total++;
+    if (sel.value === item.answer) { sel.className='styled-select correct'; right++; }
+    else sel.className='styled-select wrong';
+  });
+  showScore('colloc-score', right, total);
+  scores.colloc = {right, total};
+}
+function resetColloc() {
+  collocData.forEach((_,i) => { const s=document.getElementById(`colloc-${i}`); s.value=''; s.className='styled-select'; });
+  document.getElementById('colloc-score').innerHTML='';
+}
+
+/* ── Ladder ── */
+function buildLadder() {
+  const c = document.getElementById('ladder-display');
+  ladderWords.forEach(w => {
+    c.innerHTML += `<div class="ladder-rung">
+      <span class="ladder-level ${w.cls}">${w.level}</span>
+      <span class="ladder-word">${w.word}</span>
+      <span class="ladder-meaning">${w.meaning}</span>
+    </div>`;
+  });
+  const m = document.getElementById('ladder-moments');
+  ladderMoments.forEach((moment,i) => {
+    const opts = ladderWords.map(w=>`<option value="${w.word}">${w.word}</option>`).join('');
+    m.innerHTML += `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:14px;">
+      <span style="min-width:240px;color:var(--text2);">${moment}</span>
+      <select class="styled-select" id="ladder-mom-${i}"><option value="">— choose —</option>${opts}</select>
+    </div>`;
+  });
+}
+function showLadderAnswers() {
+  const suggested = ["heartbroken","desolate","devastated","desperate"];
+  const block = document.getElementById('ladder-answer-block');
+  block.innerHTML = `<strong>Suggested Answers:</strong>
+    <p>When Tholomyès left → <b>heartbroken</b></p>
+    <p>When she left Cosette → <b>desolate</b></p>
+    <p>When she lost her job → <b>devastated</b></p>
+    <p>At the hospital → <b>desperate</b></p>
+    <p style="margin-top:8px;font-size:12px;color:var(--correct);">Note: Other answers can be valid! Discuss your choices.</p>`;
+  block.classList.add('visible');
+}
+
+/* ══════════════════════════════════════════
+   PART 3 — GRAMMAR
+══════════════════════════════════════════ */
+function buildPSPC() {
+  const c = document.getElementById('pspc-list');
+  pspcData.forEach((item,i) => {
+    c.innerHTML += `<div class="tfn-item">
+      <span class="tfn-num">${i+1}.</span>
+      <span class="tfn-text">${item.s}</span>
+      <div class="tfn-btns">
+        <button class="tfn-btn pspc-btn" id="pspc-${i}-PS" onclick="selectPSPC(${i},'PS')">PS</button>
+        <button class="tfn-btn pspc-btn" id="pspc-${i}-PC" onclick="selectPSPC(${i},'PC')">PC</button>
+      </div>
+    </div>`;
+  });
+}
+let pspcState = {};
+function selectPSPC(i,val) {
+  ['PS','PC'].forEach(v => document.getElementById(`pspc-${i}-${v}`).className = 'tfn-btn pspc-btn' + (v===val?` selected-${val==='PS'?'T':'F'}`:''));
+  pspcState[i]=val;
+  updateProgress();
+}
+function checkPSPC() {
+  let right=0,total=0;
+  pspcData.forEach((item,i) => {
+    const chosen=pspcState[i]; if(!chosen)return; total++;
+    if(chosen===item.a)right++;
+    ['PS','PC'].forEach(v=>{
+      const b=document.getElementById(`pspc-${i}-${v}`);
+      b.className='tfn-btn pspc-btn'+(v===chosen?(chosen===item.a?' selected-T':' selected-F'):'');
+      if(v===item.a&&chosen!==item.a)b.style.outline='2px solid var(--correct)';
+      else b.style.outline='';
+    });
+  });
+  showScore('pspc-score',right,total);
+  scores.pspc={right,total};
+}
+function resetPSPC(){pspcState={};pspcData.forEach((_,i)=>['PS','PC'].forEach(v=>{const b=document.getElementById(`pspc-${i}-${v}`);b.className='tfn-btn pspc-btn';b.style.outline='';}));document.getElementById('pspc-score').innerHTML='';}
+
+function buildPSPC2(){
+  const c=document.getElementById('pspc2-list');
+  pspc2Data.forEach((item,i)=>{
+    const text=item.template.replace(/___\s*\([^)]+\)/,`<input class="gap-input" id="pspc2-${i}" placeholder="verb form..." style="min-width:140px">`);
+    c.innerHTML+=`<p style="font-size:14px;margin:12px 0;line-height:2;">${i+1}. ${text}</p>`;
+  });
+}
+function checkPSPC2(){
+  let right=0,total=0;
+  pspc2Data.forEach((item,i)=>{
+    const inp=document.getElementById(`pspc2-${i}`);
+    if(!inp.value.trim())return;
+    total++;
+    if(inp.value.trim().toLowerCase()===item.answer.toLowerCase()){inp.className='gap-input correct';right++;}
+    else inp.className='gap-input wrong';
+  });
+  const fb=document.getElementById('pspc2-feedback');
+  fb.className=`feedback ${right===total&&total>0?'correct':'info'}`;
+  fb.textContent=total===0?'Please fill in at least one answer.':`${right}/${total} correct.`;
+  scores.pspc2={right,total};
+}
+function showPSPC2Answers(){pspc2Data.forEach((item,i)=>{const inp=document.getElementById(`pspc2-${i}`);inp.value=item.answer;inp.className='gap-input correct';});}
+function resetPSPC2(){pspc2Data.forEach((_,i)=>{const inp=document.getElementById(`pspc2-${i}`);inp.value='';inp.className='gap-input';});document.getElementById('pspc2-feedback').className='feedback';}
+
+function buildModals(){
+  const c=document.getElementById('modal-list');
+  modalData.forEach((item,i)=>{
+    const text=item.s.replace('___',`<select class="styled-select modal-select" id="modal-${i}">${item.opts.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`);
+    c.innerHTML+=`<p style="font-size:14px;margin:12px 0;line-height:2;">${i+1}. ${text}</p>`;
+  });
+}
+function checkModals(){
+  let right=0,total=0;
+  modalData.forEach((item,i)=>{
+    const sel=document.getElementById(`modal-${i}`);
+    if(!sel.value)return;
+    total++;
+    if(sel.value===item.opts[item.a]){sel.className='styled-select correct';right++;}
+    else sel.className='styled-select wrong';
+  });
+  showScore('modal-score',right,total);
+  scores.modals={right,total};
+}
+function resetModals(){modalData.forEach((_,i)=>{const s=document.getElementById(`modal-${i}`);s.value=modalData[i].opts[0];s.className='styled-select';});document.getElementById('modal-score').innerHTML='';}
+
+function buildLinks(){
+  const c=document.getElementById('link-list');
+  linkData.forEach((item,i)=>{
+    const text=item.template.replace('___',`<select class="styled-select link-select" id="link-${i}">${item.opts.map(o=>`<option>${o}</option>`).join('')}</select>`);
+    c.innerHTML+=`<p style="font-size:14px;margin:12px 0;line-height:2;">${i+1}. ${text}</p>`;
+  });
+}
+function checkLinks(){
+  let right=0,total=0;
+  linkData.forEach((item,i)=>{
+    const sel=document.getElementById(`link-${i}`);
+    total++;
+    if(sel.value===item.opts[item.a]){sel.className='styled-select correct';right++;}
+    else sel.className='styled-select wrong';
+  });
+  showScore('link-score',right,total);
+  scores.links={right,total};
+}
+function resetLinks(){linkData.forEach((_,i)=>{const s=document.getElementById(`link-${i}`);s.selectedIndex=0;s.className='styled-select';});document.getElementById('link-score').innerHTML='';}
+
+function buildReported(){
+  const c=document.getElementById('reported-list');
+  reportedData.forEach((item,i)=>{
+    c.innerHTML+=`<div style="margin-bottom:20px;">
+      <div class="quote-box"><strong>Direct:</strong> ${item.direct}</div>
+      <p style="font-size:13px;color:var(--text2);margin:8px 0 4px;"><em>${item.starter}</em></p>
+      <textarea class="write-area" style="min-height:60px" id="reported-${i}" placeholder="Complete the reported thought..."></textarea>
+    </div>`;
+  });
+}
+function showReportedAnswers(){
+  const block=document.getElementById('reported-answer-block');
+  block.innerHTML='<strong>Answers:</strong>'+reportedData.map((item,i)=>`<p style="margin-top:6px;"><b>${i+1}.</b> ${item.answer}</p>`).join('');
+  block.classList.add('visible');
+}
+
+/* ══════════════════════════════════════════
+   PART 4 — MEMORY
+══════════════════════════════════════════ */
+function buildCompass(){
+  ['fantine','tholom'].forEach(who=>{
+    const c=document.getElementById(`compass-${who}`);
+    compassDirs.forEach(dir=>{
+      c.innerHTML+=`<div class="compass-card">
+        <div class="compass-dir">${dir.dir}</div>
+        <textarea class="write-area" style="min-height:60px;margin-top:0" placeholder="Your answer..."></textarea>
+      </div>`;
+    });
+  });
+}
+function buildEmotions(){
+  const c=document.getElementById('emotion-list');
+  emotionWords.forEach((item,i)=>{
+    c.innerHTML+=`<div style="margin-bottom:16px;">
+      <p style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:6px;">${item.emotion}</p>
+      <input class="gap-input" placeholder="${item.placeholder}" style="min-width:200px;display:block;margin-bottom:6px;">
+      <textarea class="write-area" style="min-height:60px" placeholder="Write a sentence from the chapter that shows this emotion..."></textarea>
+    </div>`;
+  });
+}
+function buildBA(){
+  const tbody=document.getElementById('ba-tbody');
+  baData.forEach(row=>{
+    tbody.innerHTML+=`<tr>
+      <td>${row[0]}</td>
+      <td><input class="gap-input" style="width:100%;min-width:0" placeholder="${row[1].replace('She has:','').replace('She lives in:','').replace('She feels:','').replace('She works as:','').replace('Cosette is:','').trim()}"></td>
+    </tr>`;
+  });
+}
+function showBAAnswers(){
+  const block=document.getElementById('ba-answer-block');
+  block.innerHTML='<strong>Answers:</strong>'+baData.map(row=>`<p><b>${row[0]}</b> → ${row[1]}</p>`).join('');
+  block.classList.add('visible');
+  baData.forEach((row,i)=>{
+    const inputs=document.querySelectorAll('#ba-tbody input');
+    if(inputs[i]) inputs[i].value=row[1];
+  });
+}
+
+function buildRecon(){
+  const c=document.getElementById('recon-list');
+  reconData.forEach((item,i)=>{
+    c.innerHTML+=`<div style="margin-bottom:16px;">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:6px;font-style:italic;">Words: <strong style="color:var(--text)">${item.words}</strong></p>
+      <input class="gap-input" id="recon-${i}" placeholder="Type the correct sentence..." style="display:block;width:100%;min-width:0">
+    </div>`;
+  });
+}
+function checkRecon(){
+  let right=0,total=0;
+  reconData.forEach((item,i)=>{
+    const inp=document.getElementById(`recon-${i}`);
+    if(!inp.value.trim())return;
+    total++;
+    if(inp.value.trim().toLowerCase().replace(/[^a-z0-9 ]/g,'')===item.answer.toLowerCase().replace(/[^a-z0-9 ]/g,'')){
+      inp.className='gap-input correct';right++;
+    }else inp.className='gap-input wrong';
+  });
+  const fb=document.getElementById('recon-feedback');
+  fb.className=`feedback ${right===total&&total>0?'correct':'info'}`;
+  fb.textContent=total?`${right}/${total} correct.`:'Please fill in at least one.';
+  scores.recon={right,total};
+}
+function showReconAnswers(){
+  reconData.forEach((item,i)=>{const inp=document.getElementById(`recon-${i}`);inp.value=item.answer;inp.className='gap-input correct';});
+}
+
+/* ══════════════════════════════════════════
+   PART 5 — WRITING
+══════════════════════════════════════════ */
+function buildChecklist(){
+  const c=document.getElementById('checklist-items');
+  checklistItems.forEach((item,i)=>{
+    c.innerHTML+=`<label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;cursor:pointer;font-size:14px;">
+      <input type="checkbox" style="margin-top:3px;accent-color:var(--accent);">
+      <span>${item}</span>
+    </label>`;
+  });
+}
+
+/* ══════════════════════════════════════════
+   PART 6 — DISCUSSION
+══════════════════════════════════════════ */
+function buildDiscussion(){
+  const c=document.getElementById('discussion-list');
+  discussionData.forEach((item,i)=>{
+    c.innerHTML+=`<div class="section" style="margin-bottom:16px;">
+      <div class="section-title">Question ${item.n}</div>
+      <p style="font-size:14px;margin-bottom:10px;font-style:italic;">${item.q}</p>
+      <textarea class="write-area" style="min-height:90px" placeholder="Write 3–5 sentences..." onkeyup="countWords('disc-${i}','disc-wc-${i}')" id="disc-${i}"></textarea>
+      <div class="word-count" id="disc-wc-${i}">0 words</div>
+    </div>`;
+  });
+}
+function buildAgree(){
+  const c=document.getElementById('agree-list');
+  agreeData.forEach((stmt,i)=>{
+    c.innerHTML+=`<div style="margin-bottom:20px;">
+      <div class="quote-box"><strong>Statement ${i+1}:</strong> ${stmt}</div>
+      <div style="display:flex;gap:10px;margin:8px 0;">
+        <button class="btn btn-secondary" id="agree-btn-${i}-A" onclick="selectAgree(${i},'A')" style="font-size:12px;padding:6px 14px;">👍 Agree</button>
+        <button class="btn btn-secondary" id="agree-btn-${i}-D" onclick="selectAgree(${i},'D')" style="font-size:12px;padding:6px 14px;">👎 Disagree</button>
+        <button class="btn btn-secondary" id="agree-btn-${i}-P" onclick="selectAgree(${i},'P')" style="font-size:12px;padding:6px 14px;">🤔 Partly</button>
+      </div>
+      <textarea class="write-area" style="min-height:80px" placeholder="Write 2–3 sentences explaining your view..." onkeyup="countWords('agree-${i}','agree-wc-${i}')" id="agree-${i}"></textarea>
+      <div class="word-count" id="agree-wc-${i}">0 words</div>
+    </div>`;
+  });
+}
+function selectAgree(i,val){
+  ['A','D','P'].forEach(v=>{
+    const b=document.getElementById(`agree-btn-${i}-${v}`);
+    b.style.background=v===val?'var(--accent)':'';
+    b.style.color=v===val?'#fff':'';
+  });
+}
+
+/* ══════════════════════════════════════════
+   PART 7 — FINAL QUIZ
+══════════════════════════════════════════ */
+function buildFinalMC(){
+  const c=document.getElementById('final-mc-list');
+  finalMCData.forEach((item,i)=>{
+    const opts=item.opts.map((o,j)=>`
+      <label class="mc-opt final-mc-opt" id="fmc-opt-${i}-${j}" onclick="selectFMC(${i},${j})">
+        <input type="radio" name="fmc-${i}" value="${j}">
+        <span class="mc-label">${String.fromCharCode(65+j)}</span>
+        <span>${o}</span>
+      </label>`).join('');
+    c.innerHTML+=`<div style="margin-bottom:22px;">
+      <p style="font-size:14px;font-weight:700;margin-bottom:10px;">${i+1}. ${item.q}</p>
+      <div class="mc-options">${opts}</div>
+    </div>`;
+  });
+}
+function selectFMC(i,j){
+  finalMCData[i].opts.forEach((_,k)=>document.getElementById(`fmc-opt-${i}-${k}`).classList.toggle('selected',k===j));
+}
+function checkFinalMC(){
+  let right=0,answered=0;
+  finalMCData.forEach((item,i)=>{
+    const sel=document.querySelector(`input[name="fmc-${i}"]:checked`);
+    if(!sel)return;
+    answered++;
+    const j=parseInt(sel.value);
+    if(j===item.a)right++;
+    item.opts.forEach((_,k)=>{
+      const el=document.getElementById(`fmc-opt-${i}-${k}`);
+      el.classList.remove('selected','correct','wrong');
+      if(k===item.a)el.classList.add('correct');
+      else if(k===j&&j!==item.a)el.classList.add('wrong');
+    });
+  });
+  showScore('final-mc-score',right,answered);
+  scores.finalMC={right,total:answered};
+}
+function resetFinalMC(){
+  finalMCData.forEach((_,i)=>{
+    const sel=document.querySelector(`input[name="fmc-${i}"]:checked`);
+    if(sel)sel.checked=false;
+    finalMCData[i].opts.forEach((_,k)=>document.getElementById(`fmc-opt-${i}-${k}`).className='mc-opt final-mc-opt');
+  });
+  document.getElementById('final-mc-score').innerHTML='';
+}
+
+function buildFirstLetter(){
+  const c=document.getElementById('firstletter-list');
+  firstLetterData.forEach((item,i)=>{
+    c.innerHTML+=`<div style="margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span style="font-size:13px;flex:1;min-width:200px;color:var(--text2);">${i+1}. ${item.clue}</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:16px;font-weight:700;color:var(--accent);">${item.hint}</span>
+        <input class="gap-input" id="fl-${i}" placeholder="..." data-answer="${item.answer}" style="min-width:130px">
+      </div>
+    </div>`;
+  });
+}
+function checkFirstLetter(){
+  let right=0,total=0;
+  firstLetterData.forEach((item,i)=>{
+    const inp=document.getElementById(`fl-${i}`);
+    if(!inp.value.trim())return;
+    total++;
+    if(inp.value.trim().toLowerCase()===item.answer){inp.className='gap-input correct';right++;}
+    else inp.className='gap-input wrong';
+  });
+  showScore('firstletter-score',right,total);
+  scores.firstLetter={right,total};
+}
+function showFirstLetterAnswers(){firstLetterData.forEach((item,i)=>{const inp=document.getElementById(`fl-${i}`);inp.value=item.answer;inp.className='gap-input correct';});}
+
+function buildErrors(){
+  const c=document.getElementById('error-list');
+  errorData.forEach((item,i)=>{
+    c.innerHTML+=`<div style="margin-bottom:18px;">
+      <div class="quote-box" style="font-style:normal;"><strong>${i+1}.</strong> <em>${item.wrong}</em></div>
+      <textarea class="write-area" style="min-height:55px" id="err-${i}" placeholder="Write the corrected sentence..."></textarea>
+    </div>`;
+  });
+}
+function showErrorAnswers(){
+  const block=document.getElementById('error-answers');
+  block.innerHTML='<strong>Corrected Sentences:</strong>'+errorData.map((item,i)=>{
+    const mistake=item.wrong.split(' ').find((w,idx)=>item.right.split(' ')[idx]!==w)||'see below';
+    return `<p style="margin-top:8px;"><b>${i+1}.</b> ${item.right}</p>`;
+  }).join('');
+  block.classList.add('visible');
+}
+
+/* ── Overall Score ── */
+function calcOverall(){
+  const allScores=Object.values(scores);
+  if(allScores.length===0){document.getElementById('overall-score').textContent='Complete exercises first!';return;}
+  const total=allScores.reduce((s,x)=>s+(x.total||0),0);
+  const right=allScores.reduce((s,x)=>s+(x.right||0),0);
+  const pct=total?Math.round(right/total*100):0;
+  const el=document.getElementById('overall-score');
+  el.textContent=`${right} / ${total} — ${pct}%`;
+  el.style.color=pct>=80?'var(--correct)':pct>=60?'var(--warn)':'var(--wrong)';
+  let msg='';
+  if(pct>=90)msg='🏆 Excellent! You are ready for Chapter 5.';
+  else if(pct>=70)msg='👍 Good work! Review the sections you found hard.';
+  else if(pct>=50)msg='🔁 Keep going — re-read Chapter 4 and try again.';
+  else msg='📖 Read Chapter 4 again carefully, then retry.';
+  el.nextElementSibling.textContent=msg;
+}
+
+/* ══════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════ */
+function showScore(id,right,total,extra=''){
+  const pct=total?Math.round(right/total*100):0;
+  const cls=pct>=80?'score-good':pct>=60?'score-ok':'score-bad';
+  const emoji=pct>=80?'🏆':pct>=60?'👍':'🔁';
+  document.getElementById(id).innerHTML=
+    `<span class="score-badge ${cls}">${emoji} ${right} / ${total} correct ${extra}</span>`;
+}
+function toggleAnswer(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('visible');
+}
+function countWords(textareaId,counterId){
+  const txt=document.getElementById(textareaId).value.trim();
+  const words=txt?txt.split(/\s+/).length:0;
+  document.getElementById(counterId).textContent=words+' word'+(words===1?'':'s');
+}
+</script>
+</body>
+</html>

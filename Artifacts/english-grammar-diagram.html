@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Grammar Map</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --border: #1e1e2e;
+    --accent1: #7c6af7;
+    --accent2: #f7a26a;
+    --accent3: #6af7c8;
+    --accent4: #f76a8e;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  header {
+    padding: 48px 40px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .logo-mark {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--accent1);
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span { color: var(--accent1); }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-top: 8px;
+  }
+
+  /* Tab nav */
+  .nav {
+    display: flex;
+    gap: 0;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .nav button {
+    background: none;
+    border: none;
+    padding: 18px 28px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .nav button.active { color: var(--text); border-bottom-color: var(--accent1); }
+  .nav button:hover:not(.active) { color: var(--text); }
+
+  /* Panels */
+  .panel { display: none; padding: 48px 40px; animation: fadeIn 0.3s ease; }
+  .panel.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Section title */
+  .section-title {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--accent1);
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .panel-heading {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    letter-spacing: -0.02em;
+  }
+
+  /* TENSES GRID */
+  .tenses-grid {
+    display: grid;
+    grid-template-columns: 120px repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .tg-header {
+    background: var(--border);
+    padding: 14px 16px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex;
+    align-items: center;
+  }
+
+  .tg-row-label {
+    background: var(--surface);
+    padding: 20px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    align-items: center;
+    border-left: 3px solid var(--accent2);
+  }
+
+  .tg-cell {
+    background: var(--surface);
+    padding: 20px 18px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tg-cell::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--accent1);
+    transition: height 0.3s;
+  }
+
+  .tg-cell:hover { background: #1a1a28; }
+  .tg-cell:hover::before { height: 100%; }
+
+  .tg-cell .tense-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .tg-cell .tense-tr {
+    font-size: 11px;
+    color: var(--accent3);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 10px;
+  }
+
+  .tg-cell .formula {
+    font-size: 11px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent1);
+    background: rgba(124,106,247,0.08);
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .tg-cell .example {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .tg-cell .example em {
+    color: var(--accent2);
+    font-style: normal;
+  }
+
+  /* PARTS OF SPEECH */
+  .pos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .pos-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 24px;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pos-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .pos-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+  .pos-card:hover::after { transform: scaleX(1); }
+
+  .pos-card[data-color="1"] { --card-color: var(--accent1); }
+  .pos-card[data-color="2"] { --card-color: var(--accent2); }
+  .pos-card[data-color="3"] { --card-color: var(--accent3); }
+  .pos-card[data-color="4"] { --card-color: var(--accent4); }
+  .pos-card::after { background: var(--card-color, var(--accent1)); }
+
+  .pos-icon {
+    font-size: 28px;
+    margin-bottom: 14px;
+    display: block;
+  }
+
+  .pos-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+
+  .pos-tr {
+    font-size: 11px;
+    color: var(--accent3);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 12px;
+  }
+
+  .pos-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .pos-examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 4px 10px;
+    border-radius: 2px;
+    background: rgba(124,106,247,0.1);
+    color: var(--accent1);
+    border: 1px solid rgba(124,106,247,0.2);
+  }
+
+  /* SENTENCE STRUCTURE */
+  .sentence-builder {
+    max-width: 900px;
+  }
+
+  .structure-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+  }
+
+  .structure-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    padding: 20px 14px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .structure-content {
+    flex: 1;
+    padding: 24px 28px;
+  }
+
+  .structure-type {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .structure-type-tr {
+    font-size: 11px;
+    color: var(--accent3);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 14px;
+    align-items: center;
+  }
+
+  .block {
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+  }
+
+  .block-s { background: rgba(124,106,247,0.15); color: var(--accent1); border: 1px solid rgba(124,106,247,0.3); }
+  .block-v { background: rgba(247,162,106,0.15); color: var(--accent2); border: 1px solid rgba(247,162,106,0.3); }
+  .block-o { background: rgba(106,247,200,0.15); color: var(--accent3); border: 1px solid rgba(106,247,200,0.3); }
+  .block-c { background: rgba(247,106,142,0.15); color: var(--accent4); border: 1px solid rgba(247,106,142,0.3); }
+  .block-plus { color: var(--muted); font-size: 18px; padding: 0 4px; }
+
+  .structure-example {
+    font-size: 14px;
+    color: var(--text);
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.02);
+    border-left: 3px solid var(--accent1);
+    font-style: italic;
+    margin-bottom: 8px;
+  }
+
+  .example-tr {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: normal;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* CONDITIONALS */
+  .cond-timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .cond-timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent1), var(--accent4));
+  }
+
+  .cond-item {
+    position: relative;
+    margin-bottom: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px 28px;
+    transition: all 0.2s;
+  }
+
+  .cond-item::before {
+    content: '';
+    position: absolute;
+    left: -28px; top: 28px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--accent1);
+    background: var(--bg);
+  }
+
+  .cond-item:hover { border-color: var(--accent1); }
+
+  .cond-type {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent1);
+    background: rgba(124,106,247,0.1);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+
+  .cond-name {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .cond-tr {
+    font-size: 11px;
+    color: var(--accent3);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .cond-formula {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    background: rgba(255,255,255,0.03);
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .cond-formula .kw { color: var(--accent2); }
+  .cond-formula .vb { color: var(--accent1); }
+
+  .cond-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+
+  .cond-example {
+    font-size: 13px;
+    padding: 10px 14px;
+    background: rgba(124,106,247,0.06);
+    border-left: 2px solid var(--accent1);
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo-mark">// İngilizce Gramer Haritası</div>
+    <h1>English <span>Grammar</span></h1>
+    <div class="subtitle">Kapsamlı Görsel Rehber — Interactive Visual Guide</div>
+  </div>
+</header>
+
+<nav class="nav">
+  <button class="active" onclick="show('tenses', this)">Tenses · Zamanlar</button>
+  <button onclick="show('pos', this)">Parts of Speech · Sözcük Türleri</button>
+  <button onclick="show('structure', this)">Sentence Structure · Cümle Yapısı</button>
+  <button onclick="show('conditionals', this)">Conditionals · Koşul Cümleleri</button>
+</nav>
+
+<!-- TENSES -->
+<div class="panel active" id="tenses">
+  <div class="section-title">// 01 — Zamanlar</div>
+  <div class="panel-heading">Tenses — İngilizce Zamanlar</div>
+
+  <div class="tenses-grid">
+    <div class="tg-header">Zaman</div>
+    <div class="tg-header">Simple (Basit)</div>
+    <div class="tg-header">Continuous (Süregelen)</div>
+    <div class="tg-header">Perfect (Tamamlanmış)</div>
+
+    <!-- PAST -->
+    <div class="tg-row-label">Past<br>Geçmiş</div>
+    <div class="tg-cell">
+      <div class="tense-name">Past Simple</div>
+      <div class="tense-tr">Geçmiş Zaman (Basit)</div>
+      <div class="formula">S + V²  (worked / went)</div>
+      <div class="example">I <em>worked</em> yesterday.<br>Dün çalıştım.</div>
+    </div>
+    <div class="tg-cell">
+      <div class="tense-name">Past Continuous</div>
+      <div class="tense-tr">Geçmiş Süregelen</div>
+      <div class="formula">S + was/were + V-ing</div>
+      <div class="example">I <em>was working</em> all day.<br>Bütün gün çalışıyordum.</div>
+    </div>
+    <div class="tg-cell">
+      <div class="tense-name">Past Perfect</div>
+      <div class="tense-tr">Geçmişte Tamamlanmış</div>
+      <div class="formula">S + had + V³</div>
+      <div class="example">I <em>had finished</em> before noon.<br>Öğleden önce bitirmiştim.</div>
+    </div>
+
+    <!-- PRESENT -->
+    <div class="tg-row-label">Present<br>Şimdiki</div>
+    <div class="tg-cell">
+      <div class="tense-name">Present Simple</div>
+      <div class="tense-tr">Geniş Zaman</div>
+      <div class="formula">S + V¹  (s/es for 3rd)</div>
+      <div class="example">She <em>works</em> every day.<br>Her gün çalışır.</div>
+    </div>
+    <div class="tg-cell">
+      <div class="tense-name">Present Continuous</div>
+      <div class="tense-tr">Şimdiki Süregelen</div>
+      <div class="formula">S + am/is/are + V-ing</div>
+      <div class="example">She <em>is working</em> now.<br>Şu an çalışıyor.</div>
+    </div>
+    <div class="tg-cell">
+      <div class="tense-name">Present Perfect</div>
+      <div class="tense-tr">Şimdiki Tamamlanmış</div>
+      <div class="formula">S + have/has + V³</div>
+      <div class="example">She <em>has worked</em> here for 2 years.<br>2 yıldır burada çalışıyor.</div>
+    </div>
+
+    <!-- FUTURE -->
+    <div class="tg-row-label">Future<br>Gelecek</div>
+    <div class="tg-cell">
+      <div class="tense-name">Future Simple</div>
+      <div class="tense-tr">Gelecek Zaman (Basit)</div>
+      <div class="formula">S + will + V¹</div>
+      <div class="example">I <em>will work</em> tomorrow.<br>Yarın çalışacağım.</div>
+    </div>
+    <div class="tg-cell">
+      <div class="tense-name">Future Continuous</div>
+      <div class="tense-tr">Gelecek Süregelen</div>
+      <div class="formula">S + will be + V-ing</div>
+      <div class="example">I <em>will be working</em> at 9.<br>Saat 9'da çalışıyor olacağım.</div>
+    </div>
+    <div class="tg-cell">
+      <div class="tense-name">Future Perfect</div>
+      <div class="tense-tr">Gelecekte Tamamlanmış</div>
+      <div class="formula">S + will have + V³</div>
+      <div class="example">I <em>will have finished</em> by then.<br>O zamana kadar bitirmiş olacağım.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PARTS OF SPEECH -->
+<div class="panel" id="pos">
+  <div class="section-title">// 02 — Sözcük Türleri</div>
+  <div class="panel-heading">Parts of Speech — 8 Temel Sözcük Türü</div>
+
+  <div class="pos-grid">
+    <div class="pos-card" data-color="1">
+      <span class="pos-icon">🔤</span>
+      <div class="pos-name">Noun</div>
+      <div class="pos-tr">İsim · Ad</div>
+      <div class="pos-desc">İnsanları, yerleri, nesneleri ve fikirleri adlandırır. Cümlede özne veya nesne görevini üstlenir.</div>
+      <div class="pos-examples">
+        <span class="tag">book</span>
+        <span class="tag">Istanbul</span>
+        <span class="tag">freedom</span>
+        <span class="tag">music</span>
+      </div>
+    </div>
+    <div class="pos-card" data-color="2">
+      <span class="pos-icon">⚡</span>
+      <div class="pos-name">Verb</div>
+      <div class="pos-tr">Fiil · Eylem</div>
+      <div class="pos-desc">Bir eylemi, oluşu ya da durumu ifade eder. Cümlenin çekirdeğidir; zamana göre çekilir.</div>
+      <div class="pos-examples">
+        <span class="tag">run</span>
+        <span class="tag">think</span>
+        <span class="tag">is</span>
+        <span class="tag">become</span>
+      </div>
+    </div>
+    <div class="pos-card" data-color="3">
+      <span class="pos-icon">🎨</span>
+      <div class="pos-name">Adjective</div>
+      <div class="pos-tr">Sıfat · Niteleme Sözcüğü</div>
+      <div class="pos-desc">İsimleri niteler veya tanımlar. "How is it?" (Nasıl?) sorusunu yanıtlar.</div>
+      <div class="pos-examples">
+        <span class="tag">beautiful</span>
+        <span class="tag">cold</span>
+        <span class="tag">three</span>
+        <span class="tag">curious</span>
+      </div>
+    </div>
+    <div class="pos-card" data-color="4">
+      <span class="pos-icon">🔄</span>
+      <div class="pos-name">Adverb</div>
+      <div class="pos-tr">Zarf · Belirteç</div>
+      <div class="pos-desc">Fiilleri, sıfatları veya diğer zarfları niteler. Genellikle -ly ile biter.</div>
+      <div class="pos-examples">
+        <span class="tag">quickly</span>
+        <span class="tag">very</span>
+        <span class="tag">here</span>
+        <span class="tag">never</span>
+      </div>
+    </div>
+    <div class="pos-card" data-color="1">
+      <span class="pos-icon">👆</span>
+      <div class="pos-name">Pronoun</div>
+      <div class="pos-tr">Zamir · Adıl</div>
+      <div class="pos-desc">İsimlerin yerine geçer. Tekrarı önler. I, you, he, she, it, we, they ve türevleri.</div>
+      <div class="pos-examples">
+        <span class="tag">I / me</span>
+        <span class="tag">he / him</span>
+        <span class="tag">they</span>
+        <span class="tag">this</span>
+      </div>
+    </div>
+    <div class="pos-card" data-color="2">
+      <span class="pos-icon">📍</span>
+      <div class="pos-name">Preposition</div>
+      <div class="pos-tr">Edat · İlgeç</div>
+      <div class="pos-desc">İsimler, zamirler ile cümlenin diğer öğeleri arasında konum, zaman ve ilişki bağı kurar.</div>
+      <div class="pos-examples">
+        <span class="tag">in</span>
+        <span class="tag">on</span>
+        <span class="tag">at</span>
+        <span class="tag">between</span>
+      </div>
+    </div>
+    <div class="pos-card" data-color="3">
+      <span class="pos-icon">🔗</span>
+      <div class="pos-name">Conjunction</div>
+      <div class="pos-tr">Bağlaç · Bağlama Sözcüğü</div>
+      <div class="pos-desc">Sözcükleri, öbekleri veya cümleleri birbirine bağlar. Koordinatif ve subordinatif olmak üzere iki türü vardır.</div>
+      <div class="pos-examples">
+        <span class="tag">and</span>
+        <span class="tag">but</span>
+        <span class="tag">because</span>
+        <span class="tag">although</span>
+      </div>
+    </div>
+    <div class="pos-card" data-color="4">
+      <span class="pos-icon">📰</span>
+      <div class="pos-name">Article</div>
+      <div class="pos-tr">Tanımlık · Artikel</div>
+      <div class="pos-desc">İsmin belirli (the) ya da belirsiz (a/an) olduğunu gösterir. İngilizce'ye özgü önemli bir yapıdır.</div>
+      <div class="pos-examples">
+        <span class="tag">a</span>
+        <span class="tag">an</span>
+        <span class="tag">the</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SENTENCE STRUCTURE -->
+<div class="panel" id="structure">
+  <div class="section-title">// 03 — Cümle Yapısı</div>
+  <div class="panel-heading">Sentence Structure — Temel Cümle Kalıpları</div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent1)"></div>S = Subject (Özne)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent2)"></div>V = Verb (Fiil/Yüklem)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent3)"></div>O = Object (Nesne)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent4)"></div>C = Complement (Tümleç)</div>
+  </div>
+
+  <div class="sentence-builder">
+
+    <div class="structure-row">
+      <div class="structure-label">SV</div>
+      <div class="structure-content">
+        <div class="structure-type">Subject + Verb</div>
+        <div class="structure-type-tr">Özne + Fiil — En temel cümle kalıbı</div>
+        <div class="blocks">
+          <div class="block block-s">Subject</div>
+          <span class="block-plus">+</span>
+          <div class="block block-v">Verb</div>
+        </div>
+        <div class="structure-example">Birds <em style="color:var(--accent2)">sing</em>. / The baby <em style="color:var(--accent2)">cried</em>.</div>
+        <div class="example-tr">→ Kuşlar şakır. / Bebek ağladı.</div>
+      </div>
+    </div>
+
+    <div class="structure-row">
+      <div class="structure-label">SVO</div>
+      <div class="structure-content">
+        <div class="structure-type">Subject + Verb + Object</div>
+        <div class="structure-type-tr">Özne + Fiil + Nesne — İngilizce'nin temel sıralaması</div>
+        <div class="blocks">
+          <div class="block block-s">Subject</div>
+          <span class="block-plus">+</span>
+          <div class="block block-v">Verb</div>
+          <span class="block-plus">+</span>
+          <div class="block block-o">Object</div>
+        </div>
+        <div class="structure-example">She <em style="color:var(--accent2)">reads</em> <em style="color:var(--accent3)">books</em>.</div>
+        <div class="example-tr">→ O kitap okur.</div>
+      </div>
+    </div>
+
+    <div class="structure-row">
+      <div class="structure-label">SVC</div>
+      <div class="structure-content">
+        <div class="structure-type">Subject + Verb + Complement</div>
+        <div class="structure-type-tr">Özne + Fiil + Tümleç — Linking Verb (Bağlantı Fiili) ile kullanılır</div>
+        <div class="blocks">
+          <div class="block block-s">Subject</div>
+          <span class="block-plus">+</span>
+          <div class="block block-v">Linking V</div>
+          <span class="block-plus">+</span>
+          <div class="block block-c">Complement</div>
+        </div>
+        <div class="structure-example">He <em style="color:var(--accent2)">is</em> <em style="color:var(--accent4)">a doctor</em>. / She <em style="color:var(--accent2)">feels</em> <em style="color:var(--accent4)">happy</em>.</div>
+        <div class="example-tr">→ O bir doktordur. / Kendini mutlu hissediyor.</div>
+      </div>
+    </div>
+
+    <div class="structure-row">
+      <div class="structure-label">SVOO</div>
+      <div class="structure-content">
+        <div class="structure-type">Subject + Verb + Indirect Object + Direct Object</div>
+        <div class="structure-type-tr">Özne + Fiil + Dolaylı Nesne + Düz Nesne</div>
+        <div class="blocks">
+          <div class="block block-s">Subject</div>
+          <span class="block-plus">+</span>
+          <div class="block block-v">Verb</div>
+          <span class="block-plus">+</span>
+          <div class="block block-o" style="opacity:0.7">Ind. Object</div>
+          <span class="block-plus">+</span>
+          <div class="block block-o">Dir. Object</div>
+        </div>
+        <div class="structure-example">She <em style="color:var(--accent2)">gave</em> <em style="color:var(--accent3);opacity:0.8">me</em> <em style="color:var(--accent3)">a gift</em>.</div>
+        <div class="example-tr">→ O bana bir hediye verdi.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONDITIONALS -->
+<div class="panel" id="conditionals">
+  <div class="section-title">// 04 — Koşul Cümleleri</div>
+  <div class="panel-heading">Conditionals — If Cümleleri</div>
+
+  <div class="cond-timeline">
+
+    <div class="cond-item">
+      <div class="cond-type">Zero Conditional</div>
+      <div class="cond-name">Sıfır Koşul Cümlesi</div>
+      <div class="cond-tr">Genel gerçekler ve bilimsel yasalar için kullanılır</div>
+      <div class="cond-formula">
+        <span class="kw">If</span> + <span class="vb">Present Simple</span> , <span class="vb">Present Simple</span>
+      </div>
+      <div class="cond-desc">Her zaman doğru olan durumlar için kullanılır. Türkçe'deki geniş zaman koşullarına benzer.</div>
+      <div class="cond-example">If you heat water to 100°C, it <strong>boils</strong>.<br><span style="color:var(--muted);font-size:12px">→ Suyu 100°C'ye ısıtırsan kaynar.</span></div>
+    </div>
+
+    <div class="cond-item">
+      <div class="cond-type">First Conditional</div>
+      <div class="cond-name">Birinci Koşul Cümlesi</div>
+      <div class="cond-tr">Gerçekçi ve olası gelecek durumlar için kullanılır</div>
+      <div class="cond-formula">
+        <span class="kw">If</span> + <span class="vb">Present Simple</span> , <span class="vb">will</span> + V¹
+      </div>
+      <div class="cond-desc">Gerçekleşmesi muhtemel koşulları ifade eder. Gelecek hakkında gerçekçi bir beklenti vardır.</div>
+      <div class="cond-example">If it rains tomorrow, I <strong>will stay</strong> home.<br><span style="color:var(--muted);font-size:12px">→ Yarın yağmur yağarsa evde kalacağım.</span></div>
+    </div>
+
+    <div class="cond-item">
+      <div class="cond-type">Second Conditional</div>
+      <div class="cond-name">İkinci Koşul Cümlesi</div>
+      <div class="cond-tr">Hayali veya gerçekleşmesi pek olası olmayan durumlar</div>
+      <div class="cond-formula">
+        <span class="kw">If</span> + <span class="vb">Past Simple</span> , <span class="vb">would</span> + V¹
+      </div>
+      <div class="cond-desc">Şu an gerçek olmayan veya hayali durumları anlatır. "If I were you..." yapısı burada kullanılır.</div>
+      <div class="cond-example">If I had a million dollars, I <strong>would travel</strong> the world.<br><span style="color:var(--muted);font-size:12px">→ Bir milyon dolarım olsaydı dünyayı gezerdi</span>m.</div>
+    </div>
+
+    <div class="cond-item">
+      <div class="cond-type">Third Conditional</div>
+      <div class="cond-name">Üçüncü Koşul Cümlesi</div>
+      <div class="cond-tr">Geçmişte gerçekleşmemiş, hayali durumlar (pişmanlık, eleştiri)</div>
+      <div class="cond-formula">
+        <span class="kw">If</span> + <span class="vb">Past Perfect</span> , <span class="vb">would have</span> + V³
+      </div>
+      <div class="cond-desc">Geçmişte olan ama farklı gelişebilecek olayları anlatır. Pişmanlık veya geçmiş yorumları için kullanılır.</div>
+      <div class="cond-example">If I had studied harder, I <strong>would have passed</strong>.<br><span style="color:var(--muted);font-size:12px">→ Daha çok çalışsaydım geçebilirdim.</span></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>

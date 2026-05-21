@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>USTALIQ — Bütüncül Öğrenme ve Ustalık Sistemi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap');
+
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-tertiary: #1a1a25;
+    --bg-card: #16161f;
+    --bg-card-hover: #1e1e2a;
+    --text-primary: #e8e6e3;
+    --text-secondary: #9a9a9a;
+    --text-muted: #5a5a6a;
+    --accent-gold: #c9a84c;
+    --accent-gold-dim: #a08030;
+    --accent-teal: #2d9da6;
+    --accent-teal-dim: #1d7a82;
+    --accent-rose: #b35570;
+    --accent-violet: #7c5cbf;
+    --accent-emerald: #3a9d6a;
+    --border-color: #2a2a35;
+    --border-glow: rgba(201, 168, 76, 0.15);
+    --shadow-soft: 0 4px 20px rgba(0,0,0,0.4);
+    --shadow-glow: 0 0 30px rgba(201, 168, 76, 0.08);
+    --gradient-hero: linear-gradient(135deg, #0a0a0f 0%, #12121a 50%, #1a1525 100%);
+    --flow-line: #c9a84c;
+    --flow-node-bg: #1a1a25;
+    --scroll-thumb: #c9a84c;
+    --scroll-track: #12121a;
+  }
+
+  [data-theme="light"] {
+    --bg-primary: #f5f0e8;
+    --bg-secondary: #ece5d8;
+    --bg-tertiary: #e2dace;
+    --bg-card: #faf7f0;
+    --bg-card-hover: #f0ebe0;
+    --text-primary: #1a1a1a;
+    --text-secondary: #555555;
+    --text-muted: #888888;
+    --accent-gold: #9a7520;
+    --accent-gold-dim: #b8922e;
+    --accent-teal: #1a7a82;
+    --accent-teal-dim: #22929c;
+    --accent-rose: #a04060;
+    --accent-violet: #6040a0;
+    --accent-emerald: #2a7d52;
+    --border-color: #d0c8b8;
+    --border-glow: rgba(154, 117, 32, 0.12);
+    --shadow-soft: 0 4px 20px rgba(0,0,0,0.08);
+    --shadow-glow: 0 0 30px rgba(154, 117, 32, 0.06);
+    --gradient-hero: linear-gradient(135deg, #f5f0e8 0%, #ece5d8 50%, #e8e0d5 100%);
+    --flow-line: #9a7520;
+    --flow-node-bg: #faf7f0;
+    --scroll-thumb: #9a7520;
+    --scroll-track: #ece5d8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+  }
+
+  body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.75;
+    font-size: 14.5px;
+    transition: background 0.5s ease, color 0.4s ease;
+    overflow-x: hidden;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--scroll-track); }
+  ::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 3px; }
+
+  /* ─── THEME TOGGLE ─── */
+  .theme-toggle {
+    position: fixed; top: 20px; right: 20px; z-index: 1000;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; box-shadow: var(--shadow-soft);
+    transition: all 0.3s ease;
+  }
+  .theme-toggle:hover { border-color: var(--accent-gold); transform: scale(1.1); }
+
+  /* ─── NAV ─── */
+  .side-nav {
+    position: fixed; left: 0; top: 0; height: 100vh; width: 52px;
+    background: var(--bg-secondary); border-right: 1px solid var(--border-color);
+    display: flex; flex-direction: column; align-items: center;
+    padding-top: 70px; gap: 6px; z-index: 999;
+    transition: width 0.3s ease;
+  }
+  .side-nav:hover { width: 200px; }
+  .side-nav:hover .nav-label { opacity: 1; width: auto; }
+
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 10px 14px; cursor: pointer;
+    color: var(--text-muted); text-decoration: none;
+    transition: all 0.25s ease; font-size: 12px;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover, .nav-item.active {
+    color: var(--accent-gold); border-left-color: var(--accent-gold);
+    background: var(--border-glow);
+  }
+  .nav-icon { font-size: 18px; min-width: 24px; text-align: center; }
+  .nav-label { opacity: 0; width: 0; overflow: hidden; white-space: nowrap; transition: all 0.3s ease; font-size: 11.5px; }
+
+  /* ─── MAIN ─── */
+  .main-content {
+    margin-left: 52px; padding: 0;
+    max-width: 1200px;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: var(--gradient-hero);
+    padding: 80px 50px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -50%; right: -20%; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block; padding: 5px 14px; border-radius: 20px;
+    background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25);
+    color: var(--accent-gold); font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px; font-weight: 900; line-height: 1.15;
+    margin-bottom: 16px; letter-spacing: -1px;
+  }
+  .hero h1 span { color: var(--accent-gold); }
+  .hero-subtitle {
+    font-size: 15px; color: var(--text-secondary); max-width: 650px;
+    line-height: 1.8; margin-bottom: 30px;
+  }
+  .hero-stats {
+    display: flex; gap: 30px; flex-wrap: wrap;
+  }
+  .stat-item {
+    text-align: center; padding: 15px 20px;
+    border: 1px solid var(--border-color); border-radius: 10px;
+    background: var(--bg-card); min-width: 120px;
+  }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--accent-gold); }
+  .stat-label { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+  /* ─── SECTION ─── */
+  .section {
+    padding: 50px 50px 40px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .section-tag {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 3px;
+    color: var(--accent-gold); margin-bottom: 10px;
+  }
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px; font-weight: 700; margin-bottom: 8px;
+  }
+  .section-desc {
+    color: var(--text-secondary); font-size: 13.5px; margin-bottom: 30px;
+    max-width: 700px; line-height: 1.8;
+  }
+
+  /* ─── PHILOSOPHY / BICYCLE ANALOGY ─── */
+  .philosophy-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-bottom: 30px;
+  }
+  .phil-card {
+    padding: 28px; border-radius: 12px; background: var(--bg-card);
+    border: 1px solid var(--border-color); transition: all 0.3s ease;
+  }
+  .phil-card:hover { border-color: var(--accent-gold); box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+  .phil-card-icon { font-size: 28px; margin-bottom: 12px; }
+  .phil-card h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 6px; }
+  .phil-card .en { font-size: 11.5px; color: var(--accent-teal); font-style: italic; margin-bottom: 8px; }
+  .phil-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+
+  /* ─── COMPOUND BENEFIT BOX ─── */
+  .compound-box {
+    background: var(--bg-tertiary); border: 1px solid var(--accent-gold-dim);
+    border-radius: 14px; padding: 30px; margin: 30px 0;
+    position: relative; overflow: hidden;
+  }
+  .compound-box::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: linear-gradient(to bottom, var(--accent-gold), var(--accent-teal));
+  }
+  .compound-box h3 {
+    font-family: 'Playfair Display', serif; font-size: 20px;
+    margin-bottom: 5px;
+  }
+  .compound-box .en-sub { font-size: 12px; color: var(--accent-teal); margin-bottom: 15px; }
+  .benefit-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border-color);
+    font-size: 13.5px;
+  }
+  .benefit-row:last-child { border: none; }
+  .benefit-icon { font-size: 20px; min-width: 32px; text-align: center; }
+  .benefit-label { color: var(--text-secondary); }
+  .benefit-label strong { color: var(--text-primary); }
+
+  /* ─── FLOWCHART ─── */
+  .flowchart-container {
+    overflow-x: auto; padding: 20px 0;
+  }
+  .flowchart {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    min-width: 700px; padding: 20px;
+  }
+  .flow-node {
+    background: var(--flow-node-bg); border: 2px solid var(--border-color);
+    border-radius: 12px; padding: 18px 28px; text-align: center;
+    min-width: 280px; max-width: 400px;
+    transition: all 0.3s ease; position: relative;
+  }
+  .flow-node:hover { border-color: var(--accent-gold); box-shadow: var(--shadow-glow); }
+  .flow-node.start { border-color: var(--accent-emerald); border-radius: 30px; }
+  .flow-node.process { border-color: var(--accent-teal); }
+  .flow-node.decision { border-color: var(--accent-violet); transform: rotate(0deg); border-radius: 4px; }
+  .flow-node.output { border-color: var(--accent-gold); border-radius: 0 12px 0 12px; }
+  .flow-node.end { border-color: var(--accent-rose); border-radius: 30px; }
+
+  .flow-node h4 { font-family: 'Playfair Display', serif; font-size: 15px; margin-bottom: 4px; }
+  .flow-node .flow-en { font-size: 10.5px; color: var(--accent-teal); font-style: italic; }
+  .flow-node .flow-desc { font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+  .flow-node .flow-num {
+    position: absolute; top: -10px; left: -10px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent-gold); color: var(--bg-primary);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .flow-arrow {
+    display: flex; flex-direction: column; align-items: center;
+    color: var(--flow-line); font-size: 12px; padding: 4px 0;
+  }
+  .flow-arrow .arrow-line { width: 2px; height: 24px; background: var(--flow-line); }
+  .flow-arrow .arrow-head { font-size: 16px; line-height: 1; }
+  .flow-arrow .arrow-label { font-size: 10.5px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
+
+  /* ─── PARALLEL FLOW ─── */
+  .flow-parallel {
+    display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+    width: 100%;
+  }
+  .flow-parallel .flow-node { min-width: 200px; flex: 1; max-width: 220px; }
+
+  /* ─── DOMAIN CARDS ─── */
+  .domain-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .domain-card {
+    padding: 24px; border-radius: 12px; background: var(--bg-card);
+    border: 1px solid var(--border-color); transition: all 0.3s ease;
+    cursor: pointer; position: relative; overflow: hidden;
+  }
+  .domain-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-glow); }
+  .domain-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .domain-card[data-color="gold"]::before { background: var(--accent-gold); }
+  .domain-card[data-color="teal"]::before { background: var(--accent-teal); }
+  .domain-card[data-color="rose"]::before { background: var(--accent-rose); }
+  .domain-card[data-color="violet"]::before { background: var(--accent-violet); }
+  .domain-card[data-color="emerald"]::before { background: var(--accent-emerald); }
+
+  .domain-icon { font-size: 26px; margin-bottom: 10px; }
+  .domain-card h3 { font-family: 'Playfair Display', serif; font-size: 17px; margin-bottom: 3px; }
+  .domain-card .domain-en { font-size: 11px; color: var(--accent-teal); font-style: italic; margin-bottom: 10px; }
+  .domain-card p { font-size: 12.5px; color: var(--text-secondary); line-height: 1.65; }
+  .domain-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 12px; }
+  .domain-tag {
+    font-size: 10px; padding: 3px 9px; border-radius: 12px;
+    background: var(--bg-tertiary); color: var(--text-muted);
+    border: 1px solid var(--border-color);
+  }
+
+  /* ─── METHOD PIPELINE ─── */
+  .pipeline {
+    display: flex; gap: 0; overflow-x: auto; padding: 10px 0 20px;
+  }
+  .pipe-stage {
+    flex: 1; min-width: 170px; padding: 22px 16px; text-align: center;
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    position: relative; transition: all 0.3s ease;
+  }
+  .pipe-stage:first-child { border-radius: 12px 0 0 12px; }
+  .pipe-stage:last-child { border-radius: 0 12px 12px 0; }
+  .pipe-stage:hover { background: var(--bg-card-hover); }
+  .pipe-stage::after {
+    content: '▶'; position: absolute; right: -8px; top: 50%;
+    transform: translateY(-50%); color: var(--accent-gold);
+    font-size: 14px; z-index: 2;
+  }
+  .pipe-stage:last-child::after { display: none; }
+  .pipe-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--accent-gold); color: var(--bg-primary);
+    font-size: 13px; font-weight: 700; display: flex;
+    align-items: center; justify-content: center; margin: 0 auto 10px;
+  }
+  .pipe-stage h4 { font-family: 'Playfair Display', serif; font-size: 14px; margin-bottom: 3px; }
+  .pipe-stage .pipe-en { font-size: 10px; color: var(--accent-teal); font-style: italic; }
+  .pipe-stage .pipe-desc { font-size: 11.5px; color: var(--text-secondary); margin-top: 8px; line-height: 1.6; }
+
+  /* ─── SPACED REPETITION VISUAL ─── */
+  .sr-timeline {
+    display: flex; align-items: flex-end; gap: 2px;
+    height: 120px; padding: 20px 0; margin: 20px 0;
+  }
+  .sr-bar {
+    flex: 1; background: var(--accent-gold); border-radius: 4px 4px 0 0;
+    min-width: 30px; position: relative; transition: all 0.3s ease;
+    opacity: 0.7; cursor: pointer;
+  }
+  .sr-bar:hover { opacity: 1; }
+  .sr-bar .sr-label {
+    position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
+    font-size: 9.5px; color: var(--text-muted); white-space: nowrap;
+  }
+  .sr-bar .sr-pct {
+    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    font-size: 10px; color: var(--accent-gold); font-weight: 700;
+  }
+
+  /* ─── ZETTELKASTEN STRUCTURE ─── */
+  .zettel-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
+    margin: 20px 0;
+  }
+  .zettel-card {
+    padding: 20px; background: var(--bg-card); border-radius: 10px;
+    border-left: 4px solid var(--accent-gold); transition: all 0.3s ease;
+  }
+  .zettel-card:hover { background: var(--bg-card-hover); }
+  .zettel-card.type-lit { border-left-color: var(--accent-teal); }
+  .zettel-card.type-perm { border-left-color: var(--accent-emerald); }
+  .zettel-card.type-idx { border-left-color: var(--accent-violet); }
+  .zettel-type {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 6px; font-weight: 700;
+  }
+  .zettel-card h4 { font-family: 'Playfair Display', serif; font-size: 15px; margin-bottom: 4px; }
+  .zettel-card .zettel-en { font-size: 10.5px; color: var(--accent-teal); font-style: italic; margin-bottom: 8px; }
+  .zettel-card p { font-size: 12px; color: var(--text-secondary); line-height: 1.65; }
+
+  /* ─── BOOK PROCESSING TEMPLATE ─── */
+  .process-template {
+    background: var(--bg-card); border: 1px solid var(--border-color);
+    border-radius: 14px; padding: 30px; margin: 20px 0;
+  }
+  .process-template h3 {
+    font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 15px;
+  }
+  .template-row {
+    display: grid; grid-template-columns: 180px 1fr; gap: 15px;
+    padding: 12px 0; border-bottom: 1px solid var(--border-color);
+    align-items: start;
+  }
+  .template-row:last-child { border: none; }
+  .template-label {
+    font-size: 12.5px; font-weight: 700; color: var(--accent-gold);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .template-label .en-label { font-weight: 400; color: var(--accent-teal); font-size: 10.5px; display: block; font-style: italic; }
+  .template-value { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+
+  /* ─── TABS ─── */
+  .tabs { display: flex; gap: 0; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); }
+  .tab {
+    padding: 10px 20px; font-size: 12.5px; cursor: pointer;
+    color: var(--text-muted); border-bottom: 2px solid transparent;
+    transition: all 0.25s ease; font-family: Verdana, sans-serif;
+    background: none; border-top: none; border-left: none; border-right: none;
+  }
+  .tab:hover { color: var(--text-primary); }
+  .tab.active { color: var(--accent-gold); border-bottom-color: var(--accent-gold); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ─── ROADMAP TIMELINE ─── */
+  .roadmap {
+    position: relative; padding-left: 40px;
+  }
+  .roadmap::before {
+    content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--accent-gold), var(--accent-teal), var(--accent-violet));
+  }
+  .roadmap-item {
+    position: relative; margin-bottom: 28px; padding: 20px 24px;
+    background: var(--bg-card); border-radius: 12px;
+    border: 1px solid var(--border-color); transition: all 0.3s ease;
+  }
+  .roadmap-item:hover { border-color: var(--accent-gold); }
+  .roadmap-dot {
+    position: absolute; left: -33px; top: 24px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent-gold); border: 3px solid var(--bg-primary);
+  }
+  .roadmap-period { font-size: 11px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+  .roadmap-item h4 { font-family: 'Playfair Display', serif; font-size: 17px; margin-bottom: 3px; }
+  .roadmap-item .rm-en { font-size: 11px; color: var(--accent-teal); font-style: italic; margin-bottom: 8px; }
+  .roadmap-item p { font-size: 12.5px; color: var(--text-secondary); line-height: 1.7; }
+  .roadmap-tasks { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .rm-task {
+    font-size: 10.5px; padding: 4px 10px; border-radius: 12px;
+    background: var(--bg-tertiary); color: var(--text-muted); border: 1px solid var(--border-color);
+  }
+
+  /* ─── QUOTE BLOCK ─── */
+  .wisdom-block {
+    margin: 30px 0; padding: 24px 30px;
+    border-left: 4px solid var(--accent-gold);
+    background: var(--bg-tertiary); border-radius: 0 10px 10px 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; font-style: italic; line-height: 1.7;
+    color: var(--text-secondary);
+  }
+  .wisdom-attr { font-family: Verdana, sans-serif; font-size: 11.5px; color: var(--text-muted); margin-top: 10px; font-style: normal; }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    padding: 30px 50px; text-align: center;
+    color: var(--text-muted); font-size: 11.5px;
+    border-top: 1px solid var(--border-color);
+  }
+  .footer span { color: var(--accent-gold); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .side-nav { display: none; }
+    .main-content { margin-left: 0; }
+    .hero { padding: 50px 24px 40px; }
+    .hero h1 { font-size: 32px; }
+    .section { padding: 35px 24px 30px; }
+    .philosophy-grid { grid-template-columns: 1fr; }
+    .zettel-grid { grid-template-columns: 1fr; }
+    .domain-grid { grid-template-columns: 1fr; }
+    .template-row { grid-template-columns: 1fr; }
+    .pipeline { flex-direction: column; }
+    .pipe-stage::after { display: none; }
+    .pipe-stage { border-radius: 10px !important; }
+    .flow-parallel { flex-direction: column; align-items: center; }
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in {
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .delay-1 { animation-delay: 0.1s; }
+  .delay-2 { animation-delay: 0.2s; }
+  .delay-3 { animation-delay: 0.3s; }
+  .delay-4 { animation-delay: 0.4s; }
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- THEME TOGGLE -->
+<button class="theme-toggle" id="themeToggle" title="Tema Değiştir">🌙</button>
+
+<!-- SIDE NAV -->
+<nav class="side-nav">
+  <a class="nav-item active" href="#felsefe">
+    <span class="nav-icon">🏛</span><span class="nav-label">Felsefe</span>
+  </a>
+  <a class="nav-item" href="#metod">
+    <span class="nav-icon">⚙️</span><span class="nav-label">Metod</span>
+  </a>
+  <a class="nav-item" href="#akis">
+    <span class="nav-icon">🔀</span><span class="nav-label">Akış Şeması</span>
+  </a>
+  <a class="nav-item" href="#fisleme">
+    <span class="nav-icon">🗃</span><span class="nav-label">Fişleme Sistemi</span>
+  </a>
+  <a class="nav-item" href="#sablon">
+    <span class="nav-icon">📋</span><span class="nav-label">İşleme Şablonu</span>
+  </a>
+  <a class="nav-item" href="#tekrar">
+    <span class="nav-icon">🔁</span><span class="nav-label">Aralıklı Tekrar</span>
+  </a>
+  <a class="nav-item" href="#alanlar">
+    <span class="nav-icon">🌐</span><span class="nav-label">Bilgi Alanları</span>
+  </a>
+  <a class="nav-item" href="#yolharitasi">
+    <span class="nav-icon">🗺</span><span class="nav-label">Yol Haritası</span>
+  </a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+  <!-- ═══════ HERO ═══════ -->
+  <header class="hero" id="felsefe">
+    <div class="hero-badge animate-in">USTALIQ — Mastery Architecture</div>
+    <h1 class="animate-in delay-1">Bütüncül Öğrenme ve<br><span>Ustalık Sistemi</span></h1>
+    <p class="hero-subtitle animate-in delay-2">
+      Bisikletin sana öğrettiği şeyi genelleştiriyoruz: <strong>tek eylemden çoklu kazanım</strong> (compound benefit).
+      Oku → İçselleştir → Tasnif Et → Tekrar Et → Üret. Her bilgi parçası hem kavranmış, hem erişilebilir,
+      hem de yeniden üretilebilir olana dek bu döngü bitmez.
+    </p>
+    <div class="hero-stats animate-in delay-3">
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Aşama / Stage</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Bilgi Alanı / Domain</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Fiş Tipi / Note Type</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Tekrar / Iteration</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════ SECTION 1: FELSEFE ═══════ -->
+  <section class="section">
+    <div class="section-tag">I — Temel Felsefe / Core Philosophy</div>
+    <h2>Bisiklet Prensibi: Bileşik Fayda</h2>
+    <p class="section-desc">
+      Yirmi yıllık bisiklet pratiğinin sırrı: tek bir eyleme birden fazla anlam ve kazanım yüklemek.
+      Bu prensibi tüm öğrenme sürecine uyguladığımızda, her okuma eylemi aynı anda
+      kavramsal derinlik, dil becerisi, yazarlık taklidi ve arşivleme işlevi görür.
+    </p>
+
+    <div class="compound-box">
+      <h3>🚲 Bisiklet Modeli → 📚 Öğrenme Modeli</h3>
+      <div class="en-sub">The Bicycle Principle — Compound Benefit Transfer</div>
+      <div class="benefit-row">
+        <span class="benefit-icon">🚲</span>
+        <span class="benefit-label"><strong>Ekonomi</strong> → Ücretsiz bilgi kaynakları (kütüphane, açık erişim)</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-icon">⏱</span>
+        <span class="benefit-label"><strong>Zaman Tasarrufu</strong> → Tek oturuşta okuma + fişleme + aktif recall</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-icon">💪</span>
+        <span class="benefit-label"><strong>Sağlık (Beyin)</strong> → Zihinsel esneklik, nöroplastisite</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-icon">🕊</span>
+        <span class="benefit-label"><strong>Özgürlük</strong> → Entelektüel bağımsızlık, kendi başına düşünebilme</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-icon">📖</span>
+        <span class="benefit-label"><strong>Kitap Dinleme</strong> → Aktif işleme: fişle, sorula, üret</span>
+      </div>
+    </div>
+
+    <div class="philosophy-grid">
+      <div class="phil-card animate-in">
+        <div class="phil-card-icon">🧠</div>
+        <h3>Derin İşleme</h3>
+        <div class="en">Deep Processing (Craik & Lockhart)</div>
+        <p>Yüzeysel okuma değil, anlamsal katmanlara inerek işleme. Her kavramı kendi cümlelerinle yeniden ifade etmeden geçme. Beyin, aktif olarak yeniden yapılandırdığı bilgiyi kalıcı hafızaya taşır.</p>
+      </div>
+      <div class="phil-card animate-in delay-1">
+        <div class="phil-card-icon">🔗</div>
+        <h3>Bağlantısal Öğrenme</h3>
+        <div class="en">Elaborative Interrogation</div>
+        <p>Her yeni bilgi, mevcut bilgi ağına bağlanmalı. "Bu kavram Aristoteles'in ousia kavramıyla nasıl ilişkilenir?" gibi sorularla örüntü kur. İzole bilgi çabuk unutulur.</p>
+      </div>
+      <div class="phil-card animate-in delay-2">
+        <div class="phil-card-icon">✍️</div>
+        <h3>Mimetik Temellük</h3>
+        <div class="en">Mimetic Appropriation</div>
+        <p>Ustanın üslubunu taklit ederek öğren. Tanpınar'ın betimlemelerini, Woolf'un bilinç akışını kendi metninde yeniden üret. Taklit, ustalaşmanın en kadim yöntemidir (mimesis / μίμησις).</p>
+      </div>
+      <div class="phil-card animate-in delay-3">
+        <div class="phil-card-icon">♻️</div>
+        <h3>Aralıklı Tekrar</h3>
+        <div class="en">Spaced Repetition (Ebbinghaus)</div>
+        <p>Unutma eğrisine karşı sistematik savaş. İlk gün → 3. gün → 7. gün → 21. gün → 60. gün. Her tekrarda hafıza izi (memory trace) güçlenir, geri çağırma eforsuzlaşır.</p>
+      </div>
+    </div>
+
+    <div class="wisdom-block">
+      "Tekrar bilginin anasıdır." — Aristoteles'e atfedilen, ancak evrensel bir pedagojik hakikat.
+      <br>Repetitio est mater studiorum.
+      <div class="wisdom-attr">Geleneksel Latin pedagoji ilkesi</div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 2: 5 AŞAMALI METOD ═══════ -->
+  <section class="section" id="metod">
+    <div class="section-tag">II — Beş Aşamalı Metod / The 5-Stage Method</div>
+    <h2>OKU → FİŞLE → SORULA → TAKLİT ET → ÜRET</h2>
+    <p class="section-desc">
+      Her bilgi parçası — ister felsefe kitabı, ister roman, ister İngilizce grammar konusu —
+      bu beş aşamadan geçmeden "öğrenilmiş" sayılmaz.
+      Bu pipeline (boru hattı), LOGOS-VITA mimarinle tamamen uyumludur.
+    </p>
+
+    <div class="pipeline">
+      <div class="pipe-stage">
+        <div class="pipe-num">1</div>
+        <h4>OKU</h4>
+        <div class="pipe-en">Read / Listen</div>
+        <div class="pipe-desc">TTS ile dinle veya oku. İlk geçişte genel yapıyı kavra. Anlam haritasını çıkar. "Frame first" — önce çerçeve.</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num">2</div>
+        <h4>FİŞLE</h4>
+        <div class="pipe-en">Extract & File</div>
+        <div class="pipe-desc">Anahtar kavramları çıkar. Zettelkasten yapısında fişle: Geçici fiş → Edebiyat fişi → Kalıcı fiş. Bağlantıları kur.</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num">3</div>
+        <h4>SORGULA</h4>
+        <div class="pipe-en">Active Recall</div>
+        <div class="pipe-desc">Fişleri kapat, kendine sor: "Bu kavramı açıklayabilir misin?" Cevaplayamazsan, geri dön. Aktif geri çağırma olmadan kalıcılık yok.</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num">4</div>
+        <h4>TAKLİT ET</h4>
+        <div class="pipe-en">Mimetic Practice</div>
+        <div class="pipe-desc">Yazarın / düşünürün üslubunu taklit et. Onun cümle yapısıyla, onun kavramlarıyla kendi metnini yaz. Pastiş (pastiche) yoluyla içselleştir.</div>
+      </div>
+      <div class="pipe-stage">
+        <div class="pipe-num">5</div>
+        <h4>ÜRET</h4>
+        <div class="pipe-en">Create & Synthesize</div>
+        <div class="pipe-desc">Artık kendi özgün metnini, analizini, interaktif uygulamanı yaz. Bilgiyi dönüştürüp yeni bir forma sok. Bu en üst idrak seviyesidir.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 3: AKIŞ ŞEMASI ═══════ -->
+  <section class="section" id="akis">
+    <div class="section-tag">III — Akış Şeması / Processing Flowchart</div>
+    <h2>Bilgi İşleme Akışı</h2>
+    <p class="section-desc">
+      Bir kitap, makale, kurs veya İngilizce konusuyla karşılaştığında bu akışı takip et.
+      Her düğüm (node) bir eylem, her ok (arrow) bir geçiş koşuludur.
+    </p>
+
+    <div class="flowchart-container">
+      <div class="flowchart">
+        <div class="flow-node start">
+          <span class="flow-num">0</span>
+          <h4>📥 Yeni Kaynak Geldi</h4>
+          <div class="flow-en">New Source Acquired</div>
+          <div class="flow-desc">Kitap, makale, video, kurs, İngilizce konu</div>
+        </div>
+
+        <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+
+        <div class="flow-node process">
+          <span class="flow-num">1</span>
+          <h4>🏗 Çerçeve Çıkar</h4>
+          <div class="flow-en">Frame Extraction</div>
+          <div class="flow-desc">İçindekiler, ana argüman, yapı haritası. "Frame first, then fill" prensibi. Ontoloji ağacı veya mind-map çıkar.</div>
+        </div>
+
+        <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+
+        <div class="flow-node process">
+          <span class="flow-num">2</span>
+          <h4>📖 Derin Okuma / Dinleme</h4>
+          <div class="flow-en">Deep Reading / Listening</div>
+          <div class="flow-desc">TTS 3x ile veya aktif okuma ile. Altını çiz, işaretle, marjinal notlar al.</div>
+        </div>
+
+        <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+
+        <div class="flow-parallel">
+          <div class="flow-node output">
+            <h4>🗃 Edebiyat Fişi</h4>
+            <div class="flow-en">Literature Note</div>
+            <div class="flow-desc">Kaynaktan alıntı + kendi yorumun</div>
+          </div>
+          <div class="flow-node output">
+            <h4>💎 Kalıcı Fiş</h4>
+            <div class="flow-en">Permanent Note</div>
+            <div class="flow-desc">Kendi cümlenle atomik bilgi</div>
+          </div>
+          <div class="flow-node output">
+            <h4>🔗 Dizin Fişi</h4>
+            <div class="flow-en">Index Note</div>
+            <div class="flow-desc">Kategori haritası + bağlantılar</div>
+          </div>
+        </div>
+
+        <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div><div class="arrow-label">Fişler tamam mı?</div></div>
+
+        <div class="flow-node decision">
+          <span class="flow-num">3</span>
+          <h4>❓ Aktif Recall Testi</h4>
+          <div class="flow-en">Self-Testing Gate</div>
+          <div class="flow-desc">Fişleri kapat. Kavramları ezbere açıklayabilir misin? Hayır → 2. adıma dön</div>
+        </div>
+
+        <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div><div class="arrow-label">Evet, açıklayabiliyorum</div></div>
+
+        <div class="flow-node process">
+          <span class="flow-num">4</span>
+          <h4>✍️ Mimetik Yazım</h4>
+          <div class="flow-en">Mimetic Writing</div>
+          <div class="flow-desc">Yazarın üslubunu taklit ederek kendi metnini yaz. Roman ise: betimleme pastiçi. Felsefe ise: argüman yeniden inşası.</div>
+        </div>
+
+        <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+
+        <div class="flow-node output">
+          <span class="flow-num">5</span>
+          <h4>🎯 Özgün Üretim</h4>
+          <div class="flow-en">Original Creation</div>
+          <div class="flow-desc">Kendi analiz yazın, interaktif HTML uygulaması, quiz sistemi veya sentez metni. Bu çıktı arşive gider.</div>
+        </div>
+
+        <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+
+        <div class="flow-node process">
+          <span class="flow-num">6</span>
+          <h4>📁 Kategorik Arşivleme</h4>
+          <div class="flow-en">Categorical Archiving</div>
+          <div class="flow-desc">ZihinOS'a veya dosya sistemine kaydet. Alan → Alt-alan → Kaynak → Çıktı tipi hiyerarşisi ile tasnif et.</div>
+        </div>
+
+        <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+
+        <div class="flow-node end">
+          <span class="flow-num">7</span>
+          <h4>🔁 Aralıklı Tekrar Kuyruğuna Ekle</h4>
+          <div class="flow-en">Enter Spaced Repetition Queue</div>
+          <div class="flow-desc">SM-2 algoritmasıyla: 1. gün → 3 → 7 → 21 → 60 gün. Her tekrarda derinlik artar.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 4: FİŞLEME SİSTEMİ ═══════ -->
+  <section class="section" id="fisleme">
+    <div class="section-tag">IV — Fişleme Sistemi / Zettelkasten Architecture</div>
+    <h2>Dijital Zettelkasten: Dört Fiş Tipi</h2>
+    <p class="section-desc">
+      Niklas Luhmann'ın Zettelkasten (fiş kutusu / slip-box) yönteminin dijitalleştirilmiş ve
+      senin "çerçeve önce, doldur sonra" (frame first, then fill) prensibine uyarlanmış hâli.
+      Her fiş atomiktir (atomic note) — tek bir fikir, tek bir kavram.
+    </p>
+
+    <div class="zettel-grid">
+      <div class="zettel-card">
+        <div class="zettel-type" style="color:var(--accent-gold)">📝 GEÇİCİ FİŞ</div>
+        <h4>Fleeting Note</h4>
+        <div class="zettel-en">Anlık not, ham düşünce</div>
+        <p>Okurken veya dinlerken aklına geleni hemen yaz. Düzensiz olabilir. 24-48 saat içinde işlenmeli, yoksa silinir. Bisikletteyken sesli not gibi düşün.</p>
+      </div>
+      <div class="zettel-card type-lit">
+        <div class="zettel-type" style="color:var(--accent-teal)">📚 EDEBİYAT FİŞİ</div>
+        <h4>Literature Note</h4>
+        <div class="zettel-en">Kaynağa bağlı not</div>
+        <p>Kitaptan alıntı + senin yorumun. Kaynak bilgisi mutlaka olmalı. "Tanpınar, Saatleri Ayarlama Enstitüsü, s.47" gibi. Kendi cümlenle yeniden ifade et.</p>
+      </div>
+      <div class="zettel-card type-perm">
+        <div class="zettel-type" style="color:var(--accent-emerald)">💎 KALICI FİŞ</div>
+        <h4>Permanent Note</h4>
+        <div class="zettel-en">Atomik bilgi birimi</div>
+        <p>Tamamen kendi cümlenle, tek bir fikir. Kaynaktan bağımsız anlaşılabilmeli. Diğer kalıcı fişlere bağlantı (link) içerir. Zettelkasten'in çekirdeği budur.</p>
+      </div>
+      <div class="zettel-card type-idx">
+        <div class="zettel-type" style="color:var(--accent-violet)">🗂 DİZİN FİŞİ</div>
+        <h4>Index / Map Note</h4>
+        <div class="zettel-en">Yapı haritası, MOC</div>
+        <p>Map of Content (İçerik Haritası). Bir konuya ait tüm fişlerin bağlantılarını barındırır. Obsidian'daki MOC mantığı. Navigasyon katmanı.</p>
+      </div>
+      <div class="zettel-card">
+        <div class="zettel-type" style="color:var(--accent-rose)">🎯 PROJE FİŞİ</div>
+        <h4>Project Note</h4>
+        <div class="zettel-en">Hedefe bağlı üretim</div>
+        <p>Belirli bir proje için toplanan fişler. "Dostoyevski Analizi" veya "Conditionals Mastery" gibi. Tamamlandığında arşive taşınır, fişler kalıcı sisteme entegre olur.</p>
+      </div>
+      <div class="zettel-card type-lit">
+        <div class="zettel-type" style="color:var(--accent-teal)">🧪 İNTERAKTİF VARLIK</div>
+        <h4>Interactive Asset</h4>
+        <div class="zettel-en">Claude ile üretilen HTML/JS araçları</div>
+        <p>Quiz uygulamaları, grammar oyunları, felsefe rehberleri. Her biri ilgili alana tasnif edilir ve fişleme sistemiyle bağlantılı tutulur. ZihinOS'un uygulama katmanı.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 5: KİTAP İŞLEME ŞABLONU ═══════ -->
+  <section class="section" id="sablon">
+    <div class="section-tag">V — İşleme Şablonları / Processing Templates</div>
+    <h2>Kaynak Türüne Göre İşleme</h2>
+    <p class="section-desc">
+      Her kaynak türü farklı işlenir. Roman başka, felsefe metni başka, İngilizce grammar konusu başka.
+      Aşağıda her biri için şablon (template) yapısı var.
+    </p>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="tab-roman">📖 Roman</button>
+      <button class="tab" data-tab="tab-felsefe">🏛 Felsefe</button>
+      <button class="tab" data-tab="tab-ingilizce">🇬🇧 İngilizce</button>
+      <button class="tab" data-tab="tab-teknik">💻 Teknik</button>
+      <button class="tab" data-tab="tab-sanat">🎨 Sanat</button>
+    </div>
+
+    <!-- ROMAN -->
+    <div class="tab-content active" id="tab-roman">
+      <div class="process-template">
+        <h3>📖 Roman / Edebi Metin İşleme Şablonu</h3>
+        <div class="template-row">
+          <div class="template-label">📌 Genel Değerlendirme<span class="en-label">Overall Assessment</span></div>
+          <div class="template-value">Romanın ana teması, yazarın amacı, dönemsel bağlamı. 3-5 cümlelik özet + senin kişisel tepkin.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">🧵 Olay Örgüsü<span class="en-label">Plot Structure</span></div>
+          <div class="template-value">Başlangıç durumu → Kışkırtıcı olay → Yükselen aksiyon → Doruk → Çözülme. Aristoteles'in muthos kavramıyla analiz et.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">👤 Karakter Analizi<span class="en-label">Character Analysis</span></div>
+          <div class="template-value">Ana karakterlerin iç dünyası, dönüşüm yayı (character arc), motivasyonları. Dostoyevski'nin psikolojik derinliği mi, Hemingway'in buzdağı tekniği mi?</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">🔗 İntertekstüellik<span class="en-label">Intertextual References</span></div>
+          <div class="template-value">Hangi eserlere gönderme yapıyor? Hangi gelenekten besleniyor? Pamuk → Borges → Cervantes zinciri gibi.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">✍️ Mimetik Alıştırma<span class="en-label">Mimetic Exercise</span></div>
+          <div class="template-value">Yazarın en güçlü betimlemesini seç. Aynı üslupla farklı bir sahne yaz. Cümle yapısını, ritmi, imge seçimini taklit et.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">💎 Çıkarılan Kalıcı Fişler<span class="en-label">Permanent Notes Generated</span></div>
+          <div class="template-value">En az 3-5 kalıcı fiş. Her biri atomik, bağlantılı ve kendi başına anlamlı. Edebiyat dizin fişine bağla.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FELSEFE -->
+    <div class="tab-content" id="tab-felsefe">
+      <div class="process-template">
+        <h3>🏛 Felsefe Metni İşleme Şablonu</h3>
+        <div class="template-row">
+          <div class="template-label">🎯 Ana Argüman<span class="en-label">Central Thesis</span></div>
+          <div class="template-value">Düşünürün temel tezi nedir? Tek cümleyle ifade et. Sonra 3-5 cümleyle aç.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">🏗 Argüman Yapısı<span class="en-label">Argument Structure</span></div>
+          <div class="template-value">Öncüller (premises) → Çıkarım (inference) → Sonuç (conclusion). Mantıksal akışı çıkar. Geçersiz adımlar var mı?</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">📖 Kavram Haritası<span class="en-label">Concept Map</span></div>
+          <div class="template-value">Anahtar kavramlar ve aralarındaki ilişkiler. Aristoteles: ousia, eidos, hyle, energeia, dynamis, nous. Her kavram bir kalıcı fiş olur.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">⚔️ Karşı-Argüman<span class="en-label">Counter-Argument</span></div>
+          <div class="template-value">Bu teze en güçlü itiraz ne olurdu? Eleştirel düşünme kasını çalıştır. Performatif çelişki (performative contradiction) var mı?</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">🔗 Felsefi Bağlam<span class="en-label">Philosophical Context</span></div>
+          <div class="template-value">Bu düşünce hangi geleneğe ait? Kime cevap veriyor? Platon → Aristoteles → Aquinas zinciri gibi düşünce soy ağacı çıkar.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">✍️ Yeniden İnşa<span class="en-label">Reconstruction</span></div>
+          <div class="template-value">Argümanı kendi cümlelerinle sıfırdan yeniden inşa et. Ezbere değil, kavrayarak. Bu en kritik adımdır.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- İNGİLİZCE -->
+    <div class="tab-content" id="tab-ingilizce">
+      <div class="process-template">
+        <h3>🇬🇧 İngilizce Konu İşleme Şablonu</h3>
+        <div class="template-row">
+          <div class="template-label">📐 Yapı Kuralı<span class="en-label">Grammar Rule</span></div>
+          <div class="template-value">Kuralın özü, formülü, Türkçe karşılığı. Örn: "Third Conditional = If + Past Perfect, would have + V3. Geçmişte gerçekleşmemiş koşul."</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">📝 Örnek Cümleler<span class="en-label">Example Sentences</span></div>
+          <div class="template-value">En az 5 örnek, farklı bağlamlarda. Günlük hayat, edebiyat, iş dünyası. Her örneğin Türkçe çevirisi + yapı analizi.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">⚠️ Yaygın Hatalar<span class="en-label">Common Errors</span></div>
+          <div class="template-value">Türk öğrenicilerin en çok yaptığı hatalar. Neden yapılır, nasıl düzeltilir. Negatif transfer (ana dil etkisi) analizi.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">🎮 İnteraktif Uygulama<span class="en-label">Interactive Exercise</span></div>
+          <div class="template-value">Claude ile oluşturulan HTML/JS quiz veya oyun. Fill-in-the-blank, çoktan seçmeli, cümle düzeltme. Gamification (oyunlaştırma) ile pekiştirme.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">📚 Bağlamlı Okuma<span class="en-label">Contextual Reading</span></div>
+          <div class="template-value">Bu yapıyı kullanan gerçek metin parçaları. Haber, edebiyat, akademik metin. Krashen'in "comprehensible input" (anlaşılır girdi) prensibi.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">✍️ Üretim<span class="en-label">Production</span></div>
+          <div class="template-value">Bu yapıyı kullanarak 5 özgün cümle yaz. Sonra bir paragraf yaz. Sonra bir mini deneme. Controlled → Free production (kontrollü → serbest üretim).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEKNİK -->
+    <div class="tab-content" id="tab-teknik">
+      <div class="process-template">
+        <h3>💻 Teknik Konu İşleme Şablonu (Next.js, JS, vb.)</h3>
+        <div class="template-row">
+          <div class="template-label">🎯 Konsept<span class="en-label">Core Concept</span></div>
+          <div class="template-value">Bu teknoloji/kavram ne işe yarar? Hangi problemi çözer? Analojilerle (benzetmelerle) açıkla. Türkçe + İngilizce terimler.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">🧪 Hands-on Proje<span class="en-label">Practical Project</span></div>
+          <div class="template-value">Küçük ama tam bir proje. Sıfırdan yaz, boilerplate kopyalama. "Yaparak öğrenme" (learning by doing) prensibi.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">🔗 Ekosistem Bağlantısı<span class="en-label">Ecosystem Map</span></div>
+          <div class="template-value">Bu araç/kavram diğerleriyle nasıl ilişkili? Next.js → React → Node.js → HTTP → TCP/IP. Bütüncül bakış.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">📋 Cheat Sheet<span class="en-label">Quick Reference</span></div>
+          <div class="template-value">En sık kullanılan komutlar, pattern'ler, API referansları. Hızlı erişim için kalıcı fiş formatında.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SANAT -->
+    <div class="tab-content" id="tab-sanat">
+      <div class="process-template">
+        <h3>🎨 Sanat Dalı İşleme Şablonu (Resim, Müzik, Sinema, Mimari)</h3>
+        <div class="template-row">
+          <div class="template-label">🎭 Dönem ve Akım<span class="en-label">Period & Movement</span></div>
+          <div class="template-value">Hangi dönem? Hangi akım? Antik → Ortaçağ → Rönesans → Barok → Modern. Akımın temel ilkeleri ve manifestosu.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">👁 Biçimsel Analiz<span class="en-label">Formal Analysis</span></div>
+          <div class="template-value">Resim: kompozisyon, renk, ışık. Müzik: armoni, ritim, yapı. Sinema: kadraj, kurgu, ses. Mimari: oran, malzeme, mekan.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">🔗 Çapraz Referans<span class="en-label">Cross-Reference</span></div>
+          <div class="template-value">Bu eser, aynı dönemdeki edebiyat/felsefe ile nasıl ilişkili? Rönesans resmi ↔ hümanist felsefe ↔ perspektif matematiği.</div>
+        </div>
+        <div class="template-row">
+          <div class="template-label">✍️ Eleştiri Yazısı<span class="en-label">Critical Writing</span></div>
+          <div class="template-value">Eserin 300 kelimelik eleştiri yazısı. Hem biçimsel hem içeriksel değerlendirme. Edebiyat eleştirisi formatıyla.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 6: ARALIKLI TEKRAR ═══════ -->
+  <section class="section" id="tekrar">
+    <div class="section-tag">VI — Aralıklı Tekrar / Spaced Repetition</div>
+    <h2>Unutma Eğrisine Karşı Savaş</h2>
+    <p class="section-desc">
+      Ebbinghaus'un unutma eğrisi (forgetting curve) gösterir ki,
+      tekrar olmadan bilginin %80'i 48 saat içinde kaybolur.
+      SM-2 algoritması ile her fişi optimal aralıklarla tekrar ederek
+      kalıcı hafızaya (long-term memory) taşıyoruz.
+    </p>
+
+    <div class="sr-timeline">
+      <div class="sr-bar" style="height:100%"><span class="sr-pct">100%</span><span class="sr-label">Gün 0</span></div>
+      <div class="sr-bar" style="height:45%"><span class="sr-pct">45%</span><span class="sr-label">Gün 1</span></div>
+      <div class="sr-bar" style="height:75%;background:var(--accent-teal)"><span class="sr-pct">75%</span><span class="sr-label">1. Tekrar</span></div>
+      <div class="sr-bar" style="height:35%"><span class="sr-pct">35%</span><span class="sr-label">Gün 3</span></div>
+      <div class="sr-bar" style="height:80%;background:var(--accent-teal)"><span class="sr-pct">80%</span><span class="sr-label">2. Tekrar</span></div>
+      <div class="sr-bar" style="height:50%"><span class="sr-pct">50%</span><span class="sr-label">Gün 7</span></div>
+      <div class="sr-bar" style="height:85%;background:var(--accent-teal)"><span class="sr-pct">85%</span><span class="sr-label">3. Tekrar</span></div>
+      <div class="sr-bar" style="height:65%"><span class="sr-pct">65%</span><span class="sr-label">Gün 21</span></div>
+      <div class="sr-bar" style="height:90%;background:var(--accent-emerald)"><span class="sr-pct">90%</span><span class="sr-label">4. Tekrar</span></div>
+      <div class="sr-bar" style="height:80%"><span class="sr-pct">80%</span><span class="sr-label">Gün 60</span></div>
+      <div class="sr-bar" style="height:95%;background:var(--accent-emerald)"><span class="sr-pct">95%</span><span class="sr-label">5. Tekrar</span></div>
+    </div>
+
+    <div class="compound-box">
+      <h3>Günlük Tekrar Ritüeli</h3>
+      <div class="en-sub">Daily Review Ritual — The Non-Negotiable 30 Minutes</div>
+      <div class="benefit-row">
+        <span class="benefit-icon">☀️</span>
+        <span class="benefit-label"><strong>Sabah (15 dk)</strong> — Vadesi gelen fişleri gözden geçir. Aktif recall ile test et. Zorlananları işaretle.</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-icon">🌙</span>
+        <span class="benefit-label"><strong>Akşam (15 dk)</strong> — Bugün oluşturulan yeni fişleri gözden geçir. Bağlantıları kontrol et. Yarına hazırla.</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-icon">📅</span>
+        <span class="benefit-label"><strong>Haftalık (60 dk)</strong> — Dizin fişlerini güncelle. Bağlantı haritasını genişlet. Zayıf noktaları tespit et.</span>
+      </div>
+      <div class="benefit-row">
+        <span class="benefit-icon">📆</span>
+        <span class="benefit-label"><strong>Aylık (120 dk)</strong> — Tüm alanların ilerleme değerlendirmesi. Yeni hedef belirleme. Üretim çıktılarını gözden geçirme.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 7: BİLGİ ALANLARI ═══════ -->
+  <section class="section" id="alanlar">
+    <div class="section-tag">VII — Bilgi Alanları / Knowledge Domains</div>
+    <h2>Sekiz Ustalık Alanı</h2>
+    <p class="section-desc">
+      Her alan kendi alt-kategorileri, şablonları ve ilerlemesi takip eden yapısıyla bağımsız ama birbirine bağlı.
+      Bu, LOGOS-VITA mimarisinin genişletilmiş hâlidir.
+    </p>
+
+    <div class="domain-grid">
+      <div class="domain-card" data-color="gold">
+        <div class="domain-icon">📚</div>
+        <h3>Edebiyat</h3>
+        <div class="domain-en">Literature — Logos Katmanı</div>
+        <p>Türk edebiyatı (Tanpınar, Pamuk, Kemal) + Dünya edebiyatı (Dostoyevski, Woolf, Hemingway, Borges). Roman analizi, mimetik yazım, eleştiri.</p>
+        <div class="domain-tags">
+          <span class="domain-tag">Roman Analizi</span>
+          <span class="domain-tag">Şiir</span>
+          <span class="domain-tag">Hikaye</span>
+          <span class="domain-tag">Mimetik Yazım</span>
+        </div>
+      </div>
+      <div class="domain-card" data-color="violet">
+        <div class="domain-icon">🏛</div>
+        <h3>Felsefe</h3>
+        <div class="domain-en">Philosophy — Logos Katmanı</div>
+        <p>Antik (Platon, Aristoteles) → Ortaçağ (Aquinas, İbn Rüşd) → Rönesans → Modern (Kant, Hegel, Nietzsche). Kavramsal derinlik ve argüman analizi.</p>
+        <div class="domain-tags">
+          <span class="domain-tag">Antik</span>
+          <span class="domain-tag">Ortaçağ</span>
+          <span class="domain-tag">Modern</span>
+          <span class="domain-tag">Metafizik</span>
+        </div>
+      </div>
+      <div class="domain-card" data-color="teal">
+        <div class="domain-icon">🇬🇧</div>
+        <h3>İngilizce</h3>
+        <div class="domain-en">English Mastery — Ergon Katmanı</div>
+        <p>Grammar (A1-C2), vocabulary, reading comprehension, writing, listening. Krashen'in comprehensible input prensibi + aktif üretim dengesi.</p>
+        <div class="domain-tags">
+          <span class="domain-tag">Grammar</span>
+          <span class="domain-tag">Vocabulary</span>
+          <span class="domain-tag">Writing</span>
+          <span class="domain-tag">Listening</span>
+        </div>
+      </div>
+      <div class="domain-card" data-color="rose">
+        <div class="domain-icon">🎨</div>
+        <h3>Görsel Sanatlar</h3>
+        <div class="domain-en">Visual Arts — Pathos Katmanı</div>
+        <p>Resim tarihi, mimarlık tarihi, heykel. Dönem dönem analiz: Antik → Gotik → Rönesans → Barok → İzlenimcilik → Modern → Çağdaş.</p>
+        <div class="domain-tags">
+          <span class="domain-tag">Resim</span>
+          <span class="domain-tag">Mimarlık</span>
+          <span class="domain-tag">Heykel</span>
+          <span class="domain-tag">Fotoğraf</span>
+        </div>
+      </div>
+      <div class="domain-card" data-color="emerald">
+        <div class="domain-icon">🎬</div>
+        <h3>Sinema & Müzik</h3>
+        <div class="domain-en">Cinema & Music — Pathos Katmanı</div>
+        <p>Film analizi (kadraj, kurgu, ses tasarımı, senaryo). Müzik tarihi ve teorisi. Sanat formları arası bağlantılar.</p>
+        <div class="domain-tags">
+          <span class="domain-tag">Film Analizi</span>
+          <span class="domain-tag">Müzik Teorisi</span>
+          <span class="domain-tag">Senaryo</span>
+        </div>
+      </div>
+      <div class="domain-card" data-color="gold">
+        <div class="domain-icon">💻</div>
+        <h3>Yazılım</h3>
+        <div class="domain-en">Software — Ergon Katmanı</div>
+        <p>Next.js, React, Supabase, Vercel, HTML/CSS/JS. ZihinOS geliştirme. Proje bazlı öğrenme. Kendi araçlarını kendin inşa et.</p>
+        <div class="domain-tags">
+          <span class="domain-tag">Next.js</span>
+          <span class="domain-tag">React</span>
+          <span class="domain-tag">HTML/JS</span>
+          <span class="domain-tag">Supabase</span>
+        </div>
+      </div>
+      <div class="domain-card" data-color="teal">
+        <div class="domain-icon">💰</div>
+        <h3>Finansal Okuryazarlık</h3>
+        <div class="domain-en">Financial Literacy — Ergon Katmanı</div>
+        <p>Temel finans kavramları, yatırım araçları, bütçeleme, ekonomi okuryazarlığı. Pratik ve uygulanabilir bilgi.</p>
+        <div class="domain-tags">
+          <span class="domain-tag">Bütçeleme</span>
+          <span class="domain-tag">Yatırım</span>
+          <span class="domain-tag">Ekonomi</span>
+        </div>
+      </div>
+      <div class="domain-card" data-color="violet">
+        <div class="domain-icon">✍️</div>
+        <h3>Yaratıcı Yazarlık</h3>
+        <div class="domain-en">Creative Writing — Logos Katmanı</div>
+        <p>Roman yazma ustalığı. Çerçeve → Doldur → Dönüştür metodu. Üslup geliştirme, karakter inşası, olay örgüsü, betimleme sanatı.</p>
+        <div class="domain-tags">
+          <span class="domain-tag">Roman</span>
+          <span class="domain-tag">Hikaye</span>
+          <span class="domain-tag">Üslup</span>
+          <span class="domain-tag">Betimleme</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION 8: YOL HARİTASI ═══════ -->
+  <section class="section" id="yolharitasi">
+    <div class="section-tag">VIII — Yol Haritası / Roadmap</div>
+    <h2>24 Aylık Ustalık Yol Haritası</h2>
+    <p class="section-desc">
+      Aşamalı, gerçekçi ve bileşik fayda (compound benefit) prensibiyle tasarlanmış.
+      Her aşama öncekinin üzerine inşa eder. Sabır + süreklilik + sistem = ustalık.
+    </p>
+
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-dot"></div>
+        <div class="roadmap-period">Ay 1-3 — Temel İnşası</div>
+        <h4>Altyapı ve Alışkanlık Kurulumu</h4>
+        <div class="rm-en">Foundation & Habit Formation</div>
+        <p>Fişleme sistemini kur. Günlük 30 dk tekrar ritüelini başlat. İlk 3 kitabı tam pipeline'dan geçir (1 roman, 1 felsefe, 1 İngilizce kaynak). ZihinOS temel yapısını oluştur. MFGocgun Akademi'yi genişlet.</p>
+        <div class="roadmap-tasks">
+          <span class="rm-task">Zettelkasten kurulumu</span>
+          <span class="rm-task">Günlük ritüel</span>
+          <span class="rm-task">İlk 3 kitap</span>
+          <span class="rm-task">ZihinOS MVP</span>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--accent-teal)"></div>
+        <div class="roadmap-period">Ay 4-6 — Derinleşme</div>
+        <h4>Alansal Derinlik ve Çapraz Bağlantılar</h4>
+        <div class="rm-en">Domain Depth & Cross-Linking</div>
+        <p>Edebiyat + felsefe çapraz bağlantıları kur. İngilizce B2-C1 grammar'ı tamamla. İlk mimetik yazım denemeleri. Sanat tarihi giriş. Her alanda en az 50 kalıcı fiş.</p>
+        <div class="roadmap-tasks">
+          <span class="rm-task">Çapraz bağlantılar</span>
+          <span class="rm-task">İngilizce C1</span>
+          <span class="rm-task">Mimetik yazım</span>
+          <span class="rm-task">Sanat tarihi giriş</span>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--accent-violet)"></div>
+        <div class="roadmap-period">Ay 7-12 — Sentez</div>
+        <h4>Alanlar Arası Sentez ve Üretim</h4>
+        <div class="rm-en">Interdisciplinary Synthesis</div>
+        <p>Edebiyat-felsefe-sanat üçgeninde sentez yazıları. İlk uzun yaratıcı metin denemesi. Next.js ile ZihinOS'u tam işlevsel yap. Finansal okuryazarlık temellerini oluştur. Her alanda 200+ kalıcı fiş.</p>
+        <div class="roadmap-tasks">
+          <span class="rm-task">Sentez yazıları</span>
+          <span class="rm-task">Uzun metin</span>
+          <span class="rm-task">ZihinOS v2</span>
+          <span class="rm-task">200+ fiş/alan</span>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--accent-emerald)"></div>
+        <div class="roadmap-period">Ay 13-18 — Ustalık Eşiği</div>
+        <h4>Özgün Ses ve Derin Kavrayış</h4>
+        <div class="rm-en">Original Voice & Deep Understanding</div>
+        <p>Kendi yazarlık sesini bulmaya başla. Felsefe metinlerini bağımsız analiz edebilme. İngilizce'de akıcı yazım. Tüm sanat dallarında temel okuryazarlık. İlk roman taslağı.</p>
+        <div class="roadmap-tasks">
+          <span class="rm-task">Özgün ses</span>
+          <span class="rm-task">Bağımsız analiz</span>
+          <span class="rm-task">Roman taslağı</span>
+          <span class="rm-task">Tam okuryazarlık</span>
+        </div>
+      </div>
+
+      <div class="roadmap-item">
+        <div class="roadmap-dot" style="background:var(--accent-rose)"></div>
+        <div class="roadmap-period">Ay 19-24 — Olgunlaşma</div>
+        <h4>Entegrasyon ve Üretken Döngü</h4>
+        <div class="rm-en">Integration & Productive Cycle</div>
+        <p>Tüm alanlar birbiriyle konuşuyor. Fişleme sistemi organik olarak büyüyor. Düzenli üretim: analiz yazıları, yaratıcı metinler, interaktif araçlar. Sistem kendini besliyor — vidanjör etkisi tam.</p>
+        <div class="roadmap-tasks">
+          <span class="rm-task">Tam entegrasyon</span>
+          <span class="rm-task">Düzenli üretim</span>
+          <span class="rm-task">Kendi kendini besleyen sistem</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wisdom-block">
+      "Bir işi yirmi yıl boyunca her gün yapan kişi, o işin ustası olmayabilir —
+      ama her gün bilinçli bir şekilde, sistemli bir tekrarla yapan kişi mutlaka olur."
+      <div class="wisdom-attr">Deliberate Practice — Anders Ericsson'un bulgusu, senin bisiklet prensibinin bilimsel karşılığı</div>
+    </div>
+  </section>
+
+  <!-- ═══════ SECTION: TAKSONOMİK YAPI ═══════ -->
+  <section class="section">
+    <div class="section-tag">IX — Dosya Taksonomisi / File Taxonomy</div>
+    <h2>Kategorik Arşiv Yapısı</h2>
+    <p class="section-desc">
+      Her çıktı bu hiyerarşik yapıda tasnif edilir. ZihinOS, Obsidian veya herhangi bir dosya sistemi
+      bu yapıyı takip etmelidir. Tutarlılık (consistency) sürdürülebilirliğin anahtarıdır.
+    </p>
+
+    <div class="process-template">
+      <h3>📁 Kök Dizin Yapısı / Root Directory Structure</h3>
+      <div class="template-row">
+        <div class="template-label">📚 01-EDEBIYAT<span class="en-label">Literature</span></div>
+        <div class="template-value">
+          <code>01-Türk-Edebiyatı/</code> → <code>Tanpınar/</code>, <code>Pamuk/</code> ...<br>
+          <code>02-Dünya-Edebiyatı/</code> → <code>Rus/</code>, <code>İngiliz/</code>, <code>Latin-Amerika/</code><br>
+          <code>03-Edebiyat-Kuramı/</code> → Anlatı teknikleri, eleştiri yöntemleri<br>
+          <code>04-Mimetik-Yazımlar/</code> → Kendi pastiş denemelerin
+        </div>
+      </div>
+      <div class="template-row">
+        <div class="template-label">🏛 02-FELSEFE<span class="en-label">Philosophy</span></div>
+        <div class="template-value">
+          <code>01-Antik/</code> → <code>Platon/</code>, <code>Aristoteles/</code><br>
+          <code>02-Ortacag/</code> → <code>Aquinas/</code>, <code>IbnRusd/</code><br>
+          <code>03-Modern/</code> → <code>Kant/</code>, <code>Hegel/</code>, <code>Nietzsche/</code><br>
+          <code>04-Kavram-Haritaları/</code> → Kavramsal bağlantı şemaları
+        </div>
+      </div>
+      <div class="template-row">
+        <div class="template-label">🇬🇧 03-INGILIZCE<span class="en-label">English</span></div>
+        <div class="template-value">
+          <code>01-Grammar/</code> → A1 → C2 seviye klasörleri<br>
+          <code>02-Vocabulary/</code> → Tematik kelime grupları<br>
+          <code>03-Reading/</code> → Sentence mining, metin analizleri<br>
+          <code>04-Uygulamalar/</code> → İnteraktif HTML/JS araçlar
+        </div>
+      </div>
+      <div class="template-row">
+        <div class="template-label">🎨 04-SANAT<span class="en-label">Arts</span></div>
+        <div class="template-value">
+          <code>01-Gorsel-Sanatlar/</code> → Resim, mimarlık, heykel<br>
+          <code>02-Sinema/</code> → Film analizleri, yönetmenler<br>
+          <code>03-Muzik/</code> → Müzik tarihi, teori<br>
+          <code>04-Dönemsel-Haritalar/</code> → Çapraz dönem analizleri
+        </div>
+      </div>
+      <div class="template-row">
+        <div class="template-label">💻 05-YAZILIM<span class="en-label">Software</span></div>
+        <div class="template-value">
+          <code>01-NextJS/</code> → Konular, projeler, cheat sheet'ler<br>
+          <code>02-HTML-CSS-JS/</code> → Temel ve ileri konular<br>
+          <code>03-ZihinOS/</code> → Proje dosyaları<br>
+          <code>04-Araçlar/</code> → Geliştirilen interaktif uygulamalar
+        </div>
+      </div>
+      <div class="template-row">
+        <div class="template-label">💰 06-FINANS<span class="en-label">Finance</span></div>
+        <div class="template-value">
+          <code>01-Temel-Kavramlar/</code> → Bütçeleme, tasarruf, faiz<br>
+          <code>02-Yatırım/</code> → Araçlar, stratejiler<br>
+          <code>03-Ekonomi/</code> → Makro/mikro ekonomi temelleri
+        </div>
+      </div>
+      <div class="template-row">
+        <div class="template-label">✍️ 07-YAZARLIK<span class="en-label">Creative Writing</span></div>
+        <div class="template-value">
+          <code>01-Teknik/</code> → Anlatı teknikleri, üslup çalışmaları<br>
+          <code>02-Üretimler/</code> → Kendi metinlerin<br>
+          <code>03-Taslaklar/</code> → Roman/hikaye taslakları
+        </div>
+      </div>
+      <div class="template-row">
+        <div class="template-label">🗃 00-ZETTELKASTEN<span class="en-label">Master Index</span></div>
+        <div class="template-value">
+          <code>Dizin-Fisleri/</code> → Her alan için MOC<br>
+          <code>Kalıcı-Fisler/</code> → Tüm atomik notlar<br>
+          <code>Gecici/</code> → 48 saat içinde işlenecekler<br>
+          <code>Tekrar-Kuyrugu/</code> → SM-2 zamanlaması ile
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ FOOTER ═══════ -->
+  <footer class="footer">
+    <span>USTALIQ</span> — Bütüncül Öğrenme ve Ustalık Sistemi<br>
+    MFGöçgün için tasarlandı · "Bisiklet Prensibi" ile sürdürülebilir ustalık<br>
+    <span style="font-size:10px;margin-top:6px;display:inline-block">
+      Oku → Fişle → Sorgula → Taklit Et → Üret → Tekrar Et → Ustalaş
+    </span>
+  </footer>
+
+</div><!-- main-content -->
+
+<script>
+  // Theme Toggle
+  const toggle = document.getElementById('themeToggle');
+  toggle.addEventListener('click', () => {
+    const body = document.body;
+    const isDark = body.getAttribute('data-theme') === 'dark';
+    body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    toggle.textContent = isDark ? '☀️' : '🌙';
+  });
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-tab');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(targetId).classList.add('active');
+    });
+  });
+
+  // Nav active state
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = document.querySelectorAll('.section, .hero');
+
+  function updateNav() {
+    let current = '';
+    sections.forEach(sec => {
+      const top = sec.offsetTop - 100;
+      if (window.scrollY >= top) {
+        current = sec.id || '';
+      }
+    });
+    navItems.forEach(item => {
+      item.classList.remove('active');
+      if (item.getAttribute('href') === '#' + current) {
+        item.classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateNav);
+
+  // Intersection Observer for animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.phil-card, .domain-card, .roadmap-item').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

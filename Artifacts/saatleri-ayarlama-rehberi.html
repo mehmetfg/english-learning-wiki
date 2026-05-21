@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saatleri Ayarlama Enstitüsü — Edebi Rehber</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Verdana&display=swap" rel="stylesheet">
+<style>
+/* ===========================
+   CSS VARIABLES & RESET
+=========================== */
+:root {
+  --bg: #0f0f0f;
+  --bg2: #161616;
+  --bg3: #1e1e1e;
+  --text: #e8e8e8;
+  --text-muted: #999;
+  --accent: #c9a84c;
+  --accent-dim: rgba(201,168,76,0.15);
+  --accent-glow: rgba(201,168,76,0.3);
+  --border: rgba(201,168,76,0.18);
+  --sidebar-w: 260px;
+  --radius: 16px;
+  --transition: 0.35s cubic-bezier(.4,0,.2,1);
+
+  /* Liquid glass variables */
+  --glass-bg: rgba(255,255,255,0.03);
+  --glass-blur: 18px;
+  --glass-border-top: rgba(255,255,255,0.18);
+  --glass-border-bottom: rgba(255,255,255,0.06);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.05) inset;
+}
+
+[data-theme="light"] {
+  --bg: #f5f4f0;
+  --bg2: #ebe9e3;
+  --bg3: #ddd9ce;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --accent: #b8902e;
+  --accent-dim: rgba(184,144,46,0.12);
+  --accent-glow: rgba(184,144,46,0.25);
+  --border: rgba(184,144,46,0.2);
+  --glass-bg: rgba(255,255,255,0.35);
+  --glass-blur: 20px;
+  --glass-border-top: rgba(255,255,255,0.75);
+  --glass-border-bottom: rgba(255,255,255,0.25);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 1px 0 rgba(255,255,255,0.9) inset;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Verdana', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  transition: background var(--transition), color var(--transition);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===========================
+   LIQUID GLASS MIXIN
+=========================== */
+.liquid-glass {
+  background: var(--glass-bg);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: none;
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0.15) 20%,
+    rgba(255,255,255,0) 40%,
+    rgba(255,255,255,0) 60%,
+    rgba(255,255,255,0.15) 80%,
+    rgba(255,255,255,0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===========================
+   LAYOUT
+=========================== */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===========================
+   SIDEBAR
+=========================== */
+.sidebar {
+  width: var(--sidebar-w);
+  height: 100vh;
+  position: fixed;
+  left: 0; top: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow), 2px 0 0 var(--border);
+  overflow: hidden;
+  transition: transform var(--transition);
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0.15) 20%,
+    rgba(255,255,255,0) 40%,
+    rgba(255,255,255,0) 60%,
+    rgba(255,255,255,0.15) 80%,
+    rgba(255,255,255,0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sidebar-brand {
+  padding: 28px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  position: relative; z-index: 2;
+}
+
+.sidebar-brand h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.sidebar-brand p {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+  position: relative; z-index: 2;
+}
+
+.sidebar-nav::-webkit-scrollbar { width: 3px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-family: 'Verdana', sans-serif;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  margin-bottom: 2px;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+}
+
+.nav-item:hover {
+  color: var(--text);
+  background: var(--accent-dim);
+  border-color: var(--border);
+}
+
+.nav-item.active {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  font-weight: 700;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.nav-item .nav-num {
+  font-size: 9px;
+  opacity: 0.5;
+  min-width: 16px;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+}
+
+/* ===========================
+   THEME TOGGLE
+=========================== */
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 1.4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.45) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.theme-toggle:hover { transform: scale(1.1); }
+
+/* ===========================
+   MOBILE HAMBURGER
+=========================== */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 18px;
+  left: 14px;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+/* ===========================
+   MAIN CONTENT
+=========================== */
+.main-content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  min-height: 100vh;
+  padding: 40px 44px 80px;
+  max-width: calc(100vw - var(--sidebar-w));
+}
+
+/* ===========================
+   PAGES
+=========================== */
+.page {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.page.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================
+   TYPOGRAPHY
+=========================== */
+.page-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.page-subtitle {
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  font-weight: 700;
+}
+
+.section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 44px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title:first-of-type { margin-top: 0; }
+
+p {
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+
+/* ===========================
+   GLASS CARDS
+=========================== */
+.glass-card {
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  padding: 1.4px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0.15) 20%,
+    rgba(255,255,255,0) 40%,
+    rgba(255,255,255,0) 60%,
+    rgba(255,255,255,0.15) 80%,
+    rgba(255,255,255,0.45) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glass-card > * { position: relative; z-index: 1; }
+
+.glass-card-accent {
+  border-left: 3px solid var(--accent);
+}
+
+/* ===========================
+   STAT CARDS
+=========================== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  padding: 18px 16px;
+  text-align: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1.4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--glass-shadow), 0 12px 24px var(--accent-glow); }
+
+.stat-card > * { position: relative; z-index: 1; }
+
+.stat-label {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ===========================
+   TABLES
+=========================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+th {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 700;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--accent-dim); }
+
+/* ===========================
+   TAGS / BADGES
+=========================== */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  background: var(--accent-dim);
+  margin: 2px;
+}
+
+/* ===========================
+   QUOTE BLOCKS
+=========================== */
+.quote-block {
+  border-left: 3px solid var(--accent);
+  padding: 16px 20px;
+  margin: 20px 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  position: relative;
+  overflow: hidden;
+}
+
+.quote-block::before {
+  content: '"';
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  font-size: 80px;
+  color: var(--accent);
+  opacity: 0.12;
+  font-family: 'Playfair Display', serif;
+  line-height: 1;
+}
+
+/* ===========================
+   SVG SHARED STYLES
+=========================== */
+.svg-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 20px 0;
+  border-radius: var(--radius);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.svg-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  padding: 1.4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.svg-container svg { position: relative; z-index: 1; display: block; margin: 0 auto; }
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; max-width: 100vw; padding: 70px 20px 60px; }
+  .page-title { font-size: 28px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===========================
+   PAGE 1 — DASHBOARD SPECIFIC
+=========================== */
+.axis-meter {
+  margin: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+}
+
+.axis-label { min-width: 90px; color: var(--text-muted); text-align: right; font-size: 10px; }
+.axis-label.right { text-align: left; }
+
+.axis-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.axis-fill {
+  position: absolute;
+  left: 0; top: 0; height: 100%;
+  background: linear-gradient(90deg, var(--bg3), var(--accent));
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+}
+
+/* ===========================
+   NARRATIVE CLOCK - CLICKABLE NODES
+=========================== */
+.arc-node {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.arc-node:hover circle { filter: brightness(1.3); }
+
+.arc-detail {
+  display: none;
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 10px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.arc-detail.open { display: block; animation: fadeIn 0.3s ease; }
+
+/* ===========================
+   CHARACTER CARDS
+=========================== */
+.char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+
+.char-card {
+  border-radius: var(--radius);
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  border-top: 2px solid var(--accent);
+  transition: transform 0.2s;
+}
+
+.char-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  padding: 1.4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.char-card:hover { transform: translateY(-4px); }
+.char-card > * { position: relative; z-index: 1; }
+
+.char-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.char-role {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.char-attr {
+  margin: 8px 0;
+  font-size: 12px;
+}
+
+.char-attr-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+
+/* ===========================
+   AMBIGUITY ITEMS
+=========================== */
+.ambiguity-item {
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--glass-shadow);
+  border-left: 3px solid var(--accent);
+}
+
+.ambiguity-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1.4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.45) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.ambiguity-item > * { position: relative; z-index: 1; }
+
+.ambiguity-tension {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.ambiguity-vs {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* ===========================
+   DEVICE INVENTORY
+=========================== */
+.device-list {
+  list-style: none;
+}
+
+.device-list li {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.device-list li:last-child { border-bottom: none; }
+
+.device-label {
+  min-width: 120px;
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 11px;
+}
+
+/* ===========================
+   FOREHADOWING TABLE
+=========================== */
+.foreshadow-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.foreshadow-item {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--glass-shadow);
+  font-size: 12px;
+}
+
+.foreshadow-setup {
+  padding: 14px 16px;
+  border-right: 1px solid var(--border);
+}
+
+.foreshadow-payoff {
+  padding: 14px 16px;
+}
+
+.fi-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+/* ===========================
+   TENSION GRAPH
+=========================== */
+.tension-tooltip {
+  position: absolute;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  pointer-events: none;
+  display: none;
+  z-index: 10;
+  color: var(--text);
+  box-shadow: var(--glass-shadow);
+}
+
+/* ===========================
+   SCROLLBAR GLOBAL
+=========================== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+</style>
+</head>
+<body>
+<div class="hamburger" id="hamburger" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</div>
+
+<button class="theme-toggle liquid-glass" id="themeToggle" onclick="toggleTheme()" title="Tema Değiştir">☀️</button>
+
+<!-- SIDEBAR -->
+<nav class="sidebar liquid-glass" id="sidebar">
+  <div class="sidebar-brand">
+    <h1>Saatleri Ayarlama<br>Enstitüsü</h1>
+    <p>Ahmet Hamdi Tanpınar · 1961</p>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-item active" onclick="goTo('p1')"><span class="nav-num">01</span> Ana Sayfa</div>
+    <div class="nav-item" onclick="goTo('p2')"><span class="nav-num">02</span> Karakterler</div>
+    <div class="nav-item" onclick="goTo('p3')"><span class="nav-num">03</span> Olay Örgüsü</div>
+    <div class="nav-item" onclick="goTo('p4')"><span class="nav-num">04</span> Anlatıcı & Üslüp</div>
+    <div class="nav-item" onclick="goTo('p5')"><span class="nav-num">05</span> Tema & Felsefe</div>
+    <div class="nav-item" onclick="goTo('p6')"><span class="nav-num">06</span> Çatışma & Gerilim</div>
+    <div class="nav-item" onclick="goTo('p7')"><span class="nav-num">07</span> Edebi Sanat</div>
+    <div class="nav-item" onclick="goTo('p8')"><span class="nav-num">08</span> Karşılaştırmalı Bağlam</div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main-content">
+
+<!-- ==============================
+     PAGE 1: DASHBOARD
+============================== -->
+<section class="page active" id="p1">
+  <div class="page-subtitle">Ana Sayfa · Genel Bakış</div>
+  <h1 class="page-title">Saatleri Ayarlama<br>Enstitüsü</h1>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Yazar</div><div class="stat-value">A.H. Tanpınar</div></div>
+    <div class="stat-card"><div class="stat-label">Yayın Yılı</div><div class="stat-value">1961</div></div>
+    <div class="stat-card"><div class="stat-label">Tür</div><div class="stat-value">Roman · Hiciv</div></div>
+    <div class="stat-card"><div class="stat-label">Sayfa</div><div class="stat-value">~350</div></div>
+    <div class="stat-card"><div class="stat-label">Bakış Açısı</div><div class="stat-value">1. Tekil</div></div>
+    <div class="stat-card"><div class="stat-label">Zaman</div><div class="stat-value">Geçmiş Zaman</div></div>
+  </div>
+
+  <!-- Tematik Özet -->
+  <div class="glass-card glass-card-accent">
+    <h3 class="section-title" style="margin-top:0">Tematik Öz</h3>
+    <p><em>Saatleri Ayarlama Enstitüsü</em>, Türkiye'nin modernleşme sürecini absürd bir bürokrasi makinesi olan "Enstitü" metaforu üzerinden irdeleyen, Doğu-Batı gerilimini insanın kimlik krizine dönüştüren bir hiciv ve varoluş romanıdır. Hayri İrdal'ın trajikomik yaşamı, kolektif bir toplumun bireysel çöküşünü simgeler: Reform vaadi her zaman sistemin içinde erir, zaman hiç "ayarlanamaz." Roman, modernliğin yalnızca araçsal değil, patolojik bir biçimde benimsenmesini; bireyin kalabalıklar içinde yok oluşunu ve Osmanlı geçmişiyle hesaplaşmanın kaçınılmaz trajedisini işler.</p>
+  </div>
+
+  <!-- Tansiyon Eksenleri -->
+  <h2 class="section-title">Anlatı Gerilim Eksenleri</h2>
+  <div class="glass-card">
+    <div class="axis-meter">
+      <span class="axis-label">Umut</span>
+      <div class="axis-track"><div class="axis-fill" style="width:25%"></div></div>
+      <span class="axis-label right">Çaresizlik</span>
+    </div>
+    <div class="axis-meter">
+      <span class="axis-label">Kesinlik</span>
+      <div class="axis-track"><div class="axis-fill" style="width:75%"></div></div>
+      <span class="axis-label right">Belirsizlik</span>
+    </div>
+    <div class="axis-meter">
+      <span class="axis-label">Bireysel</span>
+      <div class="axis-track"><div class="axis-fill" style="width:40%"></div></div>
+      <span class="axis-label right">Toplumsal</span>
+    </div>
+    <div class="axis-meter">
+      <span class="axis-label">Gerçekçilik</span>
+      <div class="axis-track"><div class="axis-fill" style="width:60%"></div></div>
+      <span class="axis-label right">Absürd</span>
+    </div>
+    <div class="axis-meter">
+      <span class="axis-label">Doğu</span>
+      <div class="axis-track"><div class="axis-fill" style="width:50%"></div></div>
+      <span class="axis-label right">Batı</span>
+    </div>
+  </div>
+
+  <!-- Anlatı Yayı (SVG) -->
+  <h2 class="section-title">Anlatı Yayı — Tıklanabilir Düğümler</h2>
+  <div class="svg-container" id="arcContainer">
+    <svg viewBox="0 0 700 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#c9a84c" opacity="0.6"/>
+        </marker>
+      </defs>
+      <!-- Connecting line -->
+      <polyline points="60,120 180,70 300,40 420,60 540,90 660,130"
+        fill="none" stroke="#c9a84c" stroke-width="2" stroke-dasharray="4,4" opacity="0.4" marker-end="url(#arr)"/>
+      <!-- Nodes -->
+      <g class="arc-node" onclick="toggleArc('arc1')">
+        <circle cx="60" cy="120" r="22" fill="#c9a84c" opacity="0.2" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="60" y="124" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Serim</text>
+        <text x="60" y="148" text-anchor="middle" fill="#999" font-size="8">Hayri'nin</text>
+        <text x="60" y="158" text-anchor="middle" fill="#999" font-size="8">Çocukluğu</text>
+      </g>
+      <g class="arc-node" onclick="toggleArc('arc2')">
+        <circle cx="180" cy="70" r="22" fill="#c9a84c" opacity="0.25" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="180" y="74" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Yükselen</text>
+        <text x="180" y="92" text-anchor="middle" fill="#999" font-size="8">Nuri Efendi</text>
+        <text x="180" y="102" text-anchor="middle" fill="#999" font-size="8">&amp; Ustalar</text>
+      </g>
+      <g class="arc-node" onclick="toggleArc('arc3')">
+        <circle cx="300" cy="40" r="24" fill="#c9a84c" opacity="0.35" stroke="#c9a84c" stroke-width="2"/>
+        <text x="300" y="44" text-anchor="middle" fill="#c9a84c" font-size="9" font-weight="bold" font-family="Verdana">Doruk</text>
+        <text x="300" y="62" text-anchor="middle" fill="#999" font-size="8">Enstitü</text>
+        <text x="300" y="72" text-anchor="middle" fill="#999" font-size="8">Kuruluşu</text>
+      </g>
+      <g class="arc-node" onclick="toggleArc('arc4')">
+        <circle cx="420" cy="60" r="22" fill="#c9a84c" opacity="0.25" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="420" y="64" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Düşüş</text>
+        <text x="420" y="82" text-anchor="middle" fill="#999" font-size="8">Hayal</text>
+        <text x="420" y="92" text-anchor="middle" fill="#999" font-size="8">Kırıklığı</text>
+      </g>
+      <g class="arc-node" onclick="toggleArc('arc5')">
+        <circle cx="540" cy="90" r="22" fill="#c9a84c" opacity="0.2" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="540" y="94" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Çözüm</text>
+        <text x="540" y="112" text-anchor="middle" fill="#999" font-size="8">Sistem</text>
+        <text x="540" y="122" text-anchor="middle" fill="#999" font-size="8">Çöküşü</text>
+      </g>
+      <g class="arc-node" onclick="toggleArc('arc6')">
+        <circle cx="660" cy="130" r="22" fill="#c9a84c" opacity="0.15" stroke="#c9a84c" stroke-width="1.5"/>
+        <text x="660" y="134" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Son</text>
+        <text x="660" y="152" text-anchor="middle" fill="#999" font-size="8">Hayri'nin</text>
+        <text x="660" y="162" text-anchor="middle" fill="#999" font-size="8">İtirafı</text>
+      </g>
+    </svg>
+    <div id="arc1" class="arc-detail"><strong style="color:var(--accent)">Serim — Hayri'nin Çocukluğu:</strong> Anlatıcı Hayri İrdal, yaşamını "hayatımın romanı" diyerek kaleme alır. Dedesi ve babası aracılığıyla Osmanlı'nın son döneminin kültürel atmosferi, saat tamircisi Nuri Efendi figürü aracılığıyla ileriki dönemin zemini kurulur.</div>
+    <div id="arc2" class="arc-detail"><strong style="color:var(--accent)">Yükselen Eylem — Ustalar Dönemi:</strong> Hayri, büyük ustalardan öğrendiği el becerileri ve saate duyduğu hayranlıkla şekillenir. Seyit Lütfullah ile girilen mistik ilişki, karakteri hem içe çeker hem dışarı iter. Bu bölüm kimlik arayışının ve modernleşme çelişkisinin başladığı andır.</div>
+    <div id="arc3" class="arc-detail"><strong style="color:var(--accent)">Doruk — Enstitü'nün Kuruluşu:</strong> Dr. Ramiz Bey önderliğinde "Saatleri Ayarlama Enstitüsü" kurulur. Absürd bir bürokrasi makinesi olarak başlayan bu yapı, romanın ironik merkezini oluşturur. Hayri burada hem idealist hem de araçsallaştırılmış bir nesneye dönüşür.</div>
+    <div id="arc4" class="arc-detail"><strong style="color:var(--accent)">Düşüş — Hayal Kırıklığı:</strong> Enstitü giderek bürokratik saçmalığa döner; saat ayarlamak yerine iktidar oyunlarının aracı olur. Hayri, sistemin içinde eriyişini yaşar. Sevgi ilişkileri de bu çöküşün paralelinde seyreder.</div>
+    <div id="arc5" class="arc-detail"><strong style="color:var(--accent)">Çözüm — Sistem Çöküşü:</strong> Enstitü çeşitli siyasi ve kişisel çalkantıların ardından işlevsiz hale gelir. Tanpınar, kurumların ne denli hızlı doğup öldüğünü gösterir; modernleşme projesinin kalıcı bir zemin bulamayışı somutlaşır.</div>
+    <div id="arc6" class="arc-detail"><strong style="color:var(--accent)">Son — Hayri'nin İtirafı:</strong> Roman, anlatıcının geriye dönük itirafıyla kapanır. Hayri'nin anlattığı her şeyin ne ölçüde güvenilir olduğu belirsiz kalır. Geçmişin yorumu ile şimdinin gerçekliği arasında bir aralık açık bırakılır.</div>
+  </div>
+
+  <!-- Suspense Map SVG -->
+  <h2 class="section-title">Gerilim Haritası — Askıda Bırakma Anları</h2>
+  <div class="svg-container">
+    <svg viewBox="0 0 680 120" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <line x1="30" y1="60" x2="650" y2="60" stroke="#c9a84c" stroke-width="1.5" opacity="0.3"/>
+      <!-- Events -->
+      <g>
+        <circle cx="80" cy="60" r="8" fill="#c9a84c" opacity="0.7"/>
+        <text x="80" y="88" text-anchor="middle" fill="#999" font-size="8.5" font-family="Verdana">Seyit Lütfullah'ın</text>
+        <text x="80" y="98" text-anchor="middle" fill="#999" font-size="8.5">gizemi</text>
+      </g>
+      <g>
+        <circle cx="190" cy="60" r="10" fill="#c9a84c" opacity="0.8"/>
+        <text x="190" y="88" text-anchor="middle" fill="#999" font-size="8.5" font-family="Verdana">Dr. Ramiz'in</text>
+        <text x="190" y="98" text-anchor="middle" fill="#999" font-size="8.5">gerçek niyeti</text>
+      </g>
+      <g>
+        <circle cx="310" cy="60" r="12" fill="#c9a84c"/>
+        <text x="310" y="46" text-anchor="middle" fill="#c9a84c" font-size="8.5" font-family="Verdana" font-weight="bold">EN YÜKSEK</text>
+        <text x="310" y="88" text-anchor="middle" fill="#999" font-size="8.5">Enstitü'nün</text>
+        <text x="310" y="98" text-anchor="middle" fill="#999" font-size="8.5">amacı ne?</text>
+      </g>
+      <g>
+        <circle cx="420" cy="60" r="9" fill="#c9a84c" opacity="0.75"/>
+        <text x="420" y="88" text-anchor="middle" fill="#999" font-size="8.5" font-family="Verdana">Emine ile evlilik</text>
+        <text x="420" y="98" text-anchor="middle" fill="#999" font-size="8.5">karar anı</text>
+      </g>
+      <g>
+        <circle cx="530" cy="60" r="8" fill="#c9a84c" opacity="0.65"/>
+        <text x="530" y="88" text-anchor="middle" fill="#999" font-size="8.5" font-family="Verdana">Anlatının</text>
+        <text x="530" y="98" text-anchor="middle" fill="#999" font-size="8.5">güvenilirliği</text>
+      </g>
+      <g>
+        <circle cx="630" cy="60" r="7" fill="#c9a84c" opacity="0.5"/>
+        <text x="630" y="88" text-anchor="middle" fill="#999" font-size="8.5" font-family="Verdana">Açık son</text>
+      </g>
+      <!-- Time labels -->
+      <text x="30" y="115" fill="#666" font-size="8" font-family="Verdana">Başlangıç</text>
+      <text x="610" y="115" fill="#666" font-size="8" font-family="Verdana">Son</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ==============================
+     PAGE 2: CHARACTERS
+============================== -->
+<section class="page" id="p2">
+  <div class="page-subtitle">Sayfa 02 · Karakterler</div>
+  <h1 class="page-title">Karakterler</h1>
+
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-name">Hayri İrdal</div>
+      <div class="char-role">Anlatıcı Protagonist · Birey / Kurban</div>
+      <div class="char-attr"><div class="char-attr-label">Arketip</div>Saf Kalp · Sistemin Piyonu</div>
+      <div class="char-attr"><div class="char-attr-label">İç Çatışma</div>Geçmişe bağlılık ile modernleşme baskısı arasında kimlik krizi</div>
+      <div class="char-attr"><div class="char-attr-label">Dış Çatışma</div>Enstitü bürokratları, toplumsal beklentiler, ekonomik güçsüzlük</div>
+      <div class="char-attr"><div class="char-attr-label">Karakter Yayı</div><span class="tag">Dinamik ama kendi etrafında dönen</span></div>
+      <div class="char-attr"><div class="char-attr-label">Ses</div>Sıcak, nostaljik, ironik farkındalıktan yoksun; anlatısı seçici ve dolayımlıdır</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name">Dr. Ramiz Bey</div>
+      <div class="char-role">Antagonist / İdeolog</div>
+      <div class="char-attr"><div class="char-attr-label">Arketip</div>Modernist Dönüştürücü · Karizmatik Manipülatör</div>
+      <div class="char-attr"><div class="char-attr-label">İç Çatışma</div>Vizyonunun sahteliği ile samimiyeti arasındaki bulanık alan</div>
+      <div class="char-attr"><div class="char-attr-label">Dış Çatışma</div>Sistemi oluşturmak ve korumak; rakip figürler</div>
+      <div class="char-attr"><div class="char-attr-label">Karakter Yayı</div><span class="tag">Statik · İdeolojisinin tutsakı</span></div>
+      <div class="char-attr"><div class="char-attr-label">Ses</div>Otoriter, slogancı; retoriği sürekli ilerlemeci ama içeriği boş</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name">Nuri Efendi</div>
+      <div class="char-role">Mentor Figür · Geçmişin Temsilcisi</div>
+      <div class="char-attr"><div class="char-attr-label">Arketip</div>Bilge Usta · Kayıp Düzenden Kalma</div>
+      <div class="char-attr"><div class="char-attr-label">İç Çatışma</div>Yok olduğunu bile bile sürdürülen zanaata adanmışlık</div>
+      <div class="char-attr"><div class="char-attr-label">Karakter Yayı</div><span class="tag">Statik · Arketipik</span></div>
+      <div class="char-attr"><div class="char-attr-label">Ses</div>Ölçülü, derin, anakronik; romandaki tek "gerçek zaman" sesidir</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name">Seyit Lütfullah</div>
+      <div class="char-role">Mistik Figür · Sapkın Rehber</div>
+      <div class="char-attr"><div class="char-attr-label">Arketip</div>Gölge Akıl Hocası · Kaosu Simgeleyen</div>
+      <div class="char-attr"><div class="char-attr-label">İç Çatışma</div>Dini mistisizm ile pratik çıkar arasında</div>
+      <div class="char-attr"><div class="char-attr-label">Karakter Yayı</div><span class="tag">Belirsiz · Ayna Figürü</span></div>
+      <div class="char-attr"><div class="char-attr-label">Ses</div>Muğlak, kehanetimsi; yoruma açık ifadeler kullanır</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name">Emine</div>
+      <div class="char-role">Hayri'nin Eşi · Toplumsal Gerçeklik Çapası</div>
+      <div class="char-attr"><div class="char-attr-label">Arketip</div>Topraklı Kadın · Pratik Gerçeklik</div>
+      <div class="char-attr"><div class="char-attr-label">İç Çatışma</div>Kocasının hayal dünyası ile gündelik hayatın gerekleri</div>
+      <div class="char-attr"><div class="char-attr-label">Karakter Yayı</div><span class="tag">Statik ama işlevsel</span></div>
+      <div class="char-attr"><div class="char-attr-label">Ses</div>Kısa, pratik; düzyazı içinde ritmi kırar</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name">Aristidi Efendi</div>
+      <div class="char-role">Foil · Marjinal Başarı Temsilcisi</div>
+      <div class="char-attr"><div class="char-attr-label">Arketip</div>Şans Çocuğu · Sisteme Entegre Olan</div>
+      <div class="char-attr"><div class="char-attr-label">İç Çatışma</div>Yok denecek kadar az; bu onun ironik boyutudur</div>
+      <div class="char-attr"><div class="char-attr-label">Karakter Yayı</div><span class="tag">Düz · Hayri'nin foili</span></div>
+      <div class="char-attr"><div class="char-attr-label">Ses</div>Neşeli, pragmatik; sisteme meydan okumayan sesi</div>
+    </div>
+  </div>
+
+  <!-- Karakter İlişki Haritası -->
+  <h2 class="section-title">Karakter İlişki Haritası</h2>
+  <div class="svg-container">
+    <svg viewBox="0 0 660 320" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <!-- Edges -->
+      <line x1="330" y1="160" x2="150" y2="80" stroke="#c9a84c" stroke-width="1.5" opacity="0.5" stroke-dasharray="4,2"/>
+      <text x="225" y="108" fill="#999" font-size="9" font-family="Verdana" text-anchor="middle">Mentor</text>
+      <line x1="330" y1="160" x2="510" y2="80" stroke="#c9a84c" stroke-width="1.5" opacity="0.5"/>
+      <text x="440" y="108" fill="#999" font-size="9" font-family="Verdana" text-anchor="middle">Rakip/Efendi</text>
+      <line x1="330" y1="160" x2="150" y2="250" stroke="#c9a84c" stroke-width="1.5" opacity="0.4" stroke-dasharray="2,2"/>
+      <text x="215" y="220" fill="#999" font-size="9" font-family="Verdana" text-anchor="middle">Ayna/Foil</text>
+      <line x1="330" y1="160" x2="510" y2="250" stroke="#c9a84c" stroke-width="1" opacity="0.35"/>
+      <text x="445" y="220" fill="#999" font-size="9" font-family="Verdana" text-anchor="middle">Eş</text>
+      <line x1="330" y1="160" x2="330" y2="290" stroke="#c9a84c" stroke-width="1" opacity="0.3" stroke-dasharray="3,3"/>
+      <text x="370" y="268" fill="#999" font-size="9" font-family="Verdana">Mistik Etki</text>
+      <line x1="150" y1="80" x2="510" y2="80" stroke="#c9a84c" stroke-width="1" opacity="0.2" stroke-dasharray="2,4"/>
+      <text x="330" y="72" fill="#666" font-size="8" font-family="Verdana" text-anchor="middle">Çelişen Değerler</text>
+      <!-- Nodes -->
+      <circle cx="330" cy="160" r="36" fill="#c9a84c" opacity="0.25" stroke="#c9a84c" stroke-width="2"/>
+      <text x="330" y="156" text-anchor="middle" fill="#c9a84c" font-size="11" font-weight="bold" font-family="Verdana">Hayri</text>
+      <text x="330" y="170" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">İrdal</text>
+
+      <circle cx="150" cy="80" r="28" fill="#c9a84c" opacity="0.15" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="150" y="76" text-anchor="middle" fill="#c9a84c" font-size="10" font-family="Verdana">Nuri</text>
+      <text x="150" y="89" text-anchor="middle" fill="#c9a84c" font-size="10" font-family="Verdana">Efendi</text>
+
+      <circle cx="510" cy="80" r="28" fill="#c9a84c" opacity="0.15" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="510" y="76" text-anchor="middle" fill="#c9a84c" font-size="10" font-family="Verdana">Dr.</text>
+      <text x="510" y="89" text-anchor="middle" fill="#c9a84c" font-size="10" font-family="Verdana">Ramiz</text>
+
+      <circle cx="150" cy="250" r="24" fill="#c9a84c" opacity="0.12" stroke="#c9a84c" stroke-width="1"/>
+      <text x="150" y="246" text-anchor="middle" fill="#c9a84c" font-size="10" font-family="Verdana">Aristidi</text>
+      <text x="150" y="259" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Efendi</text>
+
+      <circle cx="510" cy="250" r="24" fill="#c9a84c" opacity="0.12" stroke="#c9a84c" stroke-width="1"/>
+      <text x="510" y="254" text-anchor="middle" fill="#c9a84c" font-size="10" font-family="Verdana">Emine</text>
+
+      <circle cx="330" cy="290" r="22" fill="#c9a84c" opacity="0.1" stroke="#c9a84c" stroke-width="1" stroke-dasharray="3,2"/>
+      <text x="330" y="286" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Seyit</text>
+      <text x="330" y="299" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Lütfullah</text>
+    </svg>
+  </div>
+
+  <!-- Foil Pairs -->
+  <h2 class="section-title">Foil Çiftleri</h2>
+  <div class="glass-card">
+    <table>
+      <thead><tr><th>Karakter A</th><th>Karakter B</th><th>Karşıtlık</th></tr></thead>
+      <tbody>
+        <tr><td>Hayri İrdal</td><td>Dr. Ramiz</td><td>Geçmişe özlem ↔ Geleceğe körü körüne inanç; özgünlük ↔ ideolojik kurgusallık</td></tr>
+        <tr><td>Nuri Efendi</td><td>Dr. Ramiz</td><td>El sanatı geleneği ↔ Bürokratik modernlik; zaman bilgeliği ↔ zaman manipülasyonu</td></tr>
+        <tr><td>Hayri İrdal</td><td>Aristidi Efendi</td><td>İçe çöküş ↔ Sistemle kaynaşma; trajedi ↔ komedi</td></tr>
+        <tr><td>Emine</td><td>Seyit Lütfullah</td><td>Toprak bağlı gerçeklik ↔ Mistik kaçış; pratik ↔ muğlaklık</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==============================
+     PAGE 3: PLOT & STRUCTURE
+============================== -->
+<section class="page" id="p3">
+  <div class="page-subtitle">Sayfa 03 · Olay Örgüsü</div>
+  <h1 class="page-title">Olay Örgüsü & Yapı</h1>
+
+  <div class="glass-card glass-card-accent">
+    <h3 class="section-title" style="margin-top:0">Tam Özet (Spoiler İçerir)</h3>
+    <p>Roman, Hayri İrdal'ın kendi yaşamını, "birisinin bana söylediğine göre" kalıbı altında yazmasıyla başlar. Büyükannesinin evinde büyüyen Hayri, bir saat tamircisi olan Nuri Efendi'nin yanında yetişir. Nuri Efendi, zamana hakiki bir saygıyla yaklaşan, el sanatını tinsel bir pratik olarak gören bir ustadır; Hayri ondan hem zanaatı hem de geçmişe ait bir değerler dünyasını miras alır.</p>
+    <p>Gençliğinde Hayri, mistik eğilimli ve muğlak bir figür olan Seyit Lütfullah'ın çevresine girer. Bu ilişki onu hem besler hem de belirli bir düzensizlik içinde bırakır. Evlendiği Emine, bu karmaşık iç dünyayı topraklayan pratik gerçekliği temsil eder.</p>
+    <p>Romanın asıl motoru, psikiyatrist ve karizmatik ideolog Dr. Ramiz Bey'in "Saatleri Ayarlama Enstitüsü"nü kurmasıyla çalışmaya başlar. Enstitünün resmi amacı, toplumun saatlerini — mecazi anlamda zihinlerini — yeniden düzenlemektir. Hayri burada yönetici olarak görev alır ve başlangıçta ideale inanan biri olarak sisteme dahil olur. Ne var ki Enstitü, zamanla hedefinden uzaklaşır; kişisel çıkarların, bürokratik ritüellerin ve anlamsız toplantıların yuvasına dönüşür. Hayri, bu dönüşümü hem hisseder hem de sistemi sürdüren biri olarak suç ortaklığı taşır.</p>
+    <p>Roman, çeşitli idari krizler, iktidar mücadeleleri ve kişisel çöküşlerden sonra Enstitü'nün dağılmasıyla kapanır. Hayri, geride bir anlatı bırakır; ama bu anlatının ne ölçüde doğru olduğu belirsizliğini korur.</p>
+  </div>
+
+  <!-- Freytag's Pyramid SVG -->
+  <h2 class="section-title">Freytag Piramidi</h2>
+  <div class="svg-container">
+    <svg viewBox="0 0 700 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+      <!-- Triangle -->
+      <polygon points="40,200 350,40 660,200" fill="none" stroke="#c9a84c" stroke-width="2" opacity="0.4"/>
+      <!-- Fill gradient -->
+      <defs>
+        <linearGradient id="pyramidGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#c9a84c" stop-opacity="0.02"/>
+        </linearGradient>
+      </defs>
+      <polygon points="40,200 350,40 660,200" fill="url(#pyramidGrad)"/>
+      <!-- Labels on the slope -->
+      <text x="155" y="130" fill="#c9a84c" font-size="10" font-family="Verdana" transform="rotate(-28,155,130)">Yükselen Eylem</text>
+      <text x="490" y="130" fill="#c9a84c" font-size="10" font-family="Verdana" transform="rotate(28,490,130)">Alçalan Eylem</text>
+      <!-- Stage markers -->
+      <circle cx="40" cy="200" r="6" fill="#c9a84c" opacity="0.6"/>
+      <text x="40" y="218" text-anchor="middle" fill="#999" font-size="9" font-family="Verdana">Serim</text>
+      <text x="40" y="229" text-anchor="middle" fill="#777" font-size="8">Hayri'nin</text>
+      <text x="40" y="239" text-anchor="middle" fill="#777" font-size="8">gençliği</text>
+
+      <circle cx="175" cy="118" r="5" fill="#c9a84c" opacity="0.6"/>
+      <text x="175" y="108" text-anchor="middle" fill="#999" font-size="9" font-family="Verdana">Nuri Efendi</text>
+
+      <circle cx="350" cy="40" r="8" fill="#c9a84c"/>
+      <text x="350" y="28" text-anchor="middle" fill="#c9a84c" font-size="10" font-weight="bold" font-family="Verdana">Doruk</text>
+      <text x="350" y="16" text-anchor="middle" fill="#999" font-size="8">Enstitü Kuruluşu</text>
+
+      <circle cx="490" cy="118" r="5" fill="#c9a84c" opacity="0.6"/>
+      <text x="490" y="108" text-anchor="middle" fill="#999" font-size="9" font-family="Verdana">Hayal Kırıklığı</text>
+
+      <circle cx="660" cy="200" r="6" fill="#c9a84c" opacity="0.4"/>
+      <text x="660" y="218" text-anchor="middle" fill="#999" font-size="9" font-family="Verdana">Son</text>
+      <text x="660" y="229" text-anchor="middle" fill="#777" font-size="8">Açık Kapanış</text>
+    </svg>
+  </div>
+
+  <!-- Tension Graph SVG -->
+  <h2 class="section-title">Gerilim Grafiği — Bölüm Bazlı</h2>
+  <div class="svg-container" style="position:relative">
+    <div class="tension-tooltip" id="tensionTip"></div>
+    <svg viewBox="0 0 660 180" width="100%" xmlns="http://www.w3.org/2000/svg" id="tensionSvg">
+      <!-- Grid -->
+      <line x1="40" y1="20" x2="40" y2="150" stroke="#333" stroke-width="1"/>
+      <line x1="40" y1="150" x2="640" y2="150" stroke="#333" stroke-width="1"/>
+      <text x="25" y="24" fill="#666" font-size="8" text-anchor="middle">10</text>
+      <text x="25" y="87" fill="#666" font-size="8" text-anchor="middle">5</text>
+      <text x="25" y="152" fill="#666" font-size="8" text-anchor="middle">0</text>
+      <!-- Tension polyline -->
+      <!-- Chapters: 1-2=2, 3=3, 4=5, 5=4, 6=7, 7=8, 8=10, 9=9, 10=7, 11=6, 12=4, 13=3 -->
+      <defs>
+        <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <polygon points="40,150 90,124 140,111 190,84 240,97 290,58 340,45 390,20 440,33 490,58 540,71 590,97 640,111 640,150"
+        fill="url(#tg)"/>
+      <polyline points="40,150 90,124 140,111 190,84 240,97 290,58 340,45 390,20 440,33 490,58 540,71 590,97 640,111"
+        fill="none" stroke="#c9a84c" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Dots -->
+      <circle cx="390" cy="20" r="5" fill="#c9a84c" stroke="#c9a84c" stroke-width="2"/>
+      <text x="390" y="14" text-anchor="middle" fill="#c9a84c" font-size="8">MAX</text>
+      <!-- Chapter labels -->
+      <text x="90" y="165" text-anchor="middle" fill="#666" font-size="8">B.1-2</text>
+      <text x="190" y="165" text-anchor="middle" fill="#666" font-size="8">B.3-4</text>
+      <text x="290" y="165" text-anchor="middle" fill="#666" font-size="8">B.5-6</text>
+      <text x="390" y="165" text-anchor="middle" fill="#666" font-size="8">B.7-8</text>
+      <text x="490" y="165" text-anchor="middle" fill="#666" font-size="8">B.9-10</text>
+      <text x="590" y="165" text-anchor="middle" fill="#666" font-size="8">B.11-13</text>
+      <text x="340" y="175" text-anchor="middle" fill="#c9a84c" font-size="9" font-family="Verdana">Bölümler →</text>
+    </svg>
+  </div>
+
+  <!-- Foreshadowing -->
+  <h2 class="section-title">Öngörü (Foreshadowing) Envanteri</h2>
+  <div class="foreshadow-grid">
+    <div class="foreshadow-item">
+      <div class="foreshadow-setup"><div class="fi-label">Öngörü</div>Nuri Efendi'nin "saat zamanı değil, zamanı ayarlar" sözü</div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div class="foreshadow-payoff"><div class="fi-label">Karşılık</div>Enstitü'nün gerçekte zamanı değil, insanları "ayarladığı" gerçeği</div>
+    </div>
+    <div class="foreshadow-item">
+      <div class="foreshadow-setup"><div class="fi-label">Öngörü</div>Seyit Lütfullah'ın "her şey bir süre sonra kendi kendini bozar" kelamı</div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div class="foreshadow-payoff"><div class="fi-label">Karşılık</div>Enstitü'nün kendi iç çelişkileriyle çöküşü</div>
+    </div>
+    <div class="foreshadow-item">
+      <div class="foreshadow-setup"><div class="fi-label">Öngörü</div>Hayri'nin çocukluktaki bozuk saatlerle oyunu</div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div class="foreshadow-payoff"><div class="fi-label">Karşılık</div>Yetişkinlikte "bozuk" sistemlerin içinde çalışmak zorunda kalması</div>
+    </div>
+    <div class="foreshadow-item">
+      <div class="foreshadow-setup"><div class="fi-label">Öngörü</div>Dr. Ramiz'in ilk konuşmasında gereğinden fazla kesinlik</div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div class="foreshadow-payoff"><div class="fi-label">Karşılık</div>Projenin belirsizlik içinde erimesi</div>
+    </div>
+    <div class="foreshadow-item">
+      <div class="foreshadow-setup"><div class="fi-label">Öngörü</div>Emine'nin "bu işlerin sonu yok" ifadesi</div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div class="foreshadow-payoff"><div class="fi-label">Karşılık</div>Anlatının açık kapanışı; sonsuz bir döngü izlenimi</div>
+    </div>
+  </div>
+
+  <!-- Subplots -->
+  <h2 class="section-title">Yan Olay Örgüleri</h2>
+  <div class="glass-card">
+    <table>
+      <thead><tr><th>Yan Öykü</th><th>Giriş</th><th>Doruk</th><th>Kapanış</th></tr></thead>
+      <tbody>
+        <tr><td>Hayri'nin aşk ve evlilik öyküsü</td><td>Gençlik aşkı</td><td>Emine ile evlilik</td><td>Düz bir birliktelik, toplumsal uzlaşmanın simgesi</td></tr>
+        <tr><td>Seyit Lütfullah çevresi</td><td>Gençlikte karışım</td><td>Gizemli etkisi</td><td>Silinip gider, izi kalır</td></tr>
+        <tr><td>Enstitü içi iktidar mücadeleleri</td><td>Kadro krizleri</td><td>派ha grupları çatışması</td><td>Kurumun işlevsizleşmesi</td></tr>
+        <tr><td>Aristidi Efendi'nin yükselişi</td><td>Marjinal varlık</td><td>Fırsatçı kazanımlar</td><td>Foil olarak tamamlanır</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==============================
+     PAGE 4: NARRATIVE CRAFT
+============================== -->
+<section class="page" id="p4">
+  <div class="page-subtitle">Sayfa 04 · Anlatıcı & Üslüp</div>
+  <h1 class="page-title">Anlatıcı & Üslüp</h1>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Bakış Açısı</div><div class="stat-value">1. Tekil</div></div>
+    <div class="stat-card"><div class="stat-label">Anlatıcı</div><div class="stat-value">Güvenilmez</div></div>
+    <div class="stat-card"><div class="stat-label">Zaman Kipi</div><div class="stat-value">Geçmiş</div></div>
+    <div class="stat-card"><div class="stat-label">Ses</div><div class="stat-value">İronik · Lirik</div></div>
+    <div class="stat-card"><div class="stat-label">Mesafe</div><div class="stat-value">Yakın-Orta</div></div>
+    <div class="stat-card"><div class="stat-label">Anlatı Türü</div><div class="stat-value">Çerçeve Anlatı</div></div>
+  </div>
+
+  <div class="glass-card glass-card-accent">
+    <h3 class="section-title" style="margin-top:0">Güvenilmez Anlatıcı Analizi</h3>
+    <p>Hayri İrdal, kendi yaşamını yazarken sürekli "bana söylediğine göre" veya "sanırım böyle oldu" gibi epistemic çekinceleri devreye sokar. Bu, klasik güvenilmez anlatıcı mekanizmasının Türk romanındaki en rafine örneklerinden biridir. Okuyucu, anlatıcının gerçeği tam olarak iletip iletmediğini bilemez; bu belirsizlik kasıtlıdır. Tanpınar, bireysel hafızanın seçici ve öz-savunmacı yapısını; modernleşme döneminin "resmi tarih" anlatıları ile bireyin öznel deneyimi arasındaki uçurumu bu teknikle gözler önüne serer.</p>
+  </div>
+
+  <h2 class="section-title">Bakış Açısının Gerçeğe Erişimi Şekillendirmesi</h2>
+  <p>Birinci tekil bakış açısı, okurun yalnızca Hayri'nin süzgecinden geçen bilgiye ulaşmasını sağlar. Dr. Ramiz'in gerçek motivasyonları, Seyit Lütfullah'ın hakiki doğası ya da diğer karakterlerin iç dünyaları okura doğrudan açılmaz. Bu yapı, romanın en büyük hiciv gücünü oluşturur: anlatan kişi, anlattığı sistemin kurbanı ve suç ortağıdır.</p>
+
+  <h2 class="section-title">Geçmiş Zamanın Etkileri</h2>
+  <p>Roman geçmiş zamanda anlatılır; bu durum, olaylar ile anlatı arasına bir mesafe koyar. Hayri, her şeyi "olup bitmiş" bir perspektiften aktarır. Bu retrospektif yapı nostalji duygusunu kuvvetlendirir; aynı zamanda anlatıcının geçmişi "yeniden kurguladığı" şüphesini besler. Zaman kipinin kendisi, romanın merkezi teması olan "zamanı ayarlama" meselesinin üslupsal bir uzantısına dönüşür.</p>
+
+  <h2 class="section-title">Ses Analizi — Biçimsel / Söylemsel</h2>
+  <p>Tanpınar'ın nesri, Cumhuriyet sonrası sade dil çabalarının aksine, Osmanlıca kelime hazinesini ve terkipli cümle yapısını koruyan özgün bir ses taşır. Bu seçim ideolojiktir: Hayri'nin sesi, modernleşmenin reddedilmesi değil, iki dünya arasında kalmış bir melezliğin seslenişidir. Lirizm, ironiyle iç içe geçer; uzun, sarmal cümleler içinde birdenbire sert bir ironi sıkışır.</p>
+
+  <h2 class="section-title">Göster, Anlatma — 5 Spesifik Örnek</h2>
+  <div class="glass-card">
+    <div class="device-list">
+      <li>
+        <span class="device-label">1. Enstitü Toplantıları</span>
+        <span>Hayri katıldığı toplantıları anlatırken konuşmaların içeriğini değil, katılımcıların beden dilini, masanın üzerindeki kâğıtların karmaşıklığını ve toplantı salonunun havasını betimler. İşlevsizliği söylemek yerine <em>gösterir</em>.</span>
+      </li>
+      <li>
+        <span class="device-label">2. Nuri Efendi'nin Atölyesi</span>
+        <span>Ustanın "iyi" ya da "bilge" olduğu söylenmez; atölyedeki saatlerin düzeni, aletin dikkatlice bırakıldığı yer, sessizlik içinde çalışma ritmi bunu iletir.</span>
+      </li>
+      <li>
+        <span class="device-label">3. Emine'nin Tepkileri</span>
+        <span>Emine'nin hayal kırıklığı, Hayri'ye yönelik uzun eleştiriler yerine kısa, kesik cümlelerle ve gündelik jestlerle iletilir: tabağı masaya bırakma sesi, tek heceli yanıtlar.</span>
+      </li>
+      <li>
+        <span class="device-label">4. Dr. Ramiz'in Konuşmaları</span>
+        <span>Okuyucu, Dr. Ramiz'in hitabetiyle büyülenmenin nasıl bir his olduğunu, Hayri'nin bu konuşmalar sonrasında hissettiği fiziksel yorgunluk ve coşku karışımı üzerinden kavrar.</span>
+      </li>
+      <li>
+        <span class="device-label">5. Enstitü'nün Çöküşü</span>
+        <span>Kurumun fiilen bitmesi, uzun bir "çöktü" cümlesiyle değil; personelin azalması, mektupların cevaplanmaması ve ofislerin sessizleşmesiyle aktarılır.</span>
+      </li>
+    </div>
+  </div>
+
+  <h2 class="section-title">Serbest Dolaylı Söylem (Free Indirect Discourse)</h2>
+  <p>Tanpınar, özellikle Hayri'nin diğer karakterleri aktarırken onların düşüncelerine kayar, ancak bu geçiş işaretlenmez. "Ramiz Bey haklıydı; ya biz? Biz de gülünç müydük?" gibi cümleler, Hayri'nin mi yoksa örtük bir kolektif sesin mi sözü olduğunu belirsizleştirir. Bu teknik, bireysel suçlulukla toplumsal çöküşü aynı anda gösterir.</p>
+</section>
+
+<!-- ==============================
+     PAGE 5: THEME & PHILOSOPHY
+============================== -->
+<section class="page" id="p5">
+  <div class="page-subtitle">Sayfa 05 · Tema & Felsefe</div>
+  <h1 class="page-title">Tema & Felsefe</h1>
+
+  <h2 class="section-title">Temel Temalar</h2>
+  <div class="glass-card glass-card-accent">
+    <p><strong style="color:var(--accent)">1. Zaman ve Kimlik:</strong> Romanın merkezi metaforu saattir; ama asıl soru şudur: kim kimin zamanını ayarlar? Modernleşme, bireyin iç zamanını dışarıdan belirlenmiş bir ritme uydurmak anlamına gelir. Hayri'nin varoluşu, bu dışsal ritim ile içsel zamanı arasındaki kronik uyumsuzluktan kaynaklanır. Tanpınar, Bergson'un "durée" (içsel zaman) kavramını Türk deneyimine taşır.</p>
+    <p><strong style="color:var(--accent)">2. Doğu-Batı Gerilimi ve Modernleşme Patolojisi:</strong> Osmanlı'nın çöküşünden Cumhuriyet'in inşasına uzanan dönemde toplumun Batılı kurumları özümseyememesi; benimsenen biçimlerin içinin boşaltılması. Enstitü, bu patolojinin karikatürüdür: Batılı akılcı kurumun görünüşü, geleneksel güç oyunlarının içeriği.</p>
+    <p><strong style="color:var(--accent)">3. Bürokrasi ve Absürdite:</strong> Enstitü, Kafka'nın bürokrasisinin Türkiye yerelleşmiş halidir. Amaç araçla yer değiştirir; saatleri ayarlamak yerine toplantı düzenlemek, toplantı düzenlemek yerine bütçe hazırlamak… Her katman anlamı bir adım daha uzaklaştırır.</p>
+    <p><strong style="color:var(--accent)">4. Hafıza ve Tarih:</strong> Hayri'nin anlatısı, bireysel hafızanın tarihsel olanı nasıl biçimlendirdiğini — ve biçimsizleştirdiğini — gösterir. Resmi tarih anlatıları ile yaşanan deneyim arasındaki mesafe, romanın yapısal ereği haline gelir.</p>
+    <p><strong style="color:var(--accent)">5. Bireyin Sistemde Erimesi:</strong> Hayri, sisteme dahil olarak onu eleştiremez konuma gelir. Bu, Lukács'ın "reification" (nesneleşme) kavramının edebi karşılığıdır: birey kendi yarattığı ilişkilerin nesnesine dönüşür.</p>
+  </div>
+
+  <!-- Ambiguity Section -->
+  <h2 class="section-title">Askıda Bırakma — Belirsizlik Analizi</h2>
+  <p>Tanpınar, okuyucuyu birden fazla yoruma eşit uzaklıkta tutan bir anlatı stratejisi izler. Aşağıdaki gerilimler çözümsüz bırakılmıştır:</p>
+
+  <div class="ambiguity-item">
+    <div class="ambiguity-tension">1. Hayri İrdal masum mu, suç ortağı mı?</div>
+    <p class="ambiguity-vs">← Sistemin kurbanı olarak boyun eğen mi / Sistemi sürdüren aktif fail mi? →</p>
+    <p style="font-size:12px;margin-top:10px;color:var(--text-muted)">Tanpınar bu gerilimi çözmez çünkü modernleşme suçluluğu kolektiftir; mağduriyet ile ortak olmak arasındaki sınırı silmek, romanın siyasi iddiasını taşır.</p>
+  </div>
+  <div class="ambiguity-item">
+    <div class="ambiguity-tension">2. Dr. Ramiz gerçekten inanıyor mu, yoksa bilinçli manipülatör mü?</div>
+    <p class="ambiguity-vs">← Samimi idealist / İktidar peşinde koşan sahtekâr →</p>
+    <p style="font-size:12px;margin-top:10px;color:var(--text-muted)">Bu muğlaklık, romanı salt bireysel hicivden kurtarır; sistemlerin "güzel niyetli" figürler eliyle de nasıl yozlaşabileceğini gösterir.</p>
+  </div>
+  <div class="ambiguity-item">
+    <div class="ambiguity-tension">3. Anlatı güvenilir mi?</div>
+    <p class="ambiguity-vs">← Hayri dürüstçe anlatıyor / Kendini aklamak için kurguluyor →</p>
+    <p style="font-size:12px;margin-top:10px;color:var(--text-muted)">Güvenilmez anlatıcı stratejisi, romanın tüm iddiasını epistemik bir soru işaretiyle çerçeveler. Bu, modernist anlatının en güçlü oyunudur.</p>
+  </div>
+  <div class="ambiguity-item">
+    <div class="ambiguity-tension">4. Modernleşme iyi mi, kötü mü?</div>
+    <p class="ambiguity-vs">← İlerleme zorunludur ve değerlidir / İlerleme kültürel soykırımdır →</p>
+    <p style="font-size:12px;margin-top:10px;color:var(--text-muted)">Roman, her iki tutumu da satirize eder. Geri dönüşçüler nostaljiye hapsolmuştur; modernistler ise boş biçimlere tapınmaktadır. Tanpınar üçüncü bir yol sunmaz.</p>
+  </div>
+  <div class="ambiguity-item">
+    <div class="ambiguity-tension">5. Enstitü absürd mü, trajik mi?</div>
+    <p class="ambiguity-vs">← Komik bir hiciv / Gerçek bir toplumsal yıkım sahnesi →</p>
+    <p style="font-size:12px;margin-top:10px;color:var(--text-muted)">Tanpınar'ın üslubu bu iki boyutu eşzamanlı taşır. Güldürürken acıtır; bu trajikomik gerilim, romanın duygusal imzasıdır.</p>
+  </div>
+  <div class="ambiguity-item">
+    <div class="ambiguity-tension">6. Nuri Efendi'nin temsil ettiği geçmiş idealleştirilmeli mi?</div>
+    <p class="ambiguity-vs">← Gerçekten üstün bir değerler dünyası / Romantize edilmiş yenilgi →</p>
+    <p style="font-size:12px;margin-top:10px;color:var(--text-muted)">Hayri'nin Nuri Efendi'ye hayranlığı, anlatısının en güvenilmez noktasıdır. Geçmişin mükemmelliği mi, yoksa hafızanın idealleştirme eğilimi mi? Roman cevap vermez.</p>
+  </div>
+
+  <!-- Philosophical Connections -->
+  <h2 class="section-title">Felsefi Boyutlar & Düşünürler</h2>
+  <div class="glass-card">
+    <table>
+      <thead><tr><th>Düşünür / Akım</th><th>Kavram</th><th>Romandaki Tezahür</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Henri Bergson</strong></td><td>Durée (İçsel Zaman)</td><td>Hayri'nin subjektif zaman algısı ile saatin mekanik zamanı arasındaki çatışma; romanın başlığının kendisi bu dualiteye atıftır.</td></tr>
+        <tr><td><strong>Franz Kafka</strong></td><td>Bürokratik Absürd</td><td>Enstitü, anlamsız ama dayatılan prosedürler bütünüdür. Kafka'nın Şato'sunun sıkışıklığı burada hicivle işlenir.</td></tr>
+        <tr><td><strong>Albert Camus</strong></td><td>Absürdizm</td><td>Hayri'nin anlam arayışı sürekli boş sistemlerle karşılaşır. Camus'nün Sisifos'u gibi Hayri de anlamsız bir emekle yaşar; ama trajik kahramanlık yerine trajik komiklik içindedir.</td></tr>
+        <tr><td><strong>Georg Lukács</strong></td><td>Reification (Nesneleşme)</td><td>Hayri ve diğer çalışanlar, Enstitü içinde araçsallaştırılır; kendi yarattıkları ilişkilerin nesnelerine dönüşürler.</td></tr>
+        <tr><td><strong>Hegel / Marx</strong></td><td>Yabancılaşma</td><td>İnsan emeğinin ve kimliğinin soyut kurumsal süreçler içinde kaybolması; bireysel özün kolektif işlevsizlikte erimesi.</td></tr>
+        <tr><td><strong>Ziya Gökalp / Durkheim</strong></td><td>Toplumsal Dayanışma Çöküşü</td><td>Osmanlı cemaat değerleri ile Cumhuriyet'in dayatılmış kolektivizmi arasındaki anomik boşluk; Hayri bu boşluğun bedenlenişidir.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Intertextual -->
+  <h2 class="section-title">Metinlerarası Referanslar</h2>
+  <div class="glass-card">
+    <div class="device-list">
+      <li><span class="device-label">Kafka — Şato/Dava</span><span>Enstitü'nün anlamsız bürokratik yapısı, Kafka'nın kurumsal labirentlerini doğrudan çağrıştırır. Her ikisinde de giriş vaadi çıkışsız bırakır.</span></li>
+      <li><span class="device-label">Proust — Kayıp Zaman</span><span>Hayri'nin geçmişe dönük anlatısı ve zamanın öznel olarak yaşandığı fikri Proust'la rezonans kurar; ancak Tanpınar nostaljiyi romantic değil, ironik bir araç olarak kullanır.</span></li>
+      <li><span class="device-label">Cervantes — Don Kişot</span><span>Hayri, gerçekliği ideallerle uyumsuz biçimde yorumlayan bir figür olarak Don Kişot'u anıştırır; ancak Hayri'nin deliliği bireysel değil, toplumsal kaynaklıdır.</span></li>
+      <li><span class="device-label">Gogol — Ölü Canlar</span><span>Gogol'ün Rus bürokrasisini hicivli bürokratik karikatürlerle işlemesi, Tanpınar'ın Türkiye portresiyle yapısal bir benzerlik taşır.</span></li>
+      <li><span class="device-label">Divan Edebiyatı</span><span>Hayri'nin büyük usta figürlerine duyduğu hayranlık, divan geleneğindeki "mürşit" figürünü laik ve trajikomik bir bağlamda yeniden üretir.</span></li>
+    </div>
+  </div>
+
+  <!-- Symbolic Inventory -->
+  <h2 class="section-title">Semboller Envanteri</h2>
+  <div class="glass-card">
+    <table>
+      <thead><tr><th>Sembol</th><th>İlk Görünüş</th><th>Katmanlı Anlamlar</th></tr></thead>
+      <tbody>
+        <tr><td>Saat</td><td>Nuri Efendi'nin atölyesi</td><td>Zaman / Modernlik / Kontrol / Kimlik ölçütü / Araçsallaştırma</td></tr>
+        <tr><td>Enstitü</td><td>Dr. Ramiz'in önerisi</td><td>Reformun boşluğu / Bürokratik absürd / Kolektif inkar / Modern devlet patolojisi</td></tr>
+        <tr><td>Bozuk saat</td><td>Çocukluk sahnesi</td><td>Çalışmayan sistem / Düzeltilemez geçmiş / Hayri'nin işlevselliğinin sınırları</td></tr>
+        <tr><td>Atölye / Zanaat mekânı</td><td>Nuri Efendi ile</td><td>Kaybedilmiş zaman / Gerçek emek / Anlam</td></tr>
+        <tr><td>Toplantı odası</td><td>Enstitü dönemi</td><td>Ritüelleşmiş anlamsızlık / Güç söylemi / İletişimsizlik</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==============================
+     PAGE 6: CONFLICT & TENSION
+============================== -->
+<section class="page" id="p6">
+  <div class="page-subtitle">Sayfa 06 · Çatışma & Gerilim</div>
+  <h1 class="page-title">Çatışma & Gerilim</h1>
+
+  <h2 class="section-title">Çatışma Taksonomisi</h2>
+  <div class="glass-card">
+    <table>
+      <thead><tr><th>Tür</th><th>Durum</th><th>Tezahür</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Birey ↔ Birey</strong></td><td><span class="tag">Aktif</span></td><td>Hayri ile Dr. Ramiz arasındaki güç asimetrisi; Hayri'nin ustaları ile modernistler arasındaki değer çatışması</td></tr>
+        <tr><td><strong>Birey ↔ Kendilik</strong></td><td><span class="tag">Dominant</span></td><td>Hayri'nin kim olduğu ile kim olması "gerektiği" arasındaki kronik gerilim; kimlik krizinin tüm romanı kaplayan sessiz gürültüsü</td></tr>
+        <tr><td><strong>Birey ↔ Toplum</strong></td><td><span class="tag">Aktif</span></td><td>Osmanlı değerleri ile Cumhuriyet'in modernleşme projesi arasında sıkışan birey; toplumun "zaman ayarına" zorunlu uymak</td></tr>
+        <tr><td><strong>Birey ↔ Tarih</strong></td><td><span class="tag">Yapısal</span></td><td>Hayri'nin kişisel hikâyesini anlamlı kılmaya çalışması; tarihsel değişimlerin bireyi silip geçmesi</td></tr>
+        <tr><td><strong>Birey ↔ Sistem</strong></td><td><span class="tag">Merkezi</span></td><td>Enstitü makinasının Hayri'yi yutması; reformun bireysel özgürlüğü değil, yeni bir kafes inşa etmesi</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Birincil Çatışma Yayı</h2>
+  <div class="glass-card glass-card-accent">
+    <p><strong style="color:var(--accent)">Giriş:</strong> Hayri'nin kimliği geçmiş (Nuri Efendi, Osmanlı zanaatı) ile yeni talep (modernlik, reformcu kimlik) arasında şekillenir. Okuyucu bu gerilimi başından hisseder ama Hayri henüz adını koyamaz.</p>
+    <p><strong style="color:var(--accent)">Gelişme:</strong> Enstitü, bu gerilimi kurumsal bir bağlama taşır. Hayri artık sistemi hem yönetmek hem de sorgulamak zorundadır; ikisi aynı anda imkânsız görünür.</p>
+    <p><strong style="color:var(--accent)">Doruk:</strong> Enstitü'nün asıl amacından tamamen sapması ve Hayri'nin bu sapmanın aktif parçasına dönüşmesi.</p>
+    <p><strong style="color:var(--accent)">Kapanış:</strong> Çatışma çözülmez; Hayri anlatısını tamamlar ama kimlik meselesi askıda kalır. Roman boyunca süren gerilim, kapanışta da devam ediyor izlenimi bırakır.</p>
+  </div>
+
+  <h2 class="section-title">Gerilim İnşa Teknikleri</h2>
+  <div class="glass-card">
+    <div class="device-list">
+      <li><span class="device-label">Bilgi Gizleme</span><span>Hayri, bazı kararlarının nedenlerini okuyucuya vermez; bu boşluklar gerilim yaratır. Dr. Ramiz'in gerçek niyeti doğrudan açıklanmaz.</span></li>
+      <li><span class="device-label">Dramatik İroni</span><span>Okuyucu, Hayri'nin idealize ettiği şeylerin ne denli çürük olduğunu yavaş yavaş fark eder; bu fark ediş, Hayri'nin farkındalıksızlığıyla çarpışarak gerilim üretir.</span></li>
+      <li><span class="device-label">Zaman Baskısı</span><span>Enstitü'nün çeşitli "kriz anları" ve toplantı tarihleri, anlatıya dönemsel bir aciliyet kazandırır.</span></li>
+      <li><span class="device-label">Ahlaki İkilem</span><span>Hayri, kişisel çıkarı ile dürüstlük arasında sürekli tercihe zorlanır; bu ikilemler okuyucuyu aktif bir yargılayıcı konumuna taşır.</span></li>
+      <li><span class="device-label">Bölüm Kapanışları</span><span>Tanpınar, bölümleri sorular veya yarım kalmış düşüncelerle kapatır; bir sonraki bölüme geçişi zorunlu hissettirir.</span></li>
+    </div>
+  </div>
+
+  <h2 class="section-title">İkincil Çatışmalar</h2>
+  <div class="glass-card">
+    <table>
+      <thead><tr><th>Çatışma</th><th>Taraflar</th><th>Sonuç</th></tr></thead>
+      <tbody>
+        <tr><td>Değer sistemi çatışması</td><td>Nuri Efendi geleneği ↔ Dr. Ramiz modernizmi</td><td>İkisi de gerçek anlamda kazanamaz; Tanpınar'ın ironik karşıtı bu</td></tr>
+        <tr><td>Aile içi uyumsuzluk</td><td>Hayri ↔ Emine</td><td>Uzlaşı değil, paralel varlıklar; trajedi komediye dönüşür</td></tr>
+        <tr><td>Mistisizm ↔ Pragmatizm</td><td>Seyit Lütfullah çevresi ↔ Enstitü bürokratları</td><td>İkisi de Hayri'yi dönüştürmekte başarısız olur</td></tr>
+        <tr><td>Bireysel hafıza ↔ Kolektif tarih</td><td>Hayri'nin anlatısı ↔ "Resmi" modernleşme tarihi</td><td>Roman boyunca devam eden sessiz sürtüşme</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ==============================
+     PAGE 7: LITERARY DEVICES
+============================== -->
+<section class="page" id="p7">
+  <div class="page-subtitle">Sayfa 07 · Edebi Sanat</div>
+  <h1 class="page-title">Edebi Sanat & Biçem</h1>
+
+  <h2 class="section-title">İmge ve Motif</h2>
+  <div class="glass-card glass-card-accent">
+    <p>Romanın egemen imgesi <strong style="color:var(--accent)">saattir</strong> ve bu imge hem somut hem mecazi düzlemde sürekli dolaşır. Ama buna eşlik eden ikincil bir imge daha vardır: <strong style="color:var(--accent)">döngü</strong>. Hayri'nin anlatısı döngüsel bir yapıya sahiptir; sonunda başa döner gibidir. Bu döngüsellik, romanın "zamanı ayarlama" projesinin başarısızlığını form düzeyinde pekiştirir. Diğer yinelemeli imgeler arasında <em>boş odalar</em> (kaybedilen geçmiş), <em>toplantı masaları</em> (anlamsız iktidar ritüelleri) ve <em>yazılı belgeler</em> (bürokrasinin kalıcılığı) sayılabilir.</p>
+  </div>
+
+  <h2 class="section-title">Metafor & Benzetme Analizi</h2>
+  <div class="glass-card">
+    <div class="device-list">
+      <li><span class="device-label">Merkezi Metafor</span><span>"Saati ayarlamak" = Toplumu/bireyi belirli bir modernlik parametresine zorla uydurmak. Tanpınar bu metaforu hem başlığa hem de yapıya işler.</span></li>
+      <li><span class="device-label">Kurumsal Makine</span><span>Enstitü bir makineye benzetilmez ama makine gibi davranır: girdiler alır, anlamsız çıktılar üretir, kendini döngüsel olarak besler.</span></li>
+      <li><span class="device-label">Saat Tamiri Analogu</span><span>Nuri Efendi'nin saatleri onarması, "doğru zaman"ın elle dokunulur, sabırlı emekle kurulabileceğini öngörür; Dr. Ramiz'in kurumsal girişimi ise bu analojinin karikatürüdür.</span></li>
+      <li><span class="device-label">Zaman Nehri</span><span>Hayri'nin geçmişini anlatması, geçmişin "akan" değil "duruk" bir nehir olduğunu imler; zamanı durdurmak da ayarlamak da imkânsızdır.</span></li>
+    </div>
+  </div>
+
+  <h2 class="section-title">İroni Türleri</h2>
+  <div class="glass-card">
+    <table>
+      <thead><tr><th>İroni Türü</th><th>Örnek</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Durumsal İroni</strong></td><td>Saatleri ayarlamayı amaçlayan bir kurum, zamanla kendi zamanını yönetemez hale gelir; en büyük ironi budur.</td></tr>
+        <tr><td><strong>Dramatik İroni</strong></td><td>Okuyucu, Hayri'nin anlattığı kişilerin ne kadar güvenilmez olduğunu, Hayri'nin kendisinden önce anlar. Bu asimetri, hicvin gücünü oluşturur.</td></tr>
+        <tr><td><strong>Sözel İroni</strong></td><td>Hayri'nin Dr. Ramiz'i övdüğü cümleler içinde gömülü, tam tersi anlamlar üretir. Tanpınar, methiyeyi hicve dönüştürmekte ustadır.</td></tr>
+        <tr><td><strong>Tarihsel İroni</strong></td><td>Modernleşme reformlarının "aydınlanma" getireceği vaadi, pratikte yeni bir karanlık üretir. Tarihsel bağlam, her okuyucunun getirdiği ekstra anlam katmanıdır.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Ton Değişimleri</h2>
+  <div class="glass-card">
+    <div class="device-list">
+      <li><span class="device-label">Nostaljik Lirizm</span><span>Hayri çocukluğunu ve Nuri Efendi dönemini anlatırken uzun, ritmik, sıcak cümleler kullanır. Ton ısınır, yavaşlar.</span></li>
+      <li><span class="device-label">Komik Hiciv</span><span>Enstitü sahnelerinde ton keskinleşir, gözlemler parodik bir his taşır; absürd durumlar neredeyse soğukkanlılıkla aktarılır.</span></li>
+      <li><span class="device-label">Melankolik Felsefe</span><span>Bölüm sonlarında Hayri'nin refleksif yorumları, tonu varoluşsal bir yorgunluğa kaydırır. Bu anlarda roman "düşünen" bir ses taşır.</span></li>
+      <li><span class="device-label">Kuru Bürokratik</span><span>Enstitü belgelerini ya da toplantı tutanaklarını aktarırken üslup kasıtlı olarak ruhsuzlaşır; bu ton değişimi kendi başına hicivdir.</span></li>
+    </div>
+  </div>
+
+  <h2 class="section-title">Hız (Pacing) Analizi</h2>
+  <div class="glass-card glass-card-accent">
+    <p><strong style="color:var(--accent)">Yavaşlama:</strong> Tanpınar, Hayri'nin Nuri Efendi ile geçirdiği anları, saat tamirinin ayrıntılarını, geçmişin dokusunu anlatırken tempoyu bilinçli olarak yavaşlatır. Bu yavaşlık, hafızanın nasıl işlediğini —seçici, sıcak, ayrıntıcı— biçimsel düzeyde taklit eder.</p>
+    <p><strong style="color:var(--accent)">Hızlanma:</strong> Enstitü krizleri, siyasi çalkantılar ve kurumsal çöküşler hızlı, art arda gelen sahnelerle aktarılır. Bu hızlanma, modernliğin kendisinin getirdiği yorgunluğu ve bireyin bu hızı kavrayamayışını somutlaştırır.</p>
+    <p><strong style="color:var(--accent)">Ritim:</strong> Uzun, içe bakan bölümler ile kısa, dışa bakan kriz anları arasındaki ritimsel almaşık, okuyucuda nefes alma ile nefes tutma arasında gidip gelen fiziksel bir his üretir.</p>
+  </div>
+
+  <h2 class="section-title">Yapısal Araçlar</h2>
+  <div class="glass-card">
+    <div class="device-list">
+      <li><span class="device-label">Çerçeve Anlatı</span><span>Roman, Hayri'nin anılarını "dışarıdan" yazdığı iddiasıyla başlar. Bu çerçeve, güvenilirlik sorusunu en baştan gündeme taşır.</span></li>
+      <li><span class="device-label">Analepsis (Geri Dönüş)</span><span>Anlatı doğrusal değildir; Hayri sık sık daha önceki olaylara döner. Bu yapı, hafızanın doğrusal olmayan mantığını taklit eder.</span></li>
+      <li><span class="device-label">In Medias Res Etkisi</span><span>Okuyucu, Hayri'nin kişiliği ve durumu hakkında bilgileri parça parça, geri dönüşler aracılığıyla toplar.</span></li>
+      <li><span class="device-label">Döngüsel Kapanış</span><span>Son bölümün başlangıçla kurduğu tonal benzerlik, romanı kapalı bir döngü içinde bırakır; zaman gerçekten "ayarlanamaz" hissi pekişir.</span></li>
+    </div>
+  </div>
+</section>
+
+<!-- ==============================
+     PAGE 8: COMPARATIVE CONTEXT
+============================== -->
+<section class="page" id="p8">
+  <div class="page-subtitle">Sayfa 08 · Karşılaştırmalı Bağlam</div>
+  <h1 class="page-title">Karşılaştırmalı Bağlam</h1>
+
+  <div class="glass-card glass-card-accent">
+    <h3 class="section-title" style="margin-top:0">Edebi Gelenek İçindeki Yeri</h3>
+    <p><em>Saatleri Ayarlama Enstitüsü</em>, Türk edebiyatında <strong style="color:var(--accent)">yüksek modernizm</strong> ile <strong style="color:var(--accent)">siyasi hiciv</strong>in en rafine bileşimini temsil eder. Tanpınar, Avrupa modernizminin bilinç akışı ve güvenilmez anlatıcı tekniklerini özümseyerek Türkiye'nin özgün modernleşme deneyimine uygulamıştır. Eserin, salt "Batı taklidi" olmadığı; aksine Türk kültürel belleğini modernist formla özgün biçimde kaynaştırdığı bilinmektedir. Roman, postkolonyal edebiyatın temel kaygısını —Batı kurumlarının yerel bağlamda özgünleşememesi— postkolonyal teori doğmadan önce içkin biçimde işler.</p>
+  </div>
+
+  <h2 class="section-title">Benzer Eserler — 5 Karşılaştırma</h2>
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="char-name" style="font-size:16px">Dava</div>
+      <div class="char-role">Franz Kafka · 1925</div>
+      <div class="char-attr"><div class="char-attr-label">Ortak Temalar</div>Anlamsız bürokratik sistemler; bireyin kurumsal labirentte yok oluşu; suçluluk ve masumiyet arasındaki belirsizlik</div>
+      <div class="char-attr"><div class="char-attr-label">Yapısal Benzerlik</div>Her iki roman da sistemin anlamsızlığını "normal" gibi sunan anlatı tonuyla güçlendirir</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name" style="font-size:16px">Ölü Canlar</div>
+      <div class="char-role">Nikolai Gogol · 1842</div>
+      <div class="char-attr"><div class="char-attr-label">Ortak Temalar</div>Toplumsal çürüme ve bürokrasinin hicvi; sıradan figürler aracılığıyla toplumsal anatominin ortaya konması</div>
+      <div class="char-attr"><div class="char-attr-label">Fark</div>Gogol'de hiciv daha doğrudan; Tanpınar güvenilmez anlatıcıyla ek bir epistemik katman ekler</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name" style="font-size:16px">İnce Memed</div>
+      <div class="char-role">Yaşar Kemal · 1955</div>
+      <div class="char-attr"><div class="char-attr-label">Ortak Temalar</div>Türkiye toplumunun dönüşüm çalkantısı; güçsüzün sesini merkeze alma</div>
+      <div class="char-attr"><div class="char-attr-label">Fark</div>Kemal toplumsal gerçekçilik içinde kalır; Tanpınar absürd ve modernist alana geçer</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name" style="font-size:16px">Beyaz Şato</div>
+      <div class="char-role">Orhan Pamuk · 1985</div>
+      <div class="char-attr"><div class="char-attr-label">Ortak Temalar</div>Doğu-Batı kimlik gerilimi; güvenilmez anlatı; kimlik ve ayna metaforu</div>
+      <div class="char-attr"><div class="char-attr-label">Etki</div>Pamuk, Tanpınar mirasını açıkça sahiplenmiştir; bu ikili, Türk modernist romanının iki kılavuz yıldızıdır</div>
+    </div>
+    <div class="char-card">
+      <div class="char-name" style="font-size:16px">Şeker Portakalı</div>
+      <div class="char-role">José Mauro de Vasconcelos · 1968</div>
+      <div class="char-attr"><div class="char-attr-label">Ortak Temalar</div>Büyüme öyküleri, kültürel kırılma noktaları, çocukluk perspektifinden toplum eleştirisi</div>
+      <div class="char-attr"><div class="char-attr-label">Fark</div>Vasconcelos sentimental/lirik; Tanpınar ironik ve mesafeli kalır</div>
+    </div>
+  </div>
+
+  <!-- Author Influences -->
+  <h2 class="section-title">Tanpınar'ın Edebi Etkileri</h2>
+  <div class="glass-card">
+    <div class="device-list">
+      <li><span class="device-label">Marcel Proust</span><span>Zamanın öznel deneyimi, anıların geri getirilişi, geçmişin yeniden inşası. Tanpınar'ın Proust hayranlığı yazılarında doğrudan ifade edilmiştir.</span></li>
+      <li><span class="device-label">Henri Bergson</span><span>Yaratıcı evrim, içsel zaman (durée) ile mekanik zaman ayrımı. Romanın başlığı bu felsefi ikiliğin edebi yanıtıdır.</span></li>
+      <li><span class="device-label">Ahmet Haşim</span><span>Sembolist şiir geleneği ve Osmanlı estetiğinin korunması. Tanpınar'ın lirik nesri bu geleneği romana taşır.</span></li>
+      <li><span class="device-label">Yahya Kemal Beyatlı</span><span>Tanpınar'ın hocası; klasik şiiri modern duyarlıkla buluşturma projesi doğrudan etki bırakmıştır.</span></li>
+      <li><span class="device-label">Divan Edebiyatı</span><span>Kelime hazinesi, imgeler, zaman anlayışı ve "mürşit" figürleri gibi yapısal unsurlar romanda laik biçimde yaşamaya devam eder.</span></li>
+    </div>
+  </div>
+
+  <!-- Critical Reception -->
+  <h2 class="section-title">Eleştirel Kabul</h2>
+  <div class="glass-card glass-card-accent">
+    <p>Roman, yayımlandığı 1961 yılında Türk edebiyat çevrelerinde hem hayranlık hem de tartışma yarattı. Siyasi açıdan hassas bir dönemde (1960 askeri darbesi sonrası) yayımlanan roman, modernleşme projesinin eleştirisini içerdiği için bazı çevrelerde olumsuz karşılandı. Ancak özellikle 1970'lerden itibaren Tanpınar'ın "yeniden keşfi" yaşandı ve roman, Türk modernizminin kurucu metinlerinden biri olarak kabul gördü.</p>
+    <p>Uluslararası alanda çevirilerle (özellikle İngilizce'ye Maureen Freely çevirisiyle) tanınan roman, Avrupa postkolonyal edebiyat tartışmalarına Türk sesi olarak dahil oldu. Orhan Pamuk'un Tanpınar üzerine yazdığı denemeler, bu yeniden değerlendirmeyi pekiştirdi.</p>
+  </div>
+
+  <!-- Why It Matters -->
+  <h2 class="section-title">Bu Romanın Önemi</h2>
+  <div class="glass-card">
+    <p><em>Saatleri Ayarlama Enstitüsü</em>, üç büyük nedenden dolayı dünya edebiyatı içinde özgün bir konuma sahiptir:</p>
+    <p><strong style="color:var(--accent)">1. Evrensel ama yerel:</strong> Modernleşmenin patolojilerini, bürokratik absürdü ve kimlik krizini Türkiye özgülünde işlerken bu sorunların evrenselliğini de kanıtlar. Hiçbir ülke bu gerilimden muaf değildir.</p>
+    <p><strong style="color:var(--accent)">2. Form-içerik bütünlüğü:</strong> Romanın anlatı biçimi — güvenilmez anlatıcı, döngüsel yapı, geçmiş zaman — içeriğini pekiştirir. "Zamanı ayarlama" hem konu hem de biçimsel problem haline gelir.</p>
+    <p><strong style="color:var(--accent)">3. Öngörüsü:</strong> 1961'de yazılmış olan roman, postkolonyal teori, kurumsal absürd üzerine düşünce ve kimlik siyaseti tartışmalarının çok önünde bir anlayış sergiler. Bugün okunduğunda, çağımızın reform fetişizmine karşı bir ayna tutar.</p>
+  </div>
+
+  <div class="quote-block">
+    "Biz bu memlekette birkaç şeyi bir arada yapıyoruz: hem eskiyi yaşıyoruz, hem yeniyi bekliyoruz, hem de ikisinin arasında sıkışıp ne olduğumuzu bilmiyoruz."
+    <br><br>
+    <span style="font-size:11px;color:var(--text-muted);font-style:normal">— Romanın ruhunu özetleyen, Hayri İrdal'a atfedilebilecek bir parafraz</span>
+  </div>
+</section>
+
+</main>
+
+<script>
+/* ===========================
+   NAVIGATION
+=========================== */
+function goTo(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  const idx = ['p1','p2','p3','p4','p5','p6','p7','p8'].indexOf(pageId);
+  document.querySelectorAll('.nav-item')[idx].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Close sidebar on mobile
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+/* ===========================
+   THEME TOGGLE
+=========================== */
+function toggleTheme() {
+  const isDark = !document.documentElement.hasAttribute('data-theme');
+  if (isDark) {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('themeToggle').textContent = '🌙';
+    localStorage.setItem('theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    document.getElementById('themeToggle').textContent = '☀️';
+    localStorage.setItem('theme', 'dark');
+  }
+}
+
+/* Restore saved theme */
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.getElementById('themeToggle').textContent = '🌙';
+  }
+})();
+
+/* ===========================
+   MOBILE SIDEBAR
+=========================== */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+/* ===========================
+   NARRATIVE ARC NODES
+=========================== */
+function toggleArc(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.arc-detail').forEach(d => d.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+/* ===========================
+   AXIS FILL ANIMATION
+=========================== */
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.axis-fill').forEach(el => {
+      const w = el.style.width;
+      el.style.width = '0%';
+      requestAnimationFrame(() => {
+        setTimeout(() => { el.style.width = w; }, 100);
+      });
+    });
+  }, 300);
+});
+</script>
+</body>
+</html>

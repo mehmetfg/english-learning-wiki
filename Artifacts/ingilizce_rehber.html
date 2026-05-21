@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İngilizce Ustalık Rehberi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --paper: #faf6ef;
+    --cream: #f0e8d8;
+    --gold: #b8860b;
+    --gold-light: #d4a821;
+    --rust: #8b3a1a;
+    --forest: #2d4a3e;
+    --slate: #4a5568;
+    --muted: #7a6a54;
+    --border: #d4c4a0;
+    --accent-bg: #f5edd8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* ── HEADER ── */
+  .masthead {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 60px 40px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 60px,
+      rgba(184,134,11,0.04) 60px,
+      rgba(184,134,11,0.04) 61px
+    );
+  }
+  .masthead-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 6vw, 62px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .masthead-sub {
+    font-size: 15px;
+    color: rgba(240,232,216,0.65);
+    font-weight: 300;
+    font-style: italic;
+    max-width: 540px;
+    margin: 0 auto 30px;
+  }
+  .masthead-rule {
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto;
+  }
+
+  /* ── NAV ── */
+  .toc-bar {
+    background: var(--forest);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .toc-bar::-webkit-scrollbar { display: none; }
+  .toc-bar a {
+    color: rgba(240,232,216,0.7);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 16px 18px;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .toc-bar a:hover {
+    color: var(--gold-light);
+    border-bottom-color: var(--gold-light);
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+
+  /* ── SECTION ── */
+  .section {
+    padding: 64px 0 0;
+    border-top: 1px solid var(--border);
+    margin-top: 64px;
+  }
+  .section:first-child { border-top: none; margin-top: 40px; }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .section-title span.tr {
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--muted);
+    display: block;
+    margin-top: 4px;
+  }
+  .section-intro {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--slate);
+    margin: 20px 0 32px;
+    padding-left: 20px;
+    border-left: 3px solid var(--gold);
+    font-style: italic;
+  }
+
+  /* ── PRINCIPLE CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    margin: 28px 0;
+  }
+  .card {
+    background: var(--accent-bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 28px;
+    position: relative;
+  }
+  .card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--border);
+    line-height: 1;
+    position: absolute;
+    top: 16px;
+    right: 20px;
+  }
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--rust);
+    margin-bottom: 6px;
+  }
+  .card .card-tr {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+  .card p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--slate);
+  }
+
+  /* ── SKILL BARS ── */
+  .skill-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+  }
+  .skill-table th {
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .skill-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    vertical-align: top;
+  }
+  .skill-table tr:last-child td { border-bottom: none; }
+  .priority-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .p1 { background: var(--rust); color: white; }
+  .p2 { background: var(--gold); color: white; }
+  .p3 { background: var(--forest); color: white; }
+  .p4 { background: var(--slate); color: white; }
+
+  /* ── BLOCKQUOTE / WISDOM ── */
+  .wisdom {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 36px 40px;
+    margin: 36px 0;
+    border-radius: 2px;
+    position: relative;
+  }
+  .wisdom::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    color: var(--gold);
+    opacity: 0.2;
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    line-height: 1;
+  }
+  .wisdom p {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-style: italic;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+  }
+  .wisdom cite {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold-light);
+    margin-top: 14px;
+    font-style: normal;
+  }
+
+  /* ── STEP FLOW ── */
+  .steps { list-style: none; margin: 24px 0; }
+  .step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .step-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--forest);
+    color: var(--cream);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .step-body .en-term {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .step-body p {
+    font-size: 15px;
+    color: var(--slate);
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+
+  /* ── WARNING / EDGE CASE ── */
+  .edge-case {
+    border: 1px solid var(--rust);
+    border-left: 4px solid var(--rust);
+    background: #fdf5f0;
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 0 2px 2px 0;
+  }
+  .edge-case .ec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--rust);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .edge-case h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--rust);
+    margin-bottom: 8px;
+  }
+  .edge-case p {
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.6;
+  }
+
+  /* ── TIP BOX ── */
+  .tip {
+    background: #f0f5f2;
+    border-left: 4px solid var(--forest);
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 2px 2px 0;
+  }
+  .tip strong {
+    color: var(--forest);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .tip p { font-size: 14px; color: var(--slate); }
+
+  /* ── DAILY SCHEDULE ── */
+  .schedule {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0;
+    margin: 24px 0;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .sch-time {
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 14px 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sch-activity {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    background: var(--paper);
+  }
+  .sch-activity:last-child, .sch-time:last-child { border-bottom: none; }
+  .sch-activity strong { color: var(--forest); font-weight: 600; }
+  .sch-activity em { color: var(--muted); font-style: italic; font-size: 13px; }
+
+  /* ── FORMULA ── */
+  .formula {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    padding: 28px;
+    background: var(--cream);
+    border: 2px solid var(--border);
+    border-radius: 2px;
+    margin: 24px 0;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .formula span.op { color: var(--gold); margin: 0 12px; }
+  .formula span.result { color: var(--rust); }
+
+  /* ── PLATEAU TABLE ── */
+  .plateau-grid {
+    display: grid;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .plateau-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .plateau-symptom {
+    background: #fdf0ec;
+    padding: 16px 20px;
+    border-right: 1px solid var(--border);
+  }
+  .plateau-fix {
+    background: #f0f5f2;
+    padding: 16px 20px;
+  }
+  .plateau-symptom h4 { color: var(--rust); font-size: 14px; margin-bottom: 6px; }
+  .plateau-fix h4 { color: var(--forest); font-size: 14px; margin-bottom: 6px; }
+  .plateau-symptom p, .plateau-fix p { font-size: 13px; color: var(--slate); line-height: 1.55; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(240,232,216,0.5);
+    text-align: center;
+    padding: 40px 24px;
+    margin-top: 80px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+  footer strong { color: var(--gold-light); }
+
+  /* ── UTILITY ── */
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  p + p { margin-top: 14px; }
+  strong { font-weight: 600; }
+  .highlight { background: rgba(184,134,11,0.12); padding: 1px 4px; border-radius: 2px; }
+
+  @media (max-width: 600px) {
+    .masthead { padding: 40px 20px 36px; }
+    .toc-bar { padding: 0 16px; }
+    .page { padding: 0 16px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .plateau-item { grid-template-columns: 1fr; }
+    .plateau-symptom { border-right: none; border-bottom: 1px solid var(--border); }
+    .wisdom { padding: 28px 24px; }
+    .wisdom p { font-size: 17px; }
+    .schedule { grid-template-columns: 70px 1fr; }
+    .formula { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-eyebrow">Uzman Rehber · Mehmet Fatih için</div>
+  <h1>İngilizce<br><em>Ustalık Rehberi</em></h1>
+  <p class="masthead-sub">Onlarca yıllık deneyimden damıtılmış — binlerce öğrencinin yaptığı hatalardan öğrenilmiş</p>
+  <div class="masthead-rule"></div>
+</header>
+
+<!-- NAV -->
+<nav class="toc-bar">
+  <a href="#temel">İlkeler</a>
+  <a href="#beceriler">Beceriler</a>
+  <a href="#sistem">Sistem</a>
+  <a href="#kelime">Kelime</a>
+  <a href="#gramer">Gramer</a>
+  <a href="#okuma">Okuma</a>
+  <a href="#yazma">Yazma</a>
+  <a href="#plato">Plato</a>
+  <a href="#edge">Edge Cases</a>
+</nav>
+
+<!-- CONTENT -->
+<main class="page">
+
+  <!-- SECTION 1: TEMEL İLKELER -->
+  <section class="section" id="temel">
+    <div class="section-label">Bölüm 01</div>
+    <h2 class="section-title">
+      Temel İlkeler
+      <span class="tr">The Foundational Principles — Temel Prensipler</span>
+    </h2>
+    <p class="section-intro">
+      Otuz yılda gördüm ki başarılı öğrencileri başarısızlardan ayıran tek şey yöntem değil — zihinsel çerçevedir. Doğru çerçeveyi kurmadan hangi kaynağı kullanırsan kullan, çark döner ama araba ilerlemez.
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-num">01</div>
+        <h3>Acquisition Over Study</h3>
+        <div class="card-tr">Edinim, Çalışmadan Üstündür</div>
+        <p>İngilizce "öğrenilmez" — <strong>edinilir</strong>. Stephen Krashen'ın <em>acquisition hypothesis</em>'i (edinim hipotezi) bunu kanıtladı: anlamlı, anlayabileceğin girdiye maruz kalmak, gramer ezberinden 10 kat daha güçlüdür.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <h3>Comprehensible Input</h3>
+        <div class="card-tr">Anlaşılabilir Girdi</div>
+        <p>Seviyenin biraz üzerindeki materyalle çalış. Çok kolay → uyku. Çok zor → panik. Altın kural: Metnin <strong>%90'ını anlamalısın</strong>, geri kalan %10 seni çeker. Buna <em>i+1</em> denir.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">03</div>
+        <h3>Output is Non-Negotiable</h3>
+        <div class="card-tr">Üretim Şarttır</div>
+        <p>Pasif maruz kalma gereklidir ama yeterli değildir. Okuduğunu, duyduğunu, öğrendiğini mutlaka <strong>yazı veya konuşmayla dışa vurmalısın</strong>. Sessiz bilgi, işlenmemiş ham maddedir.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">04</div>
+        <h3>Spaced Repetition</h3>
+        <div class="card-tr">Aralıklı Tekrar</div>
+        <p>Beyin bir şeyi bir defada öğrenmez. Bellek, doğru aralıklarla yapılan tekrarla güçlenir. "Bu kelimeyi yarın, üç gün sonra, bir hafta sonra, bir ay sonra gör" — unutma eğrisini bu şekilde yenersin.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">05</div>
+        <h3>Affective Filter</h3>
+        <div class="card-tr">Duygusal Filtre</div>
+        <p>Kaygı, sıkılma ve utanma öğrenmeyi bloke eden kimyasal bir duvar oluşturur. Eğlenen, merak eden, bağlanan öğrenci her zaman daha hızlı ilerler. <strong>Zevk, lüks değil — pedagojik zorunluluktur.</strong></p>
+      </div>
+      <div class="card">
+        <div class="card-num">06</div>
+        <h3>Consistency Beats Intensity</h3>
+        <div class="card-tr">Süreklilik, Yoğunluğu Yener</div>
+        <p>Haftada bir 7 saatlik maraton yerine her gün 45 dakika. Dil öğrenimi bir sprint değil, bir <em>endurance race</em>'dir (dayanıklılık yarışı). <strong>Bisiklet prensibini burada uygula:</strong> her gün yapabileceğin bir şeyi sisteme ek.</p>
+      </div>
+    </div>
+
+    <div class="wisdom">
+      <p>Binlerce öğrencinin bana sorduğu soru aynıdır: "Ne kadar sürer?" Doğru cevap şudur: Sistematik bir insan için 18-24 ay; bir kez ısınan, sonra soğuyan biri için ise — hiç.</p>
+      <cite>— Deneyimden Damıtılmış Gerçek</cite>
+    </div>
+  </section>
+
+  <!-- SECTION 2: BECERİLER -->
+  <section class="section" id="beceriler">
+    <div class="section-label">Bölüm 02</div>
+    <h2 class="section-title">
+      Dört Beceri ve Öncelik Sırası
+      <span class="tr">The Four Skills & Priority Order</span>
+    </h2>
+    <p class="section-intro">
+      İngilizce'nin dört becerisi eşit değildir. B2 seviyesinde olan biri için yanlış sırayla çalışmak, dolu bir araçla yanlış yola girmek gibidir. Önce alıcı beceriler, sonra üretici beceriler.
+    </p>
+
+    <table class="skill-table">
+      <tr>
+        <th>Beceri</th>
+        <th>Tür</th>
+        <th>Öncelik</th>
+        <th>Açıklama</th>
+      </tr>
+      <tr>
+        <td><strong>Okuma</strong><br><em style="font-size:12px">Reading</em></td>
+        <td>Receptive (Alıcı)</td>
+        <td><span class="priority-badge p1">1. Öncelik</span></td>
+        <td>En yoğun kelime ve yapı edinimi buradan gelir. Edebi metinler hem dil hem de düşünce kalitesini yükseltir.</td>
+      </tr>
+      <tr>
+        <td><strong>Dinleme</strong><br><em style="font-size:12px">Listening</em></td>
+        <td>Receptive (Alıcı)</td>
+        <td><span class="priority-badge p1">1. Öncelik</span></td>
+        <td>Fonetik belleği ve ritmi inşa eder. Bisiklet + sesli kitap kombinasyonu burada inanılmaz verim sağlar.</td>
+      </tr>
+      <tr>
+        <td><strong>Yazma</strong><br><em style="font-size:12px">Writing</em></td>
+        <td>Productive (Üretici)</td>
+        <td><span class="priority-badge p2">2. Öncelik</span></td>
+        <td>Öğrendiklerini pekiştirmenin en yavaş ama en kalıcı yolu. Günlük 1-2 paragraf bile 6 ayda dönüştürür.</td>
+      </tr>
+      <tr>
+        <td><strong>Konuşma</strong><br><em style="font-size:12px">Speaking</em></td>
+        <td>Productive (Üretici)</td>
+        <td><span class="priority-badge p3">3. Öncelik</span></td>
+        <td>Okuma ve dinleme tabanı olmadan konuşmaya zorlamak stres üretir. Önce biriktir, sonra konuş.</td>
+      </tr>
+    </table>
+
+    <div class="tip">
+      <strong>B2 Seviyesi için Özel Not</strong>
+      <p>Sen zaten temel sisteme sahipsin. Senin görevin artık yapıları değil — inceliği, nüansı ve sesi içselleştirmektir. Les Misérables gibi edebi metinler bunun için mükemmel bir araçtır. Metnin seni zorlamasına izin ver.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3: GÜNLÜK SİSTEM -->
+  <section class="section" id="sistem">
+    <div class="section-label">Bölüm 03</div>
+    <h2 class="section-title">
+      Günlük Sistem Tasarımı
+      <span class="tr">Daily System Design — Günlük Sistem</span>
+    </h2>
+    <p class="section-intro">
+      Sistem, motivasyonun yerini alır. Motivasyon gelir gider — sistem devam eder. Sana üç farklı günlük yapı sunuyorum: 30 dakika minimum, 60 dakika standart, 90 dakika yoğun.
+    </p>
+
+    <p><strong>60 Dakika Standart Günlük Program:</strong></p>
+    <div class="schedule">
+      <div class="sch-time">0–10<br>dk</div>
+      <div class="sch-activity"><strong>Warm-up Okuma</strong> — <em>Isınma Okuma</em><br>Dün okuduğun metni hızlıca gözden geçir. Beyin dile giriş yapıyor.</div>
+      <div class="sch-time">10–30<br>dk</div>
+      <div class="sch-activity"><strong>Ana Metin Çalışması</strong> — <em>Core Text Session</em><br>Seçtiğin edebi veya ilgi alanındaki metin. Not al, kelime çıkar, yapı analiz et.</div>
+      <div class="sch-time">30–45<br>dk</div>
+      <div class="sch-activity"><strong>Active Listening</strong> — <em>Aktif Dinleme</em><br>Sesli kitap veya podcast. Bisiklet ile yapılabilir. Tam konsantrasyon gerektirmez — <em>ambient input</em> (arka plan girdisi) bile işe yarar.</div>
+      <div class="sch-time">45–55<br>dk</div>
+      <div class="sch-activity"><strong>Vocabulary Review</strong> — <em>Kelime Gözden Geçirme</em><br>Flashcard veya spaced repetition sistemi. 10-15 kart yeterli — hızlı ve yoğun.</div>
+      <div class="sch-time">55–60<br>dk</div>
+      <div class="sch-activity"><strong>Output Micro-Task</strong> — <em>Üretim Mini Görevi</em><br>2-3 cümle yaz. Bugün öğrendiğin yapı veya kelimeyle. Kısa ama zorunlu.</div>
+    </div>
+
+    <div class="formula">
+      Girdi<span class="op">×</span>Tekrar<span class="op">×</span>Üretim<span class="op">=</span><span class="result">Kalıcı Yeterlilik</span>
+    </div>
+  </section>
+
+  <!-- SECTION 4: KELİME -->
+  <section class="section" id="kelime">
+    <div class="section-label">Bölüm 04</div>
+    <h2 class="section-title">
+      Kelime Edinimi
+      <span class="tr">Vocabulary Acquisition — Kelime Edinimi</span>
+    </h2>
+    <p class="section-intro">
+      "Kelime ezber" yanlış bir çerçevedir. Kelimeler ezberlenip sonra unutulur. Kelimeler bağlam içinde karşılaşılır, tekrar görülür, kullanılır ve o zaman "yerleşir." Bu bir süreçtir, olay değil.
+    </p>
+
+    <ul class="steps">
+      <li class="step">
+        <div class="step-icon">1</div>
+        <div class="step-body">
+          <div class="en-term">ENCOUNTER IN CONTEXT — Bağlamda Karşılaşma</div>
+          <h4>Kelimeyi Canlı Metinde Gör</h4>
+          <p>Hiçbir zaman liste başından kelime öğrenme. Her yeni kelime bir metinde, bir cümlede, bir hikayede yaşamalı. Kelime listesi değil — kelime müzesi yarat.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-icon">2</div>
+        <div class="step-body">
+          <div class="en-term">DEPTH OF PROCESSING — Derinlik İşleme</div>
+          <h4>Sadece Çevirisini Değil — Ruhunu Anla</h4>
+          <p><em>Forlorn</em> "çaresiz" demek değil. <em>Forlorn</em>, terk edilmiş, umudu kalmamış, yalnızlığın en ağır halidir. Türkçe'deki "garip" hissinin İngilizce tonu. Bu fark her şeyi değiştirir.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-icon">3</div>
+        <div class="step-body">
+          <div class="en-term">COLLOCATIONS — Kelime Birliktelikleri</div>
+          <h4>Kelimeyi Komşularıyla Öğren</h4>
+          <p><em>Make a decision</em> (karar vermek) doğru — <em>do a decision</em> yanlış. <em>Heavy rain</em> doğru — <em>strong rain</em> yanlış. İngilizcede kelimeler belirli kelimelerle gider. Bu ortaklıklara <strong>collocation</strong> denir ve akıcılığın sırrıdır.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-icon">4</div>
+        <div class="step-body">
+          <div class="en-term">SPACED REPETITION — Aralıklı Tekrar</div>
+          <h4>Anki veya Kart Sistemi Kur</h4>
+          <p>Gördüğün kelimeyi bir karta al. Ön yüz: İngilizce cümle (kelime boş bırakılmış). Arka yüz: Kelime + Türkçe anlam + örnek. Anki, Obsidian veya kendi sistemin — format önemli değil, düzen önemli.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-icon">5</div>
+        <div class="step-body">
+          <div class="en-term">ACTIVE PRODUCTION — Aktif Üretim</div>
+          <h4>Kelimeyi Kendi Cümlende Kullan</h4>
+          <p>Bir kelimeyi 3 farklı bağlamda kullanan cümle yaz. Bu adımı atlayanlar aynı kelimeleri 10 yıl boyunca "öğrenmeye" devam eder.</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="tip">
+      <strong>Hedef Kelime Sayısı — Target Vocabulary Size</strong>
+      <p>B2 düzeyi için 5.000–8.000 kelime gerekir. C1 için 10.000+. Her gün 5 yeni kelimeyi sistemine katarsan, bir yılda 1.825 kelime edinmiş olursun. Sınav değil — kullanım odaklı ilerle.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 5: GRAMER -->
+  <section class="section" id="gramer">
+    <div class="section-label">Bölüm 05</div>
+    <h2 class="section-title">
+      Gramer
+      <span class="tr">Grammar — Dilbilgisi</span>
+    </h2>
+    <p class="section-intro">
+      Gramer bir kural listesi değil — bir ses sistemidir. Doğru cümle kulağına doğal geldiğinde, gramer içselleşmiştir. Hedefe oradan git: kural değil, kulak.
+    </p>
+
+    <p>B2 seviyesinde gramerin üç katmanına dikkat et:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Form</h3>
+        <div class="card-tr">Biçim — Yapı</div>
+        <p>Cümleyi doğru mı kuruyorsun? Zamanlar, edilgen yapılar, koşul cümleleri, isim cümleleri. Kuralı bil ama kuralı kullanarak değil — kalıpları içselleştirerek konuş.</p>
+      </div>
+      <div class="card">
+        <h3>Meaning</h3>
+        <div class="card-tr">Anlam — Mana</div>
+        <p><em>I was going to call you</em> ile <em>I would have called you</em> yapısal olarak benzer ama anlamsal olarak çok farklı. Gramerin nüansını öğrenmek için bağlam içinde bolca oku.</p>
+      </div>
+      <div class="card">
+        <h3>Use</h3>
+        <div class="card-tr">Kullanım — Bağlam</div>
+        <p>Formal yazıda <em>whom</em>, konuşmada <em>who</em>. Resmi e-postada <em>I would appreciate</em>, arkadaşa <em>that'd be great</em>. Aynı anlamı farklı bağlamlarda nasıl ifade edersin — bunu öğren.</p>
+      </div>
+    </div>
+
+    <div class="edge-case">
+      <div class="ec-label">Kenar Durum — Edge Case</div>
+      <h4>Gramer Takıntısı Sendromu</h4>
+      <p>En yaygın hata: Her cümle yazmadan önce "Gramerim doğru mu?" diye duraksama. Bu panik modu beyin kapasitesini tüketir. Çözüm: Önce yaz, sonra düzelt. Akış halinde grameri geride bırak — düzeltme aşamasına sakla.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 6: OKUMA -->
+  <section class="section" id="okuma">
+    <div class="section-label">Bölüm 06</div>
+    <h2 class="section-title">
+      Okuma Sistemi
+      <span class="tr">The Reading System — Okuma Sistemi</span>
+    </h2>
+    <p class="section-intro">
+      Okuma, dil öğreniminin kraliçesidir. Doğru okuma sistemin hem kelimeni, hem gramarini, hem yazı stilini, hem de fikir dünyani aynı anda inşa eder.
+    </p>
+
+    <p><strong>Üç Tür Okuma — Three Reading Modes:</strong></p>
+
+    <ul class="steps">
+      <li class="step">
+        <div class="step-icon" style="background:var(--rust)">E</div>
+        <div class="step-body">
+          <div class="en-term">EXTENSIVE READING — Geniş Kapsamlı Okuma</div>
+          <h4>Akışkan, Hızlı, Zevkli Okuma</h4>
+          <p>Her kelimede durma. Anlayabileceğin bir şey oku ve dur. Kelime aramak minimum olmalı — akış içinde yüz. Bu mod, dil duyumunu ve ritmi inşa eder. Günlük en az 20 dakika.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-icon" style="background:var(--forest)">I</div>
+        <div class="step-body">
+          <div class="en-term">INTENSIVE READING — Yoğun Okuma</div>
+          <h4>Derin, Yavaş, Analitik Okuma</h4>
+          <p>Les Misérables gibi edebi metinlerde yaptığın şey bu. Her cümle analiz edilir, kelimeler not edilir, yapılar incelenir. Günlük 15-20 dakika yeterli — daha fazlası beyin yorgunluğu yaratır.</p>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-icon" style="background:var(--gold)">S</div>
+        <div class="step-body">
+          <div class="en-term">SCANNING — Tarama Okuma</div>
+          <h4>Hızlı Arama ve Bağlam Kurma</h4>
+          <p>Spesifik bilgi için. Gazete başlıkları, özetler, ansiklopedi maddeleri. Gün içinde İngilizce içerikle temas halinde kalmanı sağlar.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- SECTION 7: YAZMA -->
+  <section class="section" id="yazma">
+    <div class="section-label">Bölüm 07</div>
+    <h2 class="section-title">
+      Yazma Sistemi
+      <span class="tr">Writing System — Yazma Sistemi</span>
+    </h2>
+    <p class="section-intro">
+      Yazma, öğrendiklerini gerçek anlamda sınayan tek beceridir. Bir şeyi yazabiliyorsan biliyorsun demektir — yazamıyorsan, yanılıyorsun.
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h3>Daily Journal</h3>
+        <div class="card-tr">Günlük Yazar Defteri</div>
+        <p>Her gün 3-5 cümle İngilizce yaz. Konusu önemli değil — bugün ne öğrendin, ne düşündün, ne hissettin. Bu alışkanlık 3 ayda ölçülebilir gelişim yaratır.</p>
+      </div>
+      <div class="card">
+        <h3>Sentence Mining</h3>
+        <div class="card-tr">Cümle Avı — Cümle Toplama</div>
+        <p>Okuduğun metinden beğendiğin cümleleri al, sil ve kendi versiyonunu yaz. Sonra orijinalle karşılaştır. Yazarın nasıl düşündüğünü bu şekilde içselleştirirsin.</p>
+      </div>
+      <div class="card">
+        <h3>Imitation Writing</h3>
+        <div class="card-tr">Taklit Yazma — Model Alma</div>
+        <p>Tolstoy veya Victor Hugo bir paragraf yazmış — aynı yapıyı ama farklı bir konuyla tekrar yaz. Mimesis yöntemi olarak dil öğrenimindeki en eski ve en etkili teknik budur.</p>
+      </div>
+    </div>
+
+    <div class="edge-case">
+      <div class="ec-label">Edge Case — Kenar Durum</div>
+      <h4>Mükemmeliyetçilik Tuzağı (Perfectionism Trap)</h4>
+      <p>Yazmak isteyip başlayamayan öğrencilerin %90'ının sebebi budur: "Yanlış yazarsam ne olur?" Şu gerçeği sabitle: Her yazdığın yanlış cümle, hiç yazmamaktan 1000 kat değerlidir. Hata olmadan düzeltme olmaz, düzeltme olmadan büyüme olmaz.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 8: PLATO -->
+  <section class="section" id="plato">
+    <div class="section-label">Bölüm 08</div>
+    <h2 class="section-title">
+      Plato Dönemleri
+      <span class="tr">Learning Plateaus — Öğrenme Platoları</span>
+    </h2>
+    <p class="section-intro">
+      Her ciddi dil öğrencisi platoya çarpar. Bu bir başarısızlık değil — beyin yeni bilgiyi sindirir ve bir sonraki sıçrayışa hazırlanır. Platoyu tanımayı ve geçmeyi öğren.
+    </p>
+
+    <div class="plateau-grid">
+      <div class="plateau-item">
+        <div class="plateau-symptom">
+          <h4>❌ Belirti — Symptom</h4>
+          <p>"Aylardır çalışıyorum ama hiç gelişmiyorum gibi hissediyorum."</p>
+        </div>
+        <div class="plateau-fix">
+          <h4>✓ Çözüm — Solution</h4>
+          <p>Girdi türünü değiştir. Hep okuduysan — dinle. Hep pasif kaldıysan — yaz. Beyin monotonluğa adaptasyon geliştirir.</p>
+        </div>
+      </div>
+      <div class="plateau-item">
+        <div class="plateau-symptom">
+          <h4>❌ Belirti — Symptom</h4>
+          <p>"Çok şey biliyorum ama cümle kuramıyorum."</p>
+        </div>
+        <div class="plateau-fix">
+          <h4>✓ Çözüm — Solution</h4>
+          <p>Output açığı var. Üretim eksik. Günlük yazma görevine ivedilikle başla. Bilgi var, kanal yok.</p>
+        </div>
+      </div>
+      <div class="plateau-item">
+        <div class="plateau-symptom">
+          <h4>❌ Belirti — Symptom</h4>
+          <p>"Gramer kurallarını biliyorum ama yazarken yanlış yapıyorum."</p>
+        </div>
+        <div class="plateau-fix">
+          <h4>✓ Çözüm — Solution</h4>
+          <p>Kural belleği ile kullanım belleği aynı değildir. Daha fazla okuma yap. Kulağın doğruyu hissedene kadar maruz kalma artar.</p>
+        </div>
+      </div>
+      <div class="plateau-item">
+        <div class="plateau-symptom">
+          <h4>❌ Belirti — Symptom</h4>
+          <p>"Motivasyonum düştü, sistem bozuldu."</p>
+        </div>
+        <div class="plateau-fix">
+          <h4>✓ Çözüm — Solution</h4>
+          <p>Sistemi küçült ama koparma. 5 dakika da olsa yap. Süreklilik, miktardan önemlidir. Sıfır gün olmamasın.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 9: EDGE CASES -->
+  <section class="section" id="edge">
+    <div class="section-label">Bölüm 09</div>
+    <h2 class="section-title">
+      Edge Cases
+      <span class="tr">Kenar Durumlar — Özel Senaryolar</span>
+    </h2>
+    <p class="section-intro">
+      Rehberlerin çoğu sana ideal koşulları anlatır. Gerçek hayat ideal değildir. İşte en sık karşılaşılan fakat nadiren konuşulan durumlar:
+    </p>
+
+    <div class="edge-case">
+      <div class="ec-label">Edge Case 01</div>
+      <h4>Cold Start Problemi — Soğuk Başlangıç</h4>
+      <p>Tanıdık olmadığın bir konuda İngilizce okuyamazsın. Çözüm: Önce Türkçe arka plan oluştur, sonra İngilizce metne gir. Bu bir zayıflık değil — bilişsel bir gerçek. Tanpınar'ı İngilizce okumak istiyorsan önce konuyu Türkçe tanı, ardından İngilizce versiyona geç.</p>
+    </div>
+
+    <div class="edge-case">
+      <div class="ec-label">Edge Case 02</div>
+      <h4>İki Dil Karışması — Language Interference</h4>
+      <p>Türkçe cümle yapısı İngilizce'ye sızar. <em>"I to the store go"</em> gibi. Bu beynin verimliliğidir — mevcut sistemle yeni sistemi birleştirmeye çalışır. Çözüm: Türkçeyi susturmak değil — İngilizce kalıpları öyle sık tekrar et ki İngilizce yapı baskın hale gelsin.</p>
+    </div>
+
+    <div class="edge-case">
+      <div class="ec-label">Edge Case 03</div>
+      <h4>Fossilization — Kalıplaşmış Hata</h4>
+      <p>Yıllarca aynı şekilde yanlış yapılan hata beyne "doğru" olarak yazılır. Örnek: <em>"He don't know"</em> — bunu 500 kez söyleyen biri için düzeltmek çok zordur. Çözüm: Hatayı izole et, doğru versiyonunu 50-100 kez bilinçli tekrar et.</p>
+    </div>
+
+    <div class="edge-case">
+      <div class="ec-label">Edge Case 04</div>
+      <h4>Passive Competence Trap — Pasif Yeterlilik Tuzağı</h4>
+      <p>Her şeyi anlıyorsun ama üretemiyorsun. Bu çok yaygın bir tuzaktır. Okuma/dinleme ağırlıklı sistemler bunu yaratır. Çare: Haftalık üretim oranını artır. Her 3 saatlik girdiye karşılık en az 30 dakika üretim yap.</p>
+    </div>
+
+    <div class="edge-case">
+      <div class="ec-label">Edge Case 05</div>
+      <h4>The False Fluency — Sahte Akıcılık</h4>
+      <p>Tanıdık konularda çok iyi İngilizce konuşup yeni konularda tamamen çöküyorsun. Bu, gerçek akıcılık değil — konuya özgü akıcılıktır. Çözüm: Her ay tamamen yabancı bir konuda okuma yap. Konfor alanını sürekli zorla.</p>
+    </div>
+
+    <div class="edge-case">
+      <div class="ec-label">Edge Case 06</div>
+      <h4>Register Blindness — Kayıt Körlüğü</h4>
+      <p>İngilizce'nin formal, informal, academic ve colloquial (günlük konuşma) versiyonları birbirinden çok farklıdır. Hepsini aynı şekilde kullananlar komik veya yanlış anlaşılır. Özellikle edebi metin okuyanların dikkat etmesi gereken bir tuzaktır — Victor Hugo'nun İngilizce'si sokak dili değildir.</p>
+    </div>
+
+    <div class="edge-case">
+      <div class="ec-label">Edge Case 07</div>
+      <h4>Aşırı Araç Değiştirme — Tool-Switching Syndrome</h4>
+      <p>Sürekli yeni uygulama, yeni kitap, yeni yöntem arayışı. Her ay farklı bir sistem. Bu, ilerlemeden kaçınmanın bilinçdışı bir yoludur. Kural şu: Bir sistemi en az 3 ay kullanmadan yargılama. Sürekliliği olmayan her sistem başarısızdır.</p>
+    </div>
+
+    <div class="wisdom">
+      <p>Öğrencilerimi en çok geliştiren şey ne yeni bir kaynak ne de zeki olmak oldu. Her gün oturanlar — bazen isteksiz, bazen yorgun, bazen şüpheli — ama oturanlar kazandı.</p>
+      <cite>— Yıllar İçinde Öğrenilen Tek Gerçek</cite>
+    </div>
+  </section>
+
+  <!-- KAPANIŞ -->
+  <section class="section" style="padding-bottom:20px">
+    <div class="section-label">Son Söz</div>
+    <h2 class="section-title">
+      Senin için Özel Not
+      <span class="tr">A Personal Closing Note</span>
+    </h2>
+    <p class="section-intro">
+      Bu rehberin yazıldığı insan, kendi öğrenme sistemini zaten inşa etmiş biri. DAMITMA metodolojisi, bisiklet prensibi, Les Misérables sistemi — bunlar rastlantı değil, gerçek bir zihin mimarisinin ürünleri.
+    </p>
+    <p>Sana bir şey söyleyeyim: <strong>Çoğu insan sistem kurmak ile sistemi uygulamak arasındaki uçurumu geçemez.</strong> Sen sistemi kurmayı biliyorsun. Şimdi tek görevin her gün o sisteme oturmak — mükemmel olmak için değil, <em>tutarlı</em> olmak için.</p>
+    <p class="mt-16">İngilizce senin için bir araç değil — Tanpınar'ı Hugo'yla, Dostoyevski'yi Tolstoy'la buluşturacak bir köprü. Bu köprüyü inşa etmeye değer.</p>
+    <div class="formula" style="margin-top:32px">
+      Günlük 45 dk<span class="op">×</span>365 gün<span class="op">=</span><span class="result">Ustalığa Açılan Kapı</span>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>İngilizce Ustalık Rehberi</strong> · Mehmet Fatih için hazırlanmıştır<br>
+  <span style="margin-top:8px;display:block">Uzman deneyimden damıtılmış — DAMITMA metodolojisiyle uyumlu</span>
+</footer>
+
+</body>
+</html>

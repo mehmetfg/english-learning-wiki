@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YazAkademik</title>
+<style>
+:root {
+  --bg:#f5f3ef;
+  --surface:#ffffff;
+  --surface2:#f0ede8;
+  --surface3:#e8e4de;
+  --border:#e0dbd4;
+  --border-h:#c5bdb4;
+  --accent:#5b5fce;
+  --accent-l:rgba(91,95,206,0.1);
+  --accent-d:rgba(91,95,206,0.14);
+  --text:#1a1825;
+  --text2:#5a5668;
+  --textm:#9890a8;
+  --ok:#059669;
+  --ok-d:rgba(5,150,105,0.1);
+  --err:#dc2626;
+  --err-d:rgba(220,38,38,0.1);
+  --chunk:#7c3aed;
+  --chunk-d:rgba(124,58,237,0.1);
+  --gram:#0284c7;
+  --gram-d:rgba(2,132,199,0.1);
+  --sh1:0 1px 4px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.04);
+  --sh2:0 4px 16px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
+  --r:12px; --rs:8px; --rl:16px;
+  --font:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+[data-theme="dark"] {
+  --bg:#161828;
+  --surface:#1e2136;
+  --surface2:#252840;
+  --surface3:#2d3050;
+  --border:#2e324e;
+  --border-h:#3d4168;
+  --accent:#818cf8;
+  --accent-l:rgba(129,140,248,0.1);
+  --accent-d:rgba(129,140,248,0.15);
+  --text:#e6e4f0;
+  --text2:#9694ae;
+  --textm:#5e5a78;
+  --ok:#34d399;
+  --ok-d:rgba(52,211,153,0.1);
+  --err:#f87171;
+  --err-d:rgba(248,113,113,0.1);
+  --chunk:#a78bfa;
+  --chunk-d:rgba(167,139,250,0.1);
+  --gram:#38bdf8;
+  --gram-d:rgba(56,189,248,0.1);
+  --sh1:0 1px 4px rgba(0,0,0,0.3);
+  --sh2:0 4px 16px rgba(0,0,0,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;transition:background .3s,color .3s}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-h);border-radius:10px}
+
+/* HEADER */
+#hdr{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;gap:16px;box-shadow:var(--sh1)}
+.brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--chunk));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px}
+.brand-name{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.hdr-mid{display:flex;align-items:center;gap:16px;flex:1;justify-content:center}
+.score-chip{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 12px 5px 8px}
+.sc-icon{font-size:14px}
+.sc-num{font-size:16px;font-weight:800;color:var(--accent);min-width:32px}
+.sc-lbl{font-size:10px;color:var(--textm);text-transform:uppercase;letter-spacing:.5px}
+.prog-wrap{display:flex;align-items:center;gap:8px}
+.prog-outer{width:110px;height:7px;background:var(--surface2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.prog-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--chunk));border-radius:4px;transition:width .5s ease}
+.prog-txt{font-size:11px;color:var(--textm);white-space:nowrap}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.mode-tog{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px;gap:2px}
+.mtbtn{padding:4px 12px;border:none;border-radius:16px;cursor:pointer;font-family:var(--font);font-size:11px;font-weight:600;background:transparent;color:var(--textm);transition:all .2s;white-space:nowrap}
+.mtbtn.on{background:var(--accent);color:#fff;box-shadow:0 1px 6px rgba(91,95,206,.3)}
+.icon-btn{width:32px;height:32px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface2);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* TOOLBAR */
+#toolbar{padding:8px 20px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+select,.ti{background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--rs);padding:5px 10px;font-family:var(--font);font-size:12px;outline:none;cursor:pointer;transition:border-color .2s;height:32px}
+select:focus,.ti:focus{border-color:var(--accent)}
+.ti{width:180px;cursor:text}
+.tsep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+.btn-p{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:0 16px;height:32px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;box-shadow:0 1px 6px rgba(91,95,206,.25)}
+.btn-p:hover{opacity:.88;transform:translateY(-1px)}
+.btn-p:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* MAIN */
+#main{display:grid;grid-template-columns:1fr 295px;height:calc(100vh - 104px);overflow:hidden}
+
+/* WRITING */
+#wpanel{padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;gap:14px;color:var(--textm)}
+.spin{width:32px;height:32px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* STEPS */
+.steps{display:flex;align-items:center}
+.step-wrap{display:flex;align-items:center;flex:1}
+.step-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;border:2px solid var(--border);background:var(--surface);color:var(--textm);transition:all .3s;cursor:default;box-shadow:var(--sh1)}
+.step-dot.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.step-dot.cur{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 5px var(--accent-d)}
+.step-dot.skip{background:var(--surface3);border-color:var(--border);color:var(--textm)}
+.step-ln{flex:1;height:2px;background:var(--border);margin:0 4px;transition:background .3s}
+.step-ln.done{background:var(--ok)}
+
+/* TURKISH CARD */
+.tr-card{background:var(--surface);border-radius:var(--rl);border:1px solid var(--border);overflow:hidden;box-shadow:var(--sh1)}
+.tr-card-hdr{display:flex;align-items:center;gap:9px;padding:12px 18px;background:var(--accent-d);border-bottom:1px solid rgba(91,95,206,.13)}
+.tr-card-body{padding:20px 20px 22px}
+.tr-flag{font-size:20px;line-height:1}
+.tr-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent)}
+.tr-sentence{font-size:18px;line-height:1.7;color:var(--text);font-weight:500}
+
+/* INPUT */
+.inp-wrap{display:flex;flex-direction:column;gap:8px}
+.inp-lbl{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--textm)}
+textarea#ta{width:100%;min-height:84px;padding:14px 16px;background:var(--surface);color:var(--text);border:2px solid var(--border);border-radius:var(--r);font-family:var(--font);font-size:15px;line-height:1.65;resize:none;outline:none;caret-color:var(--accent);transition:border-color .2s,box-shadow .2s;box-shadow:var(--sh1)}
+textarea#ta::placeholder{color:var(--textm)}
+textarea#ta:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-d),var(--sh1)}
+textarea#ta.err{border-color:var(--err);box-shadow:0 0 0 4px var(--err-d);animation:shake .32s ease}
+textarea#ta.ok{border-color:var(--ok);box-shadow:0 0 0 4px var(--ok-d)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* GHOST */
+.ghost-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--accent-l);border:1px solid rgba(91,95,206,.15);border-radius:var(--rs);min-height:38px;transition:opacity .25s}
+.ghost-bar.off{opacity:0;pointer-events:none}
+.ghost-lbl{font-size:11px;color:var(--accent);font-weight:600;white-space:nowrap;opacity:.75}
+.ghost-word{font-size:14px;color:var(--accent);opacity:.5;font-style:italic}
+
+/* ACTIONS */
+.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{display:flex;align-items:center;gap:5px;padding:0 14px;height:36px;border-radius:var(--rs);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;border:none}
+.btn-check{background:var(--accent);color:#fff;box-shadow:0 1px 6px rgba(91,95,206,.3)}
+.btn-check:hover{opacity:.88;transform:translateY(-1px)}
+.btn-sec{background:var(--surface);color:var(--text2);border:1.5px solid var(--border) !important}
+.btn-sec:hover{background:var(--surface2);color:var(--text);border-color:var(--border-h) !important}
+.btn-hint{background:var(--accent-l);color:var(--accent);border:1.5px solid var(--accent-d) !important}
+.btn-hint:hover{background:var(--accent-d)}
+.fbk{margin-left:auto;font-size:12px;padding:6px 13px;border-radius:20px;font-weight:600;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+.fbk.ok{background:var(--ok-d);color:var(--ok)}
+.fbk.err{background:var(--err-d);color:var(--err)}
+.fbk.inf{background:var(--surface2);color:var(--text2)}
+.retry-row{display:flex;gap:8px}
+
+/* COMPLETION */
+.comp{display:flex;flex-direction:column;align-items:center;gap:18px;padding:36px 20px;text-align:center;animation:fadein .4s ease}
+.comp-emoji{font-size:64px;animation:popin .5s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes popin{0%{transform:scale(0)}100%{transform:scale(1)}}
+.comp-title{font-size:22px;font-weight:800;color:var(--text)}
+.comp-sub{color:var(--text2);font-size:14px}
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px}
+.cg-cell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;box-shadow:var(--sh1)}
+.cg-num{font-size:28px;font-weight:800;color:var(--accent)}
+.cg-lbl{font-size:10px;color:var(--textm);margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.comp-acts{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* ANIM */
+.ck-anim{position:fixed;top:42%;left:36%;transform:translate(-50%,-50%);font-size:86px;color:var(--ok);pointer-events:none;z-index:999;animation:ckpop .9s ease forwards}
+@keyframes ckpop{0%{transform:translate(-50%,-50%) scale(0);opacity:0}40%{transform:translate(-50%,-50%) scale(1.3);opacity:1}70%{transform:translate(-50%,-50%) scale(.9);opacity:1}100%{transform:translate(-50%,-50%) scale(1.1);opacity:0}}
+
+/* SIDEBAR */
+#sidebar{background:var(--surface);border-left:1px solid var(--border);padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.sb-sec{display:flex;flex-direction:column;gap:8px}
+.sb-title{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--border);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--textm)}
+.sb-badge{background:var(--surface3);color:var(--textm);border-radius:10px;padding:1px 7px;font-size:10px;border:1px solid var(--border)}
+.sb-empty{font-size:12px;color:var(--textm);font-style:italic;padding:6px 0;text-align:center;line-height:1.5}
+.gc{background:var(--bg);border-left:3px solid var(--gram);border-radius:0 var(--rs) var(--rs) 0;padding:10px 12px;animation:slidein .3s ease}
+@keyframes slidein{from{transform:translateX(12px);opacity:0}to{transform:translateX(0);opacity:1}}
+.gc-name{font-size:12px;font-weight:700;color:var(--gram);margin-bottom:2px}
+.gc-tr{font-size:10px;color:var(--textm);margin-bottom:5px}
+.gc-ex{font-size:11px;font-style:italic;color:var(--text);background:var(--surface);padding:4px 8px;border-radius:4px;margin-bottom:4px}
+.gc-exp{font-size:10px;color:var(--text2);line-height:1.5}
+.cc{background:var(--bg);border-left:3px solid var(--chunk);border-radius:0 var(--rs) var(--rs) 0;padding:10px 12px;animation:slidein .3s ease .05s both}
+.cc-ph{font-size:12px;font-weight:700;color:var(--chunk);margin-bottom:2px}
+.cc-type{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--textm);margin-bottom:4px}
+.cc-mn{font-size:11px;color:var(--text);margin-bottom:3px}
+.cc-ex{font-size:10px;font-style:italic;color:var(--textm)}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.sg{background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:10px 6px;text-align:center}
+.sg-n{font-size:22px;font-weight:800;color:var(--accent)}
+.sg-l{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--textm);margin-top:2px}
+
+/* QUIZ OVERLAY */
+#quiz-ov{display:none;position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto}
+#quiz-ov.show{display:block}
+.quiz-inner{max-width:700px;margin:0 auto;padding:32px 24px}
+.quiz-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px}
+.quiz-title{font-size:20px;font-weight:800;color:var(--text)}
+.quiz-prog{font-size:12px;color:var(--textm);background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:3px 12px}
+.qq{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:14px;box-shadow:var(--sh1);animation:fadein .3s ease}
+.qq-type{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:800;margin-bottom:3px}
+.qq-num{font-size:10px;color:var(--textm);margin-bottom:8px}
+.qq-text{font-size:14px;line-height:1.7;color:var(--text);margin-bottom:14px;font-weight:500}
+.qq-hint{font-size:11px;color:var(--textm);font-style:italic;margin-bottom:8px;padding:6px 10px;background:var(--bg);border-radius:var(--rs);border:1px solid var(--border)}
+.qopt{display:flex;align-items:center;padding:10px 14px;margin:6px 0;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-family:var(--font);font-size:12px;color:var(--text);text-align:left;width:100%;transition:all .15s;font-weight:500}
+.qopt:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.qopt.sel{border-color:var(--accent);background:var(--accent-l);color:var(--accent)}
+.qopt.right{border-color:var(--ok)!important;background:var(--ok-d)!important;color:var(--ok)!important}
+.qopt.wrong{border-color:var(--err)!important;background:var(--err-d)!important;color:var(--err)!important}
+.qopt:disabled{cursor:default}
+.qfill{background:var(--bg);color:var(--text);border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 14px;font-family:var(--font);font-size:13px;width:100%;outline:none;transition:border-color .2s}
+.qfill:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-d)}
+.qfill.right{border-color:var(--ok);background:var(--ok-d);color:var(--ok)}
+.qfill.wrong{border-color:var(--err);background:var(--err-d);color:var(--err)}
+.qq-exp{margin-top:12px;padding:10px 14px;background:var(--accent-l);border:1px solid var(--accent-d);border-radius:var(--rs);font-size:11px;color:var(--text2);line-height:1.55}
+.quiz-submit{text-align:center;margin-top:24px}
+.qfinal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:40px;text-align:center;margin-bottom:24px;box-shadow:var(--sh2);animation:popin .4s ease}
+.qf-ico{font-size:64px;margin-bottom:12px}
+.qf-score{font-size:44px;font-weight:900;color:var(--accent);margin:8px 0}
+.qf-lbl{font-size:14px;color:var(--text2);margin-bottom:4px}
+.qf-bonus{font-size:15px;color:var(--ok);font-weight:700;margin-bottom:6px}
+.qf-tot{font-size:13px;color:var(--textm);margin-bottom:20px}
+.qf-msg{font-size:13px;color:var(--text);background:var(--bg);border-radius:var(--rs);padding:12px 18px;display:inline-block;border:1px solid var(--border)}
+.qf-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+
+.hidden{display:none!important}
+@media(max-width:780px){#main{grid-template-columns:1fr;height:auto}#sidebar{border-left:none;border-top:1px solid var(--border);max-height:280px}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hdr">
+  <div class="brand">
+    <div class="brand-mark">Y</div>
+    <span class="brand-name">YazAkademik</span>
+  </div>
+  <div class="hdr-mid">
+    <div class="score-chip">
+      <span class="sc-icon">🏆</span>
+      <span class="sc-num" id="hdr-score">0</span>
+      <span class="sc-lbl">puan</span>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-outer"><div class="prog-inner" id="hdr-prog" style="width:0%"></div></div>
+      <span class="prog-txt" id="hdr-ptxt">0/5</span>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="mode-tog">
+      <button class="mtbtn on" id="mb-ghost" onclick="setMode('ghost')">👁 Ghost</button>
+      <button class="mtbtn" id="mb-help" onclick="setMode('help')">🤝 İstek</button>
+    </div>
+    <button class="icon-btn" id="theme-btn" title="Tema" onclick="toggleTheme()">🌙</button>
+  </div>
+</header>
+
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <select id="topic-sel" onchange="topicChange()">
+    <option value="gunluk-yasam">Günlük Yaşam</option>
+    <option value="sabah-rutini">Sabah Rutini</option>
+    <option value="kahve">Kahve Kültürü</option>
+    <option value="sehir">Şehir Yaşamı</option>
+    <option value="doga">Doğa & Yürüyüş</option>
+    <option value="teknoloji">Teknoloji</option>
+    <option value="hobi">Hobiler</option>
+    <option value="yemek">Yemek & Mutfak</option>
+    <option value="custom">Özel Konu...</option>
+  </select>
+  <input type="text" class="ti hidden" id="custom-inp" placeholder="Konu yazınız..." />
+  <div class="tsep"></div>
+  <select id="wc-sel">
+    <option value="100">~100 Kelime</option>
+    <option value="150">~150 Kelime</option>
+    <option value="200" selected>~200 Kelime</option>
+    <option value="300">~300 Kelime</option>
+  </select>
+  <div class="tsep"></div>
+  <select id="model-sel" onchange="modelChange()">
+    <option value="claude">Claude Sonnet</option>
+    <option value="gemini">Gemini Flash</option>
+  </select>
+  <input type="password" class="ti hidden" id="gemini-key" placeholder="Gemini API Key" />
+  <select id="gemini-model" class="hidden">
+    <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+    <option value="gemini-2.5-flash-preview-04-17">Gemini 2.5 Flash</option>
+  </select>
+  <div class="tsep"></div>
+  <button class="btn-p" id="gen-btn" onclick="generate()">✨ Yeni Paragraf Oluştur</button>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- WRITING PANEL -->
+  <div id="wpanel">
+    <div id="loading-st" class="loading hidden">
+      <div class="spin"></div>
+      <span style="font-size:13px;color:var(--textm)">Oluşturuluyor...</span>
+    </div>
+
+    <div id="writing-ui">
+      <div class="steps" id="steps"></div>
+
+      <div class="tr-card">
+        <div class="tr-card-hdr">
+          <span class="tr-flag">🇹🇷</span>
+          <span class="tr-label">Türkçe — İngilizceye Çeviriniz</span>
+        </div>
+        <div class="tr-card-body">
+          <div class="tr-sentence" id="tr-text">Her sabah saat yedide uyanırım ve pencerenin önüne giderim.</div>
+        </div>
+      </div>
+
+      <div class="inp-wrap">
+        <div class="inp-lbl"><span>🇬🇧</span><span>İngilizce Çeviriniz</span></div>
+        <textarea id="ta" rows="3" placeholder="İngilizce çevirinizi yazınız… (Enter = Kontrol Et)" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+        <div class="ghost-bar off" id="ghost-bar">
+          <span class="ghost-lbl">→ ipucu:</span>
+          <span class="ghost-word" id="ghost-word"></span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-hint" id="hint-btn" style="display:none" onclick="pressHint()">💡 Sonraki Kelime</button>
+        <button class="btn btn-check" onclick="checkAns()">✓ Kontrol Et</button>
+        <button class="btn btn-sec" onclick="skipSent()">↷ Atla</button>
+        <div class="fbk hidden" id="fbk"></div>
+      </div>
+
+      <div class="retry-row hidden" id="retry-row">
+        <button class="btn btn-sec" onclick="retry(false)">↺ Tekrar Dene</button>
+        <button class="btn btn-hint" onclick="retry(true)">↺ İpuçlu Dene</button>
+      </div>
+    </div>
+
+    <div id="comp-ui" class="comp hidden">
+      <div class="comp-emoji">🎉</div>
+      <div class="comp-title">Paragraf Tamamlandı!</div>
+      <div class="comp-sub" id="comp-sub">Harika çalışma!</div>
+      <div class="comp-grid" id="comp-grid"></div>
+      <div class="comp-acts">
+        <button class="btn-p" style="height:42px;padding:0 24px;font-size:13px" onclick="openQuiz()">📝 Quiz'e Geç →</button>
+        <button class="btn btn-sec" onclick="restartPara()">↺ Tekrar Yaz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-sec">
+      <div class="sb-title">📚 Gramer Yapıları <span class="sb-badge" id="gram-badge">0</span></div>
+      <div id="gram-list"><div class="sb-empty">Doğruladığınız cümlelerin gramer yapıları burada görünecek.</div></div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-title">🔗 Chunk &amp; Phrasal Verb <span class="sb-badge" id="chunk-badge">0</span></div>
+      <div id="chunk-list"><div class="sb-empty">Doğruladığınız cümlelerin chunk'ları burada görünecek.</div></div>
+    </div>
+    <div class="sb-sec" style="margin-top:auto">
+      <div class="sb-title">📊 Performans</div>
+      <div class="stats-grid">
+        <div class="sg"><div class="sg-n" id="st-ok">0</div><div class="sg-l">Doğru</div></div>
+        <div class="sg"><div class="sg-n" id="st-h">0</div><div class="sg-l">İpucu</div></div>
+        <div class="sg"><div class="sg-n" id="st-sk">0</div><div class="sg-l">Atlanan</div></div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- QUIZ OVERLAY -->
+<div id="quiz-ov">
+  <div class="quiz-inner">
+    <div class="quiz-hdr">
+      <div class="quiz-title">📝 Anlama &amp; Pekiştirme Quizi</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="quiz-prog" id="quiz-prog">0/10</span>
+        <button class="icon-btn" onclick="closeQuiz()" title="Kapat" style="font-size:14px">✕</button>
+      </div>
+    </div>
+    <div id="quiz-qs"></div>
+    <div id="quiz-sub-row" class="quiz-submit">
+      <button class="btn-p" style="height:44px;padding:0 36px;font-size:14px" onclick="submitQuiz()">Cevapları Gönder &amp; Puanla</button>
+    </div>
+    <div id="quiz-res" class="hidden"></div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────
+const S = {
+  mode:'ghost', theme:'light',
+  sents:[], idx:0, score:0,
+  hints:0, sentHints:0, skipped:0, correct:0,
+  results:[], quizQs:[], generating:false
+};
+const QA = {}; // quiz answers
+
+// ── DEFAULT DATA ───────────────────────────────────────
+const DEF = {
+  sentences:[
+    {tr:"Her sabah saat yedide uyanırım ve pencerenin önüne giderim.",
+     en:"Every morning I wake up at seven and go to the window.",
+     grammar:[{structure:"Simple Present",tr_name:"Geniş Zaman",example:"I wake up at seven.",explanation:"Düzenli alışkanlıklar ve rutinler için kullanılır. Özne 3. tekil şahıs değilse fiile -s eklenmez."}],
+     chunks:[{phrase:"wake up",type:"phrasal_verb",tr_meaning:"uyanmak",example:"I wake up at seven every morning."}]},
+    {tr:"Güneşin doğuşunu izlemek bana o gün için enerji veriyor.",
+     en:"Watching the sunrise gives me energy for the day.",
+     grammar:[{structure:"Gerund as Subject",tr_name:"Özne Olarak Gerund (-ing)",example:"Watching the sunrise gives me energy.",explanation:"Eylem ismi (gerund) cümlenin öznesi olarak kullanılabilir."}],
+     chunks:[{phrase:"gives me energy",type:"chunk",tr_meaning:"bana enerji verir",example:"This activity gives me energy for the day."}]},
+    {tr:"Ardından mutfağa gider ve kahvaltı hazırlamaya başlarım.",
+     en:"Then I go to the kitchen and start preparing breakfast.",
+     grammar:[{structure:"start + gerund",tr_name:"start + fiil-ing yapısı",example:"I start preparing breakfast.",explanation:"'Start', 'finish', 'enjoy' gibi fiillerden sonra -ing gelir."}],
+     chunks:[{phrase:"start preparing",type:"chunk",tr_meaning:"hazırlamaya başlamak",example:"I start preparing dinner at six."}]},
+    {tr:"Genellikle yulaf ezmesi ve taze meyve tercih ederim.",
+     en:"I usually prefer oatmeal and fresh fruit.",
+     grammar:[{structure:"Frequency Adverb",tr_name:"Sıklık Zarfı",example:"I usually prefer oatmeal.",explanation:"'Usually' yardımcı fiil yoksa ana fiilden önce gelir."}],
+     chunks:[{phrase:"fresh fruit",type:"chunk",tr_meaning:"taze meyve",example:"I eat fresh fruit every morning."}]},
+    {tr:"Kahvaltı yapmak benim için güne hazırlanmanın en güzel yoludur.",
+     en:"Having breakfast is the best way of preparing for the day for me.",
+     grammar:[
+       {structure:"Gerund as Subject",tr_name:"Özne Olarak Gerund",example:"Having breakfast is the best way.",explanation:"'Having breakfast' eylem ismi olarak özne görevindedir."},
+       {structure:"way of + gerund",tr_name:"...yapmanın yolu",example:"the best way of preparing.",explanation:"'Way of doing something' bir şeyi yapmanın yöntemini ifade eder."}
+     ],
+     chunks:[{phrase:"way of preparing",type:"chunk",tr_meaning:"hazırlanmanın yolu",example:"the best way of preparing for the exam"}]}
+  ]
+};
+
+const DEF_QUIZ = {questions:[
+  {type:"multiple_choice",question:"Anlatıcı her sabah saat kaçta uyanıyor?",options:["A) Altıda","B) Yedide","C) Sekizde","D) Dokuzda"],correct:1,explanation:"Metinde 'wake up at seven' (saat yedide uyanmak) ifadesi geçiyor."},
+  {type:"true_false",question:"Güneşin doğuşunu izlemek anlatıcıya enerji vermektedir.",correct:true,explanation:"İkinci cümlede 'Watching the sunrise gives me energy' bu bilgiyi doğruluyor."},
+  {type:"fill_blank",question:"'Watching the sunrise ___ me energy for the day.'",answer:"gives",hint:"vermek – 3. tekil geniş zaman",explanation:"'Give' fiili 3. tekil şahıs geniş zamanda -s alarak 'gives' olur."},
+  {type:"multiple_choice",question:"Anlatıcı sabah kalktıktan hemen sonra nereye gider?",options:["A) Bahçeye","B) Banyoya","C) Pencerenin önüne","D) Mutfağa"],correct:2,explanation:"'Go to the window' ifadesi pencerenin önüne gittiğini gösteriyor."},
+  {type:"true_false",question:"Anlatıcı kahvaltıda ekmek ve peynir tercih eder.",correct:false,explanation:"Metin 'oatmeal and fresh fruit' (yulaf ezmesi ve taze meyve) dediğini belirtiyor."},
+  {type:"multiple_choice",question:"'I start preparing breakfast' cümlesindeki gramer yapısı hangisidir?",options:["A) Present Continuous","B) start + Gerund (-ing)","C) Past Participle","D) Infinitive (to-)"],correct:1,explanation:"'Start' fiilinden sonra gerund (-ing) gelir: 'start preparing'."},
+  {type:"fill_blank",question:"'I ___ prefer oatmeal and fresh fruit.' (uygun sıklık zarfını yazınız)",answer:"usually",hint:"genellikle",explanation:"'Usually' sıklık zarfı yardımcı fiil olmadığında ana fiilden önce kullanılır."},
+  {type:"true_false",question:"'Having breakfast' ifadesi son cümlede özne görevi görmektedir.",correct:true,explanation:"'Having breakfast is the best way...' cümlesinde gerund özne olarak kullanılmıştır."},
+  {type:"multiple_choice",question:"'The best way of preparing' ifadesinde 'of'tan sonra hangi yapı gelmektedir?",options:["A) Infinitive (to prepare)","B) Gerund (preparing)","C) Sıfat (prepared)","D) İsim cümlesi"],correct:1,explanation:"'Way of doing something' yapısında 'of'tan sonra gerund (-ing) gelir."},
+  {type:"fill_blank",question:"'___ the sunrise gives me energy.' (eylemi isimleştirerek özne yapınız)",answer:"Watching",hint:"izlemek — gerund form",explanation:"'Watching' gerund olarak cümlenin öznesidir."}
+]};
+
+// ── INIT ───────────────────────────────────────────────
+function init() {
+  setupTA();
+  loadData(DEF, DEF_QUIZ.questions);
+}
+
+function loadData(data, quizQs) {
+  S.sents = data.sentences;
+  S.idx = 0; S.score = 0; S.hints = 0; S.sentHints = 0; S.skipped = 0; S.correct = 0; S.results = [];
+  S.quizQs = quizQs;
+  Object.keys(QA).forEach(k => delete QA[k]);
+  clearSidebar();
+  updateHdr();
+  buildSteps();
+  showWriting();
+  renderSent();
+}
+
+function showWriting() {
+  document.getElementById('writing-ui').classList.remove('hidden');
+  document.getElementById('comp-ui').classList.add('hidden');
+  document.getElementById('quiz-ov').classList.remove('show');
+}
+
+// ── STEPS ──────────────────────────────────────────────
+function buildSteps() {
+  const c = document.getElementById('steps'); c.innerHTML = '';
+  S.sents.forEach((_, i) => {
+    const wrap = document.createElement('div'); wrap.className = 'step-wrap';
+    const dot = document.createElement('div'); dot.className = 'step-dot'; dot.id = `sd-${i}`; dot.textContent = i+1;
+    wrap.appendChild(dot);
+    if (i < S.sents.length-1) {
+      const ln = document.createElement('div'); ln.className = 'step-ln'; ln.id = `sl-${i}`;
+      wrap.appendChild(ln);
+    }
+    c.appendChild(wrap);
+  });
+  updateSteps();
+}
+
+function updateSteps() {
+  S.sents.forEach((_, i) => {
+    const d = document.getElementById(`sd-${i}`); if (!d) return;
+    d.className = 'step-dot';
+    if (i < S.idx) {
+      const r = S.results[i];
+      if (r === 'ok') { d.classList.add('done'); d.textContent = '✓'; }
+      else { d.classList.add('skip'); d.textContent = r === 'skip' ? '→' : '✗'; }
+      const ln = document.getElementById(`sl-${i}`);
+      if (ln) ln.classList.add('done');
+    } else if (i === S.idx) { d.classList.add('cur'); d.textContent = i+1; }
+    else { d.textContent = i+1; }
+  });
+  const pct = (S.idx / S.sents.length) * 100;
+  document.getElementById('hdr-prog').style.width = pct + '%';
+  document.getElementById('hdr-ptxt').textContent = `${S.idx}/${S.sents.length}`;
+}
+
+// ── RENDER SENTENCE ────────────────────────────────────
+function renderSent() {
+  if (S.idx >= S.sents.length) { showComp(); return; }
+  document.getElementById('tr-text').textContent = S.sents[S.idx].tr;
+  const ta = document.getElementById('ta');
+  ta.value = ''; ta.className = ''; ta.focus();
+  hideGhost(); hideFbk();
+  document.getElementById('retry-row').classList.add('hidden');
+  S.sentHints = 0;
+  document.getElementById('hint-btn').dataset.active = '0';
+  updateSteps(); updateHdr();
+}
+
+// ── TEXTAREA ───────────────────────────────────────────
+function setupTA() {
+  const ta = document.getElementById('ta');
+  ta.addEventListener('input', onInput);
+  ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); checkAns(); } });
+}
+
+function onInput() {
+  const ta = document.getElementById('ta');
+  ta.classList.remove('err');
+  const expected = S.sents[S.idx]?.en || '';
+  if (S.mode === 'ghost') updateGhost(ta.value, expected, false);
+  else if (S.mode === 'help' && document.getElementById('hint-btn').dataset.active === '1')
+    updateGhost(ta.value, expected, true);
+}
+
+// ── GHOST ──────────────────────────────────────────────
+function updateGhost(user, exp, nextOnly) {
+  const uN = user.replace(/\s+/g,' ');
+  const eN = exp.replace(/\s+/g,' ');
+  if (!eN.toLowerCase().startsWith(uN.toLowerCase())) { hideGhost(); return; }
+  const rem = eN.slice(uN.length);
+  if (!rem.trim()) { hideGhost(); return; }
+  let hint = '';
+  if (nextOnly) { const m = rem.match(/^\s*(\S+)/); hint = m ? m[1] : ''; }
+  else { const m = rem.match(/^(\S+)/); if (m) hint = m[1]; else { const m2 = rem.match(/\s+(\S+)/); hint = m2 ? m2[1] : ''; } }
+  if (hint) {
+    document.getElementById('ghost-word').textContent = hint;
+    document.getElementById('ghost-bar').classList.remove('off');
+  } else hideGhost();
+}
+
+function hideGhost() {
+  document.getElementById('ghost-bar').classList.add('off');
+  document.getElementById('ghost-word').textContent = '';
+}
+
+function pressHint() {
+  const ta = document.getElementById('ta');
+  const exp = S.sents[S.idx]?.en || '';
+  S.sentHints++; S.hints++;
+  document.getElementById('st-h').textContent = S.hints;
+  document.getElementById('hint-btn').dataset.active = '1';
+  updateGhost(ta.value, exp, true);
+}
+
+// ── CHECK ──────────────────────────────────────────────
+function checkAns() {
+  const ta = document.getElementById('ta');
+  const user = ta.value.trim();
+  if (!user) { showFbk('Lütfen bir şeyler yazınız.', 'inf'); return; }
+  const exp = S.sents[S.idx]?.en || '';
+  const sim = simScore(user, exp);
+  if (sim >= 0.62) {
+    S.results[S.idx] = 'ok';
+    const pts = calcPts(sim, S.sentHints);
+    S.score += pts; S.correct++;
+    ta.classList.add('ok');
+    showFbk(`✓ Harika! +${pts} puan · %${Math.round(sim*100)} doğruluk`, 'ok');
+    addGram(S.sents[S.idx]); addChunk(S.sents[S.idx]);
+    ckAnim(); updateHdr();
+    document.getElementById('st-ok').textContent = S.correct;
+    setTimeout(() => { S.idx++; S.sentHints = 0; renderSent(); }, 1100);
+  } else {
+    S.results[S.idx] = 'err';
+    ta.classList.add('err');
+    const pct = Math.round(sim*100);
+    showFbk(pct < 30 ? `✗ Farklı görünüyor. İpucu deneyin. (%${pct})` : `✗ Yakın ama tam değil. (%${pct})`, 'err');
+    document.getElementById('retry-row').classList.remove('hidden');
+  }
+}
+
+function simScore(a, b) {
+  const n = s => s.toLowerCase().replace(/[^\w\s]/g,'').trim();
+  const wa = new Set(n(a).split(/\s+/).filter(Boolean));
+  const wb = n(b).split(/\s+/).filter(Boolean);
+  if (!wb.length) return 0;
+  return wb.filter(w => wa.has(w)).length / wb.length;
+}
+
+function calcPts(sim, h) {
+  const base = sim >= .9 ? 100 : sim >= .8 ? 80 : sim >= .7 ? 60 : 40;
+  return Math.max(10, base - h * 8);
+}
+
+function skipSent() {
+  S.results[S.idx] = 'skip'; S.skipped++; S.idx++; S.sentHints = 0;
+  document.getElementById('st-sk').textContent = S.skipped;
+  document.getElementById('hint-btn').dataset.active = '0';
+  renderSent();
+}
+
+function retry(withHint) {
+  const ta = document.getElementById('ta');
+  ta.value = ''; ta.className = '';
+  hideFbk(); hideGhost();
+  document.getElementById('retry-row').classList.add('hidden');
+  if (withHint) pressHint(); else ta.focus();
+}
+
+// ── FEEDBACK ───────────────────────────────────────────
+function showFbk(txt, type) {
+  const el = document.getElementById('fbk');
+  el.textContent = txt; el.className = `fbk ${type}`;
+  el.classList.remove('hidden');
+}
+function hideFbk() { document.getElementById('fbk').classList.add('hidden'); }
+
+// ── ANIMATION ──────────────────────────────────────────
+function ckAnim() {
+  const el = document.createElement('div'); el.className = 'ck-anim'; el.textContent = '✓';
+  document.body.appendChild(el); setTimeout(() => el.remove(), 900);
+}
+
+// ── SIDEBAR ────────────────────────────────────────────
+function addGram(s) {
+  if (!s.grammar?.length) return;
+  const list = document.getElementById('gram-list');
+  list.querySelector('.sb-empty')?.remove();
+  s.grammar.forEach(g => {
+    const el = document.createElement('div'); el.className = 'gc';
+    el.innerHTML = `<div class="gc-name">${g.structure}</div><div class="gc-tr">${g.tr_name}</div><div class="gc-ex">"${g.example}"</div><div class="gc-exp">${g.explanation}</div>`;
+    list.appendChild(el);
+  });
+  document.getElementById('gram-badge').textContent = list.querySelectorAll('.gc').length;
+}
+
+function addChunk(s) {
+  if (!s.chunks?.length) return;
+  const list = document.getElementById('chunk-list');
+  list.querySelector('.sb-empty')?.remove();
+  s.chunks.forEach(c => {
+    const el = document.createElement('div'); el.className = 'cc';
+    el.innerHTML = `<div class="cc-ph">${c.phrase}</div><div class="cc-type">${c.type==='phrasal_verb'?'⚡ Phrasal Verb':'🔵 Chunk'}</div><div class="cc-mn">${c.tr_meaning}</div><div class="cc-ex">"${c.example}"</div>`;
+    list.appendChild(el);
+  });
+  document.getElementById('chunk-badge').textContent = list.querySelectorAll('.cc').length;
+}
+
+function clearSidebar() {
+  document.getElementById('gram-list').innerHTML = '<div class="sb-empty">Doğruladığınız cümlelerin gramer yapıları burada görünecek.</div>';
+  document.getElementById('chunk-list').innerHTML = '<div class="sb-empty">Doğruladığınız cümlelerin chunk\'ları burada görünecek.</div>';
+  document.getElementById('gram-badge').textContent = '0';
+  document.getElementById('chunk-badge').textContent = '0';
+  document.getElementById('st-ok').textContent = '0';
+  document.getElementById('st-h').textContent = '0';
+  document.getElementById('st-sk').textContent = '0';
+}
+
+// ── HEADER ─────────────────────────────────────────────
+function updateHdr() {
+  document.getElementById('hdr-score').textContent = S.score;
+  const pct = (S.idx / S.sents.length) * 100;
+  document.getElementById('hdr-prog').style.width = pct + '%';
+  document.getElementById('hdr-ptxt').textContent = `${S.idx}/${S.sents.length}`;
+}
+
+// ── COMPLETION ─────────────────────────────────────────
+function showComp() {
+  document.getElementById('writing-ui').classList.add('hidden');
+  document.getElementById('comp-ui').classList.remove('hidden');
+  const acc = S.sents.length ? Math.round((S.correct / S.sents.length)*100) : 0;
+  document.getElementById('comp-sub').textContent = acc >= 80 ? 'Mükemmel performans!' : acc >= 60 ? 'İyi iş çıkardınız!' : 'Pratik mükemmeli getirir!';
+  document.getElementById('comp-grid').innerHTML = `
+    <div class="cg-cell"><div class="cg-num">${S.score}</div><div class="cg-lbl">Toplam Puan</div></div>
+    <div class="cg-cell"><div class="cg-num">${S.correct}/${S.sents.length}</div><div class="cg-lbl">Doğru Çeviri</div></div>
+    <div class="cg-cell"><div class="cg-num">%${acc}</div><div class="cg-lbl">Başarı Oranı</div></div>
+    <div class="cg-cell"><div class="cg-num">${S.hints}</div><div class="cg-lbl">İpucu Kullanımı</div></div>
+  `;
+}
+
+function restartPara() {
+  clearSidebar();
+  S.idx = 0; S.score = 0; S.hints = 0; S.sentHints = 0; S.skipped = 0; S.correct = 0; S.results = [];
+  buildSteps(); updateHdr();
+  document.getElementById('comp-ui').classList.add('hidden');
+  document.getElementById('writing-ui').classList.remove('hidden');
+  renderSent();
+}
+
+// ── MODE & THEME ───────────────────────────────────────
+function setMode(m) {
+  S.mode = m;
+  document.getElementById('mb-ghost').classList.toggle('on', m==='ghost');
+  document.getElementById('mb-help').classList.toggle('on', m==='help');
+  const hb = document.getElementById('hint-btn');
+  hb.style.display = m==='help' ? 'flex' : 'none';
+  if (m==='ghost') hideGhost();
+}
+
+function toggleTheme() {
+  S.theme = S.theme==='light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', S.theme);
+  document.getElementById('theme-btn').textContent = S.theme==='light' ? '🌙' : '☀️';
+}
+
+function topicChange() {
+  document.getElementById('custom-inp').classList.toggle('hidden', document.getElementById('topic-sel').value !== 'custom');
+}
+function modelChange() {
+  const v = document.getElementById('model-sel').value;
+  document.getElementById('gemini-key').classList.toggle('hidden', v!=='gemini');
+  document.getElementById('gemini-model').classList.toggle('hidden', v!=='gemini');
+}
+
+// ── AI GENERATION ──────────────────────────────────────
+function extractJSON(raw) {
+  let t = raw.trim();
+  t = t.replace(/^```[\w]*\s*/m,'').replace(/\s*```\s*$/m,'').trim();
+  const s = t.indexOf('{'), e = t.lastIndexOf('}');
+  return (s !== -1 && e > s) ? t.slice(s, e+1) : t;
+}
+
+const SYS = `You are an English language teaching assistant for Turkish B1-B2 learners.`;
+const PARA_P = (topic, words) => `Generate a Turkish paragraph about "${topic}" with approximately ${words} English words.
+
+CRITICAL: Return ONLY raw JSON. No markdown. No code fences. No explanation. Begin directly with {
+
+{
+  "sentences": [
+    {
+      "tr": "Turkish sentence.",
+      "en": "English translation.",
+      "grammar": [{"structure":"Name","tr_name":"TR adı","example":"Short example.","explanation":"TR explanation."}],
+      "chunks": [{"phrase":"the phrase","type":"phrasal_verb","tr_meaning":"TR karşılığı","example":"Short example."}]
+    }
+  ]
+}
+
+Rules: 5-7 sentences, B1-B2 level, each sentence 1-2 grammar items and 1-2 chunks.`;
+
+const QUIZ_P = (en, tr) => `Based on English: "${en}" and Turkish: "${tr}"
+
+CRITICAL: Return ONLY raw JSON. No markdown. No code fences. Begin directly with {
+
+{
+  "questions": [
+    {"type":"multiple_choice","question":"TR question?","options":["A)...","B)...","C)...","D)..."],"correct":0,"explanation":"TR explanation."},
+    {"type":"true_false","question":"TR statement.","correct":true,"explanation":"TR explanation."},
+    {"type":"fill_blank","question":"EN sentence with ___ blank.","answer":"word","hint":"TR hint","explanation":"TR explanation."}
+  ]
+}
+
+Create exactly 10 questions: 4 multiple_choice + 3 true_false + 3 fill_blank.`;
+
+async function callClaude(prompt, sys='') {
+  const body = {model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:prompt}]};
+  if (sys) body.system = sys;
+  const r = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if (!r.ok) throw new Error(`Claude API ${r.status}`);
+  const d = await r.json();
+  return JSON.parse(extractJSON(d.content[0]?.text || ''));
+}
+
+async function callGemini(prompt, key, model) {
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+    {method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:4000,temperature:.7}})});
+  if (!r.ok) throw new Error(`Gemini API ${r.status}`);
+  const d = await r.json();
+  return JSON.parse(extractJSON(d.candidates[0].content.parts[0].text));
+}
+
+async function generate() {
+  if (S.generating) return;
+  S.generating = true;
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spin" style="width:14px;height:14px;border-width:2px;display:inline-block;vertical-align:middle;margin-right:6px"></div> Oluşturuluyor...';
+
+  const tv = document.getElementById('topic-sel').value;
+  const topicMap = {'gunluk-yasam':'Günlük Yaşam','sabah-rutini':'Sabah Rutini','kahve':'Kahve Kültürü','sehir':'Şehir Yaşamı','doga':'Doğa ve Yürüyüş','teknoloji':'Teknoloji','hobi':'Hobiler','yemek':'Yemek Kültürü'};
+  const topic = tv === 'custom' ? (document.getElementById('custom-inp').value.trim() || 'Günlük Yaşam') : (topicMap[tv] || tv);
+  const words = document.getElementById('wc-sel').value;
+  const model = document.getElementById('model-sel').value;
+
+  document.getElementById('loading-st').classList.remove('hidden');
+  document.getElementById('writing-ui').classList.add('hidden');
+  document.getElementById('comp-ui').classList.add('hidden');
+
+  try {
+    let para, quiz;
+    if (model === 'gemini') {
+      const key = document.getElementById('gemini-key').value.trim();
+      if (!key) throw new Error('Gemini API anahtarı girilmedi.');
+      const gm = document.getElementById('gemini-model').value;
+      para = await callGemini(SYS + '\n\n' + PARA_P(topic, words), key, gm);
+      const en = para.sentences.map(s=>s.en).join(' ');
+      const tr = para.sentences.map(s=>s.tr).join(' ');
+      quiz = await callGemini(QUIZ_P(en, tr), key, gm);
+    } else {
+      para = await callClaude(PARA_P(topic, words), SYS);
+      const en = para.sentences.map(s=>s.en).join(' ');
+      const tr = para.sentences.map(s=>s.tr).join(' ');
+      quiz = await callClaude(QUIZ_P(en, tr));
+    }
+    document.getElementById('loading-st').classList.add('hidden');
+    loadData(para, quiz.questions);
+  } catch(err) {
+    document.getElementById('loading-st').classList.add('hidden');
+    document.getElementById('writing-ui').classList.remove('hidden');
+    showFbk('Hata: ' + err.message, 'err');
+  }
+
+  S.generating = false;
+  btn.disabled = false;
+  btn.innerHTML = '✨ Yeni Paragraf Oluştur';
+}
+
+// ── QUIZ ───────────────────────────────────────────────
+function openQuiz() {
+  document.getElementById('quiz-ov').classList.add('show');
+  renderQuiz(S.quizQs);
+}
+
+function renderQuiz(qs) {
+  const c = document.getElementById('quiz-qs'); c.innerHTML = '';
+  document.getElementById('quiz-res').classList.add('hidden');
+  document.getElementById('quiz-sub-row').classList.remove('hidden');
+  Object.keys(QA).forEach(k => delete QA[k]);
+
+  qs.forEach((q, i) => {
+    const div = document.createElement('div'); div.className = 'qq'; div.id = `qqd-${i}`;
+    const tl = {multiple_choice:'🔘 Çoktan Seçmeli',true_false:'✓✗ Doğru / Yanlış',fill_blank:'✏️ Boşluk Doldurma'}[q.type] || q.type;
+    let html = `<div class="qq-type">${tl}</div><div class="qq-num">Soru ${i+1}</div><div class="qq-text">${q.question}</div>`;
+    if (q.type === 'multiple_choice') {
+      html += q.options.map((o,j) => `<button class="qopt" data-qi="${i}" data-opt="${j}" onclick="pickOpt(${i},${j})">${o}</button>`).join('');
+    } else if (q.type === 'true_false') {
+      html += `<button class="qopt" data-qi="${i}" data-opt="true" onclick="pickOpt(${i},'true')">✓ Doğru</button>
+               <button class="qopt" data-qi="${i}" data-opt="false" onclick="pickOpt(${i},'false')">✗ Yanlış</button>`;
+    } else {
+      if (q.hint) html += `<div class="qq-hint">💡 ${q.hint}</div>`;
+      html += `<input type="text" class="qfill" id="qf-${i}" placeholder="Cevabınızı yazınız..." oninput="updQProg()" />`;
+    }
+    div.innerHTML = html; c.appendChild(div);
+  });
+  updQProg();
+}
+
+function pickOpt(qi, val) {
+  document.querySelectorAll(`[data-qi="${qi}"]`).forEach(b => b.classList.remove('sel'));
+  document.querySelector(`[data-qi="${qi}"][data-opt="${val}"]`)?.classList.add('sel');
+  QA[qi] = val; updQProg();
+}
+
+function updQProg() {
+  const fills = Array.from(document.querySelectorAll('.qfill')).filter(f=>f.value.trim()).length;
+  document.getElementById('quiz-prog').textContent = `${Object.keys(QA).length + fills}/${S.quizQs.length}`;
+}
+
+function submitQuiz() {
+  let correct = 0;
+  S.quizQs.forEach((q, i) => {
+    const div = document.getElementById(`qqd-${i}`);
+    if (q.type === 'multiple_choice') {
+      const sel = QA[i];
+      if (sel !== undefined) {
+        if (parseInt(sel) === q.correct) correct++;
+        document.querySelectorAll(`[data-qi="${i}"]`).forEach(b => {
+          b.disabled = true;
+          if (parseInt(b.dataset.opt) === q.correct) b.classList.add('right');
+          else if (b.classList.contains('sel')) b.classList.add('wrong');
+        });
+      }
+    } else if (q.type === 'true_false') {
+      const sel = QA[i];
+      if (sel !== undefined) {
+        if ((sel==='true') === q.correct) correct++;
+        document.querySelectorAll(`[data-qi="${i}"]`).forEach(b => {
+          b.disabled = true;
+          if ((b.dataset.opt==='true') === q.correct) b.classList.add('right');
+          else if (b.classList.contains('sel')) b.classList.add('wrong');
+        });
+      }
+    } else {
+      const inp = document.getElementById(`qf-${i}`);
+      if (inp) {
+        const ua = inp.value.trim().toLowerCase(), ea = q.answer.trim().toLowerCase();
+        const ok = ua===ea || (ua.length>2 && (ea.includes(ua)||ea.startsWith(ua)));
+        if (ok) correct++;
+        inp.classList.add(ok ? 'right' : 'wrong'); inp.disabled = true;
+      }
+    }
+    const exp = document.createElement('div'); exp.className = 'qq-exp'; exp.textContent = '💬 ' + q.explanation;
+    div.appendChild(exp);
+  });
+  const bonus = correct * 20; S.score += bonus; updateHdr();
+  const pct = Math.round((correct/S.quizQs.length)*100);
+  document.getElementById('quiz-sub-row').classList.add('hidden');
+  const res = document.getElementById('quiz-res');
+  res.innerHTML = `
+    <div class="qfinal">
+      <div class="qf-ico">${pct>=80?'🏆':pct>=60?'👍':'📚'}</div>
+      <div class="qf-score">${correct}/${S.quizQs.length}</div>
+      <div class="qf-lbl">Doğru Cevap · %${pct}</div>
+      <div class="qf-bonus">+${bonus} Bonus Puan 🎁</div>
+      <div class="qf-tot">Genel Toplam: <strong>${S.score}</strong> Puan</div>
+      <div class="qf-msg">${pct>=80?'🎉 Mükemmel! Metni çok iyi anladınız.':pct>=60?'👍 İyi iş! Eksik kısımları tekrar çalışın.':'📖 Paragrafı tekrar okuyup çevirmeyi deneyin.'}</div>
+      <div class="qf-acts">
+        <button class="btn-p" style="height:40px;padding:0 20px" onclick="quizRestart()">↺ Aynı Paragrafı Tekrar Yaz</button>
+        <button class="btn btn-sec" style="height:40px" onclick="closeQuiz()">← Kapat</button>
+      </div>
+    </div>
+  `;
+  res.classList.remove('hidden');
+  res.scrollIntoView({behavior:'smooth'});
+}
+
+function closeQuiz() { document.getElementById('quiz-ov').classList.remove('show'); }
+function quizRestart() { closeQuiz(); restartPara(); }
+
+// ── START ──────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

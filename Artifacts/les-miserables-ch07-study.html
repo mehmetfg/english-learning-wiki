@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Misérables Ch.7 · Paris — Intensive Vocabulary Study</title>
+<style>
+:root {
+  --bg: #f5f3ee; --bg2: #ede9e0; --bg3: #ffffff;
+  --text: #2c1a0e; --text2: #5a3e2b;
+  --accent: #8b4513; --accent2: #b5651d;
+  --hl: #fdf0d5; --hlb: #c8902d;
+  --ok: #2d6a3f; --ok-bg: #d4edda;
+  --no: #9b2226; --no-bg: #f8d7da;
+  --warn: #7a5c00; --warn-bg: #fff3cd;
+  --border: #d4c4a8; --shadow: rgba(0,0,0,.12);
+  --font: 'Verdana', Geneva, sans-serif;
+}
+[data-theme="dark"] {
+  --bg: #1a1612; --bg2: #241e18; --bg3: #2e2620;
+  --text: #e8d5b7; --text2: #c4a882;
+  --accent: #d4843a; --accent2: #e8a558;
+  --hl: #3d2e18; --hlb: #c8902d;
+  --ok: #4caf72; --ok-bg: #1a3626;
+  --no: #e05555; --no-bg: #3d1a1a;
+  --warn: #e8c84a; --warn-bg: #3d3010;
+  --border: #4a3828; --shadow: rgba(0,0,0,.45);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.75;min-height:100vh}
+
+/* ── HEADER ── */
+.hdr{background:var(--accent);color:#fff;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px var(--shadow)}
+.hdr-title{font-size:.95rem;font-weight:bold;line-height:1.35}
+.hdr-title span{display:block;font-size:.72rem;opacity:.82;font-weight:normal}
+.theme-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;padding:6px 14px;border-radius:20px;cursor:pointer;font-family:var(--font);font-size:.78rem;transition:background .2s}
+.theme-btn:hover{background:rgba(255,255,255,.3)}
+
+/* ── PROGRESS ── */
+.prog{height:4px;background:var(--bg2)}
+.prog-fill{height:100%;background:var(--accent2);transition:width .4s ease;width:20%}
+
+/* ── TABS ── */
+.tab-nav{display:flex;background:var(--bg2);border-bottom:2px solid var(--border);overflow-x:auto}
+.tab-btn{flex:1;min-width:80px;padding:12px 6px;background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;font-family:var(--font);font-size:.76rem;color:var(--text2);white-space:nowrap;transition:all .2s}
+.tab-btn:hover{color:var(--accent);background:var(--bg3)}
+.tab-btn.active{color:var(--accent);border-bottom:3px solid var(--accent);background:var(--bg3);font-weight:bold}
+
+/* ── LAYOUT ── */
+.tab{display:none;padding:24px;max-width:840px;margin:0 auto}
+.tab.active{display:block}
+.sec-title{font-size:1.05rem;color:var(--accent);border-bottom:2px solid var(--border);padding-bottom:8px;margin-bottom:18px}
+.tip-box{background:var(--bg2);border-left:4px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:20px;font-size:.88rem;color:var(--text2)}
+
+/* ── STORY ── */
+.story{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:28px 30px;font-size:.94rem;line-height:1.9}
+.story p{margin-bottom:1em}
+.story p:last-child{margin-bottom:0}
+.vw{background:var(--hl);border-bottom:2px solid var(--hlb);padding:1px 3px;border-radius:3px;cursor:pointer;font-weight:bold;transition:background .2s;color:var(--text)}
+.vw:hover{background:var(--hlb);color:#fff}
+
+/* ── POPOVER ── */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;justify-content:center;align-items:center}
+.ov.show{display:flex}
+.pop{background:var(--bg3);border:2px solid var(--accent);border-radius:14px;padding:24px;max-width:380px;width:92%;box-shadow:0 8px 32px var(--shadow)}
+.pop-word{font-size:1.55rem;font-weight:bold;color:var(--accent);margin-bottom:2px}
+.pop-ph{font-size:.82rem;color:var(--text2);margin-bottom:12px}
+.pop-def{font-size:.92rem;margin-bottom:7px}
+.pop-tr{font-size:.83rem;color:var(--text2);font-style:italic;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.pop-sent{background:var(--bg2);padding:10px 14px;border-radius:6px;font-size:.86rem;font-style:italic;margin-bottom:12px}
+.pop-tip{font-size:.8rem;color:var(--warn);margin-bottom:16px;padding:8px 12px;background:var(--warn-bg);border-radius:6px}
+.pop-close{background:var(--accent);color:#fff;border:none;padding:9px 20px;border-radius:8px;cursor:pointer;font-family:var(--font);width:100%;font-size:.9rem}
+
+/* ── WORD CARDS ── */
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.wcard{background:var(--bg3);border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:10px;padding:18px;transition:box-shadow .2s}
+.wcard:hover{box-shadow:0 4px 18px var(--shadow)}
+.wc-w{font-size:1.15rem;font-weight:bold;color:var(--accent)}
+.wc-ph{font-size:.78rem;color:var(--text2);margin-bottom:8px}
+.wc-def{font-size:.88rem;margin-bottom:6px}
+.wc-tr{font-size:.8rem;color:var(--text2);font-style:italic;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.wc-sent{font-size:.83rem;font-style:italic;color:var(--text2);margin-bottom:8px}
+.wc-tip{font-size:.78rem;color:var(--warn);background:var(--warn-bg);padding:6px 10px;border-radius:4px}
+
+/* ── EXERCISE BLOCKS ── */
+.xblock{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:22px}
+.x-title{font-size:.95rem;font-weight:bold;color:var(--accent);margin-bottom:4px}
+.x-desc{font-size:.83rem;color:var(--text2);margin-bottom:16px}
+
+/* Match */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mcol{display:flex;flex-direction:column;gap:7px}
+.mbtn{padding:10px 11px;background:var(--bg2);border:2px solid var(--border);border-radius:7px;cursor:pointer;font-family:var(--font);font-size:.83rem;text-align:left;transition:all .2s;color:var(--text);line-height:1.4}
+.mbtn:hover:not(:disabled){border-color:var(--accent);background:var(--hl)}
+.mbtn.sel{border-color:var(--accent);background:var(--hl);font-weight:bold}
+.mbtn.ok{border-color:var(--ok);background:var(--ok-bg);color:var(--ok);pointer-events:none}
+.mbtn.no{border-color:var(--no);background:var(--no-bg)}
+.mbtn:disabled{cursor:default}
+
+/* Blanks */
+.bitem{margin-bottom:13px;padding:13px 14px;background:var(--bg2);border-radius:8px}
+.bitem label{font-size:.88rem;line-height:1.8}
+.bitem select{font-family:var(--font);font-size:.86rem;padding:5px 9px;border-radius:6px;border:2px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;margin:0 3px}
+.bitem select:focus{outline:none;border-color:var(--accent)}
+.fi{display:inline-block;margin-left:6px;font-size:.82rem}
+.fi.ok{color:var(--ok)} .fi.no{color:var(--no)}
+
+/* TF */
+.tfitem{margin-bottom:14px;padding:13px 14px;background:var(--bg2);border-radius:8px}
+.tf-sent{font-size:.88rem;font-style:italic;margin-bottom:8px;line-height:1.65}
+.tf-lbl{font-size:.78rem;color:var(--text2);margin-bottom:6px}
+.tf-btns{display:flex;gap:8px;flex-wrap:wrap}
+.tfbtn{padding:6px 18px;border:2px solid var(--border);border-radius:7px;cursor:pointer;font-family:var(--font);font-size:.83rem;background:var(--bg3);color:var(--text);transition:all .2s}
+.tfbtn:hover{border-color:var(--accent)}
+.tfbtn.sel{border-color:var(--accent);background:var(--hl)}
+.tfbtn.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.tfbtn.no{background:var(--no-bg);border-color:var(--no);color:var(--no)}
+.tf-fb{display:block;margin-top:7px;font-size:.8rem}
+.tf-fb.ok{color:var(--ok)} .tf-fb.no{color:var(--no)}
+
+/* Buttons */
+.abtn{background:var(--accent);color:#fff;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-family:var(--font);font-size:.88rem;margin-top:8px;margin-right:8px;transition:background .2s}
+.abtn:hover{background:var(--accent2)}
+.abtn.sec{background:var(--bg2);color:var(--text);border:2px solid var(--border)}
+.abtn.sec:hover{background:var(--border)}
+
+/* Score badge */
+.sbadge{display:inline-block;padding:6px 16px;border-radius:20px;font-weight:bold;font-size:.88rem;margin-top:12px}
+.sbadge.high{background:var(--ok-bg);color:var(--ok)}
+.sbadge.mid{background:var(--warn-bg);color:var(--warn)}
+.sbadge.low{background:var(--no-bg);color:var(--no)}
+
+/* Write tab */
+.warea{width:100%;min-height:150px;padding:13px;border:2px solid var(--border);border-radius:8px;font-family:var(--font);font-size:.9rem;background:var(--bg3);color:var(--text);resize:vertical;line-height:1.7}
+.warea:focus{outline:none;border-color:var(--accent)}
+.wmeta{display:flex;justify-content:space-between;margin-top:5px;font-size:.8rem;color:var(--text2)}
+.wtracker{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{padding:4px 10px;border-radius:12px;font-size:.76rem;background:var(--bg2);border:1px solid var(--border);color:var(--text2);transition:all .3s}
+.chip.found{background:var(--ok-bg);border-color:var(--ok);color:var(--ok);font-weight:bold}
+
+/* Sentence items */
+.sitem{margin-bottom:15px;padding:14px;background:var(--bg2);border-radius:8px}
+.s-prompt{font-size:.88rem;font-weight:bold;color:var(--accent);margin-bottom:5px}
+.s-hint{font-size:.78rem;color:var(--text2);margin-bottom:8px}
+.sinput{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:7px;font-family:var(--font);font-size:.88rem;background:var(--bg3);color:var(--text)}
+.sinput:focus{outline:none;border-color:var(--accent)}
+
+/* Score tab */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px;margin-bottom:20px}
+.scard{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center}
+.scard-title{font-size:.82rem;color:var(--text2);margin-bottom:8px}
+.sbig{font-size:2.2rem;font-weight:bold;color:var(--accent)}
+.sbig.high{color:var(--ok)} .sbig.mid{color:var(--warn)} .sbig.low{color:var(--no)}
+.stotal{font-size:.78rem;color:var(--text2)}
+.done-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px;display:none}
+
+@media(max-width:600px){
+  .tab{padding:16px}
+  .story{padding:18px 16px}
+  .mgrid{grid-template-columns:1fr}
+  .wgrid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body data-theme="light">
+
+<!-- POPOVER -->
+<div class="ov" id="ov" onclick="closePop()">
+  <div class="pop" onclick="event.stopPropagation()">
+    <div class="pop-word" id="pW"></div>
+    <div class="pop-ph" id="pPh"></div>
+    <div class="pop-def" id="pDef"></div>
+    <div class="pop-tr" id="pTr"></div>
+    <div class="pop-sent" id="pSent"></div>
+    <div class="pop-tip" id="pTip"></div>
+    <button class="pop-close" onclick="closePop()">Close ✕</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-title">
+    Les Misérables — Chapter 7: Paris
+    <span>Intensive Vocabulary Study · 10 Target Words</span>
+  </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+</header>
+<div class="prog"><div class="prog-fill" id="pf"></div></div>
+
+<!-- TAB NAV -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="go(0)">📖 Read</button>
+  <button class="tab-btn" onclick="go(1)">🔤 10 Words</button>
+  <button class="tab-btn" onclick="go(2)">🎯 Recall</button>
+  <button class="tab-btn" onclick="go(3)">✏️ Produce</button>
+  <button class="tab-btn" onclick="go(4)">🏆 Score</button>
+</nav>
+
+<!-- TAB 0: READ -->
+<div class="tab active" id="t0">
+  <div class="sec-title">📖 Read the Condensed Chapter</div>
+  <div class="tip-box">
+    This is a condensed version of Chapter 7. All ten target words are
+    <span class="vw" style="cursor:default;pointer-events:none">highlighted like this</span>.
+    Click any highlighted word for its full definition, Turkish meaning, and memory tip.
+  </div>
+  <div class="story" id="storyEl"></div>
+</div>
+
+<!-- TAB 1: 10 WORDS -->
+<div class="tab" id="t1">
+  <div class="sec-title">🔤 Your 10 Target Words</div>
+  <div class="tip-box">Study each card carefully. Read the definition, the Turkish translation, the sentence from the text, and the memory tip before moving to the exercises.</div>
+  <div class="wgrid" id="wgrid"></div>
+</div>
+
+<!-- TAB 2: RECALL -->
+<div class="tab" id="t2">
+  <div class="sec-title">🎯 Active Recall Exercises</div>
+
+  <!-- A: Match -->
+  <div class="xblock">
+    <div class="x-title">Exercise A — Definition Match</div>
+    <div class="x-desc">Click a word on the left, then click its correct definition on the right. Match all 10 pairs.
+      Score: <span id="mScore" style="font-weight:bold">—</span></div>
+    <div class="mgrid">
+      <div class="mcol" id="mWords"></div>
+      <div class="mcol" id="mDefs"></div>
+    </div>
+    <br>
+    <button class="abtn sec" onclick="resetMatch()">↺ Reset</button>
+  </div>
+
+  <!-- B: Fill in blank -->
+  <div class="xblock">
+    <div class="x-title">Exercise B — Fill in the Blank</div>
+    <div class="x-desc">Choose the correct word for each sentence from the dropdown menu.</div>
+    <div id="blanks"></div>
+    <button class="abtn" onclick="checkBlanks()">Check ✓</button>
+    <button class="abtn sec" onclick="resetBlanks()">↺ Reset</button>
+    <div id="blanksFb"></div>
+  </div>
+
+  <!-- C: Correct Usage -->
+  <div class="xblock">
+    <div class="x-title">Exercise C — Correct Usage?</div>
+    <div class="x-desc">Each sentence uses one of the 10 words. Is it used correctly? Click <strong>Correct ✓</strong> or <strong>Wrong ✗</strong>.</div>
+    <div id="tfItems"></div>
+    <button class="abtn" onclick="checkTF()">Check ✓</button>
+    <button class="abtn sec" onclick="resetTF()">↺ Reset</button>
+    <div id="tfFb"></div>
+  </div>
+</div>
+
+<!-- TAB 3: PRODUCE -->
+<div class="tab" id="t3">
+  <div class="sec-title">✏️ Production Exercises</div>
+
+  <div class="xblock">
+    <div class="x-title">Exercise D — Scene Retell</div>
+    <div class="x-desc">Retell the night escape scene in your own words (aim for 80–120 words). Use as many of the 10 target words as you can — they are automatically detected below.</div>
+    <textarea class="warea" id="retell" oninput="updRetell()" placeholder="Describe the night escape: the back alleys, the wall, the convent garden, Fauchelevent..."></textarea>
+    <div class="wmeta">
+      <span>Word count: <strong id="wc">0</strong></span>
+      <span>Target words found: <strong id="wFound">0</strong> / 10</span>
+    </div>
+    <div class="wtracker" id="tracker"></div>
+  </div>
+
+  <div class="xblock">
+    <div class="x-title">Exercise E — Write Your Own Sentences</div>
+    <div class="x-desc">Write one original sentence for each of these 5 words. Use a context that feels natural or true to you.</div>
+    <div id="sentItems"></div>
+  </div>
+</div>
+
+<!-- TAB 4: SCORE -->
+<div class="tab" id="t4">
+  <div class="sec-title">🏆 Your Progress</div>
+  <div class="tip-box">Complete the exercises in the Recall tab to see your scores here.</div>
+  <div class="sgrid" id="scoreGrid"></div>
+  <div class="done-box" id="doneBox">
+    <p style="font-size:1.1rem;color:var(--accent);font-weight:bold">Tüm egzersizler tamamlandı! 🎉</p>
+    <p style="margin-top:10px;font-size:.92rem">You have worked through all three recall exercises for Chapter 7. When you are ready, say <strong>"devam"</strong> to continue with Chapter 8 — Marius.</p>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const W = [
+  {id:'peripheral',   word:'peripheral',   ph:'/pəˈrɪf.ər.əl/',
+   def:'at the edge of your vision or attention; not the main focus',
+   tr:'çevre, kenarda olan; dikkat veya görüş alanının kenarında',
+   sent:'He sat with a book, but Cosette was always visible in the <b>peripheral</b> edge of his attention.',
+   tip:'💡 Think of the "periphery" — the outer edge of a circle. Peripheral = on the edge, not in the centre.'},
+  {id:'sanctuary',    word:'sanctuary',    ph:'/ˈsæŋk.tʃu.er.i/',
+   def:'a safe, protected place; a place where someone is sheltered from danger',
+   tr:'sığınak, güvenli yer; tehlikeden koruma sağlayan yer',
+   sent:'The convent was a <b>sanctuary</b> — a place the police could not enter without serious reason.',
+   tip:'💡 Related to "sacred" (kutsal). Originally a holy place where people could not be arrested.'},
+  {id:'brevity',      word:'brevity',      ph:'/ˈbrev.ɪ.ti/',
+   def:'the quality of saying something in very few words; being short and concise',
+   tr:'kısalık, öz anlatım; az kelimeyle çok şey söyleme sanatı',
+   sent:'Madame Burgon greeted them with <b>brevity</b> — a few short questions, a nod, and a key.',
+   tip:'💡 From Latin "brevis" (short). "Brief" = adjective, "brevity" = noun. "Brevity is the soul of wit." — Shakespeare.'},
+  {id:'premonition',  word:'premonition',  ph:'/ˌprem.əˈnɪʃ.ən/',
+   def:'a strong feeling that something bad is about to happen, even without clear evidence',
+   tr:'önsezi; kötü bir şeyin olacağına dair belirsiz ama güçlü duygu',
+   sent:'Sitting beside Cosette on the bench, Valjean felt a <b>premonition</b> — not quite fear, but something close.',
+   tip:'💡 "Pre-" = before. A premonition = a warning that comes before the event. Often unexplainable.'},
+  {id:'composure',    word:'composure',    ph:'/kəmˈpəʊ.ʒər/',
+   def:'calm, controlled behaviour especially in a difficult or surprising situation',
+   tr:'soğukkanlılık, sakinlik; zor anlarda bile sakin ve kontrollü kalma hali',
+   sent:'Cosette put on her coat without asking why — showing the quiet <b>composure</b> she had learned over years.',
+   tip:'💡 "Compose yourself" = sakinleş. Composure = the noun. "To lose composure" = sakinliğini yitirmek.'},
+  {id:'proximity',    word:'proximity',    ph:'/prɒkˈsɪm.ɪ.ti/',
+   def:'nearness in space or time; being physically close to something or someone',
+   tr:'yakınlık, bitişiklik; mekânsal veya zamansal yakın olma durumu',
+   sent:'Twenty families lived in close <b>proximity</b>, separated only by thin walls.',
+   tip:'💡 "Proximate" = near. Used in "proximity alarm" (yaklaşma alarmı). In proximity = very close together.'},
+  {id:'methodically', word:'methodically', ph:'/məˈθɒd.ɪ.kli/',
+   def:'in a careful, organized, step-by-step way; following a clear plan or system',
+   tr:'metodolojik olarak, sistematik biçimde; adım adım, planlı ve düzenli şekilde',
+   sent:'He walked through every back street and shortcut — doing this <b>methodically</b>, learning the whole area.',
+   tip:'💡 A "method" is a system or plan. Methodically = following your method carefully. Opposite: randomly, chaotically.'},
+  {id:'vain',         word:'vain',         ph:'/veɪn/',
+   def:'too proud of your own appearance or abilities; caring too much about how you look',
+   tr:'kendini beğenmiş, gösterişli; görünüşünü veya yeteneklerini aşırı önemseyen',
+   sent:'Cosette was not <b>vain</b> — she wore her hair simply and dressed for warmth, not appearance.',
+   tip:'💡 Also: "in vain" = boşuna (without success). "Vanity" is the noun. Don\'t confuse vain / vane (weather vane) / vein (damar).'},
+  {id:'assessing',    word:'assessing',    ph:'/əˈses.ɪŋ/',
+   def:'carefully examining or judging something to understand its quality, value, or condition',
+   tr:'değerlendirmek, ölçmek; bir şeyin kalitesini veya değerini dikkatle incelemek',
+   sent:'She stood in the doorway, <b>assessing</b> each item on the bed carefully, as if checking whether kindness was real.',
+   tip:'💡 Verb: "assess". Used in "risk assessment," "self-assessment." Always involves careful, deliberate judgment.'},
+  {id:'effusive',     word:'effusive',     ph:'/ɪˈfjuː.sɪv/',
+   def:'expressing feelings very enthusiastically, warmly, or in an exaggerated way',
+   tr:'taşkın, coşkulu; duyguları abartılı veya aşırı biçimde dışa vuran',
+   sent:'The nun greeted Cosette with a nod — warm in its way, but not <b>effusive</b>.',
+   tip:'💡 From Latin "effundere" = to pour out. Effusive = emotions pouring out. Often used when the reaction seems too much.'}
+];
+
+const PARAS = [
+  `Jean Valjean and Cosette arrived in Paris on a grey morning. They had very little: one bag, some money, and the bishop's two silver candlesticks. They needed a place where they would not be noticed.`,
+
+  `Valjean chose a room in the eastern part of the city, in a poor neighbourhood where strangers were not unusual. The landlady, Madame Burgon, greeted them with <vw id="brevity">brevity</vw> — a few short questions, a nod, and a key. A private man who paid his rent in advance asked for nothing more.`,
+
+  `He gave a false name: Fauchelevent. He said the child was his granddaughter. Their apartment had two rooms, a fireplace, and two small windows. It was bare and cold. But it was theirs.`,
+
+  `Valjean moved quickly and <vw id="methodically">methodically</vw>. He bought wood, blankets, food, and real leather shoes for Cosette. When she saw these things laid out on her bed, she stood in the doorway, <vw id="assessing">assessing</vw> each item carefully — as if checking whether kindness was real. Then she said simply: "These are good."`,
+
+  `Two weeks later, Valjean enrolled Cosette in school. She could read a little and count to twenty. By the end of two months, she was the fastest reader in her class. She was not <vw id="vain">vain</vw> about this — she simply worked harder than anyone else.`,
+
+  `While Cosette was at school, Valjean walked the neighbourhood <vw id="methodically">methodically</vw>, finding every back street, every courtyard, every shortcut. In the evenings, he always lit the bishop's silver candlesticks on the shelf. "Those are beautiful," Cosette said on the first night. "They were a gift," he said. "From a good man who changed my life."`,
+
+  `Spring came. Cosette grew. She began to laugh — genuinely, suddenly, surprised by it herself. One afternoon she called him <em>Grand-père</em>. He was standing at the stove with a spoon in his hand and he stood completely still for a moment. That evening, after she was in bed, he sat by the fire and thought about Fantine, and promises, and what it meant to be family.`,
+
+  `The building had many tenants, all living in close <vw id="proximity">proximity</vw>, separated by thin walls. An old man called Monsieur Mabeuf spoke with polite <vw id="brevity">brevity</vw> on the stairs. A family on the second floor was loud and very poor. Something about the father made Valjean uneasy — a quality of performance, as if the poverty was slightly more deliberate than it appeared. He said nothing. He kept his door closed.`,
+
+  `On Sunday afternoons, they walked to the Luxembourg Garden — a large park with long paths, a pond, and stone benches. It had become their weekly ritual.`,
+
+  `It was here that Valjean first noticed the young man. He was perhaps twenty, thin, dark-haired, serious. He came on the same afternoons and sat with a book he was not always reading. He looked at Cosette at the <vw id="peripheral">peripheral</vw> edge of his attention — not directly, but in the obvious way that is visible from twenty metres. Cosette was not <vw id="vain">vain</vw>, and she did not look back. But she knew he was there. Valjean felt a <vw id="premonition">premonition</vw> — not quite fear, but something close to it.`,
+
+  `One evening in autumn, Valjean turned a corner and saw Javert standing under a lamp. He stepped back immediately and went home by a different route. He made his face calm. He put the bread on the table. Cosette looked at him. "Are you all right?" she asked. "Yes," he said. "Are you hungry?" That night, after she was asleep, he sat by the cold fireplace and made a plan.`,
+
+  `He thought of Fauchelevent — an old man whose life he had saved years ago, who now worked as a gardener at the Convent of the Petit-Picpus. A convent was closed to the outside world. The police did not enter without serious reason. It would be a <vw id="sanctuary">sanctuary</vw>.`,
+
+  `The next evening, two men were watching his street. Valjean packed quickly. He told Cosette: bring your coat. She looked at his face and put it on without asking why — showing the quiet <vw id="composure">composure</vw> she had learned over years. They moved fast through dark streets. He heard footsteps behind them. He found a high stone wall, tied a rope around Cosette's waist, lifted her up, and helped her over. She landed in the dark and called back: <em>I'm all right.</em>`,
+
+  `On the other side was the convent's garden. They moved through the dark to a small door. Valjean knocked with a pattern. The door opened. An old man stood there holding a lantern and stared. "Monsieur Madeleine," he whispered. "Fauchelevent," said Valjean. "I need your help."`,
+
+  `The next morning, the abbess — a calm woman of seventy who had lived in the convent for fifty years — heard their case. The child could return as a student. The man could work in the garden as an assistant. It was the same arrangement as before. The nun who remembered Cosette greeted her with a nod — warm in its way, but not <vw id="effusive">effusive</vw>. Cosette sat in the classroom with her back straight and her notebook open. Valjean planted and pruned. In the evenings they read together by candlelight. It was safe. For now, it was enough.`
+];
+
+const BLANKS = [
+  {q:'Valjean unpacked the apartment _______, buying each item one by one in a clear, logical order.',
+   a:'methodically', opts:['methodically','effusively','briefly','vainly']},
+  {q:'She was not _______. She wore plain clothes and never looked in mirrors.',
+   a:'vain', opts:['vain','peripheral','methodical','effusive']},
+  {q:'Sitting in the garden, Valjean felt a dark _______ — something bad was coming.',
+   a:'premonition', opts:['premonition','proximity','composure','brevity']},
+  {q:'The convent was a _______ — a place where the police could not follow them.',
+   a:'sanctuary', opts:['sanctuary','brevity','proximity','composure']},
+  {q:'The young man sat with a book, but Cosette was always in the _______ edge of his vision.',
+   a:'peripheral', opts:['peripheral','effusive','vain','assessing']},
+  {q:'Cosette waited in the dark without any sign of panic — her _______ was remarkable.',
+   a:'composure', opts:['composure','proximity','brevity','premonition']},
+  {q:'Madame Burgon always spoke with _______ — never more than five words when two would do.',
+   a:'brevity', opts:['brevity','premonition','composure','proximity']},
+  {q:'The twenty families lived in close _______, hearing each other through the thin walls.',
+   a:'proximity', opts:['proximity','sanctuary','brevity','composure']}
+];
+
+const TF = [
+  {s:'He spoke with brevity, using a hundred words when ten would have been enough.',
+   ok:false, ex:'"Brevity" means using very FEW words — not many. This is the opposite.'},
+  {s:'She assessed the room carefully, checking every corner before deciding it was safe.',
+   ok:true,  ex:'"Assessing" = carefully examining and judging. Correct usage.'},
+  {s:'The sanctuary was wide open to the public — anyone could walk in off the street.',
+   ok:false, ex:'A sanctuary is a protected, closed space — not open to anyone. Wrong.'},
+  {s:'The premonition came true: he had felt something bad would happen, and it did.',
+   ok:true,  ex:'"Premonition" = a feeling that something bad will happen. Correct.'},
+  {s:'She lost her composure and screamed; she simply could not stay calm.',
+   ok:true,  ex:'"To lose composure" = to stop being calm and controlled. Correct.'},
+  {s:'He was very vain about his cooking — he thought his food was terrible.',
+   ok:false, ex:'"Vain" = thinking TOO HIGHLY of yourself. "Terrible" is the opposite.'},
+  {s:'The two houses were in close proximity — they shared a wall.',
+   ok:true,  ex:'"Proximity" = physical nearness. Sharing a wall = very close. Correct.'},
+  {s:'Her greeting was warm but not effusive — just a smile and a handshake, nothing more.',
+   ok:true,  ex:'"Not effusive" = not over-the-top. A calm, measured greeting. Correct.'}
+];
+
+const SENT5 = ['peripheral','sanctuary','premonition','composure','effusive'];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let selWord = null;
+let matched = new Set();
+let scores  = {match:null, blanks:null, tf:null};
+const tfSel = {};
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  loadTheme();
+  renderStory();
+  renderWordCards();
+  renderMatch();
+  renderBlanks();
+  renderTF();
+  renderSentItems();
+  renderTracker();
+  renderScores();
+});
+
+// ═══════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════
+function toggleTheme() {
+  const d = document.body.getAttribute('data-theme') === 'dark';
+  document.body.setAttribute('data-theme', d ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = d ? '🌙 Dark' : '☀️ Light';
+  localStorage.setItem('ch7t', d ? 'light' : 'dark');
+}
+function loadTheme() {
+  const t = localStorage.getItem('ch7t') || 'light';
+  document.body.setAttribute('data-theme', t);
+  document.getElementById('themeBtn').textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+}
+
+// ═══════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════
+function go(n) {
+  document.querySelectorAll('.tab').forEach((el,i) => el.classList.toggle('active', i===n));
+  document.querySelectorAll('.tab-btn').forEach((el,i) => el.classList.toggle('active', i===n));
+  document.getElementById('pf').style.width = ((n+1)*20)+'%';
+}
+
+// ═══════════════════════════════════════
+// POPOVER
+// ═══════════════════════════════════════
+function showPop(id) {
+  const w = W.find(x => x.id === id);
+  if (!w) return;
+  document.getElementById('pW').textContent    = w.word;
+  document.getElementById('pPh').textContent   = w.ph;
+  document.getElementById('pDef').textContent  = '📘 ' + w.def;
+  document.getElementById('pTr').textContent   = '🇹🇷 ' + w.tr;
+  document.getElementById('pSent').innerHTML   = '📄 ' + w.sent;
+  document.getElementById('pTip').textContent  = w.tip;
+  document.getElementById('ov').classList.add('show');
+}
+function closePop() {
+  document.getElementById('ov').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+// STORY
+// ═══════════════════════════════════════
+function renderStory() {
+  const el = document.getElementById('storyEl');
+  el.innerHTML = PARAS.map(p => {
+    const processed = p.replace(/<vw id="([^"]+)">([^<]+)<\/vw>/g,
+      (_, id, txt) => `<span class="vw" onclick="showPop('${id}')">${txt}</span>`);
+    return `<p>${processed}</p>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// WORD CARDS
+// ═══════════════════════════════════════
+function renderWordCards() {
+  document.getElementById('wgrid').innerHTML = W.map((w,i) => `
+    <div class="wcard">
+      <div class="wc-w">${i+1}. ${w.word}</div>
+      <div class="wc-ph">${w.ph}</div>
+      <div class="wc-def">📘 ${w.def}</div>
+      <div class="wc-tr">🇹🇷 ${w.tr}</div>
+      <div class="wc-sent">📄 <em>${w.sent.replace(/<\/?b>/g,'')}</em></div>
+      <div class="wc-tip">${w.tip}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+// MATCH
+// ═══════════════════════════════════════
+function renderMatch() {
+  const wc = document.getElementById('mWords');
+  const dc = document.getElementById('mDefs');
+  const shuffled = [...W].sort(() => Math.random()-.5);
+  wc.innerHTML = W.map(w =>
+    `<button class="mbtn" id="mw-${w.id}" onclick="clickW('${w.id}')">${w.word}</button>`).join('');
+  dc.innerHTML = shuffled.map(w =>
+    `<button class="mbtn" id="md-${w.id}" onclick="clickD('${w.id}')">${w.def}</button>`).join('');
+}
+function clickW(id) {
+  if (matched.has(id)) return;
+  document.querySelectorAll('#mWords .mbtn').forEach(b => b.classList.remove('sel'));
+  selWord = id;
+  document.getElementById('mw-'+id).classList.add('sel');
+}
+function clickD(id) {
+  if (!selWord || matched.has(id)) return;
+  const wb = document.getElementById('mw-'+selWord);
+  const db = document.getElementById('md-'+id);
+  if (selWord === id) {
+    wb.classList.remove('sel'); wb.classList.add('ok'); wb.disabled = true;
+    db.classList.add('ok'); db.disabled = true;
+    matched.add(id); selWord = null;
+    const n = matched.size;
+    document.getElementById('mScore').innerHTML = n===10
+      ? '<span style="color:var(--ok)">10/10 ✓ Perfect!</span>'
+      : n+'/10';
+    if (n===10){ scores.match=10; renderScores(); }
+    else scores.match = n;
+  } else {
+    wb.classList.remove('sel'); wb.classList.add('no'); db.classList.add('no');
+    setTimeout(() => { wb.classList.remove('no'); db.classList.remove('no'); }, 700);
+    selWord = null;
+  }
+}
+function resetMatch() {
+  selWord = null; matched.clear();
+  document.getElementById('mScore').textContent = '—';
+  scores.match = null; renderScores(); renderMatch();
+}
+
+// ═══════════════════════════════════════
+// BLANKS
+// ═══════════════════════════════════════
+function renderBlanks() {
+  document.getElementById('blanks').innerHTML = BLANKS.map((b,i) => {
+    const opts = b.opts.map(o => `<option value="${o}">${o}</option>`).join('');
+    const [before, after] = b.q.split('_______');
+    return `<div class="bitem" id="bi${i}">
+      <label>${i+1}. ${before}<select id="bs${i}"><option value="">— choose —</option>${opts}</select>${after}</label>
+      <span class="fi" id="bf${i}"></span>
+    </div>`;
+  }).join('');
+}
+function checkBlanks() {
+  let r=0;
+  BLANKS.forEach((b,i) => {
+    const v = document.getElementById('bs'+i).value;
+    const fb = document.getElementById('bf'+i);
+    if (!v) { fb.textContent=''; return; }
+    if (v===b.a) { r++; fb.textContent='✓'; fb.className='fi ok'; }
+    else         { fb.innerHTML=`✗ → <em>${b.a}</em>`; fb.className='fi no'; }
+  });
+  const t=BLANKS.length;
+  document.getElementById('blanksFb').innerHTML =
+    `<div class="sbadge ${r===t?'high':r>=t/2?'mid':'low'}">${r}/${t} correct</div>`;
+  scores.blanks=r; renderScores();
+}
+function resetBlanks() {
+  BLANKS.forEach((_,i)=>{
+    const s=document.getElementById('bs'+i); if(s) s.value='';
+    const f=document.getElementById('bf'+i); if(f){f.textContent='';f.className='fi';}
+  });
+  document.getElementById('blanksFb').innerHTML='';
+  scores.blanks=null; renderScores();
+}
+
+// ═══════════════════════════════════════
+// TRUE / FALSE
+// ═══════════════════════════════════════
+function renderTF() {
+  document.getElementById('tfItems').innerHTML = TF.map((t,i) => `
+    <div class="tfitem">
+      <div class="tf-sent">"${t.s}"</div>
+      <div class="tf-lbl">Is this word used correctly?</div>
+      <div class="tf-btns">
+        <button class="tfbtn" id="tft${i}" onclick="selTF(${i},'t')">Correct ✓</button>
+        <button class="tfbtn" id="tff${i}" onclick="selTF(${i},'f')">Wrong ✗</button>
+      </div>
+      <span class="tf-fb" id="tffb${i}"></span>
+    </div>`).join('');
+}
+function selTF(i,v) {
+  tfSel[i]=v;
+  document.getElementById('tft'+i).classList.toggle('sel', v==='t');
+  document.getElementById('tff'+i).classList.toggle('sel', v==='f');
+}
+function checkTF() {
+  let r=0;
+  TF.forEach((t,i)=>{
+    const v=tfSel[i];
+    const fb=document.getElementById('tffb'+i);
+    const bt=document.getElementById('tft'+i);
+    const bf=document.getElementById('tff'+i);
+    if(!v){fb.textContent='';return;}
+    const correct = (v==='t')===t.ok;
+    if(correct){
+      r++;
+      fb.textContent='✓ '+t.ex; fb.className='tf-fb ok';
+      (v==='t'?bt:bf).classList.add('ok');
+    } else {
+      fb.textContent='✗ '+t.ex; fb.className='tf-fb no';
+      (v==='t'?bt:bf).classList.add('no');
+    }
+  });
+  const tot=TF.length;
+  document.getElementById('tfFb').innerHTML=
+    `<div class="sbadge ${r===tot?'high':r>=tot/2?'mid':'low'}">${r}/${tot} correct</div>`;
+  scores.tf=r; renderScores();
+}
+function resetTF() {
+  Object.keys(tfSel).forEach(k=>delete tfSel[k]);
+  TF.forEach((_,i)=>{
+    ['tft','tff'].forEach(p=>{
+      const b=document.getElementById(p+i); if(b) b.className='tfbtn';
+    });
+    const fb=document.getElementById('tffb'+i); if(fb){fb.textContent='';fb.className='tf-fb';}
+  });
+  document.getElementById('tfFb').innerHTML='';
+  scores.tf=null; renderScores();
+}
+
+// ═══════════════════════════════════════
+// PRODUCE
+// ═══════════════════════════════════════
+function renderTracker() {
+  document.getElementById('tracker').innerHTML =
+    W.map(w => `<span class="chip" id="chip-${w.id}">${w.word}</span>`).join('');
+}
+function updRetell() {
+  const txt = document.getElementById('retell').value;
+  const words = txt.trim().split(/\s+/).filter(x=>x.length>0);
+  document.getElementById('wc').textContent = words.length;
+  let found=0;
+  W.forEach(w => {
+    const has = txt.toLowerCase().includes(w.id);
+    document.getElementById('chip-'+w.id).classList.toggle('found', has);
+    if(has) found++;
+  });
+  document.getElementById('wFound').textContent = found;
+}
+function renderSentItems() {
+  document.getElementById('sentItems').innerHTML = SENT5.map((id,i)=>{
+    const w = W.find(x=>x.id===id);
+    return `<div class="sitem">
+      <div class="s-prompt">${i+1}. Use: <strong>${w.word}</strong></div>
+      <div class="s-hint">${w.def}</div>
+      <input class="sinput" type="text" placeholder="Write your sentence here..."/>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+// SCORES
+// ═══════════════════════════════════════
+function renderScores() {
+  const items = [
+    {title:'A: Definition Match',    key:'match',  tot:10},
+    {title:'B: Fill in the Blank',   key:'blanks', tot:BLANKS.length},
+    {title:'C: Correct Usage?',      key:'tf',     tot:TF.length}
+  ];
+  document.getElementById('scoreGrid').innerHTML = items.map(it => {
+    const s = scores[it.key];
+    const disp = s!==null ? s : '—';
+    const pct  = s!==null ? s/it.tot : -1;
+    const cls  = pct<0?'':pct>=.8?'high':pct>=.5?'mid':'low';
+    return `<div class="scard">
+      <div class="scard-title">${it.title}</div>
+      <div class="sbig ${cls}">${disp}</div>
+      <div class="stotal">out of ${it.tot}</div>
+    </div>`;
+  }).join('');
+  const all = scores.match!==null && scores.blanks!==null && scores.tf!==null;
+  document.getElementById('doneBox').style.display = all ? 'block' : 'none';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Hub — 3000 Words</title>
+<style>
+:root {
+  --a1: #22c55e; --a1-bg: #f0fdf4;
+  --a2: #86efac; --a2-bg: #f0fdf4;
+  --b1: #3b82f6; --b1-bg: #eff6ff;
+  --b2: #a855f7; --b2-bg: #faf5ff;
+  --c1: #f97316; --c1-bg: #fff7ed;
+  --c2: #ef4444; --c2-bg: #fef2f2;
+  --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+  --text: #1e293b; --muted: #64748b; --accent: #3b82f6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+header { background: #1e293b; color: white; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+header h1 { font-size: 1.3rem; font-weight: 700; }
+.stats-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.stat-chip { background: rgba(255,255,255,0.1); border-radius: 20px; padding: 4px 12px; font-size: 0.82rem; }
+.level-progress { display: flex; gap: 8px; flex-wrap: wrap; }
+.lp { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; }
+.lp-bar { width: 60px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 3px; overflow: hidden; }
+.lp-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+.controls { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; position: sticky; top: 0; z-index: 10; }
+#search { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; width: 220px; outline: none; }
+#search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.tab { border: 1px solid var(--border); background: var(--bg); border-radius: 6px; padding: 5px 10px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.tab.active { color: white; border-color: transparent; }
+.tab[data-level="all"].active { background: #1e293b; }
+.tab[data-level="A1"].active { background: var(--a1); }
+.tab[data-level="A2"].active { background: #16a34a; }
+.tab[data-level="B1"].active { background: var(--b1); }
+.tab[data-level="B2"].active { background: var(--b2); }
+.tab[data-level="C1"].active { background: var(--c1); }
+.tab[data-level="C2"].active { background: var(--c2); }
+.filters { display: flex; gap: 4px; }
+.filt { border: 1px solid var(--border); background: var(--bg); border-radius: 6px; padding: 5px 10px; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; }
+.filt.active { background: var(--accent); color: white; border-color: var(--accent); }
+#count-label { font-size: 0.82rem; color: var(--muted); margin-left: auto; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; padding: 20px 24px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; transition: box-shadow 0.2s; }
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.card.learned { opacity: 0.6; }
+.card.learned .card-head { text-decoration: line-through; }
+.card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.card-head { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; }
+.card-actions { display: flex; gap: 6px; }
+.btn-speak { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.15s; }
+.btn-speak:hover { background: var(--b1-bg); border-color: var(--b1); }
+.btn-star { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.15s; }
+.btn-star.on { background: #fef9c3; border-color: #eab308; }
+.badge { font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; color: white; }
+.badge.A1 { background: var(--a1); }
+.badge.A2 { background: #16a34a; }
+.badge.B1 { background: var(--b1); }
+.badge.B2 { background: var(--b2); }
+.badge.C1 { background: var(--c1); }
+.badge.C2 { background: var(--c2); }
+.def { font-size: 0.88rem; color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+.ex { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-bottom: 10px; border-left: 3px solid var(--border); padding-left: 8px; }
+.tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.tag { font-size: 0.72rem; padding: 2px 7px; border-radius: 10px; }
+.tag.syn { background: #dcfce7; color: #16a34a; }
+.tag.ant { background: #fee2e2; color: #dc2626; }
+.morph-tip { font-size: 0.75rem; background: #eff6ff; border-left: 3px solid var(--b1); padding: 5px 8px; border-radius: 0 6px 6px 0; color: #1d4ed8; margin-bottom: 10px; }
+.card-foot { display: flex; justify-content: flex-end; }
+.btn-learn { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; font-weight: 600; }
+.btn-learn:hover { background: var(--a1); color: white; border-color: var(--a1); }
+.btn-learn.done { background: var(--a1); color: white; border-color: var(--a1); }
+.empty { grid-column: 1/-1; text-align: center; padding: 60px; color: var(--muted); font-size: 1rem; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>📚 Vocabulary Hub</h1>
+    <div style="font-size:0.75rem; opacity:0.7; margin-top:2px">English–English Dictionary · CEFR A1→C2 · Morphology · Tracking</div>
+  </div>
+  <div>
+    <div class="stats-row" id="stats-row"></div>
+    <div class="level-progress" id="level-progress" style="margin-top:8px"></div>
+  </div>
+</header>
+<div class="controls">
+  <input type="text" id="search" placeholder="🔍  Search words…">
+  <div class="tabs" id="tabs"></div>
+  <div class="filters" id="filters">
+    <button class="filt active" data-f="all">All</button>
+    <button class="filt" data-f="unlearned">Not Learned</button>
+    <button class="filt" data-f="learned">Learned ✓</button>
+    <button class="filt" data-f="starred">Starred ⭐</button>
+  </div>
+  <span id="count-label"></span>
+</div>
+<div class="grid" id="grid"></div>
+
+<script>
+// ─── WORD DATA ──────────────────────────────────────────────────────────────
+// Format: {id, w:word, l:level, d:definition, syn:[], ant:[], morph:'', ex:''}
+const WORDS = [
+// ── A1 ──────────────────────────────────────────────────────────────────────
+{id:1,w:"afraid",l:"A1",d:"Feeling fear or anxiety about something that might happen",syn:["scared","frightened","terrified","fearful"],ant:["brave","fearless","bold","courageous"],morph:"OE afræd — from afrēdan (to frighten)",ex:"She was afraid of the dark."},
+{id:2,w:"animal",l:"A1",d:"A living creature that is not a human, plant, or insect",syn:["creature","beast","organism"],ant:[],morph:"Latin animalis: having breath, from anima (breath, soul)",ex:"Dogs are friendly animals."},
+{id:3,w:"ask",l:"A1",d:"To say something as a question in order to get information",syn:["inquire","question","query","request"],ant:["answer","reply","respond"],morph:"Old English āscian — fundamental native verb",ex:"Can I ask you a question?"},
+{id:4,w:"bad",l:"A1",d:"Of poor quality or low standard; not good; morally wrong",syn:["poor","terrible","awful","dreadful"],ant:["good","excellent","great","wonderful"],morph:"OE bæddel — origin uncertain; possibly related to 'hermaphrodite'",ex:"The weather was really bad yesterday."},
+{id:5,w:"beautiful",l:"A1",d:"Pleasing to the senses; very attractive in appearance",syn:["lovely","gorgeous","stunning","attractive"],ant:["ugly","hideous","unattractive"],morph:"Old French beau/belle + -ful; Latin bellus (handsome)",ex:"What a beautiful sunset!"},
+{id:6,w:"big",l:"A1",d:"Of large size, amount, or extent",syn:["large","great","huge","enormous"],ant:["small","little","tiny","minute"],morph:"Middle English bigge — possibly Low German/Scandinavian",ex:"They live in a big house."},
+{id:7,w:"book",l:"A1",d:"A written or printed work consisting of pages bound together",syn:["volume","publication","text","work"],ant:[],morph:"OE bōc — possibly from bōk (beech tree: early writing on bark)",ex:"I'm reading an interesting book."},
+{id:8,w:"buy",l:"A1",d:"To obtain something by paying money for it",syn:["purchase","acquire","obtain","get"],ant:["sell","return","give away"],morph:"OE bycgan — fundamental Germanic verb",ex:"She wants to buy a new laptop."},
+{id:9,w:"clean",l:"A1",d:"Free from dirt, marks, or stains; morally pure",syn:["spotless","pure","tidy","neat","immaculate"],ant:["dirty","filthy","messy","unclean"],morph:"OE clæne — related to German klein (small, delicate, clean)",ex:"Please keep your room clean."},
+{id:10,w:"cold",l:"A1",d:"Of or at a low temperature; unfriendly in manner",syn:["cool","freezing","chilly","icy","frigid"],ant:["hot","warm","heated","mild"],morph:"OE ceald — Germanic; related to Latin gelidus, Greek kryos",ex:"It's very cold outside today."},
+{id:11,w:"come",l:"A1",d:"To move toward or reach a place or person",syn:["arrive","approach","reach","appear"],ant:["go","leave","depart","exit"],morph:"OE cuman — one of the most fundamental English verbs",ex:"Come here, please!"},
+{id:12,w:"country",l:"A1",d:"A nation with its own government occupying a particular territory",syn:["nation","state","land","territory"],ant:[],morph:"Old French contrée; Latin contra (opposite) — land lying across",ex:"France is a country in Europe."},
+{id:13,w:"day",l:"A1",d:"A period of 24 hours; the time when it is light outside",syn:["daytime","period","time"],ant:["night","darkness"],morph:"OE dæg — Germanic; related to German Tag",ex:"It was a beautiful sunny day."},
+{id:14,w:"different",l:"A1",d:"Not the same as another; unlike in nature or quality",syn:["unlike","distinct","dissimilar","diverse","varied"],ant:["same","identical","similar","alike"],morph:"Latin differens, from differre: dis- (apart) + ferre (carry)",ex:"The two sisters are very different."},
+{id:15,w:"door",l:"A1",d:"A movable barrier for closing the entrance to a building or room",syn:["entrance","entry","gate","opening"],ant:[],morph:"OE duru — Germanic; related to Latin foris (door), Greek thura",ex:"Please close the door behind you."},
+{id:16,w:"eat",l:"A1",d:"To put food in your mouth, chew, and swallow it",syn:["consume","devour","dine","feed on"],ant:["fast","starve"],morph:"OE etan — Germanic; Latin esse (eat); Greek edein",ex:"What would you like to eat?"},
+{id:17,w:"enjoy",l:"A1",d:"To get pleasure from something; to have a good time doing something",syn:["love","relish","savor","appreciate","like"],ant:["dislike","hate","suffer through","endure"],morph:"Old French enjoir: en- + joir (rejoice); Latin gaudere (rejoice)",ex:"I really enjoy reading books."},
+{id:18,w:"family",l:"A1",d:"A group of people related by blood or marriage, especially parents and children",syn:["household","relatives","kin","relations","clan"],ant:[],morph:"Latin familia: household; from famulus (servant/household member)",ex:"She has a large, close-knit family."},
+{id:19,w:"food",l:"A1",d:"Any substance eaten or drunk to maintain life and growth",syn:["nourishment","nutrition","sustenance","fare","provisions"],ant:[],morph:"OE fōda — Germanic root; related to feed, fodder",ex:"Italian food is absolutely delicious."},
+{id:20,w:"free",l:"A1",d:"Not under the control of another; not costing anything",syn:["liberated","unrestricted","complimentary","open","independent"],ant:["trapped","restricted","expensive","costly"],morph:"OE frēo — Germanic; related to Latin privus (private, individual)",ex:"Is this service completely free?"},
+{id:21,w:"friend",l:"A1",d:"A person you know well and like, who is not a family member",syn:["companion","buddy","pal","ally","associate"],ant:["enemy","foe","stranger","rival"],morph:"OE frēond — from frēon (to love); related to German Freund",ex:"She's been my best friend for years."},
+{id:22,w:"give",l:"A1",d:"To hand something to someone; to transfer ownership or provide",syn:["provide","offer","donate","hand","supply"],ant:["take","receive","keep","withhold"],morph:"OE giefan — Germanic; cognate with Latin habere (to have)",ex:"Can you give me a hand with this?"},
+{id:23,w:"good",l:"A1",d:"Having the right qualities; of a high standard; morally right",syn:["excellent","great","fine","wonderful","virtuous"],ant:["bad","poor","terrible","evil","wrong"],morph:"OE gōd — Germanic; related to Dutch goed, German gut",ex:"That's a really good idea!"},
+{id:24,w:"happy",l:"A1",d:"Feeling or showing pleasure, contentment, or joy",syn:["joyful","pleased","content","cheerful","glad","elated"],ant:["sad","unhappy","miserable","depressed","upset"],morph:"Middle English: from hap (luck/fortune) + -y; Old Norse happ",ex:"She was very happy with the results."},
+{id:25,w:"help",l:"A1",d:"To make it easier for someone to do something; to assist",syn:["assist","support","aid","guide","facilitate"],ant:["hinder","obstruct","prevent","harm"],morph:"OE helpan — Germanic; related to German helfen",ex:"Can you help me with this problem?"},
+{id:26,w:"home",l:"A1",d:"The place where one lives; the place you feel you belong",syn:["house","residence","dwelling","abode"],ant:[],morph:"OE hām — Germanic; related to German Heim, Dutch heim",ex:"I'll be home by eight o'clock."},
+{id:27,w:"important",l:"A1",d:"Having great significance, value, or effect; deserving attention",syn:["significant","essential","critical","vital","key","crucial"],ant:["unimportant","trivial","minor","insignificant"],morph:"Latin importare: im- (in) + portare (carry) — to bring in/matter",ex:"It is important to eat a good breakfast."},
+{id:28,w:"job",l:"A1",d:"Regular paid work that you do for an employer or yourself",syn:["work","occupation","profession","career","position","role"],ant:[],morph:"Origin uncertain — ME jobbe; possibly from gob (lump/piece of work)",ex:"She got a new job last month."},
+{id:29,w:"know",l:"A1",d:"To have information about something; to be familiar with someone",syn:["understand","realize","recognize","comprehend","be aware"],ant:["ignore","misunderstand","forget","be ignorant of"],morph:"OE cnāwan — Germanic; related to Latin cognoscere (recognize)",ex:"Do you know the answer to this question?"},
+{id:30,w:"learn",l:"A1",d:"To gain knowledge or skill through study, practice, or experience",syn:["study","acquire","master","discover","grasp","absorb"],ant:["forget","unlearn","ignore"],morph:"OE leornian — Germanic; related to German lernen",ex:"I want to learn Spanish this year."},
+{id:31,w:"like",l:"A1",d:"To find pleasant or attractive; to enjoy; similar to",syn:["enjoy","love","appreciate","fancy","prefer"],ant:["dislike","hate","loathe","detest"],morph:"OE gelic (similar) → gelician (to please) — evolved to like",ex:"I like coffee in the morning."},
+{id:32,w:"live",l:"A1",d:"To be alive; to have your home in a particular place",syn:["reside","dwell","exist","inhabit","stay"],ant:["die"],morph:"OE lifian/libban — Germanic; related to German leben",ex:"She lives in Paris now."},
+{id:33,w:"look",l:"A1",d:"To direct your eyes to see; to appear to be in a certain way",syn:["see","watch","observe","view","glance"],ant:["ignore","overlook","miss"],morph:"OE lōcian — specifically English; not shared with German/Dutch",ex:"Look at that beautiful sunset!"},
+{id:34,w:"love",l:"A1",d:"A strong feeling of deep affection; to feel deep affection for",syn:["adore","cherish","treasure","care for","be devoted to"],ant:["hate","loathe","despise","detest"],morph:"OE lufu (noun), lufian (verb) — Germanic; related to German Liebe",ex:"I love my family very much."},
+{id:35,w:"make",l:"A1",d:"To create, produce, or cause something to exist or happen",syn:["create","produce","build","form","construct","craft"],ant:["destroy","demolish","break","ruin"],morph:"OE macian — Germanic; related to German machen (to make)",ex:"Can you make dinner tonight?"},
+{id:36,w:"money",l:"A1",d:"A system of coins and notes used as a medium of exchange",syn:["cash","funds","currency","capital","finance"],ant:[],morph:"Latin moneta (coin/mint) — from Juno Moneta's temple in Rome",ex:"He doesn't have enough money."},
+{id:37,w:"need",l:"A1",d:"To require something because it is essential or very important",syn:["require","want","demand","must have","necessity"],ant:[],morph:"OE nēodian — Germanic; related to German nötig (necessary)",ex:"I need to go to the supermarket today."},
+{id:38,w:"new",l:"A1",d:"Not existing before; recently made, discovered, or acquired",syn:["recent","fresh","modern","novel","latest","brand-new"],ant:["old","ancient","dated","second-hand","worn"],morph:"OE nīwe — Germanic; related to Latin novus, Greek neos",ex:"Have you seen her new car?"},
+{id:39,w:"old",l:"A1",d:"Having lived or existed for a long time; not young or recent",syn:["aged","elderly","ancient","mature","senior"],ant:["young","new","modern","recent","fresh"],morph:"OE ald/eald — Germanic; related to German alt",ex:"My grandfather is very old."},
+{id:40,w:"open",l:"A1",d:"Not closed or blocked; allowing access; willing to consider ideas",syn:["accessible","available","honest","candid","unrestricted"],ant:["closed","shut","sealed","blocked","restricted"],morph:"OE openian — Germanic; related to German offen",ex:"Please open the window, it's hot."},
+{id:41,w:"place",l:"A1",d:"A particular position or area; a specific location in space",syn:["location","spot","position","area","site","venue"],ant:[],morph:"Old French place; Latin platea (street); Greek plateia (broad way)",ex:"This is a beautiful place to live."},
+{id:42,w:"say",l:"A1",d:"To speak words; to express something in words",syn:["speak","tell","state","express","declare","utter"],ant:["listen","be silent","hear"],morph:"OE secgan — fundamental Germanic verb",ex:"What did she say to you?"},
+{id:43,w:"see",l:"A1",d:"To be aware of something using your eyes; to understand",syn:["observe","notice","spot","view","perceive","witness"],ant:["miss","overlook","ignore"],morph:"OE sēon — Germanic; related to German sehen",ex:"Can you see the mountains from here?"},
+{id:44,w:"small",l:"A1",d:"Of a size less than normal or usual; not large",syn:["little","tiny","slight","minor","compact","petite"],ant:["big","large","great","enormous","huge"],morph:"OE smæl — Germanic; related to German schmal (narrow)",ex:"They live in a small apartment."},
+{id:45,w:"think",l:"A1",d:"To have a particular opinion; to use your mind to consider something",syn:["believe","consider","feel","suppose","reckon","reflect"],ant:["doubt","act without thinking"],morph:"OE þencan — Germanic; related to German denken",ex:"What do you think about this idea?"},
+{id:46,w:"time",l:"A1",d:"The ongoing sequence of events; a point in this sequence",syn:["period","moment","instance","duration","occasion"],ant:[],morph:"OE tīma — Germanic; related to tide, German Zeit",ex:"What time is it now?"},
+{id:47,w:"work",l:"A1",d:"Activity involving mental or physical effort done to achieve a purpose",syn:["job","labor","effort","task","occupation","toil"],ant:["rest","play","leisure","vacation"],morph:"OE weorc — Germanic; related to Greek ergon (work), German Werk",ex:"I work from 9 to 5."},
+{id:48,w:"write",l:"A1",d:"To mark letters, words, or other symbols on a surface",syn:["compose","pen","inscribe","record","draft","note"],ant:["erase","delete"],morph:"OE wrītan — Germanic; originally meant to scratch or carve",ex:"Please write your name on the form."},
+{id:49,w:"year",l:"A1",d:"A period of twelve months; particularly from January to December",syn:["twelvemonth","annual period"],ant:[],morph:"OE gēar — Germanic; related to German Jahr, Greek hora (season)",ex:"She was born fifty years ago."},
+{id:50,w:"world",l:"A1",d:"The earth and all living things on it; a particular sphere of activity",syn:["earth","globe","universe","planet","domain"],ant:[],morph:"OE worold: wer (man) + ald (age) — lit. 'age of man'",ex:"It's a small world, isn't it!"},
+
+// ── A2 ──────────────────────────────────────────────────────────────────────
+{id:51,w:"accept",l:"A2",d:"To receive something offered; to agree that something is true or reasonable",syn:["receive","take","agree to","approve","acknowledge"],ant:["refuse","reject","decline","deny"],morph:"Latin accipere: ad- (to) + capere (take) — to take toward oneself",ex:"She accepted the job offer immediately."},
+{id:52,w:"advice",l:"A2",d:"Guidance or recommendations offered about what someone should do",syn:["guidance","recommendation","suggestion","counsel","tip"],ant:[],morph:"Old French avis; Latin ad visum — according to what seems best",ex:"Can I give you some advice?"},
+{id:53,w:"agree",l:"A2",d:"To have the same opinion as someone; to consent to something",syn:["concur","consent","approve","comply","accept"],ant:["disagree","refuse","oppose","object"],morph:"Old French agréer; Latin ad- + gratum (pleasing) — to please",ex:"I totally agree with you on this."},
+{id:54,w:"angry",l:"A2",d:"Feeling or showing strong displeasure or hostility",syn:["furious","annoyed","irritated","mad","upset","livid"],ant:["calm","pleased","happy","content","serene"],morph:"Old Norse angr (grief, distress) + -y; related to anguish, anxiety",ex:"He was very angry about the delay."},
+{id:55,w:"believe",l:"A2",d:"To accept that something is true; to have faith or trust in",syn:["trust","think","suppose","accept","feel","reckon"],ant:["doubt","disbelieve","question","distrust"],morph:"OE belēfan/gelīefan — Germanic; related to German glauben",ex:"I believe she's telling the truth."},
+{id:56,w:"busy",l:"A2",d:"Having a great deal to do; occupied with activity; full of people",syn:["occupied","active","engaged","hectic","working"],ant:["free","idle","available","inactive"],morph:"OE bisig — origin uncertain; evolved from 'anxiously occupied'",ex:"Sorry, I can't talk — I'm busy right now."},
+{id:57,w:"careful",l:"A2",d:"Taking care to avoid problems or danger; done with great attention",syn:["cautious","thorough","attentive","mindful","meticulous"],ant:["careless","reckless","hasty","negligent"],morph:"OE caru (anxiety/sorrow) + -ful — original meaning: full of worry",ex:"Be careful on the icy road!"},
+{id:58,w:"cheap",l:"A2",d:"Low in price; charging low prices; of poor quality (informal)",syn:["inexpensive","affordable","low-priced","reasonable","budget"],ant:["expensive","costly","dear","pricey","premium"],morph:"OE cēap (trade/bargain) — from Latin caupo (innkeeper/dealer)",ex:"These shoes are surprisingly cheap."},
+{id:59,w:"choose",l:"A2",d:"To pick out something or someone as the best or most suitable option",syn:["select","pick","decide on","opt for","prefer"],ant:["reject","refuse","dismiss"],morph:"OE cēosan — Germanic; related to German küren (choose, elect)",ex:"It's hard to choose between the two."},
+{id:60,w:"correct",l:"A2",d:"Free from error; in accordance with fact, truth, or accepted standards",syn:["right","accurate","exact","proper","precise","faultless"],ant:["wrong","incorrect","inaccurate","mistaken","faulty"],morph:"Latin correctus, from corrigere: com- + regere (to rule/set straight)",ex:"Your answer is correct."},
+{id:61,w:"decide",l:"A2",d:"To make a choice or judgment after thinking about it",syn:["choose","determine","resolve","conclude","judge","settle"],ant:["hesitate","waver","doubt","defer","procrastinate"],morph:"Latin decidere: de- (off) + caedere (cut) — to cut off other options",ex:"Have you decided what to study?"},
+{id:62,w:"describe",l:"A2",d:"To give an account of what something or someone is like",syn:["explain","portray","depict","outline","characterize","sketch"],ant:[],morph:"Latin describere: de- + scribere (write) — to write down details",ex:"Can you describe what the suspect looked like?"},
+{id:63,w:"easy",l:"A2",d:"Achieved without great effort; presenting few difficulties",syn:["simple","straightforward","effortless","uncomplicated","plain"],ant:["difficult","hard","challenging","demanding","complex"],morph:"Old French aisié (comfortable); Latin adjacens (nearby/accessible)",ex:"This exercise is quite easy."},
+{id:64,w:"environment",l:"A2",d:"The natural world; the surroundings in which a person, animal, or plant lives",syn:["surroundings","ecosystem","nature","habitat","setting"],ant:[],morph:"Old French environ (around) + -ment; Latin in + viron (circuit/turn)",ex:"We must protect the environment."},
+{id:65,w:"explain",l:"A2",d:"To make something clear and easy to understand by describing it",syn:["clarify","describe","illustrate","outline","elaborate","elucidate"],ant:["confuse","complicate","obscure","muddle"],morph:"Latin explanare: ex- + planare (make flat) — spread out flat to show",ex:"Can you explain the rules again?"},
+{id:66,w:"famous",l:"A2",d:"Known and recognized by many people; widely celebrated",syn:["well-known","renowned","celebrated","notable","prominent","legendary"],ant:["unknown","obscure","anonymous","notorious (negative)"],morph:"Latin famosus: from fama (reputation) — related to fari (speak about)",ex:"She became famous overnight."},
+{id:67,w:"fast",l:"A2",d:"Moving or able to move quickly; done in a short time",syn:["quick","rapid","swift","speedy","hasty","prompt"],ant:["slow","sluggish","gradual","leisurely"],morph:"OE fæst (firm/fixed) — 'to go fast' originally meant to go firmly/strongly",ex:"He's a really fast runner."},
+{id:68,w:"feel",l:"A2",d:"To experience a sensation or emotion; to be aware of something through touch",syn:["sense","experience","perceive","notice","detect","undergo"],ant:[],morph:"OE fēlan — Germanic; related to German fühlen, Dutch voelen",ex:"How do you feel today?"},
+{id:69,w:"foreign",l:"A2",d:"Of, from, or characteristic of a country other than your own",syn:["overseas","international","alien","external","exotic","non-native"],ant:["domestic","local","native","national","internal"],morph:"Old French forain; Latin foranus — from foris (outside/beyond the door)",ex:"She speaks three foreign languages."},
+{id:70,w:"future",l:"A2",d:"A time that will come after the present; what is going to happen",syn:["coming time","prospect","outlook","tomorrow","time ahead"],ant:["past","history","yesterday","bygone days"],morph:"Latin futurus: future participle of esse (to be) — 'that which will be'",ex:"Nobody knows what the future holds."},
+{id:71,w:"improve",l:"A2",d:"To make or become better in some way",syn:["enhance","develop","advance","upgrade","better","boost"],ant:["worsen","decline","deteriorate","damage","harm"],morph:"Old French emprouer: em- + prou (profit) — to turn to good use",ex:"She wants to improve her English."},
+{id:72,w:"interesting",l:"A2",d:"Arousing curiosity or interest; holding the attention",syn:["engaging","fascinating","appealing","captivating","intriguing"],ant:["boring","dull","tedious","uninteresting","monotonous"],morph:"Latin interesse: inter- (between) + esse (to be) — to be important",ex:"That's a very interesting idea."},
+{id:73,w:"large",l:"A2",d:"Of considerable or relatively great size, extent, or capacity",syn:["big","great","huge","substantial","considerable","vast"],ant:["small","little","tiny","slight","petite"],morph:"Old French large; Latin larga (abundant, generous) — from largus",ex:"They moved into a large house."},
+{id:74,w:"message",l:"A2",d:"A verbal, written, or recorded communication sent from one person to another",syn:["communication","note","text","letter","notice","memo"],ant:[],morph:"Old French message; Medieval Latin missaticum — from mittere (send)",ex:"I'll send you a message later."},
+{id:75,w:"modern",l:"A2",d:"Relating to the present or recent times; contemporary and up-to-date",syn:["contemporary","current","up-to-date","recent","new","twenty-first century"],ant:["old-fashioned","traditional","ancient","outdated","obsolete"],morph:"Latin modernus: from modo (just now) — referring to the present time",ex:"The city has a very modern look."},
+{id:76,w:"move",l:"A2",d:"To change position; to go from one place to another; to affect emotionally",syn:["shift","travel","go","transfer","affect","touch"],ant:["stay","remain","halt","stop"],morph:"Old French mouvoir; Latin movere — root of motion, motor, mobile, emotion",ex:"Please move your car — it's blocking the entrance."},
+{id:77,w:"popular",l:"A2",d:"Liked, admired, or enjoyed by many people; widespread",syn:["well-liked","common","mainstream","trendy","favorite","in-demand"],ant:["unpopular","disliked","obscure","unfashionable"],morph:"Latin popularis: from populus (people) — related to public, population",ex:"Jazz music is very popular here."},
+{id:78,w:"practice",l:"A2",d:"Repeated performance of an activity to improve skill; to do something repeatedly",syn:["rehearsal","training","exercise","drill","repetition"],ant:["theory"],morph:"Greek praktike, from prattein (to do) — practical knowledge",ex:"You need more practice to improve."},
+{id:79,w:"prepare",l:"A2",d:"To make someone or something ready for use or a particular purpose",syn:["ready","arrange","organize","set up","plan","equip"],ant:["neglect","ignore","overlook","disorganize"],morph:"Latin praeparare: prae- (before) + parare (make ready, equip)",ex:"Let me prepare dinner quickly."},
+{id:80,w:"problem",l:"A2",d:"A matter or situation regarded as unwelcome and requiring a solution",syn:["issue","difficulty","challenge","trouble","obstacle","complication"],ant:["solution","answer","benefit","advantage"],morph:"Latin problema; Greek problema: pro- (forward) + ballein (throw) — thrown forward to solve",ex:"We need to solve this problem."},
+{id:81,w:"remember",l:"A2",d:"To bring something back to your mind; to not forget",syn:["recall","recollect","retain","think back","bear in mind"],ant:["forget","overlook","lose track of"],morph:"Old French remembrer; Latin rememorari: re- + memorari (be mindful)",ex:"I can't remember his name."},
+{id:82,w:"show",l:"A2",d:"To make something visible or clear; a public entertainment or exhibition",syn:["display","demonstrate","reveal","exhibit","present","prove"],ant:["hide","conceal","cover","obscure"],morph:"OE scēawian — Germanic; related to German schauen (to look/see)",ex:"Can you show me how to do this?"},
+{id:83,w:"start",l:"A2",d:"To begin an action, process, or journey; the beginning point",syn:["begin","commence","initiate","launch","open","kick off"],ant:["stop","finish","end","conclude","cease"],morph:"OE styrtan — Germanic; originally meant to leap or jump",ex:"When does the class start?"},
+{id:84,w:"strong",l:"A2",d:"Having great physical power; capable of withstanding force; firmly established",syn:["powerful","tough","robust","sturdy","solid","vigorous"],ant:["weak","feeble","fragile","delicate","powerless"],morph:"OE strang — Germanic; related to German streng (strict, severe)",ex:"He's a very strong swimmer."},
+{id:85,w:"teach",l:"A2",d:"To give instruction or lessons in a subject; to cause someone to learn",syn:["instruct","educate","train","coach","guide","tutor"],ant:["learn","study"],morph:"OE tæcan — Germanic; originally related to token (point out/show)",ex:"She teaches mathematics at the university."},
+{id:86,w:"travel",l:"A2",d:"To make a journey; movement from one place to another",syn:["journey","trip","voyage","tour","go","commute"],ant:["stay","remain","be stationary"],morph:"Old French travailler (to work hard) — travel was once exhausting labor",ex:"I love to travel in summer."},
+{id:87,w:"understand",l:"A2",d:"To know the meaning of something; to grasp the significance or nature of",syn:["comprehend","grasp","follow","appreciate","realize","fathom"],ant:["misunderstand","confuse","miss","fail to grasp"],morph:"OE understandan: under + standan (stand) — stand in the midst of",ex:"Do you understand the question?"},
+
+// ── B1 ──────────────────────────────────────────────────────────────────────
+{id:101,w:"achieve",l:"B1",d:"To successfully reach a goal or complete something desired through effort",syn:["accomplish","attain","reach","fulfill","realize","succeed in"],ant:["fail","miss","fall short","give up"],morph:"Old French achever: a- + chief (head) — to bring to a head",ex:"She achieved her goal of running a marathon."},
+{id:102,w:"affect",l:"B1",d:"To produce a change in someone or something; to have an impact on",syn:["influence","impact","alter","change","touch","concern"],ant:["leave unchanged","be irrelevant to"],morph:"Latin affectare: ad- + facere (do/make) — to act upon",ex:"The cold weather affects my mood."},
+{id:103,w:"argue",l:"B1",d:"To exchange opposing views, often in a heated way; to present reasons for",syn:["dispute","debate","quarrel","reason","contend","maintain"],ant:["agree","concur","accept"],morph:"Latin arguere (make clear, prove) — related to argue, argument, arguable",ex:"They often argue about politics."},
+{id:104,w:"avoid",l:"B1",d:"To keep away from; to prevent something from happening",syn:["prevent","escape","evade","dodge","shun","steer clear of"],ant:["seek","pursue","confront","face"],morph:"Old French eviter; Latin evitare: e- + vitare (shun) — to shun",ex:"Try to avoid making mistakes."},
+{id:105,w:"benefit",l:"B1",d:"An advantage or profit gained; something that promotes wellbeing",syn:["advantage","gain","profit","merit","asset","reward"],ant:["disadvantage","harm","detriment","drawback","cost"],morph:"Latin benefactum: bene (well) + factum (done) — something well-done",ex:"Exercise has many health benefits."},
+{id:106,w:"career",l:"B1",d:"A person's course of professional life; an occupation undertaken for a significant period",syn:["profession","occupation","vocation","calling","livelihood"],ant:[],morph:"French carrière; Latin carraria (road for vehicles) — course of life",ex:"She chose a career in medicine."},
+{id:107,w:"cause",l:"B1",d:"Something that produces a result; a reason; to make something happen",syn:["reason","source","origin","trigger","bring about","produce"],ant:["effect","result","consequence"],morph:"Latin causa (reason, lawsuit) — cause and effect; because",ex:"What was the cause of the accident?"},
+{id:108,w:"challenge",l:"B1",d:"A test of one's abilities; to question or dispute; a difficult task",syn:["test","trial","difficulty","obstacle","question","dispute"],ant:["ease","simplicity","accept","agree"],morph:"Old French chalenge; Latin calumnia (false accusation) — to contest",ex:"Learning a new language is a real challenge."},
+{id:109,w:"communicate",l:"B1",d:"To share or exchange information, news, or ideas",syn:["convey","express","transmit","inform","share","interact"],ant:["withhold","conceal","be silent"],morph:"Latin communicare: com- + munis (shared/common) — make common",ex:"It's important to communicate clearly."},
+{id:110,w:"compare",l:"B1",d:"To examine the similarities and differences between things",syn:["contrast","evaluate","measure","assess","weigh up","liken"],ant:["ignore differences"],morph:"Latin comparare: com- (together) + parare (prepare/make equal)",ex:"Compare these two options carefully."},
+{id:111,w:"consider",l:"B1",d:"To think carefully about something; to regard in a certain way",syn:["think about","reflect on","ponder","weigh","contemplate","regard"],ant:["ignore","overlook","dismiss","disregard"],morph:"Latin considerare: con- + sidus (star) — to observe the stars carefully",ex:"Consider all options before deciding."},
+{id:112,w:"create",l:"B1",d:"To bring something into existence; to produce something original",syn:["produce","make","design","generate","invent","form","develop"],ant:["destroy","demolish","erase","eliminate"],morph:"Latin creare (to produce, make) — related to crescere (grow)",ex:"She loves to create art."},
+{id:113,w:"culture",l:"B1",d:"The customs, arts, and social institutions of a particular group",syn:["civilization","society","tradition","heritage","customs","values"],ant:[],morph:"Latin cultura: from colere (to cultivate/tend) — cultivation of the mind",ex:"Japanese culture is very different from Western culture."},
+{id:114,w:"damage",l:"B1",d:"Physical harm that impairs value or usefulness; to cause harm to",syn:["harm","hurt","injure","impair","wreck","destroy"],ant:["repair","fix","restore","improve","protect"],morph:"Old French damage; Latin damnum (loss/penalty) — financial or physical harm",ex:"The storm caused serious damage to the roof."},
+{id:115,w:"develop",l:"B1",d:"To grow or cause to grow more advanced; to create over time",syn:["grow","expand","advance","improve","build","evolve"],ant:["decline","deteriorate","shrink","regress"],morph:"Old French developer: des- + voloper (wrap) — to unwrap/unfold potential",ex:"The company plans to develop new products."},
+{id:116,w:"discuss",l:"B1",d:"To talk about a topic in detail, considering different aspects and opinions",syn:["talk about","debate","examine","consider","go over","address"],ant:["ignore","avoid","stay silent on"],morph:"Latin discussus, from discutere: dis- + quatere (shake) — shake apart/examine",ex:"Let's discuss this problem together."},
+{id:117,w:"effective",l:"B1",d:"Producing the intended result; successful at achieving a goal",syn:["successful","efficient","productive","powerful","capable","useful"],ant:["ineffective","useless","futile","inefficient","weak"],morph:"Latin effectivus: from efficere (bring about) — producing an effect",ex:"This is a very effective method."},
+{id:118,w:"encourage",l:"B1",d:"To give someone confidence or support to do something; to stimulate",syn:["support","motivate","inspire","promote","urge","stimulate"],ant:["discourage","deter","dissuade","undermine"],morph:"Old French encourager: en- + corage (heart/courage) — to put heart into",ex:"Her parents always encouraged her to study."},
+{id:119,w:"evidence",l:"B1",d:"Facts, signs, or information that help prove whether something is true",syn:["proof","indication","data","sign","testimony","confirmation"],ant:["disproof","refutation"],morph:"Latin evidentia: from videre (see) — e- + videns (seeing) — clearly seen",ex:"The police found no evidence at the scene."},
+{id:120,w:"experience",l:"B1",d:"Practical contact with events; skills gained through doing something over time",syn:["knowledge","skill","expertise","practice","exposure","background"],ant:["inexperience","ignorance","naivety"],morph:"Latin experientia: from experiri (to try/test) — related to experiment",ex:"She has five years of teaching experience."},
+{id:121,w:"focus",l:"B1",d:"To concentrate attention or effort on something; a central point of attention",syn:["concentrate","center","direct","target","fix","emphasize"],ant:["distract","scatter","ignore","lose focus"],morph:"Latin focus (hearth/fireplace) — center of the household = point of concentration",ex:"Focus on what's most important."},
+{id:122,w:"improve",l:"B1",d:"To make or become better in quality, value, or usefulness",syn:["enhance","develop","advance","upgrade","refine","perfect"],ant:["worsen","decline","deteriorate","regress"],morph:"Old French emprouer: en- + prou (profit) — to bring profit to",ex:"Her writing has improved a lot this year."},
+{id:123,w:"include",l:"B1",d:"To make someone or something part of a whole; to contain as a part",syn:["contain","comprise","involve","incorporate","cover","encompass"],ant:["exclude","omit","leave out","bar"],morph:"Latin includere: in- + claudere (close) — to close/shut in",ex:"The price includes breakfast."},
+{id:124,w:"increase",l:"B1",d:"To become or make greater in size, amount, degree, or number",syn:["grow","rise","expand","enlarge","boost","multiply"],ant:["decrease","reduce","decline","fall","shrink"],morph:"Latin increscere: in- + crescere (grow) — to grow into/upon",ex:"Prices have increased dramatically."},
+{id:125,w:"influence",l:"B1",d:"The capacity to affect the character or behavior of someone or something",syn:["effect","impact","power","control","authority","sway"],ant:["powerlessness","weakness","irrelevance"],morph:"Medieval Latin influentia: in- + fluere (flow) — a flowing in (of stars)",ex:"Television has a strong influence on children."},
+{id:126,w:"involve",l:"B1",d:"To have or include as a necessary or integral part; to cause to participate",syn:["include","require","entail","contain","engage","concern"],ant:["exclude","omit","keep out"],morph:"Latin involvere: in- + volvere (roll) — to roll into/wrap around",ex:"The project involves a lot of teamwork."},
+{id:127,w:"manage",l:"B1",d:"To be in charge of; to succeed in doing something difficult",syn:["run","control","handle","direct","succeed","cope","achieve"],ant:["fail","mismanage","lose control"],morph:"Italian maneggiare: from mano (hand); Latin manus — handling horses",ex:"She manages a team of twenty people."},
+{id:128,w:"method",l:"B1",d:"A particular form of procedure for accomplishing something",syn:["approach","technique","procedure","way","system","process"],ant:[],morph:"Latin methodus; Greek methodos: meta- + hodos (way) — way of pursuing",ex:"There's no single best method for learning."},
+{id:129,w:"opinion",l:"B1",d:"A view or judgment formed about something, not necessarily based on fact",syn:["view","belief","judgment","stance","position","thought"],ant:["fact","certainty","knowledge"],morph:"Latin opinio: from opinari (think/believe) — what one thinks",ex:"In my opinion, this is the right decision."},
+{id:130,w:"organize",l:"B1",d:"To arrange or make plans for an event or activity; to put in order",syn:["arrange","plan","coordinate","structure","manage","set up"],ant:["disorganize","mess up","scatter","muddle"],morph:"Medieval Latin organizare; Greek organon (tool/instrument)",ex:"Can you organize the meeting for Friday?"},
+{id:131,w:"perform",l:"B1",d:"To carry out an action; to entertain an audience; to function",syn:["do","execute","carry out","act","function","operate"],ant:["fail","neglect","skip"],morph:"Old French parfournir: par- + furnir (furnish/complete) — to complete",ex:"She performed the operation successfully."},
+{id:132,w:"provide",l:"B1",d:"To make something available to someone; to supply",syn:["supply","give","offer","furnish","deliver","contribute"],ant:["withhold","take away","deny","remove"],morph:"Latin providere: pro- (before) + videre (see) — to foresee and prepare",ex:"The government provides free healthcare."},
+{id:133,w:"purpose",l:"B1",d:"The reason for which something is done or exists; a feeling of determination",syn:["aim","goal","objective","reason","intention","function"],ant:["aimlessness","pointlessness"],morph:"Old French porpos; Latin proponere (propose) — what one intends",ex:"What is the purpose of this meeting?"},
+{id:134,w:"reduce",l:"B1",d:"To make something smaller or less in amount, degree, or size",syn:["decrease","lower","cut","lessen","minimize","trim"],ant:["increase","expand","raise","grow","enlarge"],morph:"Latin reducere: re- + ducere (lead) — lead back to a smaller state",ex:"We need to reduce our carbon footprint."},
+{id:135,w:"require",l:"B1",d:"To need something; to make something necessary or compulsory",syn:["need","demand","necessitate","call for","must have"],ant:["offer","provide","volunteer"],morph:"Latin requirere: re- + quaerere (seek) — to seek again and again",ex:"This job requires good communication skills."},
+{id:136,w:"result",l:"B1",d:"Something that happens because of something else; an outcome",syn:["outcome","consequence","effect","conclusion","product","finding"],ant:["cause","reason","origin"],morph:"Latin resultare: re- + saltare (jump) — to spring back as an effect",ex:"What was the result of the experiment?"},
+{id:137,w:"suggest",l:"B1",d:"To put forward an idea for consideration; to indicate indirectly",syn:["propose","recommend","advise","imply","indicate","hint"],ant:["demand","insist","oppose"],morph:"Latin suggerere: sub- (under) + gerere (carry) — to bring up from below",ex:"I suggest we take a break."},
+{id:138,w:"support",l:"B1",d:"To bear all or part of a weight; to give assistance; to approve of",syn:["help","assist","back","uphold","sustain","encourage"],ant:["oppose","undermine","abandon","hinder","neglect"],morph:"Latin supportare: sub- + portare (carry) — to carry from below",ex:"We need your support for this project."},
+{id:139,w:"tend",l:"B1",d:"To have a tendency; to move in a particular direction; to look after",syn:["be inclined to","be prone to","lean toward","care for","look after"],ant:[],morph:"Latin tendere (stretch/aim) — to stretch toward something",ex:"She tends to arrive late."},
+
+// ── B2 ──────────────────────────────────────────────────────────────────────
+{id:151,w:"acquire",l:"B2",d:"To get or obtain something, especially through effort or experience",syn:["obtain","gain","get","attain","secure","procure"],ant:["lose","give up","relinquish","surrender"],morph:"Latin acquirere: ad- + quaerere (seek/gain) — to seek to add",ex:"She acquired a new skill during lockdown."},
+{id:152,w:"advocate",l:"B2",d:"To publicly support or recommend a cause or policy; a supporter",syn:["support","champion","promote","argue for","back","defend"],ant:["oppose","criticize","condemn","fight against"],morph:"Latin advocatus: ad- + vocare (call) — one called to another's aid (legal)",ex:"She advocates for environmental protection."},
+{id:153,w:"analyze",l:"B2",d:"To examine methodically and in detail to explain and interpret",syn:["examine","evaluate","assess","study","investigate","break down"],ant:["ignore","overlook","synthesize"],morph:"Greek analyein: ana- (up/back) + lyein (loosen) — to loosen apart",ex:"Let's analyze the data carefully."},
+{id:154,w:"anticipate",l:"B2",d:"To expect or predict something; to act in preparation for something",syn:["expect","predict","foresee","prepare for","look forward to"],ant:["be surprised by","be caught off guard","be unprepared"],morph:"Latin anticipare: ante- (before) + capere (take) — to take before",ex:"We didn't anticipate this problem."},
+{id:155,w:"assess",l:"B2",d:"To evaluate or estimate the value, quality, or nature of something",syn:["evaluate","judge","estimate","appraise","measure","gauge"],ant:["ignore","overlook","guess without care"],morph:"Latin assidere: ad- + sedere (sit) — to sit beside and judge",ex:"Teachers assess students' progress regularly."},
+{id:156,w:"assume",l:"B2",d:"To suppose something to be true without proof; to take on a role",syn:["presume","suppose","take for granted","conclude","believe","take on"],ant:["prove","verify","know","establish"],morph:"Latin assumere: ad- + sumere (take) — to take to oneself/for granted",ex:"Don't assume — ask first."},
+{id:157,w:"coherent",l:"B2",d:"Logical and consistent; forming a unified whole; easy to understand",syn:["logical","consistent","clear","unified","rational","organized"],ant:["incoherent","illogical","confused","disjointed","muddled"],morph:"Latin cohaerens: co- + haerere (stick) — sticking together logically",ex:"Please give a more coherent explanation."},
+{id:158,w:"conclude",l:"B2",d:"To bring or come to an end; to arrive at a judgment after reasoning",syn:["end","finish","determine","decide","infer","deduce"],ant:["begin","start","open","continue"],morph:"Latin concludere: com- + claudere (close) — to close/shut",ex:"We can conclude that the experiment was successful."},
+{id:159,w:"consistent",l:"B2",d:"Always behaving or performing in the same way; compatible with",syn:["constant","steady","reliable","uniform","stable","persistent"],ant:["inconsistent","erratic","unreliable","variable","changeable"],morph:"Latin consistens: con- + sistere (stand firm) — standing firm together",ex:"Be consistent in your practice."},
+{id:160,w:"demonstrate",l:"B2",d:"To clearly show the existence or truth of something; to show how to do something",syn:["show","prove","illustrate","display","exhibit","establish"],ant:["conceal","hide","disprove","deny"],morph:"Latin demonstrare: de- + monstrare (show) — to show completely",ex:"Please demonstrate the correct technique."},
+{id:161,w:"distinguish",l:"B2",d:"To recognize or treat as different; to make someone notable",syn:["differentiate","tell apart","discriminate","separate","discern"],ant:["confuse","mix up","equate","lump together"],morph:"Latin distinguere: dis- + stinguere (prick/mark) — to mark separately",ex:"Can you distinguish between these two sounds?"},
+{id:162,w:"elaborate",l:"B2",d:"Involving many carefully arranged parts; to explain in more detail",syn:["complex","detailed","intricate","expand on","develop","clarify"],ant:["simple","basic","be brief","simplify"],morph:"Latin elaboratus: e- + laborare (work) — worked out with great effort",ex:"Could you elaborate on that point?"},
+{id:163,w:"emerge",l:"B2",d:"To come out from or appear from a hidden position; to become known",syn:["appear","arise","surface","come out","develop","materialize"],ant:["disappear","sink","vanish","submerge"],morph:"Latin emergere: e- (out) + mergere (plunge/dip) — to come up out of",ex:"New information has emerged in the case."},
+{id:164,w:"emphasize",l:"B2",d:"To give special importance or attention to something",syn:["stress","highlight","underline","accentuate","underscore"],ant:["downplay","minimize","understate","ignore"],morph:"Greek emphasis: em- + phainein (show) — to show within/bring out",ex:"I want to emphasize how important this is."},
+{id:165,w:"evaluate",l:"B2",d:"To form an idea of the amount, number, or value of; to judge",syn:["assess","judge","measure","appraise","weigh","analyze"],ant:["ignore","overlook","accept without questioning"],morph:"French évaluer: é- + valoir (be worth); Latin valere (be strong)",ex:"We need to evaluate the results carefully."},
+{id:166,w:"facilitate",l:"B2",d:"To make an action or process easier or more likely",syn:["ease","help","enable","assist","promote","simplify"],ant:["hinder","obstruct","complicate","prevent","impede"],morph:"Latin facilis (easy) + -ate — to make easy; from facere (do)",ex:"This new tool will facilitate learning."},
+{id:167,w:"generate",l:"B2",d:"To produce or create something; to bring about",syn:["produce","create","cause","make","bring about","yield"],ant:["consume","destroy","prevent","suppress"],morph:"Latin generare: from genus (birth/kind) — to bring into being",ex:"The campaign generated a lot of interest."},
+{id:168,w:"implement",l:"B2",d:"To put a decision, plan, or agreement into effect",syn:["carry out","execute","apply","put into practice","enforce"],ant:["ignore","abandon","repeal","cancel","reverse"],morph:"Latin implementum: in- + plere (fill) — to fill up/complete",ex:"When will the new policy be implemented?"},
+{id:169,w:"imply",l:"B2",d:"To suggest something without saying it directly",syn:["suggest","hint","indicate","infer","signify","mean"],ant:["state directly","declare","say outright"],morph:"Latin implicare: in- + plicare (fold) — to fold in/involve without stating",ex:"What are you trying to imply?"},
+{id:170,w:"interpret",l:"B2",d:"To explain the meaning of something; to translate orally; to understand in a particular way",syn:["explain","clarify","construe","translate","read","understand"],ant:["misinterpret","misread","distort"],morph:"Latin interpretari: from interpres (agent/negotiator) — to explain between parties",ex:"How do you interpret this data?"},
+{id:171,w:"investigate",l:"B2",d:"To carry out a systematic inquiry in order to discover facts",syn:["examine","explore","research","probe","study","inquire into"],ant:["ignore","overlook","accept without questioning"],morph:"Latin investigare: in- + vestigare (track/trace) — follow the tracks",ex:"Police are investigating the crime."},
+{id:172,w:"justify",l:"B2",d:"To show or prove something to be right or reasonable",syn:["explain","defend","support","validate","warrant","vindicate"],ant:["condemn","criticize","disprove","refute"],morph:"Latin justificare: justus (just/right) + facere (make) — make just",ex:"How do you justify this decision?"},
+{id:173,w:"maintain",l:"B2",d:"To keep in the same condition; to preserve; to assert as true",syn:["keep","preserve","sustain","uphold","continue","assert"],ant:["abandon","neglect","change","drop","challenge"],morph:"Latin manutenere: manus (hand) + tenere (hold) — to hold in the hand",ex:"It's hard to maintain a healthy diet."},
+{id:174,w:"notion",l:"B2",d:"A concept or belief; a general understanding or impression",syn:["idea","concept","belief","view","impression","thought"],ant:["fact","certainty","reality"],morph:"Latin notio: from noscere (know) — a becoming acquainted with",ex:"I have no notion of what to do."},
+{id:175,w:"perspective",l:"B2",d:"A particular attitude or way of regarding something; a view",syn:["viewpoint","standpoint","angle","outlook","position","approach"],ant:[],morph:"Latin perspicere: per- + specere (look) — to look through, see clearly",ex:"Try to see things from her perspective."},
+{id:176,w:"phenomenon",l:"B2",d:"A fact or situation that is observed to exist, especially one whose cause is in question",syn:["occurrence","event","fact","circumstance","manifestation"],ant:[],morph:"Greek phainomenon: from phainein (show) — that which appears/is shown",ex:"Climate change is a global phenomenon."},
+{id:177,w:"promote",l:"B2",d:"To support or encourage; to advertise; to raise to a higher position",syn:["support","advance","encourage","advertise","market","raise"],ant:["demote","hinder","suppress","discourage"],morph:"Latin promovere: pro- (forward) + movere (move) — to move forward",ex:"The company promoted her to manager."},
+{id:178,w:"relevant",l:"B2",d:"Closely connected or appropriate to what is being done or considered",syn:["applicable","pertinent","related","appropriate","material","connected"],ant:["irrelevant","unrelated","inapplicable","beside the point"],morph:"Latin relevare: re- + levare (raise) — to raise up, to be of concern",ex:"Keep your answer relevant to the question."},
+{id:179,w:"resolve",l:"B2",d:"To find a solution to; to make a firm decision; to bring to an end",syn:["solve","settle","determine","decide","fix","sort out"],ant:["create","worsen","ignore","leave unsettled"],morph:"Latin resolvere: re- + solvere (loosen) — to loosen again = dissolve a problem",ex:"We need to resolve this conflict quickly."},
+{id:180,w:"significant",l:"B2",d:"Sufficiently great or important to be worthy of attention",syn:["important","notable","considerable","meaningful","substantial"],ant:["insignificant","trivial","minor","negligible","unimportant"],morph:"Latin significare: signum (sign) + facere (make) — to make a sign",ex:"This is a significant improvement."},
+
+// ── C1 ──────────────────────────────────────────────────────────────────────
+{id:201,w:"ambiguous",l:"C1",d:"Open to more than one interpretation; having a double meaning",syn:["unclear","vague","equivocal","open to interpretation","uncertain"],ant:["clear","unambiguous","definite","explicit","straightforward"],morph:"Latin ambiguus: ambi- (both ways) + agere (drive) — driven both ways",ex:"His answer was deliberately ambiguous."},
+{id:202,w:"articulate",l:"C1",d:"Having or showing the ability to speak fluently and coherently; to express clearly",syn:["eloquent","fluent","expressive","well-spoken","clear"],ant:["inarticulate","unclear","tongue-tied","incoherent"],morph:"Latin articulare: from articulus (joint/division) — to divide into clear parts",ex:"She gave an articulate response to every question."},
+{id:203,w:"coherence",l:"C1",d:"The quality of being logical and consistent; forming a unified whole",syn:["consistency","logic","clarity","unity","cohesion","order"],ant:["incoherence","confusion","inconsistency","contradiction"],morph:"Latin cohaerere: co- + haerere (stick) — sticking together",ex:"Your essay lacks coherence in its argument."},
+{id:204,w:"contemplate",l:"C1",d:"To think deeply about something; to consider as a future possibility",syn:["consider","ponder","reflect on","think about","muse","deliberate"],ant:["ignore","dismiss","act impulsively"],morph:"Latin contemplari: con- + templum (space for observation) — observe carefully",ex:"She sat quietly, contemplating her options."},
+{id:205,w:"controversial",l:"C1",d:"Giving rise to strong disagreement; debatable",syn:["contentious","disputed","debatable","contested","polarizing"],ant:["uncontroversial","accepted","agreed upon","mainstream"],morph:"Latin controversia: contra- + vorsus (turned) — turned against each other",ex:"The new law is highly controversial."},
+{id:206,w:"deduce",l:"C1",d:"To arrive at a conclusion by reasoning from evidence",syn:["infer","conclude","reason","derive","work out","gather"],ant:["guess","assume randomly","speculate without basis"],morph:"Latin deducere: de- + ducere (lead) — to lead/draw from premises",ex:"From the evidence, we can deduce that he was there."},
+{id:207,w:"eloquent",l:"C1",d:"Fluent and persuasive in speaking or writing",syn:["articulate","expressive","fluent","well-spoken","persuasive"],ant:["inarticulate","unclear","inexpressive","awkward"],morph:"Latin eloquens: e- + loqui (speak) — speaking out with power",ex:"She gave an eloquent speech."},
+{id:208,w:"empirical",l:"C1",d:"Based on observation or experience rather than theory",syn:["observational","experimental","practical","evidence-based","scientific"],ant:["theoretical","speculative","hypothetical","abstract"],morph:"Greek empeirikos: em- + peira (experience/trial) — based on experience",ex:"The study provides empirical evidence."},
+{id:209,w:"formulate",l:"C1",d:"To create or express a plan or idea precisely",syn:["devise","develop","create","frame","express precisely","design"],ant:["be vague","improvise","be unclear"],morph:"Latin formula (small form/rule) + -ate — to set down in a clear form",ex:"We need to formulate a clear strategy."},
+{id:210,w:"illuminate",l:"C1",d:"To light up; to help clarify or explain something",syn:["light up","clarify","explain","shed light on","enlighten","elucidate"],ant:["obscure","darken","confuse","complicate"],morph:"Latin illuminare: in- + luminare (light up); lumen (light)",ex:"This example really illuminates the concept."},
+{id:211,w:"inherent",l:"C1",d:"Existing in something as a permanent, essential, or characteristic attribute",syn:["intrinsic","innate","fundamental","built-in","natural","ingrained"],ant:["extrinsic","acquired","external","learned","added"],morph:"Latin inhaerens: in- + haerere (stick/cling) — sticking within",ex:"There are inherent risks in any investment."},
+{id:212,w:"nuance",l:"C1",d:"A subtle difference in meaning, expression, or sound",syn:["subtlety","shade","distinction","refinement","gradation"],ant:["obvious difference","bluntness","broad strokes"],morph:"French nuance: from nuer (to shade); Latin nubes (cloud) — fine shading",ex:"Good translation requires sensitivity to nuance."},
+{id:213,w:"paradigm",l:"C1",d:"A typical example or pattern; a framework of ideas and assumptions",syn:["model","pattern","framework","example","prototype","template"],ant:[],morph:"Greek paradeigma: para- (beside) + deiknynai (show) — pattern to show beside",ex:"This discovery represents a paradigm shift."},
+{id:214,w:"plausible",l:"C1",d:"Seeming reasonable or probable; appearing to be true or trustworthy",syn:["believable","credible","reasonable","likely","conceivable","convincing"],ant:["implausible","unbelievable","incredible","far-fetched"],morph:"Latin plausibilis: from plaudere (applaud) — worthy of applause/approval",ex:"That's a plausible explanation."},
+{id:215,w:"pragmatic",l:"C1",d:"Dealing with things in a practical rather than idealistic way",syn:["practical","realistic","sensible","matter-of-fact","businesslike"],ant:["idealistic","impractical","theoretical","unrealistic"],morph:"Greek pragmatikos: pragma (deed/action) + -ikos — relating to action",ex:"We need to take a pragmatic approach."},
+{id:216,w:"rhetoric",l:"C1",d:"The art of effective speaking or writing; language used to persuade",syn:["oratory","eloquence","persuasion","language","discourse"],ant:["plain speech","silence"],morph:"Greek rhetorike (art of the orator): from rhetor (speaker/teacher of speech)",ex:"His speech was full of empty rhetoric."},
+{id:217,w:"scrutinize",l:"C1",d:"To examine or inspect closely and thoroughly",syn:["examine","inspect","analyze","study closely","investigate","probe"],ant:["glance at","overlook","ignore","accept without question"],morph:"Latin scrutinium: from scrutari (search) — originally: search through rubbish",ex:"The committee will scrutinize every claim."},
+{id:218,w:"synthesize",l:"C1",d:"To combine elements into a coherent whole; to make by chemical synthesis",syn:["combine","integrate","merge","unify","blend","consolidate"],ant:["analyze","break down","separate","decompose"],morph:"Greek synthesizein: syn- (together) + tithenai (place) — to place together",ex:"The report synthesizes findings from fifty studies."},
+{id:219,w:"ubiquitous",l:"C1",d:"Present, appearing, or found everywhere",syn:["omnipresent","everywhere","pervasive","widespread","universal"],ant:["rare","scarce","uncommon","absent","limited"],morph:"Latin ubique (everywhere) + -ous — ubi (where) + -que (and/ever)",ex:"Smartphones have become ubiquitous."},
+{id:220,w:"unprecedented",l:"C1",d:"Never done or known before",syn:["unparalleled","unmatched","extraordinary","unique","novel"],ant:["common","ordinary","familiar","typical","precedented"],morph:"Latin praecedere: prae- (before) + cedere (go) + un- — never gone before",ex:"The crisis was unprecedented in scale."},
+
+// ── C2 ──────────────────────────────────────────────────────────────────────
+{id:251,w:"ephemeral",l:"C2",d:"Lasting for only a short time; transitory",syn:["transient","fleeting","momentary","brief","short-lived"],ant:["permanent","lasting","enduring","eternal","durable"],morph:"Greek ephemeros: epi- (on) + hemera (day) — lasting only one day",ex:"Fame can be ephemeral."},
+{id:252,w:"equivocal",l:"C2",d:"Open to more than one interpretation; deliberately ambiguous",syn:["ambiguous","vague","evasive","non-committal","unclear"],ant:["unequivocal","clear","definite","frank","straightforward"],morph:"Latin aequivocus: aequi- (equal) + vox (voice) — having equal/double voices",ex:"His equivocal response raised more questions."},
+{id:253,w:"esoteric",l:"C2",d:"Intended for or understood by only a small number of people with specialist knowledge",syn:["obscure","arcane","abstruse","specialist","cryptic"],ant:["popular","accessible","mainstream","common","well-known"],morph:"Greek esoterikos: eso- (within) + -terikos — only for those within the circle",ex:"The lecture was too esoteric for most students."},
+{id:254,w:"mendacious",l:"C2",d:"Not telling the truth; lying",syn:["dishonest","untruthful","deceitful","lying","false"],ant:["honest","truthful","candid","sincere","veracious"],morph:"Latin mendacium (lie) + -ous: from mendum (fault/defect) — prone to lying",ex:"His mendacious account was eventually exposed."},
+{id:255,w:"perspicacious",l:"C2",d:"Having a ready insight into things; shrewd and understanding",syn:["perceptive","shrewd","astute","insightful","acute","discerning"],ant:["obtuse","dull","unperceptive","unintelligent"],morph:"Latin perspicax: per- + specere (look) — looking through clearly",ex:"A perspicacious observer noticed the flaw immediately."},
+{id:256,w:"recalcitrant",l:"C2",d:"Having an obstinately uncooperative attitude toward authority",syn:["unruly","defiant","obstinate","rebellious","stubborn","disobedient"],ant:["cooperative","compliant","obedient","docile","amenable"],morph:"Latin recalcitrare: re- + calcitrare (kick) — to kick back against",ex:"The recalcitrant student refused to follow any instructions."},
+{id:257,w:"sycophant",l:"C2",d:"A person who acts obsequiously toward someone in authority to gain advantage",syn:["flatterer","toady","yes-man","fawner","bootlicker"],ant:["critic","opponent","detractor"],morph:"Greek sykophantes: sykon (fig) + phainein (show) — possibly 'fig informer' in Athens",ex:"He surrounded himself with sycophants."},
+{id:258,w:"ameliorate",l:"C2",d:"To make something bad or unsatisfactory better; to improve",syn:["improve","better","upgrade","ease","alleviate","enhance"],ant:["worsen","aggravate","deteriorate","exacerbate"],morph:"French améliorer; Latin meliorare — from melior (better)",ex:"The new policy aims to ameliorate living conditions."},
+{id:259,w:"cogent",l:"C2",d:"Clear, logical, and convincing in reasoning or argument",syn:["compelling","persuasive","convincing","logical","sound","forceful"],ant:["weak","unconvincing","illogical","vague","muddled"],morph:"Latin cogens: co- + agere (drive/lead) — driving together, compelling",ex:"She made a cogent argument for reform."},
+{id:260,w:"didactic",l:"C2",d:"Intended to teach, especially with a moral lesson; excessively instructive",syn:["instructive","educational","moralizing","preachy","pedagogical"],ant:["entertaining only","non-instructive","amoral"],morph:"Greek didaktikos: from didaskin (teach) — relating to teaching",ex:"The novel has a didactic quality that some readers find tedious."}
+];
+
+// ─── APP STATE ──────────────────────────────────────────────────────────────
+const LEVELS = ["A1","A2","B1","B2","C1","C2"];
+let state = {
+  level: "all",
+  filter: "all",
+  search: "",
+  learned: JSON.parse(localStorage.getItem("vh_learned")||"{}"),
+  starred: JSON.parse(localStorage.getItem("vh_starred")||"{}")
+};
+
+function save() {
+  localStorage.setItem("vh_learned", JSON.stringify(state.learned));
+  localStorage.setItem("vh_starred", JSON.stringify(state.starred));
+}
+
+function toggleLearned(id) {
+  state.learned[id] = !state.learned[id];
+  save(); render();
+}
+
+function toggleStar(id) {
+  state.starred[id] = !state.starred[id];
+  save(); render();
+}
+
+function speak(word) {
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = "en-US"; u.rate = 0.85;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+function getVisible() {
+  return WORDS.filter(w => {
+    if (state.level !== "all" && w.l !== state.level) return false;
+    if (state.filter === "learned" && !state.learned[w.id]) return false;
+    if (state.filter === "unlearned" && state.learned[w.id]) return false;
+    if (state.filter === "starred" && !state.starred[w.id]) return false;
+    if (state.search) {
+      const q = state.search.toLowerCase();
+      return w.w.includes(q) || w.d.toLowerCase().includes(q) ||
+             w.syn.some(s => s.includes(q));
+    }
+    return true;
+  });
+}
+
+function buildStats() {
+  const total = WORDS.length;
+  const learnedCount = WORDS.filter(w => state.learned[w.id]).length;
+  document.getElementById("stats-row").innerHTML = `
+    <span class="stat-chip">📖 ${total} words</span>
+    <span class="stat-chip">✅ ${learnedCount} learned</span>
+    <span class="stat-chip">⭐ ${WORDS.filter(w=>state.starred[w.id]).length} starred</span>
+    <span class="stat-chip">${Math.round(learnedCount/total*100)}% complete</span>
+  `;
+  const lp = document.getElementById("level-progress");
+  lp.innerHTML = LEVELS.map(lv => {
+    const ws = WORDS.filter(w => w.l === lv);
+    const ln = ws.filter(w => state.learned[w.id]).length;
+    const pct = ws.length ? Math.round(ln/ws.length*100) : 0;
+    const colors = {A1:"#22c55e",A2:"#16a34a",B1:"#3b82f6",B2:"#a855f7",C1:"#f97316",C2:"#ef4444"};
+    return `<div class="lp">
+      <span>${lv}</span>
+      <div class="lp-bar"><div class="lp-fill" style="width:${pct}%;background:${colors[lv]}"></div></div>
+      <span>${ln}/${ws.length}</span>
+    </div>`;
+  }).join("");
+}
+
+function buildTabs() {
+  const tabs = document.getElementById("tabs");
+  const all = ["all",...LEVELS];
+  tabs.innerHTML = all.map(lv => {
+    const cnt = lv === "all" ? WORDS.length : WORDS.filter(w=>w.l===lv).length;
+    return `<button class="tab ${state.level===lv?"active":""}" data-level="${lv}">
+      ${lv === "all" ? "All" : lv} <span style="opacity:0.7;font-weight:400">(${cnt})</span>
+    </button>`;
+  }).join("");
+  tabs.querySelectorAll(".tab").forEach(t =>
+    t.addEventListener("click", () => { state.level = t.dataset.level; render(); }));
+}
+
+function buildFilters() {
+  document.querySelectorAll(".filt").forEach(f =>
+    f.addEventListener("click", () => { state.filter = f.dataset.f; render(); }));
+}
+
+function render() {
+  buildStats(); buildTabs();
+  document.querySelectorAll(".filt").forEach(f =>
+    f.classList.toggle("active", f.dataset.f === state.filter));
+
+  const visible = getVisible();
+  document.getElementById("count-label").textContent = `${visible.length} words`;
+  const grid = document.getElementById("grid");
+
+  if (!visible.length) {
+    grid.innerHTML = `<div class="empty">No words found. Try adjusting filters.</div>`;
+    return;
+  }
+
+  grid.innerHTML = visible.map(w => {
+    const learned = !!state.learned[w.id];
+    const starred = !!state.starred[w.id];
+    const synTags = w.syn.map(s => `<span class="tag syn">${s}</span>`).join("");
+    const antTags = w.ant.map(a => `<span class="tag ant">${a}</span>`).join("");
+    return `<div class="card ${learned?"learned":""}" id="card-${w.id}">
+      <div class="card-top">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="card-head">${w.w}</span>
+          <span class="badge ${w.l}">${w.l}</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-speak" onclick="speak('${w.w}')" title="Listen">🔊</button>
+          <button class="btn-star ${starred?"on":""}" onclick="toggleStar(${w.id})" title="Star">⭐</button>
+        </div>
+      </div>
+      <div class="def">${w.d}</div>
+      <div class="ex">${w.ex}</div>
+      ${synTags || antTags ? `<div class="tags-row">${synTags}${antTags}</div>` : ""}
+      <div class="morph-tip">🔤 ${w.morph}</div>
+      <div class="card-foot">
+        <button class="btn-learn ${learned?"done":""}" onclick="toggleLearned(${w.id})">
+          ${learned ? "✓ Learned" : "Mark as Learned"}
+        </button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// Init
+document.getElementById("search").addEventListener("input", e => {
+  state.search = e.target.value; render();
+});
+buildFilters();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finansal Hesap Özeti — Mayıs 2026</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --ykb: #003087;
+      --ykb-light: #1a4fd8;
+      --ziraat: #00843D;
+      --ziraat-light: #00c45a;
+      --red: #f85149;
+      --yellow: #e3b341;
+      --green: #3fb950;
+      --purple: #8b5cf6;
+      --orange: #fb923c;
+      --cyan: #22d3ee;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 40px 28px;
+    }
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .header h1 {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .header .subtitle {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .header-badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 0.78rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--surface2);
+    }
+
+    /* ── CONTAINER ── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 40px;
+    }
+
+    /* ── SUMMARY STRIP ── */
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .sum-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .sum-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .sum-card.total::before { background: linear-gradient(90deg, var(--red), var(--orange)); }
+    .sum-card.minimum::before { background: linear-gradient(90deg, var(--yellow), #facc15); }
+    .sum-card.cards::before { background: linear-gradient(90deg, var(--purple), var(--cyan)); }
+    .sum-card.date::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+    .sum-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .sum-value {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .sum-card.total .sum-value { color: var(--red); }
+    .sum-card.minimum .sum-value { color: var(--yellow); }
+    .sum-card.cards .sum-value { color: var(--cyan); }
+    .sum-card.date .sum-value { color: var(--green); font-size: 1.2rem; }
+    .sum-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── CARD GRID ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .kart {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .kart-header {
+      padding: 20px 24px 16px;
+      position: relative;
+    }
+    .kart.ykb1 .kart-header { background: linear-gradient(135deg, #001a5c 0%, #003087 100%); }
+    .kart.ykb2 .kart-header { background: linear-gradient(135deg, #001a40 0%, #0044aa 100%); }
+    .kart.ziraat .kart-header { background: linear-gradient(135deg, #004d25 0%, #00843D 100%); }
+    .kart-bank {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 6px;
+    }
+    .kart-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .kart-number {
+      font-family: monospace;
+      font-size: 0.85rem;
+      opacity: 0.7;
+      letter-spacing: 2px;
+    }
+    .kart-chip {
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 28px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #d4af37, #c8960c);
+      opacity: 0.85;
+    }
+    .kart-body {
+      padding: 20px 24px;
+    }
+    .kart-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .kart-row:last-child { border-bottom: none; }
+    .kart-row-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .kart-row-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .kart-row-value.borç { color: var(--red); }
+    .kart-row-value.asgari { color: var(--yellow); }
+    .kart-row-value.tarih { color: var(--green); }
+    .kart-row-value.limit { color: var(--cyan); }
+    .kart-bar-wrap {
+      margin-top: 16px;
+    }
+    .kart-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .kart-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .kart-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+    .kart.ykb1 .kart-bar-fill { background: linear-gradient(90deg, #1a4fd8, #60a5fa); }
+    .kart.ykb2 .kart-bar-fill { background: linear-gradient(90deg, #3b82f6, #93c5fd); }
+    .kart.ziraat .kart-bar-fill { background: linear-gradient(90deg, #00843D, #4ade80); }
+
+    /* ── CHARTS ROW ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1.8fr;
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 860px) {
+      .charts-row { grid-template-columns: 1fr; }
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .chart-box h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .chart-container {
+      position: relative;
+    }
+
+    /* ── CATEGORY ROW ── */
+    .cat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+
+    /* ── CATEGORY BAR ── */
+    .cat-list { list-style: none; }
+    .cat-item {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cat-item:last-child { border-bottom: none; }
+    .cat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .cat-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+    .cat-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .cat-amount {
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .cat-pct {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+    }
+    .cat-progress {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .cat-progress-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.6s ease;
+    }
+
+    /* ── TRANSACTIONS TABLE ── */
+    .tx-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 36px;
+    }
+    .tx-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .tx-header h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .tx-header .tx-count {
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead th {
+      padding: 12px 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: left;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: var(--surface2); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td {
+      padding: 11px 20px;
+      font-size: 0.84rem;
+    }
+    .tx-date { color: var(--muted); white-space: nowrap; }
+    .tx-amount { text-align: right; font-weight: 600; white-space: nowrap; }
+    .tx-amount.neg { color: var(--red); }
+    .tx-amount.pos { color: var(--green); }
+    .tx-cat {
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    /* ── DEADLINE TIMELINE ── */
+    .timeline {
+      display: flex;
+      gap: 0;
+      margin-bottom: 36px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .tl-item {
+      flex: 1;
+      min-width: 180px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0;
+      padding: 20px 20px;
+      position: relative;
+    }
+    .tl-item:first-child { border-radius: 14px 0 0 14px; }
+    .tl-item:last-child { border-radius: 0 14px 14px 0; }
+    .tl-item + .tl-item { border-left: none; }
+    .tl-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .tl-bank { font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .tl-date { font-size: 1.05rem; font-weight: 700; margin: 4px 0; }
+    .tl-amount { font-size: 0.85rem; color: var(--red); font-weight: 600; }
+    .tl-sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+    .tl-status {
+      display: inline-block;
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+    }
+    .urgent { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+    .ok { background: rgba(63,185,80,0.12); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── GRID 2-col ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 36px; }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>Finansal Hesap Özeti</h1>
+      <div class="subtitle">Mayıs 2026 · MEHMET FATİH GÖÇGÜN</div>
+    </div>
+    <div class="header-badges">
+      <span class="badge">3 Kart</span>
+      <span class="badge">YKB Platinum</span>
+      <span class="badge">YKB WorldCard</span>
+      <span class="badge">Ziraat Bankkart</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SUMMARY STRIP -->
+  <div class="summary-strip">
+    <div class="sum-card total">
+      <div class="sum-label">Toplam Dönem Borcu</div>
+      <div class="sum-value">64.691,52 TL</div>
+      <div class="sum-sub">3 kart toplamı</div>
+    </div>
+    <div class="sum-card minimum">
+      <div class="sum-label">Toplam Asgari Ödeme</div>
+      <div class="sum-value">25.876,60 TL</div>
+      <div class="sum-sub">%40 oran · otomatik talimat</div>
+    </div>
+    <div class="sum-card cards">
+      <div class="sum-label">Toplam Kart Limiti</div>
+      <div class="sum-value">880.100 TL</div>
+      <div class="sum-sub">3 kart · kullanım %7,3</div>
+    </div>
+    <div class="sum-card date">
+      <div class="sum-label">En Yakın Son Ödeme</div>
+      <div class="sum-value">15 Mayıs 2026</div>
+      <div class="sum-sub">YKB Platinum · 13.036,60 TL</div>
+    </div>
+  </div>
+
+  <!-- SON ÖDEME TARİHLERİ -->
+  <div class="section-title">Son Ödeme Takvimi</div>
+  <div class="timeline" style="margin-bottom:36px;">
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#f85149;"></div>
+      <div class="tl-bank">YKB Platinum</div>
+      <div class="tl-date">15 Mayıs 2026</div>
+      <div class="tl-amount">13.036,60 TL</div>
+      <div class="tl-sub">Asgari %40 · ****7715</div>
+      <div class="tl-status urgent">Acil</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#fb923c;"></div>
+      <div class="tl-bank">Ziraat Bankkart</div>
+      <div class="tl-date">18 Mayıs 2026</div>
+      <div class="tl-amount">9.169,87 TL</div>
+      <div class="tl-sub">Asgari %40 · ****4614</div>
+      <div class="tl-status urgent">Acil</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#e3b341;"></div>
+      <div class="tl-bank">YKB WorldCard</div>
+      <div class="tl-date">1 Haziran 2026</div>
+      <div class="tl-amount">3.670,13 TL</div>
+      <div class="tl-sub">Asgari %40 · ****4480</div>
+      <div class="tl-status ok">Haziran</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#8b5cf6;"></div>
+      <div class="tl-bank">YKB Platinum — Sonraki</div>
+      <div class="tl-date">15 Haziran 2026</div>
+      <div class="tl-amount">—</div>
+      <div class="tl-sub">Hesap Kesimi: 5 Haziran 2026</div>
+      <div class="tl-status ok">Haziran</div>
+    </div>
+  </div>
+
+  <!-- KART KARTLARI -->
+  <div class="section-title">Kart Detayları</div>
+  <div class="cards-grid">
+
+    <!-- YKB PLATINUM -->
+    <div class="kart ykb1">
+      <div class="kart-header">
+        <div class="kart-chip"></div>
+        <div class="kart-bank">Yapı Kredi Bankası</div>
+        <div class="kart-name">World Platinum</div>
+        <div class="kart-number">4912 06** **** 7715</div>
+      </div>
+      <div class="kart-body">
+        <div class="kart-row">
+          <span class="kart-row-label">Dönem Borcu</span>
+          <span class="kart-row-value borç">32.591,51 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Asgari Ödeme (%40)</span>
+          <span class="kart-row-value asgari">13.036,60 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Son Ödeme</span>
+          <span class="kart-row-value tarih">15 Mayıs 2026</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Kalan Taksit</span>
+          <span class="kart-row-value">32.947,19 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Kart Limiti</span>
+          <span class="kart-row-value limit">390.100,00 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Worldpuan</span>
+          <span class="kart-row-value" style="color:#8b5cf6;">18.099 puan (90,49 TL)</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Hesap Kesimi</span>
+          <span class="kart-row-value">5 Mayıs 2026</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Dönem Harcamaları</span>
+          <span class="kart-row-value">32.591,51 TL</span>
+        </div>
+        <div class="kart-bar-wrap">
+          <div class="kart-bar-label">
+            <span>Limit Kullanımı</span>
+            <span>8,35%</span>
+          </div>
+          <div class="kart-bar">
+            <div class="kart-bar-fill" style="width:8.35%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YKB WORLDCARD -->
+    <div class="kart ykb2">
+      <div class="kart-header">
+        <div class="kart-chip"></div>
+        <div class="kart-bank">Yapı Kredi Bankası</div>
+        <div class="kart-name">WorldCard</div>
+        <div class="kart-number">4506 34** **** 4480</div>
+      </div>
+      <div class="kart-body">
+        <div class="kart-row">
+          <span class="kart-row-label">Dönem Borcu</span>
+          <span class="kart-row-value borç">9.175,33 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Asgari Ödeme (%40)</span>
+          <span class="kart-row-value asgari">3.670,13 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Son Ödeme</span>
+          <span class="kart-row-value tarih">1 Haziran 2026</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Kalan Taksit</span>
+          <span class="kart-row-value">17.044,99 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Kart Limiti</span>
+          <span class="kart-row-value limit">390.100,00 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Worldpuan</span>
+          <span class="kart-row-value" style="color:#8b5cf6;">27.069 puan (135,34 TL)</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Hesap Kesimi</span>
+          <span class="kart-row-value">17 Mayıs 2026</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Dönem Harcamaları</span>
+          <span class="kart-row-value">9.175,33 TL</span>
+        </div>
+        <div class="kart-bar-wrap">
+          <div class="kart-bar-label">
+            <span>Limit Kullanımı</span>
+            <span>2,35%</span>
+          </div>
+          <div class="kart-bar">
+            <div class="kart-bar-fill" style="width:2.35%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ZİRAAT -->
+    <div class="kart ziraat">
+      <div class="kart-header">
+        <div class="kart-chip"></div>
+        <div class="kart-bank">Ziraat Bankası</div>
+        <div class="kart-name">Bankkart</div>
+        <div class="kart-number">5309 #### #### 4614</div>
+      </div>
+      <div class="kart-body">
+        <div class="kart-row">
+          <span class="kart-row-label">Dönem Borcu</span>
+          <span class="kart-row-value borç">22.924,68 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Asgari Ödeme</span>
+          <span class="kart-row-value asgari">9.169,87 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Son Ödeme</span>
+          <span class="kart-row-value tarih">18 Mayıs 2026</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Devreden Bakiye</span>
+          <span class="kart-row-value">24.376,31 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Kart Limiti</span>
+          <span class="kart-row-value limit">500.000,00 TL</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Bankkart Lira</span>
+          <span class="kart-row-value" style="color:#8b5cf6;">7,97 TL (toplam 15.970,59 TL)</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Hesap Kesimi</span>
+          <span class="kart-row-value">7 Mayıs 2026</span>
+        </div>
+        <div class="kart-row">
+          <span class="kart-row-label">Dönem Harcamaları</span>
+          <span class="kart-row-value">22.862,89 TL</span>
+        </div>
+        <div class="kart-bar-wrap">
+          <div class="kart-bar-label">
+            <span>Limit Kullanımı</span>
+            <span>4,58%</span>
+          </div>
+          <div class="kart-bar">
+            <div class="kart-bar-fill" style="width:4.58%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="section-title">Grafik Analizler</div>
+  <div class="charts-row">
+
+    <div class="chart-box">
+      <h3>Kart Bazında Borç Dağılımı</h3>
+      <div class="chart-container" style="height:280px; display:flex; align-items:center; justify-content:center;">
+        <canvas id="donutChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <h3>Kategori Bazında Harcamalar (Tüm Kartlar)</h3>
+      <div class="chart-container" style="height:280px;">
+        <canvas id="categoryChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KATEGORİ ANALİZİ -->
+  <div class="section-title">Kategori Analizi</div>
+  <div class="two-col">
+
+    <!-- YKB PLATINUM KATEGORİLER -->
+    <div class="chart-box">
+      <h3>YKB Platinum — Harcama Kategorileri</h3>
+      <ul class="cat-list" style="margin-top:8px;">
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#f87171;"></span>Eğitim / Taksit</span>
+            <div>
+              <div class="cat-amount">20.005,13 TL</div>
+              <div class="cat-pct">%61,4</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:61.4%;background:#f87171;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#fb923c;"></span>Akaryakıt</span>
+            <div>
+              <div class="cat-amount">2.363,76 TL</div>
+              <div class="cat-pct">%7,3</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:7.3%;background:#fb923c;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#facc15;"></span>Giyim / AVM</span>
+            <div>
+              <div class="cat-amount">2.958,88 TL</div>
+              <div class="cat-pct">%9,1</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:9.1%;background:#facc15;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#34d399;"></span>Market / Gıda</span>
+            <div>
+              <div class="cat-amount">2.971,78 TL</div>
+              <div class="cat-pct">%9,1</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:9.1%;background:#34d399;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#60a5fa;"></span>Online Alışveriş</span>
+            <div>
+              <div class="cat-amount">1.957,99 TL</div>
+              <div class="cat-pct">%6,0</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:6.0%;background:#60a5fa;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#a78bfa;"></span>Dijital Abonelik</span>
+            <div>
+              <div class="cat-amount">1.358,97 TL</div>
+              <div class="cat-pct">%4,2</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:4.2%;background:#a78bfa;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#f472b6;"></span>Yeme / İçme</span>
+            <div>
+              <div class="cat-amount">975,00 TL</div>
+              <div class="cat-pct">%3,0</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:3.0%;background:#f472b6;"></div></div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ZİRAAT KATEGORİLER -->
+    <div class="chart-box">
+      <h3>Ziraat Bankkart — Harcama Kategorileri</h3>
+      <ul class="cat-list" style="margin-top:8px;">
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#34d399;"></span>Market / Gıda</span>
+            <div>
+              <div class="cat-amount">14.475,01 TL</div>
+              <div class="cat-pct">%63,2</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:63.2%;background:#34d399;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#38bdf8;"></span>Fatura Ödemeleri</span>
+            <div>
+              <div class="cat-amount">4.523,45 TL</div>
+              <div class="cat-pct">%19,8</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:19.8%;background:#38bdf8;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#fbbf24;"></span>Lastik / Otomotiv</span>
+            <div>
+              <div class="cat-amount">2.000,00 TL</div>
+              <div class="cat-pct">%8,7</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:8.7%;background:#fbbf24;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#f472b6;"></span>Yeme / İçme</span>
+            <div>
+              <div class="cat-amount">650,00 TL</div>
+              <div class="cat-pct">%2,8</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:2.8%;background:#f472b6;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#a78bfa;"></span>Taksit (Üniversite)</span>
+            <div>
+              <div class="cat-amount">141,24 TL</div>
+              <div class="cat-pct">%0,6</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:0.6%;background:#a78bfa;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#94a3b8;"></span>Diğer / Eczane</span>
+            <div>
+              <div class="cat-amount">100,00 TL</div>
+              <div class="cat-pct">%0,4</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:0.4%;background:#94a3b8;"></div></div>
+        </li>
+        <li class="cat-item">
+          <div class="cat-top">
+            <span class="cat-name"><span class="cat-dot" style="background:#f87171;"></span>Faiz / BSMV / KKDF</span>
+            <div>
+              <div class="cat-amount">61,79 TL</div>
+              <div class="cat-pct">%0,3</div>
+            </div>
+          </div>
+          <div class="cat-progress"><div class="cat-progress-fill" style="width:0.3%;background:#f87171;"></div></div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- YKB PLATINUM İŞLEMLER -->
+  <div class="section-title">YKB Platinum — İşlem Detayı</div>
+  <div class="tx-wrap" style="margin-bottom:36px;">
+    <div class="tx-header">
+      <h3>Yapı Kredi World Platinum ****7715</h3>
+      <span class="tx-count">18 İşlem</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tarih</th>
+          <th>Kart</th>
+          <th>İşlem</th>
+          <th>Kategori</th>
+          <th style="text-align:right;">Tutar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tx-date">09 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>Spotify</td>
+          <td><span class="tx-cat" style="background:rgba(167,139,250,0.15);color:#a78bfa;">Abonelik</span></td>
+          <td class="tx-amount neg">99,00 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">23 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>İYZİCO/NETFLIX.COM</td>
+          <td><span class="tx-cat" style="background:rgba(167,139,250,0.15);color:#a78bfa;">Abonelik</span></td>
+          <td class="tx-amount neg">379,99 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">26 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>TRENDYOL.COM</td>
+          <td><span class="tx-cat" style="background:rgba(96,165,250,0.15);color:#60a5fa;">Online</span></td>
+          <td class="tx-amount neg">554,91 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">27 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>TAMİ ÖDEME/KITAPYURDU</td>
+          <td><span class="tx-cat" style="background:rgba(96,165,250,0.15);color:#60a5fa;">Online</span></td>
+          <td class="tx-amount neg">342,08 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">28 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>GOOGLE *YOUTUBEPREMIUM</td>
+          <td><span class="tx-cat" style="background:rgba(167,139,250,0.15);color:#a78bfa;">Abonelik</span></td>
+          <td class="tx-amount neg">79,99 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">29 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>TRENDYOL.COM</td>
+          <td><span class="tx-cat" style="background:rgba(96,165,250,0.15);color:#60a5fa;">Online</span></td>
+          <td class="tx-amount neg">75,00 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">01 May 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>TRENDYOL.COM</td>
+          <td><span class="tx-cat" style="background:rgba(96,165,250,0.15);color:#60a5fa;">Online</span></td>
+          <td class="tx-amount neg">356,00 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">02 May 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>APPLE.COM/BILL</td>
+          <td><span class="tx-cat" style="background:rgba(167,139,250,0.15);color:#a78bfa;">Abonelik</span></td>
+          <td class="tx-amount neg">799,99 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">09 Ara 2025</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>PARAM/TÜRKİYE KATILIM <span style="color:var(--muted);font-size:0.75rem;">(5/9 taksit)</span></td>
+          <td><span class="tx-cat" style="background:rgba(248,113,113,0.15);color:#f87171;">Eğitim</span></td>
+          <td class="tx-amount neg">1.671,80 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">01 May 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Dijital ****6602</td>
+          <td>HEPSIPAY *HEPSİBURADA <span style="color:var(--muted);font-size:0.75rem;">(1/3 taksit)</span></td>
+          <td><span class="tx-cat" style="background:rgba(96,165,250,0.15);color:#60a5fa;">Online</span></td>
+          <td class="tx-amount neg">630,00 TL</td>
+        </tr>
+        <tr style="background:rgba(30,41,59,0.5);">
+          <td class="tx-date">11-12 Nis</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Esra ****3540</td>
+          <td>GAP GROSS MARKET (×3)</td>
+          <td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td>
+          <td class="tx-amount neg">1.066,07 TL</td>
+        </tr>
+        <tr style="background:rgba(30,41,59,0.5);">
+          <td class="tx-date">12 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Esra ****3540</td>
+          <td>ADDAX PRIME AVM</td>
+          <td><span class="tx-cat" style="background:rgba(250,204,21,0.15);color:#facc15;">Giyim</span></td>
+          <td class="tx-amount neg">1.548,50 TL</td>
+        </tr>
+        <tr style="background:rgba(30,41,59,0.5);">
+          <td class="tx-date">12 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Esra ****3540</td>
+          <td>DEFACTO GAZİANTEP</td>
+          <td><span class="tx-cat" style="background:rgba(250,204,21,0.15);color:#facc15;">Giyim</span></td>
+          <td class="tx-amount neg">759,99 TL</td>
+        </tr>
+        <tr style="background:rgba(30,41,59,0.5);">
+          <td class="tx-date">18-23 Nis</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Esra ****3540</td>
+          <td>HAYDİ KAFEM (×5)</td>
+          <td><span class="tx-cat" style="background:rgba(244,114,182,0.15);color:#f472b6;">Yeme/İçme</span></td>
+          <td class="tx-amount neg">485,00 TL</td>
+        </tr>
+        <tr style="background:rgba(30,41,59,0.5);">
+          <td class="tx-date">19 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Esra ****3540</td>
+          <td>KASAP SELÇUK</td>
+          <td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td>
+          <td class="tx-amount neg">950,00 TL</td>
+        </tr>
+        <tr style="background:rgba(30,41,59,0.5);">
+          <td class="tx-date">30 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Esra ****3540</td>
+          <td>EGITSAN</td>
+          <td><span class="tx-cat" style="background:rgba(248,113,113,0.15);color:#f87171;">Eğitim</span></td>
+          <td class="tx-amount neg">10.000,00 TL</td>
+        </tr>
+        <tr style="background:rgba(30,41,59,0.5);">
+          <td class="tx-date">30 Nis 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Esra ****3540</td>
+          <td>AKCANLAR PETROL</td>
+          <td><span class="tx-cat" style="background:rgba(251,146,60,0.15);color:#fb923c;">Akaryakıt</span></td>
+          <td class="tx-amount neg">2.363,76 TL</td>
+        </tr>
+        <tr style="background:rgba(30,41,59,0.5);">
+          <td class="tx-date">16 Şub 2026</td>
+          <td style="color:var(--muted);font-size:0.78rem;">Esra ****3540</td>
+          <td>EGITSAN EĞİTİM <span style="color:var(--muted);font-size:0.75rem;">(3/6 taksit)</span></td>
+          <td><span class="tx-cat" style="background:rgba(248,113,113,0.15);color:#f87171;">Eğitim</span></td>
+          <td class="tx-amount neg">8.333,33 TL</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- YKB WORLDCARD İŞLEMLER -->
+  <div class="section-title">YKB WorldCard — İşlem Detayı</div>
+  <div class="tx-wrap" style="margin-bottom:36px;">
+    <div class="tx-header">
+      <h3>Yapı Kredi WorldCard ****4480</h3>
+      <span class="tx-count">3 İşlem</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tarih</th>
+          <th>İşlem</th>
+          <th>Kategori</th>
+          <th>Taksit Durumu</th>
+          <th style="text-align:right;">Tutar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="tx-date">23 Mar 2026</td>
+          <td>TURKCELL</td>
+          <td><span class="tx-cat" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Fatura</span></td>
+          <td style="color:var(--muted);font-size:0.78rem;">—</td>
+          <td class="tx-amount neg">1.027,00 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">03 Eyl 2025</td>
+          <td>EGITSAN EĞİTİM</td>
+          <td><span class="tx-cat" style="background:rgba(248,113,113,0.15);color:#f87171;">Eğitim</span></td>
+          <td style="color:var(--muted);font-size:0.78rem;">8/10 taksit · Kalan 14.800,00 TL</td>
+          <td class="tx-amount neg">7.400,00 TL</td>
+        </tr>
+        <tr>
+          <td class="tx-date">11 Şub 2026</td>
+          <td>BİM KARTALTEPE</td>
+          <td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td>
+          <td style="color:var(--muted);font-size:0.78rem;">3/6 taksit · Kalan 2.244,99 TL</td>
+          <td class="tx-amount neg">748,33 TL</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ZİRAAT İŞLEMLER -->
+  <div class="section-title">Ziraat Bankkart — İşlem Detayı</div>
+  <div class="tx-wrap" style="margin-bottom:36px;">
+    <div class="tx-header">
+      <h3>Ziraat Bankkart ****4614 &amp; ****8817</h3>
+      <span class="tx-count">63+ İşlem</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tarih</th>
+          <th>İşlem</th>
+          <th>Kategori</th>
+          <th style="text-align:right;">Tutar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="tx-date">07.04.2026</td><td>LEZİZ UNLU MAMULLERİ</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">44,00 TL</td></tr>
+        <tr><td class="tx-date">07.04.2026</td><td>GD GROUP GIDA SANAYİ</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">150,00 TL</td></tr>
+        <tr><td class="tx-date">08.04.2026</td><td>YILMAZ TAVUKÇULUK</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">189,00 TL</td></tr>
+        <tr><td class="tx-date">08.04.2026</td><td>RÜYA PİDE FIRINI</td><td><span class="tx-cat" style="background:rgba(244,114,182,0.15);color:#f472b6;">Yeme/İçme</span></td><td class="tx-amount neg">130,00 TL</td></tr>
+        <tr><td class="tx-date">09.04.2026</td><td>AKSOY MARKET</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">62,50 TL</td></tr>
+        <tr><td class="tx-date">10.04.2026</td><td>AKKENT UNLU MAMÜLLER</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">390,00 TL</td></tr>
+        <tr><td class="tx-date">11.04.2026</td><td>GAP GROS MARKET</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">1.574,39 TL</td></tr>
+        <tr><td class="tx-date">12.04.2026</td><td>BEDESTEN ET VE TAVUK</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">1.630,00 TL</td></tr>
+        <tr><td class="tx-date">13.04.2026</td><td>TÜRK TELEKOM MOBİL</td><td><span class="tx-cat" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Fatura</span></td><td class="tx-amount neg">375,25 TL</td></tr>
+        <tr><td class="tx-date">13.04.2026</td><td>FATURA ÖDEME (5055646190)</td><td><span class="tx-cat" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Fatura</span></td><td class="tx-amount neg">423,10 TL</td></tr>
+        <tr><td class="tx-date">13.04.2026</td><td>AKSOY MARKET</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">117,50 TL</td></tr>
+        <tr><td class="tx-date">14.04.2026</td><td>ÖZLEM GÜLGÜN</td><td><span class="tx-cat" style="background:rgba(148,163,184,0.15);color:#94a3b8;">Diğer</span></td><td class="tx-amount neg">280,00 TL</td></tr>
+        <tr><td class="tx-date">14.04.2026</td><td>PEYNİRCİM EMOŞ</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">352,09 TL</td></tr>
+        <tr><td class="tx-date">15.04.2026</td><td>AKSOY MARKET</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">190,00 TL</td></tr>
+        <tr><td class="tx-date">16.04.2026</td><td>DAMLA MARKET</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">141,90 TL</td></tr>
+        <tr><td class="tx-date">16.04.2026</td><td>ÜNİVERSİTE ŞUBE Taksit 2/4</td><td><span class="tx-cat" style="background:rgba(167,139,250,0.15);color:#a78bfa;">Taksit</span></td><td class="tx-amount neg">141,24 TL</td></tr>
+        <tr><td class="tx-date">17.04.2026</td><td>AKSOY MARKET</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">173,19 TL</td></tr>
+        <tr><td class="tx-date">17.04.2026</td><td>AKKENT UNLU MAMÜLLER (×2)</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">80,00 TL</td></tr>
+        <tr><td class="tx-date">17.04.2026</td><td>GAZDAŞ FATURA</td><td><span class="tx-cat" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Fatura</span></td><td class="tx-amount neg">1.651,00 TL</td></tr>
+        <tr><td class="tx-date">18.04.2026</td><td>HAYDİ KAFEM</td><td><span class="tx-cat" style="background:rgba(244,114,182,0.15);color:#f472b6;">Yeme/İçme</span></td><td class="tx-amount neg">570,00 TL</td></tr>
+        <tr><td class="tx-date">19.04.2026</td><td>HACI USTA BAKLAVALAR</td><td><span class="tx-cat" style="background:rgba(244,114,182,0.15);color:#f472b6;">Yeme/İçme</span></td><td class="tx-amount neg">650,00 TL</td></tr>
+        <tr><td class="tx-date">19.04.2026</td><td>SEVİNÇLER GROSS / LÜXS / TUĞRA</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">146,99 TL</td></tr>
+        <tr><td class="tx-date">20.04.2026</td><td>MEHTAP MARKET / ALBAYRAM ECZ</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">215,00 TL</td></tr>
+        <tr><td class="tx-date">21.04.2026</td><td>SEMBOL SENTER AKKENT</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">105,00 TL</td></tr>
+        <tr><td class="tx-date">21.04.2026</td><td>ÇAPAROĞLU ET ÜRÜNLERİ</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">490,00 TL</td></tr>
+        <tr><td class="tx-date">21.04.2026</td><td>VODAFONE FATURA</td><td><span class="tx-cat" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Fatura</span></td><td class="tx-amount neg">293,50 TL</td></tr>
+        <tr><td class="tx-date">22.04.2026</td><td>TURKCELL FATURA</td><td><span class="tx-cat" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Fatura</span></td><td class="tx-amount neg">477,00 TL</td></tr>
+        <tr><td class="tx-date">23.04.2026</td><td>SEMBOL SENTER MARKET (×3)</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">1.822,33 TL</td></tr>
+        <tr><td class="tx-date">23.04.2026</td><td>KERVAN LEZZET GIDA (×3)</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">1.310,00 TL</td></tr>
+        <tr><td class="tx-date">24.04.2026</td><td>ENERJİSA TOROSLAR FATURA</td><td><span class="tx-cat" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Fatura</span></td><td class="tx-amount neg">695,00 TL</td></tr>
+        <tr><td class="tx-date">25-27 Nis</td><td>AKSOY MARKET (×3)</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">448,37 TL</td></tr>
+        <tr><td class="tx-date">26-27 Nis</td><td>LEZİZ UNLU / RÜYA PİDE (×4)</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">308,00 TL</td></tr>
+        <tr><td class="tx-date">27.04.2026</td><td>PEYNİRCİM EMOŞ</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">150,15 TL</td></tr>
+        <tr><td class="tx-date">30.04.2026</td><td>SEMBOL BEŞYÜZEVLER 2 / İBNİ SİNA</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">607,79 TL</td></tr>
+        <tr><td class="tx-date">01.05.2026</td><td>NATIR GIDA / LEZİZ / OLİ / LÜXS</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">788,90 TL</td></tr>
+        <tr><td class="tx-date">02.05.2026</td><td>SALKIM / ŞEKABEL / ÇAPAROĞLU</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">1.031,60 TL</td></tr>
+        <tr><td class="tx-date">02.05.2026</td><td>GOODYEAR LASTİK (1/4 taksit)</td><td><span class="tx-cat" style="background:rgba(251,191,36,0.15);color:#fbbf24;">Otomotiv</span></td><td class="tx-amount neg">2.000,00 TL</td></tr>
+        <tr><td class="tx-date">03.05.2026</td><td>AKSOY MARKET / AKKENT UNLU</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">380,00 TL</td></tr>
+        <tr><td class="tx-date">04.05.2026</td><td>MEHTAP MARKET</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">110,00 TL</td></tr>
+        <tr><td class="tx-date">05.05.2026</td><td>BALOĞLU GIDA</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Gıda</span></td><td class="tx-amount neg">150,00 TL</td></tr>
+        <tr><td class="tx-date">06.05.2026</td><td>YAVUZ ECZ</td><td><span class="tx-cat" style="background:rgba(148,163,184,0.15);color:#94a3b8;">Eczane</span></td><td class="tx-amount neg">800,00 TL</td></tr>
+        <tr><td class="tx-date">06.05.2026</td><td>BİM KARTALTEPE</td><td><span class="tx-cat" style="background:rgba(52,211,153,0.15);color:#34d399;">Market</span></td><td class="tx-amount neg">67,50 TL</td></tr>
+        <tr><td class="tx-date">07.05.2026</td><td>FATURA ÖDEME (5055646190)</td><td><span class="tx-cat" style="background:rgba(56,189,248,0.15);color:#38bdf8;">Fatura</span></td><td class="tx-amount neg">608,60 TL</td></tr>
+        <tr><td class="tx-date">07.05.2026</td><td>BSMV + KKDF + Fatura Faizi</td><td><span class="tx-cat" style="background:rgba(248,113,113,0.15);color:#f87171;">Faiz</span></td><td class="tx-amount neg">61,79 TL</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FAİZ BİLGİLERİ -->
+  <div class="section-title">Faiz Oranları</div>
+  <div class="two-col">
+    <div class="chart-box">
+      <h3>YKB Platinum ****7715</h3>
+      <ul class="cat-list" style="margin-top:8px;">
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Alışveriş Faizi (aylık)</span><span class="cat-amount" style="color:#e3b341;">%3,75</span></div></li>
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Alışveriş Faizi (yıllık)</span><span class="cat-amount" style="color:#e3b341;">%45,00</span></div></li>
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Nakit Çekim Faizi (aylık)</span><span class="cat-amount" style="color:#f87171;">%4,25</span></div></li>
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Gecikme Faizi (aylık)</span><span class="cat-amount" style="color:#f87171;">%4,05</span></div></li>
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Yıllık Üyelik Ücreti</span><span class="cat-amount">1.420,00 TL (ek kart: 710 TL)</span></div></li>
+      </ul>
+    </div>
+    <div class="chart-box">
+      <h3>Ziraat Bankkart</h3>
+      <ul class="cat-list" style="margin-top:8px;">
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Alışveriş Faizi (aylık)</span><span class="cat-amount" style="color:#e3b341;">%3,25</span></div></li>
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Alışveriş Faizi (yıllık)</span><span class="cat-amount" style="color:#e3b341;">%39,00</span></div></li>
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Nakit Avans Faizi (aylık)</span><span class="cat-amount" style="color:#f87171;">%4,25</span></div></li>
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Gecikme Faizi (aylık)</span><span class="cat-amount" style="color:#f87171;">%3,55</span></div></li>
+        <li class="cat-item"><div class="cat-top"><span class="cat-name">Bu ay Faiz/BSMV/KKDF</span><span class="cat-amount" style="color:#f87171;">61,79 TL</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    Mehmet Fatih Göçgün · Mayıs 2026 · Veriler PDF hesap özetlerinden otomatik olarak çıkarılmıştır
+  </div>
+
+</div>
+
+<script>
+// Donut chart - kart bazında borç
+const donutCtx = document.getElementById('donutChart').getContext('2d');
+new Chart(donutCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['YKB Platinum ****7715', 'YKB WorldCard ****4480', 'Ziraat Bankkart ****4614'],
+    datasets: [{
+      data: [32591.51, 9175.33, 22924.68],
+      backgroundColor: ['#1a4fd8', '#3b82f6', '#00843D'],
+      borderColor: ['#0d1117'],
+      borderWidth: 3,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    cutout: '68%',
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: '#8b949e',
+          font: { size: 12 },
+          padding: 16,
+          usePointStyle: true,
+          pointStyleWidth: 8
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ' ' + ctx.label.split(' ')[0] + ': ' +
+            ctx.raw.toLocaleString('tr-TR', {minimumFractionDigits:2}) + ' TL' +
+            ' (%' + ((ctx.raw / 64691.52) * 100).toFixed(1) + ')'
+        },
+        backgroundColor: '#21262d',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        titleColor: '#e6edf3',
+        bodyColor: '#8b949e',
+        padding: 12
+      }
+    }
+  }
+});
+
+// Horizontal bar - kategori dağılımı (tüm kartlar)
+const catCtx = document.getElementById('categoryChart').getContext('2d');
+new Chart(catCtx, {
+  type: 'bar',
+  data: {
+    labels: [
+      'Eğitim / Taksit',
+      'Market & Gıda',
+      'Fatura Ödemeleri',
+      'Giyim & AVM',
+      'Online Alışveriş',
+      'Akaryakıt',
+      'Dijital Abonelik',
+      'Yeme & İçme',
+      'Otomotiv',
+      'Diğer'
+    ],
+    datasets: [{
+      label: 'TL',
+      data: [28153.46, 17446.79, 5550.45, 2958.88, 1957.99, 2363.76, 1358.97, 1625, 2000, 275.22],
+      backgroundColor: [
+        '#f87171', '#34d399', '#38bdf8', '#facc15', '#60a5fa',
+        '#fb923c', '#a78bfa', '#f472b6', '#fbbf24', '#94a3b8'
+      ],
+      borderRadius: 5,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ' ' + ctx.raw.toLocaleString('tr-TR', {minimumFractionDigits:2}) + ' TL'
+        },
+        backgroundColor: '#21262d',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        titleColor: '#e6edf3',
+        bodyColor: '#8b949e',
+        padding: 10
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#21262d' },
+        ticks: {
+          color: '#8b949e',
+          font: { size: 11 },
+          callback: val => (val/1000).toFixed(0) + 'k'
+        }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#8b949e', font: { size: 11 } }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

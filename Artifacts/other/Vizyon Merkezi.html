@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İkinci Beyin — Vizyon Merkezi</title>
+<style>
+:root {
+  --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#242424;--border:#2e2e2e;
+  --text:#e8e6e3;--muted:#777;--accent:#c9a96e;--blue:#7eb8c9;
+  --green:#9ec97e;--pink:#c97e9e;--sw:240px;
+}
+.light {
+  --bg:#f5f3f0;--surface:#fff;--surface2:#f0ede8;--border:#d0c8bc;
+  --text:#1a1a1a;--muted:#666;--accent:#8b6914;--blue:#1a6b8b;
+  --green:#2a7a14;--pink:#8b1a4a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Verdana,Geneva,sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;transition:background .3s,color .3s}
+
+/* SIDEBAR */
+.sb{width:var(--sw);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;transition:width .3s}
+.sb-logo{padding:22px 18px 14px;border-bottom:1px solid var(--border)}
+.sb-logo h1{font-size:12px;font-weight:bold;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
+.sb-logo p{font-size:9px;color:var(--muted);margin-top:3px}
+.nav-sec{padding:10px 0;border-bottom:1px solid var(--border)}
+.nav-sec-title{font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:0 18px 5px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:7px 18px;font-size:11px;color:var(--muted);cursor:pointer;transition:all .15s;border-left:2px solid transparent}
+.nav-item:hover{color:var(--text);background:var(--surface2)}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--surface2)}
+.nav-icon{font-size:13px;width:16px;text-align:center}
+.sb-foot{padding:14px 18px;margin-top:auto}
+.theme-btn{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);cursor:pointer;padding:7px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);transition:all .2s;font-family:Verdana,sans-serif;width:100%}
+.theme-btn:hover{color:var(--text)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:28px 32px}
+.page{display:none}.page.active{display:block}
+
+/* PAGE HEADER */
+.ph{margin-bottom:28px}
+.ph h2{font-size:20px;font-weight:bold;letter-spacing:-.02em}
+.ph p{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.65;max-width:580px}
+
+/* FRAME */
+.frame{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:28px}
+.frame-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-align:center;margin-bottom:20px}
+.core-box{text-align:center;padding:18px 36px;background:var(--surface2);border:2px solid var(--accent);border-radius:12px;display:inline-block}
+.core-box .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.core-box h3{font-size:19px;font-weight:bold;margin-top:3px}
+.core-box .sub{font-size:10px;color:var(--muted);margin-top:3px}
+.core-center{text-align:center;margin-bottom:20px}
+
+/* PILLARS */
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}
+.pillar{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:15px;cursor:pointer;transition:border-color .2s}
+.pillar:hover{border-color:var(--accent)}
+.pillar.p-akil{border-top:3px solid var(--blue)}
+.pillar.p-beden{border-top:3px solid var(--green)}
+.pillar.p-ruh{border-top:3px solid var(--pink)}
+.pillar.p-dis{border-top:3px solid var(--accent)}
+.pillar-icon{font-size:18px;margin-bottom:7px}
+.pillar h4{font-size:12px;font-weight:bold;margin-bottom:2px}
+.pillar .en{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:9px}
+.pillar ul{list-style:none}
+.pillar ul li{font-size:10px;color:var(--muted);padding:3px 0;border-top:1px solid var(--border)}
+.pillar ul li:first-child{border-top:none}
+
+/* CARDS */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-bottom:28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;transition:border-color .2s,transform .15s}
+.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card .ci{font-size:18px;margin-bottom:10px}
+.card h4{font-size:12px;font-weight:bold;margin-bottom:7px}
+.card p{font-size:10px;color:var(--muted);line-height:1.7}
+
+/* TAGS */
+.tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:100px;margin:2px}
+.t-akil{background:rgba(126,184,201,.15);color:var(--blue);border:1px solid rgba(126,184,201,.3)}
+.t-beden{background:rgba(158,201,126,.15);color:var(--green);border:1px solid rgba(158,201,126,.3)}
+.t-ruh{background:rgba(201,126,158,.15);color:var(--pink);border:1px solid rgba(201,126,158,.3)}
+.t-dis{background:rgba(201,169,110,.15);color:var(--accent);border:1px solid rgba(201,169,110,.3)}
+.t-yaz{background:rgba(180,150,200,.15);color:#b496c8;border:1px solid rgba(180,150,200,.3)}
+
+/* SECTION HEADER */
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:18px;margin-top:6px}
+.sh .ico{font-size:17px}
+.sh h3{font-size:14px;font-weight:bold}
+.sh .desc{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* QUOTE */
+.quote{background:var(--surface);border-left:3px solid var(--accent);padding:14px 18px;border-radius:0 8px 8px 0;margin-bottom:20px}
+.quote p{font-size:11px;color:var(--text);line-height:1.8;font-style:italic}
+.quote .src{font-size:9px;color:var(--muted);margin-top:7px}
+
+/* PRINCIPLES */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:24px}
+.pr{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:15px}
+.pr .num{font-size:20px;font-weight:bold;color:var(--border);font-family:Georgia,serif;line-height:1}
+.pr h4{font-size:11px;font-weight:bold;margin:7px 0 4px}
+.pr p{font-size:10px;color:var(--muted);line-height:1.6}
+
+/* FLOW */
+.flow-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:22px;overflow-x:auto}
+.flow-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:18px}
+.flow{display:flex;align-items:center;min-width:700px}
+.fn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;text-align:center;min-width:115px;flex-shrink:0}
+.fn.hl{border-color:var(--accent)}
+.fn .ft{font-size:10px;font-weight:bold}
+.fn .fs{font-size:9px;color:var(--muted);margin-top:2px}
+.fa{flex:1;height:1px;background:var(--border);position:relative;margin:0 2px}
+.fa::after{content:'▶';position:absolute;right:-5px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:9px}
+
+/* DAILY */
+.daily{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin-bottom:24px}
+.db{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:13px 16px;min-width:130px;flex-shrink:0}
+.db .dt{font-size:8px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.db h4{font-size:11px;font-weight:bold;margin-bottom:3px}
+.db p{font-size:9px;color:var(--muted);line-height:1.5}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:24px}
+.tbl th{background:var(--surface2);color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.05em;padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
+.tbl td{padding:9px 13px;border-bottom:1px solid var(--border)}
+.tbl tr:hover td{background:var(--surface2)}
+
+/* PROGRESS */
+.pbar{height:3px;background:var(--surface2);border-radius:2px;overflow:hidden;margin-top:8px}
+.pfill{height:100%;border-radius:2px}.pf-a{background:var(--blue)}.pf-b{background:var(--green)}.pf-r{background:var(--pink)}.pf-d{background:var(--accent)}
+
+/* IDEAS */
+.add-panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:22px}
+.add-panel h4{font-size:11px;font-weight:bold;margin-bottom:11px}
+.frow{display:flex;gap:9px;margin-bottom:9px}
+.fin{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 11px;font-size:11px;color:var(--text);font-family:Verdana,sans-serif;outline:none;transition:border-color .2s}
+.fin:focus{border-color:var(--accent)}
+.fsel{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 11px;font-size:11px;color:var(--text);font-family:Verdana,sans-serif;cursor:pointer}
+.btn{background:var(--accent);color:var(--bg);border:none;border-radius:6px;padding:7px 16px;font-size:11px;font-family:Verdana,sans-serif;font-weight:bold;cursor:pointer;transition:opacity .2s}
+.btn:hover{opacity:.85}
+.ideas{display:flex;flex-direction:column;gap:8px}
+.idea{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:13px 15px;display:flex;gap:11px}
+.idea .idate{font-size:9px;color:var(--muted);white-space:nowrap;margin-top:2px;min-width:60px}
+.idea .itext{font-size:11px;line-height:1.6}
+.idea .imeta{margin-top:5px}
+
+/* BOOKS */
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:11px;margin-bottom:24px}
+.bcard{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:13px;transition:border-color .2s}
+.bcard:hover{border-color:var(--accent)}
+.bcard h4{font-size:11px;font-weight:bold;margin-bottom:3px;line-height:1.4}
+.bcard .ba{font-size:10px;color:var(--muted)}
+
+/* TREE */
+.tree{font-size:11px;line-height:1.9;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;font-family:monospace;margin-bottom:24px}
+.tree .tf{color:var(--text);font-weight:bold}
+.tree .ti{color:var(--muted);padding-left:16px}
+
+/* DIVIDER */
+hr{border:none;border-top:1px solid var(--border);margin:22px 0}
+
+@media(max-width:700px){.pillars{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sb">
+  <div class="sb-logo">
+    <h1>İkinci Beyin</h1>
+    <p>Vizyon &amp; Düşünce Merkezi</p>
+  </div>
+
+  <div class="nav-sec">
+    <div class="nav-sec-title">Çerçeve</div>
+    <div class="nav-item active" onclick="go('home')"><span class="nav-icon">◈</span><span>Ana Çerçeve</span></div>
+    <div class="nav-item" onclick="go('akil')"><span class="nav-icon">◎</span><span>Akıl</span></div>
+    <div class="nav-item" onclick="go('beden')"><span class="nav-icon">◉</span><span>Beden</span></div>
+    <div class="nav-item" onclick="go('ruh')"><span class="nav-icon">◌</span><span>Ruh</span></div>
+    <div class="nav-item" onclick="go('dis')"><span class="nav-icon">◍</span><span>Dış Unsurlar</span></div>
+  </div>
+
+  <div class="nav-sec">
+    <div class="nav-sec-title">Yazarlık</div>
+    <div class="nav-item" onclick="go('yazarlik')"><span class="nav-icon">✦</span><span>Yazarlık Sistemi</span></div>
+    <div class="nav-item" onclick="go('kitaplar')"><span class="nav-icon">⊞</span><span>Kitap Haritası</span></div>
+  </div>
+
+  <div class="nav-sec">
+    <div class="nav-sec-title">Akış</div>
+    <div class="nav-item" onclick="go('gunluk')"><span class="nav-icon">⊡</span><span>Günlük Akış</span></div>
+    <div class="nav-item" onclick="go('fikirler')"><span class="nav-icon">⊕</span><span>Fikirler &amp; Hakikatler</span></div>
+    <div class="nav-item" onclick="go('yapi')"><span class="nav-icon">⊟</span><span>Vault Yapısı</span></div>
+  </div>
+
+  <div class="sb-foot">
+    <button class="theme-btn" onclick="toggleTheme()" id="tbtn">☀ Açık Tema</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ═══════════════════ HOME ═══════════════════ -->
+<div class="page active" id="page-home">
+  <div class="ph">
+    <h2>Eudomonia — İyi Yaşam Çerçevesi</h2>
+    <p>Tüm düşüncelerini, fikirlerini ve yaşam vizyonunu bir arada gösteren tek çerçeve. <em>Frame first, then fill.</em></p>
+  </div>
+
+  <!-- FRAME -->
+  <div class="frame">
+    <div class="frame-label">Ana Çerçeve — Eudaimonia</div>
+    <div class="core-center">
+      <div class="core-box">
+        <div class="lbl">Merkez Vizyon</div>
+        <h3>EUDOMONIA</h3>
+        <div class="sub">İnsanın tam anlamıyla çiçeklenmesi · Aristotelesçi iyi yaşam</div>
+      </div>
+    </div>
+    <div class="pillars">
+      <div class="pillar p-akil" onclick="go('akil')">
+        <div class="pillar-icon">◎</div>
+        <h4>Akıl</h4>
+        <div class="en">Mind · Intellect</div>
+        <ul><li>Okuma Sistemi</li><li>Yaratıcı Yazarlık</li><li>Yazılım &amp; Yapay Zeka</li><li>İngilizce Gelişimi</li></ul>
+      </div>
+      <div class="pillar p-beden" onclick="go('beden')">
+        <div class="pillar-icon">◉</div>
+        <h4>Beden</h4>
+        <div class="en">Body · Physical</div>
+        <ul><li>Spor / Gym</li><li>Beslenme</li><li>Sağlık Takibi</li><li>Kozmetik</li></ul>
+      </div>
+      <div class="pillar p-ruh" onclick="go('ruh')">
+        <div class="pillar-icon">◌</div>
+        <h4>Ruh</h4>
+        <div class="en">Soul · Emotional</div>
+        <ul><li>Kendi Başınalık</li><li>Duygusal Denge</li><li>Yaratıcı Esin</li><li>Kriz Yönetimi</li></ul>
+      </div>
+      <div class="pillar p-dis" onclick="go('dis')">
+        <div class="pillar-icon">◍</div>
+        <h4>Dış Unsurlar</h4>
+        <div class="en">External Factors</div>
+        <ul><li>Finans &amp; Yatırım</li><li>Konut &amp; Ortam</li><li>Şehir &amp; Seyahat</li><li>İlişkiler</li></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- DAILY FLOW -->
+  <div class="sh"><div class="ico">⊡</div><div><h3>Günlük Temel Akış</h3><div class="desc">Verimli bir günün ritmi</div></div></div>
+  <div class="daily">
+    <div class="db"><div class="dt">Sabah Erken</div><h4>Uyanış</h4><p>Su, hafif kahvaltı, nöbet hazırlık</p></div>
+    <div class="db"><div class="dt">Sabah</div><h4>Gym / Spor</h4><p>Koşu bandı + sesli kitap. Zihin &amp; beden birlikte</p></div>
+    <div class="db"><div class="dt">Gündüz</div><h4>Derin Çalışma</h4><p>Yazılım, yazarlık, analiz, üretim</p></div>
+    <div class="db"><div class="dt">Öğle</div><h4>Yürüyüş &amp; Okuma</h4><p>Serin yürüyüş + sesli kitap</p></div>
+    <div class="db"><div class="dt">Akşam</div><h4>Günlük &amp; Yazma</h4><p>Seyir defteri, betimleme, notlar</p></div>
+    <div class="db"><div class="dt">Gece</div><h4>Okuma &amp; Yansıma</h4><p>Edebi okuma, şiir, uyku hazırlığı</p></div>
+  </div>
+
+  <!-- PRINCIPLES -->
+  <div class="sh"><div class="ico">✦</div><div><h3>Temel Prensipler</h3><div class="desc">SOLID gibi genişlemeye açık — vizyon çalışma ilkeleri</div></div></div>
+  <div class="pgrid">
+    <div class="pr"><div class="num">01</div><h4>Frame First, Then Fill</h4><p>Önce çerçeveyi kur, sonra doldur. Yapı olmadan içerik gürültüdür.</p></div>
+    <div class="pr"><div class="num">02</div><h4>Kendi Başınalık</h4><p>Yalnızlık zayıflık değil, düşüncenin hammaddesidir. Derin düşünce sessizlikte doğar.</p></div>
+    <div class="pr"><div class="num">03</div><h4>Aktif &amp; Pasif Besleme</h4><p>Her alan hem aktif üretim (yazma, spor) hem pasif besleme (okuma, dinleme) gerektirir.</p></div>
+    <div class="pr"><div class="num">04</div><h4>Sistem Sadakati</h4><p>Kendini programlamak en pahalı iştir. O programa sadık kalmak ikincil problemdir.</p></div>
+    <div class="pr"><div class="num">05</div><h4>Hakikat Olarak Yazı</h4><p>Yazmak düşüncenin kristalleşmesidir. Günlük, fikrin izini korur ve geliştirmeye açık tutar.</p></div>
+    <div class="pr"><div class="num">06</div><h4>Metodoloji ile Öğren</h4><p>Felsefi ve bilimsel düşünme biçimi üzerine inşa et. Yöntemi öğren, içeriği değil.</p></div>
+  </div>
+
+  <!-- STATUS CARDS -->
+  <div class="sh"><div class="ico">◈</div><div><h3>Hızlı Durum</h3><div class="desc">Her alanın mevcut öncelikleri</div></div></div>
+  <div class="grid">
+    <div class="card"><div class="ci">◎</div><h4>Akıl — Öncelik</h4><p>İngilizce öğrenme sistemini kur. Felsefi düşünme biçimi üzerine altyapıyı inşa et. Kitap okuma rutinini gym ile entegre et.</p><span class="tag t-akil">Akıl</span><div class="pbar"><div class="pfill pf-a" style="width:60%"></div></div></div>
+    <div class="card"><div class="ci">◉</div><h4>Beden — Öncelik</h4><p>Beslenme listesini doldur. Spor rutinini sabitleştir. Koşu bandı + okuma kombinasyonu sürdür.</p><span class="tag t-beden">Beden</span><div class="pbar"><div class="pfill pf-b" style="width:40%"></div></div></div>
+    <div class="card"><div class="ci">◌</div><h4>Ruh — Öncelik</h4><p>Kendi başınalık anlarını koru. Şiir okuma alışkanlığını sisteme yeddir. Kaygı tetikleyicilerini tanı.</p><span class="tag t-ruh">Ruh</span><div class="pbar"><div class="pfill pf-r" style="width:55%"></div></div></div>
+    <div class="card"><div class="ci">◍</div><h4>Dış — Öncelik</h4><p>Çalışma ortamını eksiksiz kur. Finansal stratejiyi netleştir. Yeni şehir/ofis geçişini planla.</p><span class="tag t-dis">Dış</span><div class="pbar"><div class="pfill pf-d" style="width:30%"></div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ AKIL ═══════════════════ -->
+<div class="page" id="page-akil">
+  <div class="ph"><h2>Akıl — Zihinsel Gelişim</h2><p>Okuma, yazma, yazılım geliştirme ve İngilizce öğrenme. Sistemli düşünme biçiminin altyapısı.</p></div>
+
+  <div class="quote"><p>"Sistemini felsefi ve bilimsel düşünme biçimi üzerine inşaa et. Öğrendiğin şeylere dair kavrayış biçimin, bilmediğin meselelere yaklaşırken bir metodoloji ve yöntem sahibi olarak anla ve idrak et."</p><div class="src">— Seyir Defteri, 11 Nisan 2026</div></div>
+
+  <div class="sh"><div class="ico">◎</div><div><h3>Üç Katmanlı Okuma Sistemi</h3><div class="desc">Her katmanın farklı çıktısı ve ritmi var</div></div></div>
+  <div class="grid">
+    <div class="card"><div class="ci">①</div><h4>Mesleki &amp; Konu Odaklı</h4><p>Yazılım, yapay zeka, proje yönetimi. Hızlı tüket, not al, içselleştir. Çıktı: Medium makalesi veya kitap incelemesi.</p><span class="tag t-akil">Her gün · Aktif</span></div>
+    <div class="card"><div class="ci">②</div><h4>Finansal &amp; Biyografi</h4><p>Başarılı iş insanlarının biyografileri. Finansal okuryazarlık. Davranış kalıpları. Çıktı: Makale &amp; inceleme.</p><span class="tag t-akil">Haftalık · Aktif</span></div>
+    <div class="card"><div class="ci">③</div><h4>Edebi &amp; Hayal Gücü</h4><p>Roman, şiir, deneme. Dil becerisini ve hayal gücünü canlı tut. Söz varlığını zenginleştir. Çıktı: Betimleme denemeleri.</p><span class="tag t-akil">Gece · Pasif Besleme</span></div>
+  </div>
+
+  <div class="sh"><div class="ico">✦</div><div><h3>Yazarlık Akışı — Bradbury Yöntemi</h3><div class="desc">Bilinçaltını besle → Yaz → Rafine et → Üret</div></div></div>
+  <div class="flow-wrap">
+    <div class="flow-label">Yazarlık Döngüsü</div>
+    <div class="flow">
+      <div class="fn hl"><div class="ft">Bilinçaltını Besle</div><div class="fs">Şiir · Deneme · Gözlem</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Günlük Yaz</div><div class="fs">Seyir Defteri</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">İncele &amp; Rafine</div><div class="fs">Kitap notları · Cümleler</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Üret</div><div class="fs">Hikaye · Şiir · Makale</div></div>
+      <div class="fa"></div>
+      <div class="fn hl"><div class="ft">Arşivle / Yayımla</div><div class="fs">Panteon · Medium</div></div>
+    </div>
+  </div>
+
+  <div class="sh"><div class="ico">◎</div><div><h3>Yazılım &amp; Yapay Zeka</h3><div class="desc">Teknolojiyi iyi yaşam aracı olarak kullan</div></div></div>
+  <div class="grid">
+    <div class="card"><div class="ci">◎</div><h4>NotebookLM &amp; AI Asistanlar</h4><p>Pasif içerik işleme. Kitap özetleri, fikir sentezi. Seyir defterinin AI ile entegrasyonu.</p></div>
+    <div class="card"><div class="ci">◉</div><h4>MCP &amp; Obsidian Entegrasyonu</h4><p>İkinci beyin ile akıllı araçların köprüsü. Otomatik etiketleme, bağlantı kurma, tema taksonomisi.</p></div>
+    <div class="card"><div class="ci">◌</div><h4>İngilizce Öğrenme Sistemi</h4><p>Günlük bazlı, seviye seçilebilir (A1→B2), aktif yazma + pasif shadowing hibrit yöntemi. Kişisel deneyimden beslenir.</p></div>
+  </div>
+
+  <div class="quote"><p>"Bilinçaltını beslemenin en önemli yollarından biri her gün şiir okumaktır. Şiir, az kullanılan zihinsel kasları çalıştırır, algıyı genişletir ve zihni formda tutar."</p><div class="src">— Ray Bradbury, Yaratıcı Yazarlık</div></div>
+</div>
+
+<!-- ═══════════════════ BEDEN ═══════════════════ -->
+<div class="page" id="page-beden">
+  <div class="ph"><h2>Beden — Fiziksel İyi Oluş</h2><p>Spor, beslenme ve sağlık. Zihinsel üretkenliğin fiziksel altyapısı.</p></div>
+
+  <div class="quote"><p>"Kurmam gereken ontolojik düzen, beslenme, hareket ve okumayı kapsıyor. Bunlar her halükarda birbirine bağlı olan, insanın kendini yetkinleştirmesi için gerekli enstrumanlar."</p><div class="src">— Seyir Defteri, Yoğun Çalışma Ortamında Olmazsa Olmazlar</div></div>
+
+  <div class="sh"><div class="ico">◉</div><div><h3>Beden Ritmi</h3></div></div>
+  <div class="flow-wrap">
+    <div class="flow-label">Günlük Fiziksel Akış</div>
+    <div class="flow">
+      <div class="fn"><div class="ft">Uyanış</div><div class="fs">Su · Hafif öğün</div></div>
+      <div class="fa"></div>
+      <div class="fn hl"><div class="ft">Gym</div><div class="fs">Koşu + Sesli kitap</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Öğle Yürüyüş</div><div class="fs">Serin · Kısa · Aktif</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Akşam Yürüyüş</div><div class="fs">Düşünce · Dinleme</div></div>
+      <div class="fa"></div>
+      <div class="fn hl"><div class="ft">Uyku</div><div class="fs">Kaliteli dinlenme</div></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="ci">◉</div><h4>Gym &amp; Koşu Bandı</h4><p>Minimum 1 saat. Koşu bandı + sesli kitap kombinasyonu. Okuma ile sporu birleştir. Bisikleti de dahil et.</p><span class="tag t-beden">Günlük</span></div>
+    <div class="card"><div class="ci">◉</div><h4>Beslenme Protokolü</h4><p>Alınacak gıdalar listesini doldur. Gıda takviyeleri ve bitkisel ilaçları düzenle. Kaliteli öğün planı.</p><span class="tag t-beden">Yapılacak</span></div>
+    <div class="card"><div class="ci">◉</div><h4>Sağlık Takibi</h4><p>Devam eden rahatsızlıkları izle. E-Nabız entegrasyonu. Periyodik kontroller.</p><span class="tag t-beden">İzleme</span></div>
+    <div class="card"><div class="ci">◉</div><h4>Ölü Zamanı Aktive Et</h4><p>İşe gidiş-geliş, öğle arası yürüyüşler. Vasıta içinde sesli kitap. Günde +2 saat kazanılabilir içerik zamanı.</p><span class="tag t-beden">Optimizasyon</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ RUH ═══════════════════ -->
+<div class="page" id="page-ruh">
+  <div class="ph"><h2>Ruh — Duygusal Denge &amp; Yaratıcı Esin</h2><p>Kendi başınalık, kriz yönetimi ve yaratıcı esin beslemesi.</p></div>
+
+  <div class="quote"><p>"Köyde veya kentin kenar mahallelerinin ıssız arazilerinden yürüyüş yapmak, kendi ruhumun derinliklerine seyahat etmek gibi gelirdi bana. İnsanın kendine yaptığı yolculukta mutlaka yeni bir haberle döner."</p><div class="src">— Çocukluk Hayallerim, Seyir Defteri</div></div>
+
+  <div class="sh"><div class="ico">◌</div><div><h3>Kendi Başınalık Ortamları</h3><div class="desc">Derin düşüncenin tetiklendiği güvenli alanlar</div></div></div>
+  <div class="grid">
+    <div class="card"><div class="ci">◌</div><h4>Uzun Yürüyüşler</h4><p>Şehrin sakin noktaları. Kalabalıktan kaçış. Hayal kurmanın en verimli zemini. Cumartesi sabahları.</p><span class="tag t-ruh">Temel Pratik</span></div>
+    <div class="card"><div class="ci">◌</div><h4>Sabah Erken / Tenha Ofis</h4><p>Az insan, yoğun düşünce. Cumartesi işe gitmenin verdiği mutluluk. Tenha ortamın mucizesi.</p><span class="tag t-ruh">Verimli Durum</span></div>
+    <div class="card"><div class="ci">◌</div><h4>Yolculuk Halleri</h4><p>Vasıtasız veya sesli kitapla yolculuk. Düşüncenin en serbest aktığı anlar. Uzak destinasyonlar.</p><span class="tag t-ruh">Fırsat</span></div>
+    <div class="card"><div class="ci">◌</div><h4>Şiir &amp; Sessizlik</h4><p>Şiir okuma alışkanlığını rutine kat. Az kullanılan zihinsel kasları çalıştır. Gece okuma ritüeli.</p><span class="tag t-ruh">Yapılacak</span></div>
+  </div>
+
+  <div class="sh"><div class="ico">◌</div><div><h3>Duygusal Harita</h3><div class="desc">Kriz seviyeleri ve müdahale noktaları</div></div></div>
+  <table class="tbl">
+    <thead><tr><th>Durum</th><th>Tetikleyici</th><th>Müdahale</th><th>Seviye</th></tr></thead>
+    <tbody>
+      <tr><td>Kaygı</td><td>Belirsizlik, yeni ortam, kontrol kaybı</td><td>Yürüyüş, sistemi gözden geçirme</td><td><span class="tag t-ruh">Hafif-Orta</span></td></tr>
+      <tr><td>Öfke</td><td>Saygısızlık, kontrolsüz ortam</td><td>Kendi başınalık, derin nefes</td><td><span class="tag t-ruh">Orta</span></td></tr>
+      <tr><td>Üzüntü</td><td>Kayıp, özlem, bağ kopması</td><td>Yazma, müzik, yalnız yürüyüş</td><td><span class="tag t-ruh">Derin</span></td></tr>
+      <tr><td>Esin Boşluğu</td><td>Rutin kırılması, yorgunluk</td><td>Şiir oku, dinlen, başka kitaba geç</td><td><span class="tag t-ruh">Yaratıcı</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="quote"><p>"Şevk, zevk, sevgi ve eğlence olmadan yazmak, yarımlıktır. Bir yazarın hissetmesi gereken en önemli şey heyecandır."</p><div class="src">— Ray Bradbury, Yaratıcı Yazarlık</div></div>
+</div>
+
+<!-- ═══════════════════ DIŞ ═══════════════════ -->
+<div class="page" id="page-dis">
+  <div class="ph"><h2>Dış Unsurlar — Destekleyici Koşullar</h2><p>Finans, yaşam ortamı ve şehir değişkenleri. Eudomonianın maddi altyapısı.</p></div>
+
+  <div class="grid">
+    <div class="card"><div class="ci">◍</div><h4>Finans &amp; Yatırım</h4><p>Nakit akışı, kripto, hisse senedi, altın, faiz, gayrimenkul. Finansal okuryazarlık ile destekle.</p><span class="tag t-dis">Maddi</span></div>
+    <div class="card"><div class="ci">◍</div><h4>Çalışma Ortamı</h4><p>Donanım kalitesi, ekranlar, ses ortamı. İstanbul tecrübesinden ders: hazırlıksız yakalanma.</p><span class="tag t-dis">Ortam</span></div>
+    <div class="card"><div class="ci">◍</div><h4>Konut &amp; Yaşam Alanı</h4><p>Verimli, sakin, kişisel alan. Özgün düzenin kurulması her şeyden önce.</p><span class="tag t-dis">Maddi</span></div>
+    <div class="card"><div class="ci">◍</div><h4>Şehir Değişkenleri</h4><p>Gaziantep · İstanbul · Dubai · Karadeniz. Her şehrin ritmi farklı — adaptasyonu çabuk sağla.</p><span class="tag t-dis">Ortam</span></div>
+  </div>
+
+  <div class="sh"><div class="ico">◍</div><div><h3>Yeni Ortam Geçiş Protokolü</h3><div class="desc">İstanbul gafletinden çıkarılan dersler</div></div></div>
+  <div class="flow-wrap">
+    <div class="flow-label">Yeni Şehir / Ofis Akışı</div>
+    <div class="flow">
+      <div class="fn"><div class="ft">Ortamı Keşfet</div><div class="fs">Harita · AI araştırma</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Çevre Kur</div><div class="fs">Donanım · Gym · Güzergah</div></div>
+      <div class="fa"></div>
+      <div class="fn hl"><div class="ft">Rutini Yerleştir</div><div class="fs">Spor · Okuma · Yazma</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Çevre Edin</div><div class="fs">Akıllı insanlar · Ağ</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Üret</div><div class="fs">Asıl işi yap</div></div>
+    </div>
+  </div>
+
+  <div class="quote"><p>"Maliyeti en yüksek iş kendini programlamaktır. O programa sadık kalmak ikincil problemdir."</p><div class="src">— Seyir Defteri, Yoğun Çalışma Ortamında Olmazsa Olmazlar</div></div>
+</div>
+
+<!-- ═══════════════════ YAZARLIK ═══════════════════ -->
+<div class="page" id="page-yazarlik">
+  <div class="ph"><h2>Yazarlık Sistemi</h2><p>Yaratıcı yazarlık pratiği, okuma-yazma döngüsü ve esin perisini besleme rehberi.</p></div>
+
+  <div class="quote"><p>"Sanatın kaçaklığı: çok sıkı tutarsan öldürürsün, çok gevşek bırakırsan kaçar. Doğru dengeyi bulmak her yazarın ömür boyu süren macerasıdır."</p><div class="src">— Ray Bradbury, Yaratıcı Yazarlık</div></div>
+
+  <div class="sh"><div class="ico">✦</div><div><h3>Aktif Yazma Pratikleri</h3></div></div>
+  <div class="grid">
+    <div class="card"><div class="ci">✦</div><h4>Seyir Defteri (Günlük)</h4><p>Günlük düşünce akışı, hakikat parçaları, anlık gözlemler. Yazmanın en saf ve en dürüst biçimi.</p><span class="tag t-yaz">Her gün</span></div>
+    <div class="card"><div class="ci">✦</div><h4>Betimleme Denemeleri</h4><p>Kısa, yoğun betimleme alıştırmaları. Kuş göçü, ışık, sessizlik... Gözlemin kristalleşmesi.</p><span class="tag t-yaz">Haftalık</span></div>
+    <div class="card"><div class="ci">✦</div><h4>Kitap İncelemeleri</h4><p>Okuduğun eserlerin derinlikli analizi. Alıntılar, karakterler, tema taksonomisi ile sınıflandır.</p><span class="tag t-yaz">Kitap başına</span></div>
+    <div class="card"><div class="ci">✦</div><h4>Hikayeleme</h4><p>Kısa hikaye denemeleri, Oulipo kısıtları ile yaratıcı denemeler. Formun içinde özgürlük.</p><span class="tag t-yaz">Ay başına</span></div>
+    <div class="card"><div class="ci">✦</div><h4>Şiir</h4><p>Duygunun en yoğun ifadesi. Şiir yazmak ve okumak birbirini besler.</p><span class="tag t-yaz">Özgür · Düzensiz</span></div>
+    <div class="card"><div class="ci">✦</div><h4>Cümleler &amp; Kelimeler</h4><p>Okurken yakalanan tek cümleler, nadir kelimeler, anlık aydınlanma anları. Ham malzeme deposu.</p><span class="tag t-yaz">Anlık kayıt</span></div>
+  </div>
+
+  <div class="sh"><div class="ico">◎</div><div><h3>Pasif Besleme — Bradbury Muse Metodolojisi</h3></div></div>
+  <div class="pgrid">
+    <div class="pr"><div class="num">①</div><h4>Her Gün Şiir Oku</h4><p>Az kullanılan zihinsel kasları çalıştırır. Metaforları besler. Zihni formda tutar.</p></div>
+    <div class="pr"><div class="num">②</div><h4>Deneme Oku</h4><p>Her konuda bilgi. Arı yetiştirmeden mezar taşına. Bilinçaltı stoku.</p></div>
+    <div class="pr"><div class="num">③</div><h4>Amatör Merakı Koru</h4><p>Uzman olduğunda bile çocuk gözüyle bak. Merak özgün sesi canlı tutar.</p></div>
+    <div class="pr"><div class="num">④</div><h4>NotebookLM Kullan</h4><p>AI ile kitapları ve notları sentezle. Pasif içerik işleme asistanı.</p></div>
+  </div>
+
+  <div class="quote"><p>"İçindeki malzeme seni birey yapan şeydir ve bu nedenle başkaları için vazgeçilmezdir."</p><div class="src">— Ray Bradbury, Yaratıcı Yazarlık</div></div>
+  <div class="quote"><p>"İyi eğitim almış bir zihnin göstergesi: bir fikri kabul ya da reddetmeksizin ele alma gücüdür."</p><div class="src">— Cümleler, Seyir Defteri</div></div>
+</div>
+
+<!-- ═══════════════════ KİTAPLAR ═══════════════════ -->
+<div class="page" id="page-kitaplar">
+  <div class="ph"><h2>Kitap Haritası</h2><p>Okunan ve okunacak eserler. Tema taksonomisi ile sınıflandırılmış kütüphane.</p></div>
+
+  <div class="sh"><div class="ico">⊞</div><div><h3>Okunan &amp; Panteon Adayları</h3></div></div>
+  <div class="bgrid">
+    <div class="bcard"><h4>Yengeç Dönencesi</h4><div class="ba">Henry Miller</div><span class="tag t-akil">İncelendi</span></div>
+    <div class="bcard"><h4>Ormana Bakan Balkon</h4><div class="ba">Julien Gracq</div><span class="tag t-akil">İncelendi</span></div>
+    <div class="bcard"><h4>Dalgalar</h4><div class="ba">Virginia Woolf</div><span class="tag t-akil">Panteon</span></div>
+    <div class="bcard"><h4>Var Olmanın Dayanılmaz Hafifliği</h4><div class="ba">Milan Kundera</div><span class="tag t-akil">Panteon</span></div>
+    <div class="bcard"><h4>Yazmak Eylemi</h4><div class="ba">Ferit Edgü</div><span class="tag t-akil">★ 10</span></div>
+    <div class="bcard"><h4>Gecenin Sonuna Yolculuk</h4><div class="ba">Louis-Ferdinand Céline</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Madame Bovary</h4><div class="ba">Gustave Flaubert</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Kırmızı ve Siyah</h4><div class="ba">Stendhal</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Sineklerin Tanrısı</h4><div class="ba">William Golding</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Kör Baykuş</h4><div class="ba">Sadık Hidayet</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Uğultulu Tepeler</h4><div class="ba">Emily Bronte</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Kral Oidipus</h4><div class="ba">Sophokles</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Guguk Kuşu</h4><div class="ba">Ken Kesey</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Azil</h4><div class="ba">Hakan Günday</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Sevgili Arsız Ölüm</h4><div class="ba">Latife Tekin</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Aydaki Kadın</h4><div class="ba">Ahmet Hamdi Tanpınar</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Şafakta Verilmiş Sözüm Vardı</h4><div class="ba">Romain Gary</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Diana, Yalnız Avlanan Tanrıça</h4><div class="ba">Carlos Fuentes</div><span class="tag t-akil">Okunan</span></div>
+    <div class="bcard"><h4>Deniz Kurdu</h4><div class="ba">Jack London</div><span class="tag t-akil">Okunan</span></div>
+  </div>
+
+  <div class="sh"><div class="ico">◌</div><div><h3>Tema Taksonomisi</h3><div class="desc">Kitapları bağlayan düşünce iplikleri</div></div></div>
+  <div class="grid">
+    <div class="card"><div class="ci">◌</div><h4>Varoluş &amp; Kimlik</h4><p>Var Olmanın Dayanılmaz Hafifliği, Kör Baykuş, Kral Oidipus. Bireyin kendisiyle yüzleşmesi.</p></div>
+    <div class="card"><div class="ci">◌</div><h4>Kaçış &amp; Özgürlük</h4><p>Yengeç Dönencesi, Gecenin Sonuna Yolculuk, Guguk Kuşu. Sistemden kaçmanın biçimleri.</p></div>
+    <div class="card"><div class="ci">◌</div><h4>Yazma &amp; Yaratıcılık</h4><p>Yazmak Eylemi, Dalgalar, Ormana Bakan Balkon. Dilin ve formun kendisini keşfetmek.</p></div>
+    <div class="card"><div class="ci">◌</div><h4>Baskı &amp; İç Ses</h4><p>Madame Bovary, Uğultulu Tepeler, Sevgili Arsız Ölüm. Toplumsal baskı karşısında iç ses.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ GÜNLÜK AKIŞ ═══════════════════ -->
+<div class="page" id="page-gunluk">
+  <div class="ph"><h2>Günlük Akış — Seyir Defteri</h2><p>Günlük tutmanın sistemi ve vault'tan distile edilmiş hakikat kırıkları.</p></div>
+
+  <div class="flow-wrap">
+    <div class="flow-label">Seyir Defteri Yazma Akışı</div>
+    <div class="flow">
+      <div class="fn"><div class="ft">Gün Başlar</div><div class="fs">Tarih &amp; meta</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Serbest Akış</div><div class="fs">Düşünce · Kaygı · Fikir</div></div>
+      <div class="fa"></div>
+      <div class="fn hl"><div class="ft">Tema Etiketle</div><div class="fs">Akıl · Beden · Ruh · Dış</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">İlişkili Bağla</div><div class="fs">Wikilinks ile</div></div>
+      <div class="fa"></div>
+      <div class="fn"><div class="ft">Arşivle</div><div class="fs">Tarih/Ay/Yıl yapısı</div></div>
+    </div>
+  </div>
+
+  <div class="sh"><div class="ico">⊡</div><div><h3>Vault'tan Distile Hakikatler</h3></div></div>
+  <div class="ideas" id="journalIdeas">
+    <div class="idea"><div class="idate">22 Nis 2026</div><div><div class="itext">"Gerçekten de ileri düzeyde anlayışın bir parçası olarak dile getirdiğimiz hakikati en yüksek düzeyde anlam ve kavrama biçimi sağlamam gerekiyor."</div><div class="imeta"><span class="tag t-akil">Akıl</span><span class="tag t-ruh">Ruh</span></div></div></div>
+    <div class="idea"><div class="idate">11 Nis 2026</div><div><div class="itext">"Sistemini felsefi ve bilimsel düşünme biçimi üzerine inşaa et. Bilmediğin meselelere yaklaşırken metodoloji ve yöntem sahibi olarak anla ve idrak et."</div><div class="imeta"><span class="tag t-akil">Akıl</span></div></div></div>
+    <div class="idea"><div class="idate">Konu Bazlı</div><div><div class="itext">"Maliyeti en yüksek iş kendini programlamaktır. O programa sadık kalmak ikincil problemdir."</div><div class="imeta"><span class="tag t-dis">Dış</span><span class="tag t-akil">Akıl</span></div></div></div>
+    <div class="idea"><div class="idate">Kendi Başınalık</div><div><div class="itext">"Kendimi güvende hissettiğim ortamlar hep kendibaşınalık olmuştur. Kalabalıklara döndüğümde daha zinde bir dönüşle gelerek ruhumun derin titreşimlerinin üstesinden geldiğim hissederim."</div><div class="imeta"><span class="tag t-ruh">Ruh</span></div></div></div>
+    <div class="idea"><div class="idate">Cümleler</div><div><div class="itext">"İyi eğitim almış bir zihnin göstergesi: bir fikri kabul ya da reddetmeksizin ele alma gücüdür."</div><div class="imeta"><span class="tag t-akil">Akıl</span></div></div></div>
+    <div class="idea"><div class="idate">Cümleler</div><div><div class="itext">"Otuzlu yaşlarımız geçmişin kök söktüren kıyılarında kalmıştı."</div><div class="imeta"><span class="tag t-ruh">Ruh</span></div></div></div>
+    <div class="idea"><div class="idate">Bradbury</div><div><div class="itext">"Sanatı çok sıkı tutarsan öldürürsün, çok gevşek bırakırsan kaçar. İçindeki malzeme seni birey yapan şeydir."</div><div class="imeta"><span class="tag t-yaz">Yazarlık</span></div></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ FİKİRLER ═══════════════════ -->
+<div class="page" id="page-fikirler">
+  <div class="ph"><h2>Fikirler &amp; Hakikatler</h2><p>Yeni fikirlerin eklendiği açık alan. SOLID prensibi gibi genişlemeye açık — her yeni fikir buraya ilave edilir.</p></div>
+
+  <div class="add-panel">
+    <h4>Yeni Fikir / Hakikat Ekle</h4>
+    <div class="frow">
+      <input type="text" class="fin" id="ideaInput" placeholder="Fikir, düşünce veya hakikat...">
+      <select class="fsel" id="ideaCat">
+        <option value="akil">Akıl</option>
+        <option value="beden">Beden</option>
+        <option value="ruh">Ruh</option>
+        <option value="dis">Dış Unsur</option>
+        <option value="yaz">Yazarlık</option>
+      </select>
+      <button class="btn" onclick="addIdea()">Ekle</button>
+    </div>
+  </div>
+
+  <div class="ideas" id="ideasList"></div>
+</div>
+
+<!-- ═══════════════════ YAPI ═══════════════════ -->
+<div class="page" id="page-yapi">
+  <div class="ph"><h2>Vault Yapısı</h2><p>Obsidian second brain klasör mimarisi ve SOLID prensipleriyle tasarım mantığı.</p></div>
+
+  <div class="tree">
+<div class="tf">📁 01 - Yazarlık <span style="color:var(--muted);font-weight:normal;font-size:10px">(Vault Kökü)</span></div>
+<div style="padding-left:16px">
+  <div class="tf">📁 00 - Eudomonia</div>
+  <div style="padding-left:16px">
+    <div class="ti">🧠 Akıl/ — Okuma · Yazma · Yazılım · Yapay Zeka</div>
+    <div class="ti">💪 Beden/ — Beslenme · Spor · Sağlık</div>
+    <div class="ti">❤ Ruh/ — Kaygı · Öfke · Üzüntü · Esin</div>
+    <div class="ti">🌍 Dış Unsurlar/ — Maddi · Maddi Olmayan</div>
+    <div class="ti">📄 Eudaimonia.md — Ana frame belgesi</div>
+  </div>
+  <div class="tf">📁 01 - Seyir Defteri</div>
+  <div style="padding-left:16px">
+    <div class="ti">📅 Günlükler/ — Yıl/Ay/Gün yapısı</div>
+    <div class="ti">🗂 Konu Bazlı/ — Uzun form konu notları</div>
+  </div>
+  <div class="tf">📁 02 - Books</div>
+  <div style="padding-left:16px">
+    <div class="ti">📚 [Kitap - Yazar].md · [Kitap] - inceleme.md · [Kitap] - alıntılar.md</div>
+  </div>
+  <div class="tf">📁 03 - Notlar</div>
+  <div style="padding-left:16px">
+    <div class="ti">✏ Cümleler/ · 📝 Kelimeler/ · 🎭 Hikayeleme Denemeleri/</div>
+    <div class="ti">🎲 Oulipo/ · 🔍 Betim Fikirleri/ · 🎬 Filmler/ &amp; Diziler/</div>
+  </div>
+  <div class="tf">📁 04 - Assets &nbsp;·&nbsp; 📁 05 - Şiirler</div>
+  <div class="tf">📁 Excalidraw/ · 📁 Prompt Bankası/ · 📁 Templates/ · 📁 Clippings/</div>
+  <div class="ti">📄 _Tema Taksonomisi.md — Wikilink referans haritası</div>
+</div>
+  </div>
+
+  <div class="sh"><div class="ico">⊞</div><div><h3>SOLID Yapı Prensipleri</h3><div class="desc">Bu vault mimarisinin tasarım ilkeleri</div></div></div>
+  <div class="pgrid">
+    <div class="pr"><div class="num">S</div><h4>Single Responsibility</h4><p>Her klasörün tek sorumluluğu var. Eudomonia için ayrı, yazarlık için ayrı, seyir defteri için ayrı.</p></div>
+    <div class="pr"><div class="num">O</div><h4>Open for Extension</h4><p>Yeni alan çıkınca klasör ekle. Mevcut yapıyı bozmadan genişle. Yeni fikir buraya ekle.</p></div>
+    <div class="pr"><div class="num">L</div><h4>Liskov (Şablon Tutarlılığı)</h4><p>Kitap şablonu her kitap için aynı çalışır. Template tutarlılığı, tahmin edilebilirlik sağlar.</p></div>
+    <div class="pr"><div class="num">I</div><h4>Interface (Wikilinks)</h4><p>Wikilink'ler belgeleri birbirine bağlar. Tema taksonomisi merkezi arayüz görevi görür.</p></div>
+    <div class="pr"><div class="num">D</div><h4>Dependency Inversion</h4><p>Tema taksonomisi üst seviye soyutlama. Günlükler ve notlar ona bağımlı, tersi değil.</p></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// Ideas storage (persistent in session)
+let ideas = [
+  { date: '22 Nis 2026', text: 'Hakikati en yüksek düzeyde anlam ve kavrama biçimi sağlamam gerekiyor.', cat: 'akil' },
+  { date: '11 Nis 2026', text: 'Sistemini felsefi ve bilimsel düşünme biçimi üzerine inşaa et.', cat: 'akil' },
+  { date: '15 Nis 2026', text: 'Spor ve beslenme etkinliğini bir sistem olarak düşün — parçaları değil bütünü kur.', cat: 'beden' },
+  { date: 'Bradbury', text: 'Sanatı çok sıkı tutarsan öldürürsün, çok gevşek bırakırsan kaçar.', cat: 'yaz' },
+  { date: 'Cümleler', text: 'İyi eğitim almış bir zihnin göstergesi: bir fikri kabul ya da reddetmeksizin ele alma gücüdür.', cat: 'akil' },
+  { date: 'Kendi Başınalık', text: 'Kendimi güvende hissettiğim ortamlar hep kendibaşınalık olmuştur.', cat: 'ruh' },
+];
+
+const catLabel = { akil:'Akıl', beden:'Beden', ruh:'Ruh', dis:'Dış Unsur', yaz:'Yazarlık' };
+const catClass = { akil:'t-akil', beden:'t-beden', ruh:'t-ruh', dis:'t-dis', yaz:'t-yaz' };
+
+function renderIdeas() {
+  document.getElementById('ideasList').innerHTML = ideas.map(i =>
+    `<div class="idea">
+      <div class="idate">${i.date}</div>
+      <div>
+        <div class="itext">"${i.text}"</div>
+        <div class="imeta"><span class="tag ${catClass[i.cat]}">${catLabel[i.cat]}</span></div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function addIdea() {
+  const inp = document.getElementById('ideaInput');
+  const cat = document.getElementById('ideaCat').value;
+  const text = inp.value.trim();
+  if (!text) return;
+  const d = new Date();
+  const months = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+  ideas.unshift({ date: `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`, text, cat });
+  inp.value = '';
+  renderIdeas();
+}
+
+// Navigation
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') === `go('${id}')`) n.classList.add('active');
+  });
+  if (id === 'fikirler') renderIdeas();
+}
+
+// Theme
+let dark = true;
+function toggleTheme() {
+  dark = !dark;
+  document.body.classList.toggle('light', !dark);
+  document.getElementById('tbtn').textContent = dark ? '☀ Açık Tema' : '☾ Koyu Tema';
+}
+
+// Enter key for idea input
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.activeElement.id === 'ideaInput') addIdea();
+});
+
+renderIdeas();
+</script>
+</body>
+</html>

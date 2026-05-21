@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aristoteles — Metafizik</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&display=swap');
+
+  :root {
+    --bg: #0f0d0a;
+    --bg2: #1a1610;
+    --bg3: #241f16;
+    --surface: #2a2318;
+    --surface2: #332c1f;
+    --border: #4a3e28;
+    --border2: #6b5a38;
+    --gold: #c9a84c;
+    --gold2: #e8c96a;
+    --gold3: #f5e0a0;
+    --amber: #d4872a;
+    --text: #f0e8d5;
+    --text2: #c8b898;
+    --text3: #8a7a5a;
+    --green: #5a8a5a;
+    --red: #8a4a3a;
+    --blue: #3a5a8a;
+    --font-body: 'Verdana', sans-serif;
+    --font-display: 'Cinzel', serif;
+  }
+
+  .light {
+    --bg: #f5f0e8;
+    --bg2: #ede5d5;
+    --bg3: #e0d5c0;
+    --surface: #d8ccb5;
+    --surface2: #cfc0a0;
+    --border: #b5a070;
+    --border2: #8a7050;
+    --gold: #8a6020;
+    --gold2: #6a4810;
+    --gold3: #4a3008;
+    --amber: #a06010;
+    --text: #2a2010;
+    --text2: #4a3820;
+    --text3: #7a6040;
+    --green: #2a5a2a;
+    --red: #6a2a1a;
+    --blue: #1a3a6a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+    transition: background 0.4s, color 0.4s;
+    overflow-x: hidden;
+  }
+
+  /* Arka plan doku efekti */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(201,168,76,0.03) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Dekoratif kenar çizgisi */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold2), var(--gold), transparent);
+    z-index: 1000;
+  }
+
+  /* ═══════════════════════════════
+     HEADER
+  ═══════════════════════════════ */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 60px 20px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-ornament {
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: 12px;
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+
+  .header-greek {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 6vw, 64px);
+    font-weight: 900;
+    color: var(--gold2);
+    letter-spacing: 4px;
+    text-shadow: 0 0 40px rgba(201,168,76,0.3);
+    margin-bottom: 8px;
+  }
+
+  .header-sub {
+    font-family: var(--font-display);
+    font-size: 16px;
+    color: var(--gold);
+    letter-spacing: 8px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  .header-desc {
+    max-width: 580px;
+    margin: 0 auto 24px;
+    color: var(--text2);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  /* Tema butonu */
+  .theme-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .theme-btn:hover { background: var(--surface2); transform: scale(1.1); }
+
+  /* ═══════════════════════════════
+     NAV TABS
+  ═══════════════════════════════ */
+  .nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 20px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  .nav-tab:hover { border-color: var(--gold); color: var(--gold); }
+  .nav-tab.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--bg);
+    box-shadow: 0 0 16px rgba(201,168,76,0.3);
+  }
+
+  /* ═══════════════════════════════
+     SECTIONS
+  ═══════════════════════════════ */
+  .section {
+    display: none;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ═══════════════════════════════
+     SECTION HEADERS
+  ═══════════════════════════════ */
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 24px;
+    color: var(--gold2);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  .section-subtitle {
+    color: var(--text3);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  /* ═══════════════════════════════
+     CARDS
+  ═══════════════════════════════ */
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    border-radius: 4px 0 0 4px;
+    opacity: 0.6;
+  }
+
+  .card:hover { border-color: var(--border2); }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--gold2);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .card-body {
+    color: var(--text2);
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+
+  /* KITAP KARTLARı */
+  .book-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .book-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .book-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .book-card:hover::after { opacity: 1; }
+
+  .book-num {
+    font-family: var(--font-display);
+    font-size: 36px;
+    color: var(--gold);
+    opacity: 0.2;
+    position: absolute;
+    top: 10px; right: 14px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .book-alpha {
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .book-name {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .book-desc { color: var(--text3); font-size: 11.5px; line-height: 1.6; }
+
+  /* KAVRAMLAR */
+  .concept-item {
+    display: flex;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .concept-item:last-child { border-bottom: none; }
+
+  .concept-greek {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--gold);
+    min-width: 120px;
+    padding-top: 2px;
+  }
+
+  .concept-content { flex: 1; }
+  .concept-turkish { font-size: 11px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .concept-def { color: var(--text2); font-size: 12.5px; line-height: 1.7; }
+
+  /* KONU AĞACI */
+  .tree-branch {
+    margin-left: 20px;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+    margin-bottom: 4px;
+  }
+
+  .tree-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    cursor: pointer;
+  }
+
+  .tree-node-dot {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .tree-node:hover .tree-node-dot { opacity: 1; }
+
+  .tree-node-text { color: var(--text2); font-size: 12px; }
+  .tree-node-text strong { color: var(--gold2); font-family: var(--font-display); font-size: 11px; }
+
+  /* ALINTI */
+  .quote-block {
+    border-left: 3px solid var(--gold);
+    background: var(--bg3);
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 0 4px 4px 0;
+    position: relative;
+  }
+
+  .quote-block::before {
+    content: '"';
+    font-family: var(--font-display);
+    font-size: 60px;
+    color: var(--gold);
+    opacity: 0.15;
+    position: absolute;
+    top: -10px; left: 12px;
+    line-height: 1;
+  }
+
+  .quote-text {
+    font-style: italic;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 8px;
+  }
+
+  .quote-source { color: var(--text3); font-size: 11px; }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+  }
+
+  .badge-gold { background: rgba(201,168,76,0.15); color: var(--gold2); border: 1px solid rgba(201,168,76,0.3); }
+  .badge-green { background: rgba(90,138,90,0.15); color: #8aba8a; border: 1px solid rgba(90,138,90,0.3); }
+  .badge-red { background: rgba(138,74,58,0.15); color: #ba8a7a; border: 1px solid rgba(138,74,58,0.3); }
+  .badge-blue { background: rgba(58,90,138,0.15); color: #7a9aba; border: 1px solid rgba(58,90,138,0.3); }
+
+  /* ═══════════════════════════════
+     SINAV SİSTEMİ
+  ═══════════════════════════════ */
+  .quiz-container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .quiz-progress-bar {
+    width: 100%;
+    height: 3px;
+    background: var(--surface);
+    border-radius: 2px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  .quiz-stat {
+    text-align: center;
+  }
+  .quiz-stat-num {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--gold2);
+  }
+  .quiz-stat-label { font-size: 10px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; }
+
+  .quiz-question-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .quiz-q-num {
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+  }
+
+  .quiz-q-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+
+  .quiz-q-category {
+    margin-bottom: 20px;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .quiz-option {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--text2);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .quiz-option:hover:not(:disabled) { border-color: var(--gold); color: var(--text); background: var(--surface); }
+  .quiz-option.correct { border-color: #5a8a5a; background: rgba(90,138,90,0.12); color: #aad4aa; }
+  .quiz-option.wrong { border-color: #8a4a3a; background: rgba(138,74,58,0.12); color: #d4aaa0; }
+  .quiz-option:disabled { cursor: not-allowed; }
+
+  .option-letter {
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--gold);
+    min-width: 20px;
+  }
+
+  .quiz-explanation {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+    display: none;
+  }
+
+  .quiz-explanation.show { display: block; animation: fadeIn 0.3s ease; }
+  .quiz-explanation strong { color: var(--gold2); }
+
+  .quiz-btn {
+    background: var(--gold);
+    border: none;
+    color: var(--bg);
+    padding: 12px 28px;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.3s;
+    margin-top: 12px;
+  }
+
+  .quiz-btn:hover { background: var(--gold2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,0.3); }
+  .quiz-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .quiz-btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    padding: 10px 20px;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 2px;
+    border-radius: 2px;
+    transition: all 0.3s;
+    margin-top: 12px;
+  }
+
+  .quiz-btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* SKOR EKRANI */
+  .result-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .result-ornament {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .result-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--gold2);
+    margin-bottom: 8px;
+    letter-spacing: 3px;
+  }
+
+  .result-score {
+    font-family: var(--font-display);
+    font-size: 64px;
+    color: var(--gold);
+    line-height: 1;
+    margin: 20px 0;
+    text-shadow: 0 0 30px rgba(201,168,76,0.4);
+  }
+
+  .result-desc { color: var(--text2); max-width: 400px; margin: 0 auto 24px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+
+  .modal-box {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 32px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 12px; right: 16px;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .modal-close:hover { color: var(--gold); }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, var(--gold), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -26px;
+    top: 4px;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(201,168,76,0.4);
+  }
+
+  .timeline-year {
+    font-family: var(--font-display);
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .timeline-text { color: var(--text2); font-size: 12.5px; line-height: 1.6; }
+
+  /* KARŞILAŞTIRMA TABLOSU */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 12px;
+  }
+
+  th {
+    font-family: var(--font-display);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+
+  td {
+    padding: 11px 16px;
+    border: 1px solid var(--border);
+    color: var(--text2);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  tr:nth-child(even) td { background: var(--bg3); }
+  tr:hover td { background: var(--surface); }
+
+  /* ACCORDION */
+  .accordion-item {
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .accordion-header {
+    padding: 14px 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg2);
+    transition: background 0.2s;
+  }
+
+  .accordion-header:hover { background: var(--surface); }
+
+  .accordion-title {
+    font-family: var(--font-display);
+    font-size: 12px;
+    color: var(--gold2);
+    letter-spacing: 1px;
+  }
+
+  .accordion-arrow {
+    color: var(--gold);
+    font-size: 10px;
+    transition: transform 0.3s;
+  }
+
+  .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+
+  .accordion-body {
+    display: none;
+    padding: 16px 18px;
+    background: var(--bg3);
+    border-top: 1px solid var(--border);
+    color: var(--text2);
+    font-size: 12.5px;
+    line-height: 1.8;
+  }
+
+  .accordion-item.open .accordion-body { display: block; animation: fadeIn 0.3s ease; }
+
+  /* QUIZ MODE SELECTOR */
+  .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 28px; }
+
+  .mode-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .mode-card:hover, .mode-card.active { border-color: var(--gold); background: var(--surface); }
+  .mode-card.active { box-shadow: 0 0 20px rgba(201,168,76,0.15); }
+
+  .mode-icon { font-size: 28px; margin-bottom: 8px; }
+  .mode-name { font-family: var(--font-display); font-size: 12px; color: var(--gold2); letter-spacing: 1px; margin-bottom: 4px; }
+  .mode-desc { font-size: 11px; color: var(--text3); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .concept-item { flex-direction: column; }
+    .concept-greek { min-width: auto; }
+    .quiz-header { flex-wrap: wrap; gap: 16px; }
+  }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 28px 0;
+    color: var(--gold);
+    font-size: 14px;
+    opacity: 0.4;
+  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* TAG */
+  .tag { display: inline-block; padding: 2px 8px; background: var(--surface); color: var(--text3); font-size: 10px; border-radius: 2px; margin: 2px; border: 1px solid var(--border); }
+
+  /* INFO BOX */
+  .info-box {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 3px;
+    padding: 16px;
+    margin: 16px 0;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .info-box-title { font-family: var(--font-display); color: var(--gold); font-size: 11px; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+
+<button class="theme-btn" onclick="toggleTheme()" title="Tema Değiştir">☀</button>
+
+<!-- HEADER -->
+<header>
+  <div class="header-ornament">⊕ ◈ ⊕</div>
+  <div class="header-greek">Ἀριστοτέλης — Τὰ μετὰ τὰ φυσικά</div>
+  <h1>METAFİZİK</h1>
+  <div class="header-sub">ARİSTOTELES</div>
+  <p class="header-desc">
+    Batı felsefesinin temel taşlarından biri olan bu dev eseri, 14 kitap ve yüzyıllarca süren düşünsel miras üzerinden kapsamlı biçimde keşfedin.
+  </p>
+  <div>
+    <span class="badge badge-gold">MÖ 335–322</span>&nbsp;
+    <span class="badge badge-blue">Felsefe</span>&nbsp;
+    <span class="badge badge-green">Ontoloji</span>&nbsp;
+    <span class="badge badge-red">Teoloji</span>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="showSection('giris')">Giriş</button>
+  <button class="nav-tab" onclick="showSection('kitaplar')">14 Kitap</button>
+  <button class="nav-tab" onclick="showSection('kavramlar')">Temel Kavramlar</button>
+  <button class="nav-tab" onclick="showSection('argümanlar')">Argümanlar</button>
+  <button class="nav-tab" onclick="showSection('karsilastirma')">Platon vs Aristoteles</button>
+  <button class="nav-tab" onclick="showSection('etki')">Etki & Miras</button>
+  <button class="nav-tab" onclick="showSection('sinav')">Sınav</button>
+</nav>
+
+<!-- ═══════════════════════════════
+     GİRİŞ
+═══════════════════════════════ -->
+<section class="section active" id="giris">
+  <div class="section-title">Metafizik Nedir?</div>
+  <p class="section-subtitle">Aristoteles'in En Büyük Felsefi Yapıtı</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">📜 Eserin Adı Hakkında</div>
+      <div class="card-body">
+        "Metafizik" adı Aristoteles'in koyduğu bir ad değildir. Romalı editör <strong>Andronikos of Rhodes</strong> (MÖ 1. yy) Aristoteles'in yazılarını düzenlerken bu kitabı doğa felsefesini anlatan <em>Fizik</em>'ten <strong>sonra</strong> yerleştirdi ve "τὰ μετὰ τὰ φυσικά" (ta meta ta physika = doğadan sonrakiler) adını verdi. Zamanla bu ad, "doğanın ötesi" anlamını kazandı.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🎯 Eserin Amacı</div>
+      <div class="card-body">
+        Aristoteles bu eserde <strong>varlık bilimi</strong>'ni (ontoloji) kurmayı hedefler: "Varlık var olduğu bakımından nedir?" Bu soru, bilimin her dalının belirli varlıkları incelerken metafiziğin <em>bütün varlıkları</em> en temel nitelikleriyle incelemesi gerektiğini ortaya koyar. Eser aynı zamanda <strong>ilk nedenler</strong> ve <strong>ilkeler</strong> bilimi olarak öne çıkar.
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <p class="quote-text">Tüm insanlar doğaları gereği bilmek ister. Bunun kanıtı duyulardan duyduğumuz zevktir; zira bu duyular faydalı olmadan da sevilir ve görme duyusu her şeyden çok sevilir.</p>
+    <p class="quote-source">— Aristoteles, Metafizik, Kitap I (Alpha), 980a21</p>
+  </div>
+
+  <div class="section-title" style="margin-top:36px">Tarihsel Bağlam</div>
+  <div class="section-subtitle">Aristoteles'in Hayatı ve Eserin Arka Planı</div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">MÖ 384 — Stageira, Makedonya</div>
+      <div class="timeline-text">Aristoteles doğdu. Babası Nikomakhos, Makedonya Kralı II. Amyntas'ın saray hekimiydi. Bu tıbbi köken, Aristoteles'in doğa bilimine olan ilgisini şekillendirdi.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">MÖ 367 — Atina, Platon'un Akademisi</div>
+      <div class="timeline-text">17 yaşında Platon'un Akademisi'ne katıldı. 20 yıl boyunca hocasıyla hem uyum içinde hem de entelektüel gerilimde çalıştı. Bu dönem Metafizik'teki İdea eleştirisinin temelini attı.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">MÖ 347 — Platon'un Ölümü</div>
+      <div class="timeline-text">"Platon'u severim ama gerçeği daha çok severim" (Amicus Plato, sed magis amica veritas). Akademi'yi terk etti; Assos ve Lesbos'ta araştırma yaptı.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">MÖ 343 — Makedonya</div>
+      <div class="timeline-text">Kral II. Philippos'un daveti üzerine genç Büyük İskender'e özel ders verdi. Bu siyasi bağlantı hem imkânlar hem de riskler getirdi.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">MÖ 335 — Atina, Lykeion</div>
+      <div class="timeline-text">Kendi okulunu kurdu: Lykeion (Lise). Gezinerek ders verdiği için öğrencilerine "Peripatetikler" (gezginciler) dendi. Metafizik'in büyük bölümü burada derslerde oluştu.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-year">MÖ 322 — Khalcis, Euboia</div>
+      <div class="timeline-text">62 yaşında hayatını kaybetti. Geride yaklaşık 200 eser bıraktı (çoğu kayıp); bunların yaklaşık 47'si günümüze ulaştı. Metafizik bu mirasın zirvesindedir.</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <div class="info-box-title">📚 Önemli Not</div>
+    Metafizik, Aristoteles'in tamamlanmış ve yayına hazır bir kitap olarak kaleme aldığı bir eser değildir. Büyük olasılıkla Lykeion'daki derslerinde kullandığı, farklı dönemlerde kaleme alınmış ve sonradan derlenerek bir araya getirilmiş notlar ve traktatlardan oluşur. Bu nedenle bazı kitaplar arasında konu tekrarları ve tutarsızlıklar görülmektedir.
+  </div>
+
+  <div class="section-title" style="margin-top:36px">Metafiziğin Temel Soruları</div>
+
+  <div class="grid-3" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title">🌐 Ontoloji</div>
+      <div class="card-body" style="font-size:12px">Varlık nedir? Neler "gerçekten" var olarak sayılır? Varlığın kategorileri nelerdir?</div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ Nedensellik</div>
+      <div class="card-body" style="font-size:12px">Her şeyin dört nedeni var mıdır? İlk Neden (Prima Causa) nedir? Tanrı'nın rolü nedir?</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔮 Töz Teorisi</div>
+      <div class="card-body" style="font-size:12px">Bir şeyi o şey yapan nedir? Öz (essence) ile varoluş nasıl ilişkilidir?</div>
+    </div>
+    <div class="card">
+      <div class="card-title">📐 Evrensel-Tikel</div>
+      <div class="card-body" style="font-size:12px">Genel kavramlar mı yoksa bireysel nesneler mi daha gerçektir?</div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎭 Değişim</div>
+      <div class="card-body" style="font-size:12px">Bir şey değişirken nasıl aynı kalabilir? Güç ve eylem nedir?</div>
+    </div>
+    <div class="card">
+      <div class="card-title">♾ Sonsuz</div>
+      <div class="card-body" style="font-size:12px">Hareketin ilk kaynağı ne olabilir? Hareketsiz Hareket Ettirici var mıdır?</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     14 KİTAP
+═══════════════════════════════ -->
+<section class="section" id="kitaplar">
+  <div class="section-title">14 Kitap — Tam İçerik Haritası</div>
+  <p class="section-subtitle">Her kitabı tıklayarak ayrıntılı bilgiye ulaşın</p>
+
+  <div class="grid-2" id="books-grid">
+  </div>
+
+  <!-- Detay Modal -->
+  <div class="modal-overlay" id="book-modal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     TEMEL KAVRAMLAR
+═══════════════════════════════ -->
+<section class="section" id="kavramlar">
+  <div class="section-title">Temel Kavramlar</div>
+  <p class="section-subtitle">Aristoteles'in Metafizik Terminolojisi</p>
+
+  <div class="info-box">
+    <div class="info-box-title">🔑 Nasıl Kullanılır?</div>
+    Aşağıdaki kavramlar Metafizik'i anlamanın anahtarıdır. Her kavram için Yunanca orijinal ad, Türkçe karşılığı ve kapsamlı bir açıklama verilmektedir. Bu kavramları ezberlemek yerine aralarındaki ilişkiyi anlamaya çalışın.
+  </div>
+
+  <div id="concepts-container"></div>
+</section>
+
+<!-- ═══════════════════════════════
+     ARGÜMANLAR
+═══════════════════════════════ -->
+<section class="section" id="argümanlar">
+  <div class="section-title">Temel Argümanlar</div>
+  <p class="section-subtitle">Aristoteles'in Metafizik'teki Büyük İspat Zincirleri</p>
+
+  <div id="arguments-container"></div>
+</section>
+
+<!-- ═══════════════════════════════
+     KARŞILAŞTIRMA
+═══════════════════════════════ -->
+<section class="section" id="karsilastirma">
+  <div class="section-title">Platon Karşısında Aristoteles</div>
+  <p class="section-subtitle">İki Büyük Filozofun Metafizik Görüşleri</p>
+
+  <div class="quote-block">
+    <p class="quote-text">Platon'u seviyorum, ama gerçeği daha çok seviyorum.</p>
+    <p class="quote-source">— Aristoteles'e atfedilen söz (Latince: Amicus Plato, sed magis amica veritas)</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>KONU</th>
+        <th>PLATON (MÖ 428–348)</th>
+        <th>ARİSTOTELES (MÖ 384–322)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Gerçekliğin Yeri</strong></td>
+        <td>İdea dünyasında (idealar gerçek, nesneler gölge)</td>
+        <td>Somut dünyada (bireysel nesneler gerçektir)</td>
+      </tr>
+      <tr>
+        <td><strong>Evrensel Kavramlar</strong></td>
+        <td>Bağımsız, maddesel olmayan idealar olarak var olur</td>
+        <td>Yalnızca tikellerde içkin olarak var olur</td>
+      </tr>
+      <tr>
+        <td><strong>Töz</strong></td>
+        <td>İdealar tözün ta kendisidir</td>
+        <td>Bireysel nesneler birincil tözü oluşturur</td>
+      </tr>
+      <tr>
+        <td><strong>Değişim ve Hareket</strong></td>
+        <td>Değişim gerçek varlığa ait değil, görünüşe ait</td>
+        <td>Değişim gerçektir; güç ve eylem kavramlarıyla açıklanır</td>
+      </tr>
+      <tr>
+        <td><strong>Matematik</strong></td>
+        <td>Matematik nesneleri idealar ile duyusal nesneler arasında</td>
+        <td>Matematik, soyutlama yoluyla fiziksel nesnelerden türetilir</td>
+      </tr>
+      <tr>
+        <td><strong>Tanrı / İlk Neden</strong></td>
+        <td>İyi'nin İdeası en yüce gerçeklik; Demiurge yaratıcı ilke</td>
+        <td>Hareketsiz Hareket Ettirici; saf eylem, saf düşünce</td>
+      </tr>
+      <tr>
+        <td><strong>Bilginin Kaynağı</strong></td>
+        <td>Anamnesis (hatırlama); ruhun önceden bildiği idealar</td>
+        <td>Duyu deneyimi + soyutlama; tümevarımsal yöntem</td>
+      </tr>
+      <tr>
+        <td><strong>Yöntem</strong></td>
+        <td>Diyalog, Sokratik sorgulama, mit ve analoji</td>
+        <td>Sistematik analiz, kategori, mantık (silogizm)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="grid-2" style="margin-top:24px">
+    <div class="card">
+      <div class="card-title">🏛 Platon'un İdea Teorisi Eleştirisi</div>
+      <div class="card-body">
+        Aristoteles, Platon'un İdea teorisine Metafizik Kitap I ve VII'de kapsamlı eleştiriler yöneltir:<br><br>
+        <strong>Üçüncü Adam Argümanı:</strong> Eğer "insan" ile bireysel insanlar arasında benzerliği açıklamak için bir İdea gerekiyorsa, o İdea ile bireysel insanlar arasındaki benzerliği açıklamak için de üçüncü bir şey gerekir; bu sonsuz bir gerilemeye yol açar.<br><br>
+        <strong>Açıklama Eksikliği:</strong> İdealar, tikellerin var olmasını açıklamaz; ideaların tikellere "katılımı" (methexis) yalnızca metaforik bir ifadedir, gerçek bir açıklama değildir.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">⚡ Aristoteles'in Alternatifi</div>
+      <div class="card-body">
+        Aristoteles, Platon'un reddettikten sonra kendi çözümünü sunar:<br><br>
+        <strong>Form İçkin:</strong> Evrensel formlar, bağımsız İdealar olarak değil, tikellerin içinde bulunur. "İnsan formu" Sokrates'te içkin biçimde vardır.<br><br>
+        <strong>Madde-Form Bileşimi (Hylomorphism):</strong> Her somut nesne, madde (hyle) ile formun (morphe/eidos) bileşimidir. Ne madde tek başına ne form tek başına tam bir açıklama sunar.<br><br>
+        <strong>Töz Birincilliği:</strong> Bireysel nesneler (Sokrates, bu at) metafiziksel olarak öncelikli tözlerdir.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     ETKİ & MİRAS
+═══════════════════════════════ -->
+<section class="section" id="etki">
+  <div class="section-title">Etki ve Miras</div>
+  <p class="section-subtitle">Metafizik'in 2400 Yıllık Yankısı</p>
+
+  <div class="grid-2">
+    <div>
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-title">🕌 İslam Felsefesi</span>
+          <span class="accordion-arrow">▼</span>
+        </div>
+        <div class="accordion-body">
+          <strong>İbn Sina (Avicenna, 980–1037):</strong> Aristoteles'in metafiziğini İslam teolojisiyle sentezledi. Öz-varoluş ayrımını geliştirerek Zorunlu Varlık (Vacibu'l-Vücud) kavramını oluşturdu.<br><br>
+          <strong>İbn Rüşd (Averroes, 1126–1198):</strong> Aristoteles'in "Şârih"i olarak tanındı. Kapsamlı Metafizik şerhleri Avrupa'da Aristoteles'in yeniden keşfedilmesinde kritik rol oynadı.<br><br>
+          <strong>Farabi (872–950):</strong> Metafizik ile İslam kelamını uzlaştırmaya çalıştı; siyaset felsefesini Aristoteles temelleri üzerine kurdu.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-title">✝ Skolastik Felsefe</span>
+          <span class="accordion-arrow">▼</span>
+        </div>
+        <div class="accordion-body">
+          <strong>Thomas Aquinas (1225–1274):</strong> Aristoteles'i Hristiyan teolojisiyle sentezledi. Hareketsiz Hareket Ettirici argümanını Tanrı'nın varlığı için "Beş Yol"un ilkine dönüştürdü.<br><br>
+          <strong>Duns Scotus ve Ockham:</strong> Aristoteles'in ontoloji anlayışını eleştirerek ortaçağ sonrası nominalizmin zeminini hazırladılar.<br><br>
+          12.-13. yüzyıllarda Aristoteles'in eserleri Latince'ye çevrilince Avrupa üniversitelerinde "Filozof" (The Philosopher) unvanıyla anılmaya başlandı.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-title">🔬 Modern Bilim ve Felsefe</span>
+          <span class="accordion-arrow">▼</span>
+        </div>
+        <div class="accordion-body">
+          <strong>Descartes ve Bacon:</strong> Aristoteles'in dört neden teorisini ve teleolojisini reddederek modern bilimi yalnızca maddi ve etkin nedenler üzerine kurdu.<br><br>
+          <strong>Leibniz:</strong> Töz teorisi ve aktüalite-potansiyellik kavramlarını yeniden yorumladı.<br><br>
+          <strong>Hegel:</strong> Aristoteles'in teleolojisini tarihsel süreçle birleştirerek diyalektiğini geliştirdi.<br><br>
+          <strong>Heidegger:</strong> Varlık sorusunu Aristoteles'ten hareketle yeniden formüle etti; "Varlık ve Zaman" büyük ölçüde Aristoteles'le hesaplaşmadır.
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <span class="accordion-title">💡 Çağdaş Felsefe</span>
+          <span class="accordion-arrow">▼</span>
+        </div>
+        <div class="accordion-body">
+          <strong>Analitik Felsefe:</strong> Frege, Russell ve sonraki geleneğin ontoloji tartışmaları Aristoteles'in kategori ve töz teorisiyle diyalog içindedir.<br><br>
+          <strong>Neo-Aristotelesçilik:</strong> Philippa Foot, Alasdair MacIntyre gibi filozoflar etik alanında Aristoteles'in ereksel (teleolojik) yaklaşımını canlandırdılar.<br><br>
+          <strong>Analitik Metafizik:</strong> Kit Fine, Jonathan Lowe gibi filozofların "özün önceliği" (essence-first) tezleri doğrudan Aristoteles yorumudur.
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">📊 Metafizik'in Etki Haritası</div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:11px;color:var(--text3)">İslam Felsefesi (8-12. yy)</span>
+                <span style="font-size:11px;color:var(--gold)">Çok Yüksek</span>
+              </div>
+              <div style="height:4px;background:var(--surface);border-radius:2px"><div style="width:95%;height:100%;background:var(--gold);border-radius:2px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:11px;color:var(--text3)">Skolastik Teoloji (12-15. yy)</span>
+                <span style="font-size:11px;color:var(--gold)">Çok Yüksek</span>
+              </div>
+              <div style="height:4px;background:var(--surface);border-radius:2px"><div style="width:90%;height:100%;background:var(--gold);border-radius:2px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:11px;color:var(--text3)">Erken Modern Felsefe (16-18. yy)</span>
+                <span style="font-size:11px;color:var(--amber)">Dolaylı (Eleştirel)</span>
+              </div>
+              <div style="height:4px;background:var(--surface);border-radius:2px"><div style="width:55%;height:100%;background:var(--amber);border-radius:2px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:11px;color:var(--text3)">Alman İdealizmi (18-19. yy)</span>
+                <span style="font-size:11px;color:var(--gold)">Yüksek</span>
+              </div>
+              <div style="height:4px;background:var(--surface);border-radius:2px"><div style="width:75%;height:100%;background:var(--gold);border-radius:2px"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:11px;color:var(--text3)">Çağdaş Analitik Felsefe</span>
+                <span style="font-size:11px;color:var(--gold)">Yüksek</span>
+              </div>
+              <div style="height:4px;background:var(--surface);border-radius:2px"><div style="width:80%;height:100%;background:var(--gold);border-radius:2px"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏆 Metafizik'ten Günümüze Gelen Terimler</div>
+        <div class="card-body">
+          Aristoteles'in Metafizik'te kullandığı pek çok kavram bugün hâlâ felsefi dilin temelini oluşturmaktadır:<br><br>
+          <span class="tag">ontoloji</span>
+          <span class="tag">töz</span>
+          <span class="tag">öz (essence)</span>
+          <span class="tag">neden</span>
+          <span class="tag">kategori</span>
+          <span class="tag">form</span>
+          <span class="tag">madde</span>
+          <span class="tag">potansiyellik</span>
+          <span class="tag">aktüalite</span>
+          <span class="tag">teleoloji</span>
+          <span class="tag">ilk neden</span>
+          <span class="tag">entelekheia</span>
+          <span class="tag">hylomorphism</span>
+          <span class="tag">Unmoved Mover</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     SINAV
+═══════════════════════════════ -->
+<section class="section" id="sinav">
+  <div class="section-title">Sınav Sistemi</div>
+  <p class="section-subtitle">Bilginizi Test Edin — Didaktik Değerlendirme</p>
+
+  <!-- Mod seçici -->
+  <div id="quiz-mode-selector">
+    <div class="mode-grid">
+      <div class="mode-card active" onclick="selectMode('all')">
+        <div class="mode-icon">📚</div>
+        <div class="mode-name">Tam Sınav</div>
+        <div class="mode-desc">Tüm konulardan 15 soru</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('kavram')">
+        <div class="mode-icon">🔑</div>
+        <div class="mode-name">Kavramlar</div>
+        <div class="mode-desc">Terim ve tanımlar</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('arguman')">
+        <div class="mode-icon">⚡</div>
+        <div class="mode-name">Argümanlar</div>
+        <div class="mode-desc">Kanıt ve çıkarımlar</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('kitap')">
+        <div class="mode-icon">📜</div>
+        <div class="mode-name">Kitaplar</div>
+        <div class="mode-desc">14 kitabın içeriği</div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:20px">
+      <button class="quiz-btn" onclick="startQuiz()">SINAVI BAŞLAT</button>
+    </div>
+  </div>
+
+  <!-- Sınav alanı -->
+  <div id="quiz-area" style="display:none">
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <div class="quiz-stat">
+          <div class="quiz-stat-num" id="q-current">1</div>
+          <div class="quiz-stat-label">Soru</div>
+        </div>
+        <div class="quiz-stat">
+          <div class="quiz-stat-num" id="q-total">15</div>
+          <div class="quiz-stat-label">Toplam</div>
+        </div>
+        <div class="quiz-stat">
+          <div class="quiz-stat-num" id="q-score">0</div>
+          <div class="quiz-stat-label">Doğru</div>
+        </div>
+        <div class="quiz-stat">
+          <div class="quiz-stat-num" id="q-wrong">0</div>
+          <div class="quiz-stat-label">Yanlış</div>
+        </div>
+      </div>
+
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="quiz-progress"></div>
+      </div>
+
+      <div class="quiz-question-card">
+        <div class="quiz-q-num" id="q-num-label">SORU 1 / 15</div>
+        <div class="quiz-q-category" id="q-cat"></div>
+        <div class="quiz-q-text" id="q-text"></div>
+        <div class="quiz-options" id="q-options"></div>
+        <div class="quiz-explanation" id="q-explanation"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="quiz-btn" id="next-btn" onclick="nextQuestion()" disabled>Sonraki Soru →</button>
+        <button class="quiz-btn-secondary" onclick="resetQuiz()">↺ Yeniden Başlat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sonuç ekranı -->
+  <div id="quiz-result" style="display:none">
+    <div class="result-screen">
+      <div class="result-ornament" id="result-ornament">🏆</div>
+      <div class="result-title" id="result-title">Mükemmel!</div>
+      <div class="result-score" id="result-score">15/15</div>
+      <div class="result-desc" id="result-desc">Aristoteles'in Metafizik'ini derinlemesine kavradınız.</div>
+      <div style="margin-bottom:24px" id="result-detail"></div>
+      <button class="quiz-btn" onclick="resetQuiz()">Tekrar Dene</button>
+      &nbsp;
+      <button class="quiz-btn-secondary" onclick="showSection('giris')">Rehbere Dön</button>
+    </div>
+  </div>
+</section>
+
+<script>
+// ═══════════════════════════════
+// VERİ
+// ═══════════════════════════════
+
+const books = [
+  { num: 'I', alpha: 'Alpha (Α)', name: 'Bilgelik ve Nedenler', desc: 'Felsefenin başlangıcı, dört neden teorisi ve önceki filozofların eleştirisi. "Tüm insanlar doğaları gereği bilmek ister" cümlesiyle açılır.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap I — Alpha (Α)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Aristoteles'in felsefi programının giriş kitabıdır. <strong>Dört neden teorisi</strong> burada sistematik biçimde sunulur:</p><ul style="color:var(--text2);margin-left:20px;margin-bottom:12px;line-height:1.8"><li><strong>Maddi Neden (Hylikon Aition):</strong> Bir şeyi oluşturan madde</li><li><strong>Biçimsel Neden (Eidetikon Aition):</strong> Bir şeyi o şey yapan form</li><li><strong>Etkin Neden (Kinetikon Aition):</strong> Değişimi başlatan kaynak</li><li><strong>Ereksel Neden (Telikon Aition):</strong> Amaç, nihai hedef</li></ul><p style="color:var(--text2);line-height:1.8">Önceki filozoflar (Thales, Anaksimenes, Herakleitos, Empedokles, Platon) bu nedenleri eksik ya da hatalı biçimde kavramışlardır. Aristoteles, kendi teorisinin bu eksiklikleri giderdiğini savunur.</p>` },
+  { num: 'II', alpha: 'Alpha Elatton (α)', name: 'Bilginin Sınırları', desc: 'Kısa bir kitap; hakikatin araştırılmasının güçlüğü, sonsuz nedenlerin imkânsızlığı ve ilk ilkelere ulaşmanın zorunluluğu.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap II — Alpha Elatton (α)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">En kısa kitaptır. Theophrastos'a atfedildiği de düşünülür. Üç temel tezi vardır:</p><p style="color:var(--text2);line-height:1.8"><strong>1.</strong> Hakikati araştırmak zordur ama kolektif çabayla mümkündür.<br><strong>2.</strong> Nedenler dizisi sonsuz olamaz; bir ilk neden (başlangıç noktası) olmak zorundadır.<br><strong>3.</strong> Her bilim dalı kendi yöntemine uygun olarak incelenmelidir; matematiksel kesinliği her alanda aramak hata olur.</p>` },
+  { num: 'III', alpha: 'Beta (Β)', name: 'Aporier', desc: 'Metafiziğin yanıtlamaya çalışacağı 15 temel felsefi güçlük (aporia) ortaya konur. Aristoteles\'in "soruları doğru sormak" yöntemi.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap III — Beta (Β)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8"><strong>Aporia</strong> (ἀπορία): Çıkış yolu olmayan, çözümü belirsiz felsefi güçlük demektir. Aristoteles burada çözüm sunmaz; sorular sorar.</p><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Başlıca aporiler:</p><ul style="color:var(--text2);margin-left:20px;line-height:1.8"><li>Bir tek bilim mi tüm varlığı inceler, yoksa birçok bilim mi?</li><li>Tözlerin mi yoksa ilkelerin mi bilimi yapılacak?</li><li>Evrensel mi yoksa tikel mi gerçektir?</li><li>İdealar ve matematiksel nesneler var mıdır?</li></ul><p style="color:var(--text2);margin-top:8px;line-height:1.8">Bu aporilere verilen yanıtlar kitabın geri kalanını yapılandırır.</p>` },
+  { num: 'IV', alpha: 'Gamma (Γ)', name: 'Varlık ve Çelişmezlik', desc: 'Metafiziğin tanımı: "varlık olduğu bakımından varlığı" inceleyen bilim. Çelişmezlik İlkesi\'nin (en temel mantık yasası) savunusu.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap IV — Gamma (Γ)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Aristoteles'in en önemli metafizik programatik ifadesi burada yer alır:</p><blockquote style="border-left:2px solid var(--gold);padding:10px 16px;margin:12px 0;color:var(--gold3);font-style:italic">"Varlık var olduğu bakımından inceleyen bir bilim vardır."</blockquote><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Kitabın ikinci büyük teması <strong>Çelişmezlik İlkesi</strong>'dir (Principium Contradictionis):</p><p style="color:var(--text2);padding:10px;background:var(--bg3);border-radius:3px;margin-bottom:12px">"Aynı şeyin, aynı bakımdan, aynı anda hem var hem de var olmaması imkânsızdır."</p><p style="color:var(--text2);line-height:1.8">Bu ilke kanıtlanamaz ama reddedilemez de: Çelişmezlik ilkesini reddeden kişi, bu reddi yaparken onu kullanmak zorundadır. Aristoteles, Protagoras ve Herakleitos'un göreli gerçeklik anlayışlarını bu ilke temelinde reddeder.</p>` },
+  { num: 'V', alpha: 'Delta (Δ)', name: 'Felsefi Sözlük', desc: 'Aristoteles\'in kendi hazırladığı felsefi terimler sözlüğü: 30\'dan fazla kavramın tanımı. "Metafizik Ansiklopedisi" olarak da anılır.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap V — Delta (Δ)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Antik felsefenin ilk sistematik felsefi sözlüğüdür. 30'dan fazla temel kavramı tanımlar. Başlıca maddeler:</p><ul style="color:var(--text2);margin-left:20px;line-height:1.8"><li><strong>Arche (ilke/başlangıç)</strong> — birden fazla anlamı olan bu kavramın tüm kullanımları listelenir</li><li><strong>Aition (neden)</strong> — dört nedenin tam tanımı</li><li><strong>Stoikheion (element)</strong></li><li><strong>Physis (doğa)</strong></li><li><strong>Anankē (zorunluluk)</strong></li><li><strong>Hen (bir/birlik)</strong></li><li><strong>On (varlık)</strong> — "kaza ile varlık", "kendi başına varlık", "potansiyel/aktüel varlık"</li><li><strong>Ousia (töz)</strong> — birincil ve ikincil anlamları</li></ul>` },
+  { num: 'VI', alpha: 'Epsilon (Ε)', name: 'Teorik Bilimler', desc: 'Teorik bilimlerin (fizik, matematik, teoloji/metafizik) sınıflandırılması. Metafiziğin en yüce bilim olduğunun kanıtlanması.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap VI — Epsilon (Ε)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Aristoteles burada bilimleri üç ana gruba ayırır:</p><ul style="color:var(--text2);margin-left:20px;margin-bottom:12px;line-height:1.8"><li><strong>Teorik Bilimler:</strong> Fizik, Matematik, İlk Felsefe (Metafizik)</li><li><strong>Pratik Bilimler:</strong> Etik, Politika</li><li><strong>Poietik/Yapıcı Bilimler:</strong> Poetika, Retorik</li></ul><p style="color:var(--text2);line-height:1.8">Metafizik neden en yüce bilimdir? Çünkü en yüce varlıkları (ilahi, değişmeyen, maddesiz varlıkları) inceler. Aristoteles buna zaman zaman "ilk felsefe" (prōtē philosophia) veya "teoloji" de der.</p>` },
+  { num: 'VII', alpha: 'Zeta (Ζ)', name: 'Töz Analizi', desc: 'Metafizik\'in kalbi sayılan bu kitapta "töz nedir?" sorusu dört adımda araştırılır. En zor ve en önemli bölüm.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap VII — Zeta (Ζ)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Metafizik'in merkezi kitabıdır. Töz sorusu dört aday üzerinden tartışılır:</p><ul style="color:var(--text2);margin-left:20px;margin-bottom:12px;line-height:1.8"><li><strong>To ti ēn einai (öz/quiddity):</strong> Bir şeyin ne olduğunun özsel tanımı. "İnsan nedir?" sorusunun yanıtı olarak "akıllı hayvan" — bu "insanın özü"dür.</li><li><strong>To katholou (evrensel):</strong> Evrensel mi yoksa tikel mi daha çok tözün adayıdır?</li><li><strong>To genos (cins):</strong> Cinsin töz olup olmadığı</li><li><strong>To hypokeimenon (özne/altta yatan):</strong> Değişimde sabit kalan taşıyıcı</li></ul><p style="color:var(--text2);line-height:1.8">Aristoteles'in vardığı sonuç: <strong>Birincil töz</strong> ne salt madde ne salt form ne de evrenseldir. Birincil töz, madde ile formun bileşimidir — ama form bu bileşimde önceliklidir çünkü maddeye birliğini ve kimliğini kazandıran formdur.</p>` },
+  { num: 'VIII', alpha: 'Eta (Η)', name: 'Duyusal Töz', desc: 'Zeta\'nın tamamlayıcısı: duyusal (değişebilir) tözlerin analizi. Madde-form bileşiminin daha somut incelenmesi.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap VIII — Eta (Η)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Zeta'nın ardından duyusal tözlerin (maddi, değişebilir nesnelerin) daha somut analizini sunar.</p><p style="color:var(--text2);margin-bottom:12px;line-height:1.8"><strong>Madde türleri:</strong> Aristoteles, farklı bağlamlarda farklı "madde" anlayışları olduğunu gösterir. Ev için kerpiç, insanlar için et ve kemik "yakın madde"dir; ancak tüm bunların altında daha temel bir "son madde" (ultima materia) arayışı vardır.</p><p style="color:var(--text2);line-height:1.8"><strong>Birlik sorunu:</strong> Madde ve formun bileşimi nasıl tek bir nesne oluşturur? Bu soruya Aristoteles'in yanıtı, formun madde için bir tür "aktüalleştirme" işlevi gördüğüdür. Form ile madde potansiyelite-aktüalite ilişkisiyle birbirine bağlıdır.</p>` },
+  { num: 'IX', alpha: 'Theta (Θ)', name: 'Güç ve Eylem', desc: 'Potansiyellik (dynamis) ve aktüalite (energeia/entelekheia) kavramlarının tam analizi. Aristoteles\'in en özgün katkılarından biri.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap IX — Theta (Θ)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Bu kitap değişim ve hareketi açıklamak için geliştirilen iki temel kavramı inceler:</p><p style="color:var(--text2);padding:10px;background:var(--bg3);border-radius:3px;margin-bottom:12px"><strong>Dynamis (δύναμις):</strong> Güç, potansiyellik, kapasite. Bir tohumun ağaç olma kapasitesi gibi.</p><p style="color:var(--text2);padding:10px;background:var(--bg3);border-radius:3px;margin-bottom:12px"><strong>Energeia (ἐνέργεια):</strong> Eylem, aktüalite, gerçekleşmiş güç. Ağacın büyümesi gibi.</p><p style="color:var(--text2);padding:10px;background:var(--bg3);border-radius:3px;margin-bottom:12px"><strong>Entelekheia (ἐντελέχεια):</strong> Tamamlanmış aktüalite, ereğine ulaşmış gerçekleşme. Tam boy ağaç gibi.</p><p style="color:var(--text2);line-height:1.8">Aristoteles'in önemli tezi: Aktüalite potansiyeliteden önce gelir — hem kavramsal hem de zamansal olarak. Hiçbir potansiyellik kendiliğinden gerçekleşemez; onu gerçekleştiren aktüel bir şey olmalıdır.</p>` },
+  { num: 'X', alpha: 'Iota (Ι)', name: 'Birlik ve Karşıtlık', desc: '"Bir" kavramının analizleri: birlik türleri, özdeşlik, benzerlik, farklılık ve karşıtlık arasındaki metafizik ilişkiler.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap X — Iota (Ι)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">"Bir" (hen) kavramının çok anlamlılığı incelenir. Birliğin dört temel anlamı:</p><ul style="color:var(--text2);margin-left:20px;margin-bottom:12px;line-height:1.8"><li><strong>Süreklilik bakımından bir</strong> (örn: çizgi)</li><li><strong>Bütünlük bakımından bir</strong> (parçaları olan ama bir bütün oluşturan)</li><li><strong>Sayı bakımından bir</strong> (bu bireysel nesne)</li><li><strong>Tür/cins bakımından bir</strong> (aynı türden olanlar)</li></ul><p style="color:var(--text2);line-height:1.8">Karşıtlık, farklılık ve zıtlık ilişkileri de bu kitapta ele alınır. Aristoteles, en temel karşıtlığın "sahiplik" (hexis) ile "yoksunluk" (sterēsis) arasındaki karşıtlık olduğunu savunur.</p>` },
+  { num: 'XI', alpha: 'Kappa (Κ)', name: 'Özet ve Fizik', desc: 'Önceki kitapların özeti ve Fizik ile ilişkisi. Bazı akademisyenler bu kitabın Aristoteles\'e ait olmadığını düşünür.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap XI — Kappa (Κ)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Bu kitabın özgünlüğü tartışmalıdır. Pek çok akademisyen, Kitap XI'in Aristoteles'in kendisi tarafından değil, bir öğrencisi ya da editör tarafından derlendiğini düşünür.</p><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">İçerik olarak:</p><ul style="color:var(--text2);margin-left:20px;line-height:1.8"><li>Kitap III-VI'nın özeti niteliğinde bölümler içerir</li><li>Aristoteles'in Fizik adlı eserinden alınan pasajlarla örtüşür</li><li>Hareket, sonsuz ve değişim kavramlarını tekrar ele alır</li></ul>` },
+  { num: 'XII', alpha: 'Lambda (Λ)', name: 'İlahiyat — Hareketsiz Hareket Ettirici', desc: 'Metafizik\'in zirve noktası. Tözün üç türü, sonsuz hareket ve Aristoteles\'in "Tanrı" anlayışı: Hareketsiz Hareket Ettirici.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap XII — Lambda (Λ)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Metafizik'in en meşhur bölümüdür. Tözün üç türü tanımlanır:</p><ul style="color:var(--text2);margin-left:20px;margin-bottom:12px;line-height:1.8"><li><strong>Duyusal ve değişebilir töz:</strong> Bitkiler, hayvanlar (güç + eylem içerir)</li><li><strong>Duyusal ama değişmez töz:</strong> Gök cisimleri (tartışmalı)</li><li><strong>Duyusal olmayan ve değişmez töz:</strong> İlk hareket ettirici — Tanrı</li></ul><p style="color:var(--text2);padding:10px;background:var(--bg3);border-radius:3px;margin-bottom:12px"><strong>Hareketsiz Hareket Ettirici (Unmoved Mover):</strong> Sonsuz hareketin zorunlu nedeni. Kendisi hareket etmeden her şeyi harekete geçirir — tıpkı sevilenden etkilenen âşık gibi. Çeker, itmez.</p><p style="color:var(--text2);line-height:1.8">Bu Tanrı <strong>saf aktüalite</strong>'dir (hiç potansiyellik içermez), <strong>saf düşünce</strong>'dir ("düşüncenin düşüncesi" — noēsis noēseōs) ve maddesizdir. Dünyayı yaratmaz; dünyayı mükemmele doğru çeken erek neden olarak işlev görür.</p>` },
+  { num: 'XIII', alpha: 'Mu (Μ)', name: 'Matematik Nesneleri', desc: 'Sayılar ve matematiksel nesneler var mıdır? Eğer varsa nasıl varlar? Platon\'un Pitagorcu matematik anlayışına eleştiri.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap XIII — Mu (Μ)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Matematik nesnelerinin (sayılar, geometrik şekiller) ontolojik statüsü tartışılır.</p><p style="color:var(--text2);margin-bottom:12px;line-height:1.8"><strong>Platon'un görüşü:</strong> Matematik nesneleri bağımsız, maddesiz, ama idealara göre daha az soyut varlıklardır.</p><p style="color:var(--text2);margin-bottom:12px;line-height:1.8"><strong>Aristoteles'in yanıtı:</strong> Matematik nesneleri ne ayrı idealar olarak ne de duyusal nesnelerin içinde mekânsal varlıklar olarak bulunur. Soyutlama yoluyla duyusal nesnelerden türetilirler; onların belirli niteliklerini dışarıda bırakarak ele alırız.</p><p style="color:var(--text2);line-height:1.8">Sayıların "bir"den türemesi (Platoncu görüş) de burada ayrıntılı biçimde eleştirilir.</p>` },
+  { num: 'XIV', alpha: 'Nu (Ν)', name: 'Sayılar ve İdealar', desc: 'Son kitap. İdea teorisi ve sayı teorisine yönelik eleştirilerin tamamlanması. Karşıtlıktan türeme teorilerinin reddi.', content: `<h3 style="font-family:var(--font-display);color:var(--gold2);margin-bottom:12px">Kitap XIV — Nu (Ν)</h3><p style="color:var(--text2);margin-bottom:12px;line-height:1.8">Aristoteles'in Platon ve Pitagorcu geleneklere yönelik eleştirilerini tamamladığı son kitaptır.</p><p style="color:var(--text2);margin-bottom:12px;line-height:1.8"><strong>Temel eleştiriler:</strong></p><ul style="color:var(--text2);margin-left:20px;margin-bottom:12px;line-height:1.8"><li>İyi ve güzel'in sayılardan türediği görüşü</li><li>Karşıtlardan (büyük-küçük, bir-çok) türeme teorileri</li><li>Sonsuz sayının (sayılar sonsuzsa) nasıl bilinebileceği sorunu</li></ul><p style="color:var(--text2);line-height:1.8">Aristoteles'in genel tutumu: Matematiği tüm gerçekliğin temeli yapmak hatalıdır. Sayılar, nesnelerin içkin özelliklerini soyutlayarak elde ettiğimiz araçsal kavramlardır; varlığın kendisi değil.</p>` },
+];
+
+const concepts = [
+  { greek: 'Ousia', turkish: 'Töz / Varlık', def: 'Aristoteles\'in en merkezi kavramıdır. Birincil anlamda bir şeyin "ne olduğu"nun taşıyıcısı olan bireysel varlıktır (Sokrates, bu at). İkincil anlamda ise türü ve cinsi ifade eder. Tüm diğer kategoriler (nitelik, nicelik vb.) töze bağlıdır; töz ise başka bir şeye bağlı değildir.' },
+  { greek: 'Morphe / Eidos', turkish: 'Form / Biçim', def: 'Bir maddeyi belirli bir töze dönüştüren ilkedir. Örneğin bronzu heykel yapan form (biçim/şekil), insanı insan yapan "akıllı hayvanlık" formudur. Form evrensel olan boyuttur; madde ile birleşerek tekil bireyler oluşturur.' },
+  { greek: 'Hyle', turkish: 'Madde / Özdek', def: 'Formun şekillendirdiği, potansiyel halindeki altlıktır. Saf madde (prote hyle - ilk madde) hiçbir forma sahip olmayan soyut potansiyelitedir. Tek başına var olamaz; ancak form ile birlikte somut nesneleri oluşturur.' },
+  { greek: 'Dynamis', turkish: 'Potansiyellik / Güç', def: 'Bir şeyin olmaya ya da etkilemeye yönelik kapasitesidir. Tohumun ağaç olma potansiyeli, mermerin heykel olma kapasitesi gibi. Aktüaliteden önce gelir ama aktüalite tarafından gerçekleştirilir. Aristoteles\'e göre aktüalite her zaman potansiyellikten ontolojik olarak önceliklidir.' },
+  { greek: 'Energeia / Entelekheia', turkish: 'Aktüalite / Eylem', def: 'Energeia, gerçekleşme sürecindeki aktüalitedir (aktif eylem). Entelekheia ise ereğine ulaşmış, tamamlanmış aktüalitedir. Bu ayrım, Aristoteles\'in Latince\'ye "actus" olarak çevrilen teriminin iki boyutunu gösterir. Hareketsiz Hareket Ettirici saf entelekheidir.' },
+  { greek: 'To ti ēn einai', turkish: 'Öz / Quiddity', def: 'Bir şeyin tanımını yapıldığında ortaya çıkan özsel nitelikler bütünüdür — "ne idi o, şimdi de o olarak kalan şey". İngilizcede "essence" ya da Scholastic gelenekte "quidditas" (ne-lik) olarak karşılanır. Bir şeyin kendine özgü ve zorunlu nitelikleri.' },
+  { greek: 'To katholou', turkish: 'Evrensel', def: 'Birden fazla tikele ortak olarak yüklenebilen kavramdır. "İnsan", "beyaz", "ağır" gibi. Aristoteles\'e göre evrensel bağımsız bir İdea olarak değil, tikellerin içinde içkin biçimde var olur. Platon\'un İdea teorisiyle temel ayrışma noktasıdır.' },
+  { greek: 'Aition', turkish: 'Neden', def: 'Aristoteles dört neden türü tanımlar: (1) Maddi neden — bir şeyi oluşturan malzeme, (2) Biçimsel neden — form/öz, (3) Etkin neden — hareketi başlatan kaynağı, (4) Ereksel neden (telos) — amaç. Modern bilim yalnızca maddi ve etkin nedenleri kullanır; Aristoteles\'in katkısı biçimsel ve özellikle ereksel nedeni sistematize etmesidir.' },
+  { greek: 'Telos', turkish: 'Erek / Amaç', def: 'Bir şeyin doğal amacı ya da hedefidir. Aristoteles\'e göre tüm doğal süreçler bir ereğe yönelir. Pişmemiş tohum ağaç olmaya, tomurcuk çiçek olmaya ererler. Aristoteles\'in bu teleolojik yaklaşımı modern bilimde terk edilmiştir ama biyoloji ve etik alanlarında hâlâ tartışılmaktadır.' },
+  { greek: 'Kategoriai', turkish: 'Kategoriler', def: 'Varlığın en genel sınıflandırma şemalarıdır. Aristoteles on kategori sayar: (1) Töz, (2) Nicelik, (3) Nitelik, (4) İlişki, (5) Yer, (6) Zaman, (7) Durum/konuş, (8) Sahiplik, (9) Etki, (10) Edilgi. Tüm önermelerde öznenin yüklemi bu kategorilerden birine girer.' },
+  { greek: 'Kinesis', turkish: 'Değişim / Hareket', def: 'Potansiyeliteden aktüaliteye geçiş sürecidir. Aristoteles dört hareket türü tanımlar: (1) Tözsel değişim (doğup ölme), (2) Niteliksel değişim (renklenme), (3) Niceliksel değişim (büyüme/küçülme), (4) Yer değişimi (yer hareketi). Değişimi açıklamak için dinamis-energeia ayrımı zorunludur.' },
+  { greek: 'Aporia', turkish: 'Güçlük / Çıkmaz', def: 'Yunancastaki "çıkış yolu olmayan yer" anlamından gelen felsefi terimdir. Aristoteles metafizik araştırmaya önce aporiaları (felsefi güçlükleri) tespit ederek başlar. Bu yöntem için "soruyu doğru sormak çözümün yarısıdır" ilkesini takip eder. Kitap III (Beta) tamamen aporiaları sıralamaya ayrılmıştır.' },
+];
+
+const allQuestions = [
+  // KAVRAM SORULARI
+  { cat: 'kavram', q: '"Ousia" (οὐσία) kavramı Aristoteles\'te ne anlama gelir?', opts: ['Evrensel form ya da İdea', 'Birincil anlamda tekil varlık; töz', 'Matematiksel soyut nesne', 'Tanrı\'nın saf düşüncesi'], correct: 1, exp: '<strong>Ousia</strong> Aristoteles\'in en temel kavramıdır. Birincil töz olarak "Sokrates" ya da "bu at" gibi tekil bireysel varlıkları ifade eder. İkincil anlamda ise tür ve cins (insan, hayvan) anlamında kullanılır. Platon\'un İdeaları birincil gerçeklik saymasına karşın Aristoteles tikelleri önce koyar.' },
+  { cat: 'kavram', q: '"Dynamis" ve "Energeia" arasındaki fark nedir?', opts: ['İkisi de aynı şeydir; farklı sözcüklerdir', 'Dynamis potansiyellik, Energeia aktüalitedir', 'Dynamis Tanrı\'ya, Energeia maddeye aittir', 'Dynamis form, Energeia maddedir'], correct: 1, exp: '<strong>Dynamis</strong> (δύναμις) bir şeyin olma ya da etki etme kapasitesidir — tohum ağaç olabilir. <strong>Energeia</strong> (ἐνέργεια) bu kapasitenin gerçekleşmesidir — tohumun filizlenmesi. Aristoteles\'e göre aktüalite her zaman potansiyeliteden önce gelir: Her potansiyelliği gerçekleştiren aktüel bir şey olmalıdır.' },
+  { cat: 'kavram', q: '"To ti ēn einai" hangi kavramın Yunanca karşılığıdır?', opts: ['Hareket / Kinesis', 'Öz / Essence (Quiddity)', 'Evrensel / Katholou', 'Madde / Hyle'], correct: 1, exp: '"To ti ēn einai" (τὸ τί ἦν εἶναι) kelimesi kelimesine "var olan olarak ne idi" anlamına gelir. Aristoteles\'in özü (essence) ifade etmek için kullandığı teknik terimdir. Bir şeyin tanımında yer alan zorunlu ve özsel niteliklerin bütünüdür. İbn Sina bunu "mahiyet", Skolastikler "quidditas" olarak Latinceye aktardı.' },
+  { cat: 'kavram', q: 'Aristoteles\'in "Dört Neden" teorisinde "telos" hangi nedeni ifade eder?', opts: ['Maddi neden', 'Biçimsel neden', 'Etkin neden', 'Ereksel neden'], correct: 3, exp: '<strong>Telos</strong> (τέλος) erek ya da amaçtır. Ereksel neden (telikon aition), bir şeyin varlığını açıklayan amacı ya da hedefi ifade eder. Aristoteles\'e göre tüm doğal süreçler bir ereğe yönelir. Örneğin kalbin ereği kan pompalaması, gözün ereği görmektir. Bu teleoloji modern bilimin en fazla reddettiği Aristoteles öğretisidir.' },
+  { cat: 'kavram', q: '"Hyle" (ὕλη) kavramı ne anlama gelir?', opts: ['Formun tamamlanmış hali', 'Ham madde; öz değil taşıyıcı altlık', 'Ereksel neden', 'Kategorilerin özeti'], correct: 1, exp: '<strong>Hyle</strong> orijinal olarak "ağaç, kereste" anlamına geliyordu; Aristoteles bunu madde anlamında felsefi bir terim olarak kullandı. Hyle, formun şekillendirdiği potansiyel altlıktır. Saf madde (prōtē hyle) hiçbir forma sahip olmayan salt potansiyelitedir. Tek başına var olamaz; her zaman bir formla birlikte bulunur.' },
+  // KİTAP SORULARI
+  { cat: 'kitap', q: 'Aristoteles\'in Metafizik\'inde hangi kitap "Felsefi Sözlük" olarak anılır?', opts: ['Kitap I (Alpha)', 'Kitap IV (Gamma)', 'Kitap V (Delta)', 'Kitap XII (Lambda)'], correct: 2, exp: '<strong>Kitap V (Delta)</strong> antik felsefenin ilk sistematik felsefi sözlüğüdür. 30\'dan fazla temel kavramı — arche, aition, stoikheion, physis, anankē, hen, on, ousia — çok anlamlılıklarıyla birlikte tanımlar. Aristoteles\'in kavram çözümleme yönteminin en güzel örneğini sunar.' },
+  { cat: 'kitap', q: 'Metafizik\'in hangi kitabında "Hareketsiz Hareket Ettirici" (Unmoved Mover) argümanı geliştirilir?', opts: ['Kitap VII (Zeta)', 'Kitap IX (Theta)', 'Kitap XII (Lambda)', 'Kitap I (Alpha)'], correct: 2, exp: '<strong>Kitap XII (Lambda)</strong> Metafizik\'in teolojik zirvesidir. Aristoteles burada tözün üç türünü ayırt eder ve sonsuz hareketin zorunlu nedeni olarak <strong>Hareketsiz Hareket Ettirici</strong>\'yi (akinēton kinoun) ortaya koyar. Bu varlık saf aktüalite, saf düşünce ("düşüncenin düşüncesi" — noēsis noēseōs) ve maddesizdir.' },
+  { cat: 'kitap', q: 'Aristoteles Metafizik\'te hangi kitapta Çelişmezlik İlkesi\'ni savunur?', opts: ['Kitap III (Beta)', 'Kitap IV (Gamma)', 'Kitap VI (Epsilon)', 'Kitap X (Iota)'], correct: 1, exp: '<strong>Kitap IV (Gamma)</strong>\'da Aristoteles "varlık olduğu bakımından varlığı inceleyen bilim" olarak metafiziği tanımlar ve ardından en temel ilkeyi — Çelişmezlik İlkesi\'ni — savunur. Bu ilke: "Aynı şeyin aynı bakımdan ve aynı anda hem var hem de var olmaması imkânsızdır." Protagoras\'ın göreleciliğine ve Herakleitos\'un karşıtları birleştirme görüşüne karşı savunulur.' },
+  { cat: 'kitap', q: 'Aristoteles Metafizik\'in hangi kitabında felsefi güçlükleri (aporiaları) listeler?', opts: ['Kitap I (Alpha)', 'Kitap II (Alpha Elatton)', 'Kitap III (Beta)', 'Kitap V (Delta)'], correct: 2, exp: '<strong>Kitap III (Beta)</strong> tamamen felsefi güçlüklerin (aporiaların) listelenmesine ayrılmıştır. Aristoteles burada yanıt vermez; yalnızca sorular sorar. Bu yaklaşım onun yönteminin özünü yansıtır: "Bağı çözebilmek için önce bağı tanımak gerekir." Kitaptaki aporiler metafiziğin geri kalanının araştırma gündemini oluşturur.' },
+  // ARGÜMAN SORULARI
+  { cat: 'arguman', q: 'Aristoteles\'in "Üçüncü Adam Argümanı" neyi eleştirir?', opts: ['Aristoteles\'in kendi dört neden teorisini', 'Platon\'un İdea teorisini', 'Herakleitos\'un değişim felsefesini', 'Pisagor\'un sayı teorisini'], correct: 1, exp: '"Üçüncü Adam Argümanı" (Third Man Argument) <strong>Platon\'un İdea teorisi</strong>\'ni eleştirir. Argüman şöyledir: Eğer bireysel insanlar ile İnsan İdeası arasındaki benzerliği açıklamak için bir İdea gerekiyorsa, o İdea ile bireyler arasındaki benzerliği de açıklamak için üçüncü bir şey gerekir; bu sonsuz bir gerilemeye (regress) yol açar. Platon\'un öğrencisi olarak bile bu eleştiriyi yapan Aristoteles, bunu "gerçeği Platon\'a tercih etmek" olarak savunur.' },
+  { cat: 'arguman', q: 'Aristoteles\'in Hareketsiz Hareket Ettirici\'si dünyayı nasıl hareket ettirir?', opts: ['Evrene doğrudan müdahale ederek', 'Bir tür fiziksel itme kuvvetiyle', 'Çekerek — aşk ya da arzu nesnesi gibi; ereksel neden olarak', 'Evreni yaratarak ve devam ettirerek'], correct: 2, exp: 'Aristoteles\'e göre Hareketsiz Hareket Ettirici evrenin hareketini <strong>ereksel neden</strong> (telikon aition) olarak sağlar: Sevilen nesnenin âşığı çektiği gibi. Kendisi hareket etmez; yalnızca çeker. Bu Tanrı evreni yaratmamıştır, etkin müdahalede de bulunmaz. Kendi kendini düşünen saf aktüalite olarak en yüksek iyiyi temsil etmesi nedeniyle her şey ona doğru yönelir.' },
+  { cat: 'arguman', q: 'Aristoteles\'e göre "aktüalite" ile "potansiyellik" arasındaki temel ilişki nedir?', opts: ['İkisi de eşit öneme sahiptir', 'Potansiyellik aktüaliteden önce gelir', 'Aktüalite potansiyeliteden kavramsal ve ontolojik olarak önce gelir', 'Aralarında hiyerarşik bir ilişki yoktur'], correct: 2, exp: 'Aristoteles\'in kritik tezi: <strong>Aktüalite her zaman potansiyeliteden önce gelir</strong> — hem kavramsal hem de zamansal hem de ontolojik olarak. Kavramsal: Potansiyelliği tanımlarken aktüaliteye başvururuz (tohum "ağaç olabilir" diye tanımlanır). Zamansal: Her potansiyelliği gerçekleştiren aktüel bir şey olmalıdır. Ontolojik: Hareketsiz Hareket Ettirici tamamen aktüeldir ve en yüksek varlıktır.' },
+  { cat: 'arguman', q: '"Varlık çok anlamlı söylenir" (to on legetai pollakhōs) ifadesi ne anlama gelir?', opts: ['Varlık tek bir şekilde tanımlanamaz; çeşitli bağlamlarda farklı anlamlar taşır', 'Aristoteles varlığın var olduğunu inkâr eder', 'Varlık yalnızca matematikte anlamlıdır', 'Evrensel kavramlar bireysel nesnelerden önce gelir'], correct: 0, exp: 'Bu Metafizik\'in en önemli metodolojik ilkelerinden biridir. "Varlık" tek bir anlamda söylenmez; kategorilere göre farklı şeyler ifade eder. Bir renk "var", bir insan "var", bir sayı "var", bir ilişki "var" derken bunlar aynı şekilde var olmaz. Aristoteles bu çok anlamlılığı "pros hen equivocality" (tek bir merkeze bağlı çok anlamlılık) kavramıyla düzenler: Her varlık türü töze referansla var olur.' },
+  { cat: 'arguman', q: 'Aristoteles neden İdea teorisindeki "Katılım" (methexis) kavramını yetersiz bulur?', opts: ['Platon Latince yazmadığı için', 'Methexis somut nesnelerin nasıl idealara katıldığını açıklamaz; yalnızca metaforiktir', 'Platon matematiksel nesneleri yanlış saydı', 'Aristoteles katılım kavramını kabul eder'], correct: 1, exp: 'Aristoteles\'in temel eleştirisi: Platon "tekil insan İnsan İdeası\'na katılır" der ama bu <strong>nasıl</strong> gerçekleşir? Katılım (methexis) ya da taklit (mimesis) sözcükleri yalnızca birer metafordur; gerçek bir açıklama sunmaz. Oysa bir açıklama ancak nedensellik zincirini gösterdiğinde tatmin edici olur. Form-madde teorisi ve aktüalite-potansiyellik ayrımı bu boşluğu doldurmak içindir.' },
+  // GENEL
+  { cat: 'kavram', q: 'Metafizik adı Aristoteles tarafından mı konulmuştur?', opts: ['Evet, Aristoteles eserine bu adı verdi', 'Hayır; Andronikos of Rhodes, eseri Fizik\'ten sonra düzenlediği için bu adı koydu', 'Ad daha sonra Platon tarafından verildi', 'Ad Thomas Aquinas tarafından Latince\'ye çevrilirken ortaya çıktı'], correct: 1, exp: '"Metafizik" adını Aristoteles koymadı. Romalı editör <strong>Andronikos of Rhodes</strong> (MÖ 1. yy), Aristoteles\'in yazılarını düzenlerken bu kitabı Fizik\'ten sonra yerleştirdi ve "τὰ μετὰ τὰ φυσικά" (doğadan sonrakiler) adını verdi. Zamanla bu ad "doğanın ötesi" anlamını kazandı ve disiplinin kendisini tanımlar hale geldi.' },
+];
+
+// ═══════════════════════════════
+// UYGULAMA MANTIĞI
+// ═══════════════════════════════
+
+let currentTheme = 'dark';
+let selectedMode = 'all';
+let quizQuestions = [];
+let currentQ = 0;
+let score = 0;
+let wrongCount = 0;
+let answered = false;
+
+function toggleTheme() {
+  if (currentTheme === 'dark') {
+    document.body.classList.add('light');
+    document.querySelector('.theme-btn').textContent = '🌙';
+    currentTheme = 'light';
+  } else {
+    document.body.classList.remove('light');
+    document.querySelector('.theme-btn').textContent = '☀';
+    currentTheme = 'dark';
+  }
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const labels = ['giris','kitaplar','kavramlar','argümanlar','karsilastirma','etki','sinav'];
+  const idx = labels.indexOf(id);
+  if (idx >= 0) tabs[idx].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// KITAP KARTLARI
+function renderBooks() {
+  const grid = document.getElementById('books-grid');
+  grid.innerHTML = books.map((b, i) => `
+    <div class="book-card" onclick="openBookModal(${i})">
+      <div class="book-num">${b.num}</div>
+      <div class="book-alpha">${b.alpha}</div>
+      <div class="book-name">${b.name}</div>
+      <div class="book-desc">${b.desc}</div>
+    </div>
+  `).join('');
+}
+
+function openBookModal(i) {
+  document.getElementById('modal-content').innerHTML = books[i].content;
+  document.getElementById('book-modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('book-modal').classList.remove('show');
+}
+
+document.getElementById('book-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// KAVRAMLAR
+function renderConcepts() {
+  const container = document.getElementById('concepts-container');
+  container.innerHTML = concepts.map(c => `
+    <div class="concept-item">
+      <div class="concept-greek">${c.greek}</div>
+      <div class="concept-content">
+        <div class="concept-turkish">${c.turkish}</div>
+        <div class="concept-def">${c.def}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ARGÜMANLAR
+function renderArguments() {
+  const argData = [
+    {
+      title: 'Hareketsiz Hareket Ettirici Argümanı',
+      badge: 'Kitap XII (Lambda)',
+      steps: [
+        { label: 'Öncül 1', text: 'Hareket (değişim) vardır ve sonsuz zamandır sürmektedir.' },
+        { label: 'Öncül 2', text: 'Her hareket eden şey bir başka şey tarafından hareket ettirilmektedir.' },
+        { label: 'Öncül 3', text: 'Nedenler dizisi sonsuz olamaz; bir ilk neden olmak zorundadır.' },
+        { label: 'Sonuç 1', text: 'Kendisi hareket etmeksizin hareket ettiren bir varlık olmak zorundadır.' },
+        { label: 'Öncül 4', text: 'Bu ilk hareket ettirici maddesiz, değişmez ve saf aktüalite olmak zorundadır.' },
+        { label: 'Sonuç 2', text: 'Bu varlık Aristoteles\'in "Tanrı" dediği, saf düşünceden ibaret Hareketsiz Hareket Ettirici\'dir.' },
+      ],
+      note: 'Thomas Aquinas bu argümanı Hristiyan teolojisine uyarladı ve "Beş Yol"unun birincisi yaptı.'
+    },
+    {
+      title: 'İdea Teorisine Karşı: Üçüncü Adam Argümanı',
+      badge: 'Kitap I & VII',
+      steps: [
+        { label: 'Platon\'un Görüşü', text: 'Bireysel insanlar "İnsan" İdeası\'na katıldığı için insan sayılır.' },
+        { label: 'Aristoteles\'in Sorusu', text: 'Bireysel insanlar ile İnsan İdeası arasındaki benzerliği ne açıklar?' },
+        { label: 'Platon\'cu Yanıt', text: 'Bu benzerliği açıklamak için yeni bir İdea gerekir (Üçüncü Adam).' },
+        { label: 'Gerileme', text: 'Yeni İdea ile bireyler arasındaki benzerlik için yine yeni bir İdea gerekecektir.' },
+        { label: 'Sonuç', text: 'Bu sonsuz bir gerilemeye (infinite regress) yol açar; İdea teorisi açıklayıcı değildir.' },
+      ],
+      note: 'Bu argümanın bir versiyonunu Platon\'un bizzat Parmenides diyalogunda dile getirdiği düşünülmektedir.'
+    },
+    {
+      title: 'Çelişmezlik İlkesinin Savunusu',
+      badge: 'Kitap IV (Gamma)',
+      steps: [
+        { label: 'İlke', text: 'Aynı şeyin aynı bakımdan aynı anda hem var hem var olmaması imkânsızdır.' },
+        { label: 'Kanıtlanamaz', text: 'Bu ilke tüm kanıtlamaların temeli olduğu için doğrudan kanıtlanamaz.' },
+        { label: 'Reddedilemez', text: 'Eğer biri bu ilkeyi reddederse, reddi yaparken ilkeyi kullanmak zorundadır.' },
+        { label: 'Elenkhos', text: 'Aristoteles dolaylı savunma yöntemi olarak "çürütme" (elenkhos) kullanır.' },
+        { label: 'Sonuç', text: 'Çelişmezlik ilkesini reddeden kişi anlamlı bir şey söylemiyor demektir; söylediği hem doğru hem yanlış ise hiçbir şey söylememiş demektir.' },
+      ],
+      note: 'Bu argüman Aristoteles\'in mantık anlayışının temelidir ve tüm Batı felsefesini etkilemiştir.'
+    },
+  ];
+
+  const container = document.getElementById('arguments-container');
+  container.innerHTML = argData.map(a => `
+    <div class="card" style="margin-bottom:24px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <div class="card-title" style="margin-bottom:0">${a.title}</div>
+        <span class="badge badge-gold">${a.badge}</span>
+      </div>
+      <div class="tree-branch">
+        ${a.steps.map(s => `
+          <div class="tree-node">
+            <div class="tree-node-dot"></div>
+            <div class="tree-node-text"><strong>${s.label}:</strong> ${s.text}</div>
+          </div>
+        `).join('')}
+      </div>
+      ${a.note ? `<div class="info-box" style="margin-top:16px;margin-bottom:0"><div class="info-box-title">📌 Not</div>${a.note}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ACCORDION
+function toggleAccordion(header) {
+  const item = header.parentElement;
+  item.classList.toggle('open');
+}
+
+// SINAV
+function selectMode(mode) {
+  selectedMode = mode;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  let pool = selectedMode === 'all' ? allQuestions : allQuestions.filter(q => q.cat === selectedMode);
+  if (pool.length < 5) pool = allQuestions;
+  quizQuestions = shuffle(pool).slice(0, Math.min(15, pool.length));
+  currentQ = 0; score = 0; wrongCount = 0;
+
+  document.getElementById('quiz-mode-selector').style.display = 'none';
+  document.getElementById('quiz-result').style.display = 'none';
+  document.getElementById('quiz-area').style.display = 'block';
+  document.getElementById('q-total').textContent = quizQuestions.length;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = quizQuestions[currentQ];
+  answered = false;
+
+  document.getElementById('q-current').textContent = currentQ + 1;
+  document.getElementById('q-score').textContent = score;
+  document.getElementById('q-wrong').textContent = wrongCount;
+  document.getElementById('q-num-label').textContent = `SORU ${currentQ + 1} / ${quizQuestions.length}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-explanation').classList.remove('show');
+  document.getElementById('next-btn').disabled = true;
+
+  const catLabels = { kavram: 'Kavramlar', kitap: '14 Kitap', arguman: 'Argümanlar' };
+  const catColors = { kavram: 'badge-gold', kitap: 'badge-blue', arguman: 'badge-green' };
+  document.getElementById('q-cat').innerHTML = `<span class="badge ${catColors[q.cat]}">${catLabels[q.cat] || q.cat}</span>`;
+
+  const progress = ((currentQ) / quizQuestions.length) * 100;
+  document.getElementById('quiz-progress').style.width = progress + '%';
+
+  const letters = ['A', 'B', 'C', 'D'];
+  document.getElementById('q-options').innerHTML = q.opts.map((o, i) => `
+    <button class="quiz-option" onclick="selectAnswer(${i})">
+      <span class="option-letter">${letters[i]}</span>
+      <span>${o}</span>
+    </button>
+  `).join('');
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = quizQuestions[currentQ];
+  const opts = document.querySelectorAll('.quiz-option');
+
+  opts.forEach(o => o.disabled = true);
+  opts[q.correct].classList.add('correct');
+
+  if (idx === q.correct) {
+    score++;
+  } else {
+    opts[idx].classList.add('wrong');
+    wrongCount++;
+  }
+
+  document.getElementById('q-score').textContent = score;
+  document.getElementById('q-wrong').textContent = wrongCount;
+
+  const expEl = document.getElementById('q-explanation');
+  expEl.innerHTML = `<strong>Açıklama:</strong> ${q.exp}`;
+  expEl.classList.add('show');
+
+  document.getElementById('next-btn').disabled = false;
+  if (currentQ === quizQuestions.length - 1) {
+    document.getElementById('next-btn').textContent = 'Sonuçları Gör →';
+  }
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= quizQuestions.length) {
+    showResult();
+  } else {
+    document.getElementById('next-btn').textContent = 'Sonraki Soru →';
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('quiz-result').style.display = 'block';
+
+  const total = quizQuestions.length;
+  const pct = Math.round((score / total) * 100);
+
+  document.getElementById('result-score').textContent = `${score}/${total}`;
+
+  let ornament, title, desc;
+  if (pct >= 90) { ornament = '🏆'; title = 'Mükemmel — Philosophos!'; desc = 'Aristoteles\'in Metafizik\'ini derinlemesine kavradınız. Gerçek bir filozofluk seviyesindesiniz.'; }
+  else if (pct >= 70) { ornament = '⭐'; title = 'Çok İyi — Peripatetikos!'; desc = 'Temel kavram ve argümanları iyi biliyorsunuz. Zayıf konuları bir kez daha gözden geçirin.'; }
+  else if (pct >= 50) { ornament = '📚'; title = 'Gelişiyor — Philomathes!'; desc = 'Temeller yerinde ama derinleşmeye ihtiyaç var. Kavramlar ve argümanlar bölümlerine odaklanın.'; }
+  else { ornament = '🔍'; title = 'Başlangıç — Zelotēs!'; desc = 'Aristoteles uzun bir yolculuk; rehberi baştan okuyun, notlar alın ve yeniden deneyin.'; }
+
+  document.getElementById('result-ornament').textContent = ornament;
+  document.getElementById('result-title').textContent = title;
+  document.getElementById('result-desc').textContent = desc;
+  document.getElementById('result-detail').innerHTML = `
+    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">
+      <div class="quiz-stat"><div class="quiz-stat-num" style="color:#8aba8a">${score}</div><div class="quiz-stat-label">Doğru</div></div>
+      <div class="quiz-stat"><div class="quiz-stat-num" style="color:#ba8a7a">${wrongCount}</div><div class="quiz-stat-label">Yanlış</div></div>
+      <div class="quiz-stat"><div class="quiz-stat-num">${pct}%</div><div class="quiz-stat-label">Başarı</div></div>
+    </div>
+  `;
+}
+
+function resetQuiz() {
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('quiz-result').style.display = 'none';
+  document.getElementById('quiz-mode-selector').style.display = 'block';
+  document.querySelectorAll('.mode-card').forEach((c, i) => c.classList.toggle('active', i === 0));
+  selectedMode = 'all';
+}
+
+// BAŞLATMA
+renderBooks();
+renderConcepts();
+renderArguments();
+</script>
+</body>
+</html>

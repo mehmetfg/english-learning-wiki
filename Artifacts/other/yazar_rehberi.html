@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yazarlık Rehberi — Sıfırdan Ustalığa</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0a0a0f;
+    --bg2: #10101a;
+    --bg3: #161625;
+    --surface: #1a1a2e;
+    --surface2: #22223a;
+    --border: #2a2a45;
+    --text: #e8e8f0;
+    --text2: #a0a0c0;
+    --text3: #606080;
+    --accent: #c9a84c;
+    --accent2: #e8c96a;
+    --accent3: #f0d890;
+    --red: #e05a5a;
+    --blue: #5a8ae0;
+    --green: #5ae08a;
+    --purple: #a05ae0;
+    --glow: rgba(201,168,76,0.15);
+    --glow2: rgba(201,168,76,0.05);
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f3ee;
+    --bg2: #ece9e0;
+    --bg3: #e5e0d5;
+    --surface: #ffffff;
+    --surface2: #f0ede5;
+    --border: #d5d0c5;
+    --text: #1a1810;
+    --text2: #4a4535;
+    --text3: #8a8070;
+    --accent: #8a6010;
+    --accent2: #a07020;
+    --accent3: #c09040;
+    --red: #c04040;
+    --blue: #2050b0;
+    --green: #207050;
+    --purple: #6030a0;
+    --glow: rgba(138,96,16,0.12);
+    --glow2: rgba(138,96,16,0.04);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Verdana', Geneva, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* ── CANVAS BG ── */
+  #canvas-bg {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:0;
+    pointer-events:none;
+    opacity:0.35;
+  }
+
+  /* ── THEME TOGGLE ── */
+  .theme-btn {
+    position: fixed;
+    top: 18px; right: 20px;
+    z-index: 1000;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px var(--glow);
+  }
+  .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  [data-theme="light"] nav { background: rgba(245,243,238,0.92); }
+  .nav-logo {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex; gap: 4px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--accent);
+    background: var(--glow);
+  }
+
+  /* ── WRAPPER ── */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    padding-top: 56px;
+  }
+
+  /* ── PAGE SYSTEM ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 24px;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-title {
+    font-size: clamp(32px, 5vw, 72px);
+    font-weight: bold;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-title span { color: var(--accent); }
+  .hero-subtitle {
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 600px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-quote {
+    font-style: italic;
+    color: var(--text3);
+    font-size: 12px;
+    max-width: 500px;
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
+    text-align: left;
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  /* ── VIEW TABS ── */
+  .view-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s 1s forwards;
+  }
+  .view-tab {
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--text2);
+    font-family: Verdana, sans-serif;
+    border: none;
+    background: transparent;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  .view-tab.active {
+    background: var(--accent);
+    color: #000;
+    font-weight: bold;
+  }
+  .view-tab:not(.active):hover { color: var(--accent); }
+
+  /* ── MAIN VIEW ── */
+  .map-view { display: none; }
+  .map-view.active { display: block; }
+
+  /* ── CATEGORY GRID ── */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+  }
+  .cat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--card-color, var(--accent));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .cat-card:hover {
+    border-color: var(--card-color, var(--accent));
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px var(--glow);
+  }
+  .cat-card:hover::before { opacity: 1; }
+  .cat-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .cat-num {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--card-color, var(--accent));
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .cat-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .cat-desc {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .cat-tags {
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .cat-tag {
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--bg3);
+    color: var(--text3);
+    border: 1px solid var(--border);
+  }
+
+  /* ── ROADMAP VIEW ── */
+  .roadmap-view {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    position: relative;
+  }
+  .roadmap-line {
+    position: absolute;
+    left: 50px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    opacity: 0.3;
+  }
+  .roadmap-phase {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .roadmap-dot {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+    color: var(--accent);
+    position: relative;
+    z-index: 2;
+    margin-top: 4px;
+  }
+  .roadmap-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    flex: 1;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .roadmap-content:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 30px var(--glow);
+  }
+  .roadmap-phase-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .roadmap-phase-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .roadmap-phase-desc {
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 12px;
+  }
+  .roadmap-items {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .roadmap-item {
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  /* ── MINDMAP VIEW ── */
+  #mindmap-canvas {
+    width: 100%;
+    height: 600px;
+    position: relative;
+  }
+  #mindmap-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── SECTION PAGES ── */
+  .section-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  .section-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 12px;
+    margin-bottom: 32px;
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+  .section-back:hover { gap: 12px; }
+  .section-eyebrow {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .section-intro {
+    font-size: 14px;
+    color: var(--text2);
+    max-width: 650px;
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(to right, var(--accent), transparent);
+    margin: 32px 0;
+    opacity: 0.3;
+  }
+
+  /* ── ACCORDION ── */
+  .accordion-group { margin-bottom: 8px; }
+  .accordion-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+    font-weight: bold;
+    font-size: 13px;
+    user-select: none;
+  }
+  .accordion-header:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .accordion-header.open {
+    border-color: var(--accent);
+    color: var(--accent);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-color: transparent;
+  }
+  .accordion-arrow {
+    transition: transform 0.3s;
+    color: var(--text3);
+    font-size: 16px;
+  }
+  .accordion-header.open .accordion-arrow {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+  .accordion-body {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 20px;
+    margin-bottom: 4px;
+  }
+  .accordion-body.open { display: block; }
+
+  .sub-accordion { margin: 10px 0; }
+  .sub-header {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text2);
+    transition: all 0.2s;
+  }
+  .sub-header:hover, .sub-header.open {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .sub-body {
+    display: none;
+    padding: 16px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.8;
+    border-left: 2px solid var(--border);
+    margin: 4px 0 4px 8px;
+  }
+  .sub-body.open { display: block; }
+
+  /* Content styles in accordion */
+  .acc-content h4 {
+    color: var(--accent);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 16px 0 8px;
+  }
+  .acc-content p { font-size: 12px; color: var(--text2); margin-bottom: 10px; line-height: 1.8; }
+  .acc-content ul { padding-left: 20px; }
+  .acc-content li { font-size: 12px; color: var(--text2); margin-bottom: 6px; line-height: 1.7; }
+  .acc-content .highlight {
+    background: var(--glow);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 12px;
+    color: var(--text);
+    font-style: italic;
+  }
+  .acc-content .tip {
+    background: rgba(90,224,138,0.08);
+    border: 1px solid rgba(90,224,138,0.2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--green);
+    margin: 8px 0;
+  }
+  .acc-content .warning {
+    background: rgba(224,90,90,0.08);
+    border: 1px solid rgba(224,90,90,0.2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: var(--red);
+    margin: 8px 0;
+  }
+  .acc-content .tr-en {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .acc-content .tr-box, .acc-content .en-box {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 11px;
+  }
+  .acc-content .tr-box {
+    background: rgba(90,138,224,0.08);
+    border: 1px solid rgba(90,138,224,0.2);
+  }
+  .acc-content .en-box {
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+  .acc-content .lang-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.7;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    margin-bottom: 30px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 32px 0;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── SCROLL INDICATOR ── */
+  .scroll-indicator {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s;
+    font-size: 16px;
+  }
+  .scroll-indicator:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── SEARCH ── */
+  .search-bar {
+    max-width: 400px;
+    margin: 0 auto 30px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.1s forwards;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 10px 20px 10px 40px;
+    color: var(--text);
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--accent); }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 14px;
+  }
+
+  /* ── TURKISH ADVANTAGE BADGE ── */
+  .tr-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(90,138,224,0.1);
+    border: 1px solid rgba(90,138,224,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 10px;
+    color: var(--blue);
+    margin: 4px;
+  }
+  .en-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 10px;
+    color: var(--accent);
+    margin: 4px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:768px) {
+    .category-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .acc-content .tr-en { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<button class="theme-btn" onclick="toggleTheme()">
+  <span id="theme-icon">☀️</span>
+  <span id="theme-label">Aydınlık</span>
+</button>
+
+<div class="scroll-indicator" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">✍ Yazarlık Rehberi</div>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')" class="active" id="nav-home">Ana Sayfa</a></li>
+    <li><a href="#" onclick="showPage('dil')" id="nav-dil">Dil & Gramer</a></li>
+    <li><a href="#" onclick="showPage('temel')" id="nav-temel">Temel Sanatlar</a></li>
+    <li><a href="#" onclick="showPage('ileri')" id="nav-ileri">İleri Teknikler</a></li>
+    <li><a href="#" onclick="showPage('psikoloji')" id="nav-psikoloji">Psikoloji</a></li>
+    <li><a href="#" onclick="showPage('pratik')" id="nav-pratik">Pratik</a></li>
+    <li><a href="#" onclick="showPage('turk')" id="nav-turk">Türkçe & İngilizce</a></li>
+  </ul>
+</nav>
+
+<div class="wrapper">
+
+<!-- ══════════════════════════════════════════ HOME PAGE ══════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-eyebrow">Sıfırdan Ustalığa — Kapsamlı Rehber</div>
+    <h1 class="hero-title">Yaratıcı Yazarlık<br><span>Sanatı ve Bilimi</span></h1>
+    <p class="hero-subtitle">Dünyanın büyük yazarlarının bilgeliğini, modern nörobiliminbulguları ve pratik egzersizleri bir araya getiren bütüncül bir harita.</p>
+    <div class="hero-quote">
+      "Bir yazar olmak için önce insan olmanın ne anlama geldiğini anlamalısın. Sonra bunu sözlere dökürsün." — Toni Morrison
+    </div>
+
+    <div class="view-tabs">
+      <button class="view-tab active" onclick="switchView('grid')">🗂 Kategoriler</button>
+      <button class="view-tab" onclick="switchView('roadmap')">🛣 Yol Haritası</button>
+      <button class="view-tab" onclick="switchView('mindmap')">🧠 Zihin Haritası</button>
+    </div>
+
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" placeholder="Konu, teknik veya kavram ara..." oninput="filterCards(this.value)">
+    </div>
+  </div>
+
+  <!-- GRID VIEW -->
+  <div id="view-grid" class="map-view active">
+    <div class="category-grid" id="card-grid">
+
+      <div class="cat-card" style="--card-color:#5a8ae0" onclick="showPage('dil')">
+        <span class="cat-icon">📖</span>
+        <div class="cat-num">Kategori 01</div>
+        <div class="cat-title">Dil & Gramer Temelleri</div>
+        <div class="cat-desc">Türkçe ve İngilizce gramer, sözdizimi (syntax), morfoloji (kelime yapısı), noktalama ve üslup altyapısı.</div>
+        <div class="cat-tags">
+          <span class="cat-tag">Cümle Yapısı</span>
+          <span class="cat-tag">Noktalama</span>
+          <span class="cat-tag">Söz Dizimi</span>
+          <span class="cat-tag">Üslup</span>
+        </div>
+      </div>
+
+      <div class="cat-card" style="--card-color:#c9a84c" onclick="showPage('temel')">
+        <span class="cat-icon">🎨</span>
+        <div class="cat-num">Kategori 02</div>
+        <div class="cat-title">Yaratıcı Yazarlığın Temel Sanatları</div>
+        <div class="cat-desc">Karakter, olay örgüsü (plot), çatışma (conflict), tempo, bakış açısı ve atmosfer inşası.</div>
+        <div class="cat-tags">
+          <span class="cat-tag">Karakter</span>
+          <span class="cat-tag">Plot / Olay Örgüsü</span>
+          <span class="cat-tag">Çatışma</span>
+          <span class="cat-tag">Atmosfer</span>
+        </div>
+      </div>
+
+      <div class="cat-card" style="--card-color:#a05ae0" onclick="showPage('ileri')">
+        <span class="cat-icon">⚡</span>
+        <div class="cat-num">Kategori 03</div>
+        <div class="cat-title">İleri Yazarlık Teknikleri</div>
+        <div class="cat-desc">Ses (voice), ton, edebi araçlar (literary devices), göster-söyleme (show don't tell), metafor ve sembol.</div>
+        <div class="cat-tags">
+          <span class="cat-tag">Ses / Voice</span>
+          <span class="cat-tag">Edebi Araçlar</span>
+          <span class="cat-tag">Sembolizm</span>
+          <span class="cat-tag">İroni</span>
+        </div>
+      </div>
+
+      <div class="cat-card" style="--card-color:#e05a5a" onclick="showPage('psikoloji')">
+        <span class="cat-icon">🧠</span>
+        <div class="cat-num">Kategori 04</div>
+        <div class="cat-title">Yazarın Psikolojisi & Zihin Yapısı</div>
+        <div class="cat-desc">Yaratıcı blok, akış hali (flow state), disiplin, okuma alışkanlıkları ve yazarın iç dünyası.</div>
+        <div class="cat-tags">
+          <span class="cat-tag">Flow State</span>
+          <span class="cat-tag">Yaratıcı Blok</span>
+          <span class="cat-tag">Disiplin</span>
+          <span class="cat-tag">Motivasyon</span>
+        </div>
+      </div>
+
+      <div class="cat-card" style="--card-color:#5ae08a" onclick="showPage('pratik')">
+        <span class="cat-icon">🔧</span>
+        <div class="cat-num">Kategori 05</div>
+        <div class="cat-title">Pratik Bilgiler & Somut Egzersizler</div>
+        <div class="cat-desc">Günlük yazma rutini, yeniden yazma (revision) süreci, geri bildirim alma ve yayıncılık dünyası.</div>
+        <div class="cat-tags">
+          <span class="cat-tag">Revision</span>
+          <span class="cat-tag">Rutin</span>
+          <span class="cat-tag">Yayıncılık</span>
+          <span class="cat-tag">Geri Bildirim</span>
+        </div>
+      </div>
+
+      <div class="cat-card" style="--card-color:#e08a5a" onclick="showPage('turk')">
+        <span class="cat-icon">🌍</span>
+        <div class="cat-num">Kategori 06</div>
+        <div class="cat-title">Türkçe Avantajları & İngilizce Kapısı</div>
+        <div class="cat-desc">Türkçenin yazarya özgü güçlü yanları, dezavantajları ve İngilizce öğrencisi olarak çift dilli yazarlık fırsatları.</div>
+        <div class="cat-tags">
+          <span class="cat-tag">Türkçe Morfoloji</span>
+          <span class="cat-tag">Çift Dillilik</span>
+          <span class="cat-tag">Çeviri Sanatı</span>
+          <span class="cat-tag">İngilizce Yazarlık</span>
+        </div>
+      </div>
+
+      <div class="cat-card" style="--card-color:#5ae0e0" onclick="showPage('turler')">
+        <span class="cat-icon">📚</span>
+        <div class="cat-num">Kategori 07</div>
+        <div class="cat-title">Yazarlık Türleri & Türler (Genres)</div>
+        <div class="cat-desc">Roman, kısa hikâye, deneme, şiir, senaryo ve gazetecilik yazarlığının her birine özgü kurallar.</div>
+        <div class="cat-tags">
+          <span class="cat-tag">Roman</span>
+          <span class="cat-tag">Kısa Hikâye</span>
+          <span class="cat-tag">Senaryo</span>
+          <span class="cat-tag">Şiir</span>
+        </div>
+      </div>
+
+      <div class="cat-card" style="--card-color:#e0c05a" onclick="showPage('ustalar')">
+        <span class="cat-icon">👑</span>
+        <div class="cat-num">Kategori 08</div>
+        <div class="cat-title">Büyük Yazarlardan Dersler</div>
+        <div class="cat-desc">Hemingway, Woolf, Tolstoy, Kafka, Tanpınar, Pamuk ve diğerlerinin teknik ve felsefi dersleri.</div>
+        <div class="cat-tags">
+          <span class="cat-tag">Hemingway Etkisi</span>
+          <span class="cat-tag">Woolf Tekniği</span>
+          <span class="cat-tag">Tanpınar Ekolü</span>
+          <span class="cat-tag">Pamuk Okulu</span>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /grid -->
+
+  <!-- ROADMAP VIEW -->
+  <div id="view-roadmap" class="map-view">
+    <div class="roadmap-view">
+      <div class="roadmap-line"></div>
+
+      <div class="roadmap-phase">
+        <div class="roadmap-dot">1</div>
+        <div class="roadmap-content" onclick="showPage('dil')">
+          <div class="roadmap-phase-label">Faz 1 — Temel (0–6 ay)</div>
+          <div class="roadmap-phase-title">Dil Hâkimiyeti</div>
+          <div class="roadmap-phase-desc">Gramer, noktalama, sözdizimi, kelime hazinesi. Dilinizi kusursuz kullanmadan hikâye anlatamazsınız.</div>
+          <div class="roadmap-items">
+            <span class="roadmap-item">Türkçe Gramer</span>
+            <span class="roadmap-item">Sözdizimi (Syntax)</span>
+            <span class="roadmap-item">Noktalama</span>
+            <span class="roadmap-item">Kelime Hazinesi</span>
+            <span class="roadmap-item">Paragraf Yapısı</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase">
+        <div class="roadmap-dot">2</div>
+        <div class="roadmap-content" onclick="showPage('temel')">
+          <div class="roadmap-phase-label">Faz 2 — İnşa (6–18 ay)</div>
+          <div class="roadmap-phase-title">Hikâye Mimarisi</div>
+          <div class="roadmap-phase-desc">Karakter, plot, çatışma, tempo ve bakış açısı. İyi hikâyelerin evrensel iskeletini öğrenmek.</div>
+          <div class="roadmap-items">
+            <span class="roadmap-item">Karakter Arki</span>
+            <span class="roadmap-item">Plot Yapıları</span>
+            <span class="roadmap-item">Çatışma Türleri</span>
+            <span class="roadmap-item">Bakış Açısı (POV)</span>
+            <span class="roadmap-item">Tempo (Pacing)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase">
+        <div class="roadmap-dot">3</div>
+        <div class="roadmap-content" onclick="showPage('ileri')">
+          <div class="roadmap-phase-label">Faz 3 — Derinlik (18–36 ay)</div>
+          <div class="roadmap-phase-title">Ses ve Teknik Ustalık</div>
+          <div class="roadmap-phase-desc">Benzersiz yazarlık sesinizi bulmak, edebi araçları ustaca kullanmak, metafor ve sembol işlemek.</div>
+          <div class="roadmap-items">
+            <span class="roadmap-item">Yazarlık Sesi (Voice)</span>
+            <span class="roadmap-item">Show Don't Tell</span>
+            <span class="roadmap-item">Edebi Araçlar</span>
+            <span class="roadmap-item">Sembolizm</span>
+            <span class="roadmap-item">Subtext / Alt Metin</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase">
+        <div class="roadmap-dot">4</div>
+        <div class="roadmap-content" onclick="showPage('pratik')">
+          <div class="roadmap-phase-label">Faz 4 — Üretim (36+ ay)</div>
+          <div class="roadmap-phase-title">Tamamlama ve Yayınlama</div>
+          <div class="roadmap-phase-desc">Revision (yeniden yazma) sürecini öğrenmek, beta okuyucular, editörler ve yayın dünyasına girmek.</div>
+          <div class="roadmap-items">
+            <span class="roadmap-item">Revision Süreci</span>
+            <span class="roadmap-item">Beta Okuyucu</span>
+            <span class="roadmap-item">Editör İlişkisi</span>
+            <span class="roadmap-item">Yayıncılık</span>
+            <span class="roadmap-item">Platform Seçimi</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase">
+        <div class="roadmap-dot">∞</div>
+        <div class="roadmap-content">
+          <div class="roadmap-phase-label">Sürekli — Tüm Hayat</div>
+          <div class="roadmap-phase-title">Okuma ve Yeniden Doğma</div>
+          <div class="roadmap-phase-desc">Büyük yazarlar hiç okumayı bırakmaz. Her kitap, her deneyim yeni bir katman ekler. Yazarlık bir varış noktası değil, yolculuğun kendisidir.</div>
+          <div class="roadmap-items">
+            <span class="roadmap-item">Kapsamlı Okuma</span>
+            <span class="roadmap-item">Gözlem</span>
+            <span class="roadmap-item">Deneme & Hata</span>
+            <span class="roadmap-item">Topluluk</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /roadmap -->
+
+  <!-- MINDMAP VIEW -->
+  <div id="view-mindmap" class="map-view">
+    <div style="max-width:1100px;margin:0 auto;padding:0 24px 60px;">
+      <div id="mindmap-canvas">
+        <svg id="mindmap-svg" viewBox="0 0 1000 580"></svg>
+      </div>
+      <p style="text-align:center;font-size:11px;color:var(--text3);margin-top:8px;">Düğümlere tıklayarak o bölüme gidebilirsiniz.</p>
+    </div>
+  </div><!-- /mindmap -->
+
+</div><!-- /home page -->
+
+<!-- ══════════════════════════════════════════ DİL PAGE ══════════════════════════════════════════ -->
+<div class="page" id="page-dil">
+<div class="section-page">
+  <a class="section-back" onclick="showPage('home')">← Ana Sayfa</a>
+  <div class="section-eyebrow">Kategori 01</div>
+  <h1 class="section-title">Dil & Gramer Temelleri</h1>
+  <p class="section-intro">Bir yazarın dili, mimarın çimentosu gibidir. En harika hayal gücü bile kırık bir dille ifade edilirse çöker. Gramer öğrenmek yaratıcılığı kısıtlamaz; aksine onu özgür kılar — kuralları bilerek çiğnemek de bir sanattır.</p>
+
+  <div class="stats-row">
+    <div class="stat-box"><span class="stat-num">7</span><span class="stat-label">Ana Başlık</span></div>
+    <div class="stat-box"><span class="stat-num">40+</span><span class="stat-label">Alt Konu</span></div>
+    <div class="stat-box"><span class="stat-num">∞</span><span class="stat-label">Pratik</span></div>
+  </div>
+  <div class="section-divider"></div>
+
+  <!-- ACCORDION 1 -->
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">
+      📌 1. Cümle Yapısı ve Sözdizimi (Syntax)
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Cümle, bir yazarın en küçük birim evidir. Her cümle bir nefes, bir düşünce, bir duygu taşır. Cümlenin uzunluğu ve yapısı bile okuyucuya mesaj verir.</p>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.1 Basit, Bileşik ve Karmaşık Cümleler <span>▼</span></div>
+          <div class="sub-body">
+            <h4>Basit Cümle</h4>
+            <p>Tek yüklem, tek özne. Hemingway'in gücü buradadır. Örnek: "Yağmur yağdı. Adam bekledi."</p>
+            <div class="highlight">Kural: Duygusal zirvelerde kısa cümle kullanın. Okuyucu nefesini tutar.</div>
+            <h4>Bileşik Cümle (Compound)</h4>
+            <p>İki bağımsız cümle "ve", "ama", "ya da" ile bağlanır. Ritim yaratır.</p>
+            <h4>Karmaşık Cümle (Complex)</h4>
+            <p>Bir ana cümle + bir bağımlı cümle (yan cümle). Neden-sonuç, koşul, zaman ilişkileri kurmak için kullanılır.</p>
+            <div class="tip">💡 Egzersiz: Aynı sahneyi 3 farklı cümle yapısıyla yaz. Hissettirdiği farkı gözlemle.</div>
+          </div>
+        </div>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.2 Cümle Ritmi ve Tempo <span>▼</span></div>
+          <div class="sub-body">
+            <p>Cümlelerin uzunluk değişimi <strong>ritim (rhythm)</strong> yaratır. Hep aynı uzunlukta cümle kurarsanız okuyucu uyuklar.</p>
+            <div class="highlight">"Geldi. Baktı. Döndü ve kapıyı yavaşça kapattı — sanki uyandırmaktan korkuyormuş gibi, ya da belki de kendini unutmaktan."</div>
+            <p>Yukarıdaki örnekte: Kısa → Kısa → Uzun. Bu <strong>sinkopal ritim</strong> (syncopated rhythm) okuyucuyu yakalar.</p>
+            <div class="tip">💡 Kendi yazdığınızı sesli okuyun. Nefes aldığınız yerler virgüllerin yeridir.</div>
+          </div>
+        </div>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.3 Fiil Seçimi: Güçlü Eylemler <span>▼</span></div>
+          <div class="sub-body">
+            <p>Zayıf fiiller yazıyı söndürür. "gitti" yerine "süzüldü", "koştu" yerine "fırladı" deyin.</p>
+            <div class="warning">⚠️ Hata: "Çok güzel bir şekilde yürüdü" → "Süzüldü" (zarf yerine güçlü fiil)</div>
+            <div class="tip">💡 Edilgen cümle (passive voice) Türkçede sıkça kötüye kullanılır. "Kitap okundu" yerine mümkünse "Herkes kitabı okudu" deyin.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /acc1 -->
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">
+      📌 2. Kelime Hazinesi (Vocabulary) ve Seçimi
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Kelime, renk paletinizdir. Bir ressam ne kadar çok renk bilirse o kadar ince ton yapabilir; bir yazar ne kadar çok kelime bilirse düşüncesini o kadar hassas ifade eder.</p>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.1 Kelime Katmanları: Konuşma, Edebi, Teknik <span>▼</span></div>
+          <div class="sub-body">
+            <p>Her dilde kelimeler katman katmandır. <strong>Konuşma dili</strong>, <strong>yazı dili</strong>, <strong>arkaik (eski) dil</strong>, <strong>teknik dil</strong>. İyi yazar bu katmanlar arasında bilinçli geçiş yapar.</p>
+            <div class="highlight">Tanpınar Osmanlıca ile Türkçeyi iç içe geçirirdi. Bu çift katman onun üslubunu eşsiz kıldı.</div>
+          </div>
+        </div>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.2 Denotasyon ve Konotasyon <span>▼</span></div>
+          <div class="sub-body">
+            <h4>Denotasyon (Düz Anlam)</h4>
+            <p>Kelimenin sözlük anlamı. "Ev" = barınak.</p>
+            <h4>Konotasyon (Yan Anlam / Çağrışım)</h4>
+            <p>"Yuva", "ocak", "dam" kelimeleri hep "ev" ama çok farklı duygusal yükler taşır. İyi yazar bu farkı kullanır.</p>
+            <div class="tip">💡 Egzersiz: "Yüz" kelimesinin 10 eşanlamlısını yaz. Her birinin ne zaman kullanılacağını belirle.</div>
+          </div>
+        </div>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.3 Kelime Hazinesi Geliştirme Yöntemleri <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li><strong>Aktif Okuma:</strong> Bilmediğin her kelimeyi durdur, sözlüğe bak, cümleyle kaydet.</li>
+              <li><strong>Tematik Listeler:</strong> "Su" konusundaki tüm fiilleri listele: akmak, sızmak, taşmak, çağlamak...</li>
+              <li><strong>Eş Anlamlı Sözlük (Thesaurus):</strong> Her zaman en iyi kelimeyi arama alışkanlığı.</li>
+              <li><strong>Şiir Okumak:</strong> Şairler en ekonomik kelimeyi seçer. Şiir, yazarın kelime jimnastiğidir.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /acc2 -->
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">
+      📌 3. Noktalama İşaretleri: Müzikal Değerleri
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Noktalama işaretleri müzikteki notalardır. Virgül bir soluk, nokta tam duruş, üç nokta belirsizlik, ünlem ise ani yükseliştir.</p>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.1 Virgül — Yazar'ın Nefesi <span>▼</span></div>
+          <div class="sub-body">
+            <p>Virgülün iki işlevi vardır: dilbilgisel (gramer) ve ritmik (müzikal). Gramer gereği zorunlu virgüller ve ritim için seçimlik virgüller ayrı değerlendirilmelidir.</p>
+            <div class="highlight">"Yorulmuştu, ama yatamıyordu." vs "Yorulmuştu ama yatamıyordu." — Her iki de kabul edilebilir; fark nüans ve tempodur.</div>
+          </div>
+        </div>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.2 Tire (—) ve Parantez: Fısıltı ve Patlama <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Em dash (—)</strong>: Ani bir düşüncenin araya girmesi. Dramatik etki. "Kapı açıldı — ve her şey değişti."</p>
+            <p><strong>Parantez ( )</strong>: Okuyucuya özel, sessizce bir not. Yakınlık yaratır.</p>
+            <div class="warning">⚠️ Tire ve parantezi fazla kullanmak yazıyı parçalar. Her paragrafta en fazla bir kez.</div>
+          </div>
+        </div>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.3 Üç Nokta (...): Sessizliğin Dili <span>▼</span></div>
+          <div class="sub-body">
+            <p>Üç nokta söylenmeyeni söyler. "Belki..." der ve okuyucunun hayal gücüne bırakır. Ama kötüye kullanıldığında yazarın düşünürken bıraktığı şekilde görünür.</p>
+            <div class="tip">💡 Üç noktayı duygusal gerilimin düştüğü anlarda, karakter konuşmanın ortasında duyguya yenik düştüğünde kullanın.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /acc3 -->
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">
+      📌 4. Paragraf Yapısı ve Geçişler
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Paragraf, bir düşüncenin evi. Her paragrafın bir odak noktası olmalı ve bir sonrakine köprü kurmalıdır.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">4.1 Açılış, Gelişme, Kapanış <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Konu cümlesi (topic sentence):</strong> Paragrafın iddiası. En başa ya da sonuna konulabilir.<br>
+            <strong>Destek cümleleri:</strong> İddiayı somutlaştıran detay, örnek, görüntü.<br>
+            <strong>Kapanış:</strong> Düşünceyi tamamla ve bir sonraki paragrafa açıl.</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">4.2 Geçiş Kelimeleri ve Teknikleri <span>▼</span></div>
+          <div class="sub-body">
+            <p>Geçişler iyi yazının görünmez tutkalidir. Zaman geçişleri, mekân geçişleri ve düşünce geçişleri farklı teknikler gerektirir.</p>
+            <ul>
+              <li><strong>Anahtar kelime tekrarı:</strong> Son cümlenin önemli kelimesini yeni paragrafın başına taşı.</li>
+              <li><strong>Zıtlık:</strong> "Oysa...", "Ne var ki...", "Buna rağmen..."</li>
+              <li><strong>Zaman köprüsü:</strong> "Üç gün sonra...", "Aynı sabah..."</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">
+      📌 5. Üslup (Style) ve Ton Bilgisi
+      <span class="accordion-arrow">▼</span>
+    </div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p><strong>Üslup (style)</strong>: Bir yazarın bilinçli dil seçimlerinin bütünü. <strong>Ton</strong>: Yazarın konuya ve okuyucuya yaklaşım tutumu.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">5.1 Resmiyet Skalası <span>▼</span></div>
+          <div class="sub-body">
+            <p>Yazarlıkta resmiyet bir skaladır: Sokak argosundan akademik dile kadar gider. İyi yazar tüm skala boyunca hareket edebilir ve doğru yerde durur.</p>
+            <div class="highlight">Orhan Pamuk, kültürel derin katmanlarda dolaşırken bile anlaşılır kalır. Bu ustalık, skala kontrolüdür.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">5.2 Ekonomi İlkesi: Az ama Derin <span>▼</span></div>
+          <div class="sub-body">
+            <p>Hemingway'in "Buzdağı Teorisi (Iceberg Theory)": Yazılmayan sekiz kısım, yazılan bir kısmı taşır. Yüzeyde az, derinlikte çok.</p>
+            <div class="tip">💡 Her cümleyi şu soruyla test et: "Bu cümle olmadan metin ne kaybeder?" Hiçbir şey kaybetmiyorsa sil.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /section-page -->
+</div><!-- /page-dil -->
+
+<!-- ══════════════════════════════════════════ TEMEL PAGE ══════════════════════════════════════════ -->
+<div class="page" id="page-temel">
+<div class="section-page">
+  <a class="section-back" onclick="showPage('home')">← Ana Sayfa</a>
+  <div class="section-eyebrow">Kategori 02</div>
+  <h1 class="section-title">Yaratıcı Yazarlığın Temel Sanatları</h1>
+  <p class="section-intro">Dil altyapınız hazır; şimdi o altyapı üzerine hikâye inşa edeceğiz. Karakter, olay örgüsü, çatışma ve bakış açısı — bunlar hikâyenin dört temel direğidir.</p>
+  <div class="section-divider"></div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🎭 1. Karakter Yaratımı ve Karakter Yayı (Character Arc)<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Karakter, hikâyenin kalbidir. Okuyucu olayları değil; insanları takip eder. Ölümsüz karakterler karmaşık, tutarlı ve değişen karakterlerdir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.1 Karakter Boyutları: Düz ve Yuvarlak Karakter <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Düz Karakter (Flat):</strong> Tek boyutlu, değişmez. Masallardaki iyi-kötü ayrımı. Yan karakterler için kabul edilebilir.<br>
+            <strong>Yuvarlak Karakter (Round):</strong> Çelişkili, gelişen, gerçekçi. Ana karakteriniz bu olmalı.<br>
+            <strong>Karakter Yayı (Arc):</strong> Karakterin hikâye boyunca geçirdiği içsel dönüşüm. İnkar → Kabul → Eylem tipik bir yay örneğidir.</p>
+            <div class="highlight">Anna Karenina neden ölümsüz? Çünkü hem sevilesi hem de kınası; hem güçlü hem kırılgan. Çelişki gerçekçilik yaratır.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.2 Karakter Profili: Derinlik Teknikleri <span>▼</span></div>
+          <div class="sub-body">
+            <p>Karikatüristlerin çizim öncesi karalama yaptığı gibi, yazarlar da karakter karalamaları yapar.</p>
+            <ul>
+              <li><strong>Dış görünüş:</strong> Sadece tarif değil, karakterin kendini nasıl gördüğü.</li>
+              <li><strong>En büyük korkusu</strong> ve <strong>en büyük arzusu</strong> — bunlar genellikle çelişir.</li>
+              <li><strong>Yara (wound):</strong> Geçmişten gelen ve davranışları açıklayan bir travma.</li>
+              <li><strong>Yanlış inanç (misbelief):</strong> Dünya hakkında yanlış inandığı bir şey. Hikâye bunu sınar.</li>
+            </ul>
+            <div class="tip">💡 Egzersiz: Karakterinizle bir röportaj yap. Ona sorular sor ve o karakterin sesinden cevapla.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.3 Diyalog Sanatı <span>▼</span></div>
+          <div class="sub-body">
+            <p>İyi diyalog gerçek konuşmayı taklit etmez — onu damıtır. Gerçek konuşmalar dolaylı, tekrarlı ve belirsizdir. Edebi diyalog bunları yoğunlaştırır.</p>
+            <ul>
+              <li><strong>Subtext (Alt Metin):</strong> Söylenenin altında yatan gerçek anlamı.</li>
+              <li><strong>Her karakter farklı konuşur:</strong> Yaşı, eğitimi, kültürü belirtir.</li>
+              <li><strong>Diyalog eylemi ilerletir:</strong> Sadece bilgi aktarmaz, gerilim yaratır.</li>
+            </ul>
+            <div class="warning">⚠️ "Anlatıcı diyaloğu" yazmayın: "Sana şunu söylemeliyim: aslında adam suçlu değil" — Kimse böyle konuşmaz.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">📐 2. Olay Örgüsü (Plot) ve Yapı Modelleri<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.1 Aristoteles'in Üç Perdesi ve Freytag Piramidi <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Üç Perde:</strong> Kuruluş → Karşılaşma → Çözüm. Sinemanın ve romanın temel iskeletidir.<br>
+            <strong>Freytag Piramidi:</strong> Giriş → Yükselen eylem → Doruk (Climax) → Düşen eylem → Çözüm (Resolution).<br>
+            <strong>Save the Cat:</strong> Blake Snyder'ın modern senaryo yapısı. 15 beat'ten oluşur, roman için de uyarlanır.</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.2 İçsel ve Dışsal Çatışma <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Dışsal çatışma:</strong> Karakter vs Karakter, Karakter vs Doğa, Karakter vs Toplum, Karakter vs Teknoloji.<br>
+            <strong>İçsel çatışma:</strong> Karakterin kendi içindeki savaş. Bu, okuyucuyu gerçekten bağlar.<br>
+            En güçlü hikâyeler her iki çatışmayı <em>birbirine bağlar</em>. Dışsal çatışma içsel çatışmayı zorlar.</p>
+            <div class="highlight">Dostoyevski'nin Raskolnikov'u: Dışsal çatışma (polis) içsel çatışmayı (suç ve ceza) tetikler ve aydınlatır.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.3 Tempo (Pacing): Hızlanma ve Yavaşlama <span>▼</span></div>
+          <div class="sub-body">
+            <p>Tempo, okuyucunun nefesini kontrol etmektir. Kısa cümleler + az tasvirler = hız. Uzun cümleler + zengin tasvir = yavaşlama.</p>
+            <ul>
+              <li><strong>Aksiyon sahneleri:</strong> Kısa, fiil ağırlıklı cümleler.</li>
+              <li><strong>Duygusal sahne sonrası:</strong> Yavaş bir nefes ver. Okuyucunun sindirmesine izin ver.</li>
+              <li><strong>Bölüm sonu kancaları (hooks):</strong> Okuyucuyu bir sonraki bölüme çeken merak ya da tehdit.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">👁 3. Bakış Açısı (Point of View — POV)<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Bakış açısı, hikâyenin kamerası ve filtresidir. Kim anlatıyor? Ne biliyor? Ne görebiliyor? Bu soruların cevabı her şeyi değiştirir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.1 Birinci, İkinci, Üçüncü Şahıs <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>1. Şahıs (Ben):</strong> Yakınlık, güvenilmez anlatıcı olanağı. Sınırlı bilgi.<br>
+            <strong>2. Şahıs (Sen):</strong> Çok nadiren kullanılır. Okuyucuyu karaktere dönüştürür. Risk yüksek ama etkili.<br>
+            <strong>3. Şahıs Sınırlı (O):</strong> Bir karakterin filtresinden anlatılır. En yaygın modern roman formu.<br>
+            <strong>3. Şahıs Tanrısal (Omniscient):</strong> Her şeyi bilen anlatıcı. Tolstoy'un tercihi. Uzak ama güçlü.</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.2 Güvenilmez Anlatıcı (Unreliable Narrator) <span>▼</span></div>
+          <div class="sub-body">
+            <p>Anlatıcı her şeyi doğru söylemez. Bize kendi gerçekliğini anlatır — ve biz okurun olarak gerçeği satır aralarında bulmak zorundayız.</p>
+            <div class="highlight">Nabokov'un Lolita'sı: Humbert Humbert kendi suçunu güzelleştirir. Okuyucu bu güzelleştirmenin dehşetiyle yüzleşir.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🌍 4. Atmosfer, Ortam (Setting) ve Dünya İnşası<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Ortam sessiz bir karakterdir. Mekân duygu taşır, zaman anlam taşır. Dickens'ın sisi, Garcia Marquez'in sıcağı tesadüf değildir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">4.1 Duyusal Yazarlık: Beş Duyu <span>▼</span></div>
+          <div class="sub-body">
+            <p>Çoğu yazar görsel tanıma takılır. Oysa en güçlü bağlar koku, ses ve dokunuş aracılığıyla kurulur.</p>
+            <ul>
+              <li><strong>Koku:</strong> En güçlü anı tetikleyicisi. Okuyucuyu anında o mekâna taşır.</li>
+              <li><strong>Ses:</strong> Ortamın sesini kur. Sessizlik de bir sestir.</li>
+              <li><strong>Dokunuş:</strong> Dokuların hissi yazıya sıcaklık katar.</li>
+            </ul>
+            <div class="tip">💡 Egzersiz: Bir mekânı sadece koku ve ses kullanarak anlat. Tek bir görsel kullanma.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">4.2 Ortam ile Karakter İlişkisi <span>▼</span></div>
+          <div class="sub-body">
+            <p>Karakterin çevresi onun içini yansıtabilir (objective correlative / nesnel bağıntı). T.S. Eliot'ın kavramı: Dış dünyayı iç dünyayla örtüştür.</p>
+            <div class="highlight">Tanpınar'ın "Huzur"undaki İstanbul: Şehrin parçalanmışlığı Mümtaz'ın ruhunun parçalanmışlığını yansıtır.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-temel -->
+
+<!-- ══════════════════════════════════════════ İLERİ PAGE ══════════════════════════════════════════ -->
+<div class="page" id="page-ileri">
+<div class="section-page">
+  <a class="section-back" onclick="showPage('home')">← Ana Sayfa</a>
+  <div class="section-eyebrow">Kategori 03</div>
+  <h1 class="section-title">İleri Yazarlık Teknikleri</h1>
+  <p class="section-intro">Temel kuralları öğrendikten sonra sıra onları içselleştirip aşmaya gelir. İşte ortalama yazarı iyi yazardan, iyi yazarı büyük yazardan ayıran katmanlar.</p>
+  <div class="section-divider"></div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🎙 1. Yazarlık Sesi (Voice) — Parmak İziniz<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>"Voice" Türkçede "ses" ya da "üslup sesi" olarak çevrilir. Bir yazarın 10 farklı kitabını okuduğunuzda hepsinde hissettiğiniz soyut ama kesin "bu bu kişi" duygusu.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.1 Ses Nasıl Bulunur? <span>▼</span></div>
+          <div class="sub-body">
+            <p>Ses taklit edilerek başlar, dönüştürülerek özgünleşir. Sevdiğiniz yazarları taklit etmek kötü değil — bir aşamadır.</p>
+            <ul>
+              <li>Kendinizle konuştuğunuz gibi yaz. Sonra edebileştir.</li>
+              <li>Neye öfkeleniyorsun, neye hayranlık duyuyorsun? Bu ses sizi ele verir.</li>
+              <li>5 farklı yazarı taklit et. Sonra hepsini bir araya getirip dönüştür.</li>
+            </ul>
+            <div class="highlight">"Stil, kendinizden kaçamamanızdır." — Susan Sontag</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.2 Ton ve Mood Arasındaki Fark <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Ton (Tone):</strong> Yazarın konuya tutumu. İronik, nostaljik, didaktik, oyunbaz...<br>
+            <strong>Mood (Atmosfer):</strong> Okuyucunun hissettirilen duygu. Hüzün, gerilim, neşe...<br>
+            Ton yazar tarafından <em>seçilir</em>; mood okuyucuda <em>oluşur</em>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🎭 2. "Göster, Söyleme" (Show Don't Tell)<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Yazarlığın en bilinen ve en yanlış anlaşılan ilkesi. "Söyleme" bazen de gereklidir — ama her duygu ve durum için geçerli bir altın kural değildir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.1 Temel Fark ve Örnekler <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Söyleme (Tell):</strong> "Ahmet çok korktu."<br>
+            <strong>Göster (Show):</strong> "Ahmet'in elleri titrerken gömleğinin düğmesini bir türlü ilikleyemedi."</p>
+            <div class="tip">💡 Göster: Duyular, bedensel tepkiler, eylemler, diyalog. Tell: Özet, arka plan, zaman atlamaları için de gereklidir.</div>
+            <div class="warning">⚠️ Her şeyi göstermeye çalışırsanız roman 10.000 sayfa olur. Dengeyi bul.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.2 Ne Zaman "Söylemek" Doğrudur? <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>Zaman geçişlerinde: "Beş yıl geçti." — Bu kuruluk doğrudur.</li>
+              <li>Önemsiz bilgilerde: "Kahvaltı etti." — Kahvaltıyı 3 paragraf göstermeye gerek yok.</li>
+              <li>Ritim değişimi için: Uzun "göster" bölümünden sonra bir "söyle" mola verebilir.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🔮 3. Edebi Araçlar (Literary Devices)<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.1 Metafor ve Benzetme <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Benzetme (Simile):</strong> "gibi", "sanki" ile: "Kalbi taş gibi."<br>
+            <strong>Metafor (Metaphor):</strong> Doğrudan özdeşleştirme: "Kalbi taş."<br>
+            Metafor daha güçlüdür çünkü daha cesurdur. Gerçekliği ikincisinde değiştirir.</p>
+            <div class="highlight">İyi metafor şu üç testi geçer: (1) Taze mi? (2) Tam mı? (3) Tutarlı mı?</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.2 Sembolizm ve Leitmotif <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Sembol:</strong> Bir nesne ya da imge, taşıdığından fazla anlam yükler.<br>
+            <strong>Leitmotif:</strong> Tekrar eden tema, imge ya da motif. Wagner'dan alınan müzik terimi.</p>
+            <p>Örnek: Büyük Gatsby'deki yeşil ışık — Amerikan rüyasının ulaşılamaz vaadini simgeler.</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.3 İroni, Paradoks ve Belirsizlik <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Verbal ironi:</strong> Söylenenin tam tersi anlaşılır. Sarkastik ton.<br>
+            <strong>Dramatik ironi:</strong> Okuyucu karakterin bilmediğini bilir. Gerilim yaratır.<br>
+            <strong>Durumsal ironi:</strong> Beklenenin tam tersi olur.<br>
+            <strong>Paradoks:</strong> Çelişkili görünen ama derin bir gerçeği barındıran ifade. "Hayat en kötü anında en güzel ders verir."</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.4 Foreshadowing (Öngöste) ve In Medias Res <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Foreshadowing / Öngöste:</strong> Sonraki olayın ipuçlarını önceden serpiştirmek. Okuyucuda bilinçdışı gerilim oluşturur.<br>
+            <strong>In medias res:</strong> Eylemin ortasında başlamak. Latince "işin ortasında." Modern romanın tercih ettiği açılış tekniği.</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.5 Anafora, Epifora ve Chiasmus <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Anafora:</strong> Ard arda gelen cümlelerin aynı kelimeyle başlaması. Ritim ve güç katar.<br>
+            <strong>Epifora:</strong> Cümlelerin aynı kelimeyle bitmesi.<br>
+            <strong>Chiasmus:</strong> "A-B / B-A" yapısı. Kennedy: "Ülken için ne yapabileceğini sor, senin için değil."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🕳 4. Subtext (Alt Metin) ve Söylenmeyenin Gücü<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Büyük yazarlığın sırrı çoğu zaman söylenende değil, söylenmeyendedir. Okuyucunun zihninde tamamlanan anlam en güçlü etkiyi yaratır.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">4.1 Diyalogda Subtext <span>▼</span></div>
+          <div class="sub-body">
+            <p>İki karakter birbirini sever ama "seni seviyorum" demez. Bunun yerine:</p>
+            <div class="highlight">"Yağmur başlamadan önce gidebilirsin," dedi. Ona bakmadı, pencereden dışarıya baktı. "Uzun sürer bazen."</div>
+            <p>Bu cümlede "gitme" anlamı gizlidir. Okuyucu hisseder ama kelime yoktur.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-ileri -->
+
+<!-- ══════════════════════════════════════════ PSİKOLOJİ PAGE ══════════════════════════════════════════ -->
+<div class="page" id="page-psikoloji">
+<div class="section-page">
+  <a class="section-back" onclick="showPage('home')">← Ana Sayfa</a>
+  <div class="section-eyebrow">Kategori 04</div>
+  <h1 class="section-title">Yazarın Psikolojisi & Zihin Yapısı</h1>
+  <p class="section-intro">Teknikler öğrenilir ama yazarlık zihni inşa edilir. En büyük engel yetenek değil, psikolojik dirençtir. Bu bölüm içsel yolculuğunuzun haritasıdır.</p>
+  <div class="section-divider"></div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🌊 1. Akış Hali (Flow State) ve Yaratıcı Derinlik<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Mihaly Csikszentmihalyi'nin "Flow" kavramı: Zaman durur, kendinizi unutursunuz, sadece yazmak vardır. Bu halin tetiklenme koşulları öğrenilebilir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.1 Flow Tetikleyicileri <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li><strong>Zorluk-Yetenek Dengesi:</strong> Çok kolay → sıkıntı. Çok zor → kaygı. Tam ortası → flow.</li>
+              <li><strong>Dikkat dağıtıcıları kaldır:</strong> Telefon uçak modunda, internet kapalı.</li>
+              <li><strong>Ritüel:</strong> Aynı saatte, aynı mekânda, aynı müzikle başlamak zihni koşullar.</li>
+              <li><strong>İlk 20 dakika:</strong> En zorlu geçiş dönemi. Bu süreyi geç.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.2 Sabah Sayfaları (Morning Pages) Tekniği <span>▼</span></div>
+          <div class="sub-body">
+            <p>Julia Cameron'ın "The Artist's Way"den. Her sabah uyandığınızda, hâlâ uyku mahmurluğundayken 3 sayfa el yazısıyla yazın. Konu yok, kural yok. Sadece akmak.</p>
+            <div class="tip">💡 Bu egzersiz iç sansürü devre dışı bırakır. 30 gün yaparsanız yazarlık sesini ve engellerinizi tanırsınız.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🧱 2. Yaratıcı Blok (Writer's Block): Gerçek mi, Mitten mi?<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Yaratıcı blok gerçektir — ama nedeni genellikle sandığınız değildir. Çoğu blok mükemmeliyetçilik, korku ya da yanlış beklentiden kaynaklanır.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.1 Blok Türleri ve Çözümleri <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Mükemmeliyetçilik bloğu:</strong> "İlk taslak mükemmel olmak zorunda" yanılgısı. Çözüm: İzinli kötü yazma — "Shitty first draft" (Anne Lamott).<br>
+            <strong>Korku bloğu:</strong> Yargılanma korkusu, başarısızlık korkusu. Çözüm: Özel günlük, kimsenin okumayacağı yazı.<br>
+            <strong>Boşalma bloğu:</strong> Input olmadan output olmaz. Okumadıysanız yazamazsınız. Çözüm: Beslenmek — okumak, gezmek, gözlemlemek.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🏋 3. Disiplin ve Alışkanlık Sistemi<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>İlham beklemek talihsizliğe davetiyedir. Büyük yazarlar her gün oturur ve yazar — ilham gelsin gelmesin.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.1 Büyük Yazarların Rutinleri <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li><strong>Hemingway:</strong> Şafakta başlar, öğlene kadar yazar, öğleden sonra okur ve yaşardı.</li>
+              <li><strong>Stephen King:</strong> Her gün 2000 kelime. Tatil, hastalık, bayram yok.</li>
+              <li><strong>Maya Angelou:</strong> Sabah 6'da oteline gider, 2'ye kadar yazar, sonra eve dönerdi.</li>
+              <li><strong>Haruki Murakami:</strong> Sabah 4'te kalkar, 5-6 saat yazar, sonra koşu yapardı.</li>
+            </ul>
+            <div class="tip">💡 Ortak nokta: Bütün gün çalışmıyorlar. Ama bütün gün çalıştıkları zaman dilimini kutsal sayıyorlar.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.2 Minimum Yapılabilir Rutin <span>▼</span></div>
+          <div class="sub-body">
+            <p>Başlamak için: Günde 250 kelime. Küçük görünür. Ama bu, yılda bir roman demektir (90.000 kelime). Hedef mükemmellik değil, tutarlılıktır.</p>
+            <div class="highlight">Bir yazar olmak için bekliyorsanız hiç olmayacaksınız. Yazar olmak için yazmak gerekir — şimdi, bugün, bu kelimeden başlayarak.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">📚 4. Okuma Alışkanlığı: Yazarın Temel Besini<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>"Çok okumazsanız iyi yazar olmanız için zaman ya da araçlarınız olmaz." — Stephen King</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">4.1 Aktif Okuma ve Pasif Okuma Farkı <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>Pasif okuma:</strong> Hikâyenin tadını çıkarmak. Zorunlu ve değerli.<br>
+            <strong>Aktif okuma:</strong> "Bu nasıl yapıldı?" sorusuyla okumak. Yazarın tekniklerini analiz etmek. Beğendiğin cümleleri yeniden yazmak.</p>
+            <div class="tip">💡 Yılda en az 50 kitap hedefleyin. Sevdiğiniz türden, sevmediğiniz türden, kendi dilinizde ve başka dillerde (veya çeviride).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-psikoloji -->
+
+<!-- ══════════════════════════════════════════ PRATİK PAGE ══════════════════════════════════════════ -->
+<div class="page" id="page-pratik">
+<div class="section-page">
+  <a class="section-back" onclick="showPage('home')">← Ana Sayfa</a>
+  <div class="section-eyebrow">Kategori 05</div>
+  <h1 class="section-title">Pratik Bilgiler & Somut Egzersizler</h1>
+  <p class="section-intro">Bilgi eylemle pekişir. Bu bölüm doğrudan yapabileceğiniz egzersizler, yeniden yazma stratejileri ve yayıncılık dünyasına adım atma rehberidir.</p>
+  <div class="section-divider"></div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">✏️ 1. Temel Yazma Egzersizleri<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.1 Serbest Yazma (Free Writing) <span>▼</span></div>
+          <div class="sub-body">
+            <p>10 dakika durmadan yaz. Kalem kağıttan kalkmasın. Anlamsız olsun, dilbilgisi önemli değil. Amaç iç sansürü susturmak.</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.2 Gözlem Günlüğü <span>▼</span></div>
+          <div class="sub-body">
+            <p>Her gün bir gözlem yaz. Kafede oturan birini anlat. Bir konuşma parçası not et. Bir görüntü, bir koku. Yazarın malzemesi hayatın içindedir.</p>
+            <div class="tip">💡 Cebinizde her zaman küçük bir defter ya da telefon notu taşıyın. Fikirler uçar.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.3 Kısıtlı Yazma Oyunları <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>Bir sahneyi "e" harfi olmadan yaz (Oulipo yöntemi).</li>
+              <li>100 kelimede tam bir hikâye anlat (Flash Fiction).</li>
+              <li>Aynı olayı 3 farklı karakterin bakış açısından yaz.</li>
+              <li>Favori yazarınızın üslubunu taklit et, ardından kendi üslubuna döndür.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🔄 2. Revizyon (Yeniden Yazma): Asıl Yazarlık Burası<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>"İlk taslak yazar için, revizyon okuyucu için yazılır." Tüm büyük yazarlar revisyon'a taslaktan fazla zaman ayırır.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.1 Revizyon Katmanları <span>▼</span></div>
+          <div class="sub-body">
+            <p><strong>1. Geçiş (Big Picture):</strong> Yapı, karakter yayı, plot tutarlılığı. Cümlelere bakma.<br>
+            <strong>2. Geçiş (Sahne Bazlı):</strong> Her sahne gerekli mi? Tempo doğru mu? Diyalog işlevsel mi?<br>
+            <strong>3. Geçiş (Dil ve Üslup):</strong> Kelime seçimleri, cümle ritmi, sıkıştırma.<br>
+            <strong>4. Geçiş (Kopya Düzeltme / Proofreading):</strong> Yazım, noktalama, dilbilgisi hataları.</p>
+            <div class="warning">⚠️ Tüm katmanları aynı anda yapmaya çalışmak en büyük hatadır. Her geçişte tek bir şeye odaklan.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.2 Mesafe Almanın Önemi <span>▼</span></div>
+          <div class="sub-body">
+            <p>Yazdıktan sonra bekle. Hemingway bir haftadan az beklemezdi. Gözleriniz yazıyı gördüğünüzü sanar, olmayan şeyleri okur. Bir hafta sonra ilk kez okur gibi görürsünüz.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🌐 3. Yayıncılık Dünyası: Yollar ve Seçenekler<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.1 Geleneksel Yayıncılık (Traditional Publishing) <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li><strong>Süreç:</strong> Eser tamamla → Sorgu mektubu (query letter) yaz → Ajan bul → Ajandan yayınevi → Kontrat</li>
+              <li><strong>Avantajlar:</strong> Prestij, dağıtım ağı, editör desteği, ön ödeme.</li>
+              <li><strong>Dezavantajlar:</strong> Uzun süreç (1-5 yıl), reddedilme, düşük telif oranı (%10-15).</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.2 Bağımsız Yayıncılık (Self-Publishing) <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>Amazon KDP, Smashwords, Türkiye'de idefix, D&R digital platformları.</li>
+              <li><strong>Avantajlar:</strong> Hız, kontrol, yüksek telif (%35-70).</li>
+              <li><strong>Dezavantajlar:</strong> Pazarlama sorumluluğu, kalite kontrolü, dağıtım sınırlılığı.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.3 Dijital İçerik ve Platform Yazarlığı <span>▼</span></div>
+          <div class="sub-body">
+            <p>Blog, Substack, Medium, sosyal medya hikâyeleri. Kitleyle doğrudan bağ. Yazarlık kariyeri artık tek bir kitap yolundan geçmiyor.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-pratik -->
+
+<!-- ══════════════════════════════════════════ TÜRKÇE-İNGİLİZCE PAGE ══════════════════════════════════════════ -->
+<div class="page" id="page-turk">
+<div class="section-page">
+  <a class="section-back" onclick="showPage('home')">← Ana Sayfa</a>
+  <div class="section-eyebrow">Kategori 06</div>
+  <h1 class="section-title">Türkçe Avantajları & İngilizce Kapısı</h1>
+  <p class="section-intro">Türkçe, yazarlık için hem büyük bir hazine hem de özel zorluklar barındıran bir dildir. İngilizce öğrenen biri için ise bu iki dili birlikte taşımak çift katlı bir güç demektir.</p>
+  <div class="section-divider"></div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🇹🇷 1. Türkçenin Yazarlık Avantajları<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.1 Morfolojik Zenginlik (Eklemeli Dil) <span>▼</span></div>
+          <div class="sub-body">
+            <p>Türkçe <strong>eklemeli (agglutinative)</strong> bir dildir. Tek bir kelime kök alıp onlarca ek alarak tam cümleler kurabilir. Bu yazara muazzam bir yoğunluk olanağı sunar.</p>
+            <div class="highlight">"Avrupalılaştıramadıklarımızdanmışsınızcasına" — tek kelime, tam bir cümlenin anlamını taşır. Bu hiçbir Hint-Avrupa dilinde mümkün değildir.</div>
+            <div class="tip">💡 Yazarlık avantajı: Türkçede çok az kelimeyle derin anlam kurulabilir. Bu, şiir ve kısa hikâye için büyük bir güçtür.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.2 Sözcük Sırası Özgürlüğü (SOV → SVO) <span>▼</span></div>
+          <div class="sub-body">
+            <p>Türkçe <strong>SOV (Özne-Nesne-Yüklem)</strong> sırasıyla çalışır ama bu sıra çok esnek bozulabilir. Yazar vurguyu kelime sırasını değiştirerek yaratabilir.</p>
+            <p>"Ahmet kitabı okudu" → "Kitabı Ahmet okudu" → "Okudu kitabı Ahmet" — Her sıra farklı bir vurgu taşır.</p>
+            <div class="tip">💡 İngilizce SVO (Subject-Verb-Object) sırasında bu esneklik yoktur. Türkçe yazara burada üstünlük sağlar.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.3 Fiil Zamanlarının Zenginliği ve Nüansı <span>▼</span></div>
+          <div class="sub-body">
+            <p>Türkçede anlatı zamanları semantik bakımdan olağanüstü zengindir. <strong>Belirsiz geçmiş zaman (-mış)</strong> ise hiçbir Avrupa dilinde karşılığı olmayan bir şey taşır: <em>duyulan/rivayete dayalı bilgi</em>.</p>
+            <p>"Geldi" = Gördüm, eminim. "Gelmiş" = Duydum, ya da inanmıyorum bile olabilir.</p>
+            <div class="highlight">Bu zaman nüansı Türk yazarına inanılmaz bir güvenilirlik ve mesafe oynama olanağı sunar. Efsanevi anlatıcı, dedikodu anlatıcı, masal anlatıcı hepsi bu -mış ekinde gizlidir.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">1.4 Ses Uyumu (Vowel Harmony) ve Müzikalite <span>▼</span></div>
+          <div class="sub-body">
+            <p>Türkçenin <strong>ünlü uyumu (ses uyumu)</strong> dile doğal bir müzik verir. Tüm ekler kök sesle uyum içindedir. Bu, Türkçeyi kulakta son derece akıcı kılar.</p>
+            <div class="tip">💡 Türkçe şiir yazan biri için bu, doğal kafiye ve ritim olanağı demektir. Bu yüzden Türk şiiri tarihsel olarak zengin bir müzikaliteye sahiptir.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">⚠️ 2. Türkçenin Yazarlık Dezavantajları<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.1 Yayıncılık Pazarının Darlığı <span>▼</span></div>
+          <div class="sub-body">
+            <p>Türkçe konuşan dünya nüfusu yaklaşık 80-90 milyon. İngilizce okur kitlesiyle karşılaştırıldığında pazar çok küçüktür. Çeviri olmadan global erişim sınırlıdır.</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.2 Yüklem Sona Kayma ve Gerilim Kaybı <span>▼</span></div>
+          <div class="sub-body">
+            <p>Türkçede yüklem (verb) sona gelir. Bu, okuyucu anlamı cümlenin sonuna kadar bekler. Uzun cümlelerde anlam bulma ve gerilim yaratma zorlaşabilir.</p>
+            <p>İngilizce: "He killed her." — Gerilim hemen patlar.<br>
+            Türkçe: "Onu öldürdü." — Hem yeterince kısa hem güçlü. Ama uzun cümle şöyle olur:<br>
+            "Kapıyı açınca, yıllarca beklediği o anın geldiğini hissederek, elini cebine atıp, bıçağı çıkardı."</p>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">2.3 Cinsiyet Belirsizliği (Avantaj mı, Dezavantaj mı?) <span>▼</span></div>
+          <div class="sub-body">
+            <p>Türkçede "o" zamiri cinsiyetsizdir. Hem "he" hem "she" hem "it" karşılığıdır. Bu kimi zaman yazara belirsizlik yaratma olanağı (avantaj) kimi zaman ise netlik sorunu (dezavantaj) çıkarır.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🌐 3. İngilizce Öğrenen Türkçe Yazar: Çift Güç<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <div class="acc-content .tr-en" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;">
+          <div style="padding:12px;border-radius:8px;background:rgba(90,138,224,0.08);border:1px solid rgba(90,138,224,0.2);">
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;opacity:0.7;color:var(--blue)">Türkçe Güçlü Yanı</div>
+            Morfolojik yoğunluk<br>Zaman nüansı (-mış)<br>Ses uyumu müzikalitesi<br>Sözdizimi esnekliği<br>Medeniyetler kavşağı deneyimi
+          </div>
+          <div style="padding:12px;border-radius:8px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);">
+            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;opacity:0.7;color:var(--accent)">İngilizce Güçlü Yanı</div>
+            Global pazar erişimi<br>Zengin edebi kütüphane<br>Fiil-önce yapı (anında anlam)<br>Phrasal verb zenginliği<br>Genre çeşitliliği
+          </div>
+        </div>
+
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.1 İki Dilli Yazarın Avantajları <span>▼</span></div>
+          <div class="sub-body">
+            <p>İki dil bilmek tek bir dil bilmekten iki kat fazla değil, katmerli fazla bir şeydir. Çünkü iki farklı düşünce yapısına, iki farklı anlam sistemine sahip olursunuz.</p>
+            <ul>
+              <li>Türkçe'nin ifade edemediği ama İngilizcenin edebildiği kavramları ödünç alabilirsiniz.</li>
+              <li>İngilizce okuduğunuzda yazarlık tekniklerini iki kat hızla öğrenirsiniz.</li>
+              <li>Çeviri yapabilmek en derin okuma biçimidir — iki dilde yazarın ne yapmaya çalıştığını anlamak zorunda kalırsınız.</li>
+            </ul>
+            <div class="highlight">Orhan Pamuk hem Türkçe hem de Batı edebiyatı geleneğinde yetişti. Bu ikili köklülük Nobel ödülüne uzandı.</div>
+          </div>
+        </div>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">3.2 İngilizce Öğrenirken Yazarlık Pratiği <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>Sevdiğiniz Türkçe kitabın sayfalarını İngilizceye çevirmeye çalışın.</li>
+              <li>İngilizce kısa hikâyeleri Türkçe özetle anlatın.</li>
+              <li>İngilizce günlük tutun. Dil hatası önemli değil — akmak önemli.</li>
+              <li>İngilizce okuduğunuzda beğendiğiniz cümleleri not edin ve neden beğendiğinizi Türkçe analiz edin.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-turk -->
+
+<!-- ══════════════════════════════════════════ TÜRLER PAGE ══════════════════════════════════════════ -->
+<div class="page" id="page-turler">
+<div class="section-page">
+  <a class="section-back" onclick="showPage('home')">← Ana Sayfa</a>
+  <div class="section-eyebrow">Kategori 07</div>
+  <h1 class="section-title">Yazarlık Türleri & Edebi Türler</h1>
+  <p class="section-intro">Her tür kendi kurallarına, sözleşmelerine ve özgürlüklerine sahiptir. Ustalaşmak istediğiniz türü derinlemesine tanımak, o türün en iyi örneklerini incelemekle başlar.</p>
+  <div class="section-divider"></div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">📗 1. Roman (Novel)<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>En karmaşık ve en özgür tür. 50.000-100.000+ kelime. Birden fazla karakter, olay örgüsü katmanı ve tema taşıyabilir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">Roman Yazmanın Temel Adımları <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li><strong>Outlining vs Pantsing:</strong> Planlamak (Plotter) mı, sezgiyle yazmak (Pantser) mı? Ya da ikisini karıştırmak (Plantser)?</li>
+              <li><strong>Bölüm yapısı:</strong> Her bölüm bir "sahne" değil ama her sahne bir hedef taşımalı.</li>
+              <li><strong>Alt olay örgüleri (Subplots):</strong> Ana olay örgüsüyle bağlantılı alt hikâyeler.</li>
+              <li><strong>Tema:</strong> Roman boyunca yankılanan merkezi fikir veya soru.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">📄 2. Kısa Hikâye (Short Story)<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>1.000-15.000 kelime. Tek bir olay, tek bir an ya da tek bir dönüşüm. Ekonomi kraldır. Her kelime çalışmak zorundadır.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">Kısa Hikâyenin Altın Kuralları <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>Hikâyeye mümkün olduğunca geç başla — son olaya yakın.</li>
+              <li>Tek bir merkezi çatışma. Alt olay örgüsü genellikle olmaz.</li>
+              <li>Son satır her şeyi değiştirmeli ya da özetlemeli.</li>
+              <li>Çekhov'un Silahı: Başta gösterilen her unsur sonra işlev görmeli.</li>
+            </ul>
+            <div class="highlight">"Eğer birinci bölümde bir duvarın üzerinde silah asılıysa, ikinci ya da üçüncü bölümde ateşlenmek zorundadır." — Chekhov</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">📝 3. Deneme (Essay) ve Kurgu-Dışı (Non-Fiction)<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Deneme yazarı kendi sesini en çıplak haliyle sunar. Kişisel deneme (personal essay), eleştirel deneme ve yaratıcı kurgu-dışı (creative non-fiction) farklı alt türlerdir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">Deneme Yazmanın İlkeleri <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>Tek bir güçlü fikir ya da soru üzerine odaklan.</li>
+              <li>Kendi deneyiminizden somut örneklerle evrensel bir gerçeğe ulaş.</li>
+              <li>Belirsizlik bir zaaftır: Pozisyonunuzu savunun.</li>
+              <li>Türkiye'deki büyük denemeciler: Cemil Meriç, Peyami Safa, Nurullah Ataç.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🎬 4. Senaryo (Screenplay)<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Senaryo görseldir ve işitseldir; sadece gördüğümüz ve duyduğumuz şeyler anlatılır. İçsel düşünce yoktur. Her şey eylem ve diyalogla anlatılır.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">Senaryo Yapısı <span>▼</span></div>
+          <div class="sub-body">
+            <p>Standart format: 90-120 sayfa = 90-120 dakika film. Üç perde yapısı senaryo dünyasında kutsal sayılır. Field Paradigm, Save the Cat, Hero's Journey temel yapısal modellerdir.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-turler -->
+
+<!-- ══════════════════════════════════════════ USTALAR PAGE ══════════════════════════════════════════ -->
+<div class="page" id="page-ustalar">
+<div class="section-page">
+  <a class="section-back" onclick="showPage('home')">← Ana Sayfa</a>
+  <div class="section-eyebrow">Kategori 08</div>
+  <h1 class="section-title">Büyük Yazarlardan Dersler</h1>
+  <p class="section-intro">Her büyük yazar bir okuldur. Onları okumak bilgi verir; onları incelemek teknik verir; onların hayatını anlamak ilham verir.</p>
+  <div class="section-divider"></div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🥊 Ernest Hemingway: İceberg Teorisi ve Cesaret<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Hemingway modern yazının Copernicus'udur. Süsü attı, sadeliği getirdi — ama bu sadelik yüzeyde gördüğünüzden çok daha derin bir şeyi gizliyordu.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">Hemingway'den 5 Ders <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>İlk cümle dürüst olsun. Her şeyin temeli budur.</li>
+              <li>Sıfatlardan (adjective) kaçın. Fiillere güven.</li>
+              <li>Her gün aynı saatte, iyi çalışıyorken dur. Yarın ne yazacağını biliyorken bırak.</li>
+              <li>Yazılanın sekiz katını yazma. Bu buzdağı teorisidir.</li>
+              <li>Bir şeyi iyice biliyorsanız yazmayabilirsiniz — okuyucu hisseder.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🌊 Virginia Woolf: Bilinç Akışı ve İç Ses<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Woolf romanın sınırlarını içe çekti. Dışarıda olan her şeyi karakterin bilinci filtresinden geçirdi. Bu teknik bilinç akışı (stream of consciousness) olarak bilinir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">Woolf'tan Ders: İçe Bakış <span>▼</span></div>
+          <div class="sub-body">
+            <p>İç monolog, anlık düşünceler, mantıksal bağ olmayan çağrışımlar. Gerçek zihin bu şekilde çalışır. Woolf bunu sayfaya aktardı.</p>
+            <div class="highlight">Mrs Dalloway'deki Clarissa'nın bir günü: Dışarıda çiçek alıyor, içinde savaş öncesi gençliğini yaşıyor. Zaman katmanları iç içe geçiyor.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🇹🇷 Ahmet Hamdi Tanpınar: Zaman ve Medeniyet<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Tanpınar Türk edebiyatının en derin filozofudur. Doğu ve Batı, gelenek ve modernlik, zaman ve hafıza onun temalarıdır.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">Tanpınar'dan Ders <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>Kültürel katmanlar yazıya derinlik katar.</li>
+              <li>Mekân sadece arka fon değil, tarihsel bilinçtir.</li>
+              <li>Üslup özenle işlenmiş bir müzik gibi olmalı.</li>
+            </ul>
+            <div class="highlight">Huzur'u okurken İstanbul'un kendisini okursunuz. Tanpınar şehri içselleştirmişti.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion-group">
+    <div class="accordion-header" onclick="toggleAcc(this)">🔴 Fyodor Dostoyevski: Psikoloji ve Labirent<span class="accordion-arrow">▼</span></div>
+    <div class="accordion-body">
+      <div class="acc-content">
+        <p>Dostoyevski insan ruhunun derinliklerini hiç kimsenin gidemediği yere kadar indi. Karakterleri çelişkili, tutarsız ve gerçektir.</p>
+        <div class="sub-accordion">
+          <div class="sub-header" onclick="toggleSub(this)">Dostoyevski'den Ders <span>▼</span></div>
+          <div class="sub-body">
+            <ul>
+              <li>Karakterlerinize fikir verin. Fikirsiz karakter ruhsuz olur.</li>
+              <li>Kötü adam da haklı gerekçelere sahip olmalı.</li>
+              <li>En büyük dramayı sıradan insanların içinde arayın.</li>
+              <li>Diyalog fikir savaşı olmalı, sadece bilgi alışverişi değil.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page-ustalar -->
+
+</div><!-- /wrapper -->
+
+<script>
+// ══ THEME ══
+function toggleTheme() {
+  const h = document.documentElement;
+  const isD = h.getAttribute('data-theme') === 'dark';
+  h.setAttribute('data-theme', isD ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isD ? '🌙' : '☀️';
+  document.getElementById('theme-label').textContent = isD ? 'Karanlık' : 'Aydınlık';
+}
+
+// ══ PAGE SYSTEM ══
+const pages = ['home','dil','temel','ileri','psikoloji','pratik','turk','turler','ustalar'];
+function showPage(id) {
+  pages.forEach(p => {
+    const el = document.getElementById('page-'+p);
+    if(el) el.classList.remove('active');
+    const nav = document.getElementById('nav-'+p);
+    if(nav) nav.classList.remove('active');
+  });
+  const target = document.getElementById('page-'+id);
+  if(target) target.classList.add('active');
+  const navT = document.getElementById('nav-'+id);
+  if(navT) navT.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══ ACCORDION ══
+function toggleAcc(header) {
+  const body = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  // close all
+  document.querySelectorAll('.accordion-header.open').forEach(h => {
+    h.classList.remove('open');
+    h.nextElementSibling.classList.remove('open');
+  });
+  if(!isOpen) {
+    header.classList.add('open');
+    body.classList.add('open');
+  }
+}
+function toggleSub(header) {
+  const body = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+// ══ VIEW TABS ══
+function switchView(v) {
+  document.querySelectorAll('.map-view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.view-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  event.target.classList.add('active');
+  if(v === 'mindmap') initMindmap();
+}
+
+// ══ SEARCH / FILTER ══
+function filterCards(q) {
+  const cards = document.querySelectorAll('.cat-card');
+  q = q.toLowerCase();
+  cards.forEach(c => {
+    c.style.display = c.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+// ══ MINDMAP ══
+function initMindmap() {
+  const svg = document.getElementById('mindmap-svg');
+  if(svg.children.length > 0) return;
+
+  const nodes = [
+    {id:'root', x:500,y:290, r:52, label:'YAZARLIK', color:'#c9a84c', page:null},
+    {id:'dil', x:200,y:120, r:38, label:'Dil &\nGramer', color:'#5a8ae0', page:'dil'},
+    {id:'temel', x:750,y:120, r:38, label:'Hikâye\nSanatı', color:'#c9a84c', page:'temel'},
+    {id:'ileri', x:860,y:290, r:38, label:'İleri\nTeknik', color:'#a05ae0', page:'ileri'},
+    {id:'psikoloji', x:750,y:460, r:38, label:'Psikoloji', color:'#e05a5a', page:'psikoloji'},
+    {id:'pratik', x:500,y:510, r:36, label:'Pratik', color:'#5ae08a', page:'pratik'},
+    {id:'turk', x:200,y:460, r:38, label:'Türkçe &\nİngilizce', color:'#e08a5a', page:'turk'},
+    {id:'turler', x:140,y:290, r:34, label:'Türler', color:'#5ae0e0', page:'turler'},
+    {id:'ustalar', x:350,y:90, r:34, label:'Ustalar', color:'#e0c05a', page:'ustalar'},
+  ];
+
+  const edges = [
+    ['root','dil'],['root','temel'],['root','ileri'],['root','psikoloji'],
+    ['root','pratik'],['root','turk'],['root','turler'],['root','ustalar'],
+    ['dil','temel'],['temel','ileri'],['turk','pratik']
+  ];
+
+  let html = '';
+
+  // edges
+  edges.forEach(([a,b]) => {
+    const na = nodes.find(n=>n.id===a);
+    const nb = nodes.find(n=>n.id===b);
+    html += `<line x1="${na.x}" y1="${na.y}" x2="${nb.x}" y2="${nb.y}" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6"/>`;
+  });
+
+  // nodes
+  nodes.forEach(n => {
+    const cursor = n.page ? 'cursor:pointer' : '';
+    const onclick = n.page ? `onclick="showPage('${n.page}')"` : '';
+    const lines = n.label.split('\n');
+    const dy = lines.length === 1 ? '0.35em' : '-0.2em';
+
+    html += `<g ${onclick} style="${cursor}">
+      <circle cx="${n.x}" cy="${n.y}" r="${n.r}" fill="var(--surface)" stroke="${n.color}" stroke-width="2"/>
+      <circle cx="${n.x}" cy="${n.y}" r="${n.r}" fill="${n.color}" opacity="0.08"/>`;
+
+    if(lines.length === 1) {
+      html += `<text x="${n.x}" y="${n.y}" text-anchor="middle" dominant-baseline="middle" fill="${n.color}" font-family="Verdana" font-size="${n.r > 40 ? 11 : 10}" font-weight="bold">${n.label}</text>`;
+    } else {
+      html += `<text x="${n.x}" y="${n.y}" text-anchor="middle" fill="${n.color}" font-family="Verdana" font-size="10" font-weight="bold">`;
+      lines.forEach((l,i) => {
+        html += `<tspan x="${n.x}" dy="${i===0 ? '-0.5em' : '1.3em'}">${l}</tspan>`;
+      });
+      html += `</text>`;
+    }
+    html += `</g>`;
+  });
+
+  svg.innerHTML = html;
+}
+
+// ══ THREE.JS BACKGROUND ══
+(function() {
+  const canvas = document.getElementById('canvas-bg');
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.z = 5;
+
+  // Floating particles
+  const geo = new THREE.BufferGeometry();
+  const count = 180;
+  const pos = new Float32Array(count * 3);
+  for(let i=0; i<count*3; i++) pos[i] = (Math.random()-0.5)*18;
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const mat = new THREE.PointsMaterial({color:0xc9a84c, size:0.04, transparent:true, opacity:0.6});
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
+
+  // Connecting lines (wireframe sphere)
+  const sphereGeo = new THREE.IcosahedronGeometry(3, 1);
+  const wireMat = new THREE.MeshBasicMaterial({color:0x2a2a45, wireframe:true, transparent:true, opacity:0.15});
+  const wire = new THREE.Mesh(sphereGeo, wireMat);
+  scene.add(wire);
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.003;
+    points.rotation.y = t * 0.15;
+    points.rotation.x = t * 0.08;
+    wire.rotation.y = -t * 0.06;
+    wire.rotation.x = t * 0.04;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+</script>
+</body>
+</html>

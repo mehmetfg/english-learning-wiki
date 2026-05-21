@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparative Reader — Çift Metin</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a2028; --text: #e6edf3; --muted: #8b949e;
+    --accent: #58a6ff; --border: #30363d;
+    --hl-1: #d29922; --hl-2: #a371f7; --hl-3: #3fb950; --hl-4: #f778ba;
+    --hl-bg-1: rgba(210,153,34,0.18); --hl-bg-2: rgba(163,113,247,0.18);
+    --hl-bg-3: rgba(63,185,80,0.18); --hl-bg-4: rgba(247,120,186,0.18);
+    --hl-active: rgba(88,166,255,0.35);
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --panel: #f6f8fa; --text: #1f2328; --muted: #656d76;
+    --accent: #0969da; --border: #d0d7de;
+    --hl-bg-1: rgba(210,153,34,0.25); --hl-bg-2: rgba(130,80,223,0.20);
+    --hl-bg-3: rgba(26,127,55,0.20); --hl-bg-4: rgba(207,34,114,0.20);
+    --hl-active: rgba(9,105,218,0.30);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    min-height: 100vh; display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+  h1 { font-size: 16px; font-weight: 600; }
+  .toolbar { display: flex; gap: 6px; }
+  .icon-btn {
+    background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .icon-btn:hover, .icon-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .topbar {
+    display: flex; gap: 12px; align-items: center; padding: 10px 16px;
+    border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .topbar select {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 10px; border-radius: 6px; font-size: 13px;
+  }
+  .legend { display: flex; gap: 10px; margin-left: auto; font-size: 12px; color: var(--muted); }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-swatch { width: 12px; height: 12px; border-radius: 2px; border: 1px solid var(--border); }
+  .legend-item[data-tag="g1"] .legend-swatch { background: var(--hl-bg-1); border-color: var(--hl-1); }
+  .legend-item[data-tag="g2"] .legend-swatch { background: var(--hl-bg-2); border-color: var(--hl-2); }
+  .legend-item[data-tag="g3"] .legend-swatch { background: var(--hl-bg-3); border-color: var(--hl-3); }
+  .legend-item[data-tag="g4"] .legend-swatch { background: var(--hl-bg-4); border-color: var(--hl-4); }
+
+  .reader {
+    flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border); overflow: hidden;
+  }
+  .pane {
+    background: var(--bg); overflow-y: auto; padding: 20px 24px;
+    display: flex; flex-direction: column;
+  }
+  .pane-header {
+    position: sticky; top: -20px; background: var(--bg); padding: 8px 0;
+    margin-bottom: 12px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cefr {
+    display: inline-block; font-size: 11px; padding: 3px 8px;
+    background: var(--accent); color: var(--bg); border-radius: 4px;
+    font-weight: 700;
+  }
+  .pane-title { font-size: 14px; font-weight: 600; }
+  .pane-source { font-size: 11px; color: var(--muted); margin-left: auto; }
+
+  .pane p {
+    font-size: 16px; line-height: 1.75; margin-bottom: 14px;
+  }
+  .pane.left p { font-size: 16px; }
+  .pane.right p { font-size: 17px; } /* right (simpler) slightly larger for readability */
+
+  .seg {
+    cursor: pointer; border-radius: 3px; padding: 1px 2px;
+    transition: background 0.15s, outline 0.1s;
+  }
+  .seg[data-tag="g1"] { background: var(--hl-bg-1); border-bottom: 1.5px solid var(--hl-1); }
+  .seg[data-tag="g2"] { background: var(--hl-bg-2); border-bottom: 1.5px solid var(--hl-2); }
+  .seg[data-tag="g3"] { background: var(--hl-bg-3); border-bottom: 1.5px solid var(--hl-3); }
+  .seg[data-tag="g4"] { background: var(--hl-bg-4); border-bottom: 1.5px solid var(--hl-4); }
+  .seg.active { background: var(--hl-active); outline: 2px solid var(--accent); }
+
+  .footer-bar {
+    border-top: 1px solid var(--border); padding: 10px 16px;
+    background: var(--panel); font-size: 13px;
+    display: flex; gap: 12px; align-items: center; min-height: 48px;
+  }
+  .seg-info { color: var(--muted); }
+  .seg-info strong { color: var(--accent); }
+  .seg-info em { color: var(--text); }
+
+  @media (max-width: 720px) {
+    .reader { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    .legend { display: none; }
+  }
+  @media print {
+    .toolbar, .topbar, .footer-bar { display: none; }
+    .reader { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>📑 Comparative Reader</h1>
+  <div class="toolbar">
+    <button class="icon-btn" id="syncBtn" title="Senkron scroll (S)">🔗 Sync</button>
+    <button class="icon-btn" id="themeBtn" title="Tema (T)">🌓</button>
+    <button class="icon-btn" id="exportBtn" title="JSON indir (E)">📥</button>
+  </div>
+</header>
+
+<div class="topbar">
+  <label>Metin:
+    <select id="textSel"></select>
+  </label>
+  <label>Vurgu:
+    <select id="tagSel">
+      <option value="">Tümü</option>
+      <option value="g1">Sadece g1</option>
+      <option value="g2">Sadece g2</option>
+      <option value="g3">Sadece g3</option>
+      <option value="g4">Sadece g4</option>
+    </select>
+  </label>
+  <div class="legend" id="legend"></div>
+</div>
+
+<div class="reader">
+  <div class="pane left" id="paneLeft">
+    <div class="pane-header">
+      <span class="cefr" id="leftCefr">B2</span>
+      <span class="pane-title">Orijinal</span>
+      <span class="pane-source" id="leftSrc">—</span>
+    </div>
+    <div id="leftBody"></div>
+  </div>
+  <div class="pane right" id="paneRight">
+    <div class="pane-header">
+      <span class="cefr" id="rightCefr">A2</span>
+      <span class="pane-title">Uyarlama</span>
+      <span class="pane-source" id="rightSrc">—</span>
+    </div>
+    <div id="rightBody"></div>
+  </div>
+</div>
+
+<div class="footer-bar">
+  <div class="seg-info" id="segInfo">Bir vurgulu kelimeye/yapıya tıkla → her iki tarafta vurgulanır.</div>
+</div>
+
+<script>
+'use strict';
+
+// ===================== DATA =====================
+// Each text: paired arrays of "segments". Same id = parallel.
+// Tag groups: g1=grammar-structure, g2=vocab-key, g3=collocation, g4=idiom/phrase
+const TEXTS = {
+  naval: {
+    title: "Naval — Specific Knowledge",
+    source: "Naval Almanack · 02 Specific Knowledge",
+    leftCefr: "C1", rightCefr: "B1",
+    legend: {
+      g1: "Cleft / Inversion",
+      g2: "Key vocabulary",
+      g3: "Collocation",
+      g4: "Idiom / Phrase"
+    },
+    pairs: [
+      {
+        left: [
+          { id: 1, text: "Specific knowledge ", tag: "g2" },
+          { text: "is found by " },
+          { id: 2, text: "pursuing your genuine curiosity", tag: "g3" },
+          { text: ", not by " },
+          { id: 3, text: "following whatever is hot right now", tag: "g4" },
+          { text: "." }
+        ],
+        right: [
+          { id: 1, text: "Special knowledge ", tag: "g2" },
+          { text: "comes from " },
+          { id: 2, text: "doing what you really love", tag: "g3" },
+          { text: ", not from " },
+          { id: 3, text: "chasing trends", tag: "g4" },
+          { text: "." }
+        ]
+      },
+      {
+        left: [
+          { text: "If society can " },
+          { id: 4, text: "train you", tag: "g3" },
+          { text: " to do it, " },
+          { id: 5, text: "it can train someone else", tag: "g1" },
+          { text: " — and replace you with cheaper labor." }
+        ],
+        right: [
+          { text: "If society can " },
+          { id: 4, text: "teach you", tag: "g3" },
+          { text: " to do it, " },
+          { id: 5, text: "it can teach someone else too", tag: "g1" },
+          { text: " — and pay less for that person." }
+        ]
+      },
+      {
+        left: [
+          { id: 6, text: "What you should be doing", tag: "g1" },
+          { text: " is the thing that " },
+          { id: 7, text: "feels like play to you", tag: "g4" },
+          { text: " but " },
+          { id: 8, text: "looks like work to others", tag: "g3" },
+          { text: "." }
+        ],
+        right: [
+          { id: 6, text: "The thing you should do", tag: "g1" },
+          { text: " is what " },
+          { id: 7, text: "feels easy and fun to you", tag: "g4" },
+          { text: " but " },
+          { id: 8, text: "seems hard to others", tag: "g3" },
+          { text: "." }
+        ]
+      }
+    ]
+  },
+  pg: {
+    title: "Paul Graham — Life Is Short (excerpt)",
+    source: "Paul Graham · 01 Life Is Short",
+    leftCefr: "B2", rightCefr: "A2",
+    legend: {
+      g1: "Tense / Structure",
+      g2: "Key vocabulary",
+      g3: "Phrasal verb",
+      g4: "Idiomatic phrase"
+    },
+    pairs: [
+      {
+        left: [
+          { text: "Having kids " },
+          { id: 1, text: "showed me", tag: "g1" },
+          { text: " how to convert " },
+          { id: 2, text: "a continuous quantity", tag: "g2" },
+          { text: ", time, into " },
+          { id: 3, text: "discrete quantities", tag: "g2" },
+          { text: "." }
+        ],
+        right: [
+          { text: "Being a parent " },
+          { id: 1, text: "taught me", tag: "g1" },
+          { text: " how to change " },
+          { id: 2, text: "a long thing", tag: "g2" },
+          { text: ", time, into " },
+          { id: 3, text: "small pieces", tag: "g2" },
+          { text: "." }
+        ]
+      },
+      {
+        left: [
+          { text: "You only " },
+          { id: 4, text: "get 52 weekends", tag: "g3" },
+          { text: " with your 2-year-old. " },
+          { id: 5, text: "If Christmas-as-magic", tag: "g1" },
+          { text: " lasts from say ages 3 to 10, " },
+          { id: 6, text: "you only get to watch", tag: "g3" },
+          { text: " your child experience it eight times." }
+        ],
+        right: [
+          { text: "You only " },
+          { id: 4, text: "have 52 weekends", tag: "g3" },
+          { text: " with your 2-year-old. " },
+          { id: 5, text: "If Christmas magic", tag: "g1" },
+          { text: " lasts from age 3 to age 10, " },
+          { id: 6, text: "you only see", tag: "g3" },
+          { text: " your child enjoy it eight times." }
+        ]
+      },
+      {
+        left: [
+          { id: 7, text: "Saying no is", tag: "g4" },
+          { text: " a way of " },
+          { id: 8, text: "saying yes", tag: "g4" },
+          { text: " to what matters." }
+        ],
+        right: [
+          { id: 7, text: "Saying no means", tag: "g4" },
+          { text: " " },
+          { id: 8, text: "saying yes", tag: "g4" },
+          { text: " to what is important." }
+        ]
+      }
+    ]
+  }
+};
+
+// ===================== STATE =====================
+const KEY = 'comparative-reader-v1';
+let state = load();
+function load() {
+  try {
+    return Object.assign({
+      textKey: 'naval', tagFilter: '', sync: true,
+      theme: 'dark', activeId: null,
+      segClicks: {}, // "textKey:id" → count
+    }, JSON.parse(localStorage.getItem(KEY) || '{}'));
+  } catch { return reset(); }
+}
+function reset() {
+  return { textKey: 'naval', tagFilter: '', sync: true,
+    theme: state?.theme || 'dark', activeId: null, segClicks: {} };
+}
+function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+// ===================== RENDER =====================
+function renderTextSelect() {
+  const sel = document.getElementById('textSel');
+  sel.innerHTML = Object.entries(TEXTS).map(([k, t]) =>
+    `<option value="${k}" ${k === state.textKey ? 'selected' : ''}>${t.title}</option>`
+  ).join('');
+}
+
+function renderLegend() {
+  const t = TEXTS[state.textKey];
+  const legend = document.getElementById('legend');
+  legend.innerHTML = Object.entries(t.legend).map(([k, label]) =>
+    `<span class="legend-item" data-tag="${k}"><span class="legend-swatch"></span>${label}</span>`
+  ).join('');
+}
+
+function renderText() {
+  const t = TEXTS[state.textKey];
+  document.getElementById('leftCefr').textContent = t.leftCefr;
+  document.getElementById('rightCefr').textContent = t.rightCefr;
+  document.getElementById('leftSrc').textContent = t.source;
+  document.getElementById('rightSrc').textContent = `Uyarlama (${t.rightCefr})`;
+  renderLegend();
+
+  document.getElementById('leftBody').innerHTML = t.pairs.map(p =>
+    '<p>' + p.left.map(s => renderSeg(s)).join('') + '</p>'
+  ).join('');
+  document.getElementById('rightBody').innerHTML = t.pairs.map(p =>
+    '<p>' + p.right.map(s => renderSeg(s)).join('') + '</p>'
+  ).join('');
+
+  attachSegEvents();
+}
+function renderSeg(s) {
+  if (!s.id) return escapeHtml(s.text);
+  const tagAttr = s.tag ? ` data-tag="${s.tag}"` : '';
+  const hidden = state.tagFilter && s.tag !== state.tagFilter ? ' style="background:transparent;border-bottom:none;"' : '';
+  return `<span class="seg" data-id="${s.id}"${tagAttr}${hidden}>${escapeHtml(s.text)}</span>`;
+}
+function escapeHtml(s) { return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+function attachSegEvents() {
+  document.querySelectorAll('.seg').forEach(el => {
+    el.onclick = () => activateSeg(parseInt(el.dataset.id));
+  });
+  if (state.activeId !== null) highlightActive();
+}
+
+function activateSeg(id) {
+  state.activeId = id;
+  const key = `${state.textKey}:${id}`;
+  state.segClicks[key] = (state.segClicks[key] || 0) + 1;
+  save();
+  highlightActive();
+  updateSegInfo(id);
+  // Scroll counterpart into view if sync on
+  if (state.sync) scrollPairIntoView(id);
+}
+
+function highlightActive() {
+  document.querySelectorAll('.seg.active').forEach(e => e.classList.remove('active'));
+  if (state.activeId === null) return;
+  document.querySelectorAll(`.seg[data-id="${state.activeId}"]`).forEach(e => e.classList.add('active'));
+}
+
+function scrollPairIntoView(id) {
+  ['paneLeft', 'paneRight'].forEach(pid => {
+    const pane = document.getElementById(pid);
+    const el = pane.querySelector(`.seg[data-id="${id}"]`);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const paneRect = pane.getBoundingClientRect();
+      if (rect.top < paneRect.top + 40 || rect.bottom > paneRect.bottom - 20) {
+        el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }
+  });
+}
+
+function updateSegInfo(id) {
+  const t = TEXTS[state.textKey];
+  let leftSeg = null, rightSeg = null;
+  t.pairs.forEach(p => {
+    p.left.forEach(s => { if (s.id === id) leftSeg = s; });
+    p.right.forEach(s => { if (s.id === id) rightSeg = s; });
+  });
+  if (!leftSeg) return;
+  const tag = leftSeg.tag || '—';
+  const label = t.legend[tag] || tag;
+  const views = state.segClicks[`${state.textKey}:${id}`] || 0;
+  document.getElementById('segInfo').innerHTML =
+    `<strong>${label}</strong> · L: <em>${escapeHtml(leftSeg.text.trim())}</em> ↔ R: <em>${escapeHtml(rightSeg.text.trim())}</em> · Görüntüleme: ${views}`;
+}
+
+// ===================== SYNC SCROLL =====================
+let syncing = false;
+function attachSyncScroll() {
+  const L = document.getElementById('paneLeft');
+  const R = document.getElementById('paneRight');
+  L.onscroll = () => syncScroll(L, R);
+  R.onscroll = () => syncScroll(R, L);
+}
+function syncScroll(src, dst) {
+  if (!state.sync || syncing) return;
+  syncing = true;
+  const ratio = src.scrollTop / (src.scrollHeight - src.clientHeight || 1);
+  dst.scrollTop = ratio * (dst.scrollHeight - dst.clientHeight);
+  setTimeout(() => { syncing = false; }, 50);
+}
+
+// ===================== EXPORT =====================
+function exportJSON() {
+  const payload = [{
+    schema_version: "1.0",
+    type: "comparative_reader_session",
+    session_id: new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19) + '-comparative-reader',
+    timestamp: new Date().toISOString(),
+    payload: {
+      text_key: state.textKey,
+      seg_clicks: state.segClicks,
+      tag_filter: state.tagFilter,
+    }
+  }];
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '') + '-comparative.json';
+  a.click();
+}
+
+// ===================== EVENTS =====================
+document.getElementById('textSel').onchange = e => {
+  state.textKey = e.target.value; state.activeId = null; save(); renderText();
+  document.getElementById('segInfo').textContent = 'Bir vurgulu kelimeye/yapıya tıkla → her iki tarafta vurgulanır.';
+};
+document.getElementById('tagSel').onchange = e => { state.tagFilter = e.target.value; save(); renderText(); };
+document.getElementById('syncBtn').onclick = () => {
+  state.sync = !state.sync; save();
+  document.getElementById('syncBtn').classList.toggle('active', state.sync);
+};
+document.getElementById('themeBtn').onclick = () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = state.theme === 'light' ? 'light' : '';
+  save();
+};
+document.getElementById('exportBtn').onclick = exportJSON;
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  if (e.key === 's' || e.key === 'S') document.getElementById('syncBtn').click();
+  else if (e.key === 't' || e.key === 'T') document.getElementById('themeBtn').click();
+  else if (e.key === 'e' || e.key === 'E') exportJSON();
+  else if (e.key === 'Escape') { state.activeId = null; save(); highlightActive(); }
+});
+
+// INIT
+function init() {
+  document.documentElement.dataset.theme = state.theme === 'light' ? 'light' : '';
+  document.getElementById('syncBtn').classList.toggle('active', state.sync);
+  document.getElementById('tagSel').value = state.tagFilter;
+  renderTextSelect();
+  renderText();
+  attachSyncScroll();
+}
+init();
+</script>
+</body>
+</html>

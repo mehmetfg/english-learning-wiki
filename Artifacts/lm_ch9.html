@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Misérables · Chapter 9: The Letters</title>
+<style>
+:root{
+  --bg:#070b18; --surface:#0d1526; --s2:#111d35; --border:#1a2a4a;
+  --accent:#4a9eff; --text:#e8edf5; --dim:#8899bb; --muted:#3d5070;
+  --g1:#4a9eff; --g2:#22c55e; --g3:#a855f7; --g4:#f97316;
+  --g5:#ef4444; --g6:#06b6d4; --g7:#eab308; --g8:#ec4899;
+  --r:8px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:Verdana,Geneva,sans-serif;font-size:15px;line-height:1.75;}
+
+/* STICKY NAV */
+.sticky-nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.65);}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 24px 6px;}
+.hl .series{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;}
+.hl .chtitle{font-size:16px;font-weight:bold;color:var(--text);margin-top:2px;}
+.hr{text-align:right;}
+.hr .chap{font-size:12px;color:var(--accent);font-weight:bold;}
+.hr .lvl{font-size:10px;color:var(--dim);margin-top:2px;}
+.lvlbar{display:flex;gap:3px;padding:5px 24px;background:var(--surface);}
+.ls{height:4px;border-radius:2px;flex:1;background:var(--border);}
+.ls.done{background:var(--accent);}
+.ls.curr{background:rgba(74,158,255,.42);}
+.tnav{display:flex;background:var(--surface);border-top:1px solid var(--border);padding:0 16px;overflow-x:auto;scrollbar-width:none;}
+.tnav::-webkit-scrollbar{display:none;}
+.tbtn{padding:10px 16px;background:none;border:none;border-bottom:3px solid transparent;color:var(--dim);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;}
+.tbtn:hover{color:var(--text);}
+.tbtn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:bold;}
+
+/* MAIN */
+.main{max-width:820px;margin:0 auto;padding:30px 20px 70px;}
+.tp{display:none;animation:fi .25s ease;}
+.tp.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.stitle{font-size:19px;font-weight:bold;color:var(--text);margin-bottom:5px;}
+.ssub{font-size:12px;color:var(--dim);margin-bottom:22px;}
+
+/* PASSAGE */
+.passage{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:30px 34px;line-height:2.05;font-size:15px;}
+.passage p{margin-bottom:20px;}
+.passage p:last-child{margin-bottom:0;}
+
+[data-g]{padding:1px 4px;border-radius:3px;cursor:help;font-weight:bold;transition:filter .15s;}
+[data-g]:hover{filter:brightness(1.3);}
+.g1{background:rgba(74,158,255,.14);color:var(--g1);border-bottom:1px dashed var(--g1);}
+.g2{background:rgba(34,197,94,.14);color:var(--g2);border-bottom:1px dashed var(--g2);}
+.g3{background:rgba(168,85,247,.14);color:var(--g3);border-bottom:1px dashed var(--g3);}
+.g4{background:rgba(249,115,22,.14);color:var(--g4);border-bottom:1px dashed var(--g4);}
+.g5{background:rgba(239,68,68,.14);color:var(--g5);border-bottom:1px dashed var(--g5);}
+.g6{background:rgba(6,182,212,.14);color:var(--g6);border-bottom:1px dashed var(--g6);}
+.g7{background:rgba(234,179,8,.14);color:var(--g7);border-bottom:1px dashed var(--g7);}
+.g8{background:rgba(236,72,153,.14);color:var(--g8);border-bottom:1px dashed var(--g8);}
+
+#tt{position:fixed;background:#0a1830;border:1px solid var(--accent);border-radius:7px;padding:10px 14px;font-size:12px;max-width:290px;pointer-events:none;z-index:9999;display:none;box-shadow:0 6px 24px rgba(0,0,0,.6);}
+#tt-n{font-weight:bold;font-size:13px;margin-bottom:2px;}
+#tt-t{font-size:11px;color:var(--dim);margin-bottom:5px;}
+#tt-d{font-size:11px;color:var(--muted);line-height:1.5;}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);}
+.leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--dim);}
+.gdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+/* VOCAB */
+.mbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px;}
+.mbtn{padding:7px 15px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--dim);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;transition:all .2s;}
+.mbtn:hover{border-color:var(--accent);color:var(--text);}
+.mbtn.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:bold;}
+.vm{display:none;}
+.vm.active{display:block;}
+
+/* FLIP */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+.fc{height:128px;cursor:pointer;perspective:900px;}
+.fin{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .4s ease;}
+.fc.flip .fin{transform:rotateY(180deg);}
+.ff,.fb{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center;}
+.ff{background:var(--s2);}
+.fb{background:var(--surface);transform:rotateY(180deg);}
+.fw{font-size:14px;font-weight:bold;color:var(--accent);}
+.fpos{font-size:10px;color:var(--muted);margin-top:2px;}
+.ftr{font-size:13px;color:var(--dim);margin-bottom:5px;}
+.fex{font-size:10px;color:var(--muted);font-style:italic;line-height:1.4;}
+
+/* QUIZ */
+.qwrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px;}
+.qhd{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:18px;}
+.qq{font-size:18px;font-weight:bold;margin-bottom:6px;}
+.qs{font-size:12px;color:var(--dim);font-style:italic;margin-bottom:20px;min-height:18px;}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.qopt{padding:11px 14px;background:var(--s2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;font-family:Verdana,sans-serif;cursor:pointer;text-align:left;transition:all .2s;}
+.qopt:hover:not(:disabled){border-color:var(--accent);background:rgba(74,158,255,.07);}
+.qopt.correct{background:rgba(34,197,94,.15);border-color:var(--g2);color:var(--g2);}
+.qopt.wrong{background:rgba(239,68,68,.15);border-color:var(--g5);color:var(--g5);}
+.qopt:disabled{cursor:default;}
+.qfb{font-size:12px;color:var(--dim);min-height:18px;margin-bottom:10px;}
+.qnxt{padding:8px 20px;background:var(--accent);border:none;border-radius:6px;color:#fff;font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;display:none;}
+.qpb{margin-top:12px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.qpf{height:100%;background:var(--accent);border-radius:2px;transition:width .4s;}
+
+/* MATCH */
+.mca{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;}
+.mcol{display:flex;flex-direction:column;gap:8px;}
+.mi{padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:13px;cursor:pointer;transition:all .2s;user-select:none;}
+.mi:hover:not(.matched){border-color:var(--accent);}
+.mi.selected{border-color:var(--accent);background:rgba(74,158,255,.1);}
+.mi.matched{border-color:var(--g2);background:rgba(34,197,94,.1);color:var(--g2);cursor:default;pointer-events:none;}
+.mi.flash{border-color:var(--g5);background:rgba(239,68,68,.1);}
+.mscore{margin-top:14px;font-size:13px;color:var(--dim);}
+
+/* WRITE */
+.wa{display:flex;flex-direction:column;gap:14px;}
+.wcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;}
+.ww{font-size:15px;font-weight:bold;color:var(--accent);margin-bottom:2px;}
+.wt{font-size:12px;color:var(--dim);margin-bottom:10px;}
+.wi{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;padding:8px 12px;outline:none;transition:border-color .2s;}
+.wi:focus{border-color:var(--accent);}
+.wr{display:flex;gap:8px;margin-top:8px;}
+.wchk{padding:6px 14px;background:var(--accent);border:none;border-radius:5px;color:#fff;font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;}
+.wex{padding:6px 14px;background:none;border:1px solid var(--border);border-radius:5px;color:var(--dim);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;}
+.wfb{font-size:12px;margin-top:8px;display:none;}
+.wexans{font-size:12px;margin-top:6px;color:var(--g2);font-style:italic;display:none;}
+
+.stnote{background:var(--surface);border-left:3px solid var(--g7);border-radius:0 var(--r) var(--r) 0;padding:14px 18px;margin-top:22px;}
+.sttitle{font-weight:bold;color:var(--g7);font-size:12px;margin-bottom:10px;}
+.stitem{font-size:13px;color:var(--dim);margin-bottom:8px;}
+.stitem strong{color:var(--text);}
+
+/* GRAMMAR */
+.gacc{display:flex;flex-direction:column;gap:10px;}
+.gc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.gch{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;transition:background .2s;}
+.gch:hover{background:var(--s2);}
+.gnum{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;color:#fff;flex-shrink:0;}
+.glbl{flex:1;}
+.gname{font-size:14px;font-weight:bold;}
+.gtr{font-size:11px;color:var(--dim);margin-top:1px;}
+.garr{font-size:11px;color:var(--muted);transition:transform .3s;}
+.gc.open .garr{transform:rotate(90deg);}
+.gcb{display:none;padding:0 18px 20px;border-top:1px solid var(--border);}
+.gc.open .gcb{display:block;}
+
+.formula{display:inline-block;background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:8px 14px;font-size:13px;color:var(--accent);font-weight:bold;margin:14px 0 10px;font-family:monospace;letter-spacing:.3px;}
+.gdesc{font-size:13px;color:var(--dim);margin-bottom:12px;line-height:1.7;}
+.gexs{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.gex{padding:7px 12px;background:var(--bg);border-left:3px solid;border-radius:0 5px 5px 0;}
+.gex .en{font-size:13px;font-style:italic;}
+.gex .tr{font-size:11px;color:var(--dim);margin-top:3px;}
+.edge{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.22);border-radius:6px;padding:10px 14px;margin-bottom:14px;}
+.etit{font-size:11px;font-weight:bold;color:var(--g7);margin-bottom:6px;}
+.eit{font-size:12px;color:var(--dim);margin-bottom:4px;line-height:1.6;}
+
+.gmt{margin-top:14px;}
+.gmq{font-size:13px;margin-bottom:10px;color:var(--text);}
+.gmo{display:flex;flex-direction:column;gap:6px;}
+.gmopt{padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--dim);font-size:12px;font-family:Verdana,sans-serif;cursor:pointer;text-align:left;transition:all .2s;}
+.gmopt:hover:not(:disabled){border-color:var(--accent);color:var(--text);}
+.gmopt.correct{border-color:var(--g2);color:var(--g2);background:rgba(34,197,94,.08);}
+.gmopt.wrong{border-color:var(--g5);color:var(--g5);background:rgba(239,68,68,.08);}
+.gmfb{font-size:11px;margin-top:7px;min-height:16px;}
+
+/* EXERCISES */
+.exprog{display:flex;align-items:center;gap:14px;margin-bottom:26px;}
+.expb{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.exfill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s;}
+.exlbl{font-size:12px;color:var(--dim);white-space:nowrap;}
+.exst{font-size:14px;font-weight:bold;color:var(--accent);margin:26px 0 14px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+
+.fibi{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 18px;margin-bottom:10px;}
+.fibs{font-size:14px;line-height:1.8;margin-bottom:10px;}
+.fibinp{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;padding:5px 10px;width:200px;outline:none;transition:border-color .2s;}
+.fibinp:focus{border-color:var(--accent);}
+.fibinp.ok{border-color:var(--g2);color:var(--g2);}
+.fibinp.no{border-color:var(--g5);color:var(--g5);}
+.fibrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+.fibbtn{padding:5px 13px;background:var(--accent);border:none;border-radius:4px;color:#fff;font-family:Verdana,sans-serif;font-size:11px;cursor:pointer;}
+.fibhnt{font-size:11px;color:var(--muted);font-style:italic;}
+.fibfb{font-size:12px;margin-top:6px;}
+
+.erri{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:14px 18px;margin-bottom:10px;}
+.errs{font-size:14px;font-style:italic;margin-bottom:8px;line-height:1.7;}
+.errl{font-size:11px;color:var(--muted);margin-bottom:7px;}
+.errinp{background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;padding:5px 10px;width:240px;outline:none;transition:border-color .2s;}
+.errinp:focus{border-color:var(--accent);}
+.errrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.errbtn{padding:5px 13px;background:var(--accent);border:none;border-radius:4px;color:#fff;font-family:Verdana,sans-serif;font-size:11px;cursor:pointer;}
+.errfb{font-size:12px;margin-top:7px;}
+
+.tri{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin-bottom:10px;}
+.trq{font-size:14px;color:var(--g7);font-weight:bold;margin-bottom:12px;}
+.trinp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;padding:8px 12px;outline:none;resize:none;transition:border-color .2s;}
+.trinp:focus{border-color:var(--accent);}
+.trrow{display:flex;gap:8px;margin-top:10px;}
+.trchk{padding:7px 15px;background:var(--accent);border:none;border-radius:4px;color:#fff;font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;}
+.trex{padding:7px 15px;background:none;border:1px solid var(--border);border-radius:4px;color:var(--dim);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;transition:border-color .2s;}
+.trex:hover{border-color:var(--accent);}
+.trfb{font-size:12px;margin-top:9px;display:none;}
+
+/* EXPLORE */
+.xg{display:flex;flex-direction:column;gap:20px;}
+.xc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.xh{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);}
+.xic{font-size:18px;}
+.xtit{font-size:14px;font-weight:bold;}
+.xb{padding:18px 20px;font-size:13px;color:var(--dim);line-height:1.85;}
+.xb p{margin-bottom:12px;}
+.xb p:last-child{margin-bottom:0;}
+.xq{background:var(--bg);border-left:3px solid var(--accent);padding:10px 16px;border-radius:0 5px 5px 0;margin:12px 0;font-style:italic;color:var(--text);font-size:14px;}
+.tlist{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.titem{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:10px 14px;}
+.tsrc{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.ttxt{font-size:13px;color:var(--text);font-style:italic;}
+.taskbox{background:rgba(74,158,255,.06);border:1px solid rgba(74,158,255,.2);border-radius:6px;padding:16px 18px;margin-top:14px;}
+.tasklbl{font-size:11px;font-weight:bold;color:var(--accent);margin-bottom:10px;letter-spacing:1px;}
+.taskinp{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;padding:10px 12px;outline:none;resize:vertical;min-height:100px;transition:border-color .2s;}
+.taskinp:focus{border-color:var(--accent);}
+.taskex{margin-top:9px;padding:6px 14px;background:none;border:1px solid var(--border);border-radius:5px;color:var(--dim);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;transition:border-color .2s;}
+.taskex:hover{border-color:var(--accent);}
+.taskans{display:none;margin-top:12px;font-size:12px;color:var(--g2);font-style:italic;line-height:1.7;}
+
+@media(max-width:580px){
+  .passage{padding:18px;}
+  .qopts{grid-template-columns:1fr;}
+  .mca{grid-template-columns:1fr;}
+  header{padding:8px 14px 4px;}
+  .tbtn{padding:9px 11px;font-size:11px;}
+}
+</style>
+</head>
+<body>
+
+<div id="tt"><div id="tt-n"></div><div id="tt-t"></div><div id="tt-d"></div></div>
+
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <header>
+    <div class="hl">
+      <div class="series">Les Misérables · English Reader</div>
+      <div class="chtitle">Chapter 9: The Letters</div>
+    </div>
+    <div class="hr">
+      <div class="chap">Chapter 9 / 12</div>
+      <div class="lvl">B1 Intermediate</div>
+    </div>
+  </header>
+  <div class="lvlbar">
+    <div class="ls done"></div><div class="ls done"></div><div class="ls done"></div>
+    <div class="ls done"></div><div class="ls done"></div><div class="ls done"></div>
+    <div class="ls done"></div><div class="ls done"></div>
+    <div class="ls curr"></div>
+    <div class="ls"></div><div class="ls"></div><div class="ls"></div>
+  </div>
+  <nav class="tnav">
+    <button class="tbtn active" onclick="switchTab('reading',this)">📖 Reading</button>
+    <button class="tbtn" onclick="switchTab('vocab',this)">📚 Vocabulary</button>
+    <button class="tbtn" onclick="switchTab('grammar',this)">⚙️ Grammar</button>
+    <button class="tbtn" onclick="switchTab('exercises',this)">✏️ Exercises</button>
+    <button class="tbtn" onclick="switchTab('explore',this)">🔭 Explore</button>
+  </nav>
+</div>
+
+<div class="main">
+
+<!-- ======== TAB 1: READING ======== -->
+<div id="tab-reading" class="tp active">
+  <div class="stitle">The Letters</div>
+  <div class="ssub">Renkli kelimelerin üzerine gelin → gramer açıklaması · Hover for grammar notes</div>
+  <div class="passage">
+    <p>Marius spent three days <span class="g4" data-g="4">trying to find</span> the courage to write. He <span class="g4" data-g="4">hesitated before beginning</span> <span class="g8" data-g="8">a great many</span> times, afraid the words would come out wrong. On the third night, he finally sat at his small desk by the window and began.</p>
+
+    <p>"I don't know <span class="g3" data-g="3">whether you remember me</span>," he wrote, "but I have thought of <span class="g8" data-g="8">little</span> else since that afternoon." He crossed out the line and started again. <span class="g1" data-g="1">If he had known</span> what to say, it <span class="g1" data-g="1">would have been</span> much easier. But he did not know — so he wrote imperfectly and honestly, which was perhaps better.</p>
+
+    <p>The next morning, <span class="g4" data-g="4">instead of sitting</span> at his usual bench, Marius walked directly to the path where she always stopped. He placed the folded letter under a stone near the fountain and left <span class="g4" data-g="4">without looking back</span>. He <span class="g2" data-g="2">must have looked</span> very strange to anyone who saw him.</p>
+
+    <p>Cosette found it that same afternoon. <span class="g5" data-g="5">What she felt</span> as she read it was difficult to name — something between excitement and a fear she did not want to admit. She remembered <span class="g7" data-g="7">stopping herself</span> from looking at him the last time they had been close in the garden. She had tried <span class="g7" data-g="7">to forget him</span> since then. It had not worked.</p>
+
+    <p>She <span class="g6" data-g="6">was going to</span> write back. She was almost certain of it. She <span class="g6" data-g="6">was about to</span> sit down and write that very evening when she heard her father's slow footsteps outside her door. She folded the letter quickly and hid it inside her book.</p>
+
+    <p>Valjean had been noticing things. A figure had been spending <span class="g8" data-g="8">a great deal of</span> time near the iron gate of their garden. <span class="g8" data-g="8">A few</span> weeks ago, this <span class="g2" data-g="2">might have meant</span> nothing at all. But now, after hearing the name Javert twice in the same week, it felt like a warning he <span class="g2" data-g="2">could not afford to ignore</span>. He didn't know <span class="g3" data-g="3">who the figure was</span> or <span class="g3" data-g="3">whether they were truly watching the house</span>. But he had survived too long by trusting his instincts.</p>
+
+    <p>The decision came clearly: they <span class="g6" data-g="6">were going to</span> leave Rue Plumet. He had <span class="g8" data-g="8">very little</span> time left to plan. <span class="g1" data-g="1">If he had acted sooner</span>, none of this <span class="g1" data-g="1">would have been</span> necessary. But the city was shifting beneath them — and they had to shift with it.</p>
+
+    <p>That evening, <span class="g5" data-g="5">it was Éponine</span> who appeared first at the corner of the street. She had spent <span class="g8" data-g="8">many</span> evenings watching Marius watch the house. She knew <span class="g3" data-g="3">exactly what was happening</span>. She <span class="g2" data-g="2">could have told</span> <span class="g8" data-g="8">a great many</span> people — but she said nothing. She remembered <span class="g7" data-g="7">promising herself</span> never to interfere. She was <span class="g6" data-g="6">about to</span> break that promise.</p>
+
+    <p>In the city, <span class="g8" data-g="8">many</span> young men were talking of change, of resistance, of barricades. Marius had heard <span class="g8" data-g="8">little</span> of this lately — his mind had been elsewhere. But the city was not waiting for anyone. <span class="g1" data-g="1">If only he had paid attention</span>, he <span class="g1" data-g="1">might have seen</span> what was coming. <span class="g4" data-g="4">By staying</span> inside his love, he had missed the turning of the world.</p>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><div class="gdot" style="background:var(--g1)"></div>3rd Conditional</div>
+    <div class="leg"><div class="gdot" style="background:var(--g2)"></div>Modal Perfects</div>
+    <div class="leg"><div class="gdot" style="background:var(--g3)"></div>Indirect Questions</div>
+    <div class="leg"><div class="gdot" style="background:var(--g4)"></div>Preposition + V-ing</div>
+    <div class="leg"><div class="gdot" style="background:var(--g5)"></div>Cleft Sentences</div>
+    <div class="leg"><div class="gdot" style="background:var(--g6)"></div>Future in the Past</div>
+    <div class="leg"><div class="gdot" style="background:var(--g7)"></div>Gerund vs Infinitive</div>
+    <div class="leg"><div class="gdot" style="background:var(--g8)"></div>Quantifiers</div>
+  </div>
+</div>
+
+<!-- ======== TAB 2: VOCABULARY ======== -->
+<div id="tab-vocab" class="tp">
+  <div class="stitle">Vocabulary</div>
+  <div class="ssub">20 key words · 4 practice modes</div>
+  <div class="mbar">
+    <button class="mbtn active" onclick="switchMode('flip',this)">🃏 Flip Cards</button>
+    <button class="mbtn" onclick="switchMode('quiz',this)">🎯 Quiz</button>
+    <button class="mbtn" onclick="switchMode('match',this)">🔗 Match</button>
+    <button class="mbtn" onclick="switchMode('write',this)">✍️ Write</button>
+  </div>
+
+  <div id="vm-flip" class="vm active">
+    <div class="fgrid" id="fgrid"></div>
+    <div class="stnote">
+      <div class="sttitle">🗣️ Street English vs Formal English — Günlük vs Resmi Dil</div>
+      <div class="stitem"><strong>hesitate</strong> → Formal: "I hesitate to take such a risk." / Street: "I'm not sure about this.", "I'm on the fence.", "I keep going back and forth."</div>
+      <div class="stitem"><strong>desperate</strong> → Formal: "He was in a state of desperation." / Street: "He was losing it.", "He was at his wit's end.", "He was going crazy."</div>
+      <div class="stitem"><strong>lurk</strong> → Formal: "Someone was lurking near the entrance." / Street: "Someone was hanging around.", "Someone was creeping.", "Some sketchy guy was out there."</div>
+    </div>
+  </div>
+
+  <div id="vm-quiz" class="vm">
+    <div class="qwrap">
+      <div class="qhd"><span id="qctr">1 / 12</span><span id="qsc">Score: 0</span></div>
+      <div id="qq" class="qq"></div>
+      <div id="qs" class="qs"></div>
+      <div id="qopts" class="qopts"></div>
+      <div id="qfb" class="qfb"></div>
+      <button id="qnxt" class="qnxt" onclick="nextQ()">Next →</button>
+      <div class="qpb"><div class="qpf" id="qpf" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div id="vm-match" class="vm">
+    <div class="mca"><div class="mcol" id="ml"></div><div class="mcol" id="mr"></div></div>
+    <div class="mscore" id="mscore">Matched: 0 / 8</div>
+  </div>
+
+  <div id="vm-write" class="vm">
+    <div class="wa" id="warea"></div>
+  </div>
+</div>
+
+<!-- ======== TAB 3: GRAMMAR ======== -->
+<div id="tab-grammar" class="tp">
+  <div class="stitle">Grammar</div>
+  <div class="ssub">8 new structures · Karta tıklayarak açın</div>
+  <div class="gacc">
+
+    <!-- G1: 3rd Conditional -->
+    <div class="gc" id="gc1">
+      <div class="gch" onclick="tog('gc1')">
+        <div class="gnum" style="background:var(--g1)">1</div>
+        <div class="glbl"><div class="gname">3rd Conditional</div><div class="gtr">3. Koşul Cümlesi — Geçmişe Dair Pişmanlık / Hayal</div></div>
+        <div class="garr">▶</div>
+      </div>
+      <div class="gcb">
+        <div class="formula">If + had + V3 &nbsp;,&nbsp; would/could/might + have + V3</div>
+        <div class="gdesc">Geçmişte gerçekleşmemiş bir koşulu ve onun hayali sonucunu anlatır. "Eğer (o zaman) yapsaydım... olurdu" anlamı taşır. Pişmanlık, hayal ve geçmişe yönelik spekülasyon için kullanılır.</div>
+        <div class="gexs">
+          <div class="gex" style="border-color:var(--g1)">
+            <div class="en"><strong>If he had known</strong> what to say, it <strong>would have been</strong> much easier.</div>
+            <div class="tr">Eğer ne söyleyeceğini bilseydi, çok daha kolay olurdu. (bilmedi)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g1)">
+            <div class="en"><strong>If Valjean had acted sooner</strong>, they <strong>would have been</strong> safer.</div>
+            <div class="tr">Valjean daha erken hareket etseydi, daha güvende olurlardı. (hareket etmedi)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g1)">
+            <div class="en"><strong>If only he had paid attention</strong>, he <strong>might have seen</strong> what was coming.</div>
+            <div class="tr">Keşke dikkat etseydi, belki ne geleceğini görebilirdi.</div>
+          </div>
+        </div>
+        <div class="edge">
+          <div class="etit">⚠️ Edge Cases — Dikkat Edilmesi Gerekenler</div>
+          <div class="eit">• "would have" = kesin sonuç / "might have / could have" = olası sonuç — bunlar değiştirilebilir</div>
+          <div class="eit">• "If only" pişmanlığı güçlendirir: "If only I had listened!" = Keşke dinleseydim!</div>
+          <div class="eit">• 2. Koşul ile karıştırma: "If he knew..." (şimdi/genelde) vs. "If he had known..." (geçmişte, olmadı)</div>
+          <div class="eit">• Inversion (edebi): "Had he known..." = "If he had known..." — resmi/edebi metinlerde "if" kaldırılır</div>
+        </div>
+        <div class="gmt">
+          <div class="gmq">✏️ Which sentence is in the 3rd Conditional?</div>
+          <div class="gmo">
+            <button class="gmopt" onclick="gma(this,'gc1','w')">a) If she knows the truth, she will tell him.</button>
+            <button class="gmopt" onclick="gma(this,'gc1','w')">b) If she knew the truth, she would tell him.</button>
+            <button class="gmopt" onclick="gma(this,'gc1','c')">c) If she had known the truth, she would have told him.</button>
+            <button class="gmopt" onclick="gma(this,'gc1','w')">d) If she had known the truth, she would tell him.</button>
+          </div>
+          <div class="gmfb" id="gc1-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G2: Modal Perfects -->
+    <div class="gc" id="gc2">
+      <div class="gch" onclick="tog('gc2')">
+        <div class="gnum" style="background:var(--g2)">2</div>
+        <div class="glbl"><div class="gname">Modal Perfects</div><div class="gtr">Geçmişe Yönelik Modaller — must have / might have / could have</div></div>
+        <div class="garr">▶</div>
+      </div>
+      <div class="gcb">
+        <div class="formula">must / might / could / should  +  have  +  V3</div>
+        <div class="gdesc">Geçmişteki bir olayı ya da durumu tahmin etmek, ihtimali tartışmak ya da pişmanlığı ifade etmek için kullanılır. Her modal farklı bir kesinlik derecesi taşır.</div>
+        <div class="gexs">
+          <div class="gex" style="border-color:var(--g2)">
+            <div class="en">He <strong>must have looked</strong> very strange to anyone watching.</div>
+            <div class="tr">Onu görene çok tuhaf görünmüş olmalıydı. (neredeyse kesin çıkarım)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g2)">
+            <div class="en">A few weeks ago, this <strong>might have meant</strong> nothing.</div>
+            <div class="tr">Birkaç hafta önce bu hiçbir şey ifade etmemiş olabilirdi. (ihtimal)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g2)">
+            <div class="en">She <strong>could have told</strong> many people — but she stayed silent.</div>
+            <div class="tr">Pek çok kişiye söyleyebilirdi — ama sessiz kaldı. (yapabilirdi ama yapmadı)</div>
+          </div>
+        </div>
+        <div class="edge">
+          <div class="etit">⚠️ Edge Cases — Dikkat Edilmesi Gerekenler</div>
+          <div class="eit">• <strong>must have</strong> = mantıksal çıkarım (kesinlik yüksek): "He must have been tired." — başka nasıl açıklarsın?</div>
+          <div class="eit">• <strong>might have / could have</strong> = ihtimal: "She might have seen him." — belki gördü, belki görmedi</div>
+          <div class="eit">• <strong>should have</strong> = pişmanlık: "He should have listened." = Dinlemeliydi (ama dinlemedi).</div>
+          <div class="eit">• ✗ "He must had known." → ✓ "He must have known." — daima "have + V3" yapısı</div>
+        </div>
+        <div class="gmt">
+          <div class="gmq">✏️ Choose: Someone is late. You say: "She _____ the wrong bus."</div>
+          <div class="gmo">
+            <button class="gmopt" onclick="gma(this,'gc2','w')">a) must took</button>
+            <button class="gmopt" onclick="gma(this,'gc2','c')">b) must have taken</button>
+            <button class="gmopt" onclick="gma(this,'gc2','w')">c) must has taken</button>
+            <button class="gmopt" onclick="gma(this,'gc2','w')">d) must be taking</button>
+          </div>
+          <div class="gmfb" id="gc2-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G3: Indirect Questions -->
+    <div class="gc" id="gc3">
+      <div class="gch" onclick="tog('gc3')">
+        <div class="gnum" style="background:var(--g3)">3</div>
+        <div class="glbl"><div class="gname">Indirect Questions</div><div class="gtr">Dolaylı Sorular</div></div>
+        <div class="garr">▶</div>
+      </div>
+      <div class="gcb">
+        <div class="formula">I wonder / I don't know / Can you tell me  +  if/whether/wh-  +  S + V</div>
+        <div class="gdesc">Soruyu doğrudan sormak yerine bir cümle içine gömmek. Dikkat: dolaylı sorularda fiil-özne sırası DEĞİŞMEZ, soru sırası kullanılmaz. Daha nazik ve resmi bir ifade biçimidir.</div>
+        <div class="gexs">
+          <div class="gex" style="border-color:var(--g3)">
+            <div class="en">He didn't know <strong>whether you remember me</strong>.</div>
+            <div class="tr">Beni hatırlayıp hatırlamadığını bilmiyordum. (Direct: "Do you remember me?")</div>
+          </div>
+          <div class="gex" style="border-color:var(--g3)">
+            <div class="en">She wondered <strong>where he lived</strong>.</div>
+            <div class="tr">Nerede yaşadığını merak etti. (Direct: "Where does he live?")</div>
+          </div>
+          <div class="gex" style="border-color:var(--g3)">
+            <div class="en">Can you tell me <strong>what time the gates close</strong>?</div>
+            <div class="tr">Kapıların saat kaçta kapandığını söyleyebilir misiniz?</div>
+          </div>
+        </div>
+        <div class="edge">
+          <div class="etit">⚠️ Edge Cases — Dikkat Edilmesi Gerekenler</div>
+          <div class="eit">• ✗ "I don't know where does he live." → ✓ "I don't know where he lives." — yardımcı fiil (do/does/did) kullanılmaz</div>
+          <div class="eit">• Evet/Hayır soruları için "if" ya da "whether" kullanılır: "I wonder <strong>if</strong> she read it."</div>
+          <div class="eit">• Wh- soruları için aynı wh- kelimesini kullan: where, what, who, how — ama sıra değişir</div>
+        </div>
+        <div class="gmt">
+          <div class="gmq">✏️ Which indirect question is correct?</div>
+          <div class="gmo">
+            <button class="gmopt" onclick="gma(this,'gc3','w')">a) I wonder where does she live.</button>
+            <button class="gmopt" onclick="gma(this,'gc3','c')">b) I wonder where she lives.</button>
+            <button class="gmopt" onclick="gma(this,'gc3','w')">c) I wonder where is she living.</button>
+            <button class="gmopt" onclick="gma(this,'gc3','w')">d) I wonder does she live here.</button>
+          </div>
+          <div class="gmfb" id="gc3-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G4: Preposition + V-ing -->
+    <div class="gc" id="gc4">
+      <div class="gch" onclick="tog('gc4')">
+        <div class="gnum" style="background:var(--g4)">4</div>
+        <div class="glbl"><div class="gname">Preposition + V-ing</div><div class="gtr">Edat + Gerundium</div></div>
+        <div class="garr">▶</div>
+      </div>
+      <div class="gcb">
+        <div class="formula">preposition  +  V-ing &nbsp;(by / instead of / without / before / after / on)</div>
+        <div class="gdesc">İngilizcede bir edattan sonra gelen fiil her zaman <strong>-ing</strong> alır — to-infinitive almaz. Bu, Türkçe "yapmaktan / yapmak yerine / yaparak" gibi anlamları karşılar.</div>
+        <div class="gexs">
+          <div class="gex" style="border-color:var(--g4)">
+            <div class="en"><strong>Instead of sitting</strong> at his usual bench, Marius walked to the path.</div>
+            <div class="tr">Olağan bankında oturmak yerine Marius patikayla yürüdü.</div>
+          </div>
+          <div class="gex" style="border-color:var(--g4)">
+            <div class="en">He left <strong>without looking back</strong>.</div>
+            <div class="tr">Geriye bakmaksızın ayrıldı.</div>
+          </div>
+          <div class="gex" style="border-color:var(--g4)">
+            <div class="en"><strong>By staying</strong> inside his love, he missed the turning of the world.</div>
+            <div class="tr">Sevgisinin içinde kalarak dünyanın dönüşünü kaçırdı.</div>
+          </div>
+        </div>
+        <div class="edge">
+          <div class="etit">⚠️ Edge Cases — Dikkat Edilmesi Gerekenler</div>
+          <div class="eit">• ✗ "instead of to sit" → ✓ "instead of sitting" — edatlar to-infinitive almaz</div>
+          <div class="eit">• "to" bazen edat gibi çalışır: "look forward to seeing you" — buradaki "to" edat, bu yüzden V-ing alır</div>
+          <div class="eit">• Yaygın kalıplar: before/after + V-ing, by + V-ing (nasıl yapıldığı), without + V-ing (yapmaksızın), on + V-ing (yapıp yapar yapmaz)</div>
+        </div>
+        <div class="gmt">
+          <div class="gmq">✏️ Choose the correct form: "She left _____ a word."</div>
+          <div class="gmo">
+            <button class="gmopt" onclick="gma(this,'gc4','w')">a) without to say</button>
+            <button class="gmopt" onclick="gma(this,'gc4','c')">b) without saying</button>
+            <button class="gmopt" onclick="gma(this,'gc4','w')">c) without to have said</button>
+            <button class="gmopt" onclick="gma(this,'gc4','w')">d) without she said</button>
+          </div>
+          <div class="gmfb" id="gc4-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G5: Cleft Sentences -->
+    <div class="gc" id="gc5">
+      <div class="gch" onclick="tog('gc5')">
+        <div class="gnum" style="background:var(--g5)">5</div>
+        <div class="glbl"><div class="gname">Cleft Sentences</div><div class="gtr">Yarık Cümleler — Vurgu için</div></div>
+        <div class="garr">▶</div>
+      </div>
+      <div class="gcb">
+        <div class="formula">It was / It is + [vurgulanan unsur] + who / that + ... &nbsp;|&nbsp; What + S + V + was / is + ...</div>
+        <div class="gdesc">Cümlenin belirli bir unsurunu öne çıkarmak için cümleyi iki parçaya "yarmak". Yazılı ve sözlü İngilizcede çok yaygın, özellikle vurgu gerektiren anlatılarda.</div>
+        <div class="gexs">
+          <div class="gex" style="border-color:var(--g5)">
+            <div class="en"><strong>It was Éponine</strong> who appeared first at the corner.</div>
+            <div class="tr">Köşede ilk ortaya çıkan Éponine'di. (başkası değil, o)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g5)">
+            <div class="en"><strong>What she felt</strong> was difficult to name.</div>
+            <div class="tr">Hissettiği şeyi adlandırmak zordu. (duyguyu öne çıkarır)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g5)">
+            <div class="en"><strong>It was the letter</strong> that changed everything.</div>
+            <div class="tr">Her şeyi değiştiren o mektuptu. (nedeni öne çıkarır)</div>
+          </div>
+        </div>
+        <div class="edge">
+          <div class="etit">⚠️ Edge Cases — Dikkat Edilmesi Gerekenler</div>
+          <div class="eit">• Kişiler için "who" tercih edilir; nesneler için "that": "It was Marius who wrote it." / "It was the letter that changed things."</div>
+          <div class="eit">• "What + S + V" = "The thing that + S + V": "What I need is time." = "The thing I need is time."</div>
+          <div class="eit">• Zaman ve yer vurgusu: "It was in the garden that they first met." — edatı cümle içinde bırak</div>
+        </div>
+        <div class="gmt">
+          <div class="gmq">✏️ Rewrite with emphasis on "the letter": Marius left the letter under the stone.</div>
+          <div class="gmo">
+            <button class="gmopt" onclick="gma(this,'gc5','w')">a) What Marius left the letter under the stone.</button>
+            <button class="gmopt" onclick="gma(this,'gc5','c')">b) It was the letter that Marius left under the stone.</button>
+            <button class="gmopt" onclick="gma(this,'gc5','w')">c) It was Marius the letter left under the stone.</button>
+            <button class="gmopt" onclick="gma(this,'gc5','w')">d) What the letter was Marius left it under the stone.</button>
+          </div>
+          <div class="gmfb" id="gc5-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G6: Future in the Past -->
+    <div class="gc" id="gc6">
+      <div class="gch" onclick="tog('gc6')">
+        <div class="gnum" style="background:var(--g6)">6</div>
+        <div class="glbl"><div class="gname">Future in the Past</div><div class="gtr">Geçmişten Bakılan Gelecek — was going to / was about to</div></div>
+        <div class="garr">▶</div>
+      </div>
+      <div class="gcb">
+        <div class="formula">was / were going to + V &nbsp;|&nbsp; was / were about to + V</div>
+        <div class="gdesc">Geçmiş bir anlatı içinde "o sırada yapılmak üzere olan" ya da "planlanmış olan" eylemi anlatır. Türkçede "yapacaktı / yapmak üzereydi" karşılığı.</div>
+        <div class="gexs">
+          <div class="gex" style="border-color:var(--g6)">
+            <div class="en">She <strong>was going to</strong> write back that very evening.</div>
+            <div class="tr">O akşam cevap yazacaktı. (planı vardı)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g6)">
+            <div class="en">She <strong>was about to</strong> sit down when she heard the footsteps.</div>
+            <div class="tr">Tam oturmak üzereydi ki ayak seslerini duydu. (tam o an)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g6)">
+            <div class="en">They <strong>were going to</strong> leave Rue Plumet the next morning.</div>
+            <div class="tr">Ertesi sabah Rue Plumet'yi terk edeceklerdi.</div>
+          </div>
+        </div>
+        <div class="edge">
+          <div class="etit">⚠️ Edge Cases — Dikkat Edilmesi Gerekenler</div>
+          <div class="eit">• "was going to" = önceden planlanmış, niyet vardı (ve genellikle gerçekleşmedi)</div>
+          <div class="eit">• "was about to" = tam o an / o saniye gerçekleşmek üzereydi — "when" ile sık kullanılır</div>
+          <div class="eit">• "would" da Future in the Past olarak kullanılır ama daha çok tahmin ve alışkanlık için: "I knew she would come." </div>
+        </div>
+        <div class="gmt">
+          <div class="gmq">✏️ Which best describes "she raised her hand but didn't speak"?</div>
+          <div class="gmo">
+            <button class="gmopt" onclick="gma(this,'gc6','w')">a) She was going to speak.</button>
+            <button class="gmopt" onclick="gma(this,'gc6','c')">b) She was about to speak.</button>
+            <button class="gmopt" onclick="gma(this,'gc6','w')">c) She would speak.</button>
+            <button class="gmopt" onclick="gma(this,'gc6','w')">d) She had been about speaking.</button>
+          </div>
+          <div class="gmfb" id="gc6-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G7: Gerund vs Infinitive -->
+    <div class="gc" id="gc7">
+      <div class="gch" onclick="tog('gc7')">
+        <div class="gnum" style="background:var(--g7)">7</div>
+        <div class="glbl"><div class="gname">Gerund vs Infinitive — Meaning-Changing Pairs</div><div class="gtr">Anlam Değiştiren Çiftler</div></div>
+        <div class="garr">▶</div>
+      </div>
+      <div class="gcb">
+        <div class="formula">remember / stop / try / forget / mean + V-ing &nbsp;≠&nbsp; + to-V</div>
+        <div class="gdesc">Bazı fiiller hem V-ing hem de to-infinitive alabilir — ama <strong>anlamları değişir</strong>. Bu fark çok önemli: yanlış kullanmak cümlenin anlamını tamamen değiştirir.</div>
+        <div class="gexs">
+          <div class="gex" style="border-color:var(--g7)">
+            <div class="en">She remembered <strong>stopping herself</strong>. (= geçmişte yaptığını hatırladı)</div>
+            <div class="tr">vs. She remembered <strong>to stop</strong>. (= durması gerektiğini hatırladı, durdu)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g7)">
+            <div class="en">She tried <strong>to forget him</strong>. (= unutmaya çalıştı — niyet/attempt)</div>
+            <div class="tr">vs. She tried <strong>forgetting him</strong>. (= unutmayı denedi — bir çözüm yolu olarak)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g7)">
+            <div class="en">He stopped <strong>to read</strong> the letter. (= okumak için durdu)</div>
+            <div class="tr">vs. He stopped <strong>reading</strong>. (= okumayı bıraktı)</div>
+          </div>
+        </div>
+        <div class="edge">
+          <div class="etit">⚠️ Edge Cases — Dikkat Edilmesi Gerekenler</div>
+          <div class="eit">• remember + V-ing = geçmişte yaptığın bir şeyi hatırlamak | remember + to-V = yapman gerektiğini hatırlamak (ve yapmak)</div>
+          <div class="eit">• forget + V-ing = geçmişte yaptığını unutmak | forget + to-V = yapman gereken şeyi unutmak</div>
+          <div class="eit">• mean + V-ing = demek oluyor ki | mean + to-V = niyet etmek: "I didn't mean to hurt you."</div>
+        </div>
+        <div class="gmt">
+          <div class="gmq">✏️ "I remember _____ that letter for the first time." (geçmişteki anı hatırlıyor)</div>
+          <div class="gmo">
+            <button class="gmopt" onclick="gma(this,'gc7','w')">a) to read</button>
+            <button class="gmopt" onclick="gma(this,'gc7','c')">b) reading</button>
+            <button class="gmopt" onclick="gma(this,'gc7','w')">c) to have read</button>
+            <button class="gmopt" onclick="gma(this,'gc7','w')">d) read</button>
+          </div>
+          <div class="gmfb" id="gc7-fb"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- G8: Quantifiers -->
+    <div class="gc" id="gc8">
+      <div class="gch" onclick="tog('gc8')">
+        <div class="gnum" style="background:var(--g8)">8</div>
+        <div class="glbl"><div class="gname">Quantifiers</div><div class="gtr">Niceleyiciler — few / a few / little / a little / much / many / a great deal of</div></div>
+        <div class="garr">▶</div>
+      </div>
+      <div class="gcb">
+        <div class="formula">few / a few + countable &nbsp;·&nbsp; little / a little + uncountable &nbsp;·&nbsp; much / many / a great deal of</div>
+        <div class="gdesc">İngilizcede "kaç / ne kadar" soruları için doğru niceleyiciyi seçmek kritiktir. Sayılabilir (countable) ve sayılamaz (uncountable) isimler için farklı kelimeler kullanılır.</div>
+        <div class="gexs">
+          <div class="gex" style="border-color:var(--g8)">
+            <div class="en">Valjean had <strong>very little</strong> time left to plan.</div>
+            <div class="tr">Valjean'ın planlamak için çok az zamanı kalmıştı. (time = uncountable)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g8)">
+            <div class="en"><strong>A few</strong> weeks ago, this might have meant nothing.</div>
+            <div class="tr">Birkaç hafta önce bu hiçbir şey ifade etmemiş olabilirdi. (weeks = countable)</div>
+          </div>
+          <div class="gex" style="border-color:var(--g8)">
+            <div class="en">Someone was spending <strong>a great deal of</strong> time near the gate.</div>
+            <div class="tr">Birisi kapı önünde çok büyük miktarda zaman geçiriyordu. (formal, uncountable)</div>
+          </div>
+        </div>
+        <div class="edge">
+          <div class="etit">⚠️ Edge Cases — Dikkat Edilmesi Gerekenler</div>
+          <div class="eit">• few (az, yeterli değil, olumsuz his) vs. a few (birkaç, yeterli, nötr/olumlu): "She has few friends." (zavallı) vs. "She has a few friends." (iyi)</div>
+          <div class="eit">• little (çok az, yeterli değil) vs. a little (biraz, yeterince): "There is little hope." (karamsar) vs. "There is a little hope." (umutlu)</div>
+          <div class="eit">• much = uncountable için (resmi/olumsuz); many = countable için: "not much time" / "not many days"</div>
+          <div class="eit">• "a great deal of" ve "plenty of" = büyük miktar (her ikisi de formal)</div>
+        </div>
+        <div class="gmt">
+          <div class="gmq">✏️ Choose: "There was _____ time remaining before dawn."</div>
+          <div class="gmo">
+            <button class="gmopt" onclick="gma(this,'gc8','w')">a) a few</button>
+            <button class="gmopt" onclick="gma(this,'gc8','w')">b) many</button>
+            <button class="gmopt" onclick="gma(this,'gc8','c')">c) very little</button>
+            <button class="gmopt" onclick="gma(this,'gc8','w')">d) a little of</button>
+          </div>
+          <div class="gmfb" id="gc8-fb"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======== TAB 4: EXERCISES ======== -->
+<div id="tab-exercises" class="tp">
+  <div class="stitle">Exercises</div>
+  <div class="ssub">Boşluk doldurma · Hata bulma · Türkçe → İngilizce</div>
+  <div class="exprog">
+    <div class="expb"><div class="exfill" id="exfill" style="width:0%"></div></div>
+    <div class="exlbl" id="exlbl">0 / 12 tamamlandı</div>
+  </div>
+
+  <div class="exst">📝 A. Fill in the Blank — Boşluğu Doldurun</div>
+
+  <div class="fibi" data-done="false">
+    <div class="fibs"><strong>If</strong> Valjean <input class="fibinp" id="f1" placeholder="act — 3rd Conditional"> sooner, they would have been safer.</div>
+    <div class="fibrow">
+      <button class="fibbtn" onclick="chkF('f1',['had acted'],'f1fb')">Check</button>
+      <span class="fibhnt">Hint: had + V3 (past participle)</span>
+    </div>
+    <div class="fibfb" id="f1fb"></div>
+  </div>
+
+  <div class="fibi" data-done="false">
+    <div class="fibs">He left the letter <input class="fibinp" id="f2" placeholder="preposition + look"> back.</div>
+    <div class="fibrow">
+      <button class="fibbtn" onclick="chkF('f2',['without looking'],'f2fb')">Check</button>
+      <span class="fibhnt">Hint: without + V-ing</span>
+    </div>
+    <div class="fibfb" id="f2fb"></div>
+  </div>
+
+  <div class="fibi" data-done="false">
+    <div class="fibs">Cosette <input class="fibinp" id="f3" placeholder="Future in the Past"> write back that evening.</div>
+    <div class="fibrow">
+      <button class="fibbtn" onclick="chkFM('f3',['was going to','was about to'],'f3fb')">Check</button>
+      <span class="fibhnt">Hint: was _____ to (iki farklı seçenek kabul edilir)</span>
+    </div>
+    <div class="fibfb" id="f3fb"></div>
+  </div>
+
+  <div class="fibi" data-done="false">
+    <div class="fibs">Valjean didn't know <input class="fibinp" id="f4" placeholder="indirect question — if/whether"> the man was truly watching.</div>
+    <div class="fibrow">
+      <button class="fibbtn" onclick="chkFM('f4',['if','whether'],'f4fb')">Check</button>
+      <span class="fibhnt">Hint: "if" ya da "whether"</span>
+    </div>
+    <div class="fibfb" id="f4fb"></div>
+  </div>
+
+  <div class="fibi" data-done="false">
+    <div class="fibs">She remembered <input class="fibinp" id="f5" placeholder="stop — gerund/infinitive"> herself from looking at him. (geçmişteki anı hatırlıyor)</div>
+    <div class="fibrow">
+      <button class="fibbtn" onclick="chkF('f5',['stopping'],'f5fb')">Check</button>
+      <span class="fibhnt">Hint: remember + V-ing (geçmişteki anı hatırlama)</span>
+    </div>
+    <div class="fibfb" id="f5fb"></div>
+  </div>
+
+  <div class="exst">🔍 B. Find the Error — Hatayı Düzeltin</div>
+  <div class="ssub" style="margin-top:-12px;margin-bottom:14px">Her cümlede bir dilbilgisi hatası var. Doğru formu yazın.</div>
+
+  <div class="erri" data-done="false">
+    <div class="errs">"If she had known the truth, she would told him immediately."</div>
+    <div class="errl">Hatalı kısım: <em>would told</em> → Doğrusu?</div>
+    <div class="errrow">
+      <input class="errinp" id="e1" placeholder="Doğru formu yazın...">
+      <button class="errbtn" onclick="chkE('e1',['would have told'],'e1fb')">Check</button>
+    </div>
+    <div class="errfb" id="e1fb"></div>
+  </div>
+
+  <div class="erri" data-done="false">
+    <div class="errs">"I wonder where does Marius live."</div>
+    <div class="errl">Hatalı kısım: <em>does Marius live</em> → Doğrusu? (indirect question kuralı)</div>
+    <div class="errrow">
+      <input class="errinp" id="e2" placeholder="Doğru formu yazın...">
+      <button class="errbtn" onclick="chkE('e2',['where marius lives','marius lives'],'e2fb')">Check</button>
+    </div>
+    <div class="errfb" id="e2fb"></div>
+  </div>
+
+  <div class="erri" data-done="false">
+    <div class="errs">"Instead of to sit at the bench, he walked to the gate."</div>
+    <div class="errl">Hatalı kısım: <em>to sit</em> → Doğrusu? (preposition + V-ing kuralı)</div>
+    <div class="errrow">
+      <input class="errinp" id="e3" placeholder="Doğru formu yazın...">
+      <button class="errbtn" onclick="chkE('e3',['sitting','instead of sitting'],'e3fb')">Check</button>
+    </div>
+    <div class="errfb" id="e3fb"></div>
+  </div>
+
+  <div class="erri" data-done="false">
+    <div class="errs">"There was a few time left — they had to move quickly."</div>
+    <div class="errl">Hatalı kısım: <em>a few time</em> → Doğrusu? (quantifier + countable/uncountable)</div>
+    <div class="errrow">
+      <input class="errinp" id="e4" placeholder="Doğru formu yazın...">
+      <button class="errbtn" onclick="chkE('e4',['little time','very little time','a little time'],'e4fb')">Check</button>
+    </div>
+    <div class="errfb" id="e4fb"></div>
+  </div>
+
+  <div class="exst">🇹🇷 → 🇬🇧 C. Translate — Türkçeden İngilizceye Çevirin</div>
+
+  <div class="tri" data-done="false">
+    <div class="trq">"Eğer daha erken hareket etseydi, hiçbirine gerek kalmayacaktı."</div>
+    <textarea class="trinp" id="t1" rows="2" placeholder="Your English translation..."></textarea>
+    <div class="trrow">
+      <button class="trchk" onclick="showTr('t1fb','t1done')">Check ✓</button>
+      <button class="trex" onclick="tog2('t1ex')">💡 Example</button>
+    </div>
+    <div class="trfb" id="t1fb">✅ Harika! Örnek cevapla karşılaştır.</div>
+    <div class="trfb" id="t1ex" style="color:var(--g2)">💡 <strong>If he had acted sooner, none of this would have been necessary.</strong> <em>(3rd Conditional)</em></div>
+  </div>
+
+  <div class="tri" data-done="false">
+    <div class="trq">"Cosette o akşam cevap yazmak üzereydi ki babasının ayak seslerini duydu."</div>
+    <textarea class="trinp" id="t2" rows="2" placeholder="Your English translation..."></textarea>
+    <div class="trrow">
+      <button class="trchk" onclick="showTr('t2fb','t2done')">Check ✓</button>
+      <button class="trex" onclick="tog2('t2ex')">💡 Example</button>
+    </div>
+    <div class="trfb" id="t2fb">✅ Harika! Örnek cevapla karşılaştır.</div>
+    <div class="trfb" id="t2ex" style="color:var(--g2)">💡 <strong>Cosette was about to write back that evening when she heard her father's footsteps.</strong> <em>(was about to + when)</em></div>
+  </div>
+
+  <div class="tri" data-done="false">
+    <div class="trq">"Adamın evi gerçekten gözetleyip gözetlemediğini bilmiyordu."</div>
+    <textarea class="trinp" id="t3" rows="2" placeholder="Your English translation..."></textarea>
+    <div class="trrow">
+      <button class="trchk" onclick="showTr('t3fb','t3done')">Check ✓</button>
+      <button class="trex" onclick="tog2('t3ex')">💡 Example</button>
+    </div>
+    <div class="trfb" id="t3fb">✅ Harika! Örnek cevapla karşılaştır.</div>
+    <div class="trfb" id="t3ex" style="color:var(--g2)">💡 <strong>He didn't know whether the man was truly watching the house.</strong> <em>(Indirect Question)</em></div>
+  </div>
+</div>
+
+<!-- ======== TAB 5: EXPLORE ======== -->
+<div id="tab-explore" class="tp">
+  <div class="stitle">Explore</div>
+  <div class="ssub">Yazarlık · Felsefe · Çeviri karşılaştırması · Yazma görevi</div>
+  <div class="xg">
+
+    <div class="xc">
+      <div class="xh"><div class="xic">✍️</div><div class="xtit" style="color:var(--g4)">Craft Box — Yazarlık Tekniği</div></div>
+      <div class="xb">
+        <p><strong>Teknik: Delayed Revelation — Bilgiyi Zamana Yayma</strong></p>
+        <p>Hugo, bu bölümde okuyucuya her şeyi söylemez. Mektubun tam içeriğini görmeyiz. Cosette'in cevabını bilmeyiz. Éponine'in ne yapacağını öğrenmeyiz. Tüm bu belirsizlikler kasıtlıdır — Hugo okuyucuyu merak içinde tutarak onu anlatının ortak yazarına dönüştürür.</p>
+        <div class="xq">"She was about to sit down and write that very evening when she heard her father's footsteps."</div>
+        <p>Bu cümle bir kapıyı tam açmadan kapatır. Cosette yazacak mıydı? Mektup ne olacak? Hugo cevabı vermiyor — çünkü cevabı bilmek merakı öldürür. Askıda bırakmak, okuyucuyu metne bağlayan iptir.</p>
+        <p><strong>Uygulayabileceğin teknik:</strong> Bir sahneyi tamamlamadan bitir. Karakterin ne yapacağını söylemek yerine tam önüne bir engel çıkar. Okuyucunu yarım bırak — ama iyi yarım.</p>
+      </div>
+    </div>
+
+    <div class="xc">
+      <div class="xh"><div class="xic">🏛️</div><div class="xtit" style="color:var(--g1)">Philosophy Corner — Felsefe Köşesi</div></div>
+      <div class="xb">
+        <p><strong>Aristoteles: Episteme ve Sevginin Sınırı</strong></p>
+        <p>Aristoteles'e göre <em>episteme</em> (ἐπιστήμη) — yani gerçek bilgi — nesnesini tam olarak kavramayı gerektirir. Marius, Cosette hakkında neredeyse hiçbir şey bilmemektedir: ne kim olduğunu, ne adını, ne yaşadığı gerçeği. Ama bu bilgisizlik onun hissini engellemiyor. Bu, Aristoteles'i şaşırtır mıydı? Belki de "Eros, episteme'ye ihtiyaç duymaz — ama philos olmak için tanımak gerekir" derdi.</p>
+        <p><strong>Kant: Ahlaki Değer ve Niyet</strong></p>
+        <p>Kant için bir eylemin ahlaki değeri sonucundan değil, niyetinden kaynaklanır. Valjean'ın Cosette'i koruma kararı içtendir. Ama bu içten niyet bile, Cosette'in hayatını kısıtlıyorsa, Kant açısından sorunlu hale gelebilir. "İyi niyet" yeterli midir — yoksa eylemin özgürlük üzerindeki etkisi de hesaba katılmalı mıdır?</p>
+        <div class="xq">"If he had acted sooner, none of this would have been necessary."</div>
+        <p><strong>Düşün:</strong> Korumak ile hapsetmek arasındaki sınır nerede çizilir? Valjean Cosette'i gerçekten özgür bırakabilir mi — ve bunu istemek ne anlama gelir?</p>
+      </div>
+    </div>
+
+    <div class="xc">
+      <div class="xh"><div class="xic">🌐</div><div class="xtit" style="color:var(--g6)">Translation Comparison — Çeviri Karşılaştırması</div></div>
+      <div class="xb">
+        <p>Marius'un mektup yazdığı sahnenin Hugo'nun Fransızcasından üç farklı İngilizce çevirisi. Her çevirmen farklı bir tercih yapar.</p>
+        <div class="tlist">
+          <div class="titem">
+            <div class="tsrc">Orijinal (Fransızca) · Victor Hugo, 1862</div>
+            <div class="ttxt">"Il écrivit lentement, en s'arrêtant, en recommençant, en raturant. Il y mit tout son cœur."</div>
+          </div>
+          <div class="titem">
+            <div class="tsrc">Translation A · Fahnestock &amp; MacAfee</div>
+            <div class="ttxt">"He wrote slowly, pausing, beginning again, crossing out. He put his whole heart into it."</div>
+          </div>
+          <div class="titem">
+            <div class="tsrc">Translation B · Norman Denny</div>
+            <div class="ttxt">"He wrote laboriously, with many pauses and fresh starts and crossings-out, pouring his heart into every word."</div>
+          </div>
+          <div class="titem">
+            <div class="tsrc">Translation C · Julie Rose</div>
+            <div class="ttxt">"He wrote slowly, stopping, starting again, scratching things out. He put his heart into it."</div>
+          </div>
+        </div>
+        <p style="margin-top:14px"><strong>Analiz:</strong> "laboriously" (B) ile "slowly" (A, C) arasındaki fark nedir? "pouring his heart into every word" (B) ile "put his whole heart into it" (A) hangi duyguyu daha güçlü taşır? Hangi çeviri sizi en çok Marius'un yerine koyuyor — ve neden?</p>
+      </div>
+    </div>
+
+    <div class="xc">
+      <div class="xh"><div class="xic">🖊️</div><div class="xtit" style="color:var(--g2)">Writing Task — Yazma Görevi</div></div>
+      <div class="xb">
+        <p>Birinden özür dilemek ya da bir şey itiraf etmek istediğin ama cesaret edemediğin için yazmadığın bir mektubu hayal et. O mektubun <strong>ilk üç cümlesini</strong> yaz. En az bir <strong>3rd Conditional</strong> (<em>If I had...</em>) ve bir <strong>indirect question</strong> (<em>I don't know whether...</em>) kullan.</p>
+        <div class="taskbox">
+          <div class="tasklbl">📝 YOUR WRITING</div>
+          <textarea class="taskinp" id="wtask" placeholder="Write the first 3 sentences of your imaginary letter...&#10;&#10;Try:&#10;• If I had said this sooner, ...&#10;• I don't know whether you remember...&#10;• Instead of writing, I..."></textarea>
+          <button class="taskex" onclick="tog2('wex')">💡 Example Answer</button>
+          <div class="taskans" id="wex">
+            <p>"I don't know <strong>whether</strong> you will ever read this — but I had to write it anyway. <strong>If I had spoken</strong> that day in the garden, things <strong>might have been</strong> different between us. <strong>Instead of saying</strong> nothing, I should have found the courage to tell you the truth."</p>
+            <p style="margin-top:8px;color:var(--muted);font-size:11px">Kullanılan yapılar: Indirect Question, 3rd Conditional, Modal Perfect, Preposition + V-ing</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end .main -->
+
+<script>
+// ─── TOOLTIP ───
+const GD={
+  '1':{n:'3rd Conditional',t:'3. Koşul Cümlesi',d:'If + had + V3, would/could/might + have + V3 — Geçmişte olmayan hayali bir koşul. Pişmanlık ve spekülasyon.'},
+  '2':{n:'Modal Perfects',t:'Geçmişe Yönelik Modaller',d:'must/might/could/should + have + V3 — Geçmişteki olay hakkında tahmin, ihtimal ya da pişmanlık ifadesi.'},
+  '3':{n:'Indirect Questions',t:'Dolaylı Sorular',d:'I wonder / I don\'t know + if/whether/wh- + S + V — Soru cümlesini gömülü hâle getirme. Fiil sırası değişmez!'},
+  '4':{n:'Preposition + V-ing',t:'Edat + Gerundium',d:'by/instead of/without/before/after + V-ing — Edattan sonra gelen fiil daima -ing alır, to-infinitive almaz.'},
+  '5':{n:'Cleft Sentences',t:'Yarık Cümleler',d:'"It was... who/that" ve "What...was" yapıları — Cümlenin belirli bir unsurunu öne çıkarmak için kullanılır.'},
+  '6':{n:'Future in the Past',t:'Geçmişten Bakılan Gelecek',d:'was going to + V (plan/niyet) | was about to + V (tam o an). Geçmiş anlatıda "yapacaktı / üzereydi" anlamı.'},
+  '7':{n:'Gerund vs Infinitive — Meaning Change',t:'Anlam Değiştiren Çiftler',d:'remember/stop/try + V-ing ≠ + to-V — İki form arasında anlam tamamen değişir. Dikkat!'},
+  '8':{n:'Quantifiers',t:'Niceleyiciler',d:'few/a few (countable) · little/a little (uncountable) · much/many · a great deal of — Doğru seçim anlam değiştirir.'}
+};
+const tt=document.getElementById('tt');
+document.querySelectorAll('[data-g]').forEach(el=>{
+  el.addEventListener('mouseenter',e=>{
+    const d=GD[e.target.dataset.g];if(!d)return;
+    document.getElementById('tt-n').textContent=d.n;
+    document.getElementById('tt-t').textContent=d.t;
+    document.getElementById('tt-d').textContent=d.d;
+    tt.style.display='block';mv(e);
+  });
+  el.addEventListener('mousemove',mv);
+  el.addEventListener('mouseleave',()=>tt.style.display='none');
+});
+function mv(e){
+  const W=tt.offsetWidth||290,H=tt.offsetHeight||80;
+  let x=e.clientX+14,y=e.clientY+14;
+  if(x+W>window.innerWidth)x=e.clientX-W-8;
+  if(y+H>window.innerHeight)y=e.clientY-H-8;
+  tt.style.left=x+'px';tt.style.top=y+'px';
+}
+
+// ─── TABS ───
+function switchTab(n,btn){
+  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── VOCAB DATA ───
+const V=[
+  {w:'courage',pos:'noun',tr:'cesaret',ex:'He found the courage to write the letter.'},
+  {w:'hesitate',pos:'verb',tr:'tereddüt etmek',ex:'She hesitated before opening the envelope.'},
+  {w:'folded',pos:'adjective',tr:'katlanmış',ex:'The folded letter was hidden under a stone.'},
+  {w:'instinct',pos:'noun',tr:'içgüdü',ex:'Valjean always trusted his instincts.'},
+  {w:'urgent',pos:'adjective',tr:'acil, ivedi',ex:'He felt an urgent need to leave Paris.'},
+  {w:'linger',pos:'verb',tr:'oyalanmak, ayrılamamak',ex:'He lingered by the gate for a long moment.'},
+  {w:'confess',pos:'verb',tr:'itiraf etmek',ex:'In the letter, he confessed his feelings.'},
+  {w:'tremble',pos:'verb',tr:'titremek',ex:'Her hands trembled as she read his words.'},
+  {w:'conceal',pos:'verb',tr:'gizlemek, saklamak',ex:'She tried to conceal her excitement.'},
+  {w:'desperate',pos:'adjective',tr:'umutsuz, çaresiz',ex:'He felt desperate to find her again.'},
+  {w:'dawn',pos:'noun',tr:'şafak, tan vakti',ex:'He arrived at the garden at dawn.'},
+  {w:'betray',pos:'verb',tr:'ihanet etmek, ele vermek',ex:'Éponine did not want to betray his secret.'},
+  {w:'lurk',pos:'verb',tr:'gizlice beklemek, pusuya yatmak',ex:'A dark figure was lurking near the gate.'},
+  {w:'farewell',pos:'noun',tr:'veda',ex:'He feared this might be their final farewell.'},
+  {w:'abrupt',pos:'adjective',tr:'ani, beklenmedik',ex:'The departure was abrupt and painful.'},
+  {w:'pursuit',pos:'noun',tr:'takip, kovalama',ex:'Javert\'s pursuit of Valjean never stopped.'},
+  {w:'flicker',pos:'verb',tr:'titreşmek, kıpırdamak',ex:'A candle flickered in the dark room.'},
+  {w:'departure',pos:'noun',tr:'ayrılış, gidiş',ex:'The departure was decided that very night.'},
+  {w:'scribble',pos:'verb',tr:'karalamak, aceleyle yazmak',ex:'He scribbled her name on a small paper.'},
+  {w:'exhaustion',pos:'noun',tr:'bitkinlik, tükenme',ex:'After three sleepless nights, exhaustion took over.'}
+];
+
+// ─── FLIP ───
+(function(){
+  const g=document.getElementById('fgrid');
+  V.forEach(v=>{
+    const c=document.createElement('div');c.className='fc';
+    c.innerHTML=`<div class="fin"><div class="ff"><div class="fw">${v.w}</div><div class="fpos">${v.pos}</div></div><div class="fb"><div class="ftr">${v.tr}</div><div class="fex">${v.ex}</div></div></div>`;
+    c.addEventListener('click',()=>c.classList.toggle('flip'));
+    g.appendChild(c);
+  });
+})();
+
+// ─── MODE SWITCH ───
+let qB=false,mB=false,wB=false;
+function switchMode(m,btn){
+  document.querySelectorAll('.vm').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('vm-'+m).classList.add('active');
+  btn.classList.add('active');
+  if(m==='quiz'&&!qB)initQ();
+  if(m==='match'&&!mB)initM();
+  if(m==='write'&&!wB)initW();
+}
+
+// ─── QUIZ ───
+let qd=[],qi=0,qs=0;
+function initQ(){qB=true;qd=sh([...V]).slice(0,12);qi=0;qs=0;rQ();}
+function rQ(){
+  if(qi>=qd.length){
+    document.getElementById('qq').textContent='🎉 Quiz Complete!';
+    document.getElementById('qs').textContent=`Final score: ${qs} / ${qd.length}`;
+    document.getElementById('qopts').innerHTML='';
+    document.getElementById('qnxt').style.display='none';
+    document.getElementById('qpf').style.width='100%';return;
+  }
+  const q=qd[qi];
+  document.getElementById('qctr').textContent=`${qi+1} / ${qd.length}`;
+  document.getElementById('qsc').textContent=`Score: ${qs}`;
+  document.getElementById('qq').textContent=q.w;
+  document.getElementById('qs').textContent=q.ex;
+  document.getElementById('qfb').innerHTML='';
+  document.getElementById('qnxt').style.display='none';
+  document.getElementById('qpf').style.width=(qi/qd.length*100)+'%';
+  const wrongs=sh(V.filter(v=>v.w!==q.w).map(v=>v.tr)).slice(0,3);
+  const opts=sh([q.tr,...wrongs]);
+  const el=document.getElementById('qopts');el.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');b.className='qopt';b.textContent=o;
+    b.onclick=()=>hQ(b,o===q.tr,q.tr);el.appendChild(b);
+  });
+}
+function hQ(btn,ok,ct){
+  document.querySelectorAll('.qopt').forEach(b=>b.disabled=true);
+  if(ok){btn.classList.add('correct');qs++;document.getElementById('qfb').innerHTML='✅ <span style="color:var(--g2)">Doğru!</span>';}
+  else{btn.classList.add('wrong');document.querySelectorAll('.qopt').forEach(b=>{if(b.textContent===ct)b.classList.add('correct');});document.getElementById('qfb').innerHTML=`❌ Doğrusu: <span style="color:var(--g2)">${ct}</span>`;}
+  document.getElementById('qsc').textContent=`Score: ${qs}`;
+  document.getElementById('qnxt').style.display='inline-block';
+}
+function nextQ(){qi++;rQ();}
+
+// ─── MATCH ───
+const MP=[
+  {w:'courage',tr:'cesaret'},{w:'hesitate',tr:'tereddüt etmek'},
+  {w:'lurk',tr:'gizlice beklemek'},{w:'desperate',tr:'umutsuz, çaresiz'},
+  {w:'farewell',tr:'veda'},{w:'departure',tr:'ayrılış'},
+  {w:'betray',tr:'ihanet etmek'},{w:'instinct',tr:'içgüdü'}
+];
+let mSel=null,mDone=0;
+function initM(){
+  mB=true;
+  const lw=sh(MP.map(p=>p.w)),rt=sh(MP.map(p=>p.tr));
+  const L=document.getElementById('ml'),R=document.getElementById('mr');
+  L.innerHTML='';R.innerHTML='';
+  lw.forEach(w=>{const i=mk(w,'l');L.appendChild(i);});
+  rt.forEach(t=>{const i=mk(t,'r');R.appendChild(i);});
+}
+function mk(val,side){
+  const i=document.createElement('div');i.className='mi';i.textContent=val;i.dataset.val=val;i.dataset.side=side;
+  i.onclick=()=>hM(i);return i;
+}
+function hM(item){
+  if(item.classList.contains('matched'))return;
+  if(!mSel){mSel=item;item.classList.add('selected');return;}
+  if(mSel===item){item.classList.remove('selected');mSel=null;return;}
+  if(mSel.dataset.side===item.dataset.side){mSel.classList.remove('selected');mSel=item;item.classList.add('selected');return;}
+  const L=mSel.dataset.side==='l'?mSel:item,R=mSel.dataset.side==='r'?mSel:item;
+  const p=MP.find(x=>x.w===L.dataset.val);
+  if(p&&p.tr===R.dataset.val){
+    L.classList.remove('selected');R.classList.remove('selected');
+    L.classList.add('matched');R.classList.add('matched');
+    mDone++;document.getElementById('mscore').textContent=`Matched: ${mDone} / 8`;
+    if(mDone===8)document.getElementById('mscore').textContent='🎉 Perfect! All 8 matched!';
+  }else{
+    L.classList.add('flash');R.classList.add('flash');
+    setTimeout(()=>{L.classList.remove('flash','selected');R.classList.remove('flash','selected');},600);
+  }
+  mSel=null;
+}
+
+// ─── WRITE ───
+const WW=[
+  {w:'hesitate',tr:'tereddüt etmek',ex:'He hesitated before placing the letter under the stone.'},
+  {w:'conceal',tr:'gizlemek, saklamak',ex:'She tried to conceal the letter inside her book.'},
+  {w:'lurk',tr:'gizlice beklemek',ex:'A figure had been lurking near the gate for days.'},
+  {w:'departure',tr:'ayrılış, gidiş',ex:'The departure was decided quickly and quietly.'},
+  {w:'desperate',tr:'umutsuz, çaresiz',ex:'He was desperate to find a way to see her again.'}
+];
+function initW(){
+  wB=true;
+  const a=document.getElementById('warea');a.innerHTML='';
+  WW.forEach(v=>{
+    const c=document.createElement('div');c.className='wcard';
+    c.innerHTML=`<div class="ww">${v.w}</div><div class="wt">${v.tr}</div><input class="wi" placeholder="Write a sentence using '${v.w}'..."><div class="wr"><button class="wchk" onclick="chkW(this)">Check ✓</button><button class="wex" onclick="shWEx(this,'${v.ex}')">Example</button></div><div class="wfb"></div><div class="wexans"></div>`;
+    a.appendChild(c);
+  });
+}
+function chkW(btn){
+  const c=btn.closest('.wcard'),inp=c.querySelector('.wi'),fb=c.querySelector('.wfb');
+  if(inp.value.trim().length<6){fb.style.display='block';fb.style.color='var(--g5)';fb.textContent='⚠️ Lütfen tam bir cümle yaz.';return;}
+  fb.style.display='block';fb.style.color='var(--g2)';fb.textContent='✅ Harika! Örnek cevapla karşılaştır.';
+}
+function shWEx(btn,ex){
+  const c=btn.closest('.wcard'),d=c.querySelector('.wexans');
+  d.style.display=d.style.display==='block'?'none':'block';
+  d.textContent='💡 '+ex;
+}
+
+// ─── GRAMMAR ACCORDION ───
+function tog(id){document.getElementById(id).classList.toggle('open');}
+function gma(btn,id,r){
+  btn.closest('.gmo').querySelectorAll('.gmopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById(id+'-fb');
+  if(r==='c'){btn.classList.add('correct');fb.textContent='✅ Doğru! Correct!';fb.style.color='var(--g2)';}
+  else{btn.classList.add('wrong');fb.textContent='❌ Yanlış. Açıklamayı tekrar oku.';fb.style.color='var(--g5)';}
+}
+
+// ─── EXERCISES ───
+let exDone=0;
+function upEx(){
+  exDone=document.querySelectorAll('[data-done="true"]').length;
+  const pct=Math.round(exDone/12*100);
+  document.getElementById('exfill').style.width=pct+'%';
+  document.getElementById('exlbl').textContent=`${exDone} / 12 tamamlandı`;
+}
+function mark(el){if(el&&el.dataset.done==='false'){el.dataset.done='true';upEx();}}
+
+function chkF(id,cs,fbId){
+  const inp=document.getElementById(id),fb=document.getElementById(fbId);
+  const val=inp.value.trim().toLowerCase();
+  const ok=cs.some(c=>val===c.toLowerCase());
+  inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok);
+  if(ok){fb.textContent='✅ Doğru!';fb.style.color='var(--g2)';mark(inp.closest('[data-done]'));}
+  else{fb.textContent=`❌ Tekrar dene. Beklenen: "${cs[0]}"`;fb.style.color='var(--g5)';}
+}
+function chkFM(id,cs,fbId){
+  const inp=document.getElementById(id),fb=document.getElementById(fbId);
+  const val=inp.value.trim().toLowerCase();
+  const ok=cs.some(c=>val===c.toLowerCase()||val.includes(c.toLowerCase()));
+  inp.classList.toggle('ok',ok);inp.classList.toggle('no',!ok);
+  if(ok){fb.textContent='✅ Doğru!';fb.style.color='var(--g2)';mark(inp.closest('[data-done]'));}
+  else{fb.textContent=`❌ Kabul edilenler: ${cs.join(' / ')}`;fb.style.color='var(--g5)';}
+}
+function chkE(id,cs,fbId){
+  const inp=document.getElementById(id),fb=document.getElementById(fbId);
+  const val=inp.value.trim().toLowerCase();
+  const ok=cs.some(c=>val===c.toLowerCase()||val.includes(c.toLowerCase()));
+  inp.style.borderColor=ok?'var(--g2)':'var(--g5)';
+  inp.style.color=ok?'var(--g2)':'var(--g5)';
+  if(ok){fb.textContent='✅ Doğru!';fb.style.color='var(--g2)';mark(inp.closest('[data-done]'));}
+  else{fb.textContent=`❌ Doğrusu: "${cs[0]}"`;fb.style.color='var(--g5)';}
+}
+function showTr(fbId,doneId){
+  const fb=document.getElementById(fbId);fb.style.display='block';
+  mark(fb.closest('[data-done]'));
+}
+function tog2(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block';}
+
+// ─── UTILS ───
+function sh(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+</script>
+</body>
+</html>

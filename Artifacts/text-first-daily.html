@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text-First Daily — Motor B</title>
+<link rel="stylesheet" href="./_engine/engine.css">
+<style>
+  .tfd-hero {background:linear-gradient(135deg, var(--bg) 0%, var(--bg3) 50%, var(--bg) 100%);
+    padding:22px 18px 16px; border-bottom:1px solid var(--border);}
+  .tfd-hero h1 {font-size:18px; color:var(--accent2); letter-spacing:1px; margin-bottom:5px;}
+  .tfd-hero p  {font-size:12px; color:var(--text2); max-width:680px; line-height:1.7;}
+  .tfd-pill   {display:inline-block; margin-top:6px; padding:3px 11px; background:rgba(129,140,248,.10);
+    color:var(--accent2); border:1px solid rgba(129,140,248,.25); border-radius:14px; font-size:11px;}
+
+  .passage {background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:22px 26px; line-height:2.1; font-size:15px;}
+  .passage p {margin-bottom:14px;}
+  .passage h2 {font-size:18px; color:var(--accent2); margin-bottom:6px;}
+  .passage .subtitle {font-size:12px; color:var(--text2); margin-bottom:18px;
+    padding-bottom:12px; border-bottom:1px solid var(--border);}
+
+  .gloss {background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; margin-top:12px;}
+  .gloss-h {font-size:11px; text-transform:uppercase; letter-spacing:1px;
+    color:var(--accent3); margin-bottom:8px;}
+  .gloss-item {display:flex; gap:8px; align-items:flex-start; padding:8px 0;
+    border-bottom:1px dashed var(--border);}
+  .gloss-item:last-child {border-bottom:none;}
+  .gloss-dot {width:9px; height:9px; border-radius:50%; margin-top:5px; flex-shrink:0;}
+  .gloss-body {flex:1;}
+  .gloss-name {font-size:13px; font-weight:bold; color:var(--text); margin-bottom:2px;}
+  .gloss-tr   {font-size:12px; color:var(--text2); margin-bottom:3px;}
+  .gloss-formula {font-family:'Courier New',monospace; font-size:11px; color:var(--green);}
+
+  .vocab-list {display:grid; gap:8px; margin-top:10px;}
+  .vocab-item {background:var(--card2); border:1px solid var(--border); border-radius:8px;
+    padding:9px 12px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .vocab-item .term {font-weight:bold; color:var(--accent); min-width:140px;}
+  .vocab-item .type {font-size:10px; padding:1px 7px; border-radius:9px;
+    background:rgba(251,191,36,.10); color:var(--accent3); border:1px solid rgba(251,191,36,.25);}
+  .vocab-item .def  {font-size:12px; color:var(--text2); flex:1; min-width:160px;}
+
+  .reflect-prompt {background:var(--card); border-left:3px solid var(--accent3);
+    padding:12px 16px; border-radius:0 8px 8px 0; margin-bottom:10px;}
+  .reflect-prompt h4 {font-size:12px; color:var(--accent3); margin-bottom:6px; text-transform:uppercase; letter-spacing:1px;}
+  .reflect-prompt textarea {width:100%; min-height:80px; padding:9px 12px;
+    background:var(--bg2); color:var(--text); border:1px solid var(--border);
+    border-radius:6px; font-family:var(--font); font-size:13px; resize:vertical; outline:none;}
+  .reflect-prompt textarea:focus {border-color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="tfd-hero">
+  <h1>TEXT-FIRST · DAILY</h1>
+  <p>Önce metin — günün konuları renk kodlu olarak içine örülmüş. Sonra her vurgulu cümlenin grameri açılır, kelime bankası beslenir, kendi yansımanı yazarsın. Aynı 6–8 gramer konusu, Motor A'yla çapraz teyit.</p>
+  <span class="tfd-pill" id="hero-pill">⚙️ Motor B · Engine v1</span>
+</div>
+
+<header id="el-header-mount"></header>
+
+<nav class="el-tabs" id="tabs">
+  <button class="el-tab active" data-tab="read">📖 Read</button>
+  <button class="el-tab" data-tab="grammar">📐 Grammar</button>
+  <button class="el-tab" data-tab="vocab">📚 Vocab</button>
+  <button class="el-tab" data-tab="quiz">🎯 Quiz</button>
+  <button class="el-tab" data-tab="reflect">✍️ Reflect</button>
+</nav>
+
+<main class="el-page">
+
+  <!-- READ TAB -->
+  <section class="el-panel active" data-panel="read">
+    <div class="el-score-bar">
+      <div>Bugün: <b id="day">—</b></div>
+      <div>🎨 Renkler: bugünün gramer konuları</div>
+      <div>👆 Üzerine gelince formül/açıklama</div>
+      <div style="flex:1;"></div>
+      <button class="el-btn" id="tts-toggle">🔊 Sesli oku</button>
+    </div>
+
+    <article class="passage" id="passage">
+      <h2 id="p-title">Bugünün Dokuması</h2>
+      <div class="subtitle" id="p-subtitle">— · — kelime · gramer odaklı paragraf</div>
+      <div id="p-body">…</div>
+    </article>
+
+    <div class="gloss">
+      <div class="gloss-h">🔍 Vurgulanan Yapılar — Bugünün Konuları</div>
+      <div id="gloss-list"></div>
+    </div>
+  </section>
+
+  <!-- GRAMMAR TAB -->
+  <section class="el-panel" data-panel="grammar">
+    <div class="el-section-title">📐 Bugünün Gramer Konuları (deep dive)</div>
+    <div class="el-section-sub">Her kart genişletilebilir — TR köprü + formül + örnek + yaygın hatalar. Motor A'yı çalıştırdıysan, aynı konuları farklı yönden görüyorsun.</div>
+    <div class="el-grid cols-2" id="grammar-grid"></div>
+  </section>
+
+  <!-- VOCAB TAB -->
+  <section class="el-panel" data-panel="vocab">
+    <div class="el-section-title">📚 Metinden Kelime & Chunk</div>
+    <div class="el-section-sub">Metinde geçen anahtar parçalar. "💾 Save to Bank" → ileride <code>vocab-srs.html</code>'de Anki mantığıyla tekrar.</div>
+    <div class="vocab-list" id="vocab-list"></div>
+    <div style="margin-top:14px; padding:12px 14px; background:var(--card2); border-radius:8px; border:1px solid var(--border); font-size:12px; color:var(--text2);">
+      <b style="color:var(--accent3);">💡 Kendi kelime ekle:</b>
+      <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+        <input class="el-q-input" id="custom-term" placeholder="kelime / phrasal / chunk" style="flex:2; min-width:140px;">
+        <select class="el-q-input" id="custom-type" style="flex:1; min-width:120px;">
+          <option value="word">word</option>
+          <option value="phrasal_verb">phrasal_verb</option>
+          <option value="chunk">chunk</option>
+        </select>
+        <input class="el-q-input" id="custom-tr" placeholder="TR anlam (opsiyonel)" style="flex:2; min-width:120px;">
+        <button class="el-btn primary" id="custom-add">➕ Bank'a ekle</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ TAB -->
+  <section class="el-panel" data-panel="quiz">
+    <div class="el-section-title">🎯 Cross-Quiz — Aynı Konular, Farklı Yön</div>
+    <div class="el-section-sub">Her konudan 2 soru. Motor A bireysel modal quizler verdi; burada karma test.</div>
+    <div id="quiz-mount"></div>
+    <button class="el-btn primary" id="quiz-start" style="margin-top:12px;">Quiz'i Başlat</button>
+  </section>
+
+  <!-- REFLECT TAB -->
+  <section class="el-panel" data-panel="reflect">
+    <div class="el-section-title">✍️ Kendi Yazımın</div>
+    <div class="el-section-sub">Bugünün konularını kullanarak kısa bir not yaz. Bu metin localStorage'da kalır; istersen Vault'a indirilen JSON'a eklenir.</div>
+
+    <div class="reflect-prompt">
+      <h4>📝 Yazı önerisi (constraint'li)</h4>
+      <div id="reflect-instructions" style="font-size:12px; color:var(--text); line-height:1.7; margin-bottom:8px;">…</div>
+      <textarea id="reflect-text" placeholder="3-5 cümle yaz. Bugünün gramer konularından en az 3 tanesini kullanmaya çalış."></textarea>
+      <div style="display:flex; gap:8px; margin-top:8px; align-items:center; flex-wrap:wrap;">
+        <button class="el-btn" id="reflect-save">💾 Kaydet (localStorage)</button>
+        <span id="reflect-status" style="font-size:11px; color:var(--text2);"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPORT BANNER -->
+  <section class="el-export">
+    <div class="el-export-text">
+      <b>Çalışman bitti mi?</b>
+      <p>Üstteki "📥 Vault'a İndir" butonu, bugün açtığın sekmelere göre bir JSON üretir. Dosyayı <code>00_INBOX/</code> klasörüne sürükle — Claude Code orada işleyecek.</p>
+    </div>
+    <button class="el-btn primary" onclick="exportSession()">📥 JSON İndir</button>
+  </section>
+
+</main>
+
+<div class="el-tt" id="tt"></div>
+
+<script src="./_engine/topics.js"></script>
+<script src="./_engine/profile.js"></script>
+<script src="./_engine/engine.js"></script>
+<script>
+const ENGINE_TAG = 'text-first';
+const SESSION_START = Date.now();
+const dailyTopics = ELV1.getDailyTopics(ENGINE_TAG);
+const perTopicResults = {};
+const sessionBank = [];
+const sessionState = { reflect: '', quiz_done: false, tabs_visited: new Set() };
+
+/* HEADER */
+const header = ELV1.renderHeader({
+  title: 'Motor B — Text-First',
+  subtitle: 'metni oku, gramer çıkar, yansıt',
+  engineTag: ENGINE_TAG,
+  onExport: exportSession,
+  onReroll: () => { ELV1.rerollDailyTopics(); location.reload(); }
+});
+document.getElementById('el-header-mount').replaceWith(header);
+ELV1.attachHeaderActions(header, { onExport: exportSession, onReroll: () => { ELV1.rerollDailyTopics(); location.reload(); } });
+
+document.getElementById('el-topics-chip').textContent = '🎯 ' + dailyTopics.length + ' konu';
+document.getElementById('day').textContent = ELV1.todayISO();
+
+/* TABS */
+document.querySelectorAll('.el-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.el-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    const k = t.getAttribute('data-tab');
+    document.querySelectorAll('.el-panel').forEach(p => {
+      p.classList.toggle('active', p.getAttribute('data-panel') === k);
+    });
+    sessionState.tabs_visited.add(k);
+  });
+});
+
+/* === READ === */
+function renderPassage() {
+  const out = ELV1.buildTextFirstPassage(dailyTopics);
+  document.getElementById('p-body').innerHTML = out.html;
+  // count words
+  const text = out.html.replace(/<[^>]+>/g, '');
+  const wc = text.trim().split(/\s+/).length;
+  document.getElementById('p-subtitle').textContent = ELV1.todayISO() + ' · ~' + wc + ' kelime · ' + dailyTopics.length + ' gramer yapısı';
+
+  // tooltip wiring
+  document.querySelectorAll('#p-body [data-g]').forEach(el => {
+    el.addEventListener('mouseenter', e => {
+      const slug = el.getAttribute('data-slug');
+      const t = ELV1.T.topics.find(x => x.slug === slug);
+      if (!t) return;
+      const tt = document.getElementById('tt');
+      tt.innerHTML = `<div class="tt-name">${ELV1.escapeHTML(t.name)} <span class="el-tag cefr" style="font-size:9px;">${t.cefr}</span></div>
+        <div class="tt-tr">${ELV1.escapeHTML(t.tr_bridge)}</div>
+        <div class="tt-formula">${ELV1.escapeHTML(t.formula)}</div>`;
+      tt.classList.add('show');
+      const r = el.getBoundingClientRect();
+      tt.style.left = Math.min(window.innerWidth - 320, r.left) + 'px';
+      tt.style.top  = (r.bottom + 6) + 'px';
+    });
+    el.addEventListener('mouseleave', () => { document.getElementById('tt').classList.remove('show'); });
+    el.addEventListener('click', () => {
+      const slug = el.getAttribute('data-slug');
+      document.querySelector('[data-tab="grammar"]').click();
+      const card = document.getElementById('gcard-' + slug);
+      if (card) {
+        card.scrollIntoView({ behavior:'smooth', block:'center' });
+        card.classList.add('pulse');
+        setTimeout(() => card.classList.remove('pulse'), 600);
+      }
+    });
+  });
+
+  // gloss list
+  const gloss = document.getElementById('gloss-list');
+  gloss.innerHTML = '';
+  out.breakdown.forEach(b => {
+    const t = ELV1.T.topics.find(x => x.slug === b.slug);
+    const colors = ['#4fc3f7','#ce93d8','#ffb74d','#80cbc4','#a5d6a7','#ef9a9a','#fff176','#f48fb1'];
+    const div = document.createElement('div');
+    div.className = 'gloss-item';
+    div.innerHTML = `
+      <div class="gloss-dot" style="background:${colors[(b.gIdx-1)%8]};"></div>
+      <div class="gloss-body">
+        <div class="gloss-name">${ELV1.escapeHTML(t.name)} <span class="el-tag cefr" style="font-size:9px;">${t.cefr}</span></div>
+        <div class="gloss-tr">${ELV1.escapeHTML(b.tr)}</div>
+        <div class="gloss-formula">${ELV1.escapeHTML(t.formula)}</div>
+      </div>`;
+    gloss.appendChild(div);
+  });
+}
+
+/* === GRAMMAR DEEP DIVE === */
+function renderGrammarCards() {
+  const grid = document.getElementById('grammar-grid');
+  grid.innerHTML = '';
+  dailyTopics.forEach((t, idx) => {
+    const card = document.createElement('div');
+    card.className = 'el-card';
+    card.id = 'gcard-' + t.slug;
+    card.innerHTML = `
+      <div class="el-card-h">
+        <div>
+          <div class="el-card-title">${idx+1}. ${ELV1.escapeHTML(t.name)}</div>
+          <div style="margin-top:3px;">
+            <span class="el-tag cefr">${t.cefr}</span>
+            <span class="el-tag cat">${ELV1.T.categories[t.category]}</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:12px; color:var(--text2); margin:8px 0; line-height:1.65;">${ELV1.escapeHTML(t.tr_bridge)}</p>
+      <div class="el-formula" style="margin:8px 0;">${ELV1.escapeHTML(t.formula)}</div>
+      ${(t.examples||[]).map(ex => `
+        <div class="el-ex">
+          <div class="en">${ELV1.escapeHTML(ex.en)}</div>
+          <div class="tr">${ELV1.escapeHTML(ex.tr)}</div>
+        </div>
+      `).join('')}
+      <details style="margin-top:8px;">
+        <summary style="cursor:pointer; font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:1px;">⚠️ Yaygın hatalar</summary>
+        <ul style="font-size:12px; color:var(--text2); padding-left:18px; margin-top:6px;">
+          ${(t.common_errors||[]).map(e => `<li>${ELV1.escapeHTML(e)}</li>`).join('')}
+        </ul>
+      </details>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* === VOCAB === */
+function renderVocab() {
+  // metinden anahtar parçalar — her topic'in örneklerinden ilk anlamlı chunk
+  const list = document.getElementById('vocab-list');
+  list.innerHTML = '';
+  const items = [];
+  dailyTopics.forEach(t => {
+    (t.examples || []).slice(0, 1).forEach(ex => {
+      const chunk = pickChunk(ex.en);
+      if (!chunk) return;
+      items.push({ chunk, ex, t });
+    });
+  });
+  items.forEach(it => {
+    const row = document.createElement('div');
+    row.className = 'vocab-item';
+    row.innerHTML = `
+      <span class="term">${ELV1.escapeHTML(it.chunk)}</span>
+      <span class="type">chunk</span>
+      <span class="def">${ELV1.escapeHTML(it.ex.tr)} · <i style="color:var(--text3);">${ELV1.escapeHTML(it.t.name)}</i></span>
+      <button class="el-bank-btn">💾 Save</button>
+    `;
+    const btn = row.querySelector('button');
+    const data = {
+      item: it.chunk, type: 'chunk',
+      definition_en: '', definition_tr: it.ex.tr,
+      example: it.ex.en,
+      source: { engine: ENGINE_TAG, topic: it.t.slug }
+    };
+    ELV1.attachBankButton(btn, data);
+    btn.addEventListener('click', () => { sessionBank.push(data); });
+    list.appendChild(row);
+  });
+
+  // custom add
+  document.getElementById('custom-add').addEventListener('click', () => {
+    const term = document.getElementById('custom-term').value.trim();
+    if (!term) return;
+    const type = document.getElementById('custom-type').value;
+    const tr = document.getElementById('custom-tr').value.trim();
+    const data = { item: term, type, definition_en:'', definition_tr: tr, example:'', source:{ engine: ENGINE_TAG, manual:true } };
+    ELV1.saveToWordBank(data);
+    sessionBank.push(data);
+    ELV1.showToast(`"${term}" word bank'a eklendi.`);
+    document.getElementById('custom-term').value = '';
+    document.getElementById('custom-tr').value = '';
+  });
+}
+function pickChunk(s) {
+  // 2-4 kelimelik anlamlı parça yakalamaya çalış
+  const m = s.match(/\b([a-z]{3,}\s+(to|of|on|in|for|with|about|into|by|that|the)\s+[a-z']{2,}(\s+[a-z']{2,})?)/i);
+  if (m) return m[1];
+  const words = s.split(/\s+/).filter(w => w.length > 3);
+  return words.slice(0, 3).join(' ');
+}
+
+/* === QUIZ === */
+function renderQuiz() {
+  const mount = document.getElementById('quiz-mount');
+  // 2 soru × konu sayısı, karıştır
+  let items = [];
+  dailyTopics.forEach(t => {
+    items = items.concat(ELV1.genQuizForTopic(t, 2));
+  });
+  items = ELV1.shuffle(items);
+
+  let i = 0, correct = 0, total = 0;
+  const errors = [];
+  const perTopicTrack = {};
+
+  function step() {
+    if (i >= items.length) return finish();
+    const it = items[i];
+    const t = ELV1.T.topics.find(x => x.slug === it.topic_slug);
+    let html = `<div class="el-q-card">
+      <div class="el-q-type">${i+1}/${items.length} · ${it.type.toUpperCase()} · <span style="color:var(--accent3);">${ELV1.escapeHTML(t.name)}</span></div>
+      <div class="el-q-text">${ELV1.escapeHTML(it.prompt)}</div>`;
+    if (it.tr) html += `<div class="el-q-meta">🇹🇷 ${ELV1.escapeHTML(it.tr)}</div>`;
+    if (it.tr_hint) html += `<div class="el-q-meta">İpucu: ${ELV1.escapeHTML(it.tr_hint)}</div>`;
+    if (it.formula_hint) html += `<div class="el-q-meta">Formül: <code>${ELV1.escapeHTML(it.formula_hint)}</code></div>`;
+
+    if (it.type === 'mcq') {
+      html += '<div class="el-q-opts">';
+      it.options.forEach(o => html += `<button class="el-q-opt" data-o="${ELV1.escapeHTML(o)}">${ELV1.escapeHTML(o)}</button>`);
+      html += '</div>';
+    } else if (it.type === 'fill') {
+      html += `<input class="el-q-input" id="qi" placeholder="Boşluk..." autocomplete="off">
+        <div style="margin-top:8px;"><button class="el-btn primary" id="qs">Kontrol</button></div>`;
+    } else if (it.type === 'errspot') {
+      html += `<div style="font-size:12px;color:var(--text2);margin:8px 0;">İpucu (cevap): <i>${ELV1.escapeHTML(it.hint)}</i></div>
+        <div style="display:flex;gap:6px;">
+          <button class="el-btn success" id="qk">Biliyorum</button>
+          <button class="el-btn danger" id="qd">Bilmiyordum</button>
+        </div>`;
+    }
+    html += '<div id="qfb"></div></div>';
+    mount.innerHTML = html;
+
+    function record(ok, info) {
+      total++;
+      if (ok) correct++;
+      perTopicTrack[it.topic_slug] = perTopicTrack[it.topic_slug] || { correct:0, total:0, errors:[], subpatterns_touched:[] };
+      perTopicTrack[it.topic_slug].total++;
+      if (ok) perTopicTrack[it.topic_slug].correct++;
+      else { perTopicTrack[it.topic_slug].errors.push(info); errors.push(info); }
+      if (it.subpattern) perTopicTrack[it.topic_slug].subpatterns_touched.push(it.subpattern);
+      setTimeout(() => { i++; step(); }, 1100);
+    }
+
+    if (it.type === 'mcq') {
+      mount.querySelectorAll('.el-q-opt').forEach(b => {
+        b.addEventListener('click', () => {
+          const sel = b.getAttribute('data-o');
+          const ok = sel === it.answer;
+          if (ok) b.classList.add('correct');
+          else {
+            b.classList.add('wrong');
+            mount.querySelectorAll('.el-q-opt').forEach(x => { if (x.getAttribute('data-o') === it.answer) x.classList.add('correct'); });
+          }
+          mount.querySelectorAll('.el-q-opt').forEach(x => x.disabled = true);
+          document.getElementById('qfb').innerHTML = `<div class="el-feedback ${ok?'correct':'wrong'}">${ok?'✓':'✗ Doğru: '+ELV1.escapeHTML(it.answer)}</div>`;
+          record(ok, { type:'mcq', selected:sel, expected:it.answer, slug:it.topic_slug });
+        });
+      });
+    } else if (it.type === 'fill') {
+      const inp = document.getElementById('qi');
+      document.getElementById('qs').addEventListener('click', () => {
+        const v = (inp.value||'').trim().toLowerCase();
+        const ans = (it.answer||'').toLowerCase();
+        const ok = v === ans;
+        inp.classList.add(ok?'correct':'wrong');
+        document.getElementById('qfb').innerHTML = `<div class="el-feedback ${ok?'correct':'wrong'}">${ok?'✓':'✗ Beklenen: '+ELV1.escapeHTML(it.answer)}</div>`;
+        document.getElementById('qs').disabled = true; inp.disabled = true;
+        record(ok, { type:'fill', wrote:v, expected:ans, slug:it.topic_slug });
+      });
+      inp.addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('qs').click(); });
+    } else if (it.type === 'errspot') {
+      document.getElementById('qk').addEventListener('click', () => {
+        document.getElementById('qfb').innerHTML = `<div class="el-feedback correct">✓ Kayıt: biliyordum</div>`;
+        record(true, null);
+      });
+      document.getElementById('qd').addEventListener('click', () => {
+        document.getElementById('qfb').innerHTML = `<div class="el-feedback wrong">⚠️ Zayıf-kuyruğuna katkı</div>`;
+        record(false, { type:'errspot', expected:it.hint, slug:it.topic_slug });
+      });
+    }
+  }
+
+  function finish() {
+    // konsolide et: her konu için recordTopicResult
+    Object.keys(perTopicTrack).forEach(slug => {
+      const r = perTopicTrack[slug];
+      perTopicResults[slug] = { ...r, completed: true };
+      ELV1.recordTopicResult(slug, r.correct, r.total, r.errors);
+    });
+    sessionState.quiz_done = true;
+    mount.innerHTML = `<div class="el-q-card" style="text-align:center;">
+      <div style="font-size:14px;color:var(--accent2);margin-bottom:8px;">✅ Cross-Quiz tamam</div>
+      <div style="font-size:24px;color:var(--accent3);margin-bottom:6px;">${correct} / ${total}</div>
+      <div style="font-size:12px;color:var(--text2);">${total?Math.round(correct/total*100):0}%</div>
+    </div>`;
+  }
+
+  step();
+}
+
+/* === REFLECT === */
+function renderReflect() {
+  const names = dailyTopics.slice(0, 4).map(t => t.name).join(', ');
+  const anchor = (ELV1.P.interest_domains[Math.floor(Math.random()*ELV1.P.interest_domains.length)]).anchors[0];
+  document.getElementById('reflect-instructions').innerHTML =
+    `Aşağıdaki 4 yapıyı en az birer kez kullanan 3-5 cümle yaz: <b>${ELV1.escapeHTML(names)}</b>. Tema: <i style="color:var(--accent2);">${ELV1.escapeHTML(anchor)}</i> üzerine kısa bir gözlem.`;
+
+  // restore
+  const prev = ELV1.lsGet('reflect_' + ELV1.todayISO(), '');
+  if (prev) document.getElementById('reflect-text').value = prev;
+
+  document.getElementById('reflect-save').addEventListener('click', () => {
+    const v = document.getElementById('reflect-text').value;
+    sessionState.reflect = v;
+    ELV1.lsSet('reflect_' + ELV1.todayISO(), v);
+    const wc = (v.trim().split(/\s+/).filter(Boolean)).length;
+    document.getElementById('reflect-status').textContent = '✓ ' + wc + ' kelime · localStorage';
+  });
+}
+
+/* === EXPORT === */
+function exportSession() {
+  const duration = Math.round((Date.now() - SESSION_START) / 1000);
+  // ensure even unentered topics show on payload (zero scores)
+  dailyTopics.forEach(t => {
+    if (!perTopicResults[t.slug]) perTopicResults[t.slug] = { correct: 0, total: 0, errors: [], subpatterns_touched: [], completed: false };
+  });
+  const payload = ELV1.buildSessionPayload(ENGINE_TAG, dailyTopics, perTopicResults, duration);
+  payload.tabs_visited = Array.from(sessionState.tabs_visited);
+  payload.reflect_text = sessionState.reflect || ELV1.lsGet('reflect_' + ELV1.todayISO(), '') || '';
+  const dump = [payload];
+  if (sessionBank.length) dump.push(ELV1.buildBankAddPayload(sessionBank, ENGINE_TAG, payload.session_id));
+  ELV1.downloadJSON(dump, ELV1.nowTag() + '-text-first.json');
+  ELV1.showToast('JSON indirildi. 00_INBOX/ klasörüne sürükle.', 3200);
+}
+
+/* === TTS === */
+document.getElementById('tts-toggle').addEventListener('click', () => {
+  if (!('speechSynthesis' in window)) return ELV1.showToast('Bu tarayıcı TTS desteklemiyor.');
+  if (speechSynthesis.speaking) { speechSynthesis.cancel(); return; }
+  const text = document.getElementById('p-body').textContent;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = ELV1.P.engine_settings.default_tts_rate || 0.95;
+  speechSynthesis.speak(u);
+});
+
+/* === INIT === */
+renderPassage();
+renderGrammarCards();
+renderVocab();
+renderReflect();
+document.getElementById('quiz-start').addEventListener('click', () => {
+  document.getElementById('quiz-start').style.display = 'none';
+  renderQuiz();
+});
+</script>
+</body>
+</html>

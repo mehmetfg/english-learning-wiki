@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Vocabulary Interactive Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Harmony (Cream, Slate, Terracotta, Sage) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Sets the tone for a calm, focused study session.
+         2. Analytical Dashboard: Visualizes the structure of the vocabulary list (Types & Complexity) using Chart.js to give a high-level overview.
+         3. Interactive Word Explorer: The core learning area. Uses a filterable grid layout allowing users to explore words by category (Verbs, Adjectives, Others). This promotes active discovery.
+         4. Contextual Flow: A visual sentence construction area using styled HTML (NO SVG) to demonstrate practical usage and word relationships.
+         5. Knowledge Check: An interactive quiz section based on the report's key questions to reinforce learning through active recall.
+    -->
+    <!-- Visualization & Content Choices: 
+         1. Word Type Distribution -> Goal: Inform/Compare -> Doughnut Chart (Chart.js) -> Shows the balance of the study list.
+         2. Word Length Complexity -> Goal: Compare -> Bar Chart (Chart.js) -> Visualizes spelling difficulty/length.
+         3. Word Explorer -> Goal: Organize -> Interactive Grid (HTML/JS) -> Allows filtering and detailed view of definitions.
+         4. Sentence Flow -> Goal: Relationships -> CSS/HTML Flexbox Flow -> Shows how words link in a sentence without using SVG/Mermaid.
+         5. Quiz -> Goal: Engagement -> Interactive Form (HTML/JS) -> Immediate feedback on learning.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #FDFBF7; /* Cream/Warm Neutral Background */
+            color: #2D3748;
+        }
+        h1, h2, h3, h4, .serif {
+            font-family: 'Merriweather', serif;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F1F1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #A0AEC0; 
+            border-radius: 4px;
+        }
+
+        /* Palette Variables */
+        .text-primary { color: #2C3E50; }
+        .bg-primary { background-color: #2C3E50; }
+        .text-accent-blue { color: #5C7C8A; }
+        .bg-accent-blue { background-color: #5C7C8A; }
+        .text-accent-terra { color: #C87961; }
+        .bg-accent-terra { background-color: #C87961; }
+        .bg-accent-gold { background-color: #E2C044; }
+        .border-accent-gold { border-color: #E2C044; }
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Card Hover Effects */
+        .vocab-card {
+            transition: all 0.3s ease;
+        }
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        /* Flow Arrow Logic without SVG */
+        .flow-arrow::after {
+            content: '→';
+            font-size: 24px;
+            color: #A0AEC0;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        @media (max-width: 768px) {
+            .flow-arrow::after {
+                content: '↓';
+                display: block;
+                text-align: center;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent-gold selection:text-white">
+
+    <!-- Navigation / Header -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-bold serif text-primary">Vocab<span class="text-accent-terra">Mastery</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="scrollToSection('dashboard')" class="text-gray-500 hover:text-accent-blue px-3 py-2 rounded-md text-sm font-medium transition">Dashboard</button>
+                    <button onclick="scrollToSection('explorer')" class="text-gray-500 hover:text-accent-blue px-3 py-2 rounded-md text-sm font-medium transition">Explorer</button>
+                    <button onclick="scrollToSection('context')" class="text-gray-500 hover:text-accent-blue px-3 py-2 rounded-md text-sm font-medium transition">Context</button>
+                    <button onclick="scrollToSection('quiz')" class="text-gray-500 hover:text-accent-blue px-3 py-2 rounded-md text-sm font-medium transition">Practice</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Introduction -->
+        <section class="text-center max-w-3xl mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold text-primary mb-6">Master Your English Vocabulary</h1>
+            <p class="text-xl text-gray-600 leading-relaxed font-light">
+                Welcome to your interactive study guide. This application is designed to help you internalize the <strong>10 key concepts</strong> from your recent evaluation. Explore the definitions, visualize the data, and test your understanding in a calm, focused environment.
+            </p>
+        </section>
+
+        <!-- Section 1: Analytical Dashboard -->
+        <section id="dashboard" class="scroll-mt-24">
+            <div class="mb-8 border-l-4 border-accent-blue pl-4">
+                <h2 class="text-2xl font-bold text-primary">Vocabulary Analytics</h2>
+                <p class="text-gray-600 mt-2">
+                    Understanding the structure of your learning list helps in categorizing and retaining information. Below, we visualize the grammatical distribution and the complexity (length) of the target words.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Doughnut Chart: Distribution -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <h3 class="text-lg font-semibold text-center mb-4 text-gray-700">Word Type Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center text-sm text-gray-500">
+                        The list is balanced between actions (verbs) and descriptions (adjectives).
+                    </div>
+                </div>
+
+                <!-- Bar Chart: Complexity -->
+                <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                    <h3 class="text-lg font-semibold text-center mb-4 text-gray-700">Word Length & Complexity</h3>
+                    <div class="chart-container">
+                        <canvas id="complexityChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center text-sm text-gray-500">
+                        "Significant" presents the highest spelling challenge based on length.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Interactive Word Explorer -->
+        <section id="explorer" class="scroll-mt-24">
+            <div class="mb-8 border-l-4 border-accent-terra pl-4">
+                <h2 class="text-2xl font-bold text-primary">Interactive Word Explorer</h2>
+                <p class="text-gray-600 mt-2">
+                    Dive deep into each word. Use the filters below to focus on specific grammatical categories. Click on any card to focus your attention on its meaning and usage.
+                </p>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button onclick="filterVocab('all')" id="btn-all" class="filter-btn active px-6 py-2 rounded-full border border-gray-300 bg-primary text-white font-medium transition shadow-sm">All Words</button>
+                <button onclick="filterVocab('Verb')" id="btn-Verb" class="filter-btn px-6 py-2 rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 font-medium transition shadow-sm">Verbs</button>
+                <button onclick="filterVocab('Adjective')" id="btn-Adjective" class="filter-btn px-6 py-2 rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 font-medium transition shadow-sm">Adjectives</button>
+                <button onclick="filterVocab('Other')" id="btn-Other" class="filter-btn px-6 py-2 rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 font-medium transition shadow-sm">Others</button>
+            </div>
+
+            <!-- Grid Container -->
+            <div id="vocabGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be injected by JS -->
+            </div>
+        </section>
+
+        <!-- Section 3: Contextual Flow (Sentence Builder) -->
+        <section id="context" class="scroll-mt-24">
+            <div class="mb-8 border-l-4 border-accent-gold pl-4">
+                <h2 class="text-2xl font-bold text-primary">Contextual Flow</h2>
+                <p class="text-gray-600 mt-2">
+                    Vocabulary is best learned in context. Observe how these independent words link together to form a coherent, complex sentence about societal structures.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-100 overflow-hidden">
+                <div class="flex flex-col md:flex-row items-center justify-center text-center md:text-left space-y-6 md:space-y-0">
+                    
+                    <!-- Step 1 -->
+                    <div class="flex flex-col items-center group cursor-default">
+                        <div class="bg-accent-gold bg-opacity-20 text-yellow-800 border border-accent-gold px-4 py-3 rounded-lg font-bold text-lg shadow-sm group-hover:bg-opacity-100 transition duration-300">
+                            Actually
+                        </div>
+                        <span class="text-xs text-gray-500 mt-2 uppercase tracking-wide">Modifier</span>
+                    </div>
+
+                    <div class="flow-arrow"></div>
+
+                    <!-- Step 2 -->
+                    <div class="flex flex-col items-center group cursor-default">
+                        <div class="bg-accent-blue bg-opacity-20 text-blue-900 border border-accent-blue px-4 py-3 rounded-lg font-bold text-lg shadow-sm group-hover:bg-opacity-100 group-hover:text-white transition duration-300">
+                            Foreign
+                        </div>
+                        <span class="text-xs text-gray-500 mt-2 uppercase tracking-wide">Adjective</span>
+                    </div>
+
+                    <div class="flow-arrow"></div>
+
+                    <!-- Step 3 -->
+                    <div class="flex flex-col items-center group cursor-default">
+                        <div class="bg-gray-200 text-gray-800 border border-gray-300 px-4 py-3 rounded-lg font-bold text-lg shadow-sm group-hover:bg-gray-300 transition duration-300">
+                            Societies
+                        </div>
+                        <span class="text-xs text-gray-500 mt-2 uppercase tracking-wide">Noun (Subject)</span>
+                    </div>
+
+                    <div class="flow-arrow"></div>
+
+                    <!-- Step 4 -->
+                    <div class="flex flex-col items-center group cursor-default">
+                        <div class="bg-accent-terra bg-opacity-20 text-red-900 border border-accent-terra px-4 py-3 rounded-lg font-bold text-lg shadow-sm group-hover:bg-opacity-100 group-hover:text-white transition duration-300">
+                            Require
+                        </div>
+                        <span class="text-xs text-gray-500 mt-2 uppercase tracking-wide">Verb</span>
+                    </div>
+
+                     <div class="flow-arrow"></div>
+
+                     <!-- Step 5 -->
+                    <div class="flex flex-col items-center group cursor-default">
+                        <div class="bg-accent-terra bg-opacity-20 text-red-900 border border-accent-terra px-4 py-3 rounded-lg font-bold text-lg shadow-sm group-hover:bg-opacity-100 group-hover:text-white transition duration-300">
+                            Consideration
+                        </div>
+                        <span class="text-xs text-gray-500 mt-2 uppercase tracking-wide">Noun (Object)</span>
+                    </div>
+
+                </div>
+
+                <div class="mt-10 p-6 bg-gray-50 rounded-lg border-l-4 border-gray-400">
+                    <p class="font-serif text-xl text-gray-800 italic text-center">
+                        "Actually, foreign societies require careful consideration."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Knowledge Check (Quiz) -->
+        <section id="quiz" class="scroll-mt-24 mb-20">
+            <div class="mb-8 border-l-4 border-gray-800 pl-4">
+                <h2 class="text-2xl font-bold text-primary">Knowledge Check</h2>
+                <p class="text-gray-600 mt-2">
+                    Test your recall. Select the correct word for each scenario based on the definitions provided in the study guide.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-8 grid grid-cols-1 gap-6" id="quizContainer">
+                <!-- Quiz items generated by JS -->
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button onclick="checkQuiz()" class="bg-accent-terra hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg shadow transition transform hover:scale-105">
+                    Check Answers
+                </button>
+            </div>
+            <div id="quizResult" class="hidden mt-4 p-4 rounded-lg text-center font-bold text-lg"></div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-10">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="font-light text-sm opacity-70">Generated Vocabulary Study Application &bull; 2025</p>
+            <p class="font-serif italic mt-2 text-accent-gold">"Learning a foreign language is beneficial."</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA STORE ---
+        const vocabulary = [
+            { id: 1, word: "Reduce", type: "Verb", def: "Azaltmak, düşürmek, kısmak.", ex: "We need to reduce our expenses.", length: 6 },
+            { id: 2, word: "Require", type: "Verb", def: "Gerektirmek, ihtiyaç duymak.", ex: "This job requires a lot of patience.", length: 7 },
+            { id: 3, word: "Establish", type: "Verb", def: "Kurmak, tesis etmek.", ex: "The company was established in 1990.", length: 9 },
+            { id: 4, word: "Consider", type: "Verb", def: "Düşünmek, göz önünde bulundurmak.", ex: "Please consider my offer.", length: 8 },
+            { id: 5, word: "Significant", type: "Adjective", def: "Önemli, kayda değer, belirgin.", ex: "There is a significant difference.", length: 11 },
+            { id: 6, word: "Foreign", type: "Adjective", def: "Yabancı, dış ülkeye ait.", ex: "Learning a foreign language is beneficial.", length: 7 },
+            { id: 7, word: "Common", type: "Adjective", def: "Yaygın, ortak, sıradan.", ex: "Cold is a common illness in winter.", length: 6 },
+            { id: 8, word: "Actually", type: "Other", def: "Aslında, gerçekten, bilfiil.", ex: "It looks easy, but actually, it's quite difficult.", length: 8 },
+            { id: 9, word: "During", type: "Other", def: "Sırasında, esnasında.", ex: "Don't talk during the movie.", length: 6 },
+            { id: 10, word: "Society", type: "Other", def: "Toplum, cemiyet.", ex: "We live in a multicultural society.", length: 7 }
+        ];
+
+        const quizQuestions = [
+            { q: "Bir şirketin veya kurumun temellerini attığını anlatmak için hangi fiili kullanırsın?", a: "Establish", options: ["Establish", "Require", "Consider"] },
+            { q: "Bir durumun görünürdekinden farklı olduğunu vurgulamak istediğinde cümlene hangi zarfla başlarsın?", a: "Actually", options: ["Actually", "During", "Common"] },
+            { q: "\"Herkesin bildiği\" veya \"sıkça rastlanan\" bir durumu tarif etmek için hangi sıfat uygundur?", a: "Common", options: ["Common", "Significant", "Foreign"] },
+            { q: "Bir eylemin başka bir olayla aynı zaman diliminde gerçekleştiğini belirtmek için hangi edatı kullanırsın?", a: "During", options: ["During", "Upon", "Within"] },
+            { q: "Bir projenin başarısı için zorunlu olan şartları anlatırken hangi fiil kullanılır?", a: "Require", options: ["Require", "Reduce", "Serve"] }
+        ];
+
+        // --- HELPER FUNCTIONS ---
+
+        // Label Wrapping for Charts (16 char limit)
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCharts();
+            renderVocabGrid(vocabulary);
+            renderQuiz();
+        });
+
+        // --- CHART RENDERING ---
+        function renderCharts() {
+            // Data Prep
+            let typeCounts = { Verb: 0, Adjective: 0, Other: 0 };
+            vocabulary.forEach(v => {
+                if (v.type === 'Verb' || v.type === 'Adjective') typeCounts[v.type]++;
+                else typeCounts['Other']++;
+            });
+
+            // Common Chart Options
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { font: { family: "'Lato', sans-serif" } } },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) return label.join(' ');
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            // 1. Distribution Chart
+            const ctxDist = document.getElementById('distributionChart').getContext('2d');
+            new Chart(ctxDist, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Verbs', 'Adjectives', 'Others'],
+                    datasets: [{
+                        data: [typeCounts.Verb, typeCounts.Adjective, typeCounts.Other],
+                        backgroundColor: ['#C87961', '#5C7C8A', '#E2C044'], // Terra, Blue, Gold
+                        borderWidth: 0
+                    }]
+                },
+                options: commonOptions
+            });
+
+            // 2. Complexity Chart
+            // Sort by length
+            const sortedVocab = [...vocabulary].sort((a,b) => b.length - a.length);
+            const ctxComp = document.getElementById('complexityChart').getContext('2d');
+            new Chart(ctxComp, {
+                type: 'bar',
+                data: {
+                    labels: sortedVocab.map(v => wrapLabel(v.word)),
+                    datasets: [{
+                        label: 'Letter Count',
+                        data: sortedVocab.map(v => v.length),
+                        backgroundColor: '#5C7C8A',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // --- VOCAB EXPLORER LOGIC ---
+        function renderVocabGrid(data) {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = '';
+
+            data.forEach(item => {
+                // Determine border color based on type
+                let borderColor = 'border-gray-200';
+                let badgeColor = 'bg-gray-200 text-gray-700';
+                
+                if (item.type === 'Verb') { borderColor = 'border-red-200'; badgeColor = 'bg-red-100 text-red-800'; }
+                else if (item.type === 'Adjective') { borderColor = 'border-blue-200'; badgeColor = 'bg-blue-100 text-blue-800'; }
+                else { borderColor = 'border-yellow-200'; badgeColor = 'bg-yellow-100 text-yellow-800'; }
+
+                const card = document.createElement('div');
+                card.className = `vocab-card bg-white rounded-xl shadow-sm border ${borderColor} p-6 flex flex-col justify-between h-full`;
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-2xl font-bold font-serif text-primary">${item.word}</h3>
+                            <span class="${badgeColor} text-xs font-semibold px-2.5 py-0.5 rounded">${item.type}</span>
+                        </div>
+                        <p class="text-gray-600 mb-4 text-sm">${item.def}</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p class="text-gray-500 italic text-sm">"${item.ex}"</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterVocab(type) {
+            // Update Buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-600');
+            });
+            const activeBtn = document.getElementById(`btn-${type}`);
+            activeBtn.classList.remove('bg-white', 'text-gray-600');
+            activeBtn.classList.add('bg-primary', 'text-white');
+
+            // Filter Data
+            if (type === 'all') {
+                renderVocabGrid(vocabulary);
+            } else {
+                const filtered = vocabulary.filter(item => {
+                    if (type === 'Other') return item.type === 'Other';
+                    return item.type === type;
+                });
+                renderVocabGrid(filtered);
+            }
+        }
+
+        // --- QUIZ LOGIC ---
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            
+            quizQuestions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = "border-b border-gray-100 pb-4 last:border-0";
+                
+                // Shuffle options slightly for randomness (simple swap) if needed, 
+                // but keeping fixed here for consistency with study guide.
+                
+                let optionsHTML = '';
+                q.options.forEach(opt => {
+                    optionsHTML += `
+                        <label class="inline-flex items-center mr-6 cursor-pointer mt-2">
+                            <input type="radio" name="q${index}" value="${opt}" class="form-radio text-accent-terra focus:ring-accent-terra h-4 w-4">
+                            <span class="ml-2 text-gray-700">${opt}</span>
+                        </label>
+                    `;
+                });
+
+                qDiv.innerHTML = `
+                    <p class="font-semibold text-lg text-primary mb-2">${index + 1}. ${q.q}</p>
+                    <div class="flex flex-wrap">
+                        ${optionsHTML}
+                    </div>
+                    <div id="feedback-${index}" class="hidden mt-2 text-sm font-bold"></div>
+                `;
+                container.appendChild(qDiv);
+            });
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            quizQuestions.forEach((q, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const feedbackDiv = document.getElementById(`feedback-${index}`);
+                feedbackDiv.classList.remove('hidden', 'text-green-600', 'text-red-600');
+
+                if (selected) {
+                    if (selected.value === q.a) {
+                        score++;
+                        feedbackDiv.innerText = "Correct! ✅";
+                        feedbackDiv.classList.add('text-green-600');
+                    } else {
+                        feedbackDiv.innerText = `Incorrect. The answer is ${q.a}. ❌`;
+                        feedbackDiv.classList.add('text-red-600');
+                    }
+                } else {
+                    feedbackDiv.innerText = "Please select an answer.";
+                    feedbackDiv.classList.add('text-gray-500');
+                }
+            });
+
+            const resultDiv = document.getElementById('quizResult');
+            resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-yellow-100', 'text-yellow-800');
+            
+            if (score === quizQuestions.length) {
+                resultDiv.innerText = `Perfect Score! ${score}/${quizQuestions.length} 🎉`;
+                resultDiv.classList.add('bg-green-100', 'text-green-800');
+            } else {
+                resultDiv.innerText = `You got ${score}/${quizQuestions.length}. Keep practicing! 💪`;
+                resultDiv.classList.add('bg-yellow-100', 'text-yellow-800');
+            }
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+    </script>
+</body>
+</html> 

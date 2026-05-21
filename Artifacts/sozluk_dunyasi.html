@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sözcük Dünyası — A2→B2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1526;--bg2:#132038;--bg3:#1a2d4a;--card:#1e3154;
+  --border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.15);
+  --text:#e8dfc8;--text2:#8fa0b8;--text3:#5a7090;
+  --amber:#e8a838;--amber2:#c8882a;--amber-bg:rgba(232,168,56,0.12);
+  --teal:#3ecfb4;--teal-bg:rgba(62,207,180,0.1);
+  --coral:#e86858;--coral-bg:rgba(232,104,88,0.1);
+  --green:#4caf7d;--green-bg:rgba(76,175,125,0.1);
+  --purple:#9b8fdd;--purple-bg:rgba(155,143,221,0.1);
+  --r:14px;--r2:10px;--r3:8px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:Verdana,Geneva,sans-serif;font-size:14px;line-height:1.6;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;position:relative}
+
+/* NAV */
+#nav{display:flex;background:var(--bg2);border-top:0.5px solid var(--border);padding:6px 0 8px;flex-shrink:0;z-index:10}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 2px;border:none;background:none;color:var(--text3);transition:color .2s}
+.nav-btn.active{color:var(--amber)}
+.nav-icon{font-size:18px;line-height:1}
+.nav-label{font-size:9px;font-family:Verdana,sans-serif;letter-spacing:.04em;text-transform:uppercase}
+
+/* VIEWS */
+#views{flex:1;overflow:hidden;position:relative}
+.view{position:absolute;inset:0;overflow-y:auto;padding:16px 14px 80px;display:none;animation:fadeIn .25s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADERS */
+.page-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;color:var(--amber);margin-bottom:4px;font-weight:600}
+.page-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+
+/* CARDS */
+.card{background:var(--card);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
+.card-sm{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r2);padding:10px 12px;margin-bottom:8px}
+
+/* BADGES */
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;letter-spacing:.04em}
+.badge-a2{background:rgba(62,207,180,.15);color:var(--teal)}
+.badge-b1{background:rgba(232,168,56,.15);color:var(--amber)}
+.badge-chunk{background:rgba(155,143,221,.15);color:var(--purple)}
+.badge-phrasal{background:rgba(232,104,88,.15);color:var(--coral)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:var(--r3);border:none;cursor:pointer;font-family:Verdana,sans-serif;font-size:13px;font-weight:600;transition:all .15s;letter-spacing:.02em}
+.btn-primary{background:var(--amber);color:#0d1526}
+.btn-primary:hover{background:var(--amber2)}
+.btn-outline{background:transparent;color:var(--text2);border:0.5px solid var(--border2)}
+.btn-outline:hover{background:var(--bg3);color:var(--text)}
+.btn-green{background:var(--green-bg);color:var(--green);border:0.5px solid rgba(76,175,125,.25)}
+.btn-red{background:var(--coral-bg);color:var(--coral);border:0.5px solid rgba(232,104,88,.25)}
+.btn-sm{padding:6px 12px;font-size:11px;border-radius:6px}
+
+/* ===== HOME ===== */
+.level-card{background:linear-gradient(135deg,var(--bg3),var(--card));border:0.5px solid var(--border2);border-radius:var(--r);padding:18px;margin-bottom:16px;position:relative;overflow:hidden}
+.level-card::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:var(--amber-bg);border-radius:50%}
+.level-badge{font-family:'Playfair Display',serif;font-size:40px;color:var(--amber);line-height:1;font-weight:600}
+.level-label{font-size:11px;color:var(--text2);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.progress-track{background:var(--bg2);border-radius:20px;height:8px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--amber),var(--teal));transition:width .8s ease}
+.progress-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:4px}
+
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
+.stat-box{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r2);padding:12px 10px;text-align:center}
+.stat-num{font-size:22px;font-weight:600;color:var(--amber);font-family:'Playfair Display',serif}
+.stat-label{font-size:10px;color:var(--text3);margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.menu-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .15s;text-decoration:none}
+.menu-card:hover{border-color:var(--border2);background:var(--bg3);transform:translateY(-2px)}
+.menu-icon{font-size:28px;margin-bottom:8px}
+.menu-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.menu-desc{font-size:11px;color:var(--text3)}
+
+/* ===== STORY ===== */
+.story-tabs{display:flex;gap:6px;margin-bottom:14px}
+.story-tab{padding:7px 14px;border-radius:20px;font-size:12px;cursor:pointer;border:0.5px solid var(--border);color:var(--text2);background:none;transition:all .15s}
+.story-tab.active{background:var(--amber-bg);border-color:rgba(232,168,56,.4);color:var(--amber)}
+
+.story-body{font-size:14px;line-height:2;color:var(--text);font-family:Verdana,sans-serif}
+.chunk-word{cursor:pointer;border-bottom:1.5px dashed var(--amber);color:var(--amber);transition:background .15s;border-radius:3px;padding:0 1px}
+.chunk-word:hover{background:var(--amber-bg)}
+
+/* CHUNK POPUP */
+#chunk-popup{display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:calc(100% - 28px);max-width:452px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--r);padding:16px;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,.5);animation:popUp .2s ease}
+@keyframes popUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.popup-en{font-size:18px;font-weight:600;color:var(--amber);font-family:'Playfair Display',serif;margin-bottom:2px}
+.popup-tr{font-size:13px;color:var(--teal);margin-bottom:8px}
+.popup-ex{font-size:12px;color:var(--text2);font-style:italic;line-height:1.7;margin-bottom:10px;border-left:2px solid var(--amber-bg);padding-left:8px}
+.popup-close{position:absolute;top:10px;right:12px;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;background:none;border:none}
+
+/* ===== FLASHCARDS ===== */
+.deck-controls{display:flex;gap:6px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.filter-btn{padding:5px 11px;border-radius:20px;font-size:11px;cursor:pointer;border:0.5px solid var(--border);color:var(--text3);background:none;transition:all .15s}
+.filter-btn.active{background:var(--teal-bg);border-color:rgba(62,207,180,.4);color:var(--teal)}
+
+.flashcard-wrap{perspective:1000px;height:220px;margin-bottom:16px;cursor:pointer}
+.flashcard{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.flashcard.flipped{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;border-radius:var(--r);border:0.5px solid var(--border2);backface-visibility:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center}
+.fc-front{background:linear-gradient(135deg,var(--bg3),var(--card))}
+.fc-back{background:linear-gradient(135deg,var(--card),var(--bg3));transform:rotateY(180deg)}
+.fc-hint{font-size:10px;color:var(--text3);position:absolute;bottom:12px;right:14px;text-transform:uppercase;letter-spacing:.06em}
+.fc-en{font-size:22px;color:var(--amber);font-family:'Playfair Display',serif;font-weight:600;margin-bottom:6px}
+.fc-ex{font-size:12px;color:var(--text2);font-style:italic;line-height:1.7;margin-top:4px}
+.fc-tr{font-size:18px;color:var(--teal);font-weight:600;margin-bottom:4px}
+.fc-pronun{font-size:11px;color:var(--text3);margin-bottom:6px}
+
+.fc-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.fc-counter{font-size:12px;color:var(--text3);min-width:60px;text-align:center}
+
+.fc-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* ===== GAME ===== */
+.game-prompt{background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--r);padding:16px;margin-bottom:14px;text-align:center}
+.game-prompt-word{font-size:20px;color:var(--amber);font-family:'Playfair Display',serif;font-weight:600;margin-bottom:4px}
+.game-prompt-ctx{font-size:12px;color:var(--text2);font-style:italic}
+.game-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.game-opt{background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--r2);padding:12px 10px;text-align:center;cursor:pointer;font-size:12px;color:var(--text);transition:all .15s;line-height:1.4}
+.game-opt:hover{border-color:var(--border2);background:var(--card)}
+.game-opt.correct{background:var(--green-bg);border-color:rgba(76,175,125,.5);color:var(--green)}
+.game-opt.wrong{background:var(--coral-bg);border-color:rgba(232,104,88,.5);color:var(--coral)}
+.game-score-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.game-dots{display:flex;gap:4px;flex-wrap:wrap}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--bg3);border:0.5px solid var(--border);transition:all .3s}
+.dot.correct{background:var(--green);border-color:var(--green)}
+.dot.wrong{background:var(--coral);border-color:var(--coral)}
+.dot.current{border-color:var(--amber)}
+
+.result-card{background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--r);padding:24px;text-align:center}
+.result-score{font-size:48px;font-family:'Playfair Display',serif;color:var(--amber);font-weight:600}
+.result-label{font-size:13px;color:var(--text2);margin-top:4px}
+.result-msg{font-size:13px;color:var(--text);margin:12px 0}
+
+/* ===== BANK ===== */
+.bank-empty{text-align:center;padding:40px 20px;color:var(--text3)}
+.bank-empty-icon{font-size:40px;margin-bottom:10px}
+.bank-item{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r2);padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.bank-en{font-size:14px;color:var(--amber);font-weight:600;margin-bottom:2px}
+.bank-tr{font-size:12px;color:var(--teal)}
+.bank-ex{font-size:11px;color:var(--text3);margin-top:4px;font-style:italic;line-height:1.5}
+.bank-del{color:var(--text3);background:none;border:none;cursor:pointer;font-size:16px;padding:2px;line-height:1;flex-shrink:0;transition:color .15s}
+.bank-del:hover{color:var(--coral)}
+.bank-filter{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+
+/* TOAST */
+#toast{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--green);color:#0d1526;padding:8px 18px;border-radius:20px;font-size:12px;font-weight:600;z-index:200;white-space:nowrap}
+#toast.show{display:block;animation:toastIn .3s ease}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px}
+
+/* NOTICE */
+.notice{background:var(--purple-bg);border:0.5px solid rgba(155,143,221,.25);border-radius:var(--r2);padding:12px 14px;font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.7}
+.notice strong{color:var(--purple)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- VIEWS -->
+  <div id="views">
+
+    <!-- HOME -->
+    <div id="view-home" class="view active">
+      <div class="level-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:1">
+          <div>
+            <div style="font-size:11px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">Mevcut Seviye</div>
+            <div class="level-badge">A2</div>
+            <div class="level-label">Pre-Intermediate</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:11px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">Hedef</div>
+            <div style="font-size:18px;font-family:'Playfair Display',serif;color:var(--teal);font-weight:600">B1+</div>
+          </div>
+        </div>
+        <div class="progress-track" style="position:relative;z-index:1;margin-top:12px">
+          <div class="progress-fill" id="main-progress" style="width:15%"></div>
+        </div>
+        <div class="progress-labels"><span>A2</span><span>B1</span><span>B2</span></div>
+      </div>
+
+      <div class="notice">
+        <strong>Not:</strong> Bu test kelime tanıma hızını ölçer — dilbilgisi hakimiyetini değil. Gramere güçlü altyapın var; bu sebeple kelime büyümesi çok hızlı olacak. İyi bir temel üzerine inşa ediyoruz.
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num" id="stat-learned">0</div>
+          <div class="stat-label">Öğrenilen</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-bank">0</div>
+          <div class="stat-label">Bankada</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-streak">0</div>
+          <div class="stat-label">Gün Serisi</div>
+        </div>
+      </div>
+
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em">Ne yapmak istersin?</div>
+      <div class="menu-grid">
+        <div class="menu-card" onclick="goTo('story')">
+          <div class="menu-icon">📖</div>
+          <div class="menu-title">Hikâye Modu</div>
+          <div class="menu-desc">Öbeklerle dolu kısa hikâyeler oku</div>
+        </div>
+        <div class="menu-card" onclick="goTo('cards')">
+          <div class="menu-icon">🃏</div>
+          <div class="menu-title">Flashcard</div>
+          <div class="menu-desc">45 öbek ve phrasal verb</div>
+        </div>
+        <div class="menu-card" onclick="goTo('game')">
+          <div class="menu-icon">🎯</div>
+          <div class="menu-title">Anlam Oyunu</div>
+          <div class="menu-desc">Eşleştirme ve bilgi yarışması</div>
+        </div>
+        <div class="menu-card" onclick="goTo('bank')">
+          <div class="menu-icon">🏦</div>
+          <div class="menu-title">Kelime Bankam</div>
+          <div class="menu-desc">Kaydettiğin öbekler</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding:14px;background:var(--bg2);border-radius:var(--r);border:0.5px solid var(--border)">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Günün Öbeği</div>
+        <div id="wod-en" style="font-size:17px;color:var(--amber);font-family:'Playfair Display',serif;font-weight:600;margin-bottom:2px"></div>
+        <div id="wod-tr" style="font-size:12px;color:var(--teal);margin-bottom:6px"></div>
+        <div id="wod-ex" style="font-size:12px;color:var(--text2);font-style:italic;line-height:1.7"></div>
+      </div>
+    </div>
+
+    <!-- STORY -->
+    <div id="view-story" class="view">
+      <div class="page-title">Hikâye Modu</div>
+      <div class="page-sub">Sarı altı çizili öbeklere tıkla — anlamını ve örneğini gör</div>
+
+      <div class="story-tabs">
+        <button class="story-tab active" onclick="loadStory(0,this)">Kayıp Yolcu (A2)</button>
+        <button class="story-tab" onclick="loadStory(1,this)">İnşaatçı (B1)</button>
+      </div>
+
+      <div class="card">
+        <div id="story-text" class="story-body"></div>
+      </div>
+
+      <div style="font-size:11px;color:var(--text3);text-align:center;margin-top:-4px">
+        Bu hikâyedeki tüm öbekleri keşfettin mi?
+      </div>
+    </div>
+
+    <!-- FLASHCARDS -->
+    <div id="view-cards" class="view">
+      <div class="page-title">Flashcard Destesi</div>
+      <div class="page-sub">Karta tıkla veya bas — Türkçe çevirisi gelsin</div>
+
+      <div class="deck-controls">
+        <span style="font-size:11px;color:var(--text3)">Filtre:</span>
+        <button class="filter-btn active" onclick="setFilter('all',this)">Tümü</button>
+        <button class="filter-btn" onclick="setFilter('A2',this)">A2</button>
+        <button class="filter-btn" onclick="setFilter('B1',this)">B1</button>
+        <button class="filter-btn" onclick="setFilter('chunk',this)">Chunk</button>
+        <button class="filter-btn" onclick="setFilter('phrasal',this)">Phrasal</button>
+      </div>
+
+      <div id="fc-counter-wrap" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span id="fc-progress-text" style="font-size:11px;color:var(--text3)"></span>
+        <button class="btn btn-sm btn-outline" onclick="shuffleDeck()">🔀 Karıştır</button>
+      </div>
+
+      <div class="flashcard-wrap" onclick="flipCard()">
+        <div class="flashcard" id="flashcard">
+          <div class="fc-face fc-front">
+            <div id="fc-badges" style="display:flex;gap:5px;margin-bottom:10px"></div>
+            <div class="fc-en" id="fc-en"></div>
+            <div id="fc-tag-en" style="font-size:11px;color:var(--text3);margin-top:4px"></div>
+            <div class="fc-ex" id="fc-ex"></div>
+            <div class="fc-hint">Tıkla → Türkçe</div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-tr" id="fc-tr"></div>
+            <div class="fc-ex" id="fc-ex-back" style="color:var(--text2)"></div>
+            <div class="fc-hint">Tıkla → İngilizce</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fc-nav">
+        <button class="btn btn-outline btn-sm" onclick="prevCard()">← Önceki</button>
+        <span id="fc-counter" class="fc-counter"></span>
+        <button class="btn btn-outline btn-sm" onclick="nextCard()">Sonraki →</button>
+      </div>
+
+      <div class="fc-actions">
+        <button class="btn btn-red" onclick="markCard(false)" style="font-size:12px">✗ Bilmiyorum</button>
+        <button class="btn btn-outline btn-sm" style="font-size:12px" onclick="saveToBank()">🏦 Bankaya Kaydet</button>
+        <button class="btn btn-green" onclick="markCard(true)" style="font-size:12px">✓ Biliyorum</button>
+      </div>
+    </div>
+
+    <!-- GAME -->
+    <div id="view-game" class="view">
+      <div class="page-title">Anlam Oyunu</div>
+      <div class="page-sub">Doğru Türkçe karşılığını seç</div>
+
+      <div id="game-ui">
+        <div class="game-score-bar">
+          <span id="game-q-num" style="font-size:12px;color:var(--text3)"></span>
+          <div class="game-dots" id="game-dots"></div>
+          <span id="game-score-live" style="font-size:12px;color:var(--amber);font-weight:600"></span>
+        </div>
+        <div class="game-prompt">
+          <div id="gp-badges" style="display:flex;justify-content:center;gap:5px;margin-bottom:8px"></div>
+          <div class="game-prompt-word" id="gp-word"></div>
+          <div class="game-prompt-ctx" id="gp-ctx"></div>
+        </div>
+        <div class="game-options" id="game-opts"></div>
+        <div id="game-feedback" style="display:none;margin-bottom:10px;padding:10px 12px;border-radius:var(--r2);font-size:12px;line-height:1.7"></div>
+        <button id="game-next-btn" class="btn btn-primary" style="width:100%;display:none" onclick="gameNext()">Sonraki Soru →</button>
+      </div>
+
+      <div id="game-result" style="display:none">
+        <div class="result-card">
+          <div class="result-score" id="final-score"></div>
+          <div class="result-label">/ 10 doğru</div>
+          <div class="result-msg" id="final-msg"></div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
+            <button class="btn btn-primary" onclick="startGame()">Tekrar Oyna</button>
+            <button class="btn btn-outline" onclick="goTo('home')">Ana Sayfa</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANK -->
+    <div id="view-bank" class="view">
+      <div class="page-title">Kelime Bankam</div>
+      <div class="page-sub">Hikâye ve kartlardan kaydettiğin öbekler</div>
+
+      <div class="bank-filter" id="bank-filter">
+        <button class="filter-btn active" onclick="setBankFilter('all',this)">Tümü</button>
+        <button class="filter-btn" onclick="setBankFilter('chunk',this)">Chunk</button>
+        <button class="filter-btn" onclick="setBankFilter('phrasal',this)">Phrasal</button>
+        <button class="filter-btn" onclick="setBankFilter('A2',this)">A2</button>
+        <button class="filter-btn" onclick="setBankFilter('B1',this)">B1</button>
+      </div>
+
+      <div id="bank-count" style="font-size:11px;color:var(--text3);margin-bottom:10px"></div>
+      <div id="bank-list"></div>
+
+      <div id="bank-empty" class="bank-empty" style="display:none">
+        <div class="bank-empty-icon">📭</div>
+        <div style="font-size:14px;color:var(--text2);margin-bottom:6px">Banka henüz boş</div>
+        <div style="font-size:12px;line-height:1.7">Flashcard'lardan "🏦 Bankaya Kaydet" butonuna bas<br>ya da hikâyelerdeki öbekleri kaydet</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav id="nav">
+    <button class="nav-btn active" onclick="goTo('home')" id="nav-home">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Ana</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('story')" id="nav-story">
+      <span class="nav-icon">📖</span>
+      <span class="nav-label">Hikâye</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('cards')" id="nav-cards">
+      <span class="nav-icon">🃏</span>
+      <span class="nav-label">Kartlar</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('game')" id="nav-game">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">Oyun</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('bank')" id="nav-bank">
+      <span class="nav-icon">🏦</span>
+      <span class="nav-label">Banka</span>
+    </button>
+  </nav>
+</div>
+
+<!-- CHUNK POPUP -->
+<div id="chunk-popup">
+  <button class="popup-close" onclick="closePopup()">×</button>
+  <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+    <div class="popup-en" id="popup-en"></div>
+  </div>
+  <div class="popup-tr" id="popup-tr"></div>
+  <div class="popup-ex" id="popup-ex"></div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-primary btn-sm" onclick="savePopupToBank()">🏦 Bankaya Ekle</button>
+    <button class="btn btn-outline btn-sm" onclick="closePopup()">Kapat</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ===================== DATA =====================
+const vocab = [
+  {id:1,type:'phrasal',level:'A2',en:'give up',tr:'vazgeçmek',ex:"Don't give up — every great journey starts with a single step.",tag:'motivasyon'},
+  {id:2,type:'phrasal',level:'A2',en:'look for',tr:'aramak / peşinde olmak',ex:'She was looking for her keys when she found an old letter.',tag:'günlük'},
+  {id:3,type:'phrasal',level:'A2',en:'find out',tr:'keşfetmek / öğrenmek',ex:'He found out about a secret path through the forest.',tag:'keşif'},
+  {id:4,type:'phrasal',level:'A2',en:'wake up',tr:'uyanmak',ex:'I wake up early to catch the quiet of the morning.',tag:'rutin'},
+  {id:5,type:'phrasal',level:'A2',en:'pick up',tr:'almak / toplamak / öğrenmek',ex:'She picked up Spanish while travelling through South America.',tag:'öğrenme'},
+  {id:6,type:'phrasal',level:'A2',en:'put off',tr:'ertelemek',ex:"Don't put off until tomorrow what you can do today.",tag:'zaman'},
+  {id:7,type:'phrasal',level:'A2',en:'go on',tr:'devam etmek',ex:'The rain stopped and they went on with their journey.',tag:'süreç'},
+  {id:8,type:'phrasal',level:'A2',en:'run out of',tr:'tükenmek / bitmek',ex:'They ran out of water before reaching the next village.',tag:'kaynak'},
+  {id:9,type:'phrasal',level:'A2',en:'come back',tr:'geri dönmek',ex:'He came back from the island completely changed.',tag:'yolculuk'},
+  {id:10,type:'phrasal',level:'A2',en:'turn on',tr:'açmak (cihaz / ışık)',ex:"Turn on the light — it's getting dark.",tag:'günlük'},
+  {id:11,type:'phrasal',level:'B1',en:'look forward to',tr:'dört gözle beklemek / sabırsızlanmak',ex:"I'm looking forward to reading your next chapter.",tag:'duygu'},
+  {id:12,type:'phrasal',level:'B1',en:'deal with',tr:'başa çıkmak / üstesinden gelmek',ex:'Learning to deal with uncertainty is a real skill.',tag:'yaşam'},
+  {id:13,type:'phrasal',level:'B1',en:'carry on',tr:'sürdürmek / devam etmek (ısrarla)',ex:'Despite the difficulties, she carried on writing every day.',tag:'azim'},
+  {id:14,type:'phrasal',level:'B1',en:'set up',tr:'kurmak / oluşturmak / hazırlamak',ex:'He set up a small system to track his daily reading.',tag:'proje'},
+  {id:15,type:'phrasal',level:'B1',en:'break down',tr:'bozulmak / çökmek / parçalara ayırmak',ex:'The plan broke down when they ran out of resources.',tag:'sorun'},
+  {id:16,type:'phrasal',level:'B1',en:'catch up with',tr:'yetişmek / farkı kapatmak',ex:'It took weeks to catch up with all the missed reading.',tag:'öğrenme'},
+  {id:17,type:'phrasal',level:'B1',en:'look into',tr:'araştırmak / incelemek',ex:'I will look into the best method for learning vocabulary.',tag:'araştırma'},
+  {id:18,type:'phrasal',level:'B1',en:'hold on',tr:'beklemek / tutunmak / dur bir dakika',ex:"Hold on — there's something important you need to see.",tag:'dikkat'},
+  {id:19,type:'phrasal',level:'B1',en:'get on with',tr:'geçinmek / ile iyi anlaşmak',ex:'He got on well with all his new colleagues.',tag:'ilişki'},
+  {id:20,type:'phrasal',level:'B1',en:'come across',tr:'tesadüfen karşılaşmak / rastlamak',ex:'I came across this beautiful phrase while reading.',tag:'keşif'},
+  {id:21,type:'chunk',level:'A2',en:'make a decision',tr:'karar vermek',ex:'Sometimes the hardest thing is to make a decision and act on it.',tag:'düşünce'},
+  {id:22,type:'chunk',level:'A2',en:'take a break',tr:'mola vermek / ara vermek',ex:'After two hours of studying, take a break and go for a walk.',tag:'rutin'},
+  {id:23,type:'chunk',level:'A2',en:'in the end',tr:'sonunda / sonuç olarak',ex:'In the end, every difficulty became a lesson.',tag:'sonuç'},
+  {id:24,type:'chunk',level:'A2',en:'at the moment',tr:'şu anda / şu sıralar',ex:'At the moment, I am building a better learning routine.',tag:'zaman'},
+  {id:25,type:'chunk',level:'A2',en:'by the way',tr:'bu arada (konuya geçerken)',ex:'By the way, did you read the chapter about the island?',tag:'konuşma'},
+  {id:26,type:'chunk',level:'A2',en:'all the time',tr:'her zaman / sürekli olarak',ex:'He was thinking about the problem all the time.',tag:'sıklık'},
+  {id:27,type:'chunk',level:'A2',en:'for example',tr:'örneğin / mesela',ex:"Use chunks in context — for example, in a sentence you write yourself.",tag:'açıklama'},
+  {id:28,type:'chunk',level:'A2',en:'a long time ago',tr:'uzun zaman önce',ex:'A long time ago, a man was stranded on a deserted island.',tag:'hikâye'},
+  {id:29,type:'chunk',level:'A2',en:"right now",tr:'şu anda / hemen şimdi',ex:'Right now is the best time to start learning.',tag:'zaman'},
+  {id:30,type:'chunk',level:'A2',en:"I can't wait",tr:'sabırsızlanıyorum / çok istiyorum',ex:"I can't wait to finish this book and start the next one.",tag:'duygu'},
+  {id:31,type:'chunk',level:'B1',en:'make progress',tr:'ilerleme kaydetmek',ex:"Every day you study, you make progress — even when you don't feel it.",tag:'öğrenme'},
+  {id:32,type:'chunk',level:'B1',en:'pay attention',tr:'dikkat etmek / dikkat vermek',ex:'Pay attention to the chunks, not just the single words.',tag:'öğrenme'},
+  {id:33,type:'chunk',level:'B1',en:'run out of time',tr:'zamanı tükenmek',ex:'We almost ran out of time to finish the project.',tag:'zaman'},
+  {id:34,type:'chunk',level:'B1',en:'on the other hand',tr:'öte yandan / diğer taraftan',ex:'Grammar is important; on the other hand, vocabulary is the key.',tag:'karşıtlık'},
+  {id:35,type:'chunk',level:'B1',en:'as soon as possible',tr:'mümkün olan en kısa sürede',ex:"I'll look into that as soon as possible.",tag:'zaman'},
+  {id:36,type:'chunk',level:'B1',en:'take part in',tr:'katılmak / içinde yer almak',ex:'Take part in conversations even when you make mistakes.',tag:'eylem'},
+  {id:37,type:'chunk',level:'B1',en:'get used to',tr:'-e alışmak',ex:'After a while, you get used to thinking in chunks.',tag:'alışkanlık'},
+  {id:38,type:'chunk',level:'B1',en:"it's worth it",tr:'değer / buna değer',ex:'The effort is hard, but it\'s worth it.',tag:'değerlendirme'},
+  {id:39,type:'chunk',level:'B1',en:'end up',tr:'sonunda beklenmedik biçimde ... -mek',ex:"If you keep reading, you'll end up speaking naturally.",tag:'sonuç'},
+  {id:40,type:'chunk',level:'B1',en:'set off',tr:'yola çıkmak',ex:'He set off early in the morning before the sun rose.',tag:'yolculuk'},
+  {id:41,type:'chunk',level:'B1',en:'lose track of time',tr:'zamanı unutmak / zamanın geçtiğini fark etmemek',ex:'When you read a great story, you lose track of time.',tag:'his'},
+  {id:42,type:'chunk',level:'B1',en:'make up your mind',tr:'kerar vermek / aklını bir yere bağlamak',ex:'Make up your mind and commit to one method.',tag:'karar'},
+  {id:43,type:'chunk',level:'B1',en:'out of the blue',tr:'aniden / beklenmedik şekilde / ansızın',ex:'Out of the blue, a great idea came to him.',tag:'sürpriz'},
+  {id:44,type:'chunk',level:'B1',en:'keep in mind',tr:'aklında tutmak / göz önünde bulundurmak',ex:'Keep in mind that consistency beats intensity every time.',tag:'tavsiye'},
+  {id:45,type:'chunk',level:'B1',en:'on a regular basis',tr:'düzenli olarak',ex:'Read on a regular basis — even 15 minutes counts.',tag:'alışkanlık'},
+];
+
+// Stories with annotated chunks
+const stories = [
+  {
+    title:'Kayıp Yolcu',
+    level:'A2',
+    text:[
+      {t:'A long time ago',c:28}, {t:', a man decided to ', c:null}, {t:'set off', c:40},
+      {t:' on a long journey by sea. ', c:null},
+      {t:'At the moment', c:24}, {t:' the ship left the harbour, he was full of hope.', c:null},
+      {t:'\n\nBut soon, things went wrong. The ship ', c:null},
+      {t:'ran out of', c:8}, {t:' food three days from shore. ', c:null},
+      {t:'In the end', c:23}, {t:', a terrible storm came. The man found himself alone on a small island.', c:null},
+      {t:'\n\nHe did not ', c:null}, {t:'give up', c:1}, {t:'. He started to ', c:null},
+      {t:'look for', c:2}, {t:' water and food. He ', c:null},
+      {t:'found out', c:3}, {t:' that the island had fruit trees and fish in the sea.', c:null},
+      {t:'\n\nDay after day he ', c:null}, {t:'carried on', c:13}, {t:'. He had to ', c:null},
+      {t:'make a decision', c:21}, {t:' — build a shelter or keep waiting. He built it.', c:null},
+      {t:'\n\nAfter many months, a ship ', c:null}, {t:'came back', c:9}, {t:' to the island. ', c:null},
+      {t:'By the way', c:25}, {t:' — that man\'s name was Robinson Crusoe.', c:null},
+    ]
+  },
+  {
+    title:'İnşaatçı',
+    level:'B1',
+    text:[
+      {t:'She had been thinking about the project for months. Then, ', c:null},
+      {t:'out of the blue', c:43}, {t:', she ', c:null},
+      {t:'made up her mind', c:42}, {t:' — it was time to ', c:null},
+      {t:'set it up', c:14}, {t:'.', c:null},
+      {t:'\n\nAt first, things ', c:null}, {t:'broke down', c:15},
+      {t:' more often than they worked. She had to ', c:null},
+      {t:'deal with', c:12}, {t:' one problem after another. But she ', c:null},
+      {t:'paid attention', c:32}, {t:' to every mistake and learned from it.', c:null},
+      {t:'\n\nHer friend said: "', c:null}, {t:'On the other hand', c:34},
+      {t:', maybe this is too hard." But she ', c:null},
+      {t:'carried on', c:13}, {t:'.', c:null},
+      {t:'\n\nSlowly, she started to ', c:null}, {t:'make progress', c:31},
+      {t:'. She ', c:null}, {t:'caught up with', c:16},
+      {t:' where she wanted to be. She ', c:null},
+      {t:'got used to', c:37}, {t:' the rhythm of building something new.', c:null},
+      {t:'\n\n', c:null}, {t:'In the end', c:23}, {t:', ', c:null},
+      {t:"it was worth it", c:38}, {t:'. She was ', c:null},
+      {t:'looking forward to', c:11}, {t:' every new day of work.', c:null},
+    ]
+  }
+];
+
+// ===================== STATE =====================
+let currentView = 'home';
+let filteredDeck = [...vocab];
+let currentCardIdx = 0;
+let cardKnown = {};
+let currentPopupItem = null;
+let bankFilter = 'all';
+let gameQuestions = [];
+let gameIdx = 0;
+let gameScore = 0;
+let gameAnswered = false;
+
+function getBank(){try{return JSON.parse(localStorage.getItem('sozluk_bank')||'[]')}catch{return[]}}
+function setBank(b){localStorage.setItem('sozluk_bank',JSON.stringify(b))}
+function getStats(){try{return JSON.parse(localStorage.getItem('sozluk_stats')||'{}')}catch{return{}}}
+function setStats(s){localStorage.setItem('sozluk_stats',JSON.stringify(s))}
+
+// ===================== NAV =====================
+function goTo(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.getElementById('nav-'+view).classList.add('active');
+  currentView = view;
+  closePopup();
+  if(view==='home') refreshHome();
+  if(view==='story') loadStory(0,document.querySelector('.story-tab'));
+  if(view==='cards') initCards();
+  if(view==='game') startGame();
+  if(view==='bank') renderBank();
+}
+
+// ===================== HOME =====================
+function refreshHome(){
+  const bank = getBank();
+  const stats = getStats();
+  document.getElementById('stat-bank').textContent = bank.length;
+  document.getElementById('stat-learned').textContent = stats.learned||0;
+  document.getElementById('stat-streak').textContent = stats.streak||0;
+  const progress = Math.min(100, (bank.length/45)*60 + ((stats.learned||0)/20)*40);
+  document.getElementById('main-progress').style.width = Math.max(5,Math.round(progress))+'%';
+  // Word of the day
+  const wod = vocab[new Date().getDate() % vocab.length];
+  document.getElementById('wod-en').textContent = wod.en;
+  document.getElementById('wod-tr').textContent = wod.tr;
+  document.getElementById('wod-ex').textContent = wod.ex;
+}
+
+// ===================== STORY =====================
+function loadStory(idx, btn){
+  document.querySelectorAll('.story-tab').forEach(t=>t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const story = stories[idx];
+  const container = document.getElementById('story-text');
+  let html = '';
+  story.text.forEach(seg=>{
+    if(seg.c !== null && seg.c !== undefined){
+      html += `<span class="chunk-word" data-id="${seg.c}" onclick="showChunk(${seg.c})">${seg.t}</span>`;
+    } else {
+      html += seg.t.replace(/\n/g,'<br>');
+    }
+  });
+  container.innerHTML = html;
+}
+
+function showChunk(id){
+  const item = vocab.find(v=>v.id===id);
+  if(!item) return;
+  currentPopupItem = item;
+  document.getElementById('popup-en').textContent = item.en;
+  document.getElementById('popup-tr').textContent = '🔵 ' + item.tr;
+  document.getElementById('popup-ex').textContent = '"' + item.ex + '"';
+  document.getElementById('chunk-popup').style.display = 'block';
+}
+
+function closePopup(){
+  document.getElementById('chunk-popup').style.display = 'none';
+  currentPopupItem = null;
+}
+
+function savePopupToBank(){
+  if(!currentPopupItem) return;
+  addToBank(currentPopupItem);
+  closePopup();
+}
+
+// ===================== FLASHCARDS =====================
+function initCards(){
+  currentCardIdx = 0;
+  renderCard();
+}
+
+function setFilter(f, btn){
+  document.querySelectorAll('#view-cards .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(f==='all') filteredDeck=[...vocab];
+  else if(f==='A2') filteredDeck=vocab.filter(v=>v.level==='A2');
+  else if(f==='B1') filteredDeck=vocab.filter(v=>v.level==='B1');
+  else if(f==='chunk') filteredDeck=vocab.filter(v=>v.type==='chunk');
+  else if(f==='phrasal') filteredDeck=vocab.filter(v=>v.type==='phrasal');
+  currentCardIdx=0;
+  cardKnown={};
+  renderCard();
+}
+
+function shuffleDeck(){
+  for(let i=filteredDeck.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [filteredDeck[i],filteredDeck[j]]=[filteredDeck[j],filteredDeck[i]];
+  }
+  currentCardIdx=0;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+  showToast('🔀 Deste karıştırıldı!');
+}
+
+function renderCard(){
+  const item = filteredDeck[currentCardIdx];
+  if(!item) return;
+  // Reset flip
+  document.getElementById('flashcard').classList.remove('flipped');
+  // Badges
+  const bHTML = `<span class="badge badge-${item.level.toLowerCase()}">${item.level}</span><span class="badge badge-${item.type}">${item.type==='phrasal'?'Phrasal Verb':'Chunk'}</span>`;
+  document.getElementById('fc-badges').innerHTML = bHTML;
+  document.getElementById('fc-en').textContent = item.en;
+  document.getElementById('fc-tag-en').textContent = '#'+item.tag;
+  document.getElementById('fc-ex').textContent = item.ex;
+  document.getElementById('fc-tr').textContent = item.tr;
+  document.getElementById('fc-ex-back').textContent = item.ex;
+  document.getElementById('fc-counter').textContent = (currentCardIdx+1)+' / '+filteredDeck.length;
+  const known = Object.values(cardKnown).filter(Boolean).length;
+  document.getElementById('fc-progress-text').textContent = `${known}/${filteredDeck.length} biliniyor`;
+}
+
+function flipCard(){
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function nextCard(){
+  currentCardIdx = (currentCardIdx+1)%filteredDeck.length;
+  renderCard();
+}
+
+function prevCard(){
+  currentCardIdx = (currentCardIdx-1+filteredDeck.length)%filteredDeck.length;
+  renderCard();
+}
+
+function markCard(known){
+  const item = filteredDeck[currentCardIdx];
+  cardKnown[item.id] = known;
+  if(known){
+    const stats = getStats();
+    stats.learned = (stats.learned||0)+1;
+    setStats(stats);
+    showToast('✓ Harika! Bir adım daha!');
+  }
+  nextCard();
+}
+
+function saveToBank(){
+  const item = filteredDeck[currentCardIdx];
+  addToBank(item);
+}
+
+// ===================== BANK =====================
+function addToBank(item){
+  const bank = getBank();
+  if(bank.find(b=>b.id===item.id)){
+    showToast('⚠ Zaten bankada var');
+    return;
+  }
+  bank.push({...item, savedAt: Date.now()});
+  setBank(bank);
+  showToast('🏦 Bankaya eklendi: ' + item.en);
+  document.getElementById('stat-bank').textContent = bank.length;
+}
+
+function setBankFilter(f, btn){
+  document.querySelectorAll('.bank-filter .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  bankFilter = f;
+  renderBank();
+}
+
+function renderBank(){
+  let bank = getBank();
+  document.getElementById('stat-bank').textContent = bank.length;
+  if(bankFilter==='chunk') bank=bank.filter(b=>b.type==='chunk');
+  else if(bankFilter==='phrasal') bank=bank.filter(b=>b.type==='phrasal');
+  else if(bankFilter==='A2') bank=bank.filter(b=>b.level==='A2');
+  else if(bankFilter==='B1') bank=bank.filter(b=>b.level==='B1');
+
+  const list = document.getElementById('bank-list');
+  const empty = document.getElementById('bank-empty');
+  document.getElementById('bank-count').textContent = bank.length + ' öbek';
+
+  if(bank.length===0){
+    list.innerHTML='';
+    empty.style.display='block';
+    return;
+  }
+  empty.style.display='none';
+  list.innerHTML = bank.map(item=>`
+    <div class="bank-item" id="bank-item-${item.id}">
+      <div style="flex:1">
+        <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px">
+          <span class="badge badge-${item.level.toLowerCase()}">${item.level}</span>
+          <span class="badge badge-${item.type}">${item.type==='phrasal'?'Phrasal':'Chunk'}</span>
+        </div>
+        <div class="bank-en">${item.en}</div>
+        <div class="bank-tr">${item.tr}</div>
+        <div class="bank-ex">${item.ex}</div>
+      </div>
+      <button class="bank-del" onclick="removeFromBank(${item.id})" title="Bankadan çıkar">×</button>
+    </div>
+  `).join('');
+}
+
+function removeFromBank(id){
+  let bank = getBank();
+  bank = bank.filter(b=>b.id!==id);
+  setBank(bank);
+  renderBank();
+  showToast('🗑 Bankadan çıkarıldı');
+}
+
+// ===================== GAME =====================
+function startGame(){
+  document.getElementById('game-ui').style.display='block';
+  document.getElementById('game-result').style.display='none';
+  gameScore=0;
+  gameIdx=0;
+  gameAnswered=false;
+
+  // Pick 10 random questions
+  const shuffled=[...vocab].sort(()=>Math.random()-.5);
+  gameQuestions = shuffled.slice(0,10);
+
+  // Build dots
+  const dots = document.getElementById('game-dots');
+  dots.innerHTML = gameQuestions.map((_,i)=>`<div class="dot" id="dot-${i}"></div>`).join('');
+
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = gameQuestions[gameIdx];
+  if(!q) return;
+  gameAnswered = false;
+  document.getElementById('game-feedback').style.display='none';
+  document.getElementById('game-next-btn').style.display='none';
+  document.getElementById('game-q-num').textContent = `Soru ${gameIdx+1}/10`;
+  document.getElementById('game-score-live').textContent = `${gameScore} ✓`;
+
+  document.getElementById('gp-badges').innerHTML = `<span class="badge badge-${q.level.toLowerCase()}">${q.level}</span><span class="badge badge-${q.type}">${q.type==='phrasal'?'Phrasal Verb':'Chunk'}</span>`;
+  document.getElementById('gp-word').textContent = q.en;
+  document.getElementById('gp-ctx').textContent = q.ex;
+
+  // Dots
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.classList.remove('correct','wrong');
+    if(i===gameIdx) d.classList.add('current');
+    else d.classList.remove('current');
+  });
+
+  // Build 4 options (1 correct + 3 wrong)
+  const wrong = vocab.filter(v=>v.id!==q.id).sort(()=>Math.random()-.5).slice(0,3);
+  const options = [...wrong, q].sort(()=>Math.random()-.5);
+  const opts = document.getElementById('game-opts');
+  opts.innerHTML = options.map(opt=>`
+    <div class="game-opt" onclick="selectAnswer(${opt.id},${q.id})" id="opt-${opt.id}">
+      ${opt.tr}
+    </div>
+  `).join('');
+}
+
+function selectAnswer(selectedId, correctId){
+  if(gameAnswered) return;
+  gameAnswered = true;
+  const correct = selectedId === correctId;
+  const q = gameQuestions[gameIdx];
+
+  // Style options
+  document.querySelectorAll('.game-opt').forEach(opt=>opt.style.pointerEvents='none');
+  document.getElementById('opt-'+correctId).classList.add('correct');
+  if(!correct) document.getElementById('opt-'+selectedId).classList.add('wrong');
+
+  // Update dot
+  const dot = document.getElementById('dot-'+gameIdx);
+  dot.classList.remove('current');
+  dot.classList.add(correct?'correct':'wrong');
+
+  if(correct) gameScore++;
+  document.getElementById('game-score-live').textContent = `${gameScore} ✓`;
+
+  // Feedback
+  const fb = document.getElementById('game-feedback');
+  fb.style.display='block';
+  fb.style.background = correct?'var(--green-bg)':'var(--coral-bg)';
+  fb.style.border = `0.5px solid ${correct?'rgba(76,175,125,.3)':'rgba(232,104,88,.3)'}`;
+  fb.style.color = correct?'var(--green)':'var(--coral)';
+  fb.innerHTML = correct
+    ? `✓ Doğru! <span style="color:var(--text2)">— "${q.en}" = <em>${q.tr}</em></span>`
+    : `✗ Yanlış. <span style="color:var(--text2)">"${q.en}" aslında <em>${q.tr}</em> demek.</span>`;
+
+  document.getElementById('game-next-btn').style.display='block';
+  document.getElementById('game-next-btn').textContent = gameIdx<9?'Sonraki Soru →':'Sonuçları Gör';
+}
+
+function gameNext(){
+  gameIdx++;
+  if(gameIdx>=10) showResult();
+  else renderQuestion();
+}
+
+function showResult(){
+  document.getElementById('game-ui').style.display='none';
+  document.getElementById('game-result').style.display='block';
+  document.getElementById('final-score').textContent = gameScore;
+  const msgs = [
+    [0,3,'Endişelenme — her başlangıç böyle olur. Hikâye Modu\'ndan başla ve kartlara bak.'],
+    [4,6,'İyi bir başlangıç! Chunk\'lar yerleşmeye başlıyor. Devam et.'],
+    [7,8,'Güçlü performans! A2→B1 geçişi yakın.'],
+    [9,10,'Mükemmel! Sezgisi güçlü bir öğrenci. B1\'e çok yakınsın.'],
+  ];
+  const msg = msgs.find(([a,b])=>gameScore>=a&&gameScore<=b);
+  document.getElementById('final-msg').textContent = msg?msg[2]:'';
+
+  // Update streak
+  const stats = getStats();
+  const today = new Date().toDateString();
+  if(stats.lastGame !== today){
+    stats.streak = (stats.streak||0)+1;
+    stats.lastGame = today;
+    setStats(stats);
+  }
+}
+
+// ===================== TOAST =====================
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded',()=>{
+  refreshHome();
+  loadStory(0, document.querySelector('.story-tab'));
+  initCards();
+
+  // Close popup on outside click
+  document.addEventListener('click',(e)=>{
+    const popup = document.getElementById('chunk-popup');
+    if(popup.style.display==='block' && !popup.contains(e.target) && !e.target.classList.contains('chunk-word')){
+      closePopup();
+    }
+  });
+
+  // Check daily streak
+  const stats = getStats();
+  const today = new Date().toDateString();
+  if(!stats.lastVisit) {stats.streak=1;stats.lastVisit=today;setStats(stats);}
+  else if(stats.lastVisit!==today){
+    const last=new Date(stats.lastVisit),now=new Date();
+    const diff=Math.round((now-last)/(1000*60*60*24));
+    if(diff===1) stats.streak=(stats.streak||1)+1;
+    else if(diff>1) stats.streak=1;
+    stats.lastVisit=today;
+    setStats(stats);
+  }
+});
+</script>
+</body>
+</html>

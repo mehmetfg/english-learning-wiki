@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İngilizce Dilbilgisi Rehberi</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2535;
+    --card: #1a2030;
+    --card2: #232c3d;
+    --accent: #4f9ef8;
+    --accent2: #7ec8e3;
+    --accent3: #f7c948;
+    --green: #4ade80;
+    --red: #f87171;
+    --text: #e8eaf0;
+    --text2: #9ba3b8;
+    --border: #2a3450;
+    --font: 'Verdana', Geneva, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; min-height: 100vh; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(15,17,23,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0; padding: 0 24px; height: 56px;
+  }
+  .nav-logo { font-size: 15px; font-weight: bold; color: var(--accent); margin-right: 32px; letter-spacing: 1px; }
+  .nav-btn {
+    background: none; border: none; color: var(--text2); font-family: var(--font); font-size: 12px;
+    padding: 6px 14px; cursor: pointer; border-radius: 6px; transition: all .2s;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .nav-btn:hover, .nav-btn.active { background: var(--accent); color: #fff; }
+
+  /* PAGES */
+  .page { display: none; padding-top: 72px; min-height: 100vh; }
+  .page.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  /* HOME */
+  .home-hero {
+    text-align: center; padding: 48px 24px 32px;
+    background: linear-gradient(135deg, #0f1117 0%, #1a2236 50%, #0f1117 100%);
+  }
+  .home-hero h1 { font-size: 28px; color: var(--accent); letter-spacing: 2px; margin-bottom: 8px; }
+  .home-hero p { color: var(--text2); font-size: 13px; max-width: 500px; margin: 0 auto; line-height: 1.7; }
+  .home-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; padding: 24px; max-width: 1200px; margin: 0 auto; }
+  .topic-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; cursor: pointer; transition: all .25s; position: relative; overflow: hidden;
+  }
+  .topic-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0); transform-origin: left; transition: transform .3s;
+  }
+  .topic-card:hover::before { transform: scaleX(1); }
+  .topic-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(79,158,248,.15); }
+  .topic-num { font-size: 10px; color: var(--accent); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .topic-title { font-size: 15px; font-weight: bold; color: var(--text); margin-bottom: 4px; }
+  .topic-en { font-size: 12px; color: var(--accent3); margin-bottom: 8px; }
+  .topic-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+  .topic-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 18px; opacity: 0; transition: opacity .2s; }
+  .topic-card:hover .topic-arrow { opacity: 1; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,.75); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.open { display: flex; animation: fadeIn .25s ease; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    width: 100%; max-width: 720px; max-height: 85vh; overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  }
+  .modal-header {
+    position: sticky; top: 0; background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;
+    border-radius: 16px 16px 0 0;
+  }
+  .modal-header h2 { font-size: 17px; color: var(--accent); }
+  .modal-close { background: none; border: none; color: var(--text2); font-size: 22px; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+  .modal-close:hover { background: var(--border); color: var(--text); }
+  .modal-body { padding: 24px; }
+  .modal-en-label { display: inline-block; background: rgba(79,158,248,.15); color: var(--accent); border: 1px solid var(--accent); border-radius: 20px; padding: 3px 14px; font-size: 12px; margin-bottom: 16px; }
+  .modal-section { margin-bottom: 20px; }
+  .modal-section h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent3); margin-bottom: 10px; }
+  .modal-section p { font-size: 13px; color: var(--text); line-height: 1.8; }
+  .example-box { background: var(--card2); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 8px 0; }
+  .example-box .en { color: var(--accent2); font-size: 13px; margin-bottom: 4px; font-style: italic; }
+  .example-box .tr { color: var(--text2); font-size: 12px; }
+  .rule-tag { display: inline-block; background: rgba(247,201,72,.12); color: var(--accent3); border: 1px solid rgba(247,201,72,.3); border-radius: 4px; padding: 2px 8px; font-size: 11px; margin: 2px; }
+  .modal-quiz-btn {
+    width: 100%; margin-top: 20px; padding: 12px; background: var(--accent); color: #fff;
+    border: none; border-radius: 10px; font-family: var(--font); font-size: 13px; font-weight: bold;
+    cursor: pointer; transition: all .2s; letter-spacing: .5px;
+  }
+  .modal-quiz-btn:hover { background: var(--accent2); color: #0f1117; transform: translateY(-1px); }
+
+  /* QUIZ */
+  .quiz-page-inner { max-width: 700px; margin: 0 auto; padding: 24px; }
+  .quiz-page-inner h2 { font-size: 20px; color: var(--accent); margin-bottom: 24px; }
+  .quiz-topic-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .quiz-topic-item {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; cursor: pointer; transition: all .2s;
+  }
+  .quiz-topic-item:hover, .quiz-topic-item.selected { border-color: var(--accent); background: rgba(79,158,248,.08); }
+  .quiz-topic-item .qtitle { font-size: 13px; font-weight: bold; color: var(--text); }
+  .quiz-topic-item .qen { font-size: 11px; color: var(--accent3); margin-top: 3px; }
+  .start-quiz-btn {
+    padding: 12px 32px; background: var(--accent); color: #fff; border: none;
+    border-radius: 10px; font-family: var(--font); font-size: 13px; font-weight: bold;
+    cursor: pointer; transition: all .2s; margin-bottom: 32px;
+  }
+  .start-quiz-btn:hover { background: var(--accent2); color: #0f1117; }
+
+  /* QUIZ RUNNER */
+  .quiz-runner { display: none; }
+  .quiz-runner.active { display: block; }
+  .quiz-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .quiz-progress { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .quiz-progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width .4s ease; }
+  .quiz-counter { font-size: 12px; color: var(--text2); white-space: nowrap; }
+  .quiz-score-live { font-size: 12px; color: var(--accent3); white-space: nowrap; }
+  .question-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 16px; }
+  .q-type { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .q-text { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 20px; }
+  .q-text .blank { display: inline-block; border-bottom: 2px solid var(--accent); min-width: 80px; text-align: center; color: var(--accent2); }
+  .options { display: grid; gap: 10px; }
+  .option-btn {
+    background: var(--card2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; color: var(--text); font-family: var(--font); font-size: 13px;
+    cursor: pointer; text-align: left; transition: all .2s;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(79,158,248,.1); }
+  .option-btn.correct { background: rgba(74,222,128,.15); border-color: var(--green); color: var(--green); }
+  .option-btn.wrong { background: rgba(248,113,113,.15); border-color: var(--red); color: var(--red); }
+  .option-btn:disabled { cursor: default; }
+  .tf-options { display: flex; gap: 12px; }
+  .tf-btn {
+    flex: 1; padding: 14px; border: 1px solid var(--border); border-radius: 10px;
+    background: var(--card2); color: var(--text); font-family: var(--font); font-size: 14px;
+    font-weight: bold; cursor: pointer; transition: all .2s;
+  }
+  .tf-btn:hover:not(:disabled) { border-color: var(--accent); }
+  .tf-btn.correct { background: rgba(74,222,128,.15); border-color: var(--green); color: var(--green); }
+  .tf-btn.wrong { background: rgba(248,113,113,.15); border-color: var(--red); color: var(--red); }
+  .fill-input {
+    width: 100%; padding: 12px 16px; background: var(--card2); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); font-family: var(--font); font-size: 14px;
+    margin-bottom: 10px; outline: none; transition: border-color .2s;
+  }
+  .fill-input:focus { border-color: var(--accent); }
+  .fill-input.correct { border-color: var(--green); background: rgba(74,222,128,.08); }
+  .fill-input.wrong { border-color: var(--red); background: rgba(248,113,113,.08); }
+  .submit-btn {
+    padding: 10px 24px; background: var(--accent); color: #fff; border: none;
+    border-radius: 8px; font-family: var(--font); font-size: 12px; font-weight: bold;
+    cursor: pointer; transition: all .2s;
+  }
+  .submit-btn:hover { background: var(--accent2); color: #0f1117; }
+  .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 12px; line-height: 1.6; display: none; }
+  .feedback.show { display: block; animation: fadeIn .2s ease; }
+  .feedback.good { background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.3); color: var(--green); }
+  .feedback.bad { background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.3); color: var(--red); }
+  .next-btn {
+    display: none; margin-top: 12px; padding: 10px 24px; background: var(--bg3);
+    border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: var(--font);
+    font-size: 12px; cursor: pointer; transition: all .2s;
+  }
+  .next-btn.show { display: inline-block; }
+  .next-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-result {
+    display: none; text-align: center; padding: 48px 24px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  }
+  .quiz-result.show { display: block; animation: fadeIn .4s ease; }
+  .result-score { font-size: 56px; font-weight: bold; color: var(--accent); margin-bottom: 8px; }
+  .result-msg { font-size: 15px; color: var(--text); margin-bottom: 24px; }
+  .result-sub { font-size: 12px; color: var(--text2); margin-bottom: 32px; }
+  .result-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .result-btn {
+    padding: 10px 24px; border-radius: 10px; font-family: var(--font); font-size: 13px;
+    font-weight: bold; cursor: pointer; transition: all .2s;
+  }
+  .result-btn.primary { background: var(--accent); color: #fff; border: none; }
+  .result-btn.secondary { background: none; color: var(--text2); border: 1px solid var(--border); }
+  .result-btn:hover { transform: translateY(-2px); }
+
+  /* STORY PAGE */
+  .story-container { max-width: 800px; margin: 0 auto; padding: 24px; }
+  .story-header { text-align: center; margin-bottom: 32px; }
+  .story-header h2 { font-size: 22px; color: var(--accent); margin-bottom: 8px; }
+  .story-header p { font-size: 12px; color: var(--text2); }
+  .story-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; padding: 14px; background: var(--card); border-radius: 10px; border: 1px solid var(--border); }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+  .story-text {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 32px; font-size: 14px; line-height: 2.2; color: var(--text);
+  }
+  .grammar-mark {
+    cursor: pointer; border-radius: 3px; padding: 1px 3px; position: relative;
+    transition: all .2s; border-bottom: 2px solid transparent;
+  }
+  .grammar-mark:hover { filter: brightness(1.2); }
+  .gm-0 { background: rgba(79,158,248,.2); border-color: var(--accent); }
+  .gm-1 { background: rgba(126,200,227,.2); border-color: var(--accent2); }
+  .gm-2 { background: rgba(247,201,72,.2); border-color: var(--accent3); }
+  .gm-3 { background: rgba(74,222,128,.2); border-color: var(--green); }
+  .gm-4 { background: rgba(248,113,113,.2); border-color: var(--red); }
+  .vocab-mark { border-bottom: 1px dashed var(--text2); cursor: pointer; color: var(--text2); }
+  .vocab-mark:hover { color: var(--text); }
+  .grammar-tooltip, .vocab-tooltip {
+    display: none; position: fixed; z-index: 300;
+    background: var(--bg3); border: 1px solid var(--accent); border-radius: 10px;
+    padding: 12px 16px; max-width: 280px; font-size: 12px; pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  }
+  .grammar-tooltip .tt-title { color: var(--accent); font-weight: bold; margin-bottom: 4px; }
+  .grammar-tooltip .tt-desc { color: var(--text2); line-height: 1.6; }
+  .vocab-tooltip .tt-word { color: var(--accent3); font-weight: bold; margin-bottom: 4px; }
+  .vocab-tooltip .tt-tr { color: var(--text); }
+  .story-quiz-section { margin-top: 32px; }
+  .story-quiz-section h3 { font-size: 16px; color: var(--accent); margin-bottom: 20px; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ANIMATIONS */
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  .anim-correct { animation: pulse .3s ease; }
+  .anim-wrong { animation: shake .3s ease; }
+  .score-anim { animation: pulse .5s ease; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+  .badge-new { background: rgba(74,222,128,.15); color: var(--green); border: 1px solid rgba(74,222,128,.3); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🇬🇧 ENG</div>
+  <button class="nav-btn active" onclick="showPage('home')">Ana Sayfa</button>
+  <button class="nav-btn" onclick="showPage('quiz')">Konu Quizleri</button>
+  <button class="nav-btn" onclick="showPage('karma')">Karma Quiz</button>
+  <button class="nav-btn" onclick="showPage('story')">Hikaye</button>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <h1>📚 İngilizce Dilbilgisi Rehberi</h1>
+    <p>12 temel konu · Kapsamlı açıklamalar · Interaktif quizler · Hikayeli öğrenme</p>
+  </div>
+  <div class="home-grid" id="topicGrid"></div>
+</div>
+
+<!-- QUIZ PAGE -->
+<div class="page" id="page-quiz">
+  <div class="quiz-page-inner">
+    <h2>📝 Konu Bazlı Quizler</h2>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:20px">Bir konu seçin ve 5 soruluk quiz başlatsın.</p>
+    <div class="quiz-topic-list" id="quizTopicList"></div>
+    <button class="start-quiz-btn" id="startTopicQuizBtn" onclick="startTopicQuiz()">Seçili Konuyu Sına →</button>
+    <div class="quiz-runner" id="topicQuizRunner"></div>
+  </div>
+</div>
+
+<!-- KARMA QUIZ PAGE -->
+<div class="page" id="page-karma">
+  <div class="quiz-page-inner">
+    <h2>🎯 Karma Quiz</h2>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:24px">Tüm konulardan karma sorular · Çoktan seçmeli · Doğru/Yanlış · Boşluk doldurma · Çeviri</p>
+    <button class="start-quiz-btn" onclick="startKarmaQuiz()">Karma Quiz Başlat →</button>
+    <div class="quiz-runner" id="karmaQuizRunner"></div>
+  </div>
+</div>
+
+<!-- STORY PAGE -->
+<div class="page" id="page-story">
+  <div class="story-container">
+    <div class="story-header">
+      <h2>📖 Türk'ün İngiltere Macerası</h2>
+      <p>~500 kelime · Dilbilgisi kuralları işaretli · Bilinmeyen kelimeler çevirili · 10 soruluk quiz</p>
+    </div>
+    <div class="story-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(79,158,248,.5)"></div> Had Better / Be Supposed To</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(126,200,227,.5)"></div> As...As / Would You Mind</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(247,201,72,.5)"></div> -ed/-ing / Be Able To</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(74,222,128,.5)"></div> In Case / Shall / Whatever vb.</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(248,113,113,.5)"></div> Telling the Time / Meslekler</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(200,200,200,.2)"></div><span style="border-bottom:1px dashed var(--text2)">dashed</span>&nbsp;= kelime çevirisi</div>
+    </div>
+    <div class="story-text" id="storyText"></div>
+    <div class="story-quiz-section">
+      <h3>📝 Hikayeye Ait Quiz (10 Soru)</h3>
+      <div class="quiz-runner active" id="storyQuizRunner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h2 id="modalTitle"></h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- TOOLTIPS -->
+<div class="grammar-tooltip" id="grammarTooltip">
+  <div class="tt-title" id="ttTitle"></div>
+  <div class="tt-desc" id="ttDesc"></div>
+</div>
+<div class="vocab-tooltip" id="vocabTooltip">
+  <div class="tt-word" id="vtWord"></div>
+  <div class="tt-tr" id="vtTr"></div>
+</div>
+
+<script>
+// ===================== DATA =====================
+const topics = [
+  {
+    id: 0, tr: "Güçlü Tavsiye ve Uyarı", en: "had better",
+    desc: "Yapılmaması durumunda olumsuz sonuç doğabilecek durumlarda 'iyi olur/iyi edersin' anlamında kullanılır.",
+    detail: `<b>Had better</b> yapısı, bir eylemi yapmanın ya da yapmamanın sonuçları hakkında güçlü bir tavsiye vermek için kullanılır. "İyi olur ki yapsan / yapmasan" anlamı taşır.`,
+    form: ["Özne + had better + fiil (yalın hali)", "Özne + had better not + fiil (olumsuz)"],
+    examples: [
+      { en: "You had better take an umbrella — it might rain.", tr: "Şemsiye alsan iyi olur, yağmur yağabilir." },
+      { en: "She had better not be late for the meeting.", tr: "Toplantıya geç kalmaması iyi olur." },
+      { en: "We had better leave now or we'll miss the train.", tr: "Şimdi yola çıksak iyi olur yoksa treni kaçırırız." },
+      { en: "You had better study harder if you want to pass.", tr: "Geçmek istiyorsan daha çok çalışsan iyi olur." }
+    ],
+    notes: "Had better, geçmiş zaman gibi görünse de her zaman şimdiki veya gelecek anlam taşır. 'd better şeklinde kısaltılabilir."
+  },
+  {
+    id: 1, tr: "Eşitlik Karşılaştırması", en: "as + sıfat + as",
+    desc: "İki şeyin eşit derecede olduğunu belirtir. Sıfat iki 'as' kelimesi arasına yerleştirilir.",
+    detail: "İki şeyi, kişiyi ya da durumu kıyaslamak için kullanılır. Eşit olduklarında 'as…as', eşit olmadıklarında 'not as…as' yapısı kullanılır.",
+    form: ["Özne + fiil + as + sıfat/zarf + as + karşılaştırılan unsur"],
+    examples: [
+      { en: "London is as expensive as New York.", tr: "Londra, New York kadar pahalıdır." },
+      { en: "She runs as fast as her brother.", tr: "O, erkek kardeşi kadar hızlı koşar." },
+      { en: "This coffee isn't as hot as I expected.", tr: "Bu kahve beklediğim kadar sıcak değil." },
+      { en: "He speaks English as fluently as a native speaker.", tr: "İngilizceyi anadili gibi akıcı konuşuyor." }
+    ],
+    notes: "Not as…as ile eşitsizlik ifade edilir. twice as big as = iki kat büyük gibi çarpan ifadelerde de kullanılır."
+  },
+  {
+    id: 2, tr: "Gereklilik ve Beklenti", en: "be supposed to",
+    desc: "Gereklilik, kurallar, beklentiler veya duyumlara dayalı bilgileri anlatmak için kullanılır.",
+    detail: "Be supposed to; beklenti, kural, program ya da söylentiye dayalı bilgi aktarımı için kullanılır. 'Olması gerekiyor / yapması gerekiyor' anlamına gelir.",
+    form: ["am/is/are + supposed to + fiil (yalın)", "was/were + supposed to + fiil (geçmiş)"],
+    examples: [
+      { en: "You are supposed to wear a uniform at school.", tr: "Okulda üniforma giymen gerekiyor." },
+      { en: "The train was supposed to arrive at 9.", tr: "Trenin 9'da gelmesi gerekiyordu." },
+      { en: "They are supposed to be the best team.", tr: "En iyi takım olduklarına dair söylentiler var." },
+      { en: "She isn't supposed to eat sugar.", tr: "Şeker yememesi gerekiyor (doktoru yasak etmiş)." }
+    ],
+    notes: "Must/have to'dan farkı; kuralı dışarıdan bir otorite veya toplumsal beklenti koyar. Geçmişte yerine getirilmemiş beklenti için was/were supposed to kullanılır."
+  },
+  {
+    id: 3, tr: "-ed ve -ing Sıfatları", en: "Fiil + ed / Fiil + ing",
+    desc: "-ed takısı duyguyu hissedeni (sonucu), -ing takısı ise etkiyi yapanı (nedeni) niteler.",
+    detail: "-ing sıfatlar bir şeyin özelliğini, -ed sıfatlar ise bir kişinin hissettiği duyguyu anlatır.",
+    form: ["-ing: özneyi/şeyi tanımlar (causing the feeling)", "-ed: kişinin hissettiği duyguyu tanımlar (experiencing the feeling)"],
+    examples: [
+      { en: "The film was boring. / I was bored.", tr: "Film sıkıcıydı. / Ben sıkıldım." },
+      { en: "The news was shocking. / She was shocked.", tr: "Haber şok ediciydi. / O şoke oldu." },
+      { en: "The trip was exhausting. / He was exhausted.", tr: "Gezi yorucuydu. / O yorulmuştu." },
+      { en: "The book is fascinating. / I'm fascinated by it.", tr: "Kitap büyüleyici. / Büyülendim." }
+    ],
+    notes: "Kural: Something is interesting → bir şey seni etkiliyor. You are interested → sen etkileniyorsun."
+  },
+  {
+    id: 4, tr: "Gelecekte Yetenek", en: "be able to",
+    desc: "'Can' yapısının kullanılamadığı gelecek zaman ve diğer tüm zamanlarda 'ebilmek' anlamını karşılar.",
+    detail: "Can yalnızca geniş zamanda ve geçmiş zamanda (could) kullanılabilir. Diğer zaman ve yapılarda 'be able to' kullanılmak zorundadır.",
+    form: ["will be able to + fiil (gelecek)", "have been able to + fiil (perfect)", "to be able to + fiil (infinitive sonrası)"],
+    examples: [
+      { en: "She will be able to speak French after the course.", tr: "Kurs sonrasında Fransızca konuşabilecek." },
+      { en: "I haven't been able to sleep recently.", tr: "Son zamanlarda uyuyamadım." },
+      { en: "He wants to be able to drive by summer.", tr: "Yaza kadar araba kullanabilmek istiyor." },
+      { en: "We were able to finish the project on time.", tr: "Projeyi zamanında bitirebildik." }
+    ],
+    notes: "could ≠ was/were able to: could genel yeteneği, was/were able to ise tek bir olayda başarıyı ifade eder."
+  },
+  {
+    id: 5, tr: "Kibar Rica", en: "would you mind / do you mind",
+    desc: "'Sakıncası var mı?' anlamında kullanılır. 'If' cümlesi veya '-ing' yapısıyla devam eder.",
+    detail: "Nazik bir istekte bulunmak ya da bir şeyi yapmadan önce izin almak için kullanılır.",
+    form: ["Would you mind + -ing (doğrudan istek)", "Would you mind if I + past simple (izin isteme)", "Do you mind + -ing (daha az resmi)"],
+    examples: [
+      { en: "Would you mind closing the window?", tr: "Pencereyi kapatır mısınız?" },
+      { en: "Would you mind if I used your phone?", tr: "Telefonunuzu kullansam sakıncası var mı?" },
+      { en: "Do you mind waiting for a few minutes?", tr: "Birkaç dakika bekler misiniz?" },
+      { en: "I don't mind helping you.", tr: "Sana yardım etmem sakıncası yok." }
+    ],
+    notes: "Dikkat: 'No, I don't mind' = 'Hayır, sakıncası yok' (EVET anlamında). Cevabı tersine anlamak çok yaygın bir hata!"
+  },
+  {
+    id: 6, tr: "Tedbir Belirtme", en: "in case (of)",
+    desc: "Bir olayın olma ihtimaline karşı alınan önlemi belirtir. 'in case of' sonrası isim gelir.",
+    detail: "In case, olası bir duruma karşı önlem alındığını ifade eder. 'Eğer…olursa diye' anlamındadır. 'If' ile karıştırılmamalıdır.",
+    form: ["in case + özne + fiil", "in case of + isim"],
+    examples: [
+      { en: "Take a map in case you get lost.", tr: "Kaybolursun diye haritayı yanına al." },
+      { en: "I'll call you in case something changes.", tr: "Bir şey değişirse diye seni ararım." },
+      { en: "In case of fire, use the stairs.", tr: "Yangın durumunda merdivenleri kullanın." },
+      { en: "She saved his number in case she needed help.", tr: "Yardıma ihtiyaç duyarsa diye numarasını kaydetti." }
+    ],
+    notes: "In case ≠ If: 'I'll call if it rains' (şart) vs 'I'll take an umbrella in case it rains' (ihtimale karşı önlem)."
+  },
+  {
+    id: 7, tr: "Öneride Bulunma", en: "shall, let's, why don't, how about",
+    desc: "Farklı kalıplarla öneri sunmak için kullanılır.",
+    detail: "İngilizce'de öneri sunmanın birçok yolu vardır ve her biri farklı bir bağlamda kullanılır.",
+    form: ["Shall we + fiil?", "Let's + fiil", "Why don't we + fiil?", "How about + -ing?", "What about + -ing?"],
+    examples: [
+      { en: "Shall we go for a walk?", tr: "Yürüyüşe çıksak mı?" },
+      { en: "Let's try that new restaurant.", tr: "O yeni restorana gidelim." },
+      { en: "Why don't we watch a movie tonight?", tr: "Bu gece neden film izlemiyoruz?" },
+      { en: "How about visiting the museum?", tr: "Müzeyi ziyaret etsek nasıl olur?" }
+    ],
+    notes: "Shall, özellikle İngiliz İngilizcesi'nde öneride bulunmak için tercih edilir. How about / What about her zaman -ing alır."
+  },
+  {
+    id: 8, tr: "İsim Cümlecikleri (Ever)", en: "whatever, wherever, whenever, whoever",
+    desc: "'Her ne/her nerede/her ne zaman' gibi anlamlar katarak yan cümle kurarlar.",
+    detail: "Bu kelimeler '-ever' ekiyle oluşur ve 'her + soru kelimesi' anlamını taşır. Cümle içinde isim cümlesi görevi görür.",
+    form: ["whatever + cümle = her ne olursa", "wherever + cümle = her nerede", "whenever + cümle = her ne zaman", "whoever + cümle = her kim"],
+    examples: [
+      { en: "Whatever you decide, I'll support you.", tr: "Her ne karar verirsen, seni destekleyeceğim." },
+      { en: "Sit wherever you like.", tr: "Nereyi istersen otur." },
+      { en: "Whenever you're ready, we can leave.", tr: "Ne zaman hazır olursan gidebiliriz." },
+      { en: "Whoever arrives first should open the door.", tr: "Kim önce gelirse kapıyı açmalı." }
+    ],
+    notes: "However + sıfat/zarf: 'However tired I am, I always exercise.' (ne kadar yorgun olursam da)"
+  },
+  {
+    id: 9, tr: "Saatler (Telling the Time)", en: "Past, To, Quarter, Half past",
+    desc: "Saat söylerken 'It is...' ile başlanır. Dakika 30'a kadar 'past', 30'dan sonra 'to' kullanılır.",
+    detail: "İngilizce saat ifadesinde dakikayı önce söyler, saati sonra söylersiniz.",
+    form: ["X past Y = Y'yi X geçiyor", "X to Y = Y'ye X var", "Quarter past = çeyrek geçiyor", "Half past = buçuk"],
+    examples: [
+      { en: "It's ten past three. (3:10)", tr: "Üçü on geçiyor." },
+      { en: "It's quarter past seven. (7:15)", tr: "Yediyi çeyrek geçiyor." },
+      { en: "It's half past nine. (9:30)", tr: "Dokuz buçuk." },
+      { en: "It's twenty to five. (4:40)", tr: "Beşe yirmi var." }
+    ],
+    notes: "Dijital saatte: '3:45' → 'three forty-five' diyebilirsiniz. O'clock yalnızca tam saatlerde kullanılır."
+  },
+  {
+    id: 10, tr: "Sayılar ve Sayma", en: "Cardinal & Ordinal Numbers",
+    desc: "Sayıları ve sıralamayı (first, second, third vb.) belirtmek için kullanılır.",
+    detail: "Cardinal sayılar miktar belirtir (one, two, three). Ordinal sayılar sıra belirtir (first, second, third).",
+    form: ["Cardinal: one, two, three... hundred, thousand, million", "Ordinal: first, second, third, fourth... (ekler: -th, -st, -nd, -rd)"],
+    examples: [
+      { en: "There are thirty-five students in the class.", tr: "Sınıfta otuz beş öğrenci var." },
+      { en: "She finished first in the race.", tr: "Yarışmada birinci oldu." },
+      { en: "The 21st century began in 2001.", tr: "21. yüzyıl 2001'de başladı." },
+      { en: "He lives on the fourth floor.", tr: "Dördüncü katta yaşıyor." }
+    ],
+    notes: "İstisna: 1st (first), 2nd (second), 3rd (third) — diğerleri -th alır. 21st, 32nd, 43rd gibi birleşiklerde de aynı kural geçerli."
+  },
+  {
+    id: 11, tr: "Renkler & Meslekler", en: "Colors / What's your job?",
+    desc: "Renk sormak için 'What color...?', meslek belirtmek için 'özne + be + a/an + meslek' yapısı kullanılır.",
+    detail: "Renkler ve meslekler temel kelime hazinesidir. Meslek cümlelerinde 'a/an' kullanımına dikkat edilmelidir.",
+    form: ["What color is/are + nesne?", "She is a doctor. / He is an engineer.", "What do you do? / What's your job?"],
+    examples: [
+      { en: "What color is your car? — It's dark blue.", tr: "Arabanın rengi ne? — Koyu mavi." },
+      { en: "She is a nurse and her husband is an architect.", tr: "O hemşire, kocası mimar." },
+      { en: "What do you do? — I'm a software engineer.", tr: "Ne iş yapıyorsunuz? — Yazılım mühendisiyim." },
+      { en: "He works as a taxi driver in London.", tr: "Londra'da taksi şoförü olarak çalışıyor." }
+    ],
+    notes: "Meslek önünde sesli harfle başlıyorsa 'an' kullanılır: an artist, an engineer. Çoğulda 'a/an' kullanılmaz: They are doctors."
+  }
+];
+
+// ===================== QUIZ DATA =====================
+const topicQuestions = [
+  // Topic 0: had better
+  [
+    { type:"mc", q:"'You ___ better see a doctor' cümlesini tamamlayan seçenek hangisidir?", opts:["have","had","would","should"], ans:1, exp:"'Had better' sabit bir yapıdır; 'have better' yoktur." },
+    { type:"tf", q:"'Had better' yapısı geçmiş zaman ifade eder.", ans:false, exp:"Had better her zaman şimdiki veya gelecek anlam taşır." },
+    { type:"fill", q:"You ___ better not be late or the teacher will be angry.", ans:"had", exp:"Had better not = yapmasan iyi olur." },
+    { type:"mc", q:"Aşağıdakilerden hangisi 'had better' ile eşanlamlı değildir?", opts:["should","it would be wise to","used to","you'd better"], ans:2, exp:"'Used to' geçmiş alışkanlıkları anlatır, had better'la ilgisi yoktur." },
+    { type:"tf", q:"'She'd better study' cümlesinde 'd = had anlamındadır.", ans:true, exp:"'d better = had better kısaltmasıdır." }
+  ],
+  // Topic 1: as...as
+  [
+    { type:"mc", q:"'London is ___ expensive ___ New York.' Boşluklara ne gelir?", opts:["so / that","as / as","more / than","too / to"], ans:1, exp:"Eşitlik karşılaştırması as + sıfat + as yapısındadır." },
+    { type:"tf", q:"'Not as big as' eşitlik ifade eder.", ans:false, exp:"'Not as...as' eşitsizlik ifade eder." },
+    { type:"fill", q:"She is ___ tall as her mother.", ans:"as", exp:"as...as yapısının ilk 'as'i." },
+    { type:"mc", q:"'twice as big as' ne anlama gelir?", opts:["iki kat küçük","iki kat büyük","yarı büyüklükte","eşit büyüklükte"], ans:1, exp:"twice = iki kat; twice as big as = iki kat büyük." },
+    { type:"tf", q:"'as...as' yapısında sıfat değil isim de kullanılabilir.", ans:false, exp:"Yapıda sıfat veya zarf kullanılır, isim değil." }
+  ],
+  // Topic 2: be supposed to
+  [
+    { type:"mc", q:"'The train ___ supposed to arrive at 9.' Doğru fiil hangisi?", opts:["is","was","were","be"], ans:1, exp:"Geçmişte gerçekleşmemiş beklenti için 'was/were supposed to' kullanılır." },
+    { type:"tf", q:"'Be supposed to' ve 'must' tamamen aynı anlamda kullanılabilir.", ans:false, exp:"Be supposed to dışarıdan gelen kural/beklentiyi ifade eder, must daha kişiseldir." },
+    { type:"fill", q:"You are not supposed ___ use your phone in class.", ans:"to", exp:"be supposed to = olması gereken." },
+    { type:"mc", q:"'She is supposed to be the best student' cümlesi ne anlama gelir?", opts:["Onun en iyi öğrenci olması zorunlu","En iyi öğrenci olduğu söyleniyor","En iyi öğrenci olmalıydı","En iyi öğrenci olmak istiyor"], ans:1, exp:"Söylentiye dayalı bilgi aktarımı." },
+    { type:"tf", q:"'You aren't supposed to park here' bir kural ifade eder.", ans:true, exp:"Dışarıdan konan kural/yasak ifadesidir." }
+  ],
+  // Topic 3: -ed/-ing
+  [
+    { type:"mc", q:"'The film was very ___.' (sıkıcı)", opts:["bored","boring","bore","bores"], ans:1, exp:"Film (şey) -ing sıfatı alır: boring." },
+    { type:"tf", q:"'I was boring' doğru bir cümledir ve 'sıkıldım' anlamına gelir.", ans:false, exp:"'I was boring' = Ben sıkıcı biriyim. Doğrusu: 'I was bored' = Sıkıldım." },
+    { type:"fill", q:"The news was very shock___.", ans:"ing", exp:"Haber (şey) -ing alır: shocking." },
+    { type:"mc", q:"Hangisi doğrudur?", opts:["She was exciting about the trip","She was excited about the trip","The trip was excited","She is an exciting person to be bored"], ans:1, exp:"Kişi hissi = excited; şey = exciting." },
+    { type:"tf", q:"'The book is interesting' ve 'I am interested in the book' ikisi de doğrudur.", ans:true, exp:"İkisi de doğrudur ve farklı özne kullanır." }
+  ],
+  // Topic 4: be able to
+  [
+    { type:"mc", q:"'She ___ be able to speak French after the course.' (gelecek)", opts:["can","will","could","shall"], ans:1, exp:"Gelecekte yetenek: will be able to." },
+    { type:"tf", q:"'Can' her zaman 'be able to' ile değiştirilebilir.", ans:false, exp:"Can yalnızca geniş ve geçmişte (could) kullanılır; diğer yapılarda be able to gerekir." },
+    { type:"fill", q:"I haven't been ___ to sleep recently.", ans:"able", exp:"Present perfect + be able to." },
+    { type:"mc", q:"'Could' ve 'was able to' arasındaki fark nedir?", opts:["Hiçbir fark yok","Could genel yetenek, was able to tek olay başarısı","Was able to genel yetenek, could tek olay","Sadece resmiyet farkı var"], ans:1, exp:"Could = genel yetenek; was/were able to = o an başardı." },
+    { type:"tf", q:"'I want to can drive' doğru bir yapıdır.", ans:false, exp:"'Can' sonsuz mastar alamaz; 'to be able to drive' doğrudur." }
+  ],
+  // Topic 5: would you mind
+  [
+    { type:"mc", q:"'Would you mind ___ the window?' (kapatmak)", opts:["close","to close","closing","closed"], ans:2, exp:"Would you mind + -ing." },
+    { type:"tf", q:"'No, I don't mind' = 'Hayır, yapmazsın' anlamına gelir.", ans:false, exp:"'No, I don't mind' = 'Hayır, sakıncası yok' (yani yapar)." },
+    { type:"fill", q:"Would you mind if I ___ (open) the door?", ans:"opened", exp:"Would you mind if I + past simple." },
+    { type:"mc", q:"Birisinden rica ederken en kibar hangisi?", opts:["Open the door!","Can you open the door?","Would you mind opening the door?","You should open the door."], ans:2, exp:"Would you mind en kibar rica biçimidir." },
+    { type:"tf", q:"'Do you mind if I sit here?' daha resmi bir ifadedir.", ans:false, exp:"'Would you mind...' daha resmi; 'Do you mind...' daha az resmidir." }
+  ],
+  // Topic 6: in case
+  [
+    { type:"mc", q:"'Take a map ___ you get lost.' Boşluğa ne gelir?", opts:["if","in case","so that","unless"], ans:1, exp:"Olası duruma karşı önlem: in case." },
+    { type:"tf", q:"'In case' ve 'if' aynı anlamda kullanılabilir.", ans:false, exp:"In case önlem ifade eder; if şart ifade eder." },
+    { type:"fill", q:"In case ___ fire, use the stairs.", ans:"of", exp:"in case of + isim." },
+    { type:"mc", q:"Hangisi 'in case' ile doğru kullanılır?", opts:["I'll go if it rains.","I'll take an umbrella in case it rains.","In case it rains, I won't go.","He went in case the shop was open."], ans:1, exp:"Önlem ifadesi: şemsiye almak olası yağmura karşı önlem." },
+    { type:"tf", q:"'In case' cümlesi genellikle olaydan önce alınan önlemi anlatır.", ans:true, exp:"Doğru; eylem öncesinde tedbir alınır." }
+  ],
+  // Topic 7: suggestions
+  [
+    { type:"mc", q:"'___ we go for a walk?' (Shall kullanarak öneri)", opts:["Should","Shall","Would","Must"], ans:1, exp:"Shall we + fiil = öneri soru." },
+    { type:"tf", q:"'How about watching a movie?' doğru bir yapıdır.", ans:true, exp:"How about + -ing doğrudur." },
+    { type:"fill", q:"How about ___ (visit) the museum?", ans:"visiting", exp:"How about + -ing." },
+    { type:"mc", q:"Hangisi öneri ifade etmez?", opts:["Let's eat out.","Why don't we try it?","You had better not go.","Shall we dance?"], ans:2, exp:"'Had better not' uyarı ifade eder, öneri değil." },
+    { type:"tf", q:"'What about go swimming?' doğrudur.", ans:false, exp:"'What about + -ing' → 'What about going swimming?' doğrudur." }
+  ],
+  // Topic 8: -ever
+  [
+    { type:"mc", q:"'___ you decide, I'll support you.' Boşluğa ne gelir?", opts:["However","Whenever","Whatever","Wherever"], ans:2, exp:"Whatever = her ne karar verirsen." },
+    { type:"tf", q:"'Wherever' zaman anlamı taşır.", ans:false, exp:"Wherever = her nerede; zaman için whenever kullanılır." },
+    { type:"fill", q:"___ tired I am, I always exercise. (however)", ans:"However", exp:"However + sıfat = ne kadar … olursa olsun." },
+    { type:"mc", q:"'Whoever arrives first should open the door.' cümlesinde whoever ne anlama gelir?", opts:["Her zaman","Her kim","Her nerede","Her ne kadar"], ans:1, exp:"Whoever = her kim." },
+    { type:"tf", q:"'-ever' kelimeleri isim cümlesi kurar.", ans:true, exp:"Doğru; whatever, whoever vb. isim cümlesi görevi görür." }
+  ],
+  // Topic 9: time
+  [
+    { type:"mc", q:"3:15 nasıl söylenir?", opts:["Quarter to three","Quarter past three","Half past three","Fifteen to three"], ans:1, exp:"3:15 = quarter past three." },
+    { type:"tf", q:"4:45 = 'Quarter past four' olarak ifade edilir.", ans:false, exp:"4:45 = quarter to five (beşe çeyrek var)." },
+    { type:"fill", q:"It's 9:30. It's half ___ nine.", ans:"past", exp:"Buçuk = half past." },
+    { type:"mc", q:"'Twenty to six' saat kaçtır?", opts:["6:20","5:40","6:40","5:20"], ans:1, exp:"Twenty to six = altıya yirmi var = 5:40." },
+    { type:"tf", q:"'O'clock' tüm saatlerde kullanılabilir.", ans:false, exp:"O'clock yalnızca tam saatlerde kullanılır: 3 o'clock." }
+  ],
+  // Topic 10: numbers
+  [
+    { type:"mc", q:"21. (ordinal) nasıl yazılır?", opts:["21th","21st","21nd","21rd"], ans:1, exp:"21st = twenty-first. Biten 1 → st." },
+    { type:"tf", q:"'32nd' doğru bir ordinal yazılışıdır.", ans:true, exp:"32nd = thirty-second. Biten 2 → nd." },
+    { type:"fill", q:"She finished ___ (3.) in the race.", ans:"third", exp:"3. = third (düzensiz ordinal)." },
+    { type:"mc", q:"'There are ___ students.' (35)", opts:["thirty five","thirty-five","thirtyfive","thirty and five"], ans:1, exp:"İki basamaklı sayılar aralarına tire alır: thirty-five." },
+    { type:"tf", q:"'1,000,000' → 'a million' veya 'one million' denilebilir.", ans:true, exp:"Her ikisi de doğrudur." }
+  ],
+  // Topic 11: colors & jobs
+  [
+    { type:"mc", q:"'She is ___ engineer.' Doğru artikel hangisi?", opts:["a","an","the","—"], ans:1, exp:"'Engineer' sesli harfle başlar → 'an engineer'." },
+    { type:"tf", q:"'They are doctors.' cümlesinde 'a' kullanılmaz.", ans:true, exp:"Çoğulda a/an kullanılmaz." },
+    { type:"fill", q:"What ___ is your car? It's red.", ans:"color", exp:"What color = rengi ne?" },
+    { type:"mc", q:"'What do you do?' sorusuna doğru yanıt hangisi?", opts:["I do fine.","I am a teacher.","I do my job.","I work good."], ans:1, exp:"Meslek: I am a/an + meslek." },
+    { type:"tf", q:"'What's your job?' ve 'What do you do?' aynı anlamda kullanılır.", ans:true, exp:"Her ikisi de meslek sorusudur." }
+  ]
+];
+
+// Karma quiz: tüm konulardan
+const karmaQuestions = [
+  { type:"mc", q:"'You ___ better not be late.' Boşluğa ne?", opts:["have","had","would","should"], ans:1, exp:"Had better sabit yapıdır.", topic:"Had Better" },
+  { type:"tf", q:"'I was boring' → 'Sıkıldım' anlamındadır.", ans:false, exp:"I was boring = Ben sıkıcıyım. Doğrusu: I was bored.", topic:"-ed/-ing" },
+  { type:"fill", q:"Would you mind ___ (close) the window?", ans:"closing", exp:"Would you mind + -ing.", topic:"Would You Mind" },
+  { type:"mc", q:"'3:45' İngilizce nasıl söylenir?", opts:["Three forty-five","Quarter to four","Quarter past three","Half to four"], ans:0, exp:"Dijital: three forty-five; ya da quarter to four.", topic:"Telling the Time" },
+  { type:"tf", q:"'She will be able to drive soon.' doğrudur.", ans:true, exp:"Gelecekte yetenek: will be able to.", topic:"Be Able To" },
+  { type:"mc", q:"'___ we try that new café?' (öneri)", opts:["Should","Shall","Must","Have"], ans:1, exp:"Öneri: Shall we + fiil.", topic:"Öneri" },
+  { type:"fill", q:"Take an umbrella in ___ it rains.", ans:"case", exp:"in case + cümle = olası duruma karşı önlem.", topic:"In Case" },
+  { type:"mc", q:"'as expensive as' ne ifade eder?", opts:["Daha pahalı","Eşit derecede pahalı","Daha az pahalı","Çok pahalı"], ans:1, exp:"as...as = eşit derece.", topic:"As...As" },
+  { type:"tf", q:"'Whatever' zaman anlamı taşır.", ans:false, exp:"Whatever = her ne; zaman için: whenever.", topic:"Whatever/Whenever" },
+  { type:"mc", q:"'She is ___ architect.' Doğru artikel?", opts:["a","an","the","—"], ans:1, exp:"'Architect' sesli harfle başlar → an.", topic:"Meslekler" },
+  { type:"fill", q:"You are supposed ___ wear a uniform.", ans:"to", exp:"be supposed to = olması gereken.", topic:"Be Supposed To" },
+  { type:"tf", q:"'21st' doğru yazılıştır.", ans:true, exp:"21st = twenty-first.", topic:"Sayılar" },
+  { type:"mc", q:"'The lecture was boring' → Öğrenciler nasıl hissetti?", opts:["Sıkıcı","Heyecanlanmış","Sıkmış","Sıkılmış"], ans:3, exp:"Ders sıkıcıydı → öğrenciler sıkıldı (bored).", topic:"-ed/-ing" },
+  { type:"fill", q:"___ tired you are, you should rest. (however)", ans:"However", exp:"However + sıfat = ne kadar … olursa olsun.", topic:"Whatever/Whenever" },
+  { type:"mc", q:"'No, I don't mind' ne anlama gelir?", opts:["Hayır, yapmam","Tamam, sorun değil","Evet, sakıncam var","Bilmiyorum"], ans:1, exp:"'No, I don't mind' = Hayır, sakıncası yok = Tamam.", topic:"Would You Mind" },
+  { type:"tf", q:"'Could' genel yeteneği, 'was able to' tek olayda başarıyı ifade eder.", ans:true, exp:"Doğru ayrım: could = genel, was able to = o an.", topic:"Be Able To" },
+  { type:"mc", q:"Saat 'half past nine' kaçtır?", opts:["9:15","9:30","9:45","8:30"], ans:1, exp:"Half past nine = 9:30.", topic:"Telling the Time" },
+  { type:"fill", q:"She is a nurs___. (meslek)", ans:"e", exp:"Nurse = hemşire.", topic:"Meslekler" },
+  { type:"mc", q:"'In case of fire...' cümlesinin devamı?", opts:["...if you want","...use the stairs","...whenever possible","...you had better"], ans:1, exp:"Yangın durumunda merdivenleri kullanın.", topic:"In Case" },
+  { type:"tf", q:"'How about to swim?' doğru yapıdır.", ans:false, exp:"How about + -ing → How about swimming?", topic:"Öneri" }
+];
+
+// Story quiz questions
+const storyQuestions = [
+  { type:"mc", q:"Mert neden Londra'ya gitti?", opts:["Tatil için","Master eğitimi için","İş için","Aile ziyareti için"], ans:1, exp:"Hikayede Mert master eğitimi için Londra'ya gittiği belirtilir." },
+  { type:"tf", q:"Mert, hava durumu sebebiyle şemsiye taşıdı.", ans:true, exp:"'In case it rained' ibaresinden anlaşılır." },
+  { type:"mc", q:"Mert, komşusuna kapıyı açması için nasıl ricada bulundu?", opts:["Please open the door","Would you mind opening the door?","Open the door!","Can you open it?"], ans:1, exp:"Would you mind + -ing kibar rica yapısıdır." },
+  { type:"fill", q:"Mert'in üniforma giymesi gerektiğini anlatan yapı: He was ___ to wear a uniform.", ans:"supposed", exp:"be supposed to = olması gereken." },
+  { type:"tf", q:"Hikayede Mert İngilizce'yi akıcı konuşabilecek duruma geldi.", ans:true, exp:"'He would be able to speak English fluently' bölümünden anlaşılır." },
+  { type:"mc", q:"'Whatever challenges he faced' ne anlama gelir?", opts:["Bazı zorluklara rağmen","Her ne zorlukla karşılaşırsa","Zorluklardan önce","Zorluklardan sonra"], ans:1, exp:"Whatever = her ne olursa olsun." },
+  { type:"mc", q:"Saat ifadesinde 'quarter past eight' saat kaçtır?", opts:["8:45","7:45","8:15","8:30"], ans:2, exp:"Quarter past eight = 8:15." },
+  { type:"tf", q:"'Mert was exhausted' → Mert yorucuydu anlamındadır.", ans:false, exp:"'Mert was exhausted' = Mert yorgundu (bitmişti). Exhausted = kişi hissi." },
+  { type:"fill", q:"Mert sınıfta ___ student. (birinci — ordinal)", ans:"first", exp:"First = birinci." },
+  { type:"mc", q:"Hikayenin genel mesajı nedir?", opts:["Londra çok pahalıdır","Yabancı dil öğrenmek zordur","Azim ve doğru dil yapılarıyla başarı gelir","İngiltere'ye gitme"], ans:2, exp:"Hikaye kararlılık ve dil öğreniminin gücünü anlatır." }
+];
+
+// ===================== STORY HTML =====================
+function buildStory() {
+  const s = `
+<p>Mert, Gaziantep'ten genç bir mühendis <span class="vocab-mark" data-word="determined" data-tr="kararlı">determined</span> to chase his dreams. One September morning, he 
+<span class="grammar-mark gm-0" data-topic="Had Better / Be Supposed To" data-desc="'He had better take an umbrella' → Şemsiye alsan iyi olur. Olumsuz sonuç doğabilecek tavsiye.">had better take</span> an umbrella because the London sky looked 
+<span class="vocab-mark" data-word="overcast" data-tr="bulutlu, kapalı">overcast</span>. He was 
+<span class="grammar-mark gm-0" data-topic="Be Supposed To" data-desc="'was supposed to arrive' → O saatte varması gerekiyordu (program/beklenti).">supposed to arrive</span> at his university dormitory by noon.</p>
+
+<p>London was 
+<span class="grammar-mark gm-1" data-topic="As...As (Eşitlik Karşılaştırması)" data-desc="'as big as' → en az o kadar büyük. İki şeyi eşit derecede kıyaslar.">as big as</span> he had imagined — 
+<span class="vocab-mark" data-word="bustling" data-tr="kalabalık ve hareketli">bustling</span> streets, red double-decker buses and people from every corner of the world. He felt both 
+<span class="grammar-mark gm-2" data-topic="-ed/-ing Sıfatları" data-desc="'excited' → kişi hissi (-ed). 'exciting' → şeyin özelliği (-ing). Mert heyecanlandı.">excited</span> and 
+<span class="grammar-mark gm-2" data-topic="-ed/-ing Sıfatları" data-desc="'overwhelmed' → Kişi hissi. Londra'nın yoğunluğu onu bunalttı.">overwhelmed</span>.</p>
+
+<p>On his first day at university, his 
+<span class="vocab-mark" data-word="flatmate" data-tr="ev/daire arkadaşı">flatmate</span> James greeted him warmly. "
+<span class="grammar-mark gm-1" data-topic="Would You Mind (Kibar Rica)" data-desc="'Would you mind opening the door?' → Kapıyı açar mısın? -ing yapısıyla devam eder.">Would you mind opening the door?</span>" Mert asked 
+<span class="vocab-mark" data-word="shyly" data-tr="utangaçça">shyly</span>, his hands full of 
+<span class="vocab-mark" data-word="luggage" data-tr="valiz, bagaj">luggage</span>. James smiled and obliged.</p>
+
+<p>The first lecture was 
+<span class="grammar-mark gm-2" data-topic="-ing Sıfatı" data-desc="'fascinating' → Dersin kendisi büyüleyici özellik taşıyor (-ing).">fascinating</span> but Mert was slightly 
+<span class="grammar-mark gm-2" data-topic="-ed Sıfatı" data-desc="'confused' → Mert'in hissi (-ed). Ders onu şaşırttı.">confused</span>. His professor was 
+<span class="grammar-mark gm-0" data-topic="Be Supposed To" data-desc="'supposed to be' → olduğu söyleniyor / biliniyordu ki. Söylentiye dayalı bilgi.">supposed to be</span> the best in the department, and Mert could see why.</p>
+
+<p>After class, he wrote in his 
+<span class="vocab-mark" data-word="diary" data-tr="günlük">diary</span>: <em>"I will 
+<span class="grammar-mark gm-2" data-topic="Be Able To (Gelecekte Yetenek)" data-desc="'will be able to' → gelecekte yetenek. Can gelecekte kullanılamaz.">be able to</span> speak English as 
+<span class="grammar-mark gm-1" data-topic="As...As (Eşitlik Karşılaştırması)" data-desc="'as fluently as a native speaker' → anadil konuşucusu kadar akıcı. Eşitlik karşılaştırması.">fluently as a native speaker</span> someday."</em></p>
+
+<p>In the cafeteria, he always carried extra cash 
+<span class="grammar-mark gm-3" data-topic="In Case (Tedbir Belirtme)" data-desc="'in case he forgot his card' → Kartını unutursa diye. Olası duruma karşı önlem.">in case he forgot his card</span>. He also kept a small notebook 
+<span class="grammar-mark gm-3" data-topic="In Case (Tedbir Belirtme)" data-desc="'in case he came across' → Yeni kelime karşılaşırsa diye. Tedbir ifadesi.">in case he came across</span> new vocabulary.</p>
+
+<p>"
+<span class="grammar-mark gm-3" data-topic="Öneri: Shall We" data-desc="'Shall we explore the city?' → Şehri gezelim mi? Shall we = öneri.">Shall we explore the city</span> this weekend?" James suggested. "
+<span class="grammar-mark gm-3" data-topic="Öneri: How About" data-desc="'How about visiting the British Museum?' → Müzeyi ziyaret etsek nasıl? How about + -ing.">How about visiting the British Museum?</span>"
+"
+<span class="grammar-mark gm-3" data-topic="Öneri: Why Don't" data-desc="'Why don't we take the Tube?' → Metroyu kullansak mı? Why don't we + fiil.">Why don't we take the Tube?</span>" Mert added 
+<span class="vocab-mark" data-word="eagerly" data-tr="istekle, hevesle">eagerly</span>.</p>
+
+<p>The museum was open from 
+<span class="grammar-mark gm-4" data-topic="Telling the Time" data-desc="'quarter past nine' = 9:15. Quarter past = çeyrek geçiyor.">quarter past nine</span> in the morning. They arrived at 
+<span class="grammar-mark gm-4" data-topic="Telling the Time" data-desc="'half past ten' = 10:30. Half past = buçuk.">half past ten</span>. There were 
+<span class="grammar-mark gm-4" data-topic="Sayılar" data-desc="'thirty-five' = cardinal number. İki basamaklı sayılarda tire kullanılır.">thirty-five</span> 
+<span class="vocab-mark" data-word="exhibits" data-tr="sergi eserleri">exhibits</span> related to 
+<span class="vocab-mark" data-word="ancient" data-tr="antik, eski">ancient</span> civilisations, and Mert stood in front of each one as if it were 
+<span class="grammar-mark gm-4" data-topic="Sayılar: Ordinal" data-desc="'the first time' = first → ordinal number. Sıralamada kullanılır.">the first time</span> he had ever seen history.</p>
+
+<p>
+<span class="grammar-mark gm-3" data-topic="Whatever/-ever Yapısı" data-desc="'Whatever challenges' → her ne zorlukla karşılaşırsa. İsim cümlesi kurar.">Whatever challenges</span> he faced, Mert 
+<span class="vocab-mark" data-word="persevered" data-tr="ısrar etti, sebat etti">persevered</span>. 
+<span class="grammar-mark gm-3" data-topic="Whenever/-ever Yapısı" data-desc="'Whenever he felt homesick' → ne zaman yurt özlemi çekse. Her ne zaman anlamında.">Whenever he felt homesick</span>, he would cook 
+<span class="vocab-mark" data-word="lentil soup" data-tr="mercimek çorbası">lentil soup</span> and call his mother.</p>
+
+<p>By the end of his 
+<span class="grammar-mark gm-4" data-topic="Ordinal Numbers" data-desc="'first semester' → birinci dönem. First = ordinal.">first semester</span>, he was 
+<span class="grammar-mark gm-4" data-topic="-ed Sıfatı" data-desc="'recognised' → tanındı. Pasif yapı. Onun çalışkanlığı fark edildi.">recognised</span> as the most 
+<span class="grammar-mark gm-2" data-topic="-ing Sıfatı" data-desc="'hardworking' → çalışkan (özellik, şeyi/kişiyi tanımlar, -ing kategorisi).">hardworking</span> student — not 
+<span class="grammar-mark gm-4" data-topic="Saying Jobs" data-desc="'a student' → meslek/sıfat önünde a/an kullanımı. a + öğrenci.">a student</span> who 
+<span class="vocab-mark" data-word="gave up" data-tr="vazgeçti">gave up</span>, but one who 
+<span class="grammar-mark gm-0" data-topic="Had Better" data-desc="'had better keep going' → Devam etmesi iyi olur. Tavsiye/uyarı içerir.">had better keep going</span>.</p>
+
+<p>Mert's story 
+<span class="vocab-mark" data-word="proved" data-tr="kanıtladı">proved</span> one thing: 
+<span class="grammar-mark gm-3" data-topic="Whatever/-ever" data-desc="'Wherever you come from' → her nereden gelirsen gel. Wherever = isim cümlesi.">Wherever you come from</span> and 
+<span class="grammar-mark gm-3" data-topic="Whatever/-ever" data-desc="'whatever language you speak' → hangi dili konuşursan konuş. Whatever + isim.">whatever language you speak</span> at home, with 
+<span class="vocab-mark" data-word="determination" data-tr="kararlılık">determination</span> and the right grammar, you will 
+<span class="grammar-mark gm-2" data-topic="Be Able To" data-desc="'will be able to' → gelecekte yetenek. Can gelecekte kullanılamaz, be able to kullanılır.">be able to</span> find your place in the world — even in 
+<span class="vocab-mark" data-word="rainy" data-tr="yağmurlu">rainy</span>, wonderful London.</p>`;
+  document.getElementById('storyText').innerHTML = s;
+}
+
+// ===================== TOOLTIP =====================
+let activeTooltipEl = null;
+document.addEventListener('mousemove', function(e) {
+  const tt = document.getElementById('grammarTooltip');
+  const vt = document.getElementById('vocabTooltip');
+  if (tt.style.display === 'block' || vt.style.display === 'block') {
+    let x = e.clientX + 14, y = e.clientY + 14;
+    if (x + 300 > window.innerWidth) x = e.clientX - 300;
+    if (y + 100 > window.innerHeight) y = e.clientY - 100;
+    tt.style.left = x + 'px'; tt.style.top = y + 'px';
+    vt.style.left = x + 'px'; vt.style.top = y + 'px';
+  }
+});
+
+document.addEventListener('mouseover', function(e) {
+  const gm = e.target.closest('.grammar-mark');
+  const vm = e.target.closest('.vocab-mark');
+  if (gm) {
+    document.getElementById('ttTitle').textContent = gm.dataset.topic;
+    document.getElementById('ttDesc').textContent = gm.dataset.desc;
+    document.getElementById('grammarTooltip').style.display = 'block';
+    document.getElementById('vocabTooltip').style.display = 'none';
+  } else if (vm) {
+    document.getElementById('vtWord').textContent = vm.dataset.word;
+    document.getElementById('vtTr').textContent = '🇹🇷 ' + vm.dataset.tr;
+    document.getElementById('vocabTooltip').style.display = 'block';
+    document.getElementById('grammarTooltip').style.display = 'none';
+  } else if (!e.target.closest('.grammar-tooltip') && !e.target.closest('.vocab-tooltip')) {
+    document.getElementById('grammarTooltip').style.display = 'none';
+    document.getElementById('vocabTooltip').style.display = 'none';
+  }
+});
+
+// ===================== PAGES =====================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const map = { home:0, quiz:1, karma:2, story:3 };
+  btns[map[id]]?.classList.add('active');
+}
+
+// ===================== HOME =====================
+function buildHome() {
+  const grid = document.getElementById('topicGrid');
+  topics.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = `
+      <div class="topic-num">Konu ${i+1}</div>
+      <div class="topic-title">${t.tr}</div>
+      <div class="topic-en">${t.en}</div>
+      <div class="topic-desc">${t.desc}</div>
+      <div class="topic-arrow">→</div>`;
+    card.onclick = () => openModal(i);
+    grid.appendChild(card);
+  });
+}
+
+// ===================== MODAL =====================
+function openModal(i) {
+  const t = topics[i];
+  document.getElementById('modalTitle').textContent = `${t.tr}`;
+  let html = `<span class="modal-en-label">${t.en}</span>`;
+  html += `<div class="modal-section"><h3>📖 Açıklama</h3><p>${t.detail}</p></div>`;
+  html += `<div class="modal-section"><h3>📐 Yapı</h3>`;
+  t.form.forEach(f => html += `<span class="rule-tag">${f}</span>`);
+  html += `</div>`;
+  html += `<div class="modal-section"><h3>💬 Örnekler</h3>`;
+  t.examples.forEach(ex => {
+    html += `<div class="example-box"><div class="en">🇬🇧 ${ex.en}</div><div class="tr">🇹🇷 ${ex.tr}</div></div>`;
+  });
+  html += `</div>`;
+  if (t.notes) html += `<div class="modal-section"><h3>💡 Not</h3><p>${t.notes}</p></div>`;
+  html += `<button class="modal-quiz-btn" onclick="closeModal();showPage('quiz');selectTopicQuiz(${i})">Bu Konuyu Sına →</button>`;
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+// ===================== QUIZ RUNNER =====================
+let selectedTopic = 0;
+function buildQuizTopicList() {
+  const list = document.getElementById('quizTopicList');
+  topics.forEach((t, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-topic-item' + (i===0?' selected':'');
+    div.innerHTML = `<div class="qtitle">${t.tr}</div><div class="qen">${t.en}</div>`;
+    div.onclick = () => { document.querySelectorAll('.quiz-topic-item').forEach(x=>x.classList.remove('selected')); div.classList.add('selected'); selectedTopic = i; };
+    list.appendChild(div);
+  });
+}
+function selectTopicQuiz(i) {
+  selectedTopic = i;
+  document.querySelectorAll('.quiz-topic-item').forEach((x,j) => { x.classList.toggle('selected', j===i); });
+}
+function startTopicQuiz() {
+  const container = document.getElementById('topicQuizRunner');
+  container.classList.add('active');
+  runQuiz(topicQuestions[selectedTopic], container, () => {});
+}
+function startKarmaQuiz() {
+  const container = document.getElementById('karmaQuizRunner');
+  container.classList.add('active');
+  runQuiz(karmaQuestions, container, () => {});
+}
+function buildStoryQuiz() {
+  runQuiz(storyQuestions, document.getElementById('storyQuizRunner'), () => {});
+}
+
+function runQuiz(questions, container, onDone) {
+  let current = 0, score = 0;
+  function render() {
+    if (current >= questions.length) {
+      showResult();
+      return;
+    }
+    const q = questions[current];
+    const pct = (current / questions.length) * 100;
+    let html = `
+      <div class="quiz-header">
+        <div class="quiz-progress"><div class="quiz-progress-bar" style="width:${pct}%"></div></div>
+        <span class="quiz-counter">${current+1}/${questions.length}</span>
+        <span class="quiz-score-live">✓ ${score}</span>
+      </div>
+      <div class="question-card" id="qcard">
+        <div class="q-type">${getTypeLabel(q.type)}${q.topic ? ' · ' + q.topic : ''}</div>
+        <div class="q-text">${q.q}</div>`;
+    if (q.type === 'mc') {
+      html += `<div class="options">`;
+      q.opts.forEach((o,i) => html += `<button class="option-btn" onclick="handleMC(this,${i},${q.ans},'${esc(q.exp)}')">${o}</button>`);
+      html += `</div>`;
+    } else if (q.type === 'tf') {
+      html += `<div class="tf-options">
+        <button class="tf-btn" onclick="handleTF(this,true,${q.ans},'${esc(q.exp)}')">✓ Doğru</button>
+        <button class="tf-btn" onclick="handleTF(this,false,${q.ans},'${esc(q.exp)}')">✗ Yanlış</button>
+      </div>`;
+    } else {
+      html += `<input type="text" class="fill-input" id="fillInput" placeholder="Cevabınızı yazın...">
+        <button class="submit-btn" onclick="handleFill('${esc(q.ans)}','${esc(q.exp)}')">Kontrol Et</button>`;
+    }
+    html += `<div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQ()">İleri →</button>
+      </div>`;
+    container.innerHTML = html;
+    if (q.type === 'fill') {
+      document.getElementById('fillInput').addEventListener('keydown', e => { if (e.key === 'Enter') handleFill(q.ans, q.exp); });
+    }
+  }
+  function handleMC(btn, chosen, correct, exp) {
+    const btns = container.querySelectorAll('.option-btn');
+    btns.forEach(b => b.disabled = true);
+    btns[correct].classList.add('correct');
+    const isCorrect = chosen === correct;
+    if (!isCorrect) btn.classList.add('wrong');
+    else score++;
+    showFeedback(isCorrect, exp);
+    document.getElementById('nextBtn').classList.add('show');
+  }
+  function handleTF(btn, chosen, correct, exp) {
+    container.querySelectorAll('.tf-btn').forEach(b => b.disabled = true);
+    const isCorrect = chosen === correct;
+    btn.classList.add(isCorrect ? 'correct' : 'wrong');
+    if (!isCorrect) {
+      container.querySelectorAll('.tf-btn').forEach(b => { if ((b.textContent.includes('Doğru') && correct) || (b.textContent.includes('Yanlış') && !correct)) b.classList.add('correct'); });
+    }
+    if (isCorrect) score++;
+    showFeedback(isCorrect, exp);
+    document.getElementById('nextBtn').classList.add('show');
+  }
+  function handleFill(ans, exp) {
+    const input = document.getElementById('fillInput');
+    if (!input) return;
+    const userVal = input.value.trim().toLowerCase();
+    const correctVal = ans.toLowerCase();
+    const isCorrect = userVal === correctVal;
+    input.classList.add(isCorrect ? 'correct' : 'wrong');
+    input.disabled = true;
+    if (isCorrect) score++;
+    else {
+      const hint = document.createElement('div');
+      hint.style.cssText = 'font-size:12px;color:var(--accent3);margin-top:6px;';
+      hint.textContent = 'Doğru cevap: ' + ans;
+      input.parentNode.insertBefore(hint, input.nextSibling);
+    }
+    showFeedback(isCorrect, exp);
+    document.getElementById('nextBtn').classList.add('show');
+  }
+  function showFeedback(isCorrect, exp) {
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback show ' + (isCorrect ? 'good' : 'bad');
+    fb.textContent = (isCorrect ? '✓ Doğru! ' : '✗ Yanlış. ') + exp;
+    fb.classList.add(isCorrect ? 'anim-correct' : 'anim-wrong');
+  }
+  function nextQ() { current++; render(); }
+  function showResult() {
+    const pct = Math.round((score / questions.length) * 100);
+    let msg = pct >= 80 ? '🎉 Harika!' : pct >= 60 ? '👍 İyi gidiyor!' : '📚 Daha çok çalış!';
+    container.innerHTML = `
+      <div class="quiz-result show">
+        <div class="result-score score-anim">${pct}%</div>
+        <div class="result-msg">${msg}</div>
+        <div class="result-sub">${score} / ${questions.length} doğru</div>
+        <div class="result-btns">
+          <button class="result-btn primary" onclick="location.reload()">Yeniden Başla</button>
+          <button class="result-btn secondary" onclick="showPage('home')">Ana Sayfa</button>
+        </div>
+      </div>`;
+    onDone();
+  }
+  render();
+  window.handleMC = handleMC;
+  window.handleTF = handleTF;
+  window.handleFill = handleFill;
+  window.nextQ = nextQ;
+}
+function getTypeLabel(t) {
+  return { mc:'🔘 Çoktan Seçmeli', tf:'✅ Doğru/Yanlış', fill:'✏️ Boşluk Doldurma' }[t] || t;
+}
+function esc(s) { return String(s).replace(/'/g,"\\x27").replace(/"/g,"\\x22"); }
+
+// ===================== INIT =====================
+buildHome();
+buildQuizTopicList();
+buildStory();
+buildStoryQuiz();
+</script>
+</body>
+</html>

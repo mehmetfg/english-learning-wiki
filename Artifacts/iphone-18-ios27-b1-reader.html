@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPhone 18 & iOS 27 — B1 Interactive English Reader</title>
+<style>
+:root{--bg:#070b18;--surface:#0d1527;--card:#1a2540;--card2:#1e2d4a;--border:#2d3f5e;--text:#e2e8f0;--text2:#94a3b8;--accent:#3b82f6;--accent2:#60a5fa;--success:#22c55e;--error:#ef4444;--warn:#f59e0b;--g1:#4fc3f7;--g2:#ce93d8;--g3:#ffb74d;--g4:#80cbc4;--g5:#a5d6a7;--g6:#ef9a9a;--g7:#fff176;--g8:#f48fb1}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Verdana,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.7}
+.sticky-top{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border)}
+.header-bar{background:linear-gradient(135deg,#0f1f3d,#1a2f5a);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.badge{background:var(--accent);color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;border-radius:12px;letter-spacing:.5px}
+.header-bar h1{font-size:15px;font-weight:bold;color:#fff;flex:1}
+.header-bar .meta{font-size:11px;color:var(--text2)}
+.level-bar{background:var(--surface);padding:6px 20px;display:flex;align-items:center;gap:14px;font-size:11px;flex-wrap:wrap}
+.level-pill{background:#1e3a1e;color:#4ade80;padding:2px 10px;border-radius:10px;font-weight:bold;font-size:11px;white-space:nowrap}
+.grammar-legend{display:flex;gap:10px;flex-wrap:wrap;flex:1}
+.gl-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2)}
+.gl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto}
+.tab-btn{padding:10px 20px;background:none;border:none;color:var(--text2);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.content{max-width:860px;margin:0 auto;padding:24px 20px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.passage{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;line-height:2;font-size:15px}
+.passage h2{font-size:20px;color:var(--accent2);margin-bottom:6px}
+.passage .subtitle{font-size:12px;color:var(--text2);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.passage p{margin-bottom:16px}
+[data-g]{border-radius:3px;padding:1px 4px;cursor:pointer;position:relative;font-weight:500}
+[data-g="1"]{background:rgba(79,195,247,.18);color:var(--g1);border-bottom:1px solid var(--g1)}
+[data-g="2"]{background:rgba(206,147,216,.18);color:var(--g2);border-bottom:1px solid var(--g2)}
+[data-g="3"]{background:rgba(255,183,77,.18);color:var(--g3);border-bottom:1px solid var(--g3)}
+[data-g="4"]{background:rgba(128,203,196,.18);color:var(--g4);border-bottom:1px solid var(--g4)}
+[data-g="5"]{background:rgba(165,214,167,.18);color:var(--g5);border-bottom:1px solid var(--g5)}
+[data-g="6"]{background:rgba(239,154,154,.18);color:var(--g6);border-bottom:1px solid var(--g6)}
+[data-g="7"]{background:rgba(255,241,118,.18);color:var(--g7);border-bottom:1px solid var(--g7)}
+[data-g="8"]{background:rgba(244,143,177,.18);color:var(--g8);border-bottom:1px solid var(--g8)}
+.g-tooltip{display:none;position:fixed;background:#1a2d4a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;max-width:290px;font-size:12px;line-height:1.5;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.6)}
+.tt-name{font-weight:bold;margin-bottom:3px}
+.tt-tr{color:var(--text2);margin-bottom:3px}
+.tt-formula{color:#94a3b8;font-style:italic;font-size:11px;font-family:'Courier New',monospace}
+.reading-meta{display:flex;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text2);flex-wrap:wrap}
+.section-title{font-size:16px;font-weight:bold;color:var(--text);margin-bottom:6px}
+.section-sub{font-size:12px;color:var(--text2);margin-bottom:20px}
+.vocab-score-bar{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 16px;display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:12px}
+.score-display{font-weight:bold;color:var(--accent2);font-size:18px}
+.vocab-controls{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.vocab-btn{padding:7px 16px;background:var(--card);border:1px solid var(--border);border-radius:20px;color:var(--text2);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
+.vocab-btn:hover,.vocab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.flip-card{height:128px;cursor:pointer;perspective:1000px}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center;border:1px solid var(--border)}
+.flip-front{background:var(--card)}
+.flip-front .fw{font-size:15px;font-weight:bold;color:var(--accent2)}
+.flip-front .fp{font-size:10px;color:var(--text2);margin-top:3px}
+.flip-back{background:var(--card2);transform:rotateY(180deg)}
+.flip-back .ft{font-size:13px;color:var(--text);margin-bottom:4px}
+.flip-back .fe{font-size:11px;color:var(--text2);font-style:italic;line-height:1.4}
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px}
+.q-num{font-size:11px;color:var(--text2);margin-bottom:5px}
+.q-sent{font-size:14px;margin-bottom:5px}
+.q-sent em{color:var(--warn);font-style:normal;font-weight:bold}
+.q-ex{font-size:11px;color:var(--text2);font-style:italic;margin-bottom:12px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt-btn{padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;text-align:left;transition:all .2s}
+.opt-btn:hover:not(:disabled){border-color:var(--accent)}
+.opt-btn.correct{background:#1e3a1e;border-color:var(--success);color:var(--success)}
+.opt-btn.wrong{background:#3a1e1e;border-color:var(--error);color:var(--error)}
+.match-area{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-item{padding:10px 13px;background:var(--card);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;transition:all .2s;min-height:44px;display:flex;align-items:center}
+.match-item:hover:not(.matched){border-color:var(--accent)}
+.match-item.selected{border-color:var(--accent);background:var(--card2)}
+.match-item.matched{border-color:var(--success);background:#1e3a1e;color:var(--success);cursor:default}
+.match-item.wrong-anim{border-color:var(--error);background:#3a1e1e}
+.write-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px}
+.write-word{font-size:18px;font-weight:bold;color:var(--accent2);margin-bottom:3px}
+.write-tr{font-size:12px;color:var(--text2);margin-bottom:10px}
+.write-inp{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;resize:vertical;min-height:60px}
+.write-inp:focus{outline:none;border-color:var(--accent)}
+.street-note{background:#1a2a1a;border:1px solid #2d4d2d;border-radius:8px;padding:10px 13px;margin-top:10px;font-size:12px}
+.sn-label{color:#4ade80;font-weight:bold;margin-bottom:3px;font-size:11px}
+.sn-text{color:var(--text2);line-height:1.6}
+.grammar-intro{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:13px;color:var(--text2)}
+.accordion{display:flex;flex-direction:column;gap:10px}
+.acc-item{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.acc-header{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;user-select:none;transition:background .2s}
+.acc-header:hover{background:var(--card2)}
+.acc-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;flex-shrink:0}
+.acc-title{flex:1;font-size:14px;font-weight:bold}
+.acc-tr{font-size:11px;color:var(--text2);text-align:right}
+.acc-arrow{color:var(--text2);transition:transform .3s;font-size:12px;margin-left:8px}
+.acc-item.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;padding:0 18px 18px}
+.acc-item.open .acc-body{display:block}
+.formula-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Courier New',monospace;font-size:12px;color:var(--accent2);margin-bottom:12px}
+.acc-section{margin-bottom:12px}
+.acc-section h4{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.example-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.ex-en{color:var(--text);font-size:13px}
+.ex-tr{color:var(--text2);font-size:11px;margin-top:2px}
+.edge-cases{display:flex;flex-direction:column;gap:6px}
+.edge-case{background:var(--surface);border-left:3px solid var(--warn);padding:8px 12px;border-radius:0 6px 6px 0;font-size:12px;color:var(--text2);line-height:1.5}
+.mini-test{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-top:12px}
+.mini-test h4{font-size:11px;color:var(--text2);text-transform:uppercase;margin-bottom:10px}
+.mini-q{margin-bottom:12px;font-size:13px}
+.mq-text{margin-bottom:6px;color:var(--text)}
+.mq-opts{display:flex;gap:6px;flex-wrap:wrap}
+.mini-opt{padding:5px 12px;background:var(--card);border:1px solid var(--border);border-radius:14px;font-size:12px;cursor:pointer;color:var(--text2);font-family:Verdana,sans-serif;transition:all .2s}
+.mini-opt:hover:not(:disabled){border-color:var(--accent);color:var(--text)}
+.mini-opt.correct{background:#1e3a1e;border-color:var(--success);color:var(--success)}
+.mini-opt.wrong{background:#3a1e1e;border-color:var(--error);color:var(--error)}
+.ex-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
+.ex-section h3{font-size:14px;color:var(--accent2);margin-bottom:4px}
+.ex-desc{font-size:12px;color:var(--text2);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:14px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s}
+.word-bank{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.wb-label{font-size:11px;color:var(--text2);margin-right:4px}
+.word-tag{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:3px 10px;font-size:12px;color:var(--accent2)}
+.fib-item{margin-bottom:12px;font-size:14px;line-height:2.2}
+.fib-num{color:var(--text2);margin-right:5px;font-size:12px}
+.fib-input{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:3px 10px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;min-width:130px}
+.fib-input:focus{outline:none;border-color:var(--accent)}
+.fib-input.correct{border-color:var(--success);background:#1e3a1e}
+.fib-input.wrong{border-color:var(--error);background:#3a1e1e}
+.err-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:10px}
+.err-sent{font-size:14px;margin-bottom:8px;color:var(--text)}
+.err-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px}
+.err-input:focus{outline:none;border-color:var(--accent)}
+.err-fb{font-size:12px;margin-top:8px;padding:6px 10px;border-radius:6px;display:none;line-height:1.5}
+.err-fb.show{display:block}
+.err-fb.ok{background:#1e3a1e;color:var(--success);border:1px solid var(--success)}
+.err-fb.no{background:#3a1e1e;color:var(--error);border:1px solid var(--error)}
+.te-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:13px 16px;margin-bottom:10px}
+.te-tr{font-size:14px;color:var(--text2);margin-bottom:5px}
+.te-hint{font-size:11px;color:#64748b;margin-bottom:7px}
+.te-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px}
+.te-input:focus{outline:none;border-color:var(--accent)}
+.btn-check{margin-top:14px;padding:10px 24px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:Verdana,sans-serif;font-size:13px;cursor:pointer;transition:background .2s}
+.btn-check:hover{background:var(--accent2)}
+.btn-show{margin-top:10px;padding:8px 18px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;transition:all .2s;margin-left:8px}
+.btn-show:hover{border-color:var(--accent);color:var(--text)}
+.answer-box{background:var(--surface);border:1px solid #2d4d2d;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#4ade80;display:none;line-height:1.8}
+.answer-box.show{display:block}
+.ans-label{font-size:11px;color:var(--text2);margin-bottom:6px}
+.ex-score-bar{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;gap:24px;flex-wrap:wrap;font-size:13px;margin-bottom:20px}
+.es-item{display:flex;flex-direction:column;gap:2px}
+.es-num{font-size:22px;font-weight:bold;color:var(--accent2)}
+.es-label{font-size:11px;color:var(--text2)}
+.explore-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
+.explore-section h3{font-size:14px;color:var(--accent2);margin-bottom:6px}
+.es-desc{font-size:12px;color:var(--text2);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.craft-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.craft-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px}
+.craft-item h4{font-size:12px;color:var(--accent2);margin-bottom:7px}
+.craft-item p{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:6px}
+.craft-ex{font-style:italic;color:var(--text);font-size:12px;border-left:2px solid var(--accent);padding-left:8px;line-height:1.5}
+.ph-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+.ph-who{font-size:12px;color:var(--accent2);font-weight:bold;margin-bottom:4px}
+.ph-concept{font-size:13px;color:var(--text);margin-bottom:6px;line-height:1.6}
+.ph-link{font-size:12px;color:var(--text2);line-height:1.5}
+.trans-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px}
+.trans-table th{background:var(--card);padding:8px 12px;text-align:left;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border)}
+.trans-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.trans-table tr:last-child td{border-bottom:none}
+.t-note{color:#64748b;font-size:11px}
+.writing-task{background:#0d1f3d;border:1px solid #2d4d8d;border-radius:8px;padding:16px}
+.writing-task h4{font-size:13px;color:var(--accent2);margin-bottom:8px}
+.wt-text{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6}
+.wt-hints{font-size:12px;color:var(--text2);padding-left:18px}
+.wt-hints li{margin-bottom:4px}
+.writing-area{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;resize:vertical;min-height:110px;margin-top:12px}
+.writing-area:focus{outline:none;border-color:var(--accent)}
+@media(max-width:600px){.craft-grid,.options{grid-template-columns:1fr}.match-area{grid-template-columns:1fr}.header-bar h1{font-size:13px}.grammar-legend{display:none}}
+</style>
+</head>
+<body>
+
+<div class="g-tooltip" id="gTip">
+  <div class="tt-name" id="ttN"></div>
+  <div class="tt-tr" id="ttT"></div>
+  <div class="tt-formula" id="ttF"></div>
+</div>
+
+<div class="sticky-top">
+  <div class="header-bar">
+    <span class="badge">B1</span>
+    <h1>iPhone 18 &amp; iOS 27 — What We Know So Far</h1>
+    <span class="meta">Tech News · 2026</span>
+  </div>
+  <div class="level-bar">
+    <span class="level-pill">B1 Upper</span>
+    <div class="grammar-legend">
+      <span class="gl-item"><span class="gl-dot" style="background:var(--g1)"></span>Future Continuous</span>
+      <span class="gl-item"><span class="gl-dot" style="background:var(--g2)"></span>3rd Conditional</span>
+      <span class="gl-item"><span class="gl-dot" style="background:var(--g3)"></span>Modal Perfect</span>
+      <span class="gl-item"><span class="gl-dot" style="background:var(--g4)"></span>Cleft Sentences</span>
+      <span class="gl-item"><span class="gl-dot" style="background:var(--g5)"></span>Passive + Modal</span>
+      <span class="gl-item"><span class="gl-dot" style="background:var(--g6)"></span>Quantifiers</span>
+      <span class="gl-item"><span class="gl-dot" style="background:var(--g7)"></span>unless / as long as</span>
+      <span class="gl-item"><span class="gl-dot" style="background:var(--g8)"></span>the more...the more</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('reading',this)">📖 Reading</button>
+    <button class="tab-btn" onclick="showTab('vocabulary',this)">📚 Vocabulary</button>
+    <button class="tab-btn" onclick="showTab('grammar',this)">🔧 Grammar</button>
+    <button class="tab-btn" onclick="showTab('exercises',this)">✏️ Exercises</button>
+    <button class="tab-btn" onclick="showTab('explore',this)">🌍 Explore</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══════════════ READING ══════════════ -->
+<div id="tab-reading" class="tab-panel active">
+  <div class="passage">
+    <h2>iPhone 18 &amp; iOS 27: What We Know So Far</h2>
+    <div class="subtitle">Tech News · B1 Level · 8 Grammar Structures Highlighted · ~460 words · Click any coloured phrase for grammar info</div>
+
+    <p>The technology world is buzzing with excitement. <span data-g="5">Apple is expected to release</span> the iPhone 18 in September 2026, and <span data-g="6">a number of</span> reliable sources have already shared details about what to expect. From a dramatically thinner design to powerful new AI features, this could be one of the most ambitious product cycles in Apple's history.</p>
+
+    <p>According to recent leaks, the iPhone 18 <span data-g="1">will be sporting</span> an ultra-slim body — approximately 5.5 millimetres thick, making it the thinnest iPhone ever made. <span data-g="4">What makes this possible</span> is a completely redesigned internal layout that places the battery in a new position. However, this came with engineering trade-offs. <span data-g="3">Apple could have kept</span> the same battery size as the iPhone 17, but engineers chose a new solid-state battery technology instead — one that stores more energy in a smaller space.</p>
+
+    <p>On the processing side, the new A19 chip <span data-g="5">is believed to be</span> significantly faster than its predecessor. <span data-g="6">A great deal of</span> internal testing has reportedly taken place, with early benchmarks showing a 25% performance gain. <span data-g="2">If Apple had not invested so heavily in chip research over the past five years, it would not have been able to achieve</span> such impressive results today.</p>
+
+    <p>Perhaps the most exciting part is iOS 27. <span data-g="4">It is the AI features that</span> have generated the most excitement online. The new "Apple Intelligence 2.0" system <span data-g="1">will be handling</span> complex tasks — such as writing assistance, image creation, and smart voice commands — entirely on the device, without sending any data to external servers. <span data-g="7">As long as</span> your iPhone has enough storage, all of these features will work completely offline. <span data-g="7">Unless</span> you turn them off manually in settings, they will activate automatically after setup.</p>
+
+    <p><span data-g="8">The more powerful the on-device AI becomes, the more storage it requires.</span> This is why Apple <span data-g="5">is said to be</span> considering 256GB as the new base storage option. Several configurations <span data-g="5">are rumoured to be</span> available: 256GB, 512GB, and 1TB.</p>
+
+    <p>The camera system is also receiving major attention. <span data-g="3">Apple should have introduced</span> a periscope zoom lens much earlier, according to many critics — but the iPhone 18 Pro finally delivers it with a 5x optical zoom. <span data-g="2">If the company had launched this feature with the iPhone 16, many competing brands would have struggled</span> to keep pace. <span data-g="8">The better the camera hardware becomes, the higher users' expectations grow</span> — and Apple knows this well.</p>
+
+    <p><span data-g="6">A large number of</span> analysts predict that the iPhone 18 could break global sales records. <span data-g="1">Tech enthusiasts around the world will be watching</span> Apple's WWDC event in June 2026 closely, where iOS 27 <span data-g="5">is expected to be officially announced</span>. One thing is certain: <span data-g="8">the longer we wait, the more excited</span> the tech community becomes.</p>
+
+    <div class="reading-meta">
+      <span>📝 ~460 words</span>
+      <span>🎯 B1 Upper</span>
+      <span>🔤 8 grammar structures</span>
+      <span>💡 Click any highlighted phrase to see grammar info</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ VOCABULARY ══════════════ -->
+<div id="tab-vocabulary" class="tab-panel">
+  <div class="section-title">Vocabulary</div>
+  <div class="section-sub">20 key tech words — 4 learning modes</div>
+  <div class="vocab-score-bar">
+    <span>Quiz Score:</span>
+    <span class="score-display" id="vScore">0</span>
+    <span>/ <span id="vTotal">12</span></span>
+    <span style="margin-left:auto;font-size:11px;color:var(--text2)" id="vMode">Flashcard Mode</span>
+  </div>
+  <div class="vocab-controls">
+    <button class="vocab-btn active" onclick="setVMode('flash',this)">🃏 Flashcards</button>
+    <button class="vocab-btn" onclick="setVMode('quiz',this)">❓ Quiz</button>
+    <button class="vocab-btn" onclick="setVMode('match',this)">🔗 Match</button>
+    <button class="vocab-btn" onclick="setVMode('write',this)">✍️ Write</button>
+  </div>
+  <div id="v-flash"></div>
+  <div id="v-quiz" style="display:none"></div>
+  <div id="v-match" style="display:none"></div>
+  <div id="v-write" style="display:none"></div>
+</div>
+
+<!-- ══════════════ GRAMMAR ══════════════ -->
+<div id="tab-grammar" class="tab-panel">
+  <div class="section-title">Grammar</div>
+  <div class="section-sub">8 new structures — click each card to expand</div>
+  <div class="grammar-intro">💡 Tüm bu yapılar okuma metninde renk kodlu olarak işaretlidir. Bir yapıya tıkladığınızda kısa açıklama belirir; tam detay için bu sekmeden ilgili kartı açın.</div>
+  <div class="accordion" id="gAccordion"></div>
+</div>
+
+<!-- ══════════════ EXERCISES ══════════════ -->
+<div id="tab-exercises" class="tab-panel">
+  <div class="section-title">Exercises</div>
+  <div class="section-sub">Fill in the blanks · Find the error · Turkish → English</div>
+  <div class="ex-score-bar">
+    <div class="es-item"><span class="es-num" id="exC">0</span><span class="es-label">Correct</span></div>
+    <div class="es-item"><span class="es-num" id="exA">0</span><span class="es-label">Answered</span></div>
+    <div class="es-item"><span class="es-num" id="exP">—</span><span class="es-label">Rate</span></div>
+  </div>
+
+  <div class="ex-section">
+    <h3>1 — Fill in the Blanks</h3>
+    <div class="ex-desc">Use words from the word bank to complete each sentence. Each word is used once.</div>
+    <div class="word-bank">
+      <span class="wb-label">Word Bank:</span>
+      <span class="word-tag">sensor</span><span class="word-tag">slim</span><span class="word-tag">leak</span>
+      <span class="word-tag">feature</span><span class="word-tag">launch</span><span class="word-tag">chip</span>
+      <span class="word-tag">analyst</span><span class="word-tag">confirm</span><span class="word-tag">upgrade</span>
+      <span class="word-tag">display</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="fibBar" style="width:0%"></div></div>
+    <div id="fibQ"></div>
+    <button class="btn-check" onclick="checkFIB()">Check Answers</button>
+    <button class="btn-show" onclick="revealFIB()">Show Answers</button>
+    <div class="answer-box" id="fibAns"></div>
+  </div>
+
+  <div class="ex-section">
+    <h3>2 — Find the Error</h3>
+    <div class="ex-desc">Each sentence has one grammar mistake. Write only the corrected part (or the full corrected sentence).</div>
+    <div id="errQ"></div>
+    <button class="btn-check" onclick="checkErr()">Check</button>
+  </div>
+
+  <div class="ex-section">
+    <h3>3 — Turkish → English</h3>
+    <div class="ex-desc">Translate using grammar structures from today's article.</div>
+    <div id="teQ"></div>
+    <button class="btn-show" style="margin-left:0;margin-top:14px" onclick="revealTE()">Show Example Answers</button>
+    <div class="answer-box" id="teAns"></div>
+  </div>
+</div>
+
+<!-- ══════════════ EXPLORE ══════════════ -->
+<div id="tab-explore" class="tab-panel">
+  <div class="section-title">Explore</div>
+  <div class="section-sub">Writing craft · Philosophy · Translation notes · Your turn</div>
+
+  <div class="explore-section">
+    <h3>✍️ Writing Craft: Tech Journalism</h3>
+    <div class="es-desc">Bu makalede kullanılan profesyonel teknoloji yazarlığı teknikleri</div>
+    <div class="craft-grid">
+      <div class="craft-item">
+        <h4>Hedging Language — Belirsizlik İfadeleri</h4>
+        <p>Tech gazeteciler kesin bilmeden haber yazmak zorundadır. "is said to", "reportedly", "according to sources" kesinliği azaltır.</p>
+        <div class="craft-ex">"The chip <em>is said to be</em> 25% faster."<br>"<em>According to recent leaks</em>, the design will change."</div>
+      </div>
+      <div class="craft-item">
+        <h4>Attribution — Kaynak Gösterme</h4>
+        <p>Güvenilirlik için kaynak belirtmek şarttır. Kim söyledi? Okuyucu bunu bilmek ister.</p>
+        <div class="craft-ex">"<em>A number of reliable sources</em> have shared details."<br>"<em>Analysts predict</em> record-breaking sales."</div>
+      </div>
+      <div class="craft-item">
+        <h4>3rd Conditional for Speculation — Geçmiş Spekülasyonu</h4>
+        <p>Olmayan bir geçmişi hayal etmek okuyucuyu hikayeye çeker ve gazetecinin analizini gösterir.</p>
+        <div class="craft-ex">"<em>If Apple had launched this earlier, competitors would have struggled</em> to keep pace."</div>
+      </div>
+      <div class="craft-item">
+        <h4>Escalating Tension — "The more…the more"</h4>
+        <p>Okuyucuda döngüsel bir gerilim hissi yaratır. Tech haber yazarlığında beklentiyi artırmak için idealdir.</p>
+        <div class="craft-ex">"<em>The longer we wait, the more excited</em> the tech community becomes."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="explore-section">
+    <h3>🧠 Philosophy Connection</h3>
+    <div class="es-desc">Tech haberleri felsefe ile nasıl kesişir?</div>
+    <div class="ph-card">
+      <div class="ph-who">Joseph Schumpeter — "Creative Destruction" (Yaratıcı Yıkım)</div>
+      <div class="ph-concept">Her yeni iPhone modeli eskiyi değersiz kılar — ama bu yıkım aynı zamanda bir yaratımdır. Schumpeter'e göre kapitalizmin motoru budur: sürekli yenileme döngüsü.</div>
+      <div class="ph-link">💭 Bağlantı: "If Apple had not invested so heavily in chip research, it would not have achieved these results." — Bu cümle Schumpeter'in döngüsünü özetler: geçmiş yatırım → şimdiki yıkım → gelecekteki yaratım.</div>
+    </div>
+    <div class="ph-card">
+      <div class="ph-who">Marshall McLuhan — "The Medium is the Message"</div>
+      <div class="ph-concept">McLuhan için önemli olan cihazın ne yaptığı değil, ne <em>olduğudur</em>. iPhone sadece bir telefon değil; düşünme biçimimizi, ilişkilerimizi, zamanımızı şekillendiren bir medyum.</div>
+      <div class="ph-link">💭 Bağlantı: iOS 27'nin on-device AI'ı internete ihtiyaç duymaz. McLuhan sorar: "Bu araç sizi ne yapar?" Daha bağımsız mı? Yoksa daha kapalı ve içe dönük mü?</div>
+    </div>
+    <div class="ph-card">
+      <div class="ph-who">Aristoteles — Techne (Zanaat Bilgisi)</div>
+      <div class="ph-concept">Aristoteles techne'yi "bilgi ile üretim" olarak tanımlar. iPhone mühendisleri modern techne ustaları: bilgi ve beceriyi birleştirerek fiziksel bir nesne üretiyorlar.</div>
+      <div class="ph-link">💭 Soru: Aristoteles'e göre bir aracın değeri ne ile ölçülür — güzelliğiyle mi (form), işleviyle mi (function), yoksa kimin için yapıldığıyla mı (telos)?</div>
+    </div>
+  </div>
+
+  <div class="explore-section">
+    <h3>🌐 Tech Vocabulary: Translation Notes</h3>
+    <div class="es-desc">Teknoloji terimlerinin Türkçeye geçişi nasıl olur?</div>
+    <table class="trans-table">
+      <tr><th>English</th><th>Türkçe (Resmi)</th><th>Günlük Kullanım</th><th>Not</th></tr>
+      <tr><td>leak (n)</td><td>sızıntı</td><td>sızıntı / "leak"</td><td class="t-note">İngilizce hali doğrudan kullanılır</td></tr>
+      <tr><td>feature</td><td>özellik</td><td>özellik / "fiçır"</td><td class="t-note">"Fiçır" konuşmada duyulur, yazıda yok</td></tr>
+      <tr><td>chip</td><td>işlemci / çip</td><td>çip</td><td class="t-note">Loanword olarak yerleşmiş</td></tr>
+      <tr><td>display</td><td>ekran</td><td>ekran</td><td class="t-note">Türkçe karşılık başarıyla yerleşmiş</td></tr>
+      <tr><td>artificial intelligence</td><td>yapay zeka</td><td>yapay zeka / AI</td><td class="t-note">TDK çevirisi başarıyla kullanılıyor</td></tr>
+      <tr><td>benchmark</td><td>kıyaslama testi</td><td>benchmark</td><td class="t-note">Teknik çevrelerde İngilizce kullanılır</td></tr>
+    </table>
+    <div style="font-size:12px;color:var(--text2);margin-top:6px">💬 Türkçe teknolojiyi iki yolla alır: (1) doğrudan loanword (çip, prototip), (2) anlamsal çeviri (yapay zeka, ekran). Her ikisi de dilin canlılığını gösterir.</div>
+  </div>
+
+  <div class="explore-section">
+    <h3>✏️ Writing Task</h3>
+    <div class="es-desc">Kendi cümlelerinizle yazın — en az 3 gramer yapısı kullanmaya çalışın</div>
+    <div class="writing-task">
+      <h4>Technology of the Future — Opinion Paragraph</h4>
+      <div class="wt-text">Write 5–8 sentences about a technology you think will be important in the next 10 years. Use grammar structures from today's article.</div>
+      <ul class="wt-hints">
+        <li>Use <em>is expected to / is said to</em> for predictions</li>
+        <li>Use <em>will be + -ing</em> for ongoing future actions</li>
+        <li>Try <em>the more… the more…</em> to show a relationship</li>
+        <li>Add a 3rd conditional: <em>"If scientists had…"</em></li>
+        <li>Use <em>unless / as long as</em> for conditions</li>
+      </ul>
+      <textarea class="writing-area" placeholder="Start here... Example: 'Quantum computing is expected to transform medicine. The more powerful these computers become, the faster scientists will be able to find cures. If researchers had access to quantum computers ten years ago, they would have solved...'"></textarea>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// ══ DATA ══
+
+const GD = [
+  {id:1,color:'#4fc3f7',name:'Future Continuous',tr:'Gelecekte Devam Eden Eylem',
+   formula:'will be + V-ing',
+   desc:'Gelecekte belirli bir anda devam ediyor olacak eylemleri anlatır. Planlanmış veya beklenen süregelen durumlar için kullanılır.',
+   exs:[
+     {en:'Apple will be releasing the iPhone 18 in September.',tr:'Apple, iPhone 18\'i Eylül\'de piyasaya çıkarıyor olacak.'},
+     {en:'Tech enthusiasts will be watching the WWDC event closely.',tr:'Teknoloji meraklıları WWDC\'yi yakından izliyor olacak.'},
+     {en:'The AI system will be handling complex tasks on-device.',tr:'AI sistemi, karmaşık görevleri cihaz üzerinde yürütüyor olacak.'},
+     {en:'Engineers will be testing the new battery all year.',tr:'Mühendisler, yıl boyunca yeni pili test ediyor olacak.'}
+   ],
+   edge:[
+     'Belirli bir gelecek anda devam eden eylemi vurgular: "At 10pm tonight, I will be sleeping." — o anda uyuyor olacak.',
+     'Planlı gelecek için Going To\'ya nezih bir alternatiftir: "We will be launching next month."',
+     'Resmi yazılı dilde Future Simple\'dan daha kibar/belirsiz görünür — tech gazetecilik için ideal.'
+   ],
+   mini:[
+     {q:'Apple ___ the new phone at WWDC next month.',opts:['will announce','will be announcing','announces','announced'],ans:1},
+     {q:'At this time tomorrow, she ___ the new software.',opts:['tests','will test','will be testing','tested'],ans:2}
+   ]},
+  {id:2,color:'#ce93d8',name:'3rd Conditional',tr:'Üçüncü Koşul Cümlesi (Geçmiş Hayal)',
+   formula:'If + had + V3, would/could/might + have + V3',
+   desc:'Geçmişte gerçekleşmemiş koşul ve hayali sonucunu anlatır. Pişmanlık, eleştiri ve spekülasyon için kullanılır.',
+   exs:[
+     {en:'If Apple had introduced this lens earlier, users would have switched sooner.',tr:'Apple bu lensi daha önce tanıtsaydı, kullanıcılar daha önce geçerdi.'},
+     {en:'If Apple had not invested in chips, it would not have achieved these results.',tr:'Apple çipe yatırım yapmamış olsaydı, bu sonuçlara ulaşamazdı.'},
+     {en:'If they had delayed the launch, competitors might have caught up.',tr:'Lansmanı geciktirmiş olsalardı, rakipler yetişmiş olabilirdi.'},
+     {en:'If we had known about the leak, we would have been more prepared.',tr:'Sızıntıdan haberdâr olmuş olsaydık, daha hazırlıklı olurduk.'}
+   ],
+   edge:[
+     '"would" yerine "could have" (olasılık) ve "might have" (düşük ihtimal) da kullanılabilir.',
+     'If-clause cümlenin sonuna da gelebilir: "She would have won if she had practised more."',
+     'Çift olumsuz dikkat: "If they hadn\'t NOT…" gibi yapılar yanlış — sadece biri kullanın.'
+   ],
+   mini:[
+     {q:'If she ___ harder, she would have passed.',opts:['studied','had studied','would study','studies'],ans:1},
+     {q:'We ___ the problem if we had acted earlier.',opts:['solve','would solve','would have solved','solved'],ans:2}
+   ]},
+  {id:3,color:'#ffb74d',name:'Modal Perfect',tr:'Modal + have + V3 (Geçmişe Yönelik)',
+   formula:'should / could / might + have + V3',
+   desc:'"Should have" pişmanlık/eleştiri; "could have" geçmiş potansiyel; "might have" belirsiz geçmiş olasılık anlatır.',
+   exs:[
+     {en:'Apple should have introduced this feature years ago.',tr:'Apple bu özelliği yıllar önce tanıtmalıydı (ama tanıtmadı).'},
+     {en:'They could have made the phone thinner with different materials.',tr:'Farklı malzeme kullansalardı telefonu daha ince yapabilirlerdi.'},
+     {en:'The chip might have caused overheating in early tests.',tr:'Çip, erken testlerde ısınma sorunlarına neden olmuş olabilir.'},
+     {en:'Engineers should have tested the battery more thoroughly.',tr:'Mühendisler pili daha kapsamlı test etmeliydi.'}
+   ],
+   edge:[
+     '"Should have" → eleştiri/pişmanlık: "You should have read it." (okumadın ama okumalıydın)',
+     '"Could have" → geçmiş potansiyel: "She could have been a great engineer." (olabilirdi ama olmadı)',
+     '"Might have" → belirsiz geçmiş: "He might have left early." (belki ayrıldı, emin değilim)'
+   ],
+   mini:[
+     {q:'You ___ Apple about the bug earlier.',opts:['should tell','should have told','should told','have told'],ans:1},
+     {q:'The battery ___ lasted longer with a better design.',opts:['could','could have','might','should'],ans:1}
+   ]},
+  {id:4,color:'#80cbc4',name:'Cleft Sentences',tr:'Yarık Cümleler — Vurgu Yapısı',
+   formula:'It is/was + [vurgulanan öge] + that/who... | What + [konu] + is/are...',
+   desc:'Cümlenin belirli bir bölümünü güçlü biçimde vurgulamak için kullanılır. "It is…that" ve "What…is" en yaygın iki türdür.',
+   exs:[
+     {en:'It is the AI features that have generated the most excitement.',tr:'En çok heyecan yaratan şey, AI özellikleridir.'},
+     {en:'What makes this possible is a redesigned internal layout.',tr:'Bunu mümkün kılan şey, yeniden tasarlanmış iç yapıdır.'},
+     {en:'It was Apple who first introduced the App Store concept.',tr:'App Store konseptini ilk tanıtan Apple oldu.'},
+     {en:'What surprises analysts is the base storage decision.',tr:'Analistleri şaşırtan şey, temel depolama kararıdır.'}
+   ],
+   edge:[
+     '"It is…that/who" → herhangi bir ögeyi vurgular: "It was John who called." / "It is money that causes problems."',
+     '"What…is/are" → özne/nesneyi vurgular, genellikle tanım gibi işlev görür.',
+     'Zaman uyumu: "It was the price that worried us." (geçmiş) — "is" değil "was" kullanın.'
+   ],
+   mini:[
+     {q:'___ surprises me is the new price.',opts:['That','It','What','Which'],ans:2},
+     {q:'It is the design ___ makes it special.',opts:['who','which','that','what'],ans:2}
+   ]},
+  {id:5,color:'#a5d6a7',name:'Passive with Modal Verbs',tr:'Modal Fiilli Pasif Yapı',
+   formula:'is/are + expected / said / believed / rumoured + to + V / to be + V3',
+   desc:'Haber, söylenti ve beklentileri aktarırken kaynağı belirsizleştirmek için kullanılır. Tech gazetecilik dilinin temel yapısıdır.',
+   exs:[
+     {en:'Apple is expected to release the iPhone 18 in September.',tr:'Apple\'ın iPhone 18\'i Eylül\'de piyasaya çıkarması bekleniyor.'},
+     {en:'The chip is believed to be 25% faster than its predecessor.',tr:'Çipin öncekinden %25 daha hızlı olduğuna inanılıyor.'},
+     {en:'The new model is said to have a solid-state battery.',tr:'Yeni modelin solid-state pili olduğu söyleniyor.'},
+     {en:'Several storage options are rumoured to be available.',tr:'Birkaç depolama seçeneğinin mevcut olacağı söylentisi var.'}
+   ],
+   edge:[
+     '"is expected to" → beklenti / "is believed to" → inanış / "is rumoured to" → söylenti — güvenilirlik farkı var.',
+     'Active karşılığı: "People say the chip is faster." → Passive: "The chip is said to be faster."',
+     '"is supposed to" farklıdır — sorumluluk/beklenti anlatır, söylenti değil.'
+   ],
+   mini:[
+     {q:'The new model ___ launch in autumn.',opts:['is expected to','expects to','is expecting to','expected'],ans:0},
+     {q:'The battery ___ last two full days.',opts:['is said be','said to','is said to','says to'],ans:2}
+   ]},
+  {id:6,color:'#ef9a9a',name:'Quantifiers',tr:'Niceleyiciler — Miktar İfadeleri',
+   formula:'"a number of" + sayılabilir çoğul | "a great deal of" + sayılamaz | "a large number of" + sayılabilir',
+   desc:'"Many/much" yerine yazılı ve resmi dilde kullanılan, miktar veya sayı belirten ifadeler.',
+   exs:[
+     {en:'A number of reliable sources have confirmed the design leak.',tr:'Bir dizi güvenilir kaynak tasarım sızıntısını doğruladı.'},
+     {en:'A great deal of testing has taken place in Apple\'s labs.',tr:'Apple laboratuvarlarında çok miktarda test gerçekleşti.'},
+     {en:'A large number of analysts predict record-breaking sales.',tr:'Çok sayıda analist rekor satış tahmin ediyor.'},
+     {en:'A good deal of effort went into the new camera system.',tr:'Yeni kamera sistemine büyük çaba harcandı.'}
+   ],
+   edge:[
+     '"A number of" → sayılabilir isim + ÇOĞUL fiil: "A number of phones WERE sold." (not "was")',
+     '"A great deal of" → sayılamaz isim: time, money, work, effort — TEKIL fiil alır.',
+     '⚠️ "The number of" farklıdır: TEKIL fiil alır. "The number of users IS increasing." (a number of vs. the number of!)'
+   ],
+   mini:[
+     {q:'___ sources have leaked the new design.',opts:['A number of','A great deal of','Much','An amount of'],ans:0},
+     {q:'___ work has gone into this project.',opts:['A number of','A great deal of','Many','Several'],ans:1}
+   ]},
+  {id:7,color:'#fff176',name:'unless / as long as',tr:'Koşul Bağlaçları: unless / as long as',
+   formula:'"unless" + olumlu clause (= if...not) | "as long as" + koşul (= only if)',
+   desc:'"Unless" = eğer…mazsa/mezse. "As long as" = olduğu sürece / koşuluyla. İkisi de koşul cümlelerinde kullanılır, farklı anlam taşır.',
+   exs:[
+     {en:'Unless you turn off the AI in settings, it will activate automatically.',tr:'Ayarlardan AI\'ı kapatmazsan, otomatik olarak etkinleşecek.'},
+     {en:'As long as your phone has enough storage, all features work offline.',tr:'Telefonunda yeterli depolama olduğu sürece, tüm özellikler çevrimdışı çalışır.'},
+     {en:'Unless Apple changes its plans, the launch will be in September.',tr:'Apple planlarını değiştirmezse, lansman Eylül\'de olacak.'},
+     {en:'The battery will last two days as long as you avoid 5G.',tr:'5G\'den kaçındığın sürece pil iki gün dayanır.'}
+   ],
+   edge:[
+     '"Unless" her zaman OLUMLU bir clause alır ama anlamı olumsuzdur: "Unless it rains" = "If it doesn\'t rain"',
+     '⚠️ "Unless" içinde "not" kullanmayın: ❌ "Unless it doesn\'t rain" → ✅ "Unless it rains"',
+     '"As long as" = "provided that" / "on condition that" — daha resmi yazılı alternatifler.'
+   ],
+   mini:[
+     {q:'___ you update iOS, the new features won\'t work.',opts:['As long as','Unless','Although','Even if'],ans:1},
+     {q:'The phone will perform well ___ you keep it charged.',opts:['unless','as long as','although','despite'],ans:1}
+   ]},
+  {id:8,color:'#f48fb1',name:'The more… the more…',tr:'"Ne kadar… o kadar…" Orantılı Karşılaştırma',
+   formula:'The + comparative + [clause], the + comparative + [clause]',
+   desc:'İki olgu arasında orantılı bir ilişki kurar. Biri arttıkça diğeri de artar (ya da azalır). Güçlü retorik etki yaratır.',
+   exs:[
+     {en:'The more powerful the AI becomes, the more storage it requires.',tr:'AI ne kadar güçlü olursa, o kadar çok depolama gerektirir.'},
+     {en:'The better the camera gets, the higher users\' expectations grow.',tr:'Kamera ne kadar iyileşirse, kullanıcıların beklentileri o kadar yükselir.'},
+     {en:'The longer we wait, the more excited the tech community becomes.',tr:'Ne kadar beklersek, teknoloji dünyası o kadar heyecanlanır.'},
+     {en:'The thinner the phone is, the harder it is to fit a large battery.',tr:'Telefon ne kadar inceyse, büyük pil sığdırmak o kadar zordur.'}
+   ],
+   edge:[
+     'Fiil genellikle atlanabilir: "The more, the merrier." = "The more [people there are], the merrier [it is]."',
+     'Sıfat, zarf veya isimle kullanılabilir: "The more MONEY you have, the more PROBLEMS you face."',
+     'Türkçedeki "ne kadar X ise o kadar Y" yapısına birebir karşılık gelir — öğrenmesi nispeten kolay!'
+   ],
+   mini:[
+     {q:'The ___ you practise, the better your English becomes.',opts:['much','more','most','many'],ans:1},
+     {q:'The faster the phone, the ___ battery it uses.',opts:['much','most','more','little'],ans:2}
+   ]}
+];
+
+const VD = [
+  {w:'leak',pos:'n/v',tr:'sızıntı / sızdırmak',ex:'Recent leaks revealed the phone\'s new slim design.',street:'🗣️ "That info totally leaked!" — fiil olarak da yaygın. "Stop leaking secrets!" günlük konuşmada çok duyulur.'},
+  {w:'rumour',pos:'n',tr:'söylenti, dedikodu',ex:'There are rumours about a foldable iPhone 18.',street:'🗣️ İngiliz yazımı "rumour", Amerikan "rumor". "Rumour has it that..." → meşhur deyim: söylentilere göre...'},
+  {w:'feature',pos:'n',tr:'özellik, işlev',ex:'The on-device AI feature works completely offline.',street:'🗣️ "Feature" hem özellik (noun) hem "sahne almak" (verb): "The film features Tom Hanks." — bağlama dikkat!'},
+  {w:'reveal',pos:'v',tr:'ortaya çıkarmak, ifşa etmek',ex:'Apple will reveal the new design at WWDC in June.',street:'🗣️ Günlük: "Can you reveal the secret?" Resmi: "The data reveals a significant trend."'},
+  {w:'slim',pos:'adj',tr:'ince, dar',ex:'The new model has a slim 5.5mm aluminium body.',street:'🗣️ "Slim chance" → çok az ihtimal. "Slimming down" → kilo vermek. Tasarım için: "That phone looks incredibly slim!"'},
+  {w:'sensor',pos:'n',tr:'sensör, algılayıcı',ex:'The camera uses a much larger image sensor.',street:'🗣️ "Sensor" Türkçeye de "sensör" olarak geçmiş. "Motion sensor", "fingerprint sensor" — günlük tech dilinde çok sık.'},
+  {w:'upgrade',pos:'n/v',tr:'yükseltme / yükseltmek',ex:'The camera upgrade includes a new periscope zoom lens.',street:'🗣️ "Upgrade" her alanda kullanılır: "software upgrade", "upgrade your seat", "I need to upgrade my skills."'},
+  {w:'chip',pos:'n',tr:'çip, işlemci',ex:'The A19 chip is 25% faster than the A18.',street:'🗣️ "Chip" → işlemci. "Chips" (çoğul) → cips! Bağlama dikkat: "The new chip is amazing." vs. "Can I have some chips?"'},
+  {w:'display',pos:'n',tr:'ekran, görüntü',ex:'The new OLED display is 20% brighter than last year.',street:'🗣️ "Display" hem ekran (noun) hem sergilemek (verb): "She displayed great confidence."'},
+  {w:'analyst',pos:'n',tr:'analist, uzman',ex:'A tech analyst predicted record-breaking iPhone 18 sales.',street:'🗣️ Her sektörde var: "financial analyst", "data analyst". Türkçe "analist" doğrudan İngilizceden alıntı.'},
+  {w:'confirm',pos:'v',tr:'doğrulamak, onaylamak',ex:'Apple has not confirmed the official launch date yet.',street:'🗣️ "Can you confirm your booking?" → günlük. "The results confirm our theory." → akademik.'},
+  {w:'launch',pos:'n/v',tr:'lansman / piyasaya çıkmak',ex:'The product launch is expected in early September.',street:'🗣️ "Launch" üç bağlamda: ürün lansmanı, roket fırlatma, yeni bir işe başlama. "We\'re launching a new project!"'},
+  {w:'prototype',pos:'n',tr:'prototip, ilk model',ex:'Engineers are currently testing an early prototype.',street:'🗣️ "Prototype" doğrudan alıntı — Türkçe "prototip". "This is just a prototype, not the final version."'},
+  {w:'innovative',pos:'adj',tr:'yenilikçi, özgün',ex:'The solid-state battery technology is genuinely innovative.',street:'🗣️ "Innovative" pazarlama dilinde aşınmış bir kelime. Daha güçlü olun: "uses AI for the first time" > "innovative AI".'},
+  {w:'performance',pos:'n',tr:'performans, verim',ex:'Benchmark tests show impressive performance gains.',street:'🗣️ Hem teknik (chip performance) hem sanatsal (a great performance). Bağlama göre anlam değişir.'},
+  {w:'artificial intelligence',pos:'n',tr:'yapay zeka',ex:'Artificial intelligence runs all tasks directly on the device.',street:'🗣️ Kısaltma "AI" konuşmada yaygın. "Machine learning" AI\'ın bir alt dalıdır — eş anlamlı değildir.'},
+  {w:'storage',pos:'n',tr:'depolama, hafıza',ex:'The base model may offer 256GB of storage.',street:'🗣️ "Storage" hem dijital (cloud storage) hem fiziksel (storage room). "I\'m running out of storage!" — çok duyulur.'},
+  {w:'benchmark',pos:'n',tr:'kıyaslama testi, referans',ex:'Early benchmarks show a 25% speed improvement.',street:'🗣️ "Benchmark" hem test (noun) hem fiil: "We benchmark our results against competitors."'},
+  {w:'satellite',pos:'n',tr:'uydu',ex:'The phone supports emergency messaging via satellite.',street:'🗣️ "Satellite TV", "satellite phone", "satellite office" (şube) — birden fazla anlamı var.'},
+  {w:'release',pos:'n/v',tr:'piyasaya çıkış / yayınlamak',ex:'The official release date has not been announced yet.',street:'🗣️ "Release" müzik, film, yazılım — hepsi için kullanılır. "Apple released iOS 27." / "The album was released last Friday."'}
+];
+
+const MATCH_PAIRS = [
+  {w:'leak',tr:'sızıntı / sızdırmak'},
+  {w:'analyst',tr:'analist, uzman'},
+  {w:'prototype',tr:'prototip, ilk model'},
+  {w:'launch',tr:'lansman / piyasaya çıkmak'},
+  {w:'confirm',tr:'doğrulamak, onaylamak'},
+  {w:'innovative',tr:'yenilikçi, özgün'},
+  {w:'benchmark',tr:'kıyaslama testi'},
+  {w:'release',tr:'piyasaya çıkış / yayınlamak'}
+];
+
+const FIB = [
+  {pre:'Apple engineers use a temperature ',ans:'sensor',post:' to detect heat inside the new chip.'},
+  {pre:'The iPhone 18 will have a very ',ans:'slim',post:' body — only 5.5mm thick.'},
+  {pre:'A reliable insider confirmed the design ',ans:'leak',post:' before Apple made any announcement.'},
+  {pre:'The main ',ans:'feature',post:' of iOS 27 is its on-device artificial intelligence system.'},
+  {pre:'Apple will officially ',ans:'launch',post:' the iPhone 18 at its annual September event.'},
+  {pre:'The A19 ',ans:'chip',post:' is expected to be 25% faster than the A18 model.'},
+  {pre:'A tech ',ans:'analyst',post:' predicted that iPhone 18 sales would break all previous records.'},
+  {pre:'Apple has not yet ',ans:'confirm',post:' the official release date for iOS 27.'},
+  {pre:'The camera ',ans:'upgrade',post:' finally includes a long-awaited periscope zoom lens.'},
+  {pre:'The new OLED ',ans:'display',post:' is reported to be 20% brighter than last year\'s model.'}
+];
+
+const ERRORS = [
+  {s:'If she had studied harder, she would pass the tech exam.',corr:'would have passed',exp:'3rd Conditional: "would + have + V3" gerekir. "would pass" → "would have passed"'},
+  {s:'A great deal of engineers worked on the new chip.',corr:'A number of engineers',exp:'"A great deal of" sayılamaz isimlerle kullanılır (work, time, money). Engineers sayılabilir → "A number of"'},
+  {s:'The new model is said be the thinnest iPhone ever.',corr:'is said to be',exp:'"to" eksik: "said be" → "said to be"'},
+  {s:'Unless you don\'t update iOS, the AI won\'t work correctly.',corr:'Unless you update',exp:'"Unless" zaten olumsuz anlam taşır. Çift olumsuz hata: "Unless you don\'t update" → "Unless you update"'},
+  {s:'The more storage the phone has, the AI works better.',corr:'the better the AI works',exp:'"The more…" yapısında ikinci kısım da "the + comparative" ile başlamalı.'}
+];
+
+const TE = [
+  {tr:'Bir dizi güvenilir kaynak iPhone 18\'in tasarımını sızdırdı.',hint:'Hint: A number of... / leaked...',ans:'A number of reliable sources leaked the iPhone 18 design.'},
+  {tr:'Apple\'ın iOS 27\'yi Haziran\'da duyurması bekleniyor.',hint:'Hint: Apple is expected to...',ans:'Apple is expected to announce iOS 27 in June.'},
+  {tr:'Apple bu özelliği çok daha önce tanıtmış olmalıydı.',hint:'Hint: Apple should have + V3...',ans:'Apple should have introduced this feature much earlier.'},
+  {tr:'En çok dikkat çeken şey, on-device yapay zeka sistemidir.',hint:'Hint: What... is the on-device...',ans:'What attracts the most attention is the on-device AI system.'},
+  {tr:'iOS\'u güncellemezsen, yeni AI özellikleri çalışmayacak.',hint:'Hint: Unless you update...',ans:'Unless you update iOS, the new AI features will not work.'}
+];
+
+// ══ TOOLTIP ══
+
+const gMap = {};
+GD.forEach(g => gMap[g.id] = g);
+
+document.querySelectorAll('[data-g]').forEach(el => {
+  el.addEventListener('click', function(e){
+    const g = gMap[+this.dataset.g];
+    if(!g) return;
+    const tip = document.getElementById('gTip');
+    document.getElementById('ttN').textContent = g.id + '. ' + g.name;
+    document.getElementById('ttN').style.color = g.color;
+    document.getElementById('ttT').textContent = g.tr;
+    document.getElementById('ttF').textContent = g.formula;
+    const r = this.getBoundingClientRect();
+    let top = r.bottom + 8, left = r.left;
+    if(left + 295 > window.innerWidth) left = window.innerWidth - 300;
+    if(top + 110 > window.innerHeight) top = r.top - 115;
+    tip.style.cssText = `display:block;top:${top}px;left:${left}px`;
+    e.stopPropagation();
+  });
+});
+document.addEventListener('click', () => document.getElementById('gTip').style.display = 'none');
+
+// ══ TABS ══
+
+function showTab(name, btn){
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='vocabulary' && !vInited) initVocab();
+  if(name==='grammar' && !gInited) initGrammar();
+  if(name==='exercises' && !eInited) initExercises();
+}
+
+// ══ VOCABULARY ══
+
+let vInited=false, gInited=false, eInited=false;
+let qScore=0, qTotal=0, qIdx=0, qShuffled=[];
+
+function initVocab(){
+  vInited=true;
+  buildFlash();
+}
+
+function buildFlash(){
+  document.getElementById('v-flash').innerHTML = '<div class="cards-grid">' +
+    VD.map(v=>`<div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front"><div class="fw">${v.w}</div><div class="fp">${v.pos}</div></div>
+        <div class="flip-back"><div class="ft">${v.tr}</div><div class="fe">${v.ex}</div></div>
+      </div></div>`).join('') + '</div>';
+}
+
+function setVMode(mode, btn){
+  document.querySelectorAll('.vocab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['flash','quiz','match','write'].forEach(m => document.getElementById('v-'+m).style.display='none');
+  document.getElementById('vocabMode' in window ? 'vMode':'vMode') && (document.getElementById('vMode').textContent = {flash:'Flashcard Mode',quiz:'Quiz Mode',match:'Match Mode',write:'Write Mode'}[mode]);
+  document.getElementById('v-'+mode).style.display='block';
+  if(mode==='flash') buildFlash();
+  else if(mode==='quiz') startQuiz();
+  else if(mode==='match') startMatch();
+  else if(mode==='write'){writeIdx=0; renderWrite();}
+}
+
+function startQuiz(){
+  qScore=0; qTotal=0; qIdx=0;
+  qShuffled=[...VD].sort(()=>Math.random()-.5).slice(0,12);
+  document.getElementById('vScore').textContent=0;
+  document.getElementById('vTotal').textContent=12;
+  renderQuiz();
+}
+
+function renderQuiz(){
+  const el=document.getElementById('v-quiz');
+  if(qIdx>=qShuffled.length){
+    el.innerHTML=`<div style="text-align:center;padding:40px"><div style="font-size:38px">🎉</div><div style="font-size:18px;color:var(--accent2);margin-top:10px">Quiz Complete!</div><div style="color:var(--text2);margin-top:6px">Score: ${qScore} / ${qShuffled.length}</div><button class="btn-check" style="margin-top:16px" onclick="startQuiz()">Try Again</button></div>`;
+    return;
+  }
+  const v=qShuffled[qIdx];
+  const opts=[v,...VD.filter(x=>x.w!==v.w).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  el.innerHTML=`<div class="quiz-q">
+    <div class="q-num">Question ${qIdx+1} / ${qShuffled.length}</div>
+    <div class="q-sent">What is the meaning of: <em>${v.w}</em>?</div>
+    <div class="q-ex">"${v.ex}"</div>
+    <div class="options">${opts.map(o=>`<button class="opt-btn" data-word="${o.w}" onclick="pickOpt(this,'${v.w}')">${o.tr}</button>`).join('')}</div>
+  </div>`;
+}
+
+function pickOpt(btn, correct){
+  btn.closest('.options').querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled=true;
+    if(b.dataset.word===correct) b.classList.add('correct');
+  });
+  qTotal++;
+  if(btn.dataset.word===correct) qScore++;
+  else btn.classList.add('wrong');
+  document.getElementById('vScore').textContent=qScore;
+  setTimeout(()=>{qIdx++; renderQuiz();},1000);
+}
+
+// Match
+let mSelected=null, mCount=0;
+
+function startMatch(){
+  mSelected=null; mCount=0;
+  const pairs=[...MATCH_PAIRS].sort(()=>Math.random()-.5);
+  const rights=[...pairs].sort(()=>Math.random()-.5);
+  document.getElementById('v-match').innerHTML=`
+    <p style="font-size:12px;color:var(--text2);margin-bottom:12px">Click a word on the left, then its meaning on the right.</p>
+    <div class="match-area">
+      <div class="match-col">${pairs.map((p,i)=>`<div class="match-item" data-side="L" data-idx="${i}" onclick="mClick(this)">${p.w}</div>`).join('')}</div>
+      <div class="match-col">${rights.map(p=>{const i=pairs.findIndex(x=>x.w===p.w);return`<div class="match-item" data-side="R" data-idx="${i}" onclick="mClick(this)">${p.tr}</div>`}).join('')}</div>
+    </div>
+    <div style="margin-top:12px;font-size:13px;color:var(--text2)">Matched: <span id="mCnt">0</span> / ${MATCH_PAIRS.length}</div>`;
+}
+
+function mClick(el){
+  if(el.classList.contains('matched')) return;
+  if(!mSelected){
+    if(el.dataset.side==='L'){mSelected=el;el.classList.add('selected');}
+  } else {
+    if(el.dataset.side==='R'){
+      if(el.dataset.idx===mSelected.dataset.idx){
+        [mSelected,el].forEach(e=>{e.classList.remove('selected');e.classList.add('matched');});
+        mCount++; document.getElementById('mCnt').textContent=mCount;
+        mSelected=null;
+      } else {
+        [mSelected,el].forEach(e=>{e.classList.remove('selected');e.classList.add('wrong-anim');});
+        const tmp=mSelected; mSelected=null;
+        setTimeout(()=>[tmp,el].forEach(e=>e.classList.remove('wrong-anim')),700);
+      }
+    } else {
+      mSelected.classList.remove('selected'); mSelected=el; el.classList.add('selected');
+    }
+  }
+}
+
+// Write
+let writeIdx=0;
+function renderWrite(){
+  const el=document.getElementById('v-write');
+  if(writeIdx>=8){el.innerHTML=`<div style="text-align:center;padding:40px"><div style="font-size:36px">✨</div><div style="font-size:16px;color:var(--accent2);margin-top:10px">All 8 words practised!</div><button class="btn-check" style="margin-top:14px" onclick="writeIdx=0;renderWrite()">Start Over</button></div>`;return;}
+  const v=VD[writeIdx];
+  el.innerHTML=`<div style="font-size:11px;color:var(--text2);margin-bottom:8px">${writeIdx+1} / 8</div>
+    <div class="write-card">
+      <div class="write-word">${v.w}</div>
+      <div class="write-tr">${v.tr} · <em style="color:var(--text2)">${v.pos}</em></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Write a sentence about technology using <strong>${v.w}</strong>:</div>
+      <textarea class="write-inp" placeholder="Your sentence here..." rows="3"></textarea>
+      <div class="street-note"><div class="sn-label">Street Note</div><div class="sn-text">${v.street}</div></div>
+    </div>
+    <button class="btn-check" onclick="writeIdx++;renderWrite()">Next Word →</button>
+    <button class="btn-show" onclick="document.querySelector('#v-write textarea').value=\`${v.ex.replace(/`/g,'\\`')}\`">Show Example</button>`;
+}
+
+// ══ GRAMMAR ══
+
+function initGrammar(){
+  gInited=true;
+  const acc=document.getElementById('gAccordion');
+  acc.innerHTML=GD.map(g=>{
+    const exH=g.exs.map(e=>`<li><div class="ex-en">${e.en}</div><div class="ex-tr">${e.tr}</div></li>`).join('');
+    const edgeH=g.edge.map(e=>`<div class="edge-case">⚠️ ${e}</div>`).join('');
+    const miniH=g.mini.map((m,mi)=>`<div class="mini-q"><div class="mq-text">${mi+1}. ${m.q}</div><div class="mq-opts">${m.opts.map((o,oi)=>`<button class="mini-opt" onclick="chkMini(this,${oi},${m.ans})">${o}</button>`).join('')}</div></div>`).join('');
+    return `<div class="acc-item" id="acc${g.id}">
+      <div class="acc-header" onclick="togAcc(${g.id})">
+        <div class="acc-num" style="background:${g.color}22;color:${g.color}">${g.id}</div>
+        <div class="acc-title" style="color:${g.color}">${g.name}</div>
+        <div class="acc-tr">${g.tr}</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body">
+        <div class="formula-box">${g.formula}</div>
+        <div class="acc-section"><p style="font-size:13px;color:var(--text2)">${g.desc}</p></div>
+        <div class="acc-section"><h4>Örnekler</h4><ul class="example-list">${exH}</ul></div>
+        <div class="acc-section"><h4>Dikkat Noktaları</h4><div class="edge-cases">${edgeH}</div></div>
+        <div class="mini-test"><h4>Mini Test</h4>${miniH}</div>
+      </div></div>`;
+  }).join('');
+}
+
+function togAcc(id){document.getElementById('acc'+id).classList.toggle('open');}
+
+function chkMini(btn, sel, ans){
+  const opts=btn.closest('.mq-opts').querySelectorAll('.mini-opt');
+  opts.forEach(b=>b.disabled=true);
+  if(sel===ans){btn.classList.add('correct');}
+  else{btn.classList.add('wrong');opts[ans].classList.add('correct');}
+}
+
+// ══ EXERCISES ══
+
+let exC=0, exA=0;
+
+function addScore(ok){
+  if(ok) exC++;
+  exA++;
+  document.getElementById('exC').textContent=exC;
+  document.getElementById('exA').textContent=exA;
+  document.getElementById('exP').textContent=Math.round(exC/exA*100)+'%';
+}
+
+function initExercises(){
+  eInited=true;
+  // FIB
+  document.getElementById('fibQ').innerHTML=FIB.map((f,i)=>`<div class="fib-item"><span class="fib-num">${i+1}.</span>${f.pre}<input class="fib-input" id="fi${i}" placeholder="...">${f.post}</div>`).join('');
+  // Errors
+  document.getElementById('errQ').innerHTML=ERRORS.map((e,i)=>`<div class="err-item"><div class="err-sent"><span style="color:var(--text2)">${i+1}.</span> "${e.s}"</div><input class="err-input" id="ei${i}" placeholder="Write the corrected part..."><div class="err-fb" id="ef${i}"></div></div>`).join('');
+  // TE
+  document.getElementById('teQ').innerHTML=TE.map((t,i)=>`<div class="te-item"><div class="te-tr">${i+1}. ${t.tr}</div><div class="te-hint">${t.hint}</div><input class="te-input" id="ti${i}" placeholder="Write in English..."></div>`).join('');
+}
+
+function checkFIB(){
+  let ok=0;
+  FIB.forEach((f,i)=>{
+    const inp=document.getElementById('fi'+i);
+    const v=inp.value.trim().toLowerCase();
+    if(v===f.ans.toLowerCase()){inp.classList.add('correct');inp.classList.remove('wrong');ok++;}
+    else{inp.classList.add('wrong');inp.classList.remove('correct');}
+  });
+  document.getElementById('fibBar').style.width=Math.round(ok/FIB.length*100)+'%';
+  addScore(ok>=FIB.length*.7);
+}
+
+function revealFIB(){
+  const box=document.getElementById('fibAns');
+  box.innerHTML='<div class="ans-label">Correct Answers:</div>'+FIB.map((f,i)=>`<div><span style="color:var(--text2)">${i+1}.</span> <strong>${f.ans}</strong></div>`).join('');
+  box.classList.add('show');
+}
+
+function checkErr(){
+  ERRORS.forEach((e,i)=>{
+    const inp=document.getElementById('ei'+i);
+    const fb=document.getElementById('ef'+i);
+    const v=inp.value.trim().toLowerCase();
+    if(v.length<3) return;
+    if(v.includes(e.corr.toLowerCase())){
+      fb.textContent='✓ Correct! '+e.exp; fb.className='err-fb show ok';
+    } else {
+      fb.textContent='✗ Correction: "'+e.corr+'" — '+e.exp; fb.className='err-fb show no';
+    }
+  });
+}
+
+function revealTE(){
+  const box=document.getElementById('teAns');
+  box.innerHTML='<div class="ans-label">Example Answers:</div>'+TE.map((t,i)=>`<div style="margin-bottom:6px"><span style="color:var(--text2)">${i+1}.</span> ${t.ans}</div>`).join('');
+  box.classList.add('show');
+}
+
+// ══ INIT ══
+document.getElementById('v-flash').style.display='block';
+['v-quiz','v-match','v-write'].forEach(id=>document.getElementById(id).style.display='none');
+</script>
+</body>
+</html>

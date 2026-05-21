@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Your Brain Hates Losing — A2-B1 Interactive Reader v2</title>
+<style>
+:root{--bg:#070b18;--surface:#0d1527;--card:#1a2540;--card2:#1e2d4a;--border:#2d3f5e;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--accent:#3b82f6;--accent2:#60a5fa;--success:#22c55e;--error:#ef4444;--warn:#f59e0b;--gold:#fbbf24;--g1:#4fc3f7;--g2:#ce93d8;--g3:#ffb74d;--g4:#80cbc4;--g5:#a5d6a7;--g6:#ef9a9a;--g7:#fff176;--g8:#f48fb1;--fs:15px}
+body.theme-forest{--bg:#0a1410;--surface:#10221a;--card:#163326;--card2:#1d4332;--border:#2d5a44;--accent:#10b981;--accent2:#34d399}
+body.theme-sunset{--bg:#1a0a14;--surface:#2a1220;--card:#3d1a2e;--card2:#52223a;--border:#6e3050;--accent:#f59e0b;--accent2:#fbbf24}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:Verdana,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:var(--fs);line-height:1.7;transition:background .3s}
+body.fs-s{--fs:13px}body.fs-m{--fs:15px}body.fs-l{--fs:17px}body.fs-xl{--fs:19px}
+.sticky-top{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border)}
+.header-bar{background:linear-gradient(135deg,#0f1f3d,#1a2f5a);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+body.theme-forest .header-bar{background:linear-gradient(135deg,#0d2018,#163d2c)}
+body.theme-sunset .header-bar{background:linear-gradient(135deg,#2a0f1c,#4d1a30)}
+.badge{background:var(--accent);color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;border-radius:12px;letter-spacing:.5px}
+.badge.psy{background:#a855f7}
+.header-bar h1{font-size:14px;font-weight:bold;color:#fff;flex:1;min-width:160px}
+.header-bar .meta{font-size:11px;color:var(--text2)}
+.xp-mini{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.25);padding:3px 10px;border-radius:14px;font-size:11px;border:1px solid var(--border)}
+.xp-mini .lvl{color:var(--gold);font-weight:bold}
+.xp-mini .xp{color:var(--accent2)}
+.xp-bar{width:50px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;position:relative}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .4s}
+.toolbar{display:flex;gap:5px;align-items:center}
+.tool-btn{background:rgba(255,255,255,.07);border:1px solid var(--border);color:var(--text2);width:30px;height:28px;border-radius:6px;font-family:Verdana,sans-serif;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s}
+.tool-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.level-bar{background:var(--surface);padding:6px 20px;display:flex;align-items:center;gap:14px;font-size:11px;flex-wrap:wrap}
+.level-pill{background:#1e3a1e;color:#4ade80;padding:2px 10px;border-radius:10px;font-weight:bold;font-size:11px;white-space:nowrap}
+.grammar-legend{display:flex;gap:9px;flex-wrap:wrap;flex:1}
+.gl-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);cursor:pointer}
+.gl-item:hover{color:var(--text)}
+.gl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto}
+.tab-btn{padding:10px 20px;background:none;border:none;color:var(--text2);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;position:relative}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.tab-btn .kbd{position:absolute;top:2px;right:4px;font-size:8px;color:var(--text3);opacity:.6}
+.read-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--gold));width:0;z-index:101;transition:width .15s}
+.content{max-width:860px;margin:0 auto;padding:24px 20px 80px}
+.tab-panel{display:none;animation:fadeIn .25s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.shake{animation:shake .35s ease}
+.pop{animation:pop .3s ease}
+.passage{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;line-height:2;font-size:var(--fs)}
+.passage h2{font-size:20px;color:var(--accent2);margin-bottom:6px}
+.passage .subtitle{font-size:12px;color:var(--text2);margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.passage p{margin-bottom:16px}
+[data-g]{border-radius:3px;padding:1px 4px;cursor:pointer;position:relative;font-weight:500}
+[data-g="1"]{background:rgba(79,195,247,.18);color:var(--g1);border-bottom:1px solid var(--g1)}
+[data-g="2"]{background:rgba(206,147,216,.18);color:var(--g2);border-bottom:1px solid var(--g2)}
+[data-g="3"]{background:rgba(255,183,77,.18);color:var(--g3);border-bottom:1px solid var(--g3)}
+[data-g="4"]{background:rgba(128,203,196,.18);color:var(--g4);border-bottom:1px solid var(--g4)}
+[data-g="5"]{background:rgba(165,214,167,.18);color:var(--g5);border-bottom:1px solid var(--g5)}
+[data-g="6"]{background:rgba(239,154,154,.18);color:var(--g6);border-bottom:1px solid var(--g6)}
+[data-g="7"]{background:rgba(255,241,118,.18);color:var(--g7);border-bottom:1px solid var(--g7)}
+[data-g="8"]{background:rgba(244,143,177,.18);color:var(--g8);border-bottom:1px solid var(--g8)}
+.g-tooltip{display:none;position:fixed;background:#1a2d4a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;max-width:290px;font-size:12px;line-height:1.5;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.6)}
+.tt-name{font-weight:bold;margin-bottom:3px}
+.tt-tr{color:var(--text2);margin-bottom:3px}
+.tt-formula{color:#94a3b8;font-style:italic;font-size:11px;font-family:'Courier New',monospace}
+.tt-hint{color:var(--text3);font-size:10px;margin-top:6px;border-top:1px solid var(--border);padding-top:5px}
+.reading-meta{display:flex;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text2);flex-wrap:wrap}
+.tts-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px}
+.tts-btn{padding:6px 14px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:Verdana,sans-serif;font-size:12px;border-radius:18px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.tts-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent2)}
+.tts-btn:disabled{opacity:.4;cursor:not-allowed}
+.tts-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tts-rate{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);margin-left:auto}
+.tts-rate input{accent-color:var(--accent);width:90px}
+.tts-status{font-size:11px;color:var(--text2);padding-left:6px}
+.section-title{font-size:16px;font-weight:bold;color:var(--text);margin-bottom:6px}
+.section-sub{font-size:12px;color:var(--text2);margin-bottom:14px}
+.vocab-dash{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap;font-size:12px}
+.vd-item{display:flex;flex-direction:column;gap:2px;min-width:60px}
+.vd-num{font-size:18px;font-weight:bold;color:var(--accent2)}
+.vd-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.vd-num.gold{color:var(--gold)}
+.vocab-controls{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.vocab-btn{padding:6px 13px;background:var(--card);border:1px solid var(--border);border-radius:18px;color:var(--text2);font-family:Verdana,sans-serif;font-size:11px;cursor:pointer;transition:all .2s}
+.vocab-btn:hover,.vocab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.flip-card{height:150px;cursor:pointer;perspective:1000px;position:relative}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center;border:1px solid var(--border)}
+.flip-front{background:var(--card)}
+.flip-front .fw{font-size:15px;font-weight:bold;color:var(--accent2)}
+.flip-front .fp{font-size:10px;color:var(--text2);margin-top:3px}
+.flip-front .fspk{margin-top:8px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:10px;padding:3px 8px;border-radius:10px;cursor:pointer}
+.flip-front .fspk:hover{color:var(--accent2);border-color:var(--accent)}
+.flip-back{background:var(--card2);transform:rotateY(180deg)}
+.flip-back .ft{font-size:13px;color:var(--text);margin-bottom:4px}
+.flip-back .fe{font-size:11px;color:var(--text2);font-style:italic;line-height:1.4}
+.bm{position:absolute;top:6px;right:8px;font-size:14px;cursor:pointer;color:var(--text3);z-index:2;transition:transform .15s}
+.bm.on{color:var(--gold)}
+.bm:hover{transform:scale(1.2)}
+.mast{position:absolute;top:8px;left:8px;width:9px;height:9px;border-radius:50%;background:#475569;z-index:2}
+.mast.learning{background:var(--warn)}
+.mast.familiar{background:var(--accent)}
+.mast.mastered{background:var(--success)}
+.quiz-top{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;flex-wrap:wrap;gap:10px}
+.qt-lives{font-size:18px;letter-spacing:3px}
+.qt-combo{display:flex;align-items:center;gap:5px;color:var(--warn);font-weight:bold;font-size:14px}
+.qt-combo.fire{color:#ef4444;animation:pop .4s ease}
+.qt-score{color:var(--accent2);font-weight:bold;font-size:14px}
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px}
+.q-num{font-size:11px;color:var(--text2);margin-bottom:5px}
+.q-sent{font-size:14px;margin-bottom:5px}
+.q-sent em{color:var(--warn);font-style:normal;font-weight:bold}
+.q-ex{font-size:11px;color:var(--text2);font-style:italic;margin-bottom:12px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt-btn{padding:9px 12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;text-align:left;transition:all .2s}
+.opt-btn:hover:not(:disabled){border-color:var(--accent)}
+.opt-btn.correct{background:#1e3a1e;border-color:var(--success);color:var(--success)}
+.opt-btn.wrong{background:#3a1e1e;border-color:var(--error);color:var(--error)}
+.match-area{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-item{padding:10px 13px;background:var(--card);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;transition:all .2s;min-height:44px;display:flex;align-items:center}
+.match-item:hover:not(.matched){border-color:var(--accent)}
+.match-item.selected{border-color:var(--accent);background:var(--card2)}
+.match-item.matched{border-color:var(--success);background:#1e3a1e;color:var(--success);cursor:default}
+.match-item.wrong-anim{border-color:var(--error);background:#3a1e1e}
+.write-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:14px}
+.write-word{font-size:18px;font-weight:bold;color:var(--accent2);margin-bottom:3px}
+.write-tr{font-size:12px;color:var(--text2);margin-bottom:10px}
+.write-inp{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;resize:vertical;min-height:60px}
+.write-inp:focus{outline:none;border-color:var(--accent)}
+.street-note{background:#1a2a1a;border:1px solid #2d4d2d;border-radius:8px;padding:10px 13px;margin-top:10px;font-size:12px}
+.sn-label{color:#4ade80;font-weight:bold;margin-bottom:3px;font-size:11px}
+.sn-text{color:var(--text2);line-height:1.6}
+/* Speed Round */
+.sr-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center}
+.sr-timer{font-size:48px;font-weight:bold;color:var(--accent2);margin:6px 0}
+.sr-timer.warn{color:var(--warn)}
+.sr-timer.danger{color:var(--error);animation:pop 1s infinite}
+.sr-stats{display:flex;justify-content:center;gap:24px;font-size:13px;color:var(--text2);margin-bottom:16px}
+.sr-stats b{color:var(--gold);font-size:16px}
+.sr-q{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;text-align:left}
+.sr-q .sr-word{font-size:20px;font-weight:bold;color:var(--accent2);margin-bottom:8px}
+.sr-q .sr-ex{font-size:11px;color:var(--text2);font-style:italic;margin-bottom:12px}
+.sr-start{padding:14px 36px;background:var(--accent);border:none;border-radius:24px;color:#fff;font-size:14px;font-weight:bold;cursor:pointer;font-family:Verdana,sans-serif}
+.sr-start:hover{background:var(--accent2)}
+/* Hangman */
+.hm-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.hm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:13px}
+.hm-art{font-family:'Courier New',monospace;font-size:14px;color:var(--accent2);white-space:pre;background:var(--surface);padding:12px 16px;border-radius:8px;text-align:center;line-height:1.3;margin-bottom:14px}
+.hm-clue{background:var(--surface);padding:10px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;color:var(--text)}
+.hm-clue b{color:var(--accent2)}
+.hm-word{font-size:28px;font-family:'Courier New',monospace;text-align:center;letter-spacing:8px;margin:14px 0;color:var(--accent2);font-weight:bold}
+.hm-letters{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;margin-top:14px}
+.hm-letter{padding:8px 0;background:var(--surface);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:'Courier New',monospace;font-size:12px;font-weight:bold;cursor:pointer;transition:all .15s;text-align:center}
+.hm-letter:hover:not(:disabled){background:var(--accent);color:#fff}
+.hm-letter:disabled{opacity:.3;cursor:not-allowed}
+.hm-letter.ok{background:#1e3a1e;border-color:var(--success);color:var(--success)}
+.hm-letter.no{background:#3a1e1e;border-color:var(--error);color:var(--error)}
+.hm-msg{padding:14px;border-radius:8px;text-align:center;font-size:15px;margin-top:14px;display:none}
+.hm-msg.show{display:block}
+.hm-msg.win{background:#1e3a1e;color:var(--success);border:1px solid var(--success)}
+.hm-msg.lose{background:#3a1e1e;color:var(--error);border:1px solid var(--error)}
+/* Word Builder */
+.wb-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.wb-clue{background:var(--surface);padding:12px 14px;border-radius:8px;margin-bottom:14px;font-size:13px}
+.wb-clue b{color:var(--accent2)}
+.wb-slot{min-height:50px;background:var(--surface);border:2px dashed var(--border);border-radius:8px;padding:8px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center;justify-content:center}
+.wb-slot:empty::before{content:'tap letters below ↓';color:var(--text3);font-size:12px}
+.wb-tile{display:inline-block;width:36px;height:36px;background:var(--card2);border:1px solid var(--accent);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-family:'Courier New',monospace;font-size:16px;font-weight:bold;color:var(--accent2);cursor:pointer;transition:all .15s;user-select:none}
+.wb-tile:hover{background:var(--accent);color:#fff}
+.wb-tile.used{opacity:.25;cursor:not-allowed}
+.wb-pool{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.wb-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.grammar-intro{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:13px;color:var(--text2)}
+.accordion{display:flex;flex-direction:column;gap:10px}
+.acc-item{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.acc-header{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;user-select:none;transition:background .2s}
+.acc-header:hover{background:var(--card2)}
+.acc-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold;flex-shrink:0}
+.acc-title{flex:1;font-size:14px;font-weight:bold}
+.acc-tr{font-size:11px;color:var(--text2);text-align:right}
+.acc-arrow{color:var(--text2);transition:transform .3s;font-size:12px;margin-left:8px}
+.acc-item.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{display:none;padding:0 18px 18px}
+.acc-item.open .acc-body{display:block}
+.formula-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Courier New',monospace;font-size:12px;color:var(--accent2);margin-bottom:12px}
+.acc-section{margin-bottom:12px}
+.acc-section h4{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.example-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.ex-en{color:var(--text);font-size:13px}
+.ex-tr{color:var(--text2);font-size:11px;margin-top:2px}
+.edge-cases{display:flex;flex-direction:column;gap:6px}
+.edge-case{background:var(--surface);border-left:3px solid var(--warn);padding:8px 12px;border-radius:0 6px 6px 0;font-size:12px;color:var(--text2);line-height:1.5}
+.mini-test{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin-top:12px}
+.mini-test h4{font-size:11px;color:var(--text2);text-transform:uppercase;margin-bottom:10px}
+.mini-q{margin-bottom:12px;font-size:13px}
+.mq-text{margin-bottom:6px;color:var(--text)}
+.mq-opts{display:flex;gap:6px;flex-wrap:wrap}
+.mini-opt{padding:5px 12px;background:var(--card);border:1px solid var(--border);border-radius:14px;font-size:12px;cursor:pointer;color:var(--text2);font-family:Verdana,sans-serif;transition:all .2s}
+.mini-opt:hover:not(:disabled){border-color:var(--accent);color:var(--text)}
+.mini-opt.correct{background:#1e3a1e;border-color:var(--success);color:var(--success)}
+.mini-opt.wrong{background:#3a1e1e;border-color:var(--error);color:var(--error)}
+.ex-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
+.ex-section h3{font-size:14px;color:var(--accent2);margin-bottom:4px}
+.ex-desc{font-size:12px;color:var(--text2);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.progress-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:14px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s}
+.word-bank{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.wb-label{font-size:11px;color:var(--text2);margin-right:4px}
+.word-tag{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:3px 10px;font-size:12px;color:var(--accent2)}
+.fib-item{margin-bottom:12px;font-size:14px;line-height:2.2}
+.fib-num{color:var(--text2);margin-right:5px;font-size:12px}
+.fib-input{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:3px 10px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;min-width:130px}
+.fib-input:focus{outline:none;border-color:var(--accent)}
+.fib-input.correct{border-color:var(--success);background:#1e3a1e}
+.fib-input.wrong{border-color:var(--error);background:#3a1e1e}
+.err-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:10px}
+.err-sent{font-size:14px;margin-bottom:8px;color:var(--text)}
+.err-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px}
+.err-input:focus{outline:none;border-color:var(--accent)}
+.err-fb{font-size:12px;margin-top:8px;padding:6px 10px;border-radius:6px;display:none;line-height:1.5}
+.err-fb.show{display:block}
+.err-fb.ok{background:#1e3a1e;color:var(--success);border:1px solid var(--success)}
+.err-fb.no{background:#3a1e1e;color:var(--error);border:1px solid var(--error)}
+.te-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:13px 16px;margin-bottom:10px}
+.te-tr{font-size:14px;color:var(--text2);margin-bottom:5px}
+.te-hint{font-size:11px;color:#64748b;margin-bottom:7px}
+.te-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px}
+.te-input:focus{outline:none;border-color:var(--accent)}
+.btn-check{margin-top:14px;padding:10px 24px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-family:Verdana,sans-serif;font-size:13px;cursor:pointer;transition:background .2s}
+.btn-check:hover{background:var(--accent2)}
+.btn-show{margin-top:10px;padding:8px 18px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:Verdana,sans-serif;font-size:12px;cursor:pointer;transition:all .2s;margin-left:8px}
+.btn-show:hover{border-color:var(--accent);color:var(--text)}
+.answer-box{background:var(--surface);border:1px solid #2d4d2d;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#4ade80;display:none;line-height:1.8}
+.answer-box.show{display:block}
+.ans-label{font-size:11px;color:var(--text2);margin-bottom:6px}
+.ex-score-bar{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;gap:24px;flex-wrap:wrap;font-size:13px;margin-bottom:20px}
+.es-item{display:flex;flex-direction:column;gap:2px}
+.es-num{font-size:22px;font-weight:bold;color:var(--accent2)}
+.es-label{font-size:11px;color:var(--text2)}
+.explore-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px}
+.explore-section h3{font-size:14px;color:var(--accent2);margin-bottom:6px}
+.es-desc{font-size:12px;color:var(--text2);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.craft-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.craft-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px}
+.craft-item h4{font-size:12px;color:var(--accent2);margin-bottom:7px}
+.craft-item p{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:6px}
+.craft-ex{font-style:italic;color:var(--text);font-size:12px;border-left:2px solid var(--accent);padding-left:8px;line-height:1.5}
+.ph-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px}
+.ph-who{font-size:12px;color:var(--accent2);font-weight:bold;margin-bottom:4px}
+.ph-concept{font-size:13px;color:var(--text);margin-bottom:6px;line-height:1.6}
+.ph-link{font-size:12px;color:var(--text2);line-height:1.5}
+.trans-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px}
+.trans-table th{background:var(--card);padding:8px 12px;text-align:left;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border)}
+.trans-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.trans-table tr:last-child td{border-bottom:none}
+.t-note{color:#64748b;font-size:11px}
+.writing-task{background:#0d1f3d;border:1px solid #2d4d8d;border-radius:8px;padding:16px}
+.writing-task h4{font-size:13px;color:var(--accent2);margin-bottom:8px}
+.wt-text{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6}
+.wt-hints{font-size:12px;color:var(--text2);padding-left:18px}
+.wt-hints li{margin-bottom:4px}
+.writing-area{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:Verdana,sans-serif;font-size:13px;resize:vertical;min-height:110px;margin-top:12px}
+.writing-area:focus{outline:none;border-color:var(--accent)}
+.scroll-top{position:fixed;bottom:20px;right:20px;width:42px;height:42px;background:var(--accent);border:none;border-radius:50%;color:#fff;font-size:18px;cursor:pointer;box-shadow:0 4px 16px rgba(59,130,246,.4);display:none;z-index:50;transition:all .2s}
+.scroll-top:hover{background:var(--accent2);transform:translateY(-2px)}
+.scroll-top.show{display:flex;align-items:center;justify-content:center}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card2);border:1px solid var(--accent);color:var(--text);padding:10px 18px;border-radius:24px;font-size:13px;z-index:200;opacity:0;transition:all .3s}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.ach-popup{position:fixed;top:24px;right:-360px;width:340px;background:linear-gradient(135deg,#1e293b,#334155);border:2px solid var(--gold);border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(251,191,36,.3);z-index:300;transition:right .4s cubic-bezier(.34,1.56,.64,1)}
+.ach-popup.show{right:24px}
+.ach-popup .at{font-size:11px;color:var(--gold);font-weight:bold;letter-spacing:.5px;margin-bottom:4px}
+.ach-popup .an{font-size:15px;font-weight:bold;color:#fff;margin-bottom:4px}
+.ach-popup .ad{font-size:12px;color:var(--text2);line-height:1.5}
+.ach-popup .ax{font-size:11px;color:var(--gold);margin-top:6px}
+#confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:250}
+@media(max-width:600px){.craft-grid,.options{grid-template-columns:1fr}.match-area{grid-template-columns:1fr}.header-bar h1{font-size:13px;width:100%;order:99}.grammar-legend{display:none}.tab-btn .kbd{display:none}.tab-btn{padding:10px 14px;font-size:11px}.passage{padding:18px}.tts-rate{margin-left:0;width:100%}.hm-letters{grid-template-columns:repeat(9,1fr)}.hm-word{font-size:22px;letter-spacing:5px}}
+@media print{.sticky-top,.toolbar,.tts-bar,.scroll-top,.vocab-controls,.btn-check,.btn-show,.tabs,.read-progress,.vocab-dash{display:none!important}.tab-panel{display:block!important;page-break-after:always}body{background:#fff;color:#000}.passage,.acc-item,.explore-section,.ex-section{background:#fff!important;border:1px solid #888!important;color:#000!important}[data-g]{background:#f0f0f0!important;color:#000!important;border-bottom:1px dotted #888!important}}
+</style>
+</head>
+<body class="fs-m">
+
+<div class="read-progress" id="readProgress"></div>
+<canvas id="confetti"></canvas>
+<div class="g-tooltip" id="gTip"><div class="tt-name" id="ttN"></div><div class="tt-tr" id="ttT"></div><div class="tt-formula" id="ttF"></div><div class="tt-hint">💡 Grammar sekmesinde tam detay</div></div>
+<div class="toast" id="toast"></div>
+<div class="ach-popup" id="achPop"><div class="at">🏆 ACHIEVEMENT UNLOCKED</div><div class="an" id="achN"></div><div class="ad" id="achD"></div><div class="ax" id="achX"></div></div>
+
+<div class="sticky-top">
+  <div class="header-bar">
+    <span class="badge">A2-B1</span>
+    <span class="badge psy">Psych</span>
+    <h1>Why Your Brain Hates Losing More Than It Loves Winning</h1>
+    <span class="meta">CG · 001</span>
+    <div class="xp-mini">
+      <span class="lvl" id="lvlT">Apprentice</span>
+      <div class="xp-bar"><div class="xp-bar-fill" id="xpFill"></div></div>
+      <span class="xp" id="xpT">0 XP</span>
+    </div>
+    <div class="toolbar">
+      <button class="tool-btn" id="fsBtn" onclick="cycleFs()" title="Font (F)">A</button>
+      <button class="tool-btn" id="thBtn" onclick="cycleTheme()" title="Theme (T)">🎨</button>
+      <button class="tool-btn" id="sndBtn" onclick="toggleSound()" title="Sound (M)">🔊</button>
+      <button class="tool-btn" onclick="resetProg()" title="Reset (Shift+R)">↺</button>
+      <button class="tool-btn" onclick="window.print()" title="Print">⎙</button>
+    </div>
+  </div>
+  <div class="level-bar">
+    <span class="level-pill">A2-B1</span>
+    <div class="grammar-legend">
+      <span class="gl-item" onclick="jumpG(1)"><span class="gl-dot" style="background:var(--g1)"></span>Zero/1st Cond</span>
+      <span class="gl-item" onclick="jumpG(2)"><span class="gl-dot" style="background:var(--g2)"></span>Comparatives</span>
+      <span class="gl-item" onclick="jumpG(3)"><span class="gl-dot" style="background:var(--g3)"></span>Present Perfect</span>
+      <span class="gl-item" onclick="jumpG(4)"><span class="gl-dot" style="background:var(--g4)"></span>Passive</span>
+      <span class="gl-item" onclick="jumpG(5)"><span class="gl-dot" style="background:var(--g5)"></span>Relative Clauses</span>
+      <span class="gl-item" onclick="jumpG(6)"><span class="gl-dot" style="background:var(--g6)"></span>Modals</span>
+      <span class="gl-item" onclick="jumpG(7)"><span class="gl-dot" style="background:var(--g7)"></span>Adverbs of Degree</span>
+      <span class="gl-item" onclick="jumpG(8)"><span class="gl-dot" style="background:var(--g8)"></span>Phrasal Verbs</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('reading',this)">📖 Reading<span class="kbd">1</span></button>
+    <button class="tab-btn" onclick="showTab('vocabulary',this)">📚 Vocabulary<span class="kbd">2</span></button>
+    <button class="tab-btn" onclick="showTab('grammar',this)">🔧 Grammar<span class="kbd">3</span></button>
+    <button class="tab-btn" onclick="showTab('exercises',this)">✏️ Exercises<span class="kbd">4</span></button>
+    <button class="tab-btn" onclick="showTab('explore',this)">🌍 Explore<span class="kbd">5</span></button>
+  </div>
+</div>
+
+<div class="content">
+
+<div id="tab-reading" class="tab-panel active">
+  <div class="tts-bar">
+    <button class="tts-btn" id="ttsPlay" onclick="ttsPlay()">▶ Play</button>
+    <button class="tts-btn" id="ttsPause" onclick="ttsPause()" disabled>⏸ Pause</button>
+    <button class="tts-btn" id="ttsStop" onclick="ttsStop()" disabled>⏹ Stop</button>
+    <span class="tts-status" id="ttsStat">Ready</span>
+    <label class="tts-rate">Speed <input type="range" id="ttsRate" min="0.6" max="1.4" step="0.1" value="0.95"><span id="ttsRateV">0.95×</span></label>
+  </div>
+  <div class="passage" id="passage">
+    <h2>Why Your Brain Hates Losing More Than It Loves Winning</h2>
+    <div class="subtitle">Psychology · A2-B1 · ~470 words · 8 grammar structures · Click any coloured phrase</div>
+    <p>Imagine you find twenty dollars on the street. You feel happy. Now imagine you lose twenty dollars from your pocket. You feel terrible. But wait — it is the same twenty dollars. <span data-g="1">If you compare these two feelings honestly</span>, the loss hurts more.</p>
+    <p>This is one of the most interesting things about the human brain. <span data-g="2">Losing feels much worse than winning feels good.</span> And once you understand it, you start to see it everywhere.</p>
+    <p>Two psychologists, Daniel Kahneman and Amos Tversky, studied this question for many years. They did simple experiments. The results were always the same. People work about <span data-g="2">twice as hard</span> to avoid losing something as they work to gain something new. <span data-g="4">This is called loss aversion.</span> Aversion means a strong dislike of something.</p>
+    <p><span data-g="3">Have you ever kept</span> something you do not use — old clothes, a phone, a book — just because throwing it away felt wrong? That is loss aversion. The thing has no real value to you anymore. But losing it still feels bad.</p>
+    <p>Here is why this happens. Your brain has two different systems. One system is fast and emotional. It reacts immediately to danger. The other system is slow and logical. It thinks carefully before deciding.</p>
+    <p>When you lose something, the fast system reacts first. This reaction is very old. It helped <span data-g="5">our ancestors — the people who lived before us</span>, thousands of years ago. Back then, losing food or shelter was very dangerous. So the brain learned to protect what it already had.</p>
+    <p>The problem is that this ancient brain lives in a modern world. Today, losing twenty dollars is not dangerous. But your brain does not know that. <span data-g="6">It might still react</span> the same way.</p>
+    <p>This is why loss aversion causes so many problems. People stay in bad jobs because leaving feels like losing. People <span data-g="8">hold onto</span> bad investments because selling feels like admitting a loss. They <span data-g="8">give up</span> new chances. They avoid new experiences because something <span data-g="6">could go wrong</span>.</p>
+    <p>Here is the surprising part. In one study, researchers looked at professional golf players. These are experts. <span data-g="4">They are paid</span> to play. When a player needed one shot to avoid a loss, they performed <span data-g="7">much better</span>. When they needed one shot to gain something extra, they performed <span data-g="7">slightly worse</span>. The stakes were the same. The skill was the same. But the brain responded differently.</p>
+    <p>Even experts are not free from this.</p>
+    <p>Loss aversion is not a weakness. It is just how the brain works. But knowing about it gives you a small advantage. <span data-g="1">If you feel scared to lose something next time</span>, ask yourself a simple question: am I making this decision because it is actually good for me, or am I just afraid of losing?</p>
+    <p>Sometimes holding on is the right choice. But sometimes the fear of losing is just noise — a false alarm from a very old part of your brain.</p>
+    <div class="reading-meta"><span>📝 ~470 words</span><span>🎯 A2-B1</span><span>🔤 8 structures</span><span>⏱️ ~6 min TTS</span></div>
+  </div>
+</div>
+
+<div id="tab-vocabulary" class="tab-panel">
+  <div class="section-title">Vocabulary</div>
+  <div class="section-sub">20 words · 7 modes · Earn XP, level up, unlock achievements</div>
+  <div class="vocab-dash">
+    <div class="vd-item"><span class="vd-num gold" id="dXp">0</span><span class="vd-label">XP Total</span></div>
+    <div class="vd-item"><span class="vd-num" id="dMast">0/20</span><span class="vd-label">Mastered</span></div>
+    <div class="vd-item"><span class="vd-num" id="dBest">0</span><span class="vd-label">Best Streak</span></div>
+    <div class="vd-item"><span class="vd-num" id="dSpeed">0</span><span class="vd-label">Speed Best</span></div>
+    <div class="vd-item"><span class="vd-num" id="dBookmarks">0</span><span class="vd-label">⭐ Saved</span></div>
+  </div>
+  <div class="vocab-controls">
+    <button class="vocab-btn active" onclick="setVMode('flash',this)">🃏 Cards</button>
+    <button class="vocab-btn" onclick="setVMode('quiz',this)">❓ Quiz</button>
+    <button class="vocab-btn" onclick="setVMode('match',this)">🔗 Match</button>
+    <button class="vocab-btn" onclick="setVMode('write',this)">✍️ Write</button>
+    <button class="vocab-btn" onclick="setVMode('speed',this)">⚡ Speed</button>
+    <button class="vocab-btn" onclick="setVMode('hangman',this)">🎯 Hangman</button>
+    <button class="vocab-btn" onclick="setVMode('builder',this)">🧩 Builder</button>
+  </div>
+  <div id="v-flash"></div>
+  <div id="v-quiz" style="display:none"></div>
+  <div id="v-match" style="display:none"></div>
+  <div id="v-write" style="display:none"></div>
+  <div id="v-speed" style="display:none"></div>
+  <div id="v-hangman" style="display:none"></div>
+  <div id="v-builder" style="display:none"></div>
+</div>
+
+<div id="tab-grammar" class="tab-panel">
+  <div class="section-title">Grammar</div>
+  <div class="section-sub">8 structures · click each card to expand</div>
+  <div class="grammar-intro">💡 Tüm bu yapılar okuma metninde renk kodlu. Bir yapıya tıkladığında kısa açıklama belirir; tam detay için bu sekmeden ilgili kartı aç.</div>
+  <div class="accordion" id="gAccordion"></div>
+</div>
+
+<div id="tab-exercises" class="tab-panel">
+  <div class="section-title">Exercises</div>
+  <div class="section-sub">Fill blanks · Find error · Turkish → English · +XP</div>
+  <div class="ex-score-bar">
+    <div class="es-item"><span class="es-num" id="exC">0</span><span class="es-label">Correct</span></div>
+    <div class="es-item"><span class="es-num" id="exA">0</span><span class="es-label">Answered</span></div>
+    <div class="es-item"><span class="es-num" id="exP">—</span><span class="es-label">Rate</span></div>
+  </div>
+  <div class="ex-section">
+    <h3>1 — Fill in the Blanks</h3>
+    <div class="ex-desc">Use words from the word bank. Each word is used once.</div>
+    <div class="word-bank"><span class="wb-label">Word Bank:</span><span class="word-tag">avoid</span><span class="word-tag">ancient</span><span class="word-tag">react</span><span class="word-tag">expert</span><span class="word-tag">protect</span><span class="word-tag">stakes</span><span class="word-tag">gain</span><span class="word-tag">admit</span><span class="word-tag">signal</span><span class="word-tag">value</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="fibBar" style="width:0%"></div></div>
+    <div id="fibQ"></div>
+    <button class="btn-check" onclick="checkFIB()">Check Answers</button>
+    <button class="btn-show" onclick="revealFIB()">Show Answers</button>
+    <div class="answer-box" id="fibAns"></div>
+  </div>
+  <div class="ex-section">
+    <h3>2 — Find the Error</h3>
+    <div class="ex-desc">Each sentence has one grammar mistake. Write only the corrected part.</div>
+    <div id="errQ"></div>
+    <button class="btn-check" onclick="checkErr()">Check</button>
+  </div>
+  <div class="ex-section">
+    <h3>3 — Turkish → English</h3>
+    <div class="ex-desc">Translate using grammar structures from today's article.</div>
+    <div id="teQ"></div>
+    <button class="btn-show" style="margin-left:0;margin-top:14px" onclick="revealTE()">Show Example Answers</button>
+    <div class="answer-box" id="teAns"></div>
+  </div>
+</div>
+
+<div id="tab-explore" class="tab-panel">
+  <div class="section-title">Explore</div>
+  <div class="section-sub">Writing craft · Philosophy · Translation notes · Your turn</div>
+  <div class="explore-section">
+    <h3>✍️ Writing Craft: Popular Psychology Writing</h3>
+    <div class="es-desc">Bu makalede kullanılan profesyonel popüler-psikoloji yazarlığı teknikleri</div>
+    <div class="craft-grid">
+      <div class="craft-item"><h4>Concrete Hook</h4><p>Soyut kavram önce somut bir sahneyle anlatılır: 20 dolar bulma vs. kaybetme.</p><div class="craft-ex">"Imagine you find twenty dollars on the street. You feel happy."</div></div>
+      <div class="craft-item"><h4>Inclusive "You"</h4><p>"You" diye seslenmek, akademik mesafeyi kırar. Arkadaş sohbeti hissi.</p><div class="craft-ex">"Have you ever kept something you do not use?"</div></div>
+      <div class="craft-item"><h4>Contrast Beats</h4><p>"Fast vs slow", "ancient vs modern" — beyne yapışan ikilikler.</p><div class="craft-ex">"One system is fast and emotional. The other is slow and logical."</div></div>
+      <div class="craft-item"><h4>The Twist Paragraph</h4><p>Sıradan örnekler beklerken profesyonel golfçü kanıtı gelir. Fikir unutulmaz olur.</p><div class="craft-ex">"Even experts are not free from this."</div></div>
+    </div>
+  </div>
+  <div class="explore-section">
+    <h3>🧠 Philosophy Connection</h3>
+    <div class="es-desc">Loss aversion'ın felsefi kökleri</div>
+    <div class="ph-card"><div class="ph-who">Platon — Phaedrus (Atlı Araba)</div><div class="ph-concept">Platon'a göre ruh iki at çeken arabaya benzer: akıl ve tutku. Kahneman'ın "System 1/2" modelinin 2400 yıllık atası.</div><div class="ph-link">💭 "One system is fast and emotional. The other is slow and logical." — Platon'un atları modern beyin biliminde geri döndü.</div></div>
+    <div class="ph-card"><div class="ph-who">Aristoteles — Phronesis</div><div class="ph-concept">"Phronesis" = pratik bilgelik. Doğru kararı vermek, duygunun ne zaman yanıltıcı olduğunu fark etmek demektir.</div><div class="ph-link">💭 "Am I making this decision because it is actually good for me, or am I just afraid of losing?" — Aristoteles'in en sevdiği soru olabilirdi.</div></div>
+    <div class="ph-card"><div class="ph-who">Kahneman — Thinking, Fast and Slow</div><div class="ph-concept">Nobel Ekonomi (2002). Rasyonel ekonomik adam modelinin yanıldığını gösterdi. Beynin tembel hızlı sistemi çoğunlukla direksiyondadır.</div><div class="ph-link">💭 Kahneman bile kendi yazdığı önyargıların kurbanı olduğunu itiraf eder. Bu dürüstlük, kitabın gücüdür.</div></div>
+  </div>
+  <div class="explore-section">
+    <h3>🌐 Psychology Vocabulary: Translation Notes</h3>
+    <div class="es-desc">Psikoloji terimlerinin Türkçeye geçişi</div>
+    <table class="trans-table"><tr><th>English</th><th>Türkçe (Resmi)</th><th>Günlük</th><th>Not</th></tr>
+      <tr><td>loss aversion</td><td>kayıptan kaçınma</td><td>kayıp korkusu</td><td class="t-note">Akademik çevrelerde yerleşti</td></tr>
+      <tr><td>bias</td><td>önyargı / yanlılık</td><td>önyargı</td><td class="t-note">"Bias" doğrudan da kullanılır</td></tr>
+      <tr><td>cognitive</td><td>bilişsel</td><td>bilişsel</td><td class="t-note">Türkçe karşılık başarılı</td></tr>
+      <tr><td>aversion</td><td>kaçınma / tiksinti</td><td>kaçınma</td><td class="t-note">Tonu bağlama göre değişir</td></tr>
+      <tr><td>stakes</td><td>risk derecesi</td><td>risk</td><td class="t-note">"What's at stake?" = "Ne risk altında?"</td></tr>
+      <tr><td>experiment</td><td>deney</td><td>deney</td><td class="t-note">Tam oturmuş çeviri</td></tr></table>
+  </div>
+  <div class="explore-section">
+    <h3>✏️ Writing Task <span style="font-size:11px;color:var(--text2);font-weight:normal">· 💾 auto-saved</span></h3>
+    <div class="es-desc">En az 3 gramer yapısı kullanmaya çalış</div>
+    <div class="writing-task">
+      <h4>A Time I Was Afraid to Lose</h4>
+      <div class="wt-text">Write 5-8 sentences about a time when you held onto something (a job, a habit, a friendship, a thing) because losing it felt wrong — even though letting go was the better choice.</div>
+      <ul class="wt-hints"><li>Present Perfect: <em>"Have you ever felt..."</em></li><li>Comparative: <em>"...was worse than..."</em></li><li>Relative clause: <em>"...the job that I really wanted..."</em></li><li>Phrasal verb: hold onto, give up, let go</li></ul>
+      <textarea class="writing-area" id="wArea" placeholder="Start here... draft auto-saves after 1.5s"></textarea>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ═════════ DATA ═════════
+const GD = [
+  {id:1,color:'#4fc3f7',name:'Zero / First Conditional',tr:'Sıfır ve Birinci Koşul',
+   formula:'If + Present, Present (gerçek) | If + Present, will + V (gelecek)',
+   desc:'Gerçek koşulları anlatır. Genel doğrular veya gelecekteki olası durumlar için.',
+   exs:[{en:'If you compare these two feelings honestly, the loss hurts more.',tr:'Bu iki hissi dürüstçe karşılaştırırsan, kayıp daha çok acıtır.'},{en:'If you feel scared to lose something, ask yourself a question.',tr:'Bir şeyi kaybetmekten korktuğunu hissediyorsan, kendine bir soru sor.'},{en:'If water reaches 100 degrees, it boils.',tr:'Su 100 dereceye ulaşırsa kaynar.'},{en:'If you study every day, you will improve quickly.',tr:'Her gün çalışırsan hızla ilerlersin.'}],
+   edge:['Zero Conditional → genel gerçekler: "If you heat ice, it melts."','First Conditional → gerçekçi gelecek: "If it rains tomorrow, I will stay home."','⚠️ "If" cümlesinde "will" KULLANMAYIN: ❌ "If you will study..." → ✅ "If you study..."','"When" → kesin olacak; "if" → şart.'],
+   mini:[{q:'If you ___ harder, you will pass.',opts:['will study','study','studied','studies'],ans:1},{q:'If you ___ ice in sun, it melts.',opts:['will leave','leave','left','leaves'],ans:1}]},
+  {id:2,color:'#ce93d8',name:'Comparatives',tr:'Karşılaştırma Yapıları',
+   formula:'-er than | more...than | as...as | twice as...as',
+   desc:'İki şeyi karşılaştırır. "-er than", "more...than", "as...as" en yaygın yapılar.',
+   exs:[{en:'Losing feels much worse than winning feels good.',tr:'Kaybetmek, kazanmanın iyi hissettirdiğinden çok daha kötü hissettirir.'},{en:'People work twice as hard to avoid losing.',tr:'İnsanlar kaybetmemek için iki kat daha sıkı çalışır.'},{en:'Your old phone is slower than the new one.',tr:'Eski telefonun yenisinden daha yavaş.'},{en:'This book is as interesting as the last one.',tr:'Bu kitap en az sonuncusu kadar ilginç.'}],
+   edge:['Kısa sıfat → -er than: fast → faster than','Uzun sıfat → more + adj + than: more interesting than','⚠️ Düzensiz: good→better, bad→worse, far→further','"Twice/three times as X as" → çarpan karşılaştırma','Vurgu: "much/far/a lot + comparative" → "much faster"'],
+   mini:[{q:'This is ___ than the last one.',opts:['more easy','easier','easyer','more easier'],ans:1},{q:'He runs ___ his brother.',opts:['as fast as','as faster','more fast','fast than'],ans:0}]},
+  {id:3,color:'#ffb74d',name:'Present Perfect (Experience)',tr:'Present Perfect — Deneyim',
+   formula:'have/has + V3 (past participle)',
+   desc:'Hayat boyu yaşanan deneyimleri sormak/anlatmak için. Belirli zaman söylenmez.',
+   exs:[{en:'Have you ever kept something you do not use?',tr:'Hiç kullanmadığın bir şeyi sakladığın oldu mu?'},{en:'I have visited London three times.',tr:'Londra\'yı üç kez ziyaret ettim.'},{en:'She has never eaten sushi.',tr:'Hiç suşi yememiş.'},{en:'We have seen this film before.',tr:'Bu filmi daha önce izledik.'}],
+   edge:['⚠️ Belirli geçmişle KULLANILMAZ: ❌ "I have seen him yesterday" → ✅ "I saw him yesterday"','"Ever/never/before/already/yet/just" → tipik kelimeleri','"For" + süre, "since" + başlangıç: "for 5 years / since 2020"','Düzensiz V3: go→gone, see→seen, do→done, eat→eaten','He/she/it → has; diğerleri → have'],
+   mini:[{q:'___ you ever been to Paris?',opts:['Did','Have','Has','Are'],ans:1},{q:'She has ___ this book.',opts:['read','reads','reading','readed'],ans:0}]},
+  {id:4,color:'#80cbc4',name:'Passive Voice (Present)',tr:'Edilgen Çatı',
+   formula:'am/is/are + V3',
+   desc:'Eylemi yapan kişi yerine etkilenen şeye odaklanır. Bilim, haber, tanım dilinde yaygın.',
+   exs:[{en:'This is called loss aversion.',tr:'Buna kayıptan kaçınma denir.'},{en:'They are paid to play.',tr:'Oyun oynamaları için para ödenir.'},{en:'English is spoken in many countries.',tr:'İngilizce birçok ülkede konuşulur.'},{en:'The letters are written every Monday.',tr:'Mektuplar her pazartesi yazılır.'}],
+   edge:['Aktif: "People call this X" → Pasif: "This is called X"','"By" ile yapanı belirtilebilir, ama çoğu zaman gereksiz','⚠️ V3 (past participle), V2 değil: ❌ "is wrote" → ✅ "is written"','Tüm tense\'lerde pasif var: was/has been/will be called','Tanım için ideal: "Bu şuna denir" → "This is called..."'],
+   mini:[{q:'This song ___ on the radio daily.',opts:['is played','are played','be played','plays'],ans:0},{q:'The cake ___ by my mom.',opts:['is made','are made','was made','made'],ans:0}]},
+  {id:5,color:'#a5d6a7',name:'Defining Relative Clauses',tr:'Belirleyici İlgi Cümlesi',
+   formula:'noun + who/that/which + verb',
+   desc:'Bir ismi tanımlar/belirler. "Kim olan", "ki o" anlamı verir.',
+   exs:[{en:'our ancestors — the people who lived before us',tr:'atalarımız — bizden önce yaşamış olan insanlar'},{en:'This is the book that changed my mind.',tr:'Bu, fikrimi değiştiren kitaptır.'},{en:'I know a girl who speaks five languages.',tr:'Beş dil konuşan bir kız tanıyorum.'},{en:'The phone which I bought is broken.',tr:'Aldığım telefon bozuldu.'}],
+   edge:['İnsanlar → who/that / Nesneler → which/that','"That" en güvenli — hem insan hem nesne için','Nesne pozisyonunda ilgi zamiri çıkarılabilir: "The book (that) I read"','⚠️ Defining clause virgülsüzdür','Non-defining clause virgüllü, "that" alamaz'],
+   mini:[{q:'I know a man ___ speaks ten languages.',opts:['which','who','what','where'],ans:1},{q:'This is the car ___ I bought.',opts:['who','what','that','whose'],ans:2}]},
+  {id:6,color:'#ef9a9a',name:'Modal Verbs (Possibility)',tr:'Modallar — Olasılık',
+   formula:'might / could / may + V (base)',
+   desc:'"Olabilir", "yapabilir" gibi olasılık anlatır. Modaldan sonra V0 gelir.',
+   exs:[{en:'It might still react the same way.',tr:'Hâlâ aynı şekilde tepki verebilir.'},{en:'Something could go wrong.',tr:'Bir şey yanlış gidebilir.'},{en:'She might know the answer.',tr:'Cevabı biliyor olabilir.'},{en:'We could try a different way.',tr:'Farklı bir yol deneyebiliriz.'}],
+   edge:['"Might/may/could" → zayıftan güçlüye olasılık','⚠️ Modal\'dan sonra "to" YOK: ❌ "might to go" → ✅ "might go"','⚠️ Modal\'dan sonra V0 (yalın hal): ❌ "could went" → ✅ "could go"','"Can" → genel yetenek; "could" → geçmiş yetenek/kibar olasılık','Olumsuz: mightn\'t, couldn\'t, may not'],
+   mini:[{q:'It ___ rain tomorrow.',opts:['might','must','will','shall'],ans:0},{q:'She ___ speak French; not sure.',opts:['can to','could','could to','can'],ans:1}]},
+  {id:7,color:'#fff176',name:'Adverbs of Degree',tr:'Derece Zarfları',
+   formula:'much / a lot / a little / slightly / completely / very + adj',
+   desc:'Sıfat veya zarfın derecesini gösterir. Karşılaştırmaları güçlendirir/yumuşatır.',
+   exs:[{en:'They performed much better.',tr:'Çok daha iyi performans gösterdiler.'},{en:'They performed slightly worse.',tr:'Biraz daha kötü performans gösterdiler.'},{en:'She speaks English very well.',tr:'İngilizceyi çok iyi konuşur.'},{en:'The film was completely boring.',tr:'Film tamamen sıkıcıydı.'}],
+   edge:['"Much" + comparative → "much better" (NOT "very better")','"Very" + adj/adv, karşılaştırmasız: "very good"','"A little/slightly" → küçük fark','"Completely/totally" + uçtaki sıfatlar: "completely wrong"','"Quite" BrE "oldukça" / AmE "tamamen" — bağlama bak'],
+   mini:[{q:'This is ___ harder than last.',opts:['very','much','more','too'],ans:1},{q:'The answer is ___ wrong.',opts:['very','much','completely','more'],ans:2}]},
+  {id:8,color:'#f48fb1',name:'Phrasal Verbs',tr:'Bileşik Fiiller',
+   formula:'verb + preposition/adverb',
+   desc:'Fiil + edat birleşimi, yeni anlam. Günlük İngilizcenin temeli.',
+   exs:[{en:'People hold onto bad investments.',tr:'İnsanlar kötü yatırımlara tutunurlar.'},{en:'They give up new chances.',tr:'Yeni şansları bırakırlar.'},{en:'I can\'t figure out this problem.',tr:'Bu problemi çözemiyorum.'},{en:'Please look after my dog.',tr:'Lütfen köpeğime bak.'}],
+   edge:['İki tür: separable (ayrılabilir) / inseparable','Separable: "turn off the light" = "turn the light off"; zamir varsa ayrılır: "turn it off"','Inseparable: "look after the kids" — ayıramazsın','⚠️ Anlamı tahmin etme — her phrasal verbu ayrı öğren','Resmi yazıda tek-kelime: "give up" → "abandon"'],
+   mini:[{q:'Don\'t ___! You can do it.',opts:['give up','give in','give out','give off'],ans:0},{q:'She is looking ___ her sister.',opts:['at','after','for','up'],ans:1}]}
+];
+
+const VD = [
+  {w:'aversion',pos:'n',tr:'kaçınma, hoşlanmama',ex:'She has an aversion to loud music.',street:'🗣️ "Dislike" daha günlük. "Aversion" akademik/yazılı.'},
+  {w:'ancestor',pos:'n',tr:'ata, ced',ex:'My ancestors came from a small village.',street:'🗣️ "Distant ancestors" → uzak atalar. Karşıt: "descendant" (torun).'},
+  {w:'investment',pos:'n',tr:'yatırım',ex:'He made a bad investment.',street:'🗣️ Para değil de "an investment in your future", "emotional investment".'},
+  {w:'react',pos:'v',tr:'tepki vermek',ex:'She reacted quickly to the news.',street:'🗣️ "React TO" — edat hep "to".'},
+  {w:'stakes',pos:'n',tr:'risk, önem',ex:'The stakes were high.',street:'🗣️ "At stake" → risk altında. Kumar dilinden gelir.'},
+  {w:'avoid',pos:'v',tr:'kaçınmak',ex:'I avoid sugar in the evenings.',street:'🗣️ "Avoid + V-ing": ❌ "avoid to eat" → ✅ "avoid eating".'},
+  {w:'signal',pos:'n',tr:'işaret, sinyal',ex:'Her smile was a signal that she liked the gift.',street:'🗣️ Trafik: "turn signal". Mecazi: "send a signal".'},
+  {w:'shelter',pos:'n',tr:'barınak, sığınak',ex:'They built a shelter from wood.',street:'🗣️ "Animal shelter", "bus shelter", "take shelter".'},
+  {w:'gain',pos:'v',tr:'kazanmak, elde etmek',ex:'You gain confidence by practising.',street:'🗣️ "Gain weight" → kilo almak (negatif). "Gain experience" → pozitif.'},
+  {w:'admit',pos:'v',tr:'kabul etmek',ex:'He admitted that he was wrong.',street:'🗣️ "Admit + V-ing" or "admit that...". Hastane: "admitted to" → yatırıldı.'},
+  {w:'equally',pos:'adv',tr:'eşit olarak',ex:'They divided the work equally.',street:'🗣️ "Equally important" → eşit derecede önemli.'},
+  {w:'expert',pos:'n',tr:'uzman',ex:'You don\'t have to be an expert to start.',street:'🗣️ "Expert IN" / "Expert AT doing": "expert in chemistry", "expert at puzzles".'},
+  {w:'perform',pos:'v',tr:'gerçekleştirmek',ex:'The team performed better in the second half.',street:'🗣️ (1) görev yerine getir (perform surgery), (2) sahne al (perform on stage).'},
+  {w:'value',pos:'n',tr:'değer',ex:'The phone has no real value to me.',street:'🗣️ "I value your opinion" → fikrine değer veriyorum. "Family values" → aile değerleri.'},
+  {w:'immediate',pos:'adj',tr:'anında, hemen',ex:'I need an immediate answer.',street:'🗣️ Adverb "immediately" yaygın. "Immediate family" → en yakın aile.'},
+  {w:'dangerous',pos:'adj',tr:'tehlikeli',ex:'Driving fast in the rain is dangerous.',street:'🗣️ Ad: "danger". Karşıt: "safe". "Out of danger" → tehlike dışında.'},
+  {w:'ancient',pos:'adj',tr:'antik, çok eski',ex:'They studied ancient Greek philosophy.',street:'🗣️ Şaka: "My phone is ancient!" → çok eski.'},
+  {w:'respond',pos:'v',tr:'cevap vermek',ex:'She did not respond to my message.',street:'🗣️ "Respond TO" — edat sabit. "Reply" ile yakın, biraz daha resmi.'},
+  {w:'logical',pos:'adj',tr:'mantıklı',ex:'His argument is completely logical.',street:'🗣️ Ad: "logic". Günlük: "It makes sense" → daha yaygın.'},
+  {w:'protect',pos:'v',tr:'korumak',ex:'Parents try to protect their children.',street:'🗣️ "Protect FROM" — edat sabit. Ad: "protection".'}
+];
+const MATCH_PAIRS=[{w:'aversion',tr:'kaçınma, hoşlanmama'},{w:'ancestor',tr:'ata, ced'},{w:'stakes',tr:'risk, önem'},{w:'admit',tr:'kabul etmek'},{w:'avoid',tr:'kaçınmak'},{w:'gain',tr:'kazanmak'},{w:'shelter',tr:'barınak'},{w:'react',tr:'tepki vermek'}];
+const FIB=[{pre:'In the past, our ',ans:'ancient',post:' brain helped us survive.'},{pre:'You should ',ans:'avoid',post:' sugar to lose weight.'},{pre:'Most people do not ',ans:'react',post:' well to bad news.'},{pre:'You don\'t have to be an ',ans:'expert',post:' to enjoy this hobby.'},{pre:'Parents always try to ',ans:'protect',post:' their children.'},{pre:'In the final match, the ',ans:'stakes',post:' were very high.'},{pre:'You can ',ans:'gain',post:' a lot of experience by travelling alone.'},{pre:'He finally ',ans:'admit',post:'ted his mistake.'},{pre:'A red light is a clear ',ans:'signal',post:' that you must stop.'},{pre:'The old letter has no money ',ans:'value',post:', but it is important.'}];
+const ERRORS=[{s:'If you will study every day, your English improves quickly.',corr:'If you study',exp:'1st Conditional: "if" cümlesinde "will" YOK.'},{s:'This book is more interesting that the last one.',corr:'more interesting than',exp:'Karşılaştırmada "than", "that" değil.'},{s:'I have saw that film three times.',corr:'have seen',exp:'Present Perfect: "have/has + V3". See → seen.'},{s:'This game called football in England.',corr:'is called football',exp:'Pasif: "is" gerek. "IS called".'},{s:'My friend who he lives in Paris speaks French.',corr:'My friend who lives in Paris',exp:'Relative clause: "who" yerine "he" KULLANILMAZ. Çift özne hatası.'},{s:'She might to call you tomorrow.',corr:'might call',exp:'Modal\'dan sonra "to" YOK.'},{s:'This problem is very harder than yesterday\'s.',corr:'much harder',exp:'Karşılaştırma + "very" değil, "much".'},{s:'Please look the children after.',corr:'look after the children',exp:'"Look after" inseparable. Ayrılmaz.'}];
+const TE=[{tr:'Eğer her gün okursan, İngilizcen çok daha hızlı gelişir.',hint:'Hint: If + Present, ... will + V',ans:'If you read every day, your English will improve much faster.'},{tr:'Bu kitap bana eskisinden çok daha ilginç geliyor.',hint:'Hint: much more interesting than',ans:'This book seems much more interesting to me than the old one.'},{tr:'Hiç tek başına yurtdışına gittin mi?',hint:'Hint: Have you ever + V3',ans:'Have you ever travelled abroad alone?'},{tr:'Bu yemeğe Türkiye\'de "lahmacun" denir.',hint:'Hint: Passive — is called',ans:'This food is called "lahmacun" in Turkey.'},{tr:'Bizden önce yaşamış olan insanlar bizden az şey biliyordu.',hint:'Hint: the people who...',ans:'The people who lived before us knew less than we do.'},{tr:'Yarın yağmur yağabilir, şemsiyeni al.',hint:'Hint: Modal — might',ans:'It might rain tomorrow, so take your umbrella.'},{tr:'Bu cevap tamamen yanlış.',hint:'Hint: completely',ans:'This answer is completely wrong.'},{tr:'O kötü alışkanlığı bırakman gerek.',hint:'Hint: give up',ans:'You need to give up that bad habit.'}];
+
+// ═════════ STATE + PERSISTENCE ═════════
+const SK='cg001_progress_v2';
+const LVLS=[{min:0,t:'Apprentice'},{min:100,t:'Student'},{min:300,t:'Scholar'},{min:600,t:'Master'},{min:1000,t:'Philosopher'}];
+const ACH={
+  first_quiz:{n:'First Quiz',d:'Completed your first quiz',x:25},
+  combo_5:{n:'Combo 5',d:'5 correct in a row',x:25},
+  combo_10:{n:'Combo 10',d:'10 correct in a row',x:50},
+  perfect_quiz:{n:'Perfect Quiz',d:'No hearts lost',x:50},
+  speed_demon:{n:'Speed Demon',d:'15+ in Speed Round',x:50},
+  hangman_hero:{n:'Hangman Hero',d:'Won with 3+ tries left',x:50},
+  builder_perfect:{n:'Master Builder',d:'Built without errors',x:50},
+  scholar:{n:'Scholar',d:'10 words mastered',x:75},
+  master:{n:'Vocab Master',d:'All 20 words mastered',x:150},
+  bookworm:{n:'Bookworm',d:'Listened to full passage',x:30}
+};
+let prog={fs:1,xp:0,level:0,mastery:{},bookmarks:[],bestSpeed:0,bestStreak:0,exC:0,exA:0,achievements:[],theme:'navy',sound:true,draft:''};
+try{const s=localStorage.getItem(SK);if(s)prog={...prog,...JSON.parse(s)}}catch(e){}
+function save(){try{localStorage.setItem(SK,JSON.stringify(prog))}catch(e){}}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800);}
+
+function addXp(n){
+  const oldLvl=prog.level;
+  prog.xp+=n;
+  let newLvl=0;
+  for(let i=LVLS.length-1;i>=0;i--){if(prog.xp>=LVLS[i].min){newLvl=i;break;}}
+  if(newLvl>oldLvl){prog.level=newLvl;levelUp();}
+  save();updateXp();
+}
+function updateXp(){
+  document.getElementById('xpT').textContent=prog.xp+' XP';
+  document.getElementById('lvlT').textContent=LVLS[prog.level].t;
+  const cur=LVLS[prog.level].min;
+  const next=LVLS[prog.level+1]?LVLS[prog.level+1].min:cur+1;
+  const pct=Math.min(100,((prog.xp-cur)/(next-cur))*100);
+  document.getElementById('xpFill').style.width=pct+'%';
+  const dx=document.getElementById('dXp');if(dx)dx.textContent=prog.xp;
+  const dm=document.getElementById('dMast');if(dm)dm.textContent=Object.values(prog.mastery).filter(v=>v==='mastered').length+'/20';
+  const db=document.getElementById('dBest');if(db)db.textContent=prog.bestStreak;
+  const ds=document.getElementById('dSpeed');if(ds)ds.textContent=prog.bestSpeed;
+  const dbk=document.getElementById('dBookmarks');if(dbk)dbk.textContent=prog.bookmarks.length;
+}
+function levelUp(){beep('levelUp');confetti(120);showAch('Level Up!','You are now a '+LVLS[prog.level].t,40);}
+function showAch(n,d,x){
+  const p=document.getElementById('achPop');
+  document.getElementById('achN').textContent=n;
+  document.getElementById('achD').textContent=d;
+  document.getElementById('achX').textContent='+'+x+' XP';
+  p.classList.add('show');
+  setTimeout(()=>p.classList.remove('show'),3500);
+}
+function unlockAch(key){
+  if(prog.achievements.includes(key))return;
+  prog.achievements.push(key);
+  const a=ACH[key];
+  showAch('🏆 '+a.n,a.d,a.x);
+  beep('levelUp');confetti(80);
+  addXp(a.x);save();
+}
+function checkMastery(){
+  const m=Object.values(prog.mastery).filter(v=>v==='mastered').length;
+  if(m>=10)unlockAch('scholar');
+  if(m>=20)unlockAch('master');
+}
+function updateMastery(word,correct){
+  const cur=prog.mastery[word]||'new';
+  const order=['new','learning','familiar','mastered'];
+  let idx=order.indexOf(cur);
+  if(correct&&idx<3)idx++;
+  prog.mastery[word]=order[idx];
+  save();checkMastery();
+}
+
+// ═════════ FONT/THEME/SOUND ═════════
+const fsSteps=['fs-s','fs-m','fs-l','fs-xl'],fsLabels=['A−','A','A+','A++'];
+function cycleFs(){const cur=fsSteps.findIndex(c=>document.body.classList.contains(c));const next=(cur+1)%4;fsSteps.forEach(c=>document.body.classList.remove(c));document.body.classList.add(fsSteps[next]);document.getElementById('fsBtn').textContent=fsLabels[next];prog.fs=next;save();}
+document.body.classList.add(fsSteps[prog.fs]);document.getElementById('fsBtn').textContent=fsLabels[prog.fs];
+
+const themes=['navy','forest','sunset'];
+function applyTheme(t){themes.forEach(x=>document.body.classList.remove('theme-'+x));if(t!=='navy')document.body.classList.add('theme-'+t);prog.theme=t;save();}
+function cycleTheme(){const i=themes.indexOf(prog.theme||'navy');applyTheme(themes[(i+1)%3]);toast('Theme: '+prog.theme);}
+applyTheme(prog.theme||'navy');
+
+let audioCtx=null;
+function beep(type){
+  if(!prog.sound)return;
+  try{
+    if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    const map={correct:[880,.08,'sine'],wrong:[220,.18,'sawtooth'],combo:[1320,.05,'sine'],heart:[330,.15,'triangle']};
+    if(type==='levelUp'){[523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,.12,'sine'),i*90));return;}
+    const [f,d,t]=map[type]||[440,.1,'sine'];tone(f,d,t);
+  }catch(e){}
+}
+function tone(freq,dur,wave){
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type=wave;o.frequency.value=freq;
+  g.gain.setValueAtTime(.15,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);
+  o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur);
+}
+function toggleSound(){prog.sound=!prog.sound;document.getElementById('sndBtn').textContent=prog.sound?'🔊':'🔇';save();toast(prog.sound?'Sound on':'Sound off');}
+document.getElementById('sndBtn').textContent=prog.sound?'🔊':'🔇';
+
+// ═════════ CONFETTI ═════════
+const confCv=document.getElementById('confetti');
+function confetti(n){
+  const ctx=confCv.getContext('2d');
+  confCv.width=window.innerWidth;confCv.height=window.innerHeight;
+  const cols=['#3b82f6','#fbbf24','#22c55e','#ef4444','#a855f7','#60a5fa'];
+  const ps=[];for(let i=0;i<n;i++){ps.push({x:Math.random()*confCv.width,y:-20,vx:(Math.random()-.5)*6,vy:Math.random()*3+2,r:Math.random()*5+3,c:cols[Math.floor(Math.random()*cols.length)],rot:Math.random()*360,vr:(Math.random()-.5)*10});}
+  function frame(){
+    ctx.clearRect(0,0,confCv.width,confCv.height);
+    let alive=0;
+    ps.forEach(p=>{p.vy+=.15;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;if(p.y<confCv.height+30){alive++;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.fillStyle=p.c;ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);ctx.restore();}});
+    if(alive)requestAnimationFrame(frame);else ctx.clearRect(0,0,confCv.width,confCv.height);
+  }
+  frame();
+}
+
+// ═════════ TOOLTIP + JUMP ═════════
+const gMap={};GD.forEach(g=>gMap[g.id]=g);
+document.querySelectorAll('[data-g]').forEach(el=>{
+  el.addEventListener('click',function(e){
+    const g=gMap[+this.dataset.g];if(!g)return;
+    const tip=document.getElementById('gTip');
+    document.getElementById('ttN').textContent=g.id+'. '+g.name;
+    document.getElementById('ttN').style.color=g.color;
+    document.getElementById('ttT').textContent=g.tr;
+    document.getElementById('ttF').textContent=g.formula;
+    const r=this.getBoundingClientRect();
+    let top=r.bottom+8,left=r.left;
+    if(left+295>window.innerWidth)left=window.innerWidth-300;
+    if(top+130>window.innerHeight)top=r.top-135;
+    tip.style.cssText=`display:block;top:${top}px;left:${left}px`;
+    e.stopPropagation();
+  });
+});
+document.addEventListener('click',()=>document.getElementById('gTip').style.display='none');
+function jumpG(id){showTab('grammar',document.querySelectorAll('.tab-btn')[2]);setTimeout(()=>{const el=document.getElementById('acc'+id);if(el){el.classList.add('open');el.scrollIntoView({behavior:'smooth',block:'center'});}},100);}
+
+// ═════════ TABS + KEYBOARD ═════════
+function showTab(name,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='vocabulary'&&!vInited)initVocab();
+  if(name==='grammar'&&!gInited)initGrammar();
+  if(name==='exercises'&&!eInited)initExercises();
+  ttsStop();
+}
+document.addEventListener('keydown',e=>{
+  if(e.target.matches('input,textarea'))return;
+  const map={'1':'reading','2':'vocabulary','3':'grammar','4':'exercises','5':'explore'};
+  if(map[e.key]){const idx=Object.keys(map).indexOf(e.key);showTab(map[e.key],document.querySelectorAll('.tab-btn')[idx]);}
+  if(e.key==='f'||e.key==='F')cycleFs();
+  if(e.key==='t'||e.key==='T')cycleTheme();
+  if(e.key==='m'||e.key==='M')toggleSound();
+  if((e.key==='r'||e.key==='R')&&e.shiftKey)resetProg();
+});
+
+// ═════════ TTS ═════════
+let ttsUtt=null,ttsPaused=false,ttsListened=false;
+document.getElementById('ttsRate').addEventListener('input',function(){document.getElementById('ttsRateV').textContent=parseFloat(this.value).toFixed(2)+'×';});
+function getPassageText(){return Array.from(document.getElementById('passage').querySelectorAll('h2,p')).map(e=>e.textContent.trim()).join('. ');}
+function ttsPlay(){
+  if(!('speechSynthesis' in window)){toast('TTS desteklenmiyor');return;}
+  if(ttsPaused){speechSynthesis.resume();ttsPaused=false;updateTtsUI('playing');return;}
+  speechSynthesis.cancel();
+  ttsUtt=new SpeechSynthesisUtterance(getPassageText());
+  ttsUtt.lang='en-US';
+  ttsUtt.rate=parseFloat(document.getElementById('ttsRate').value);
+  const voices=speechSynthesis.getVoices();
+  const en=voices.find(v=>v.lang.startsWith('en-')&&!v.name.toLowerCase().includes('google'))||voices.find(v=>v.lang.startsWith('en-'));
+  if(en)ttsUtt.voice=en;
+  ttsUtt.onend=()=>{updateTtsUI('done');if(!ttsListened){ttsListened=true;unlockAch('bookworm');}};
+  ttsUtt.onerror=()=>updateTtsUI('done');
+  speechSynthesis.speak(ttsUtt);updateTtsUI('playing');
+}
+function ttsPause(){if(speechSynthesis.speaking&&!speechSynthesis.paused){speechSynthesis.pause();ttsPaused=true;updateTtsUI('paused');}}
+function ttsStop(){speechSynthesis.cancel();ttsPaused=false;updateTtsUI('stopped');}
+function updateTtsUI(s){const p=document.getElementById('ttsPlay'),pa=document.getElementById('ttsPause'),sb=document.getElementById('ttsStop'),st=document.getElementById('ttsStat');if(s==='playing'){p.disabled=true;pa.disabled=false;sb.disabled=false;p.classList.add('active');st.textContent='▶ Playing...';}else if(s==='paused'){p.disabled=false;p.textContent='▶ Resume';p.classList.remove('active');st.textContent='⏸ Paused';}else{p.disabled=false;pa.disabled=true;sb.disabled=true;p.textContent='▶ Play';p.classList.remove('active');st.textContent=s==='done'?'✓ Done':'Ready';}}
+
+// ═════════ VOCABULARY ═════════
+let vInited=false,gInited=false,eInited=false;
+function initVocab(){vInited=true;buildFlash();updateXp();}
+function speakWord(w){if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w);u.lang='en-US';u.rate=.9;speechSynthesis.speak(u);}
+function bookmark(w,btn){
+  const i=prog.bookmarks.indexOf(w);
+  if(i>=0){prog.bookmarks.splice(i,1);btn.classList.remove('on');btn.textContent='☆';}
+  else{prog.bookmarks.push(w);btn.classList.add('on');btn.textContent='⭐';}
+  save();updateXp();
+}
+function buildFlash(){
+  document.getElementById('v-flash').innerHTML='<div class="cards-grid">'+VD.map(v=>{
+    const bm=prog.bookmarks.includes(v.w);
+    const ms=prog.mastery[v.w]||'new';
+    return `<div class="flip-card" onclick="if(!event.target.closest('.bm,.fspk'))this.classList.toggle('flipped')">
+      <span class="mast ${ms!=='new'?ms:''}" title="Mastery: ${ms}"></span>
+      <span class="bm ${bm?'on':''}" onclick="event.stopPropagation();bookmark('${v.w}',this)">${bm?'⭐':'☆'}</span>
+      <div class="flip-inner">
+        <div class="flip-front"><div class="fw">${v.w}</div><div class="fp">${v.pos}</div><button class="fspk" onclick="event.stopPropagation();speakWord('${v.w.replace(/'/g,"\\'")}')">🔊 listen</button></div>
+        <div class="flip-back"><div class="ft">${v.tr}</div><div class="fe">${v.ex}</div></div>
+      </div></div>`;
+  }).join('')+'</div>';
+  addXp(1);
+}
+function setVMode(m,btn){
+  document.querySelectorAll('.vocab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  ['flash','quiz','match','write','speed','hangman','builder'].forEach(x=>document.getElementById('v-'+x).style.display='none');
+  document.getElementById('v-'+m).style.display='block';
+  if(m==='flash')buildFlash();
+  else if(m==='quiz')startQuiz();
+  else if(m==='match')startMatch();
+  else if(m==='write'){writeIdx=0;renderWrite();}
+  else if(m==='speed')renderSpeedStart();
+  else if(m==='hangman')renderHangmanStart();
+  else if(m==='builder')renderBuilderStart();
+}
+
+// ━━━ QUIZ (with hearts + combo) ━━━
+let qScore=0,qTotal=0,qIdx=0,qShuffled=[],qLives=3,qCombo=0,qMaxCombo=0,qPerfect=true;
+function startQuiz(){qScore=0;qTotal=0;qIdx=0;qLives=3;qCombo=0;qMaxCombo=0;qPerfect=true;qShuffled=[...VD].sort(()=>Math.random()-.5).slice(0,12);renderQuiz();}
+function renderQuiz(){
+  const el=document.getElementById('v-quiz');
+  if(qLives<=0){
+    el.innerHTML=`<div style="text-align:center;padding:40px"><div style="font-size:46px">💔</div><div style="font-size:18px;color:var(--error);margin-top:10px">Out of hearts!</div><div style="color:var(--text2);margin-top:6px">Score: ${qScore} · Best combo: ${qMaxCombo}</div><button class="btn-check" style="margin-top:16px" onclick="startQuiz()">Try Again</button></div>`;
+    prog.totalQuizzes=(prog.totalQuizzes||0)+1;save();return;
+  }
+  if(qIdx>=qShuffled.length){
+    el.innerHTML=`<div style="text-align:center;padding:40px"><div style="font-size:46px">🎉</div><div style="font-size:18px;color:var(--accent2);margin-top:10px">Quiz Complete!</div><div style="color:var(--text2);margin-top:6px">Score: ${qScore} · Hearts: ${'♥'.repeat(qLives)} · Best combo: ${qMaxCombo}</div><button class="btn-check" style="margin-top:16px" onclick="startQuiz()">Try Again</button></div>`;
+    confetti(qLives===3?150:80);
+    unlockAch('first_quiz');
+    if(qPerfect&&qLives===3)unlockAch('perfect_quiz');
+    if(qMaxCombo>prog.bestStreak){prog.bestStreak=qMaxCombo;save();updateXp();}
+    return;
+  }
+  const v=qShuffled[qIdx];
+  const opts=[v,...VD.filter(x=>x.w!==v.w).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  const fire=qCombo>=5?'<span class="qt-combo fire">🔥 '+qCombo+'</span>':'<span class="qt-combo">⚡ '+qCombo+'</span>';
+  el.innerHTML=`<div class="quiz-top"><div class="qt-lives">${'♥'.repeat(qLives)}${'♡'.repeat(3-qLives)}</div>${fire}<div class="qt-score">${qScore}/${qShuffled.length}</div></div>
+    <div class="quiz-q"><div class="q-num">Question ${qIdx+1} / ${qShuffled.length}</div><div class="q-sent">Meaning of: <em>${v.w}</em>?</div><div class="q-ex">"${v.ex}"</div>
+    <div class="options">${opts.map(o=>`<button class="opt-btn" data-word="${o.w}" onclick="pickOpt(this,'${v.w.replace(/'/g,"\\'")}')">${o.tr}</button>`).join('')}</div></div>`;
+}
+function pickOpt(btn,correct){
+  btn.closest('.options').querySelectorAll('.opt-btn').forEach(b=>{b.disabled=true;if(b.dataset.word===correct)b.classList.add('correct');});
+  qTotal++;
+  if(btn.dataset.word===correct){
+    qScore++;qCombo++;qMaxCombo=Math.max(qMaxCombo,qCombo);
+    beep('correct');
+    const bonus=Math.floor(qCombo*2);
+    addXp(5+bonus);
+    if(qCombo===5)unlockAch('combo_5');
+    if(qCombo===10)unlockAch('combo_10');
+    if(qCombo>=3)beep('combo');
+    updateMastery(correct,true);
+  }else{
+    qCombo=0;qLives--;qPerfect=false;
+    btn.classList.add('wrong');btn.classList.add('shake');
+    beep('wrong');beep('heart');
+    document.querySelector('.qt-lives').classList.add('shake');
+    setTimeout(()=>{const ql=document.querySelector('.qt-lives');if(ql)ql.classList.remove('shake');},400);
+  }
+  setTimeout(()=>{qIdx++;renderQuiz();},900);
+}
+
+// ━━━ MATCH ━━━
+let mSelected=null,mCount=0;
+function startMatch(){
+  mSelected=null;mCount=0;
+  const pairs=[...MATCH_PAIRS].sort(()=>Math.random()-.5);
+  const rights=[...pairs].sort(()=>Math.random()-.5);
+  document.getElementById('v-match').innerHTML=`<p style="font-size:12px;color:var(--text2);margin-bottom:12px">Click a word on the left, then its meaning on the right.</p>
+    <div class="match-area"><div class="match-col">${pairs.map((p,i)=>`<div class="match-item" data-side="L" data-idx="${i}" onclick="mClick(this)">${p.w}</div>`).join('')}</div>
+    <div class="match-col">${rights.map(p=>{const i=pairs.findIndex(x=>x.w===p.w);return`<div class="match-item" data-side="R" data-idx="${i}" onclick="mClick(this)">${p.tr}</div>`}).join('')}</div></div>
+    <div style="margin-top:12px;font-size:13px;color:var(--text2)">Matched: <span id="mCnt">0</span> / ${MATCH_PAIRS.length}</div>`;
+}
+function mClick(el){
+  if(el.classList.contains('matched'))return;
+  if(!mSelected){if(el.dataset.side==='L'){mSelected=el;el.classList.add('selected');}}
+  else{if(el.dataset.side==='R'){
+    if(el.dataset.idx===mSelected.dataset.idx){
+      [mSelected,el].forEach(e=>{e.classList.remove('selected');e.classList.add('matched');});
+      mCount++;document.getElementById('mCnt').textContent=mCount;
+      beep('correct');addXp(3);
+      const w=MATCH_PAIRS[parseInt(el.dataset.idx)].w;updateMastery(w,true);
+      mSelected=null;
+      if(mCount===MATCH_PAIRS.length){toast('🎉 All matched!');confetti(100);}
+    }else{
+      [mSelected,el].forEach(e=>{e.classList.remove('selected');e.classList.add('wrong-anim','shake');});
+      beep('wrong');
+      const tmp=mSelected;mSelected=null;
+      setTimeout(()=>[tmp,el].forEach(e=>{e.classList.remove('wrong-anim');e.classList.remove('shake');}),700);
+    }
+  }else{mSelected.classList.remove('selected');mSelected=el;el.classList.add('selected');}}
+}
+
+// ━━━ WRITE ━━━
+let writeIdx=0;
+function renderWrite(){
+  const el=document.getElementById('v-write');
+  if(writeIdx>=8){el.innerHTML=`<div style="text-align:center;padding:40px"><div style="font-size:36px">✨</div><div style="font-size:16px;color:var(--accent2);margin-top:10px">All 8 words practised!</div><button class="btn-check" style="margin-top:14px" onclick="writeIdx=0;renderWrite()">Start Over</button></div>`;return;}
+  const v=VD[writeIdx];
+  el.innerHTML=`<div style="font-size:11px;color:var(--text2);margin-bottom:8px">${writeIdx+1} / 8 · +5 XP per word</div>
+    <div class="write-card"><div class="write-word">${v.w}</div><div class="write-tr">${v.tr} · <em style="color:var(--text2)">${v.pos}</em></div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:10px">Write a sentence using <strong>${v.w}</strong>:</div>
+    <textarea class="write-inp" placeholder="Your sentence here..." rows="3"></textarea>
+    <div class="street-note"><div class="sn-label">Street Note</div><div class="sn-text">${v.street}</div></div></div>
+    <button class="btn-check" onclick="writeIdx++;addXp(5);renderWrite()">Next Word → (+5)</button>
+    <button class="btn-show" onclick="document.querySelector('#v-write textarea').value='${v.ex.replace(/'/g,"\\'")}'">Show Example</button>`;
+}
+
+// ━━━ SPEED ROUND ━━━
+let srTime=60,srScore=0,srIdx=0,srShuffled=[],srTimer=null;
+function renderSpeedStart(){
+  document.getElementById('v-speed').innerHTML=`<div class="sr-wrap">
+    <div style="font-size:48px;margin-bottom:8px">⚡</div>
+    <div style="font-size:20px;font-weight:bold;color:var(--accent2);margin-bottom:8px">Speed Round</div>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:18px;line-height:1.6">60 saniyede mümkün olduğu kadar çok kelimeyi doğru cevapla.<br>Her doğru: +5 XP · Best score: <b style="color:var(--gold)">${prog.bestSpeed||0}</b></p>
+    <button class="sr-start" onclick="startSpeed()">▶ Başla</button>
+  </div>`;
+}
+function startSpeed(){
+  srTime=60;srScore=0;srIdx=0;
+  srShuffled=[...VD].sort(()=>Math.random()-.5);
+  if(srTimer)clearInterval(srTimer);
+  srTimer=setInterval(()=>{srTime--;updateSpeedUI();if(srTime<=0)endSpeed();},1000);
+  renderSpeedQ();
+}
+function renderSpeedQ(){
+  if(srTime<=0)return;
+  const v=srShuffled[srIdx%srShuffled.length];
+  const opts=[v,...VD.filter(x=>x.w!==v.w).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  const tCls=srTime<=10?'danger':(srTime<=20?'warn':'');
+  document.getElementById('v-speed').innerHTML=`<div class="sr-wrap">
+    <div class="sr-stats"><div>⏱️ <b class="sr-timer ${tCls}" style="display:inline">${srTime}</b>s</div><div>Score: <b>${srScore}</b></div><div>Best: ${prog.bestSpeed||0}</div></div>
+    <div class="sr-q"><div class="sr-word">${v.w}</div><div class="sr-ex">"${v.ex}"</div>
+    <div class="options">${opts.map(o=>`<button class="opt-btn" data-word="${o.w}" onclick="srPick(this,'${v.w.replace(/'/g,"\\'")}')">${o.tr}</button>`).join('')}</div></div></div>`;
+}
+function srPick(btn,correct){
+  if(btn.dataset.word===correct){srScore++;beep('correct');addXp(5);updateMastery(correct,true);}
+  else{beep('wrong');btn.classList.add('shake');}
+  srIdx++;setTimeout(renderSpeedQ,150);
+}
+function updateSpeedUI(){const t=document.querySelector('.sr-timer');if(t){t.textContent=srTime;t.className='sr-timer '+(srTime<=10?'danger':(srTime<=20?'warn':''));}}
+function endSpeed(){
+  clearInterval(srTimer);srTimer=null;
+  const better=srScore>(prog.bestSpeed||0);
+  if(better){prog.bestSpeed=srScore;save();updateXp();}
+  if(srScore>=15)unlockAch('speed_demon');
+  document.getElementById('v-speed').innerHTML=`<div class="sr-wrap">
+    <div style="font-size:48px">⚡</div>
+    <div style="font-size:22px;font-weight:bold;color:var(--accent2);margin:8px 0">Time's Up!</div>
+    <div style="font-size:36px;color:var(--gold);font-weight:bold">${srScore}</div>
+    <div style="color:var(--text2);font-size:13px;margin-bottom:18px">${better?'🎉 NEW BEST!':'Best: '+(prog.bestSpeed||0)}</div>
+    <button class="sr-start" onclick="startSpeed()">↻ Tekrar</button></div>`;
+  if(better||srScore>=10)confetti(120);
+}
+
+// ━━━ HANGMAN ━━━
+let hmWord='',hmTr='',hmGuessed=[],hmWrong=0,hmDone=false;
+const GALLOWS=[
+  '  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========',
+  '  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========',
+  '  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========',
+  '  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========',
+  '  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========',
+  '  +---+\n  |   |\n  O   |\n /|\\  |\n /    |\n      |\n=========',
+  '  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n========='
+];
+function renderHangmanStart(){
+  document.getElementById('v-hangman').innerHTML=`<div class="hm-wrap" style="text-align:center">
+    <div style="font-size:48px">🎯</div>
+    <div style="font-size:20px;font-weight:bold;color:var(--accent2);margin:8px 0">Hangman</div>
+    <p style="color:var(--text2);font-size:13px;line-height:1.6;margin-bottom:18px">Türkçe ipucundan İngilizce kelimeyi bul.<br>6 yanlış hakkın var. Kazanırsan +20 XP.</p>
+    <button class="sr-start" onclick="startHangman()">▶ Yeni Oyun</button>
+  </div>`;
+}
+function startHangman(){
+  const candidates=VD.filter(v=>v.w.length>=4&&v.w.length<=12&&!/[\s-]/.test(v.w));
+  const v=candidates[Math.floor(Math.random()*candidates.length)];
+  hmWord=v.w.toLowerCase();hmTr=v.tr;hmGuessed=[];hmWrong=0;hmDone=false;
+  renderHangman();
+}
+function renderHangman(){
+  const masked=hmWord.split('').map(c=>hmGuessed.includes(c)?c:'_').join(' ');
+  const won=!masked.includes('_');
+  const lost=hmWrong>=6;
+  let msg='';
+  if(won){msg=`<div class="hm-msg show win">🎉 Won! +20 XP · Word was <b>${hmWord}</b></div>`;hmDone=true;}
+  else if(lost){msg=`<div class="hm-msg show lose">💀 Game Over · Word was <b>${hmWord}</b></div>`;hmDone=true;}
+  document.getElementById('v-hangman').innerHTML=`<div class="hm-wrap">
+    <div class="hm-top"><span>Wrong: <b style="color:var(--error)">${hmWrong}/6</b></span><span>Word length: ${hmWord.length}</span></div>
+    <div class="hm-art">${GALLOWS[hmWrong]}</div>
+    <div class="hm-clue">💡 Türkçe: <b>${hmTr}</b></div>
+    <div class="hm-word">${masked}</div>
+    <div class="hm-letters">${'abcdefghijklmnopqrstuvwxyz'.split('').map(c=>{
+      const used=hmGuessed.includes(c);
+      const inWord=hmWord.includes(c);
+      const cls=used?(inWord?'ok':'no'):'';
+      return `<button class="hm-letter ${cls}" ${used||hmDone?'disabled':''} onclick="hmGuess('${c}')">${c.toUpperCase()}</button>`;
+    }).join('')}</div>
+    ${msg}
+    ${hmDone?`<div style="text-align:center;margin-top:14px"><button class="sr-start" onclick="startHangman()">↻ Yeni Oyun</button></div>`:''}
+  </div>`;
+  if(won){
+    addXp(20);beep('levelUp');confetti(100);
+    updateMastery(hmWord,true);
+    if(hmWrong<=3)unlockAch('hangman_hero');
+  }else if(lost){beep('wrong');}
+}
+function hmGuess(c){
+  if(hmDone||hmGuessed.includes(c))return;
+  hmGuessed.push(c);
+  if(hmWord.includes(c))beep('correct');
+  else{hmWrong++;beep('wrong');}
+  renderHangman();
+}
+
+// ━━━ WORD BUILDER ━━━
+let wbWord='',wbTr='',wbPool=[],wbSlot=[],wbErrors=0,wbDone=false;
+function renderBuilderStart(){
+  document.getElementById('v-builder').innerHTML=`<div class="wb-wrap" style="text-align:center">
+    <div style="font-size:48px">🧩</div>
+    <div style="font-size:20px;font-weight:bold;color:var(--accent2);margin:8px 0">Word Builder</div>
+    <p style="color:var(--text2);font-size:13px;line-height:1.6;margin-bottom:18px">Karıştırılmış harflerden kelimeyi kur.<br>Hatasız bitir → +25 XP bonus.</p>
+    <button class="sr-start" onclick="startBuilder()">▶ Yeni Kelime</button>
+  </div>`;
+}
+function startBuilder(){
+  const candidates=VD.filter(v=>v.w.length>=4&&v.w.length<=10&&!/[\s-]/.test(v.w));
+  const v=candidates[Math.floor(Math.random()*candidates.length)];
+  wbWord=v.w.toLowerCase();wbTr=v.tr;wbErrors=0;wbDone=false;wbSlot=[];
+  wbPool=wbWord.split('').sort(()=>Math.random()-.5).map((c,i)=>({c,used:false,id:i}));
+  renderBuilder();
+}
+function renderBuilder(){
+  const slotHtml=wbSlot.map((s,i)=>`<span class="wb-tile" onclick="wbRemove(${i})">${s.c.toUpperCase()}</span>`).join('');
+  const poolHtml=wbPool.map((p,i)=>`<span class="wb-tile ${p.used?'used':''}" onclick="wbAdd(${i})">${p.c.toUpperCase()}</span>`).join('');
+  document.getElementById('v-builder').innerHTML=`<div class="wb-wrap">
+    <div class="wb-clue">💡 Türkçe: <b>${wbTr}</b> · Harf sayısı: <b>${wbWord.length}</b> · Yanlış: <b style="color:var(--error)">${wbErrors}</b></div>
+    <div class="wb-slot">${slotHtml}</div>
+    <div class="wb-pool">${poolHtml}</div>
+    <div class="wb-actions">
+      <button class="btn-show" onclick="wbReset()">↻ Reset</button>
+      <button class="btn-check" onclick="wbCheck()">Check</button>
+      <button class="sr-start" style="padding:8px 18px;font-size:12px;font-weight:normal" onclick="startBuilder()">Skip</button>
+    </div>
+  </div>`;
+}
+function wbAdd(i){if(wbPool[i].used||wbDone)return;wbPool[i].used=true;wbSlot.push(wbPool[i]);renderBuilder();}
+function wbRemove(i){if(wbDone)return;const t=wbSlot[i];wbPool[t.id].used=false;wbSlot.splice(i,1);renderBuilder();}
+function wbReset(){if(wbDone)return;wbPool.forEach(p=>p.used=false);wbSlot=[];renderBuilder();}
+function wbCheck(){
+  const built=wbSlot.map(s=>s.c).join('');
+  if(built===wbWord){
+    wbDone=true;
+    const bonus=wbErrors===0?25:10;
+    addXp(15+bonus);beep('levelUp');confetti(120);
+    updateMastery(wbWord,true);
+    if(wbErrors===0)unlockAch('builder_perfect');
+    document.getElementById('v-builder').innerHTML=`<div class="wb-wrap" style="text-align:center">
+      <div style="font-size:48px">🎉</div>
+      <div style="font-size:22px;font-weight:bold;color:var(--success);margin:8px 0">Correct!</div>
+      <div style="font-size:30px;font-family:'Courier New',monospace;color:var(--accent2);margin:14px 0;letter-spacing:6px">${wbWord.toUpperCase()}</div>
+      <div style="color:var(--text2);font-size:13px;margin-bottom:18px">+${15+bonus} XP · ${wbErrors===0?'Perfect!':wbErrors+' errors'}</div>
+      <button class="sr-start" onclick="startBuilder()">↻ Yeni Kelime</button></div>`;
+  }else{
+    wbErrors++;beep('wrong');
+    document.querySelector('.wb-slot').classList.add('shake');
+    setTimeout(()=>{document.querySelector('.wb-slot').classList.remove('shake');wbReset();},500);
+  }
+}
+
+// ═════════ GRAMMAR ═════════
+function initGrammar(){gInited=true;document.getElementById('gAccordion').innerHTML=GD.map(g=>{
+  const exH=g.exs.map(e=>`<li><div class="ex-en">${e.en}</div><div class="ex-tr">${e.tr}</div></li>`).join('');
+  const edgeH=g.edge.map(e=>`<div class="edge-case">⚠️ ${e}</div>`).join('');
+  const miniH=g.mini.map((m,mi)=>`<div class="mini-q"><div class="mq-text">${mi+1}. ${m.q}</div><div class="mq-opts">${m.opts.map((o,oi)=>`<button class="mini-opt" onclick="chkMini(this,${oi},${m.ans})">${o}</button>`).join('')}</div></div>`).join('');
+  return `<div class="acc-item" id="acc${g.id}"><div class="acc-header" onclick="togAcc(${g.id})"><div class="acc-num" style="background:${g.color}22;color:${g.color}">${g.id}</div><div class="acc-title" style="color:${g.color}">${g.name}</div><div class="acc-tr">${g.tr}</div><span class="acc-arrow">▼</span></div>
+    <div class="acc-body"><div class="formula-box">${g.formula}</div><div class="acc-section"><p style="font-size:13px;color:var(--text2)">${g.desc}</p></div>
+    <div class="acc-section"><h4>Örnekler</h4><ul class="example-list">${exH}</ul></div>
+    <div class="acc-section"><h4>Dikkat Noktaları</h4><div class="edge-cases">${edgeH}</div></div>
+    <div class="mini-test"><h4>Mini Test</h4>${miniH}</div></div></div>`;
+}).join('');}
+function togAcc(id){document.getElementById('acc'+id).classList.toggle('open');}
+function chkMini(btn,sel,ans){const opts=btn.closest('.mq-opts').querySelectorAll('.mini-opt');opts.forEach(b=>b.disabled=true);if(sel===ans){btn.classList.add('correct');beep('correct');addXp(3);}else{btn.classList.add('wrong');opts[ans].classList.add('correct');beep('wrong');}}
+
+// ═════════ EXERCISES ═════════
+let exC=prog.exC||0,exA=prog.exA||0;
+function addScore(ok){if(ok)exC++;exA++;document.getElementById('exC').textContent=exC;document.getElementById('exA').textContent=exA;document.getElementById('exP').textContent=Math.round(exC/exA*100)+'%';prog.exC=exC;prog.exA=exA;save();}
+function initExercises(){eInited=true;
+  document.getElementById('fibQ').innerHTML=FIB.map((f,i)=>`<div class="fib-item"><span class="fib-num">${i+1}.</span>${f.pre}<input class="fib-input" id="fi${i}" placeholder="...">${f.post}</div>`).join('');
+  document.getElementById('errQ').innerHTML=ERRORS.map((e,i)=>`<div class="err-item"><div class="err-sent"><span style="color:var(--text2)">${i+1}.</span> "${e.s}"</div><input class="err-input" id="ei${i}" placeholder="Write the corrected part..."><div class="err-fb" id="ef${i}"></div></div>`).join('');
+  document.getElementById('teQ').innerHTML=TE.map((t,i)=>`<div class="te-item"><div class="te-tr">${i+1}. ${t.tr}</div><div class="te-hint">${t.hint}</div><input class="te-input" id="ti${i}" placeholder="Write in English..."></div>`).join('');
+  if(exA>0){document.getElementById('exC').textContent=exC;document.getElementById('exA').textContent=exA;document.getElementById('exP').textContent=Math.round(exC/exA*100)+'%';}
+}
+function checkFIB(){let ok=0;FIB.forEach((f,i)=>{const inp=document.getElementById('fi'+i);const v=inp.value.trim().toLowerCase();if(v===f.ans.toLowerCase()){inp.classList.add('correct');inp.classList.remove('wrong');ok++;}else{inp.classList.add('wrong');inp.classList.remove('correct');}});document.getElementById('fibBar').style.width=Math.round(ok/FIB.length*100)+'%';addScore(ok>=FIB.length*.7);if(ok===FIB.length){beep('levelUp');confetti(80);addXp(30);}else{addXp(ok*3);}toast(`${ok} / ${FIB.length} correct (+${ok===FIB.length?30:ok*3} XP)`);}
+function revealFIB(){const box=document.getElementById('fibAns');box.innerHTML='<div class="ans-label">Correct Answers:</div>'+FIB.map((f,i)=>`<div><span style="color:var(--text2)">${i+1}.</span> <strong>${f.ans}</strong></div>`).join('');box.classList.add('show');}
+function checkErr(){let ok=0,tot=0;ERRORS.forEach((e,i)=>{const inp=document.getElementById('ei'+i);const fb=document.getElementById('ef'+i);const v=inp.value.trim().toLowerCase();if(v.length<3)return;tot++;if(v.includes(e.corr.toLowerCase())){fb.textContent='✓ Correct! '+e.exp;fb.className='err-fb show ok';ok++;}else{fb.textContent='✗ Correction: "'+e.corr+'" — '+e.exp;fb.className='err-fb show no';}});if(tot>0){addScore(ok>=tot*.7);addXp(ok*5);}}
+function revealTE(){const box=document.getElementById('teAns');box.innerHTML='<div class="ans-label">Example Answers:</div>'+TE.map((t,i)=>`<div style="margin-bottom:6px"><span style="color:var(--text2)">${i+1}.</span> ${t.ans}</div>`).join('');box.classList.add('show');}
+
+// ═════════ AUTO-SAVE WRITING ═════════
+const wArea=document.getElementById('wArea');
+if(prog.draft)wArea.value=prog.draft;
+const debounce=(fn,ms)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+wArea.addEventListener('input',debounce(()=>{prog.draft=wArea.value;save();toast('💾 Saved');},1500));
+
+// ═════════ RESET ═════════
+function resetProg(){if(!confirm('Tüm ilerleme silinecek. Emin misin?'))return;localStorage.removeItem(SK);prog={fs:1,xp:0,level:0,mastery:{},bookmarks:[],bestSpeed:0,bestStreak:0,exC:0,exA:0,achievements:[],theme:'navy',sound:true,draft:''};exC=0;exA=0;applyTheme('navy');updateXp();document.querySelectorAll('.fib-input').forEach(i=>{i.value='';i.className='fib-input'});document.querySelectorAll('.err-input,.te-input').forEach(i=>i.value='');document.querySelectorAll('.err-fb').forEach(f=>f.className='err-fb');document.querySelectorAll('.writing-area').forEach(t=>t.value='');document.getElementById('fibBar').style.width='0%';['exC','exA'].forEach(id=>document.getElementById(id).textContent='0');document.getElementById('exP').textContent='—';toast('İlerleme sıfırlandı');}
+
+// ═════════ READING PROGRESS BAR ═════════
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const pct=Math.min(100,(window.scrollY/h)*100);
+  document.getElementById('readProgress').style.width=pct+'%';
+  const b=document.getElementById('scrollTop');
+  if(window.scrollY>500)b.classList.add('show');else b.classList.remove('show');
+});
+
+// ═════════ INIT ═════════
+document.getElementById('v-flash').style.display='block';
+['v-quiz','v-match','v-write','v-speed','v-hangman','v-builder'].forEach(id=>document.getElementById(id).style.display='none');
+window.addEventListener('beforeunload',()=>{speechSynthesis.cancel()});
+if('speechSynthesis' in window)speechSynthesis.getVoices();
+updateXp();
+window.addEventListener('resize',()=>{confCv.width=window.innerWidth;confCv.height=window.innerHeight;});
+</script>
+</body>
+</html>

@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hegel'e Giriş — Çerçeve Rehberi</title>
+<style>
+  :root {
+    --bg: #f4eee2;
+    --bg-elev: #ece4d3;
+    --bg-deep: #e2d8c2;
+    --ink: #1c1a17;
+    --ink-soft: #3d3833;
+    --ink-mute: #6a635a;
+    --line: #c9bfa8;
+    --line-soft: #d9d0bb;
+    --gold: #8a6a1f;
+    --gold-deep: #5e4814;
+    --crimson: #8a2622;
+    --crimson-soft: #b35a52;
+    --highlight: #f3d98a;
+    --highlight-strong: #e9b94a;
+    --shadow: 0 1px 0 rgba(28,26,23,0.04), 0 8px 24px -12px rgba(28,26,23,0.18);
+  }
+  [data-theme="dark"] {
+    --bg: #161412;
+    --bg-elev: #1f1c19;
+    --bg-deep: #0f0e0c;
+    --ink: #ece4d0;
+    --ink-soft: #c9c0aa;
+    --ink-mute: #8a8273;
+    --line: #3a342c;
+    --line-soft: #2a2622;
+    --gold: #d4a849;
+    --gold-deep: #f0c66a;
+    --crimson: #d76a60;
+    --crimson-soft: #e89289;
+    --highlight: #4a3a1a;
+    --highlight-strong: #6e5320;
+    --shadow: 0 1px 0 rgba(0,0,0,0.4), 0 12px 28px -14px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: Verdana, Geneva, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* --- Header --- */
+  .header {
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-elev);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+  }
+  .header-inner {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    min-width: 0;
+  }
+  .brand-mark {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: bold;
+    border-left: 2px solid var(--gold);
+    padding-left: 10px;
+  }
+  .brand-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .brand-sub {
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-style: italic;
+  }
+  .theme-toggle {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    font-family: Verdana, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .theme-toggle:hover {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  /* --- Layout --- */
+  .layout {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 0;
+  }
+  .nav {
+    border-right: 1px solid var(--line);
+    padding: 32px 20px 60px 28px;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  .nav h4 {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    margin: 0 0 12px 0;
+    font-weight: bold;
+  }
+  .nav ol {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px 0;
+    counter-reset: nav-counter;
+  }
+  .nav ol li {
+    counter-increment: nav-counter;
+    margin-bottom: 2px;
+  }
+  .nav a {
+    display: block;
+    padding: 7px 10px 7px 32px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 2px solid transparent;
+    position: relative;
+    transition: all 0.15s ease;
+  }
+  .nav a::before {
+    content: counter(nav-counter, decimal-leading-zero);
+    position: absolute;
+    left: 8px;
+    top: 7px;
+    font-size: 10px;
+    color: var(--ink-mute);
+    font-variant-numeric: tabular-nums;
+  }
+  .nav a:hover {
+    color: var(--ink);
+    background: var(--bg-deep);
+  }
+  .nav a.active {
+    color: var(--crimson);
+    border-left-color: var(--crimson);
+    background: var(--bg-deep);
+  }
+  .nav a.active::before {
+    color: var(--crimson);
+  }
+
+  main {
+    padding: 48px 56px 120px 56px;
+    min-width: 0;
+  }
+
+  /* --- Hero --- */
+  .hero {
+    border-top: 4px double var(--ink);
+    border-bottom: 1px solid var(--line);
+    padding: 36px 0 40px 0;
+    margin-bottom: 40px;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--crimson);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: Verdana, sans-serif;
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 1.18;
+    margin: 0 0 14px 0;
+    letter-spacing: -0.01em;
+  }
+  .hero h1 em {
+    color: var(--gold);
+    font-style: italic;
+    font-weight: normal;
+  }
+  .hero p.lead {
+    font-size: 15px;
+    color: var(--ink-soft);
+    max-width: 720px;
+    margin: 0;
+    line-height: 1.7;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+    font-size: 12px;
+    color: var(--ink-mute);
+    flex-wrap: wrap;
+  }
+  .hero-meta span strong {
+    color: var(--ink);
+    font-weight: bold;
+  }
+
+  /* --- Sections --- */
+  section {
+    margin-bottom: 64px;
+    scroll-margin-top: 80px;
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-num {
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    font-variant-numeric: tabular-nums;
+  }
+  .section-head h2 {
+    font-size: 24px;
+    margin: 0;
+    font-weight: bold;
+    letter-spacing: -0.005em;
+  }
+  .section-head .ger {
+    font-size: 13px;
+    color: var(--ink-mute);
+    font-style: italic;
+    margin-left: auto;
+  }
+
+  h3 {
+    font-size: 17px;
+    margin: 32px 0 12px 0;
+    color: var(--ink);
+    font-weight: bold;
+    letter-spacing: -0.005em;
+  }
+  h3 .ger {
+    color: var(--gold);
+    font-style: italic;
+    font-weight: normal;
+    font-size: 14px;
+    margin-left: 6px;
+  }
+  h4 {
+    font-size: 14px;
+    margin: 20px 0 8px 0;
+    color: var(--crimson);
+    font-weight: bold;
+    letter-spacing: 0.02em;
+  }
+
+  p { margin: 0 0 14px 0; }
+
+  /* --- Inline elements --- */
+  .hl {
+    background: linear-gradient(180deg, transparent 55%, var(--highlight) 55%);
+    padding: 0 2px;
+    font-weight: bold;
+    color: var(--ink);
+  }
+  .hl-strong {
+    background: linear-gradient(180deg, transparent 55%, var(--highlight-strong) 55%);
+    padding: 0 3px;
+    font-weight: bold;
+    color: var(--ink);
+  }
+  .term {
+    color: var(--gold-deep);
+    font-style: italic;
+    font-weight: bold;
+  }
+  [data-theme="dark"] .term { color: var(--gold-deep); }
+  .ger-term {
+    font-style: italic;
+    color: var(--ink-mute);
+    font-size: 0.94em;
+  }
+
+  /* --- Cards --- */
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    padding: 18px 22px;
+    margin: 16px 0;
+    border-radius: 1px;
+    box-shadow: var(--shadow);
+  }
+  .card.crimson { border-left-color: var(--crimson); }
+  .card.deep { border-left-color: var(--ink); }
+  .card-head {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .card.crimson .card-head { color: var(--crimson); }
+  .card.deep .card-head { color: var(--ink); }
+  [data-theme="dark"] .card-head { color: var(--gold); }
+
+  /* --- Quote --- */
+  blockquote {
+    margin: 20px 0;
+    padding: 14px 22px;
+    border-left: 3px solid var(--crimson);
+    background: var(--bg-deep);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  blockquote cite {
+    display: block;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-style: normal;
+    letter-spacing: 0.06em;
+  }
+
+  /* --- Concept grid --- */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .concept {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    padding: 14px 16px;
+    border-radius: 1px;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .concept:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold);
+  }
+  .concept-name {
+    font-weight: bold;
+    color: var(--ink);
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .concept-ger {
+    font-style: italic;
+    color: var(--gold-deep);
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  [data-theme="dark"] .concept-ger { color: var(--gold); }
+  .concept-def {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  /* --- Diagram (SVG containers) --- */
+  .diagram {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    padding: 20px;
+    margin: 24px 0;
+    border-radius: 2px;
+    overflow-x: auto;
+  }
+  .diagram-cap {
+    font-size: 11px;
+    color: var(--ink-mute);
+    text-align: center;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 12px;
+    font-weight: bold;
+  }
+  .diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+
+  /* --- Comparative table --- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  th {
+    background: var(--bg-deep);
+    font-weight: bold;
+    color: var(--ink);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--ink);
+  }
+  tr:last-child td { border-bottom: none; }
+  td.lead-col {
+    font-weight: bold;
+    color: var(--gold-deep);
+    width: 22%;
+  }
+  [data-theme="dark"] td.lead-col { color: var(--gold); }
+
+  /* --- DAMITMA steps --- */
+  .damitma-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0;
+    margin: 20px 0;
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+  }
+  .damitma-step {
+    padding: 16px 14px;
+    border-right: 1px solid var(--line-soft);
+    position: relative;
+  }
+  .damitma-step:last-child { border-right: none; }
+  .damitma-step .num {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.16em;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+  .damitma-step .name {
+    font-weight: bold;
+    color: var(--ink);
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .damitma-step .what {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* --- Quiz --- */
+  .quiz {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--crimson);
+    padding: 22px 26px;
+    margin: 18px 0;
+    border-radius: 1px;
+  }
+  .quiz-q {
+    font-weight: bold;
+    color: var(--ink);
+    margin-bottom: 14px;
+    font-size: 14px;
+  }
+  .quiz-q .qnum {
+    color: var(--crimson);
+    margin-right: 8px;
+    font-variant-numeric: tabular-nums;
+  }
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .quiz-opt {
+    padding: 10px 14px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ink-soft);
+    transition: all 0.15s ease;
+    border-radius: 1px;
+    font-family: Verdana, sans-serif;
+    text-align: left;
+  }
+  .quiz-opt:hover {
+    border-color: var(--ink-soft);
+    background: var(--bg-deep);
+  }
+  .quiz-opt.correct {
+    background: rgba(138,106,31,0.15);
+    border-color: var(--gold);
+    color: var(--ink);
+  }
+  .quiz-opt.wrong {
+    background: rgba(138,38,34,0.1);
+    border-color: var(--crimson);
+    color: var(--ink);
+  }
+  .quiz-feedback {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--bg-deep);
+    border-left: 2px solid var(--gold);
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback strong { color: var(--ink); }
+
+  /* --- Distill panel --- */
+  .distill {
+    background: var(--bg-deep);
+    border: 1px dashed var(--gold);
+    padding: 16px 20px;
+    margin: 20px 0;
+    border-radius: 1px;
+  }
+  .distill-head {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--gold-deep);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  [data-theme="dark"] .distill-head { color: var(--gold); }
+
+  /* --- Footer --- */
+  footer {
+    border-top: 4px double var(--ink);
+    padding: 28px 56px 40px;
+    max-width: 1240px;
+    margin: 0 auto;
+    color: var(--ink-mute);
+    font-size: 12px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; }
+    .nav {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 20px 24px;
+    }
+    main { padding: 32px 24px 80px 24px; }
+    .hero h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-mark">Çerçeve I</span>
+      <div>
+        <div class="brand-title">Hegel — Anlam Coğrafyası</div>
+        <div class="brand-sub">Kant · Fichte · Schiller üçlüsünden Mutlak Tin'e</div>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeToggle">Karanlık</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="nav">
+    <h4>İçindekiler</h4>
+    <ol>
+      <li><a href="#frame" class="active">Genel Çerçeve</a></li>
+      <li><a href="#cografya">Anlam Coğrafyası</a></li>
+      <li><a href="#kant">Kant — Miras ve Boşluk</a></li>
+      <li><a href="#fichte">Fichte — Mutlak Ben</a></li>
+      <li><a href="#schiller">Schiller — Estetik Köprü</a></li>
+      <li><a href="#hegel-cikis">Hegel'in Çıkışı</a></li>
+      <li><a href="#kavramlar">Hegel'in Anahtar Kavramları</a></li>
+      <li><a href="#diyalektik">Diyalektik Hareket</a></li>
+      <li><a href="#sistem">Sistemin Mimarisi</a></li>
+      <li><a href="#aristoteles">Aristoteles ile Diyalog</a></li>
+      <li><a href="#damitma">DAMITMA Uygulaması</a></li>
+      <li><a href="#olcme">Ölçme & Değerlendirme</a></li>
+      <li><a href="#sonraki">Sonraki Filozof</a></li>
+    </ol>
+  </aside>
+
+  <main>
+
+    <div class="hero">
+      <div class="hero-eyebrow">Faz I · Çerçeve Rehberi</div>
+      <h1>Hegel'i <em>kendi</em> diliyle anlamak — Alman İdealizmi'nin coğrafyası</h1>
+      <p class="lead">Bu rehber, Hegel'in kavram dünyasına popülerleştirilmiş bir özet vermek için değil; onun <span class="hl">sorduğu soruların ağırlığını</span> ve cevap verdiği sorunun semantik coğrafyasını sana iade etmek için yazıldı. Önce çerçeve, sonra dolgu. Detaylı kazı ikinci aşamada gelecek.</p>
+      <div class="hero-meta">
+        <span><strong>Yöntem:</strong> Frame-first then fill</span>
+        <span><strong>Köprü:</strong> Aristotelesçi kavram seti</span>
+        <span><strong>Damıtma:</strong> DAMITMA katmanı entegre</span>
+        <span><strong>Ölçme:</strong> Kavrayış denetimi</span>
+      </div>
+    </div>
+
+    <!-- ========== 1. ÇERÇEVE ========== -->
+    <section id="frame">
+      <div class="section-head">
+        <span class="section-num">§ 01</span>
+        <h2>Genel Çerçeve — Önce harita</h2>
+        <span class="ger">Frame first</span>
+      </div>
+
+      <p>Hegel'i okumadan önce, dört filozofun aralarındaki <span class="hl">probleme dayalı bağı</span> görmemiz lazım. Aşağıdaki diyagram, Aydınlanma sonrası Alman düşüncesinin bir <em>sorun zinciri</em> olduğunu gösteriyor: her filozof, bir öncekinin çözemediği gerilimi devraldı.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kant Fichte Schiller Hegel ilişki haritası">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+          </defs>
+          <style>
+            .node-rect { fill: var(--bg-deep); stroke: var(--ink); stroke-width: 1.5; }
+            .node-rect-h { fill: var(--bg-deep); stroke: var(--crimson); stroke-width: 2; }
+            .node-name { font-family: Verdana, sans-serif; font-size: 14px; font-weight: bold; fill: var(--ink); }
+            .node-sub { font-family: Verdana, sans-serif; font-size: 10px; fill: var(--ink-mute); font-style: italic; }
+            .arrow-line { fill: none; stroke: var(--gold); stroke-width: 1.5; color: var(--gold); }
+            .arrow-label { font-family: Verdana, sans-serif; font-size: 10px; fill: var(--gold-deep); }
+            .frame-label { font-family: Verdana, sans-serif; font-size: 11px; fill: var(--crimson); font-weight: bold; letter-spacing: 0.1em; }
+          </style>
+
+          <text x="380" y="30" text-anchor="middle" class="frame-label">SORUN ZİNCİRİ — DEVRALMA HARİTASI</text>
+
+          <!-- Kant -->
+          <rect x="40" y="80" width="160" height="70" class="node-rect" rx="2"/>
+          <text x="120" y="108" text-anchor="middle" class="node-name">KANT</text>
+          <text x="120" y="128" text-anchor="middle" class="node-sub">1724—1804</text>
+          <text x="120" y="144" text-anchor="middle" class="node-sub">Eleştirel Felsefe</text>
+
+          <!-- Fichte -->
+          <rect x="280" y="80" width="160" height="70" class="node-rect" rx="2"/>
+          <text x="360" y="108" text-anchor="middle" class="node-name">FICHTE</text>
+          <text x="360" y="128" text-anchor="middle" class="node-sub">1762—1814</text>
+          <text x="360" y="144" text-anchor="middle" class="node-sub">Bilim Öğretisi</text>
+
+          <!-- Schiller (sağ üst) -->
+          <rect x="520" y="40" width="200" height="70" class="node-rect" rx="2"/>
+          <text x="620" y="68" text-anchor="middle" class="node-name">SCHILLER</text>
+          <text x="620" y="88" text-anchor="middle" class="node-sub">1759—1805</text>
+          <text x="620" y="104" text-anchor="middle" class="node-sub">Estetik aracılık</text>
+
+          <!-- Hegel -->
+          <rect x="520" y="180" width="200" height="80" class="node-rect-h" rx="2"/>
+          <text x="620" y="210" text-anchor="middle" class="node-name">HEGEL</text>
+          <text x="620" y="230" text-anchor="middle" class="node-sub">1770—1831</text>
+          <text x="620" y="248" text-anchor="middle" class="node-sub">Mutlak İdealizm</text>
+
+          <!-- Oklar -->
+          <path d="M 200 115 L 275 115" class="arrow-line" marker-end="url(#arrow)"/>
+          <text x="237" y="108" text-anchor="middle" class="arrow-label">Ding an sich sorunu</text>
+
+          <path d="M 440 110 Q 480 95 515 80" class="arrow-line" marker-end="url(#arrow)"/>
+          <text x="480" y="78" text-anchor="middle" class="arrow-label">eylem · özgürlük</text>
+
+          <path d="M 440 140 Q 480 170 515 200" class="arrow-line" marker-end="url(#arrow)"/>
+          <text x="455" y="180" text-anchor="end" class="arrow-label">Ben—Ben-olmayan diyalektiği</text>
+
+          <path d="M 620 115 L 620 175" class="arrow-line" marker-end="url(#arrow)"/>
+          <text x="630" y="148" text-anchor="start" class="arrow-label">bütünlük · uzlaşma</text>
+
+          <path d="M 200 130 Q 360 320 515 240" class="arrow-line" marker-end="url(#arrow)"/>
+          <text x="360" y="335" text-anchor="middle" class="arrow-label">eleştirel mirasın doğrudan dönüşümü</text>
+
+          <text x="380" y="345" text-anchor="middle" class="node-sub" style="font-size:9px;">— oklar yön değil, sorun devralımını gösterir —</text>
+        </svg>
+        <div class="diagram-cap">Şekil 1 · Sorun Devralma Haritası</div>
+      </div>
+
+      <div class="card deep">
+        <div class="card-head">Tek Cümlede Devralma</div>
+        <p style="margin:0;"><strong>Kant</strong> özne ile nesne arasına bir duvar (numen) çekti. <strong>Fichte</strong> bu duvarı yıkmak için her şeyi <em>Ben'in eylemi</em>nden türetti. <strong>Schiller</strong> Ben ile dünyanın bölünmüşlüğünü <em>estetik oyun</em>la köprülemeye çalıştı. <strong>Hegel</strong> bu üç hamleyi tek bir <span class="hl-strong">sürecin uğrakları</span> olarak yeniden düşündü: bölünme bir kusur değil, Tin'in kendini bilmesinin zorunlu yoludur.</p>
+      </div>
+    </section>
+
+    <!-- ========== 2. ANLAM COĞRAFYASI ========== -->
+    <section id="cografya">
+      <div class="section-head">
+        <span class="section-num">§ 02</span>
+        <h2>Anlam Coğrafyası — Hegel hangi soruyu sordu?</h2>
+        <span class="ger">Sinngeographie</span>
+      </div>
+
+      <p>Bir filozofu doğru anlamak için, onun <span class="hl">cevap olduğu soruyu</span> bilmek gerekir. Hegel'in arka planında üç büyük yara vardır:</p>
+
+      <div class="concept-grid">
+        <div class="concept">
+          <div class="concept-name">Bölünme yarası</div>
+          <div class="concept-ger">Entzweiung</div>
+          <div class="concept-def">Modern bilinç özne–nesne, akıl–doğa, sonlu–sonsuz, özgürlük–zorunluluk arasında parçalanmıştır. Hegel için felsefenin görevi bu bölünmenin <em>üstesinden gelmektir</em> — yok saymak değil, içererek aşmak.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Devrim yarası</div>
+          <div class="concept-ger">Revolution</div>
+          <div class="concept-def">Fransız Devrimi özgürlüğü tarihe çıkardı ama Terör'le çürüdü. Soyut özgürlük neden yıkıma dönüştü? Akıl tarihte gerçekten iş başında mıdır?</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Bilim yarası</div>
+          <div class="concept-ger">Wissenschaft</div>
+          <div class="concept-def">Kant sonrası felsefe parçalandı: dogmacılık, kuşkuculuk, sezgicilik. Felsefe gerçekten <em>bilim</em> olabilir mi — sistematik, zorunlu, kendi kendini temellendiren bir bilim?</div>
+        </div>
+      </div>
+
+      <p>Hegel'in tüm sistemi tek bir soruya verilen cevap olarak okunabilir:</p>
+
+      <blockquote>
+        Aklın sonlu ile sonsuzu, özne ile nesneyi, özgürlük ile zorunluluğu <span class="hl">birbirinden ayırmadan</span> kavrayabileceği bir bilim mümkün müdür?
+        <cite>— Hegel'in örtük başsorusu</cite>
+      </blockquote>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Anlam Çekirdeği</div>
+        <p style="margin:0;">Hegel "her şeyin birdir" demez (bu Spinoza). "Hiçbir şey bilinemez" demez (bu Kant'ın yarım-doğrusu). Şunu der: <span class="hl-strong">Bütün gerçektir, ama bütün ancak bir süreçtir.</span> Gerçeklik dondurulmuş bir şey değil, kendini açan bir hareketin sonucudur — ve bu hareketin adı Tin'dir.</p>
+      </div>
+    </section>
+
+    <!-- ========== 3. KANT ========== -->
+    <section id="kant">
+      <div class="section-head">
+        <span class="section-num">§ 03</span>
+        <h2>Kant — Devralınan miras ve devralınan boşluk</h2>
+        <span class="ger">Kritische Philosophie</span>
+      </div>
+
+      <p>Hegel, Fichte ve Schiller hepsi Kant'ın <em>çocuklarıdır</em> — ona karşı çıkarken bile onun açtığı zeminde durur. Kant'ın iki katkısını tanımak şart:</p>
+
+      <h3>Kopernik Devrimi <span class="ger">kopernikanische Wende</span></h3>
+      <p>Kant'tan önce: <span class="hl">bilgi nesneye uymak zorundadır</span>. Kant'tan sonra: <span class="hl-strong">nesne bilgiye uymak zorundadır</span>. Yani şeyleri olduğu gibi değil, bizim <em>anlama yetimizin kategorileri aracılığıyla</em> biliriz. Uzay, zaman, nedensellik nesnelerin değil, <em>bilen öznenin</em> a priori formlarıdır.</p>
+
+      <h3>Fenomen — Numen Ayrımı <span class="ger">Phänomen / Noumenon</span></h3>
+      <p>Bilebileceğimiz şey: <span class="term">fenomen</span> (görünüş — bize göre olan şey). Bilemeyeceğimiz: <span class="term">numen / Ding an sich</span> (kendinde şey). Bu ayrım Kant için özgürlüğü, Tanrı'yı, ölümsüzlüğü kurtarmanın yoludur — onlar bilginin değil, <em>pratik aklın</em> alanına aittir.</p>
+
+      <div class="card crimson">
+        <div class="card-head">Devralınan Boşluk — Halefler için Kanama Noktası</div>
+        <p style="margin:0;"><span class="hl-strong">Ding an sich problemi:</span> Eğer kendinde şeyi bilemiyorsam, onun <em>var olduğunu</em> bile nasıl iddia edebilirim? "Bilemediğim şey" kavramı bile bir bilgi değil mi? Kant bu uçurumun kenarında durdu. Halefleri (Fichte, Schelling, Hegel) dediler ki: <span class="hl">Bu uçurumu kapatmak gerek; idealizmi yarım bırakmak idealizm değildir.</span></p>
+      </div>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Kant'tan Kalan</div>
+        <p style="margin:0;">Hegel Kant'tan iki şey alır: (1) <strong>özne aktiftir</strong>, bilgi pasif yansıma değildir; (2) <strong>akıl kendi kendisinin yargıcıdır</strong>. Reddettiği şey: <strong>bilinemezlik duvarı</strong>. Hegel için Kant bir kapıyı açtı ama eşikten geçmekten korktu.</p>
+      </div>
+    </section>
+
+    <!-- ========== 4. FICHTE ========== -->
+    <section id="fichte">
+      <div class="section-head">
+        <span class="section-num">§ 04</span>
+        <h2>Fichte — Mutlak Ben'in eylemi</h2>
+        <span class="ger">Wissenschaftslehre</span>
+      </div>
+
+      <p>Senin için önem arz ettiğini söylediğin Fichte, Kant'ın yarım bıraktığı işi tamamlama girişimidir. Fichte'nin tek bir radikal hamlesi vardır: <span class="hl-strong">Kendinde şeyi at, geriye sadece Ben kalır.</span></p>
+
+      <h3>Tathandlung <span class="ger">— eylem-edim</span></h3>
+      <p>Fichte bu kelimeyi icat etti. Almanca'da <em>Tat</em> (eylem/iş) + <em>Handlung</em> (eylemde bulunma). Türkçe'ye genelde "edim" diye çevrilir ama bu zayıf. Fichte'nin kastı şudur: <span class="hl">eyleyenle eylem aynı şeydir</span>. Önce bir Ben yoktur ki sonra eylesin; Ben, kendini koyma eyleminin <em>kendisidir</em>. Aristotelesçi bir köprü: bu, salt <em>energeia</em>'dır — fiil halindeki varlık, edimin kendisi olan varlık.</p>
+
+      <h3>Üç İlke</h3>
+      <table>
+        <thead><tr><th>İlke</th><th>Formülasyon</th><th>Anlamı</th></tr></thead>
+        <tbody>
+          <tr><td class="lead-col">1. Tez</td><td>Ben kendini koyar <span class="ger-term">(Ich setzt sich)</span></td><td>Tüm bilincin koşulsuz başlangıcı: Ben kendini var eder.</td></tr>
+          <tr><td class="lead-col">2. Antitez</td><td>Ben'e karşı bir Ben-olmayan koyulur</td><td>Bilinç ancak bir karşıt karşısında bilinç olabilir. Nesne dünyası burada doğar.</td></tr>
+          <tr><td class="lead-col">3. Sentez</td><td>Mutlak Ben içinde sınırlı Ben ve Ben-olmayan karşılıklı sınırlanır</td><td>Sonlu özne ve dünya, mutlak Ben içinde uzlaşır.</td></tr>
+        </tbody>
+      </table>
+
+      <p>Dikkat: <span class="hl">Yaygın "tez–antitez–sentez" formülü Hegel'in değil, Fichte'nindir.</span> Hegel'e bu formülü Heinrich Moritz Chalybäus yapıştırmıştır. Hegel diyalektiği bambaşka çalışır (bkz. § 08).</p>
+
+      <div class="card">
+        <div class="card-head">Fichte'nin Önemi — Hegel için</div>
+        <p style="margin:0;">Fichte iki şeyi öğretti: (1) <strong>Felsefe sistematik olmalı</strong>, tek bir ilkeden zorunlukla türemeli; (2) <strong>Gerçeklik özne ile nesnenin karşıtlığında değil, onların ortak kökeninde</strong> aranmalı. Hegel her ikisini de devralır. Reddettiği: Fichte hâlâ <em>özneye</em>, sonlu Ben'e dayanır. Hegel için zemin <span class="hl">özne de değil, nesne de değil — Tin'dir</span> (her ikisinin ortak hareketi).</p>
+      </div>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Fichte Çekirdeği</div>
+        <p style="margin:0;">Fichte: <span class="hl-strong">Var olmak = etmektir.</span> Ben bir şey değil, bir eylemdir. Dünya, Ben'in kendi özgürlüğünü gerçekleştirmek için kendine koyduğu engeldir. Bu, ahlaki idealizmdir — gerçeklik etik bir görevin alanıdır.</p>
+      </div>
+    </section>
+
+    <!-- ========== 5. SCHILLER ========== -->
+    <section id="schiller">
+      <div class="section-head">
+        <span class="section-num">§ 05</span>
+        <h2>Schiller — Estetik köprü, bütünlüğün geri kazanılması</h2>
+        <span class="ger">Ästhetische Erziehung</span>
+      </div>
+
+      <p>Schiller filozof olduğu kadar şairdir; sistemli bir metafizik kurmadı ama Hegel'in <em>kavradığı bir şeyi ilk hisseden</em> kişiydi: modern insan parçalanmıştır, ve bu parçalanmanın çaresi soyut akılda değil, <span class="hl">somut bir bütünlüğün yeniden kazanımındadır</span>.</p>
+
+      <h3>Üç Dürtü <span class="ger">Briefe über die ästhetische Erziehung des Menschen</span></h3>
+      <div class="concept-grid">
+        <div class="concept">
+          <div class="concept-name">Madde dürtüsü</div>
+          <div class="concept-ger">Stofftrieb</div>
+          <div class="concept-def">İnsanı duyusal, zaman içinde, doğa yasalarına bağlı yapan dürtü. Beden, arzu, değişim.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Form dürtüsü</div>
+          <div class="concept-ger">Formtrieb</div>
+          <div class="concept-def">İnsanı akılsal, zamansız, yasa-koyucu yapan dürtü. Ahlak, kavram, özdeşlik.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Oyun dürtüsü</div>
+          <div class="concept-ger">Spieltrieb</div>
+          <div class="concept-def">İki dürtüyü <em>uzlaştıran</em> üçüncü dürtü. Güzelin alanı. İnsan yalnızca <em>oynadığı zaman</em> tam insandır.</div>
+        </div>
+      </div>
+
+      <blockquote>
+        İnsan, kelimenin tam anlamıyla <em>insan</em> olduğu yerde oynar; ve yalnızca oynadığı yerde tam <em>insandır</em>.
+        <cite>— Schiller, Estetik Mektuplar XV</cite>
+      </blockquote>
+
+      <p>Schiller'in Hegel'e armağanı: <span class="hl-strong">karşıtların uzlaşması bir teorik ispat değil, somut-yaşanan bir bütünlük olabilir</span>. Hegel bunu sanattan alıp <em>tarihe</em> taşıyacak. Schiller'de güzel uzlaştırır; Hegel'de <span class="hl">tarih</span> uzlaştırır.</p>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Schiller Çekirdeği</div>
+        <p style="margin:0;">Aydınlanma'nın soyut aklı yetmez, romantizmin saf duygusu da yetmez. Gerçek bütünlük: <strong>karşıtları içinde tutan canlı uyum</strong>. Hegel'in "somut evrensel" (das konkrete Allgemeine) kavramı kökünü buradan alır.</p>
+      </div>
+    </section>
+
+    <!-- ========== 6. HEGEL'İN ÇIKIŞI ========== -->
+    <section id="hegel-cikis">
+      <div class="section-head">
+        <span class="section-num">§ 06</span>
+        <h2>Hegel'in Çıkışı — Üçlüden ne aldı, neyi aştı</h2>
+        <span class="ger">Aufhebung der Vorgänger</span>
+      </div>
+
+      <table>
+        <thead><tr><th>Filozof</th><th>Hegel'in aldığı</th><th>Hegel'in aştığı</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="lead-col">Kant</td>
+            <td>Öznenin etkinliği · aklın özyargıçlığı · transandantal yöntem</td>
+            <td>Numen duvarı · sonluluğa hapsolma · biçimsellik</td>
+          </tr>
+          <tr>
+            <td class="lead-col">Fichte</td>
+            <td>Sistematiklik · özne-nesne ortaklığı · mutlak başlangıç arayışı</td>
+            <td>Sonlu Ben'e dayanma · ahlaki "olmalı"nın sonsuz erişilemezliği</td>
+          </tr>
+          <tr>
+            <td class="lead-col">Schiller</td>
+            <td>Karşıtların somut uzlaşması · yaşanan bütünlük · tarihselliğe açılım</td>
+            <td>Estetik çözümle yetinme · sistemsizlik</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Hegel'in büyük hamlesi: bu üçünü ayrı çözümler olarak değil, <span class="hl-strong">aynı sürecin uğrakları</span> olarak okumak. Kant'ın özne–nesne ayrımı bir hata değil; Tin'in kendini kavrama yolunda gerekli bir <em>uğrak</em>tır (Moment). Aşılır ama silinmez — <em>aufgehoben</em>.</p>
+    </section>
+
+    <!-- ========== 7. ANAHTAR KAVRAMLAR ========== -->
+    <section id="kavramlar">
+      <div class="section-head">
+        <span class="section-num">§ 07</span>
+        <h2>Hegel'in Anahtar Kavramları — Sözlük değil anatomi</h2>
+        <span class="ger">Grundbegriffe</span>
+      </div>
+
+      <p>Bu kavramları <em>tek tek değil, birbirine kenetlenmiş şekilde</em> öğrenmen lazım. Aşağıdaki ızgarayı bir lego takımı gibi düşün: her parça diğerine geçer.</p>
+
+      <div class="concept-grid">
+        <div class="concept">
+          <div class="concept-name">Tin</div>
+          <div class="concept-ger">Geist</div>
+          <div class="concept-def">Hegel'in baş kavramı. Ne ruh (psyche), ne zihin (mind), ne salt akıl. <strong>Kendini bilen, kendini tarihte gerçekleştiren bütün</strong>. Birey-üstü ama bireyler aracılığıyla iş gören.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Kavram</div>
+          <div class="concept-ger">Begriff</div>
+          <div class="concept-def">Sıradan "kavram" değil. Bir şeyin <strong>içsel yapısı, kendi mantığı, kendini geliştirme ilkesi</strong>. Tohumun kavramı, ağaca dönüşmesinin yasasıdır.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">İdea</div>
+          <div class="concept-ger">Idee</div>
+          <div class="concept-def">Kavramın <strong>kendi gerçekliğine kavuşmuş</strong> hali. Kavram + Gerçeklik. Platon'un idea'sından farklı: bu, <em>somut</em>, gelişen, tarihsel bir bütündür.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Aufhebung</div>
+          <div class="concept-ger">aufheben</div>
+          <div class="concept-def">Hegel'in en ünlü terimi. <strong>Üç anlamı aynı anda taşır</strong>: (1) ortadan kaldırmak, (2) korumak/saklamak, (3) yükseltmek. Türkçe'ye "aşma" yetersiz; "içererek aşma" daha doğru.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Belirli Olumsuzlama</div>
+          <div class="concept-ger">bestimmte Negation</div>
+          <div class="concept-def">Bir şeyin yadsınması <strong>boşluk değil, belirli bir sonuç</strong> verir. A'nın olumsuzlanması yalnızca "A-değil" değil, A'nın eksiklerini içeren <em>belirli bir B</em>'dir. Diyalektiğin motoru budur.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Dolayım</div>
+          <div class="concept-ger">Vermittlung</div>
+          <div class="concept-def">Hiçbir şey saf, dolaysız, kendi başına değildir. Her şey <strong>başka bir şey aracılığıyla</strong> ne ise odur. Gül, dikenle dolayımlanır; özgürlük, yasayla dolayımlanır.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Kendinde / Kendisi-için</div>
+          <div class="concept-ger">an sich / für sich</div>
+          <div class="concept-def"><strong>An sich:</strong> potansiyel olarak, henüz bilincine varmadan. <strong>Für sich:</strong> kendisi için, kendinin bilincinde. <strong>An und für sich:</strong> her ikisi birden — tamamlanmış. Aristotelesçi <em>dynamis–energeia</em>'nın yeniden düşünülmüş hali.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Gerçeklik</div>
+          <div class="concept-ger">Wirklichkeit</div>
+          <div class="concept-def"><em>Realität</em>'ten farklı. Wirklichkeit = <strong>etken-iş gören gerçeklik</strong> (Wirken: iş görmek). Var olan her şey gerçek değildir; ancak kavramına uygun olarak iş gören şey gerçektir.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Töz Özne'dir</div>
+          <div class="concept-ger">Substanz als Subjekt</div>
+          <div class="concept-def"><em>Tinin Fenomenolojisi</em>'nin manifestosu. Spinoza tözü statik bir bütün gördü. Hegel: <strong>töz aynı zamanda öznedir</strong> — yani kendi kendini geliştiren, dönüştüren bir hareket.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Aklın Hilesi</div>
+          <div class="concept-ger">List der Vernunft</div>
+          <div class="concept-def">Tarihte tek tek insanlar kendi tutkuları, çıkarları için iş görür; ama Tin onların eylemlerini <strong>kendi amacının aracı</strong> olarak kullanır. Napoleon kendi şanı için savaştı; Tin onu modern devleti yaymak için kullandı.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Etiklik</div>
+          <div class="concept-ger">Sittlichkeit</div>
+          <div class="concept-def">Kant'ın bireysel ahlakına (<em>Moralität</em>) karşı: <strong>somut, kurumsal, topluluk-içi etik yaşam</strong>. Aile, sivil toplum, devlet. Birey ahlaki olmaz, bir <em>etik düzene</em> ait olarak ahlaki olur.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Mutlak</div>
+          <div class="concept-ger">das Absolute</div>
+          <div class="concept-def">Hiçbir başka şeye bağlı olmayan, kendi kendine yeten. Hegel için <strong>Mutlak başlangıçta değil, sondadır</strong>. "Hakikat bütündür ve bütün, ancak kendini gelişimi yoluyla tamamlayan özdür."</div>
+        </div>
+      </div>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Kavramları Bağla</div>
+        <p style="margin:0;">Bu on iki kavram tek bir cümlede kenetlenir: <span class="hl-strong">Tin (Geist), kendi Kavramını (Begriff) belirli olumsuzlama (bestimmte Negation) ve dolayım (Vermittlung) yoluyla geliştirir; an sich'ten an und für sich'e geçer; karşıtlarını kaldırıp koruyarak yükseltir (Aufhebung); ve sonunda kendisini hem töz hem özne olarak — yani İdea olarak — bilir.</span></p>
+      </div>
+    </section>
+
+    <!-- ========== 8. DİYALEKTİK ========== -->
+    <section id="diyalektik">
+      <div class="section-head">
+        <span class="section-num">§ 08</span>
+        <h2>Diyalektik Hareket — Tez-antitez-sentez değil</h2>
+        <span class="ger">dialektische Bewegung</span>
+      </div>
+
+      <p>Hegel'in diyalektiği <em>dışarıdan</em> uygulanan bir yöntem değil, <span class="hl">şeyin kendi iç hareketidir</span>. Üç uğrağı vardır ama bu uğraklar üç ayrı önerme değil, bir kavramın kendi gelişiminin üç anıdır.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diyalektik üç uğrak">
+          <style>
+            .moment-circle { fill: var(--bg-deep); stroke: var(--gold); stroke-width: 2; }
+            .moment-name { font-family: Verdana, sans-serif; font-size: 13px; font-weight: bold; fill: var(--ink); }
+            .moment-ger { font-family: Verdana, sans-serif; font-size: 10px; fill: var(--gold-deep); font-style: italic; }
+            .moment-desc { font-family: Verdana, sans-serif; font-size: 10px; fill: var(--ink-soft); }
+            .move-arrow { fill: none; stroke: var(--crimson); stroke-width: 1.5; }
+            .move-label { font-family: Verdana, sans-serif; font-size: 10px; fill: var(--crimson); font-weight: bold; }
+            .title-d { font-family: Verdana, sans-serif; font-size: 11px; fill: var(--crimson); font-weight: bold; letter-spacing: 0.1em; }
+          </style>
+
+          <text x="360" y="22" text-anchor="middle" class="title-d">DİYALEKTİĞİN ÜÇ UĞRAĞI</text>
+
+          <circle cx="120" cy="140" r="65" class="moment-circle"/>
+          <text x="120" y="125" text-anchor="middle" class="moment-name">Soyut</text>
+          <text x="120" y="142" text-anchor="middle" class="moment-ger">verständig</text>
+          <text x="120" y="160" text-anchor="middle" class="moment-desc">"şudur"</text>
+          <text x="120" y="174" text-anchor="middle" class="moment-desc">sabit, ayrı</text>
+
+          <circle cx="360" cy="140" r="65" class="moment-circle"/>
+          <text x="360" y="125" text-anchor="middle" class="moment-name">Diyalektik</text>
+          <text x="360" y="142" text-anchor="middle" class="moment-ger">dialektisch</text>
+          <text x="360" y="160" text-anchor="middle" class="moment-desc">kendi karşıtına</text>
+          <text x="360" y="174" text-anchor="middle" class="moment-desc">geçer</text>
+
+          <circle cx="600" cy="140" r="65" class="moment-circle"/>
+          <text x="600" y="120" text-anchor="middle" class="moment-name">Spekülatif</text>
+          <text x="600" y="137" text-anchor="middle" class="moment-ger">spekulativ</text>
+          <text x="600" y="155" text-anchor="middle" class="moment-desc">karşıtların</text>
+          <text x="600" y="169" text-anchor="middle" class="moment-desc">birliği</text>
+
+          <path d="M 190 140 L 290 140" class="move-arrow" marker-end="url(#arrow)"/>
+          <text x="240" y="132" text-anchor="middle" class="move-label">olumsuzlama</text>
+
+          <path d="M 430 140 L 530 140" class="move-arrow" marker-end="url(#arrow)"/>
+          <text x="480" y="132" text-anchor="middle" class="move-label">aufhebung</text>
+
+          <text x="360" y="240" text-anchor="middle" class="moment-desc" style="font-style:italic;">Üç ayrı adım değil — tek bir kavramın kendi içinden geçirdiği zorunlu hareket.</text>
+        </svg>
+        <div class="diagram-cap">Şekil 2 · Diyalektik Hareketin Üç Uğrağı</div>
+      </div>
+
+      <h3>Klasik Örnek: Varlık → Hiçlik → Oluş <span class="ger">(Mantık'ın açılışı)</span></h3>
+      <div class="card">
+        <p style="margin:0;"><strong>Varlık</strong> (Sein) — saf, belirlenimsiz, dolaysız. Onu düşündüğünde <em>hiçbir belirlenim</em> yoktur. Demek ki o, içeriksizdir. <strong>Hiçlik</strong> (Nichts) — saf belirlenimsizlik. Ama o da içeriksizdir. <span class="hl">İkisi birbirinin aynısıdır</span> ve aynı zamanda <em>tam karşıtıdır</em>. Bu çelişki sabit kalmaz, hareket eder: birinin diğerine geçişi <strong>Oluş</strong>'tur (Werden). Oluş, varlık ile hiçliğin <em>aufgehoben</em> birliğidir.</p>
+      </div>
+
+      <p><span class="hl-strong">Burada hiçbir "tez–antitez–sentez" yok</span>. Diyalektik, kavramın kendi yetersizliğini açığa çıkarması ve daha zengin bir kavrama geçmesidir. Sentez dışarıdan eklenmez; <em>içeriden doğar</em>.</p>
+    </section>
+
+    <!-- ========== 9. SİSTEM ========== -->
+    <section id="sistem">
+      <div class="section-head">
+        <span class="section-num">§ 09</span>
+        <h2>Sistemin Mimarisi — Hegel ne inşa etti?</h2>
+        <span class="ger">Enzyklopädie der philosophischen Wissenschaften</span>
+      </div>
+
+      <p>Hegel'in olgun sistemi (1817 <em>Ansiklopedi</em>) üç büyük halkadan oluşur. Bunu görmek, onun ne yaptığını anlamak için şarttır.</p>
+
+      <div class="diagram">
+        <svg viewBox="0 0 740 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hegel sistem mimarisi">
+          <style>
+            .pillar { fill: var(--bg-deep); stroke: var(--ink); stroke-width: 1.5; }
+            .pillar-title { font-family: Verdana, sans-serif; font-size: 14px; font-weight: bold; fill: var(--ink); }
+            .pillar-ger { font-family: Verdana, sans-serif; font-size: 11px; font-style: italic; fill: var(--gold-deep); }
+            .pillar-item { font-family: Verdana, sans-serif; font-size: 11px; fill: var(--ink-soft); }
+            .pillar-divider { stroke: var(--line); stroke-width: 1; }
+            .sys-title { font-family: Verdana, sans-serif; font-size: 11px; fill: var(--crimson); font-weight: bold; letter-spacing: 0.12em; }
+            .arc-arrow { fill: none; stroke: var(--gold); stroke-width: 1.5; }
+            .arc-label { font-family: Verdana, sans-serif; font-size: 10px; fill: var(--gold-deep); }
+          </style>
+
+          <text x="370" y="22" text-anchor="middle" class="sys-title">ANSİKLOPEDİ — ÜÇ HALKA</text>
+
+          <!-- Mantık -->
+          <rect x="40" y="60" width="200" height="240" class="pillar" rx="2"/>
+          <text x="140" y="88" text-anchor="middle" class="pillar-title">I. MANTIK</text>
+          <text x="140" y="106" text-anchor="middle" class="pillar-ger">Logik</text>
+          <line x1="60" y1="118" x2="220" y2="118" class="pillar-divider"/>
+          <text x="60" y="142" class="pillar-item">• Varlık öğretisi</text>
+          <text x="60" y="162" class="pillar-item">• Öz öğretisi</text>
+          <text x="60" y="182" class="pillar-item">• Kavram öğretisi</text>
+          <line x1="60" y1="200" x2="220" y2="200" class="pillar-divider"/>
+          <text x="140" y="222" text-anchor="middle" class="pillar-item" style="font-style:italic;">Tanrı'nın</text>
+          <text x="140" y="238" text-anchor="middle" class="pillar-item" style="font-style:italic;">dünya yaratımından</text>
+          <text x="140" y="254" text-anchor="middle" class="pillar-item" style="font-style:italic;">önceki düşüncesi</text>
+          <text x="140" y="280" text-anchor="middle" class="pillar-item">İdea kendinde</text>
+
+          <!-- Doğa -->
+          <rect x="270" y="60" width="200" height="240" class="pillar" rx="2"/>
+          <text x="370" y="88" text-anchor="middle" class="pillar-title">II. DOĞA</text>
+          <text x="370" y="106" text-anchor="middle" class="pillar-ger">Naturphilosophie</text>
+          <line x1="290" y1="118" x2="450" y2="118" class="pillar-divider"/>
+          <text x="290" y="142" class="pillar-item">• Mekanik</text>
+          <text x="290" y="162" class="pillar-item">• Fizik</text>
+          <text x="290" y="182" class="pillar-item">• Organik</text>
+          <line x1="290" y1="200" x2="450" y2="200" class="pillar-divider"/>
+          <text x="370" y="222" text-anchor="middle" class="pillar-item" style="font-style:italic;">İdea'nın</text>
+          <text x="370" y="238" text-anchor="middle" class="pillar-item" style="font-style:italic;">kendine</text>
+          <text x="370" y="254" text-anchor="middle" class="pillar-item" style="font-style:italic;">yabancılaşması</text>
+          <text x="370" y="280" text-anchor="middle" class="pillar-item">İdea başkalığında</text>
+
+          <!-- Tin -->
+          <rect x="500" y="60" width="200" height="240" class="pillar" rx="2"/>
+          <text x="600" y="88" text-anchor="middle" class="pillar-title">III. TİN</text>
+          <text x="600" y="106" text-anchor="middle" class="pillar-ger">Geistphilosophie</text>
+          <line x1="520" y1="118" x2="680" y2="118" class="pillar-divider"/>
+          <text x="520" y="142" class="pillar-item">• Sübjektif Tin</text>
+          <text x="520" y="162" class="pillar-item">• Objektif Tin</text>
+          <text x="520" y="182" class="pillar-item">• Mutlak Tin</text>
+          <line x1="520" y1="200" x2="680" y2="200" class="pillar-divider"/>
+          <text x="600" y="222" text-anchor="middle" class="pillar-item" style="font-style:italic;">İdea'nın</text>
+          <text x="600" y="238" text-anchor="middle" class="pillar-item" style="font-style:italic;">kendine dönüşü,</text>
+          <text x="600" y="254" text-anchor="middle" class="pillar-item" style="font-style:italic;">kendini bilmesi</text>
+          <text x="600" y="280" text-anchor="middle" class="pillar-item">İdea kendisi-için</text>
+
+          <!-- Döngü oku -->
+          <path d="M 240 320 Q 370 350 500 320" class="arc-arrow" marker-end="url(#arrow)"/>
+          <text x="370" y="345" text-anchor="middle" class="arc-label">tek bir İdea'nın kendi içinden geçişi</text>
+        </svg>
+        <div class="diagram-cap">Şekil 3 · Hegel'in Üç-Halkalı Sistemi</div>
+      </div>
+
+      <h3>Tinin Üç Düzeyi <span class="ger">— sistemin yüreği</span></h3>
+      <table>
+        <thead><tr><th>Düzey</th><th>Konu</th><th>Anahtar başlıklar</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="lead-col">Sübjektif Tin</td>
+            <td>Bireysel Tin: ruh, bilinç, psikoloji</td>
+            <td>Antropoloji · Fenomenoloji · Psikoloji</td>
+          </tr>
+          <tr>
+            <td class="lead-col">Objektif Tin</td>
+            <td>Tarihsel/kurumsal Tin: hukuk, ahlak, siyaset</td>
+            <td>Hukuk · Moralität · <strong>Sittlichkeit</strong> (Aile→Sivil Toplum→Devlet)</td>
+          </tr>
+          <tr>
+            <td class="lead-col">Mutlak Tin</td>
+            <td>Tin'in kendini bildiği en yüksek formlar</td>
+            <td><strong>Sanat → Din → Felsefe</strong> (sezgi → tasarım → kavram)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Sistem Çekirdeği</div>
+        <p style="margin:0;">Hegel'in sistemi <em>üç ayrı bölge</em> değil, <span class="hl-strong">İdea'nın tek bir biyografisidir</span>: önce kendinde (saf düşünce/Mantık), sonra kendi dışında (Doğa), sonra kendine geri (Tin). Mutlak Tin'in zirvesi felsefedir — çünkü orada Tin <em>kendisini, kavramsal olarak</em> bilir. Felsefe, Tin'in aynaya bakmasıdır.</p>
+      </div>
+    </section>
+
+    <!-- ========== 10. ARİSTOTELES ========== -->
+    <section id="aristoteles">
+      <div class="section-head">
+        <span class="section-num">§ 10</span>
+        <h2>Aristoteles ile Diyalog — Senin için köprü</h2>
+        <span class="ger">Brücke zur Vertrautheit</span>
+      </div>
+
+      <p>Hegel açıkça söyler: kendi felsefesinin Antikçağ'daki en yakın akrabası Aristoteles'tir. <em>Ansiklopedi</em>'nin son paragrafı, Aristoteles'in <em>Metafizik</em> Λ kitabından — Tanrı'nın kendi kendini düşünen düşünce olduğu pasajdan — yapılan bir alıntıdır. Senin Aristoteles'e aşinalığın, Hegel'i öğrenmek için <span class="hl">en güçlü kaldıraçtır</span>.</p>
+
+      <table>
+        <thead><tr><th>Aristoteles</th><th>Hegel</th><th>İlişki</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="lead-col">dynamis</td>
+            <td>an sich</td>
+            <td>Potansiyel olarak var olma — henüz açılmamış</td>
+          </tr>
+          <tr>
+            <td class="lead-col">energeia</td>
+            <td>für sich · Wirklichkeit</td>
+            <td>Edim halinde olma — fiilen iş gören gerçeklik</td>
+          </tr>
+          <tr>
+            <td class="lead-col">entelekheia</td>
+            <td>an und für sich</td>
+            <td>Telos'una ulaşmış, kendi kavramını tamamlamış</td>
+          </tr>
+          <tr>
+            <td class="lead-col">ousia (töz)</td>
+            <td>Substanz als Subjekt</td>
+            <td>Hegel: töz statik bir <em>hypokeimenon</em> değil, kendini geliştiren özne</td>
+          </tr>
+          <tr>
+            <td class="lead-col">telos</td>
+            <td>Zweck · diyalektiğin yönü</td>
+            <td>Süreç telos'una göre okunur — sondan başa anlamlanır</td>
+          </tr>
+          <tr>
+            <td class="lead-col">noêsis noêseôs</td>
+            <td>der sich wissende Geist</td>
+            <td>Düşüncenin kendini düşünmesi — Mutlak Tin'in zirve formülü</td>
+          </tr>
+          <tr>
+            <td class="lead-col">phronêsis · ethos</td>
+            <td>Sittlichkeit</td>
+            <td>Soyut ahlak değil, polis-içi/topluluk-içi somut etik yaşam</td>
+          </tr>
+          <tr>
+            <td class="lead-col">to ti ên einai</td>
+            <td>Begriff</td>
+            <td>Şeyin "ne olarak ne olduğu" — içsel kavramı, gelişim yasası</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="card">
+        <div class="card-head">Bir Önemli Fark</div>
+        <p style="margin:0;">Aristoteles için telos <em>doğal</em>dır (her şeyin türsel doğasında verilidir). Hegel için telos <span class="hl">tarihseldir</span> — Tin kendi telos'unu da süreç içinde keşfeder, hatta üretir. Aristoteles döngüseldir; Hegel tarihseldir. Ama her ikisinde de gerçeklik, bir <em>kavramın kendini gerçekleştirmesidir</em>.</p>
+      </div>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Aristotelesçi Köprü</div>
+        <p style="margin:0;">Hegel okurken kendine sor: "<em>Şu an bu kavramın</em> dynamis'i mi (an sich) <em>energeia'sı mı</em> (für sich) <em>entelekheia'sı mı</em> (an und für sich) <em>tartışılıyor?</em>" Bu üç soru, çoğu Hegel pasajında pusula olur.</p>
+      </div>
+    </section>
+
+    <!-- ========== 11. DAMITMA ========== -->
+    <section id="damitma">
+      <div class="section-head">
+        <span class="section-num">§ 11</span>
+        <h2>DAMITMA Uygulaması — Bu rehberi senin sistemine bağlamak</h2>
+        <span class="ger">dein eigenes System</span>
+      </div>
+
+      <p>Senin DAMITMA döngün (Dinle → Yokla → Damıt → Mecz Et → Hattırata Geçir → Tekrar → Arşivle) Hegel için olağanüstü uygundur, çünkü Hegel'in kendisi de <em>aşamalı, içererek-aşan</em> bir öğrenme süreci tarif eder. İşte bu rehbere özgü uygulama planı:</p>
+
+      <div class="damitma-steps">
+        <div class="damitma-step">
+          <div class="num">01</div>
+          <div class="name">Dinle</div>
+          <div class="what">Bu rehberi <em>baştan sona</em> sesli oku/dinlet (TTS, hızlı). Amaç anlamak değil — kavram kümesinin <span class="hl">tınısına</span> alışmak. <em>Yabancılık duygusunu</em> kırmak.</div>
+        </div>
+        <div class="damitma-step">
+          <div class="num">02</div>
+          <div class="name">Yokla</div>
+          <div class="what">İkinci geçişte, anlamadığın kavramları <em>not etmeden</em> sadece işaretle. Geist · Aufhebung · Sittlichkeit · Wirklichkeit · Begriff. Bunların ağırlığını hisset.</div>
+        </div>
+        <div class="damitma-step">
+          <div class="num">03</div>
+          <div class="name">Damıt</div>
+          <div class="what">Her § için <strong>tek cümlelik özet</strong> yaz. Senin sözcüklerinle. Kopya değil — <span class="hl">çeviri</span>. Aristotelesçi karşılığını yanına ekle.</div>
+        </div>
+        <div class="damitma-step">
+          <div class="num">04</div>
+          <div class="name">Mecz Et</div>
+          <div class="what">Kavramları kendi muktesebatına bağla. Geist'i Tanpınar'ın "zaman" kavrayışıyla, Sittlichkeit'i kendi etik-toplumsal sezgilerinle çapraz oku.</div>
+        </div>
+        <div class="damitma-step">
+          <div class="num">05</div>
+          <div class="name">Hattırata Geçir</div>
+          <div class="what">12 anahtar kavramı (§07) kendi defterine, <em>kendi tertibinle</em> aktar. Kavram-haritası çiz. Hegel'in mimarisini değil — <span class="hl">senin kavradığın mimariyi</span>.</div>
+        </div>
+        <div class="damitma-step">
+          <div class="num">06</div>
+          <div class="name">Tekrar</div>
+          <div class="what">Üç gün, bir hafta, bir ay aralarla aynı kavram setine dön. Her dönüşte <em>ek bir katman</em> görünür olur — bu Hegel'in kendi mantığıdır: kavram kendini açar.</div>
+        </div>
+        <div class="damitma-step">
+          <div class="num">07</div>
+          <div class="name">Arşivle</div>
+          <div class="what">Kendi DAMITMA arşivinde "Hegel · Çerçeve" başlığı altına yerleştir. Faz II (detaylı kazı) bunun üstüne bina edilecek.</div>
+        </div>
+      </div>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Sürdürülebilirlik Notu</div>
+        <p style="margin:0;">Senin "soğuk başlangıç yapamama" prensibin burada anahtar: Bu rehberin amacı seni <em>doğrudan Hegel'e</em> sokmak değil, Hegel'le karşılaştığında <span class="hl-strong">"yabancı değil, sadece yeni"</span> diyebilmeni sağlamaktır. Çerçeve + Aristotelesçi köprü = sıcak giriş.</p>
+      </div>
+    </section>
+
+    <!-- ========== 12. ÖLÇME ========== -->
+    <section id="olcme">
+      <div class="section-head">
+        <span class="section-num">§ 12</span>
+        <h2>Ölçme & Değerlendirme — Kavrayışın denetimi</h2>
+        <span class="ger">Selbstprüfung</span>
+      </div>
+
+      <p>Aşağıdaki sorular kolay değil — kasten zorlayıcılar. Doğru cevabı bulmak değil, <span class="hl">kendi düşünceni gözlemlemek</span> önemli. Cevabını seç, ardından geri bildirimi oku.</p>
+
+      <div class="quiz" data-correct="2">
+        <div class="quiz-q"><span class="qnum">Q1.</span>"Hegel'in diyalektiği tez–antitez–sentez şemasıdır" ifadesi için en doğru değerlendirme hangisidir?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" data-i="0">Doğru, Hegel bu üçlüyü Mantık'ın açılışında açıkça kullanır.</button>
+          <button class="quiz-opt" data-i="1">Kısmen doğru — Hegel sentezi farklı isimlendirir ama yapı aynıdır.</button>
+          <button class="quiz-opt" data-i="2">Yanlış — bu formül Fichte'ye aittir; Hegel diyalektiği belirli olumsuzlama ve aufhebung ile çalışır, dışarıdan uygulanan üçlü bir şema değildir.</button>
+          <button class="quiz-opt" data-i="3">Doğru ama Hegel onu yalnızca Hukuk Felsefesi'nde kullanır.</button>
+        </div>
+        <div class="quiz-feedback"><strong>Cevap:</strong> 3. seçenek. Tez–antitez–sentez Fichte'nin formülasyonudur ve Hegel'e Chalybäus tarafından yanlışlıkla yapıştırılmıştır. Hegel'in diyalektiği <em>kavramın kendi içsel hareketidir</em>, dışsal bir şema değil.</div>
+      </div>
+
+      <div class="quiz" data-correct="1">
+        <div class="quiz-q"><span class="qnum">Q2.</span>Hegel'in <em>Wirklichkeit</em> kavramının <em>Realität</em>'ten temel farkı nedir?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" data-i="0">Wirklichkeit zihinsel, Realität fiziksel olandır.</button>
+          <button class="quiz-opt" data-i="1">Wirklichkeit, kavramına uygun olarak iş gören gerçekliktir; Realität yalnızca var olmadır. Var olan her şey wirklich değildir.</button>
+          <button class="quiz-opt" data-i="2">İkisi eşanlamlıdır, Hegel ikisini de aynı anlamda kullanır.</button>
+          <button class="quiz-opt" data-i="3">Wirklichkeit gelecek olandır, Realität şimdi olandır.</button>
+        </div>
+        <div class="quiz-feedback"><strong>Cevap:</strong> 2. seçenek. <em>Wirklichkeit</em> kelimesi <em>wirken</em> (iş görmek, etki etmek) kökünden gelir. Hegel için bir taş <em>real</em>dir (var) ama <em>wirklich</em> (gerçek, etkin, kavramına uygun) olması için "taşın kavramını" yerine getirmesi gerekir. Bu ayrım onun ünlü "Akılsal olan gerçektir, gerçek olan akılsaldır" sözünün anahtarıdır.</div>
+      </div>
+
+      <div class="quiz" data-correct="2">
+        <div class="quiz-q"><span class="qnum">Q3.</span>Aristoteles'in <em>energeia</em>'sı Hegel'in hangi kavramına en yakındır?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" data-i="0">an sich (kendinde)</button>
+          <button class="quiz-opt" data-i="1">Begriff (Kavram)</button>
+          <button class="quiz-opt" data-i="2">für sich · Wirklichkeit (kendisi-için · etken gerçeklik)</button>
+          <button class="quiz-opt" data-i="3">Aufhebung (içererek aşma)</button>
+        </div>
+        <div class="quiz-feedback"><strong>Cevap:</strong> 3. seçenek. <em>Energeia</em> "edim halinde olma"dır — potansiyelden çıkmış, fiilen iş gören. Hegel'in <em>für sich</em>'i ve özellikle <em>Wirklichkeit</em>'i bu sezgiyi devralır. <em>An sich</em> ise <em>dynamis</em>'e (potansiyel) karşılık gelir.</div>
+      </div>
+
+      <div class="quiz" data-correct="0">
+        <div class="quiz-q"><span class="qnum">Q4.</span>Schiller'in Hegel'e en kalıcı armağanı hangisidir?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" data-i="0">Karşıtların somut, yaşanan bir bütünlük içinde uzlaşabileceği fikri — "somut evrensel"in çekirdeği.</button>
+          <button class="quiz-opt" data-i="1">Sistematik bir mantık modeli.</button>
+          <button class="quiz-opt" data-i="2">Numen kavramının reddi.</button>
+          <button class="quiz-opt" data-i="3">Mutlak Ben öğretisi.</button>
+        </div>
+        <div class="quiz-feedback"><strong>Cevap:</strong> 1. seçenek. Schiller bir sistem kurmadı; Hegel'e verdiği şey bir <em>sezgi</em>dir: aklın soyut ayrımları somut, yaşanan, içsel olarak farklılaşmış bir bütünlükte uzlaşabilir. Hegel bunu sanattan tarihe taşıdı.</div>
+      </div>
+
+      <div class="quiz" data-correct="3">
+        <div class="quiz-q"><span class="qnum">Q5.</span>"Töz aynı zamanda öznedir" (<em>Substanz als Subjekt</em>) önermesi neyi ifade eder?</div>
+        <div class="quiz-options">
+          <button class="quiz-opt" data-i="0">Tüm nesneler aslında insanlardır.</button>
+          <button class="quiz-opt" data-i="1">Spinoza haklıdır, töz bütündür.</button>
+          <button class="quiz-opt" data-i="2">Bilinç tözden bağımsızdır.</button>
+          <button class="quiz-opt" data-i="3">Gerçeklik statik bir bütün değil, kendi kendini geliştiren, kendine dönen, kendini bilen bir hareket olarak kavranmalıdır.</button>
+        </div>
+        <div class="quiz-feedback"><strong>Cevap:</strong> 4. seçenek. Bu <em>Tinin Fenomenolojisi</em> Önsözü'nün manifestosudur. Spinoza'nın tözü canlı değil. Hegel: Töz <em>aynı zamanda</em> özne olmalı — yani kendi içinde dolayımlanan, kendine geri dönen, sonunda kendini bilen bir süreç. Bu olmadan İdea ölü bir mutlaktır.</div>
+      </div>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Ölçmenin Anlamı</div>
+        <p style="margin:0;">Bu sorularda <em>tek bir doğru</em> bilgi sınanmıyor; Hegel'in en sık <span class="hl">yanlış anlaşıldığı noktalar</span> sınanıyor. Doğru cevapları bilmek değil, yanlış cevapların neden cazip geldiğini görmek — kavrayışın asıl sınavı budur.</p>
+      </div>
+    </section>
+
+    <!-- ========== 13. SONRAKİ FİLOZOF ========== -->
+    <section id="sonraki">
+      <div class="section-head">
+        <span class="section-num">§ 13</span>
+        <h2>Sonraki Adım — Hegel'den sonra nereye?</h2>
+        <span class="ger">der nächste Schritt</span>
+      </div>
+
+      <p>Hegel'i bitirmek bir tür <em>zirve deneyimi</em>dir; ondan sonraki tüm Avrupa felsefesi büyük ölçüde Hegel'e <span class="hl">tepkidir</span>. Sana üç ana güzergâh ve sıralı bir öneri sunuyorum:</p>
+
+      <div class="concept-grid">
+        <div class="concept">
+          <div class="concept-name">Schelling</div>
+          <div class="concept-ger">F. W. J. Schelling</div>
+          <div class="concept-def"><strong>Yan yol — köprü.</strong> Hegel'in arkadaşı ve sonra rakibi. Doğa felsefesinde Hegel'den derin, ama sistemde Hegel'le yarıştı. Geç dönem Schelling, Hegel'e güçlü bir <em>içeriden eleştiri</em> getirir: "olumlu felsefe" — varlığın kavramdan türetilemeyeceği iddiası.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Marx</div>
+          <div class="concept-ger">Karl Marx</div>
+          <div class="concept-def"><strong>Sol-Hegelci dönüşüm.</strong> "Hegel'i ayakları üstüne dikmek" — diyalektiği idealizmden materyalizme çevirmek. Sittlichkeit'in çelişkilerini sınıf çelişkisi olarak okumak. Hegel'siz Marx, Marx'sız 20. yüzyıl anlaşılmaz.</div>
+        </div>
+        <div class="concept">
+          <div class="concept-name">Kierkegaard</div>
+          <div class="concept-ger">Søren Kierkegaard</div>
+          <div class="concept-def"><strong>Egzistansiyel tepki.</strong> Hegel'in sisteminde <em>tek tek bireyin</em> kaybolduğunu söyledi. "Sistem var olmaz, var oluş sistemleştirilemez." Modern egzistansiyalizmin kökü.</div>
+        </div>
+      </div>
+
+      <div class="card crimson">
+        <div class="card-head">Önerim — Sıralı Yol</div>
+        <p style="margin:0;"><strong>1) Önce Schelling</strong> (geç dönem) — Hegel'i içeriden anlamak için. Senin Aristoteles ve Hegel'i okumuş zihnin için doğal eşik. <strong>2) Sonra Kierkegaard</strong> — Hegel'in sisteminin <em>içeriden patlatılışı</em>; sübjektif var oluşun haklarının iadesi. <strong>3) Ardından Marx'ın 1844 Elyazmaları</strong> — Hegelci mirasın somut-tarihsel dönüşümü. Bu üçü, 19. yüzyıl sonu felsefesinin haritasını eline verir.</p>
+      </div>
+
+      <div class="distill">
+        <div class="distill-head">Damıtma · Bir Sonraki Faza Köprü</div>
+        <p style="margin:0;">Faz II (detaylı kazı) için iki seçenek: (a) Hegel'in <em>Tinin Fenomenolojisi</em>'nin yapı sökümü — bilinçten Mutlak Bilgi'ye yolculuğun adım adım anatomisi; (b) <em>Mantık Bilimi</em>'nin başlangıç bölümünün (Varlık-Hiçlik-Oluş) mikroskopik incelenmesi. Hangisinden başlamak istediğine sen karar ver — ben hazırım.</p>
+      </div>
+
+      <p style="margin-top:24px;"><strong>Sana iki sorum var:</strong></p>
+      <ol>
+        <li>Bu çerçeve rehberinde <span class="hl">en çok hangi kavram</span> sende "burada bir kapı var" hissi uyandırdı? Faz II'yi oradan başlatabiliriz.</li>
+        <li>Aristotelesçi köprüleri <span class="hl">yeterli</span> buldun mu, yoksa daha çok mu açayım — özellikle <em>Metafizik</em> Λ ile <em>Ansiklopedi</em>'nin kapanışı arasındaki bağlantıyı ayrıntılandırmamı ister misin?</li>
+      </ol>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  Faz I · Çerçeve tamamlandı. Detaylı kazı, senin işaretine göre başlayacak.<br>
+  <em>Was vernünftig ist, das ist wirklich; und was wirklich ist, das ist vernünftig.</em>
+</footer>
+
+<script>
+  // Theme toggle
+  const toggle = document.getElementById('themeToggle');
+  let dark = false;
+  toggle.addEventListener('click', () => {
+    dark = !dark;
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    toggle.textContent = dark ? 'Aydınlık' : 'Karanlık';
+  });
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id], div[id="frame"]');
+  const navLinks = document.querySelectorAll('.nav a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // Quiz
+  document.querySelectorAll('.quiz').forEach(q => {
+    const correct = parseInt(q.dataset.correct, 10);
+    const opts = q.querySelectorAll('.quiz-opt');
+    const feedback = q.querySelector('.quiz-feedback');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const chosen = parseInt(opt.dataset.i, 10);
+        opts.forEach(o => o.classList.remove('correct', 'wrong'));
+        opts[correct].classList.add('correct');
+        if (chosen !== correct) opt.classList.add('wrong');
+        feedback.classList.add('show');
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPrompt Wizard — İngilizce Öğrenme Uygulaması Tasarım Aracı</title>
+<style>
+  :root {
+    --bg: #f0f4ff;
+    --surface: #ffffff;
+    --surface2: #f7f9ff;
+    --border: #dde3f5;
+    --accent: #4361ee;
+    --accent2: #7209b7;
+    --accent3: #f72585;
+    --text: #1a1a2e;
+    --text2: #4a4a6a;
+    --text3: #8888aa;
+    --success: #06d6a0;
+    --warn: #ffd60a;
+    --card-shadow: 0 4px 24px rgba(67,97,238,0.10);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --font: Verdana, Geneva, Tahoma, sans-serif;
+    --step-active: #4361ee;
+    --step-done: #06d6a0;
+    --step-idle: #dde3f5;
+    --chip-bg: #eef0ff;
+    --chip-active: #4361ee;
+    --chip-text-active: #fff;
+    --chip-text: #4361ee;
+  }
+  [data-theme="dark"] {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1a2030;
+    --border: #2a3050;
+    --accent: #4cc9f0;
+    --accent2: #b5179e;
+    --accent3: #f72585;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #484f58;
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --chip-bg: #1f2d3d;
+    --chip-active: #4cc9f0;
+    --chip-text-active: #0d1117;
+    --chip-text: #4cc9f0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+    font-size: 14px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(67,97,238,0.07);
+  }
+  .logo {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 18px; font-weight: 700; color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .logo-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: white;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .theme-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 12px; cursor: pointer;
+    color: var(--text2); font-size: 16px; transition: all 0.2s;
+  }
+  .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .lang-badge {
+    background: var(--chip-bg); color: var(--chip-text);
+    padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  }
+
+  /* STEPPER */
+  .stepper-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+  }
+  .stepper {
+    display: flex; align-items: center; gap: 0;
+    max-width: 900px; margin: 0 auto;
+    overflow-x: auto; padding-bottom: 4px;
+  }
+  .step-item {
+    display: flex; align-items: center; gap: 8px;
+    flex-shrink: 0; cursor: pointer;
+  }
+  .step-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--step-idle); color: var(--text3);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px; transition: all 0.3s;
+    border: 2px solid var(--step-idle);
+  }
+  .step-item.active .step-circle { background: var(--step-active); color: #fff; border-color: var(--step-active); box-shadow: 0 0 0 4px rgba(67,97,238,0.15); }
+  .step-item.done .step-circle { background: var(--step-done); color: #fff; border-color: var(--step-done); }
+  .step-label { font-size: 12px; font-weight: 600; color: var(--text2); white-space: nowrap; }
+  .step-item.active .step-label { color: var(--accent); }
+  .step-item.done .step-label { color: var(--step-done); }
+  .step-line {
+    flex: 1; height: 2px; background: var(--step-idle);
+    min-width: 20px; max-width: 60px; margin: 0 6px;
+    transition: background 0.3s;
+  }
+  .step-line.done { background: var(--step-done); }
+
+  /* MAIN */
+  main {
+    max-width: 960px; margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+
+  /* PANEL */
+  .panel {
+    display: none;
+    animation: fadeSlide 0.35s ease;
+  }
+  .panel.active { display: block; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .panel-title {
+    font-size: 22px; font-weight: 700; color: var(--text);
+    margin-bottom: 6px;
+  }
+  .panel-sub {
+    font-size: 13px; color: var(--text2); margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
+  }
+  .card-title {
+    font-size: 14px; font-weight: 700; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .icon { font-size: 18px; }
+
+  /* CHIPS */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 8px 16px; border-radius: 24px;
+    background: var(--chip-bg); color: var(--chip-text);
+    border: 1.5px solid transparent;
+    cursor: pointer; font-size: 12px; font-weight: 600;
+    transition: all 0.2s; user-select: none;
+    font-family: var(--font);
+  }
+  .chip:hover { border-color: var(--accent); }
+  .chip.selected {
+    background: var(--chip-active); color: var(--chip-text-active);
+    border-color: var(--chip-active);
+  }
+  .chip-tr { font-size: 10px; opacity: 0.8; display: block; margin-top: 1px; }
+
+  /* GRAMMAR TOPIC GRID */
+  .topic-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .topic-card {
+    padding: 12px 14px; border-radius: var(--radius-sm);
+    background: var(--chip-bg); border: 1.5px solid transparent;
+    cursor: pointer; transition: all 0.2s;
+    position: relative;
+  }
+  .topic-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(67,97,238,0.12); }
+  .topic-card.selected {
+    border-color: var(--accent); background: rgba(67,97,238,0.08);
+  }
+  .topic-card .check {
+    position: absolute; top: 8px; right: 10px;
+    font-size: 14px; display: none;
+  }
+  .topic-card.selected .check { display: block; color: var(--accent); }
+  .topic-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .topic-tr { font-size: 11px; color: var(--text2); }
+  .topic-cat { font-size: 10px; color: var(--text3); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* SELECT BOX */
+  select {
+    width: 100%; padding: 10px 14px;
+    border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+    background: var(--surface2); color: var(--text);
+    font-family: var(--font); font-size: 13px;
+    cursor: pointer; outline: none; transition: border-color 0.2s;
+  }
+  select:focus { border-color: var(--accent); }
+
+  /* TOGGLE */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-info { flex: 1; }
+  .toggle-label { font-size: 13px; font-weight: 600; color: var(--text); }
+  .toggle-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .toggle {
+    position: relative; width: 44px; height: 24px;
+    flex-shrink: 0; margin-left: 16px;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0; background: var(--border);
+    border-radius: 24px; cursor: pointer; transition: background 0.3s;
+  }
+  .slider::before {
+    content: ''; position: absolute;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: white; top: 3px; left: 3px;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  input:checked + .slider { background: var(--accent); }
+  input:checked + .slider::before { transform: translateX(20px); }
+
+  /* NUMBER INPUT */
+  .num-row { display: flex; align-items: center; gap: 10px; }
+  .num-input {
+    width: 80px; padding: 8px 12px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface2); color: var(--text);
+    font-family: var(--font); font-size: 13px; text-align: center;
+    outline: none; transition: border-color 0.2s;
+  }
+  .num-input:focus { border-color: var(--accent); }
+
+  /* SECTION DIVIDER */
+  .section-head {
+    font-size: 11px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin: 24px 0 12px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* COLOR SWATCH */
+  .color-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .color-swatch {
+    width: 36px; height: 36px; border-radius: 10px;
+    cursor: pointer; border: 3px solid transparent;
+    transition: all 0.2s; position: relative;
+  }
+  .color-swatch.selected { border-color: var(--text); transform: scale(1.1); }
+
+  /* NAV BUTTONS */
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 32px; gap: 12px;
+  }
+  .btn {
+    padding: 12px 28px; border-radius: var(--radius-sm);
+    font-family: var(--font); font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; border: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; box-shadow: 0 4px 16px rgba(67,97,238,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(67,97,238,0.4); }
+  .btn-secondary {
+    background: var(--surface2); color: var(--text2);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white; box-shadow: 0 4px 16px rgba(6,214,160,0.3);
+    font-size: 14px; padding: 14px 36px;
+  }
+  .btn-success:hover { transform: translateY(-1px); }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    height: 4px; background: var(--border); border-radius: 99px;
+    margin-bottom: 32px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.5s ease;
+  }
+
+  /* SUMMARY */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  .summary-item {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px;
+  }
+  .summary-key { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .summary-val { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.5; }
+
+  /* PROMPT OUTPUT */
+  .prompt-box {
+    background: #0d1117; color: #c9d1d9;
+    border-radius: var(--radius); padding: 28px;
+    font-family: 'Courier New', monospace; font-size: 12.5px;
+    line-height: 1.7; white-space: pre-wrap; word-break: break-word;
+    position: relative; border: 1px solid #30363d;
+    max-height: 500px; overflow-y: auto;
+  }
+  .prompt-box .kw { color: #79c0ff; }
+  .prompt-box .val { color: #a5d6ff; }
+  .prompt-box .section { color: #d2a8ff; font-weight: bold; }
+  .copy-btn {
+    position: absolute; top: 16px; right: 16px;
+    background: #21262d; color: #8b949e; border: 1px solid #30363d;
+    border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 11px;
+    transition: all 0.2s; font-family: var(--font);
+  }
+  .copy-btn:hover { background: #388bfd; color: white; border-color: #388bfd; }
+
+  /* BADGE COUNTERS */
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--accent3); color: white;
+    border-radius: 99px; min-width: 20px; height: 20px;
+    font-size: 10px; font-weight: 700; padding: 0 5px;
+    margin-left: 6px;
+  }
+
+  /* TOOLTIP */
+  .tip {
+    display: inline-block; font-size: 11px; color: var(--text3);
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 10px; margin-top: 8px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header { padding: 12px 16px; }
+    main { padding: 20px 12px 60px; }
+    .stepper-wrap { padding: 14px 16px; }
+    .topic-grid { grid-template-columns: 1fr 1fr; }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+
+  /* CATEGORY FILTER */
+  .cat-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .cat-btn {
+    padding: 5px 14px; border-radius: 99px;
+    background: var(--surface2); border: 1.5px solid var(--border);
+    color: var(--text2); font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; font-family: var(--font);
+  }
+  .cat-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  /* SEARCH */
+  .search-box {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface2); color: var(--text);
+    font-family: var(--font); font-size: 13px;
+    outline: none; margin-bottom: 14px; transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+
+  /* SELECTED STRIP */
+  .selected-strip {
+    background: rgba(67,97,238,0.06);
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px; margin-bottom: 16px;
+    font-size: 12px; color: var(--accent);
+    min-height: 44px;
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  }
+  .sel-tag {
+    background: var(--accent); color: white;
+    border-radius: 16px; padding: 3px 10px; font-size: 11px; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .sel-tag .rm { cursor: pointer; opacity: 0.7; }
+  .sel-tag .rm:hover { opacity: 1; }
+
+  /* INFO BOX */
+  .info-box {
+    background: rgba(67,97,238,0.06); border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 12px 16px; margin-bottom: 16px;
+    font-size: 12px; color: var(--text2); line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🎓</div>
+    <div>
+      <div>EduPrompt Wizard</div>
+      <div style="font-size:11px;color:var(--text2);font-weight:400;">İngilizce Öğrenme Uygulaması Tasarım Aracı</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="lang-badge">🇹🇷 TR / 🇬🇧 EN</span>
+    <button class="theme-btn" onclick="toggleTheme()" title="Tema Değiştir / Toggle Theme">🌙</button>
+  </div>
+</header>
+
+<div class="stepper-wrap">
+  <div class="stepper" id="stepper"></div>
+</div>
+
+<main>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressBar" style="width:16%"></div>
+  </div>
+
+  <!-- STEP 1: Grammar Topics -->
+  <div class="panel active" id="panel-1">
+    <div class="panel-title">📚 Gramer Konuları Seç <span style="color:var(--text3);font-size:14px;font-weight:400">/ Select Grammar Topics</span></div>
+    <div class="panel-sub">Çalışmak istediğin konuları seç. Birden fazla konu seçebilirsin — aynı anda karşılaştırmalı çalışma yapabilmek için. <br><em>Select topics to study. Multiple selections enable comparative learning across structures.</em></div>
+
+    <div class="info-box">💡 <strong>İpucu:</strong> Aynı anda birden fazla konu seçerek "Passive + Causative" veya "Conditionals + Relative Clauses" gibi kombine öğrenim yapabilirsin. Seçili konular karşılaştırmalı örnekler, cümle varyasyonları ve dönüşüm egzersizleri için kullanılır.</div>
+
+    <div class="selected-strip" id="selectedTopicsStrip">
+      <span style="color:var(--text3)">Henüz konu seçilmedi / No topics selected yet…</span>
+    </div>
+
+    <input class="search-box" type="text" placeholder="🔍 Konu ara / Search topics…" oninput="filterTopics(this.value)" id="topicSearch">
+
+    <div class="cat-filters" id="catFilters"></div>
+
+    <div class="topic-grid" id="topicGrid"></div>
+
+    <div class="nav-row">
+      <div></div>
+      <button class="btn btn-primary" onclick="goStep(2)">Sonraki: Metin Ayarları →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Text Settings -->
+  <div class="panel" id="panel-2">
+    <div class="panel-title">📝 Metin & İçerik Ayarları <span style="color:var(--text3);font-size:14px;font-weight:400">/ Text & Content Settings</span></div>
+    <div class="panel-sub">Uygulamanın üretmesini istediğin metin türünü ve seviyesini belirle. <br><em>Define what kind of text and learning content you want the app to generate.</em></div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📄</span> Metin Formatı / Text Format</div>
+      <div class="chips" id="textFormatChips">
+        <div class="chip" onclick="toggleChip(this,'textFormat')" data-val="story">📖 Hikaye <span class="chip-tr">Story</span></div>
+        <div class="chip" onclick="toggleChip(this,'textFormat')" data-val="article">📰 Makale <span class="chip-tr">Article</span></div>
+        <div class="chip" onclick="toggleChip(this,'textFormat')" data-val="dialogue">💬 Diyalog <span class="chip-tr">Dialogue</span></div>
+        <div class="chip" onclick="toggleChip(this,'textFormat')" data-val="diary">📓 Günlük <span class="chip-tr">Diary</span></div>
+        <div class="chip" onclick="toggleChip(this,'textFormat')" data-val="email">✉️ E-posta <span class="chip-tr">Email</span></div>
+        <div class="chip" onclick="toggleChip(this,'textFormat')" data-val="news">📡 Haber <span class="chip-tr">News</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🎨</span> Ton / Üslup — Tone / Register</div>
+      <div class="chips">
+        <div class="chip" onclick="toggleChip(this,'tone')" data-val="formal">🏛️ Resmi <span class="chip-tr">Formal</span></div>
+        <div class="chip" onclick="toggleChip(this,'tone')" data-val="informal">😊 Samimi <span class="chip-tr">Informal</span></div>
+        <div class="chip" onclick="toggleChip(this,'tone')" data-val="academic">🔬 Akademik <span class="chip-tr">Academic</span></div>
+        <div class="chip" onclick="toggleChip(this,'tone')" data-val="journalistic">📻 Gazetecilik <span class="chip-tr">Journalistic</span></div>
+        <div class="chip" onclick="toggleChip(this,'tone')" data-val="literary">📜 Edebi <span class="chip-tr">Literary</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Seviye / Level</div>
+      <div class="chips">
+        <div class="chip" onclick="toggleChip(this,'level')" data-val="A2">A2 <span class="chip-tr">Başlangıç Üstü</span></div>
+        <div class="chip" onclick="toggleChip(this,'level')" data-val="B1">B1 <span class="chip-tr">Orta</span></div>
+        <div class="chip" onclick="toggleChip(this,'level')" data-val="B2">B2 <span class="chip-tr">Orta Üstü</span></div>
+        <div class="chip" onclick="toggleChip(this,'level')" data-val="C1">C1 <span class="chip-tr">İleri</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🔢</span> Kelime Sayısı / Word Count</div>
+      <div class="chips">
+        <div class="chip" onclick="toggleChip(this,'wordCount')" data-val="200">200 kelime</div>
+        <div class="chip" onclick="toggleChip(this,'wordCount')" data-val="350">350 kelime</div>
+        <div class="chip" onclick="toggleChip(this,'wordCount')" data-val="500">500 kelime</div>
+        <div class="chip" onclick="toggleChip(this,'wordCount')" data-val="750">750 kelime</div>
+        <div class="chip" onclick="toggleChip(this,'wordCount')" data-val="1000">1000 kelime</div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goStep(1)">← Geri</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Sonraki: Öğrenme Modları →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Learning Modes -->
+  <div class="panel" id="panel-3">
+    <div class="panel-title">🎯 Öğrenme Modları & Aktiviteler <span style="color:var(--text3);font-size:14px;font-weight:400">/ Learning Modes & Activities</span></div>
+    <div class="panel-sub">Hangi pratik modlarının ve oyunların dahil edileceğini seç. <br><em>Choose which practice modes and interactive games to include.</em></div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📋</span> Değerlendirme Modları / Assessment Modes</div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">MOD A — Doğru/Yanlış Quiz</div>
+          <div class="toggle-sub">True/False with Turkish explanations — Türkçe açıklamalı D/Y testi</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="modA" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">MOD B — Çoktan Seçmeli Quiz</div>
+          <div class="toggle-sub">Grammar + comprehension MCQ — Gramer + anlama odaklı çoktan seçmeli</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="modB" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">MOD C — Boşluk Doldurma</div>
+          <div class="toggle-sub">Fill-in-the-blank with scaffolded hints — İpuçlu boşluk doldurma</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="modC" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">MOD D — L1-Cued Output (Çeviri Görevi)</div>
+          <div class="toggle-sub">Translate from Turkish cue + passive/causative/wh-question variants</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="modD" checked><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🔄</span> Cümle Varyasyonları / Sentence Variations</div>
+      <div class="info-box">Bir cümlenin farklı gramer yapılarındaki hallerini yan yana görme özelliği. <em>See the same sentence in different grammar structures side by side.</em></div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Passive Voice Dönüşümü / Passive Transformation</div>
+          <div class="toggle-sub">Active → Passive karşılaştırmalı görünüm</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="varPassive" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Causative Dönüşümü / Causative Forms</div>
+          <div class="toggle-sub">make/let/have/get varyasyonları</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="varCausative" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">WH-Soru Varyasyonları / WH-Question Forms</div>
+          <div class="toggle-sub">Özne belli/belirsiz, so/because, bağlaç alternatifleri</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="varWH" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Cümle Yeniden Yazma / Sentence Rewriting</div>
+          <div class="toggle-sub">Aynı anlamı farklı yapıyla yaz — Same meaning, different structure</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="varRewrite" checked><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🎮</span> Oyun Modları / Game Modes</div>
+      <div class="chips" style="gap:10px" id="gameChips">
+        <div class="chip selected" onclick="this.classList.toggle('selected')" data-val="hangman">🪝 Hangman</div>
+        <div class="chip selected" onclick="this.classList.toggle('selected')" data-val="memory">🃏 Memory Cards <span class="chip-tr">Hafıza Kartları</span></div>
+        <div class="chip selected" onclick="this.classList.toggle('selected')" data-val="scramble">🔀 Sentence Scramble <span class="chip-tr">Cümle Karıştırma</span></div>
+        <div class="chip selected" onclick="this.classList.toggle('selected')" data-val="wordsearch">🔎 Word Search <span class="chip-tr">Kelime Arama</span></div>
+        <div class="chip selected" onclick="this.classList.toggle('selected')" data-val="crossword">✏️ Crossword <span class="chip-tr">Bulmaca</span></div>
+        <div class="chip" onclick="this.classList.toggle('selected')" data-val="jeopardy">🏆 Jeopardy</div>
+        <div class="chip" onclick="this.classList.toggle('selected')" data-val="anagram">🔤 Anagram</div>
+        <div class="chip" onclick="this.classList.toggle('selected')" data-val="typing">⌨️ Typing Race <span class="chip-tr">Yazma Yarışı</span></div>
+        <div class="chip" onclick="this.classList.toggle('selected')" data-val="spinning">🎡 Spinning Wheel <span class="chip-tr">Çark</span></div>
+        <div class="chip" onclick="this.classList.toggle('selected')" data-val="pronunciation">🎙️ Pronunciation <span class="chip-tr">Telaffuz</span></div>
+        <div class="chip" onclick="this.classList.toggle('selected')" data-val="bingo">🎰 Bingo</div>
+        <div class="chip" onclick="this.classList.toggle('selected')" data-val="adventure">🗺️ Interactive Story <span class="chip-tr">Macera Hikayesi</span></div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goStep(2)">← Geri</button>
+      <button class="btn btn-primary" onclick="goStep(4)">Sonraki: Aktif Modüller →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Active Modules -->
+  <div class="panel" id="panel-4">
+    <div class="panel-title">⚡ Aktif Katılım Modülleri <span style="color:var(--text3);font-size:14px;font-weight:400">/ Active Participation Modules</span></div>
+    <div class="panel-sub">Kelime bankası, shadowing, gramer rehberi ve gerçek dünya içerikleri için ayarlar. <br><em>Configure vocabulary bank, shadowing, grammar guide and real-world content.</em></div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📖</span> Gramer Rehberi / Grammar Guide</div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Tam Gramer Açıklaması / Full Grammar Explanation</div>
+          <div class="toggle-sub">Seçilen konunun tüm detayları, formülleri, istisnalar — No detail skipped</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="fullGrammar" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Türkçe Paragraf → İngilizce Çeviri Görevi</div>
+          <div class="toggle-sub">Türkçe açıklama + anahtar kelimeler → Kullanıcı İngilizceye çevirir</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="translationTask" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Tüm Varyasyon Tablosu / Full Variation Table</div>
+          <div class="toggle-sub">"I write a report" → tüm zaman + yapı varyasyonları tablosu</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="varTable" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Gerçek Dünya Örnekleri / Real-World Examples</div>
+          <div class="toggle-sub">İnternetten 5 gerçek paragraf örneği + kaynak linki</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="realWorld" checked><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📚</span> Kelime Bankası / Vocabulary Bank</div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Otomatik Kelime Bankası / Auto Vocabulary Bank</div>
+          <div class="toggle-sub">Metindeki zor kelimeler otomatik listelenir + Türkçe anlamı</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="vocabBank" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Spaced Repetition (Aralıklı Tekrar)</div>
+          <div class="toggle-sub">SM-2 algoritması: "öğrendim / tekrar et" işaretleme sistemi</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="spaced" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Chunk & Phrasal Verb Bağlamı</div>
+          <div class="toggle-sub">Test bölümünde geçen chunk/phrasal verb'ler bağlamıyla gösterilsin</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="chunkContext" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Hızlı Yanıt Modu / Speed Round</div>
+          <div class="toggle-sub">10 saniyelik sayaç + tek cümle gramer sorusu (aktif geri çağırma)</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="speedRound" checked><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🎙️</span> Shadowing Modülü / Shadowing Module</div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">TTS Seslendirme / Text-to-Speech</div>
+          <div class="toggle-sub">Metin seslendirilir, cümle takibi vurgulanır</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="tts" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Shadowing Alanı / Shadowing Practice Area</div>
+          <div class="toggle-sub">Ses + metin eşleşmesi, ayrı menüde shadowing modu</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="shadowing" checked><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">💾</span> Veri & Arşiv / Data & Archive</div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Ders Arşivi / Lesson Archive</div>
+          <div class="toggle-sub">Her ders kaydedilir, kalındığı yerden devam edilebilir</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="archive" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">JSON Dışa/İçe Aktarma / JSON Export-Import</div>
+          <div class="toggle-sub">Tüm içerik JSON olarak export/import edilebilir</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="jsonExport" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Konu Takip Sistemi / Topic Progress Tracking</div>
+          <div class="toggle-sub">Hangi konuların tamamlandığı, eksik kaldığı takip edilir</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="tracking" checked><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goStep(3)">← Geri</button>
+      <button class="btn btn-primary" onclick="goStep(5)">Sonraki: Teknik Ayarlar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Technical Settings -->
+  <div class="panel" id="panel-5">
+    <div class="panel-title">⚙️ Teknik Ayarlar <span style="color:var(--text3);font-size:14px;font-weight:400">/ Technical Settings</span></div>
+    <div class="panel-sub">AI modeli, depolama ve arayüz tercihlerini belirle. <br><em>Configure AI model, storage and UI preferences.</em></div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🤖</span> AI Model Seçimi / AI Model Selection</div>
+      <select id="aiModel">
+        <option value="claude-sonnet-4-20250514" selected>Claude Sonnet 4 — Hızlı & Güçlü (Önerilen / Recommended)</option>
+        <option value="claude-opus-4-20250514">Claude Opus 4 — En Güçlü (En Yüksek Kalite / Highest Quality)</option>
+        <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 — En Hızlı (Çok Hızlı / Fastest)</option>
+      </select>
+      <div class="tip">💡 Anthropic API anahtarın uygulamaya girilecek. Varsayılan: Claude Sonnet 4 — en iyi hız/kalite dengesi.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">💾</span> Veri Depolama / Data Storage</div>
+      <div class="chips">
+        <div class="chip selected" onclick="toggleChip(this,'storage')" data-val="localStorage">🖥️ LocalStorage <span class="chip-tr">Tarayıcı Belleği</span></div>
+        <div class="chip" onclick="toggleChip(this,'storage')" data-val="indexedDB">📦 IndexedDB <span class="chip-tr">Büyük Veri</span></div>
+        <div class="chip" onclick="toggleChip(this,'storage')" data-val="json">📄 JSON Dosya <span class="chip-tr">Dışa/İçe Aktarma</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🎨</span> Arayüz Tercihleri / UI Preferences</div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Dark/Light Tema Toggle</div>
+          <div class="toggle-sub">Karanlık / Aydınlık tema geçişi</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="themeToggle" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Combo / XP Sistemi / Combo & XP System</div>
+          <div class="toggle-sub">Doğru cevap serisi ve deneyim puanı sistemi</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="xpSystem" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Progress Bar (İlerleme Çubuğu)</div>
+          <div class="toggle-sub">Her modda görünen ilerleme çubuğu</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="progressBarUI" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Türkçe-İngilizce 2 Dilli Arayüz / Bilingual UI</div>
+          <div class="toggle-sub">Tüm arayüz hem Türkçe hem İngilizce gösterilir</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="bilingual" checked><span class="slider"></span></label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-label">Modern Tailwind-tarzı Tasarım / Modern UI Design</div>
+          <div class="toggle-sub">Laravel/Tailwind benzeri temiz, modern görünüm. Verdana font.</div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="modernUI" checked><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Max Token Ayarı / Max Tokens</div>
+      <div class="num-row">
+        <input class="num-input" type="number" id="maxTokens" value="4000" min="500" max="8000" step="500">
+        <span style="font-size:12px;color:var(--text2)">token (500 – 8000). JSON parse hatalarını önlemek için en az 2000 önerilir. / Minimum 2000 recommended to prevent JSON parse errors.</span>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-secondary" onclick="goStep(4)">← Geri</button>
+      <button class="btn btn-primary" onclick="goStep(6)">Prompt Oluştur →</button>
+    </div>
+  </div>
+
+  <!-- STEP 6: Summary + Prompt Output -->
+  <div class="panel" id="panel-6">
+    <div class="panel-title">🚀 Özet & Prompt Çıktısı <span style="color:var(--text3);font-size:14px;font-weight:400">/ Summary & Prompt Output</span></div>
+    <div class="panel-sub">Seçimlerinin özeti ve AI modeline verilecek tam prompt aşağıda. Kopyalayıp Claude'a yapıştır. <br><em>Summary of your selections and the full prompt for the AI model. Copy and paste into Claude.</em></div>
+
+    <div class="summary-grid" id="summaryGrid"></div>
+
+    <div class="section-head">📋 Üretilen Prompt / Generated Prompt</div>
+    <div style="position:relative">
+      <div class="prompt-box" id="promptOutput"></div>
+      <button class="copy-btn" onclick="copyPrompt()">📋 Kopyala / Copy</button>
+    </div>
+
+    <div style="margin-top: 24px; display:flex; gap:12px; flex-wrap:wrap;">
+      <button class="btn btn-success" onclick="copyPrompt()">✅ Prompt'u Kopyala</button>
+      <button class="btn btn-secondary" onclick="downloadPrompt()">⬇️ TXT Olarak İndir</button>
+      <button class="btn btn-secondary" onclick="goStep(1)">🔄 Yeniden Başla</button>
+    </div>
+
+    <div class="info-box" style="margin-top:20px">
+      💡 <strong>Nasıl kullanırsın?</strong> Üretilen prompt'u kopyala → Yeni bir Claude sohbeti aç → Yapıştır ve gönder. Claude sana tam kapsamlı, tek HTML dosyası olarak çalışan uygulamayı üretecek.<br>
+      <em>How to use: Copy the prompt → Open a new Claude conversation → Paste and send. Claude will build your complete, single-file HTML learning app.</em>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const GRAMMAR_TOPICS = [
+  // Tenses
+  { id:'present-simple', name:'Present Simple', tr:'Geniş Zaman', cat:'Tenses' },
+  { id:'present-cont', name:'Present Continuous', tr:'Şimdiki Zaman', cat:'Tenses' },
+  { id:'present-perfect', name:'Present Perfect', tr:'Geçmiş-Şimdi Bağı', cat:'Tenses' },
+  { id:'present-perfect-cont', name:'Present Perfect Continuous', tr:'Süregelen Geçmiş', cat:'Tenses' },
+  { id:'past-simple', name:'Past Simple', tr:'Basit Geçmiş', cat:'Tenses' },
+  { id:'past-cont', name:'Past Continuous', tr:'Süregelen Geçmiş', cat:'Tenses' },
+  { id:'past-perfect', name:'Past Perfect', tr:'Geçmiş-Öncesi', cat:'Tenses' },
+  { id:'past-perfect-cont', name:'Past Perfect Continuous', tr:'Süregelen Geçmişöncesi', cat:'Tenses' },
+  { id:'future-will', name:'Future: will', tr:'Gelecek (will)', cat:'Tenses' },
+  { id:'future-going', name:'Future: be going to', tr:'Yakın Gelecek', cat:'Tenses' },
+  { id:'future-perfect', name:'Future Perfect', tr:'Gelecekte Tamamlanmış', cat:'Tenses' },
+  { id:'future-cont', name:'Future Continuous', tr:'Gelecekte Süregelen', cat:'Tenses' },
+  // Conditionals
+  { id:'cond0', name:'Zero Conditional', tr:'0. Koşul (Gerçek/Evrensel)', cat:'Conditionals' },
+  { id:'cond1', name:'First Conditional', tr:'1. Koşul (Olası)', cat:'Conditionals' },
+  { id:'cond2', name:'Second Conditional', tr:'2. Koşul (Hayali)', cat:'Conditionals' },
+  { id:'cond3', name:'Third Conditional', tr:'3. Koşul (Pişmanlık)', cat:'Conditionals' },
+  { id:'mixed-cond', name:'Mixed Conditionals', tr:'Karışık Koşullar', cat:'Conditionals' },
+  { id:'wish-if-only', name:'Wish / If Only', tr:'Keşke İfadeleri', cat:'Conditionals' },
+  // Passive
+  { id:'passive-present', name:'Passive: Present', tr:'Edilgen: Şimdi', cat:'Passive Voice' },
+  { id:'passive-past', name:'Passive: Past', tr:'Edilgen: Geçmiş', cat:'Passive Voice' },
+  { id:'passive-perfect', name:'Passive: Perfect', tr:'Edilgen: Tamamlanmış', cat:'Passive Voice' },
+  { id:'passive-modal', name:'Passive: Modal Verbs', tr:'Edilgen: Modal ile', cat:'Passive Voice' },
+  { id:'passive-causative', name:'Causative Passive (get/have)', tr:'Yaptırma Edilgeni', cat:'Passive Voice' },
+  // Causatives
+  { id:'caus-make', name:'Causative: MAKE', tr:'Zorlamak (make)', cat:'Causatives' },
+  { id:'caus-let', name:'Causative: LET', tr:'İzin vermek (let)', cat:'Causatives' },
+  { id:'caus-have', name:'Causative: HAVE', tr:'Yaptırmak (have)', cat:'Causatives' },
+  { id:'caus-get', name:'Causative: GET', tr:'Yaptırmak (get)', cat:'Causatives' },
+  // Relative Clauses
+  { id:'rel-defining', name:'Defining Relative Clauses', tr:'Belirten Sıfat Cümleciği', cat:'Relative Clauses' },
+  { id:'rel-non-def', name:'Non-Defining Relative Clauses', tr:'Ekleyen Sıfat Cümleciği', cat:'Relative Clauses' },
+  { id:'rel-reduced', name:'Reduced Relative Clauses', tr:'Kısaltılmış Sıfat Cümleciği', cat:'Relative Clauses' },
+  // Modals
+  { id:'modal-ability', name:'Modals: Ability (can/could)', tr:'Yetenek (can/could)', cat:'Modals' },
+  { id:'modal-permission', name:'Modals: Permission (may/might)', tr:'İzin (may/might)', cat:'Modals' },
+  { id:'modal-obligation', name:'Modals: Obligation (must/have to)', tr:'Zorunluluk (must/have to)', cat:'Modals' },
+  { id:'modal-advice', name:'Modals: Advice (should/ought)', tr:'Tavsiye (should/ought to)', cat:'Modals' },
+  { id:'modal-deduction', name:'Modals: Deduction (must/can\'t)', tr:'Çıkarım (must/can\'t)', cat:'Modals' },
+  { id:'modal-perfect', name:'Modals: Perfect Forms', tr:'Modal + have + V3', cat:'Modals' },
+  // Reported Speech
+  { id:'rep-statements', name:'Reported Speech: Statements', tr:'Dolaylı Anlatım: Cümle', cat:'Reported Speech' },
+  { id:'rep-questions', name:'Reported Speech: Questions', tr:'Dolaylı Anlatım: Soru', cat:'Reported Speech' },
+  { id:'rep-commands', name:'Reported Speech: Commands', tr:'Dolaylı Anlatım: Emir', cat:'Reported Speech' },
+  // Articles & Determiners
+  { id:'articles', name:'Articles (a/an/the/zero)', tr:'Belirtici (a/an/the)', cat:'Articles & Determiners' },
+  { id:'quantifiers', name:'Quantifiers (some/any/much/many)', tr:'Miktar Belirteçleri', cat:'Articles & Determiners' },
+  // Gerund & Infinitive
+  { id:'gerund', name:'Gerund (V-ing as noun)', tr:'İsim-Fiil (-ing)', cat:'Gerund & Infinitive' },
+  { id:'infinitive', name:'Infinitive (to + V)', tr:'Mastar (to + fiil)', cat:'Gerund & Infinitive' },
+  { id:'gerund-inf', name:'Gerund vs Infinitive', tr:'Mastar / İsimfiil Farkı', cat:'Gerund & Infinitive' },
+  // Conjunctions
+  { id:'coord-conj', name:'Coordinating Conjunctions', tr:'Eşdizimli Bağlaçlar (and/but/or)', cat:'Conjunctions' },
+  { id:'subord-conj', name:'Subordinating Conjunctions', tr:'Bağımlı Bağlaçlar (although/because)', cat:'Conjunctions' },
+  { id:'discourse-markers', name:'Discourse Markers', tr:'Söylem İşaretçileri (however/moreover)', cat:'Conjunctions' },
+  // Advanced
+  { id:'inversion', name:'Inversion (Emphatic Structures)', tr:'Vurgulu Devrik Cümle', cat:'Advanced' },
+  { id:'cleft', name:'Cleft Sentences (It is...that)', tr:'Yarık Cümle (It is...that)', cat:'Advanced' },
+  { id:'subjunctive', name:'Subjunctive Mood', tr:'Dilek Kipi', cat:'Advanced' },
+  { id:'ellipsis', name:'Ellipsis & Substitution', tr:'Eksiltme & İkame', cat:'Advanced' },
+  { id:'participle', name:'Participle Clauses', tr:'Ortaç Cümleciği', cat:'Advanced' },
+  { id:'noun-clauses', name:'Noun Clauses', tr:'İsim Cümleciği', cat:'Advanced' },
+  { id:'adv-clauses', name:'Adverbial Clauses', tr:'Zarf Cümleciği', cat:'Advanced' },
+  { id:'stative-verbs', name:'Stative vs Dynamic Verbs', tr:'Durum / Eylem Fiilleri', cat:'Advanced' },
+];
+
+const CATEGORIES = [...new Set(GRAMMAR_TOPICS.map(t => t.cat))];
+const STEPS = [
+  { n:1, label:'Gramer Konuları' },
+  { n:2, label:'Metin Ayarları' },
+  { n:3, label:'Öğrenme Modları' },
+  { n:4, label:'Aktif Modüller' },
+  { n:5, label:'Teknik Ayarlar' },
+  { n:6, label:'Prompt Çıktısı' },
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let state = {
+  currentStep: 1,
+  selectedTopics: [],
+  textFormat: [],
+  tone: [],
+  level: [],
+  wordCount: [],
+  storage: ['localStorage'],
+};
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function init() {
+  buildStepper();
+  buildTopicGrid(GRAMMAR_TOPICS);
+  buildCatFilters();
+}
+
+function buildStepper() {
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = '';
+  STEPS.forEach((s, i) => {
+    const item = document.createElement('div');
+    item.className = 'step-item' + (s.n === state.currentStep ? ' active' : s.n < state.currentStep ? ' done' : '');
+    item.onclick = () => { if (s.n <= state.currentStep) goStep(s.n); };
+    item.innerHTML = `<div class="step-circle">${s.n < state.currentStep ? '✓' : s.n}</div><div class="step-label">${s.label}</div>`;
+    wrap.appendChild(item);
+    if (i < STEPS.length - 1) {
+      const line = document.createElement('div');
+      line.className = 'step-line' + (s.n < state.currentStep ? ' done' : '');
+      wrap.appendChild(line);
+    }
+  });
+}
+
+function buildCatFilters() {
+  const wrap = document.getElementById('catFilters');
+  wrap.innerHTML = `<button class="cat-btn active" onclick="filterCat('all',this)">🌐 Tümü</button>`;
+  CATEGORIES.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.textContent = cat;
+    btn.onclick = function() { filterCat(cat, this); };
+    wrap.appendChild(btn);
+  });
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const search = document.getElementById('topicSearch').value;
+  const filtered = cat === 'all' ? GRAMMAR_TOPICS : GRAMMAR_TOPICS.filter(t => t.cat === cat);
+  buildTopicGrid(filtered.filter(t =>
+    t.name.toLowerCase().includes(search.toLowerCase()) ||
+    t.tr.toLowerCase().includes(search.toLowerCase())
+  ));
+}
+
+function filterTopics(val) {
+  const cat = document.querySelector('.cat-btn.active')?.textContent.trim();
+  let filtered = GRAMMAR_TOPICS;
+  if (cat && cat !== '🌐 Tümü') filtered = filtered.filter(t => t.cat === cat);
+  filtered = filtered.filter(t =>
+    t.name.toLowerCase().includes(val.toLowerCase()) ||
+    t.tr.toLowerCase().includes(val.toLowerCase()) ||
+    t.cat.toLowerCase().includes(val.toLowerCase())
+  );
+  buildTopicGrid(filtered);
+}
+
+function buildTopicGrid(topics) {
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = '';
+  topics.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'topic-card' + (state.selectedTopics.includes(t.id) ? ' selected' : '');
+    card.dataset.id = t.id;
+    card.innerHTML = `<span class="check">✓</span><div class="topic-name">${t.name}</div><div class="topic-tr">${t.tr}</div><div class="topic-cat">${t.cat}</div>`;
+    card.onclick = () => toggleTopic(t.id, t.name, card);
+    grid.appendChild(card);
+  });
+}
+
+function toggleTopic(id, name, card) {
+  if (state.selectedTopics.includes(id)) {
+    state.selectedTopics = state.selectedTopics.filter(x => x !== id);
+    card.classList.remove('selected');
+  } else {
+    state.selectedTopics.push(id);
+    card.classList.add('selected');
+  }
+  updateSelectedStrip();
+}
+
+function updateSelectedStrip() {
+  const strip = document.getElementById('selectedTopicsStrip');
+  if (!state.selectedTopics.length) {
+    strip.innerHTML = '<span style="color:var(--text3)">Henüz konu seçilmedi / No topics selected yet…</span>';
+    return;
+  }
+  strip.innerHTML = state.selectedTopics.map(id => {
+    const t = GRAMMAR_TOPICS.find(x => x.id === id);
+    return `<span class="sel-tag">${t.name} <span class="rm" onclick="removeTopic('${id}')">×</span></span>`;
+  }).join('');
+}
+
+function removeTopic(id) {
+  state.selectedTopics = state.selectedTopics.filter(x => x !== id);
+  document.querySelectorAll('.topic-card').forEach(c => {
+    if (c.dataset.id === id) c.classList.remove('selected');
+  });
+  updateSelectedStrip();
+}
+
+// ─────────────────────────────────────────────
+// CHIP TOGGLE (single select groups)
+// ─────────────────────────────────────────────
+function toggleChip(el, group) {
+  // For single-select groups
+  const singleGroups = ['level','wordCount','storage'];
+  if (singleGroups.includes(group)) {
+    document.querySelectorAll(`[onclick*="toggleChip(this,'${group}')"]`).forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state[group] = [el.dataset.val];
+  } else {
+    el.classList.toggle('selected');
+    const val = el.dataset.val;
+    if (!state[group]) state[group] = [];
+    if (el.classList.contains('selected')) { state[group].push(val); }
+    else { state[group] = state[group].filter(v => v !== val); }
+  }
+}
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function goStep(n) {
+  state.currentStep = n;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + n).classList.add('active');
+  buildStepper();
+  const pct = Math.round((n / STEPS.length) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (n === 6) buildSummaryAndPrompt();
+}
+
+// ─────────────────────────────────────────────
+// SUMMARY & PROMPT
+// ─────────────────────────────────────────────
+function buildSummaryAndPrompt() {
+  // Summary
+  const topicNames = state.selectedTopics.map(id => {
+    const t = GRAMMAR_TOPICS.find(x => x.id === id);
+    return t ? t.name : id;
+  });
+
+  const games = [...document.querySelectorAll('#gameChips .chip.selected')].map(c => c.dataset.val || c.textContent.split('\n')[0].trim());
+
+  const summaryItems = [
+    { k:'Gramer Konuları / Topics', v: topicNames.length ? topicNames.join(', ') : '—' },
+    { k:'Metin Formatı / Format', v: getSelectedChips('textFormat').join(', ') || '—' },
+    { k:'Ton / Tone', v: getSelectedChips('tone').join(', ') || '—' },
+    { k:'Seviye / Level', v: getSelectedChips('level').join(', ') || '—' },
+    { k:'Kelime Sayısı / Words', v: getSelectedChips('wordCount').join(', ') || '—' },
+    { k:'Oyunlar / Games', v: games.slice(0,6).join(', ') || '—' },
+    { k:'AI Modeli / AI Model', v: document.getElementById('aiModel').value },
+    { k:'Depolama / Storage', v: getSelectedChips('storage').join(', ') || '—' },
+    { k:'Max Tokens', v: document.getElementById('maxTokens').value },
+  ];
+
+  const grid = document.getElementById('summaryGrid');
+  grid.innerHTML = summaryItems.map(item => `
+    <div class="summary-item">
+      <div class="summary-key">${item.k}</div>
+      <div class="summary-val">${item.v}</div>
+    </div>
+  `).join('');
+
+  // Collect toggles
+  const T = id => document.getElementById(id)?.checked;
+
+  const activeGames = [...document.querySelectorAll('#gameChips .chip.selected')]
+    .map(c => (c.dataset.val || c.textContent.split('\n')[0].trim())).filter(Boolean);
+
+  const prompt = buildPrompt({
+    topics: topicNames,
+    textFormat: getSelectedChips('textFormat'),
+    tone: getSelectedChips('tone'),
+    level: getSelectedChips('level').join(' / ') || 'B1',
+    wordCount: getSelectedChips('wordCount').join(' / ') || '350',
+    games: activeGames,
+    modA: T('modA'), modB: T('modB'), modC: T('modC'), modD: T('modD'),
+    varPassive: T('varPassive'), varCausative: T('varCausative'),
+    varWH: T('varWH'), varRewrite: T('varRewrite'),
+    fullGrammar: T('fullGrammar'), translationTask: T('translationTask'),
+    varTable: T('varTable'), realWorld: T('realWorld'),
+    vocabBank: T('vocabBank'), spaced: T('spaced'),
+    chunkContext: T('chunkContext'), speedRound: T('speedRound'),
+    tts: T('tts'), shadowing: T('shadowing'),
+    archive: T('archive'), jsonExport: T('jsonExport'), tracking: T('tracking'),
+    themeToggle: T('themeToggle'), xpSystem: T('xpSystem'),
+    progressBar: T('progressBarUI'), bilingual: T('bilingual'), modernUI: T('modernUI'),
+    aiModel: document.getElementById('aiModel').value,
+    storage: getSelectedChips('storage').join(', ') || 'localStorage',
+    maxTokens: document.getElementById('maxTokens').value,
+  });
+
+  document.getElementById('promptOutput').textContent = prompt;
+}
+
+function getSelectedChips(group) {
+  return [...document.querySelectorAll(`[onclick*="toggleChip(this,'${group}')"].selected`)]
+    .map(c => c.dataset.val || c.childNodes[0]?.textContent?.trim()).filter(Boolean);
+}
+
+function buildPrompt(cfg) {
+  const topicsStr = cfg.topics.length
+    ? cfg.topics.join(', ')
+    : 'Conditionals (Type 1, 2, 3), Passive Voice, Causative Verbs, Relative Clauses';
+
+  return `Sen deneyimli bir eğitim yazılımı mimarısın ve İngilizce dil öğrenimi üzerine uzmanlaşmış bir pedagoji uzmanısın. Aşağıdaki spesifikasyonlara göre tam kapsamlı, üretim kalitesinde, TEK HTML DOSYASI olarak çalışan interaktif bir İngilizce öğrenme uygulaması üret. Hiçbir özelliği atlamadan, tam işlevsel kod yaz.
+
+════════════════════════════════════════════════
+BÖLÜM 1 — HEDEF GRAMER KONULARI / GRAMMAR TOPICS
+════════════════════════════════════════════════
+Çalışılacak konular: ${topicsStr}
+
+Bu konuların her biri için:
+- Tam Türkçe + İngilizce gramer açıklaması (formüller, tablolar, istisnalar, kullanım notları)
+- Konuya özel anahtar yapıların vurgulanması (renk highlight — konuya göre farklı renk)
+- Hover tooltip ile zor kelimelerin Türkçe anlamı
+- Her paragrafın yanında collapsible (açılır-kapanır) gramer formül notu
+- Gerçek dünya örnekleri bölümü: internetten bulunan kaynaklara linkler + 5 örnek paragraf özeti
+- "I write a report" örneğindeki gibi: seçilen yapının tüm zaman + varyasyon tablosu (Present, Past, Future × Active, Passive, Question, Negative)
+
+Çoklu konu seçiminde: konular karşılaştırmalı olarak yan yana gösterilmeli, geçişleri ve farklılıkları açıklanmalı.
+
+════════════════════════════════════════════════
+BÖLÜM 2 — DİNAMİK METİN ÜRETİMİ / DYNAMIC TEXT GENERATION
+════════════════════════════════════════════════
+Kullanıcı tercihleri:
+- Format: ${cfg.textFormat.join(' / ') || 'Hikaye / Makale / Diyalog / Günlük'}
+- Ton: ${cfg.tone.join(' / ') || 'Formal / Informal / Academic'}
+- Seviye: ${cfg.level}
+- Kelime Sayısı: ${cfg.wordCount} kelime
+
+Anthropic API (model: ${cfg.aiModel}, max_tokens: ${cfg.maxTokens}) ile metin üretilmeli.
+Gramer yapıları farklı renkte highlight edilmeli; üst-seviye kelimeler altı çizili + Türkçe tooltip.
+
+════════════════════════════════════════════════
+BÖLÜM 3 — ÖLÇME & DEĞERLENDİRME MODLARI / ASSESSMENT MODES
+════════════════════════════════════════════════
+${cfg.modA ? '✅ MOD A — Doğru/Yanlış Quiz: Metinden üretilmiş T/F sorular. Yanlışta Türkçe neden açıklaması.' : ''}
+${cfg.modB ? '✅ MOD B — Çoktan Seçmeli Quiz: Gramer + anlama odaklı. Her şıkta neden doğru/yanlış açıklaması.' : ''}
+${cfg.modC ? '✅ MOD C — Boşluk Doldurma: Gramer yapıları boşaltılsın. Scaffolded hint butonu (formül + Türkçe).' : ''}
+${cfg.modD ? `✅ MOD D — L1-Cued Output (Çeviri Görevi):
+  - Türkçe bağlam cümlesi verilir, kullanıcı İngilizce yazar.
+  - "Kontrol Et" butonu → doğru/yanlış → ipucu → tam cevap
+  ${cfg.varPassive ? '- Aynı cümlenin Passive Voice versiyonu yan yana gösterilmeli' : ''}
+  ${cfg.varCausative ? '- Causative (make/let/have/get) varyasyonları karşılaştırmalı' : ''}
+  ${cfg.varWH ? '- WH-soru varyasyonları: özne belli/belirsiz, so/because, bağlaç alternatifleri (although/however/despite)' : ''}
+  ${cfg.varRewrite ? '- Cümle yeniden yazma: aynı anlamı farklı yapıyla (gramer dönüşümü)' : ''}` : ''}
+
+════════════════════════════════════════════════
+BÖLÜM 4 — KARŞILAŞTIRMALI ÖĞRENME / COMPARATIVE LEARNING
+════════════════════════════════════════════════
+${cfg.varPassive ? '- Active → Passive dönüşüm paneli: Her cümle için yan yana active/passive görünüm' : ''}
+${cfg.varCausative ? '- Causative panel: aynı anlamın make/let/have/get varyasyonları karşılaştırması' : ''}
+${cfg.varWH ? '- WH-question panel: who/what/where/when/why/how × subject/object questions; embedded questions; so/because/although/however karşılaştırma tablosu' : ''}
+${cfg.varRewrite ? '- Cümle dönüşüm egzersizleri: Passive ↔ Active, Causative ↔ Passive, Conditional forms' : ''}
+
+════════════════════════════════════════════════
+BÖLÜM 5 — OYUN MODLARI / GAME MODES
+════════════════════════════════════════════════
+Dahil edilecek oyunlar: ${cfg.games.join(', ')}
+
+Her oyun:
+- Seçilen gramer konusuna ve metne özel içerikle üretilmeli
+- Kelime bankasındaki chunk ve phrasal verb'leri içermeli
+- Puanlama sistemi ile entegre olmalı
+
+════════════════════════════════════════════════
+BÖLÜM 6 — AKTİF MODÜLLER / ACTIVE MODULES
+════════════════════════════════════════════════
+${cfg.vocabBank ? '✅ KELIME BANKASI: Metindeki zor kelimeler + Türkçe anlamları otomatik listelenir.' : ''}
+${cfg.spaced ? '✅ SPACED REPETITION: SM-2 algoritması — "Öğrendim / Tekrar Et" işaretleme.' : ''}
+${cfg.chunkContext ? '✅ CHUNK & PHRASAL VERB BAĞLAMI: Test bölümünde geçen chunk ve phrasal verblar orijinal cümle bağlamıyla gösterilmeli.' : ''}
+${cfg.speedRound ? '✅ HIZLI YANIT MODU: 10 saniyelik geri sayım sayacı + tek cümle gramer sorusu (aktif geri çağırma).' : ''}
+${cfg.fullGrammar ? '✅ GRAMER REHBERİ: Seçilen konunun TÜM detayları — formüller, tablolar, istisnalar, false friends, Türkçe karşılaştırmalar.' : ''}
+${cfg.translationTask ? '✅ ÇEVİRİ GÖREVİ: Türkçe paragraf/cümle → kullanıcı İngilizceye çevirir. Anahtar kelimeler highlight. İpucu sistemi.' : ''}
+${cfg.varTable ? '✅ VARİASYON TABLOSU: "I write a report" → tüm yapı × zaman kombinasyonları üretilir.' : ''}
+${cfg.realWorld ? '✅ GERÇEK DÜNYA ÖRNEKLERİ: Konuya uygun internet kaynaklarına link + 5 paragraf özeti.' : ''}
+${cfg.tts ? '✅ TTS (Text-to-Speech): Metin seslendirilir, aktif cümle vurgulanır (Web Speech API).' : ''}
+${cfg.shadowing ? '✅ SHADOWING MODÜLÜ: Ayrı menüde — ses + metin eşleşmesi, cümle cümle takip, kullanıcı tekrar eder.' : ''}
+
+════════════════════════════════════════════════
+BÖLÜM 7 — VERİ YÖNETİMİ / DATA MANAGEMENT
+════════════════════════════════════════════════
+${cfg.archive ? '✅ DERS ARŞİVİ: Her ders otomatik kaydedilir. Arşivden geri dönüldüğünde AI çağrısı yapılmaz — doğrudan yüklenir. Kalındığı yerden devam.' : ''}
+${cfg.jsonExport ? '✅ JSON DIŞA/İÇE AKTARMA: Tüm içerik (ders, kelime bankası, quiz, skorlar) JSON olarak export/import edilebilir.' : ''}
+${cfg.tracking ? '✅ KONU TAKİBİ: Her gramer konusunun tamamlanma durumu, quiz skorları, öğrenilen kelimeler dashboard\'da gösterilir.' : ''}
+Depolama: ${cfg.storage}
+
+════════════════════════════════════════════════
+BÖLÜM 8 — TEKNİK STANDARTLAR / TECHNICAL STANDARDS
+════════════════════════════════════════════════
+- TEK HTML DOSYASI — CDN hariç sıfır dış bağımlılık
+- Anthropic API: model="${cfg.aiModel}", max_tokens=${cfg.maxTokens}
+- JSON parse hatası önleme: response'dan JSON bloğunu güvenli çıkar, try-catch kullan
+${cfg.themeToggle ? '- Dark / Light tema toggle (CSS variables ile)' : ''}
+- Yazı tipi: Verdana, Geneva, Tahoma, sans-serif (HER YERDE — Google Fonts yok)
+${cfg.xpSystem ? '- XP & Combo sistemi: Doğru cevap serisi arttıkça combo çarpanı ve XP kazanımı' : ''}
+${cfg.progressBar ? '- Progress bar: Her aktivite modunda üstte görünen ilerleme çubuğu' : ''}
+${cfg.bilingual ? '- 2 dilli arayüz: Tüm buton, başlık, açıklama, hata mesajları Türkçe + İngilizce' : ''}
+${cfg.modernUI ? '- Modern UI: Tailwind/Laravel benzeri temiz kart tasarımı, soft gölgeler, border-radius, responsive grid' : ''}
+- Responsive: Mobil uyumlu (320px - 1440px)
+- Tüm metin üretimi AI API üzerinden; aktiviteler bir kez üretildikten sonra cache'de tutulur
+- Kod temiz, okunabilir ve genişletilebilir olmalı
+
+════════════════════════════════════════════════
+UYGULAMA NAVİGASYONU / APP NAVIGATION
+════════════════════════════════════════════════
+Ana Menü:
+1. 📚 Gramer Rehberi (Konu seçimi + tam açıklama)
+2. 📝 Metin Okuma (Üretilen metin + highlights)
+3. 🎯 Pratik Modları (A/B/C/D)
+4. 🎮 Oyun Merkezi
+5. 📖 Kelime Bankası
+6. 🎙️ Shadowing Stüdyo
+7. 📊 İlerleme & Arşiv
+8. ⚙️ Ayarlar (Model seçimi, API anahtarı, tema, dil)
+
+Lütfen TÜM özellikleri eksiksiz, çalışır şekilde tek HTML dosyasında üret. Yarım bırakma, TODO yorum satırı koyma — her şey tam işlevsel olsun.`;
+}
+
+// ─────────────────────────────────────────────
+// ACTIONS
+// ─────────────────────────────────────────────
+function copyPrompt() {
+  const text = document.getElementById('promptOutput').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = '✅ Kopyalandı!';
+    btn.style.background = '#06d6a0';
+    btn.style.color = 'white';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; btn.style.color = ''; }, 2000);
+  });
+}
+
+function downloadPrompt() {
+  const text = document.getElementById('promptOutput').textContent;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'english-learning-app-prompt.txt';
+  a.click();
+}
+
+function toggleTheme() {
+  const d = document.documentElement;
+  const isDark = d.getAttribute('data-theme') === 'dark';
+  d.setAttribute('data-theme', isDark ? '' : 'dark');
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙' : '☀️';
+}
+
+// ─────────────────────────────────────────────
+// START
+// ─────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

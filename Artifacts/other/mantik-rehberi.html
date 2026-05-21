@@ -1,0 +1,2522 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORGANON — Klasik Mantık Rehberi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Verdana&display=swap');
+
+  :root {
+    --font: Verdana, Geneva, sans-serif;
+
+    /* DARK THEME (default) */
+    --bg: #080c14;
+    --bg2: #0d1420;
+    --bg3: #111827;
+    --bg4: #1a2332;
+    --surface: #131d2e;
+    --surface2: #1c2a3e;
+    --surface3: #243044;
+    --border: rgba(0,200,255,0.12);
+    --border2: rgba(0,200,255,0.25);
+    --text: #e8f4ff;
+    --text2: #a0bcd4;
+    --text3: #607a94;
+    --accent: #00c8ff;
+    --accent2: #0066ff;
+    --accent3: #7b2dff;
+    --accent4: #00ffa3;
+    --accent5: #ff6b35;
+    --gold: #f0c040;
+    --glow: rgba(0,200,255,0.15);
+    --glow2: rgba(123,45,255,0.15);
+    --card-shadow: 0 4px 32px rgba(0,0,0,0.5);
+    --grid-line: rgba(0,200,255,0.04);
+  }
+
+  [data-theme="light"] {
+    --bg: #f0f4fa;
+    --bg2: #e8eef8;
+    --bg3: #dde5f2;
+    --bg4: #d0daea;
+    --surface: #ffffff;
+    --surface2: #f5f8ff;
+    --surface3: #eaf0fb;
+    --border: rgba(0,100,200,0.15);
+    --border2: rgba(0,100,200,0.3);
+    --text: #0a1525;
+    --text2: #2a4060;
+    --text3: #6080a0;
+    --accent: #0077cc;
+    --accent2: #0044bb;
+    --accent3: #5500cc;
+    --accent4: #00aa66;
+    --accent5: #cc4400;
+    --gold: #b08000;
+    --glow: rgba(0,120,220,0.1);
+    --glow2: rgba(80,0,200,0.1);
+    --card-shadow: 0 4px 24px rgba(0,50,150,0.1);
+    --grid-line: rgba(0,100,200,0.05);
+  }
+
+  [data-theme="amber"] {
+    --bg: #0f0a00;
+    --bg2: #1a1200;
+    --bg3: #221800;
+    --bg4: #2e2200;
+    --surface: #1a1400;
+    --surface2: #241d00;
+    --surface3: #2e2600;
+    --border: rgba(255,180,0,0.15);
+    --border2: rgba(255,180,0,0.3);
+    --text: #fff8e0;
+    --text2: #d4b060;
+    --text3: #806030;
+    --accent: #ffb800;
+    --accent2: #ff8800;
+    --accent3: #cc6600;
+    --accent4: #44ff88;
+    --accent5: #ff4444;
+    --gold: #ffcc00;
+    --glow: rgba(255,180,0,0.12);
+    --glow2: rgba(200,100,0,0.12);
+    --card-shadow: 0 4px 32px rgba(0,0,0,0.6);
+    --grid-line: rgba(255,180,0,0.04);
+  }
+
+  [data-theme="emerald"] {
+    --bg: #00100a;
+    --bg2: #001a10;
+    --bg3: #002018;
+    --bg4: #002a1e;
+    --surface: #001810;
+    --surface2: #002218;
+    --surface3: #002c20;
+    --border: rgba(0,255,140,0.12);
+    --border2: rgba(0,255,140,0.25);
+    --text: #e0fff4;
+    --text2: #60d4a0;
+    --text3: #308060;
+    --accent: #00ff8c;
+    --accent2: #00cc66;
+    --accent3: #4400ff;
+    --accent4: #ffcc00;
+    --accent5: #ff4466;
+    --gold: #ccff00;
+    --glow: rgba(0,255,140,0.12);
+    --glow2: rgba(0,180,80,0.12);
+    --card-shadow: 0 4px 32px rgba(0,0,0,0.6);
+    --grid-line: rgba(0,255,140,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ========== NAV ========== */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(8,12,20,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 60px;
+  }
+
+  [data-theme="light"] nav { background: rgba(240,244,250,0.9); }
+  [data-theme="amber"] nav { background: rgba(15,10,0,0.9); }
+  [data-theme="emerald"] nav { background: rgba(0,16,10,0.9); }
+
+  .nav-logo {
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-logo-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.5; transform:scale(0.7); }
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-tab {
+    padding: 6px 14px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: var(--font);
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    color: var(--text3);
+    background: transparent;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .nav-tab:hover, .nav-tab.active {
+    color: var(--accent);
+    border-color: var(--border2);
+    background: var(--glow);
+  }
+
+  .nav-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .theme-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    font-family: var(--font);
+    font-size: 10px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-btn.active { border-color: var(--accent); color: var(--accent); background: var(--glow); }
+
+  /* ========== PAGES ========== */
+  .page {
+    display: none;
+    min-height: 100vh;
+    padding-top: 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page.active { display: block; }
+
+  /* ========== PAGE 1: OVERVIEW ========== */
+  .hero {
+    padding: 60px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-size: clamp(28px,5vw,52px);
+    font-weight: bold;
+    letter-spacing: 6px;
+    color: var(--text);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-shadow: 0 0 40px var(--glow);
+  }
+
+  .hero-subtitle {
+    font-size: 13px;
+    color: var(--text3);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+
+  .hero-desc {
+    max-width: 660px;
+    margin: 0 auto 48px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text2);
+  }
+
+  /* ORGANON BOOKS STRIP */
+  .books-strip {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 24px 48px;
+  }
+
+  .book-chip {
+    padding: 6px 16px;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    font-size: 10px;
+    font-family: var(--font);
+    letter-spacing: 2px;
+    color: var(--accent);
+    background: var(--glow);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: bold;
+  }
+
+  .book-chip:hover {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 0 20px var(--accent);
+  }
+
+  /* MIND MAP CONTAINER */
+  .mindmap-wrap {
+    padding: 0 24px 48px;
+    overflow-x: auto;
+  }
+
+  .mindmap-svg-container {
+    width: 100%;
+    min-height: 520px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* CATEGORY GRID */
+  .category-section {
+    padding: 0 24px 60px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border2), transparent);
+  }
+
+  .cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--c1), var(--c2));
+    opacity: 0.6;
+  }
+
+  .cat-card:hover {
+    border-color: var(--border2);
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow);
+  }
+
+  .cat-card:hover::before { opacity: 1; }
+
+  .cat-number {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text3);
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  .cat-title {
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .cat-greek {
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    font-style: italic;
+  }
+
+  .cat-desc {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--text2);
+    margin-bottom: 16px;
+  }
+
+  .cat-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    border: 1px solid;
+  }
+
+  .tag-blue { border-color: rgba(0,200,255,0.3); color: var(--accent); background: rgba(0,200,255,0.05); }
+  .tag-purple { border-color: rgba(123,45,255,0.3); color: var(--accent3); background: rgba(123,45,255,0.05); }
+  .tag-green { border-color: rgba(0,255,163,0.3); color: var(--accent4); background: rgba(0,255,163,0.05); }
+  .tag-orange { border-color: rgba(255,107,53,0.3); color: var(--accent5); background: rgba(255,107,53,0.05); }
+  .tag-gold { border-color: rgba(240,192,64,0.3); color: var(--gold); background: rgba(240,192,64,0.05); }
+
+  .cat-arrow {
+    position: absolute;
+    right: 20px; bottom: 20px;
+    font-size: 16px;
+    color: var(--text3);
+    transition: all 0.2s;
+  }
+
+  .cat-card:hover .cat-arrow { color: var(--accent); transform: translateX(4px); }
+
+  /* ========== INNER PAGES ========== */
+  .page-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  .page-hero {
+    margin-bottom: 48px;
+    padding: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--glow);
+    filter: blur(40px);
+  }
+
+  .page-hero-num {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+
+  .page-hero-title {
+    font-size: clamp(20px, 4vw, 36px);
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .page-hero-greek {
+    font-size: 14px;
+    color: var(--accent);
+    font-style: italic;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+  }
+
+  .page-hero-desc {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text2);
+    max-width: 700px;
+  }
+
+  /* ACCORDION */
+  .accordion-section {
+    margin-bottom: 32px;
+  }
+
+  .accordion-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+    gap: 16px;
+  }
+
+  .accordion-header:hover { background: var(--surface2); }
+
+  .accordion-header.open { background: var(--surface2); border-bottom: 1px solid var(--border); }
+
+  .accordion-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: var(--glow);
+    border: 1px solid var(--border2);
+  }
+
+  .accordion-title {
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    flex: 1;
+    color: var(--text);
+  }
+
+  .accordion-sub {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 1px;
+  }
+
+  .accordion-chevron {
+    font-size: 12px;
+    color: var(--text3);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .accordion-header.open .accordion-chevron { transform: rotate(180deg); color: var(--accent); }
+
+  .accordion-body {
+    display: none;
+    padding: 24px;
+    background: var(--bg2);
+  }
+
+  .accordion-body.open { display: block; }
+
+  .acc-content {
+    font-size: 12px;
+    line-height: 1.85;
+    color: var(--text2);
+    margin-bottom: 20px;
+  }
+
+  /* SUB CARDS */
+  .sub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .sub-card {
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .sub-card:hover { border-color: var(--border2); }
+
+  .sub-card-title {
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .sub-card-body {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--text2);
+  }
+
+  /* EXAMPLE BOX */
+  .example-box {
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .example-box .ex-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  /* FORMULA BOX */
+  .formula {
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  /* TABLE */
+  .logic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 11px;
+  }
+
+  .logic-table th {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: bold;
+  }
+
+  .logic-table td {
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  .logic-table tr:hover td { background: var(--surface3); }
+
+  /* FIGURE BOXES */
+  .syllogism-box {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+    text-align: center;
+  }
+
+  .syllogism-premise {
+    font-size: 13px;
+    color: var(--text2);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-style: italic;
+  }
+
+  .syllogism-premise:last-of-type { border-bottom: none; }
+
+  .syllogism-conclusion {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--accent4);
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 2px solid var(--accent4);
+  }
+
+  .syllogism-name {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-top: 12px;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: fixed;
+    top: 60px; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    z-index: 999;
+    transition: width 0.2s;
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* BACK TO TOP */
+  .back-top {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 900;
+    transition: all 0.2s;
+  }
+
+  .back-top:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 20px var(--accent); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border2), transparent);
+    margin: 32px 0;
+  }
+
+  /* PHILOSOPHER QUOTE */
+  .quote-block {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    background: var(--surface);
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .quote-mark {
+    position: absolute;
+    top: -14px; left: 20px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .quote-text {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text2);
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  .quote-source {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  /* TREE/HIERARCHY */
+  .tree {
+    font-size: 12px;
+    line-height: 2;
+    color: var(--text2);
+    padding-left: 8px;
+  }
+
+  .tree-root {
+    color: var(--accent);
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 13px;
+  }
+
+  .tree-branch::before { content: '├── '; color: var(--text3); }
+  .tree-last::before { content: '└── '; color: var(--text3); }
+  .tree-sub { padding-left: 24px; }
+  .tree-sub .tree-branch::before { content: '├── '; }
+  .tree-sub .tree-last::before { content: '└── '; }
+
+  .highlight { color: var(--accent4); font-weight: bold; }
+  .highlight-gold { color: var(--gold); font-weight: bold; }
+  .highlight-purple { color: var(--accent3); }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .nav-tabs { display: none; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .sub-grid { grid-template-columns: 1fr; }
+    .hero { padding: 40px 20px 30px; }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page.active > * {
+    animation: fadeIn 0.4s ease both;
+  }
+
+  /* MOBILE MENU */
+  .mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: var(--font);
+    font-size: 11px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-menu-btn { display: block; }
+  }
+
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    top: 60px; left: 0; right: 0;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    z-index: 999;
+    padding: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mobile-nav.open { display: flex; }
+
+  /* CHAIN / FLOW DIAGRAM */
+  .flow-chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 16px 0;
+  }
+
+  .flow-node {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--text);
+    letter-spacing: 1px;
+  }
+
+  .flow-arrow {
+    color: var(--accent);
+    font-size: 18px;
+    line-height: 1;
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-dot"></div>
+    ORGANON
+  </div>
+
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" onclick="showPage('overview')">I. Genel Bakış</button>
+    <button class="nav-tab" onclick="showPage('kategoriler')">II. Kategoriler</button>
+    <button class="nav-tab" onclick="showPage('onermeler')">III. Önermeler</button>
+    <button class="nav-tab" onclick="showPage('kiyas')">IV. Kıyas</button>
+    <button class="nav-tab" onclick="showPage('kanitlama')">V. Kanıtlama</button>
+    <button class="nav-tab" onclick="showPage('yanilmacalar')">VI. Yanılmacalar</button>
+    <button class="nav-tab" onclick="showPage('filozoflar')">VII. Geleneği</button>
+  </div>
+
+  <div class="nav-controls">
+    <button class="theme-btn active" onclick="setTheme('dark',this)">DARK</button>
+    <button class="theme-btn" onclick="setTheme('light',this)">LIGHT</button>
+    <button class="theme-btn" onclick="setTheme('amber',this)">AMBER</button>
+    <button class="theme-btn" onclick="setTheme('emerald',this)">EMRD</button>
+    <button class="mobile-menu-btn" onclick="toggleMobile()">☰ MENÜ</button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="nav-tab active" onclick="showPage('overview');toggleMobile()">Genel Bakış</button>
+  <button class="nav-tab" onclick="showPage('kategoriler');toggleMobile()">Kategoriler</button>
+  <button class="nav-tab" onclick="showPage('onermeler');toggleMobile()">Önermeler</button>
+  <button class="nav-tab" onclick="showPage('kiyas');toggleMobile()">Kıyas</button>
+  <button class="nav-tab" onclick="showPage('kanitlama');toggleMobile()">Kanıtlama</button>
+  <button class="nav-tab" onclick="showPage('yanilmacalar');toggleMobile()">Yanılmacalar</button>
+  <button class="nav-tab" onclick="showPage('filozoflar');toggleMobile()">Geleneği</button>
+</div>
+
+<!-- ===================== PAGE 1: OVERVIEW ===================== -->
+<div class="page active" id="page-overview">
+  <div class="hero">
+    <div class="hero-eyebrow">Aristoteles · M.Ö. 384–322 · Organon Külliyatı</div>
+    <h1 class="hero-title">Klasik Mantık</h1>
+    <div class="hero-subtitle">Logos · Syllogismos · Apodeixis</div>
+    <p class="hero-desc">
+      Aristoteles'in Organon (Ὄργανον — Araç) adlı külliyatı, düşüncenin doğru işleyişine ilişkin ilk sistematik incelemeyi sunar. Mantık burada bilimin kendisi değil, bilimin <em>aracı</em>dır. Bu rehber, o külliyatı temel almakta; Porphyrios, Boethius, İbn Sînâ, Ockham ve Skolastik geleneğin katkılarıyla zenginleştirerek klasik mantığın tüm yapısını katman katman açmaktadır.
+    </p>
+
+    <div class="books-strip">
+      <div class="book-chip" onclick="showPage('kategoriler')">Kategoriae</div>
+      <div class="book-chip" onclick="showPage('onermeler')">De Interpretatione</div>
+      <div class="book-chip" onclick="showPage('kiyas')">Analytica Priora</div>
+      <div class="book-chip" onclick="showPage('kanitlama')">Analytica Posteriora</div>
+      <div class="book-chip">Topica</div>
+      <div class="book-chip" onclick="showPage('yanilmacalar')">De Sophisticis Elenchis</div>
+    </div>
+  </div>
+
+  <!-- MIND MAP SVG -->
+  <div class="mindmap-wrap">
+    <div class="section-header"><span class="section-label">Yapısal Harita</span><div class="section-line"></div></div>
+    <div class="mindmap-svg-container">
+      <svg id="mindmapSvg" viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+        <defs>
+          <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(0,200,255,0.2)"/>
+            <stop offset="100%" stop-color="rgba(0,200,255,0)"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- BACKGROUND NODES GLOW -->
+        <circle cx="550" cy="260" r="80" fill="url(#centerGlow)"/>
+
+        <!-- CONNECTING LINES -->
+        <!-- Center to Kategoriler -->
+        <line x1="550" y1="260" x2="150" y2="120" stroke="rgba(0,200,255,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- Center to Onermeler -->
+        <line x1="550" y1="260" x2="150" y2="260" stroke="rgba(0,200,255,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- Center to Kiyas -->
+        <line x1="550" y1="260" x2="150" y2="400" stroke="rgba(0,200,255,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- Center to Kanitlama -->
+        <line x1="550" y1="260" x2="950" y2="120" stroke="rgba(123,45,255,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- Center to Topica -->
+        <line x1="550" y1="260" x2="950" y2="260" stroke="rgba(123,45,255,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- Center to Soph -->
+        <line x1="550" y1="260" x2="950" y2="400" stroke="rgba(123,45,255,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- Center to Yuksek Cinsler -->
+        <line x1="550" y1="260" x2="550" y2="470" stroke="rgba(0,255,163,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- Center to Konu -->
+        <line x1="550" y1="260" x2="550" y2="60" stroke="rgba(240,192,64,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+        <!-- SUB LINES from Kategoriler -->
+        <line x1="150" y1="120" x2="30" y2="60" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+        <line x1="150" y1="120" x2="30" y2="105" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+        <line x1="150" y1="120" x2="30" y2="150" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+
+        <!-- SUB LINES from Onermeler -->
+        <line x1="150" y1="260" x2="30" y2="230" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+        <line x1="150" y1="260" x2="30" y2="260" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+        <line x1="150" y1="260" x2="30" y2="290" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+
+        <!-- SUB LINES from Kiyas -->
+        <line x1="150" y1="400" x2="30" y2="370" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+        <line x1="150" y1="400" x2="30" y2="400" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+        <line x1="150" y1="400" x2="30" y2="430" stroke="rgba(0,200,255,0.12)" stroke-width="1"/>
+
+        <!-- SUB from Kanitlama -->
+        <line x1="950" y1="120" x2="1080" y2="75" stroke="rgba(123,45,255,0.12)" stroke-width="1"/>
+        <line x1="950" y1="120" x2="1080" y2="110" stroke="rgba(123,45,255,0.12)" stroke-width="1"/>
+        <line x1="950" y1="120" x2="1080" y2="145" stroke="rgba(123,45,255,0.12)" stroke-width="1"/>
+
+        <!-- SUB from Topica -->
+        <line x1="950" y1="260" x2="1080" y2="235" stroke="rgba(123,45,255,0.12)" stroke-width="1"/>
+        <line x1="950" y1="260" x2="1080" y2="265" stroke="rgba(123,45,255,0.12)" stroke-width="1"/>
+        <line x1="950" y1="260" x2="1080" y2="295" stroke="rgba(123,45,255,0.12)" stroke-width="1"/>
+
+        <!-- SUB from Soph Elenchis -->
+        <line x1="950" y1="400" x2="1080" y2="370" stroke="rgba(123,45,255,0.12)" stroke-width="1"/>
+        <line x1="950" y1="400" x2="1080" y2="405" stroke="rgba(123,45,255,0.12)" stroke-width="1"/>
+
+        <!-- CENTER NODE -->
+        <rect x="470" y="222" width="160" height="76" rx="10" fill="rgba(0,200,255,0.08)" stroke="rgba(0,200,255,0.5)" stroke-width="1.5" filter="url(#glow)"/>
+        <text x="550" y="250" text-anchor="middle" font-family="Verdana" font-size="13" font-weight="bold" fill="#00c8ff" filter="url(#glow)">ORGANON</text>
+        <text x="550" y="268" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(0,200,255,0.6)" letter-spacing="3">ARISTOTELES</text>
+        <text x="550" y="286" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.7)">Klasik Mantık Külliyatı</text>
+
+        <!-- LEFT NODES -->
+        <!-- Kategoriler -->
+        <rect x="60" y="96" width="180" height="48" rx="8" fill="rgba(0,200,255,0.06)" stroke="rgba(0,200,255,0.3)" stroke-width="1"/>
+        <text x="150" y="117" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="#00c8ff">Kategoriler</text>
+        <text x="150" y="134" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.6)">Varlığın 10 Yüklemi</text>
+
+        <!-- Sub: Kategoriler -->
+        <text x="52" y="63" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(0,200,255,0.5)">Cevher</text>
+        <text x="52" y="108" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Nitelik · Nicelik</text>
+        <text x="52" y="153" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">İlişki · Yer · Zaman</text>
+
+        <!-- Önermeler -->
+        <rect x="60" y="236" width="180" height="48" rx="8" fill="rgba(0,200,255,0.06)" stroke="rgba(0,200,255,0.3)" stroke-width="1"/>
+        <text x="150" y="257" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="#00c8ff">Önermeler</text>
+        <text x="150" y="274" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.6)">De Interpretatione</text>
+
+        <!-- Sub: Önermeler -->
+        <text x="52" y="233" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(0,200,255,0.5)">Tümel · Tikel</text>
+        <text x="52" y="263" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Olumlu · Olumsuz</text>
+        <text x="52" y="293" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Karşıtlık Karesİ</text>
+
+        <!-- Kıyas -->
+        <rect x="60" y="376" width="180" height="48" rx="8" fill="rgba(0,200,255,0.06)" stroke="rgba(0,200,255,0.3)" stroke-width="1"/>
+        <text x="150" y="397" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="#00c8ff">Kıyas</text>
+        <text x="150" y="414" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.6)">Analytica Priora</text>
+
+        <!-- Sub: Kiyas -->
+        <text x="52" y="373" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(0,200,255,0.5)">3 Şekil · Barbara</text>
+        <text x="52" y="403" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Büyük · Küçük Terim</text>
+        <text x="52" y="433" text-anchor="end" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Orta Terim</text>
+
+        <!-- RIGHT NODES -->
+        <!-- Kanıtlama -->
+        <rect x="860" y="96" width="180" height="48" rx="8" fill="rgba(123,45,255,0.06)" stroke="rgba(123,45,255,0.35)" stroke-width="1"/>
+        <text x="950" y="117" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="#9b6bff">Kanıtlama</text>
+        <text x="950" y="134" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.6)">Analytica Posteriora</text>
+
+        <!-- Sub: Kanitlama -->
+        <text x="1098" y="78" text-anchor="start" font-family="Verdana" font-size="9" fill="rgba(123,45,255,0.55)">Apodeixis</text>
+        <text x="1098" y="113" text-anchor="start" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Tümevarım</text>
+        <text x="1098" y="148" text-anchor="start" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Bilim Kuramı</text>
+
+        <!-- Topica -->
+        <rect x="860" y="236" width="180" height="48" rx="8" fill="rgba(123,45,255,0.06)" stroke="rgba(123,45,255,0.35)" stroke-width="1"/>
+        <text x="950" y="257" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="#9b6bff">Topica</text>
+        <text x="950" y="274" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.6)">Diyalektik Uslamlama</text>
+
+        <!-- Sub: Topica -->
+        <text x="1098" y="238" text-anchor="start" font-family="Verdana" font-size="9" fill="rgba(123,45,255,0.55)">Endoksa</text>
+        <text x="1098" y="268" text-anchor="start" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Olası Öncüller</text>
+        <text x="1098" y="298" text-anchor="start" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">8 Kitap Topos</text>
+
+        <!-- De Soph. Elenchis -->
+        <rect x="860" y="376" width="180" height="48" rx="8" fill="rgba(255,107,53,0.06)" stroke="rgba(255,107,53,0.3)" stroke-width="1"/>
+        <text x="950" y="394" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#ff6b35">De Sophisticis Elenchis</text>
+        <text x="950" y="413" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.6)">Sofistik Çürütmeler</text>
+
+        <!-- Sub: Soph -->
+        <text x="1098" y="373" text-anchor="start" font-family="Verdana" font-size="9" fill="rgba(255,107,53,0.55)">13 Dil Yanılmacası</text>
+        <text x="1098" y="408" text-anchor="start" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Dışsal Yanılmacalar</text>
+
+        <!-- TOP NODE: Konu -->
+        <rect x="460" y="20" width="180" height="36" rx="8" fill="rgba(240,192,64,0.07)" stroke="rgba(240,192,64,0.35)" stroke-width="1"/>
+        <text x="550" y="38" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#f0c040">VARLIK · LOGOS · NOUS</text>
+        <text x="550" y="51" text-anchor="middle" font-family="Verdana" font-size="8.5" fill="rgba(160,188,212,0.5)">Metafizik Zemin</text>
+
+        <!-- BOTTOM NODE: Yüksek Cinsler -->
+        <rect x="420" y="458" width="260" height="36" rx="8" fill="rgba(0,255,163,0.06)" stroke="rgba(0,255,163,0.3)" stroke-width="1"/>
+        <text x="550" y="476" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#00ffa3">PORPHYRIOS · İSAGOGE</text>
+        <text x="550" y="490" text-anchor="middle" font-family="Verdana" font-size="8.5" fill="rgba(160,188,212,0.5)">Beş Tümel · Ağaç</text>
+
+      </svg>
+    </div>
+  </div>
+
+  <!-- CATEGORY CARDS GRID -->
+  <div class="category-section">
+    <div class="section-header"><span class="section-label">Yüksek Cinsler — Ana Başlıklar</span><div class="section-line"></div></div>
+    <div class="cat-grid">
+
+      <div class="cat-card" style="--c1:#00c8ff;--c2:#0066ff" onclick="showPage('kategoriler')">
+        <div class="cat-number">KİTAP I</div>
+        <div class="cat-title">Kategoriler</div>
+        <div class="cat-greek">Categoriae — Κατηγορίαι</div>
+        <div class="cat-desc">Varlığın en temel yüklem biçimlerini inceler. Aristoteles 10 kategori tespit eder; bunlar düşüncenin değil, varlığın bölümleridir. Her söylemenin en nihai çerçevesi burada çizilir.</div>
+        <div class="cat-tags">
+          <span class="tag tag-blue">10 Kategori</span>
+          <span class="tag tag-purple">Cevher</span>
+          <span class="tag tag-green">Nitelik</span>
+          <span class="tag tag-gold">Yüklem</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+
+      <div class="cat-card" style="--c1:#7b2dff;--c2:#ff6b35" onclick="showPage('onermeler')">
+        <div class="cat-number">KİTAP II</div>
+        <div class="cat-title">Önerme & Yorum</div>
+        <div class="cat-greek">De Interpretatione — Περὶ Ἑρμηνείας</div>
+        <div class="cat-desc">Doğru ve yanlışın taşıyıcısı olan önermeyi inceler. Özne–yüklem yapısı, nicelik ve nitelik bakımından önerme türleri, karşıtlık ilişkileri ve modluk kavramları burada temellendirilir.</div>
+        <div class="cat-tags">
+          <span class="tag tag-purple">Tümel</span>
+          <span class="tag tag-blue">Tikel</span>
+          <span class="tag tag-orange">Çelişki</span>
+          <span class="tag tag-green">Modalite</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+
+      <div class="cat-card" style="--c1:#00c8ff;--c2:#00ffa3" onclick="showPage('kiyas')">
+        <div class="cat-number">KİTAP III – IV</div>
+        <div class="cat-title">Kıyas Teorisi</div>
+        <div class="cat-greek">Analytica — Ἀναλυτικά</div>
+        <div class="cat-desc">Analytica Priora kıyasın biçimsel yapısını kurar: üç şekil, dört kip, on dört geçerli kip. Analytica Posteriora bu çerçeveyi bilimsel kanıtlamaya uygular; zorunlu ve evrensel bilginin nasıl elde edildiğini gösterir.</div>
+        <div class="cat-tags">
+          <span class="tag tag-blue">Syllogismos</span>
+          <span class="tag tag-green">Apodeixis</span>
+          <span class="tag tag-gold">Barbara</span>
+          <span class="tag tag-purple">Öncül</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+
+      <div class="cat-card" style="--c1:#00ffa3;--c2:#0066ff" onclick="showPage('kanitlama')">
+        <div class="cat-number">BİLİM KURAMI</div>
+        <div class="cat-title">Kanıtlama & Bilim</div>
+        <div class="cat-greek">Apodeixis — Ἀπόδειξις</div>
+        <div class="cat-desc">Bilimsel kanıtlama, zorunlu ve evrensel öncüllerden çıkan kıyaslardır. Aristoteles bilimin axiomal yapısını, ilk ilkeleri (archai) ve tümevarımın rolünü burada ele alır.</div>
+        <div class="cat-tags">
+          <span class="tag tag-green">Axiom</span>
+          <span class="tag tag-blue">Nous</span>
+          <span class="tag tag-purple">Epagoge</span>
+          <span class="tag tag-gold">Episteme</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+
+      <div class="cat-card" style="--c1:#ff6b35;--c2:#7b2dff" onclick="showPage('yanilmacalar')">
+        <div class="cat-number">KİTAP V – VI</div>
+        <div class="cat-title">Yanılmacalar</div>
+        <div class="cat-greek">De Sophisticis Elenchis — Σοφιστικοὶ Ἔλεγχοι</div>
+        <div class="cat-desc">Aristoteles 13 dile bağlı ve 7 dile bağlı olmayan yanılmaca türünü tespit ederek bunları çözümlemenin yollarını gösterir. Sofistlerin kullandığı geçersiz argümanları teşhis etmek için temel araçtır.</div>
+        <div class="cat-tags">
+          <span class="tag tag-orange">Paralogism</span>
+          <span class="tag tag-purple">Equivocatio</span>
+          <span class="tag tag-blue">Amphibolia</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+
+      <div class="cat-card" style="--c1:#f0c040;--c2:#00c8ff" onclick="showPage('filozoflar')">
+        <div class="cat-number">GELENEK</div>
+        <div class="cat-title">Mantık Filozofları</div>
+        <div class="cat-greek">Traditio Logica — Ars Rationis</div>
+        <div class="cat-desc">Porphyrios'tan Boethius'a, İbn Sînâ'dan Ockham'a uzanan büyük mantık geleneği. Her filozof Organon'un hangi boyutuna nasıl katkı yaptı? Porphyrios Ağacı ve Beş Tümel nedir?</div>
+        <div class="cat-tags">
+          <span class="tag tag-gold">Porphyrios</span>
+          <span class="tag tag-purple">Boethius</span>
+          <span class="tag tag-green">İbn Sînâ</span>
+          <span class="tag tag-blue">Ockham</span>
+        </div>
+        <div class="cat-arrow">→</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TEMEL İLKELER -->
+  <div class="category-section">
+    <div class="section-header"><span class="section-label">Üç Temel Düşünce İlkesi</span><div class="section-line"></div></div>
+    <div class="cat-grid">
+      <div class="cat-card" style="--c1:#00c8ff;--c2:#00ffa3">
+        <div class="cat-number">İLKE I</div>
+        <div class="cat-title">Özdeşlik İlkesi</div>
+        <div class="cat-greek">Principium Identitatis — A = A</div>
+        <div class="cat-desc">Her şey kendisiyle özdeştir. Düşüncenin tutarlılığının en temel güvencesidir. Bu ilke ihlal edilirse anlamlı konuşma imkânsız hale gelir.</div>
+      </div>
+      <div class="cat-card" style="--c1:#7b2dff;--c2:#ff6b35">
+        <div class="cat-number">İLKE II</div>
+        <div class="cat-title">Çelişmezlik İlkesi</div>
+        <div class="cat-greek">Principium Non-Contradictionis</div>
+        <div class="cat-desc">Aynı şey aynı bakımdan hem var hem yok olamaz. Aristoteles bunu "ilkelerin en sağlam olanı" diye nitelendirir (Metaphysica Γ 3). Tüm kanıtlamanın zeminidir.</div>
+      </div>
+      <div class="cat-card" style="--c1:#00ffa3;--c2:#0066ff">
+        <div class="cat-number">İLKE III</div>
+        <div class="cat-title">Üçüncü Halin Dışlanması</div>
+        <div class="cat-greek">Principium Exclusi Tertii</div>
+        <div class="cat-desc">Bir önerme ya doğrudur ya yanlıştır; üçüncü bir durum yoktur. Aristoteles bunu De Interpretatione 9'da gelecekteki olgusal önermeler (deniz savaşı) açısından tartışır.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- END PAGE 1 -->
+
+
+<!-- ===================== PAGE 2: KATEGORİLER ===================== -->
+<div class="page" id="page-kategoriler">
+<div class="page-inner">
+
+  <div class="page-hero">
+    <div class="page-hero-num">KİTAP I · ORGANON</div>
+    <h2 class="page-hero-title">Kategoriler</h2>
+    <div class="page-hero-greek">Categoriae — Κατηγορίαι</div>
+    <p class="page-hero-desc">
+      Kategoriler, Organon'un ilk kitabıdır ve herhangi bir kanıt ya da tartışmada kullanılabilecek terimlerin en temel sınıflandırmasını sunar. Aristoteles'e göre kategoriler, varlığın kendisinin en üst bölümleridir; her söylenen şey bu on başlıktan birine girer.
+    </p>
+  </div>
+
+  <div class="accordion-section">
+    <div class="section-header"><span class="section-label">Terim ve Yüklem Anlayışı</span><div class="section-line"></div></div>
+
+    <!-- TERIM -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">📐</div>
+        <div style="flex:1">
+          <div class="accordion-title">Terim (Term) Nedir?</div>
+          <div class="accordion-sub">Logos'un en küçük anlamlı birimi</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Terim, bir önermenin öznesi ya da yüklemi olabilecek ve tek başına doğru veya yanlış olmayan dil birimidir. "İnsan", "hayvan", "beyaz", "koşuyor" gibi sözcükler birer terimdir. Aristoteles Kategoriler'in girişinde önce adları (onoma) ve söylemleri (logos) ayırır, ardından daha temel bir ayrıma geçer.</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Karmaşık Olmayan İfade</div>
+            <div class="sub-card-body">Herhangi bir bileşim içermeyen tek tek sözcükler: "insan", "koşar", "kazanır". Bunlar tek başlarına doğru ya da yanlış değildir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Karmaşık İfade</div>
+            <div class="sub-card-body">Birleştirilmiş sözcüklerden oluşan ifadeler: "insan koşar". Bu tür ifadeler doğru veya yanlış olabilir; yani önerme niteliği taşır.</div>
+          </div>
+        </div>
+
+        <div class="example-box">
+          <div class="ex-label">Örnek</div>
+          "İnsan" tek başına ne doğru ne yanlıştır. "İnsan ölümlüdür" ise doğru ya da yanlış olabilecek tam bir önermedir. Mantığın incelediği şey bu ikinci tür birleşik yapılardır.
+        </div>
+      </div>
+    </div>
+
+    <!-- ON KATEGORİ -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🏛️</div>
+        <div style="flex:1">
+          <div class="accordion-title">On Kategori (Decem Praedicamenta)</div>
+          <div class="accordion-sub">Varlığın en yüksek cinsleri</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aristoteles, herhangi bir karmaşık olmayan ifadeyle söylenebilecek her şeyin şu on başlıktan birine girdiğini öne sürer. Bunlar hem dilde hem varlıkta karşılığı olan en geniş cinsleri ifade eder. Skolastikler bu on kategoriyi "yüklem kategorileri" (praedicamenta) olarak adlandırmıştır.</p>
+
+        <table class="logic-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Latince</th>
+              <th>Türkçe</th>
+              <th>Yunanca</th>
+              <th>Örnek</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Substantia</td><td>Cevher / Töz</td><td>οὐσία</td><td>İnsan, at</td></tr>
+            <tr><td>2</td><td>Quantitas</td><td>Nicelik</td><td>ποσόν</td><td>İki arşın uzunluk</td></tr>
+            <tr><td>3</td><td>Qualitas</td><td>Nitelik</td><td>ποιόν</td><td>Beyaz, gramerci</td></tr>
+            <tr><td>4</td><td>Relatio</td><td>Bağıntı</td><td>πρός τι</td><td>Çift, büyük</td></tr>
+            <tr><td>5</td><td>Ubi</td><td>Yer</td><td>ποῦ</td><td>Pazarda, Likende</td></tr>
+            <tr><td>6</td><td>Quando</td><td>Zaman</td><td>ποτέ</td><td>Dün, geçen yıl</td></tr>
+            <tr><td>7</td><td>Situs</td><td>Duruş / Konum</td><td>κεῖσθαι</td><td>Uzanıyor, oturuyor</td></tr>
+            <tr><td>8</td><td>Habitus</td><td>Sahip Olma</td><td>ἔχειν</td><td>Ayakkabı giymiş</td></tr>
+            <tr><td>9</td><td>Actio</td><td>Etki / Eylem</td><td>ποιεῖν</td><td>Kesiyor, yakıyor</td></tr>
+            <tr><td>10</td><td>Passio</td><td>Edilgi / Etkilenme</td><td>πάσχειν</td><td>Kesiliyor, yakılıyor</td></tr>
+          </tbody>
+        </table>
+
+        <div class="example-box">
+          <div class="ex-label">Neden On?</div>
+          Aristoteles bu sayıyı niçin on olarak belirlediğini açıklamaz. Yorumcular (Porphyrios, Simplikios) çeşitli gerekçeler öne sürmüştür. Önemli olan, birinci kategorinin (cevher) ayrıcalıklı konumu: Diğer dokuz kategori cevherde bulunur ve onunla birlikte anlam kazanır.
+        </div>
+      </div>
+    </div>
+
+    <!-- CEVHER -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">⬡</div>
+        <div style="flex:1">
+          <div class="accordion-title">Cevher / Töz (Substantia — Ousia)</div>
+          <div class="accordion-sub">Birinci ve İkinci Cevher Ayrımı</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aristoteles cevheri iki düzeyide ele alır. Birinci cevherler (substantiae primae) bireysel varlıklardır; bu Sokrates, bu at. İkinci cevherler (substantiae secundae) ise bu bireyleri içine alan türler (species) ve cinslerdir (genera): insan, hayvan.</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Birinci Cevher</div>
+            <div class="sub-card-body">Bireysel, belirli varlık. Ne bir öznede bulunur ne de bir özneden yüklenir. Örnek: <span class="highlight">Bu Sokrates</span>, <span class="highlight">Bu at</span>. En tam anlamıyla cevher bunlardır.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">İkinci Cevher</div>
+            <div class="sub-card-body">Birinci cevherlerin cinsleri ve türleri. Bireylerden yüklenir: "Sokrates insandır". <span class="highlight">İnsan</span> (tür), <span class="highlight">Hayvan</span> (cins) ikinci cevherlerdir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Cevherin Özellikleri</div>
+            <div class="sub-card-body">1) Başka bir öznede bulunmaz. 2) Karşıt nitelikleri sırasıyla alabilir (ısınmak, soğumak). 3) Tek ve sayıca birdir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Aksidanlar</div>
+            <div class="sub-card-body">Nitelik, nicelik vb. diğer dokuz kategori, cevherde bulunan arızî (aksidantal) özelliklerdir. Cevherden bağımsız var olamazlar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PORPHYRİOS AĞACI -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🌳</div>
+        <div style="flex:1">
+          <div class="accordion-title">Porphyrios Ağacı ve Beş Tümel</div>
+          <div class="accordion-sub">Isagoge — Beşinci Kategorilerin Girişi</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Porphyrios (M.S. 234–305), Aristoteles'in Kategoriler'ine bir giriş (Isagoge) yazmış ve beş temel yüklem türü tespit etmiştir. Bu "beş tümel" (quinque voces) klasik mantığın ortak mirası hâline gelmiştir. Porphyrios Ağacı ise cins-tür ilişkisini hiyerarşik biçimde görselleştirir.</p>
+
+        <table class="logic-table">
+          <thead>
+            <tr><th>Tümel</th><th>Latince</th><th>Açıklama</th><th>Örnek</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="highlight">Cins</span></td><td>Genus</td><td>Türleri kaplayan daha geniş kavram</td><td>Hayvan</td></tr>
+            <tr><td><span class="highlight">Tür</span></td><td>Species</td><td>Cinsin altında ayrı bir küme</td><td>İnsan</td></tr>
+            <tr><td><span class="highlight">Ayrım</span></td><td>Differentia</td><td>Türü cinsten ayıran özellik</td><td>Akıllı (rational)</td></tr>
+            <tr><td><span class="highlight">Özgün Özellik</span></td><td>Proprium</td><td>Yalnızca o türe ait ama özü değil</td><td>Gülebilme</td></tr>
+            <tr><td><span class="highlight">Aksidan</span></td><td>Accidens</td><td>Olsa da olmasa da mümkün özellik</td><td>Beyazlık</td></tr>
+          </tbody>
+        </table>
+
+        <!-- PORPHYRIOS TREE SVG -->
+        <div class="mindmap-svg-container" style="min-height:300px;margin-top:16px">
+          <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:280px">
+            <!-- Lines -->
+            <line x1="350" y1="40" x2="350" y2="80" stroke="rgba(0,255,163,0.3)" stroke-width="1.5"/>
+            <line x1="350" y1="80" x2="200" y2="120" stroke="rgba(0,255,163,0.3)" stroke-width="1.5"/>
+            <line x1="350" y1="80" x2="500" y2="120" stroke="rgba(0,255,163,0.3)" stroke-width="1.5"/>
+            <line x1="200" y1="120" x2="200" y2="160" stroke="rgba(0,200,255,0.3)" stroke-width="1.5"/>
+            <line x1="200" y1="160" x2="110" y2="200" stroke="rgba(0,200,255,0.3)" stroke-width="1.5"/>
+            <line x1="200" y1="160" x2="290" y2="200" stroke="rgba(0,200,255,0.3)" stroke-width="1.5"/>
+            <line x1="110" y1="200" x2="110" y2="238" stroke="rgba(123,45,255,0.3)" stroke-width="1.5"/>
+            <line x1="290" y1="200" x2="290" y2="238" stroke="rgba(123,45,255,0.3)" stroke-width="1.5"/>
+
+            <!-- NODES -->
+            <rect x="270" y="18" width="160" height="28" rx="6" fill="rgba(240,192,64,0.1)" stroke="rgba(240,192,64,0.5)" stroke-width="1"/>
+            <text x="350" y="36" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#f0c040">CEVHER (En Yüksek Cins)</text>
+
+            <rect x="120" y="96" width="160" height="28" rx="6" fill="rgba(0,255,163,0.07)" stroke="rgba(0,255,163,0.4)" stroke-width="1"/>
+            <text x="200" y="114" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#00ffa3">CANLI (Cins)</text>
+
+            <rect x="420" y="96" width="160" height="28" rx="6" fill="rgba(160,188,212,0.07)" stroke="rgba(160,188,212,0.2)" stroke-width="1"/>
+            <text x="500" y="114" text-anchor="middle" font-family="Verdana" font-size="10" fill="rgba(160,188,212,0.5)">CANSIZ (Cins)</text>
+
+            <rect x="120" y="138" width="160" height="28" rx="6" fill="rgba(0,200,255,0.07)" stroke="rgba(0,200,255,0.4)" stroke-width="1"/>
+            <text x="200" y="156" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#00c8ff">HAYVAN (Cins)</text>
+
+            <rect x="30" y="178" width="160" height="28" rx="6" fill="rgba(0,200,255,0.07)" stroke="rgba(0,200,255,0.3)" stroke-width="1"/>
+            <text x="110" y="196" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#00c8ff">İNSAN (Tür)</text>
+
+            <rect x="210" y="178" width="160" height="28" rx="6" fill="rgba(160,188,212,0.06)" stroke="rgba(160,188,212,0.2)" stroke-width="1"/>
+            <text x="290" y="196" text-anchor="middle" font-family="Verdana" font-size="10" fill="rgba(160,188,212,0.5)">AT (Tür)</text>
+
+            <rect x="30" y="218" width="160" height="28" rx="6" fill="rgba(123,45,255,0.07)" stroke="rgba(123,45,255,0.4)" stroke-width="1"/>
+            <text x="110" y="236" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#9b6bff">SOKRATES (Birey)</text>
+
+            <rect x="210" y="218" width="160" height="28" rx="6" fill="rgba(123,45,255,0.07)" stroke="rgba(123,45,255,0.4)" stroke-width="1"/>
+            <text x="290" y="236" text-anchor="middle" font-family="Verdana" font-size="10" font-weight="bold" fill="#9b6bff">PLATON (Birey)</text>
+
+            <!-- Labels -->
+            <text x="570" y="112" font-family="Verdana" font-size="8" fill="rgba(160,188,212,0.4)" font-style="italic">ayrım: ruh sahibi</text>
+            <text x="400" y="156" font-family="Verdana" font-size="8" fill="rgba(160,188,212,0.4)" font-style="italic">ayrım: duyarlı</text>
+            <text x="30" y="175" font-family="Verdana" font-size="8" fill="rgba(0,200,255,0.5)" font-style="italic">ayrım: akıllı</text>
+          </svg>
+        </div>
+
+        <div class="example-box">
+          <div class="ex-label">Porphyrios'un Meşhur Sorusu</div>
+          Isagoge'nin girişinde Porphyrios şunu sorar: Cinsler ve türler gerçekten var mı, yoksa yalnızca akıldaki kavramlar mı? Varlarsa maddi mi, değilse duyusal şeylerin dışında mı dururlar? Bu soru Ortaçağ felsefesinde <span class="highlight-gold">tümeller tartışması</span>nı başlatmıştır: Realistler vs. Nominalistler.
+        </div>
+      </div>
+    </div>
+
+    <!-- NİTELİK -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">◈</div>
+        <div style="flex:1">
+          <div class="accordion-title">Nitelik (Qualitas) Kategorisi</div>
+          <div class="accordion-sub">Dört Nitelik Türü</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aristoteles niteliği dört alt türde inceler. Nitelik, bir şeyin nasıl olduğunu belirten kategoridir; "nasıl" sorusunun cevabıdır.</p>
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Huy ve Karakter</div>
+            <div class="sub-card-body">Kalıcı yatkınlıklar: erdem, bilgi, hastalık. Bunlar kolayca değişmez. Örnek: Sokrates'in bilgeliği.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Doğal Kapasite</div>
+            <div class="sub-card-body">Doğal yatkınlık veya zayıflık: hastalığa yatkınlık, güçlülük. İradenin ürünü değildir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Edilgin Nitelikler</div>
+            <div class="sub-card-body">Renk, ses, tat gibi duyusal nitelikler. "Tatlı", "acı", "kırmızı" bunlardandır.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Şekil & Form</div>
+            <div class="sub-card-body">Geometrik biçimler ve bunların uzantıları: kare, üçgen, düz, eğri.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+<!-- END PAGE 2 -->
+
+
+<!-- ===================== PAGE 3: ÖNERMELER ===================== -->
+<div class="page" id="page-onermeler">
+<div class="page-inner">
+
+  <div class="page-hero">
+    <div class="page-hero-num">KİTAP II · ORGANON</div>
+    <h2 class="page-hero-title">Önerme ve Yorum</h2>
+    <div class="page-hero-greek">De Interpretatione — Περὶ Ἑρμηνείας</div>
+    <p class="page-hero-desc">
+      Önerme (propositio / logos apophantikos), doğru ya da yanlış olabilecek söylemdir. De Interpretatione bu temel dil birimi olan önermeyi özne–yüklem yapısı, nicelik, nitelik ve modalite bakımından derinlemesine analiz eder.
+    </p>
+  </div>
+
+  <div class="accordion-section">
+    <div class="section-header"><span class="section-label">Önermenin Yapısı ve Türleri</span><div class="section-line"></div></div>
+
+    <!-- ÖNERMENİN YAPISI -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">📝</div>
+        <div style="flex:1">
+          <div class="accordion-title">Önermenin Temel Yapısı</div>
+          <div class="accordion-sub">Özne · Yüklem · Bağ</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Bir önerme en az iki terimden (özne ve yüklem) oluşur. Aristoteles'e göre basit bir önermede yüklem ya özneyi olumlar ya da olumsuzlar. "İnsan ölümlüdür" bir olumlu basit önermedir. Yüklem ile özne arasındaki bağ copula (bağ-fiil: "dır/dir") ile kurulur.</p>
+
+        <div class="formula">S — P (Özne — Yüklem)</div>
+        <div class="formula">S dir P &nbsp;|&nbsp; S değildir P</div>
+
+        <div class="flow-chain">
+          <div class="flow-node">Özne (S)</div>
+          <div class="flow-arrow">+</div>
+          <div class="flow-node">Bağ (copula)</div>
+          <div class="flow-arrow">+</div>
+          <div class="flow-node">Yüklem (P)</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node">Önerme</div>
+        </div>
+
+        <div class="example-box">
+          <div class="ex-label">Örnekler</div>
+          • "İnsan <span class="highlight">dır</span> ölümlü." (olumlu)<br>
+          • "İnsan <span class="highlight">değildir</span> taş." (olumsuz)<br>
+          • "Her insan <span class="highlight">dır</span> hayvan." (tümel olumlu — A)
+        </div>
+      </div>
+    </div>
+
+    <!-- NİCELİK VE NİTELİK -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">⊞</div>
+        <div style="flex:1">
+          <div class="accordion-title">Dört Önerme Türü (A–E–I–O)</div>
+          <div class="accordion-sub">Nicelik × Nitelik Matrisi</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Skolastikler Aristoteles'in nicelik (tümel/tikel) ve nitelik (olumlu/olumsuz) ayrımını dört harf sembolüyle sistematize etmiştir: <span class="highlight">A, E, I, O</span>. Bu dört önerme türü, kıyasın bütün yapısını belirleyen temel matristir.</p>
+
+        <table class="logic-table">
+          <thead>
+            <tr><th>Sembol</th><th>Ad</th><th>Nicelik</th><th>Nitelik</th><th>Form</th><th>Örnek</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="highlight" style="font-size:16px">A</span></td>
+              <td>Tümel Olumlu</td><td>Tümel</td><td>Olumlu</td>
+              <td><em>Her S, P'dir</em></td>
+              <td>Her insan ölümlüdür</td>
+            </tr>
+            <tr>
+              <td><span class="highlight-purple" style="font-size:16px">E</span></td>
+              <td>Tümel Olumsuz</td><td>Tümel</td><td>Olumsuz</td>
+              <td><em>Hiçbir S, P değildir</em></td>
+              <td>Hiçbir insan taş değildir</td>
+            </tr>
+            <tr>
+              <td><span class="highlight-gold" style="font-size:16px">I</span></td>
+              <td>Tikel Olumlu</td><td>Tikel</td><td>Olumlu</td>
+              <td><em>Bazı S, P'dir</em></td>
+              <td>Bazı insanlar bilgedir</td>
+            </tr>
+            <tr>
+              <td><span class="highlight" style="color:var(--accent5);font-size:16px">O</span></td>
+              <td>Tikel Olumsuz</td><td>Tikel</td><td>Olumsuz</td>
+              <td><em>Bazı S, P değildir</em></td>
+              <td>Bazı insanlar bilge değildir</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="example-box">
+          <div class="ex-label">Anma Yöntemi</div>
+          "AffIrmo" (olumlarım) → A ve I olumlu; "nEgO" (reddederim) → E ve O olumsuz. Bu Skolastik bellek yöntemi asırlar boyunca kullanılmıştır.
+        </div>
+      </div>
+    </div>
+
+    <!-- KARŞITLIK KARESİ -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">◻</div>
+        <div style="flex:1">
+          <div class="accordion-title">Karşıtlık Karesi (Quadratum Oppositorum)</div>
+          <div class="accordion-sub">A·E·I·O arasındaki mantıksal ilişkiler</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Dört önerme türü arasındaki mantıksal ilişkileri bir kare üzerinde gösteren bu şema, Boethius ve Apuleius'a atfedilir; Aristoteles bu ilişkileri De Interpretatione'de analiz etmiş ancak kare biçiminde çizmemiştir.</p>
+
+        <!-- OPPOSITION SQUARE SVG -->
+        <div class="mindmap-svg-container" style="min-height:320px;margin:16px 0">
+          <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:300px">
+            <defs>
+              <marker id="arrow1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="rgba(0,200,255,0.6)"/>
+              </marker>
+              <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="rgba(255,107,53,0.6)"/>
+              </marker>
+              <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="rgba(0,255,163,0.6)"/>
+              </marker>
+              <marker id="arrow4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="rgba(240,192,64,0.6)"/>
+              </marker>
+            </defs>
+
+            <!-- A - Top Left -->
+            <rect x="60" y="40" width="160" height="56" rx="8" fill="rgba(0,200,255,0.08)" stroke="rgba(0,200,255,0.5)" stroke-width="1.5"/>
+            <text x="140" y="62" text-anchor="middle" font-family="Verdana" font-size="18" font-weight="bold" fill="#00c8ff">A</text>
+            <text x="140" y="78" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.7)">Her S, P'dir</text>
+            <text x="140" y="90" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(0,200,255,0.5)">Tümel Olumlu</text>
+
+            <!-- E - Top Right -->
+            <rect x="400" y="40" width="160" height="56" rx="8" fill="rgba(123,45,255,0.08)" stroke="rgba(123,45,255,0.5)" stroke-width="1.5"/>
+            <text x="480" y="62" text-anchor="middle" font-family="Verdana" font-size="18" font-weight="bold" fill="#9b6bff">E</text>
+            <text x="480" y="78" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.7)">Hiçbir S, P değildir</text>
+            <text x="480" y="90" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(123,45,255,0.5)">Tümel Olumsuz</text>
+
+            <!-- I - Bottom Left -->
+            <rect x="60" y="210" width="160" height="56" rx="8" fill="rgba(0,255,163,0.07)" stroke="rgba(0,255,163,0.4)" stroke-width="1.5"/>
+            <text x="140" y="232" text-anchor="middle" font-family="Verdana" font-size="18" font-weight="bold" fill="#00ffa3">I</text>
+            <text x="140" y="248" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.7)">Bazı S, P'dir</text>
+            <text x="140" y="260" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(0,255,163,0.5)">Tikel Olumlu</text>
+
+            <!-- O - Bottom Right -->
+            <rect x="400" y="210" width="160" height="56" rx="8" fill="rgba(255,107,53,0.07)" stroke="rgba(255,107,53,0.4)" stroke-width="1.5"/>
+            <text x="480" y="232" text-anchor="middle" font-family="Verdana" font-size="18" font-weight="bold" fill="#ff6b35">O</text>
+            <text x="480" y="248" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.7)">Bazı S, P değildir</text>
+            <text x="480" y="260" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(255,107,53,0.5)">Tikel Olumsuz</text>
+
+            <!-- CONTRARIES (A–E, top) -->
+            <line x1="220" y1="68" x2="400" y2="68" stroke="rgba(255,107,53,0.6)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+            <line x1="400" y1="68" x2="220" y2="68" stroke="rgba(255,107,53,0)" stroke-width="0"/>
+            <text x="310" y="58" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(255,107,53,0.7)">KARŞIT (Contraries)</text>
+            <text x="310" y="86" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(160,188,212,0.4)">İkisi birden doğru olamaz</text>
+
+            <!-- SUBCONTRARIES (I–O, bottom) -->
+            <line x1="220" y1="238" x2="400" y2="238" stroke="rgba(0,255,163,0.5)" stroke-width="1.5" marker-end="url(#arrow3)"/>
+            <text x="310" y="228" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(0,255,163,0.7)">ALT KARŞIT (Subcontraries)</text>
+            <text x="310" y="256" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(160,188,212,0.4)">İkisi birden yanlış olamaz</text>
+
+            <!-- SUBALTERNS (A–I, left) -->
+            <line x1="140" y1="96" x2="140" y2="210" stroke="rgba(240,192,64,0.5)" stroke-width="1.5" marker-end="url(#arrow4)"/>
+            <text x="110" y="157" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(240,192,64,0.6)" transform="rotate(-90,110,157)">ALTLI (Subaltern)</text>
+
+            <!-- SUBALTERNS (E–O, right) -->
+            <line x1="480" y1="96" x2="480" y2="210" stroke="rgba(240,192,64,0.5)" stroke-width="1.5" marker-end="url(#arrow4)"/>
+            <text x="512" y="157" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(240,192,64,0.6)" transform="rotate(90,512,157)">ALTLI (Subaltern)</text>
+
+            <!-- CONTRADICTORIES (A–O, E–I, diagonal) -->
+            <line x1="220" y1="96" x2="400" y2="210" stroke="rgba(0,200,255,0.35)" stroke-width="1.5" stroke-dasharray="6,3"/>
+            <line x1="400" y1="96" x2="220" y2="210" stroke="rgba(0,200,255,0.35)" stroke-width="1.5" stroke-dasharray="6,3"/>
+            <text x="310" y="157" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(0,200,255,0.6)">ÇELİŞİK</text>
+            <text x="310" y="170" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(160,188,212,0.4)">(Contradictories)</text>
+          </svg>
+        </div>
+
+        <table class="logic-table">
+          <thead><tr><th>İlişki</th><th>Çiftler</th><th>Kural</th></tr></thead>
+          <tbody>
+            <tr><td><span class="highlight">Çelişik</span></td><td>A–O, E–I</td><td>Biri doğruysa diğeri kesinlikle yanlıştır. Hem ikisi doğru hem ikisi yanlış olamaz.</td></tr>
+            <tr><td><span class="highlight-purple">Karşıt</span></td><td>A–E</td><td>İkisi birden doğru olamaz; ama ikisi birden yanlış olabilir.</td></tr>
+            <tr><td><span class="highlight-gold">Alt Karşıt</span></td><td>I–O</td><td>İkisi birden yanlış olamaz; ama ikisi birden doğru olabilir.</td></tr>
+            <tr><td><span class="highlight" style="color:var(--accent4)">Altlık</span></td><td>A→I, E→O</td><td>Tümel doğruysa tikel de doğrudur (ama tersi zorunlu değil).</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MODALİTE -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">◈</div>
+        <div style="flex:1">
+          <div class="accordion-title">Modal Önermeler (Modalitas)</div>
+          <div class="accordion-sub">Zorunluluk · Olasılık · İmkânsızlık</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aristoteles De Interpretatione'de önermelere bir modalite boyutu ekler. Bir şey "zorunlu olarak" böyledir, ya da "olası olarak" böyledir gibi niteleme ekleyerek önermenin epistemik veya ontolojik statüsü belirtilir.</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Zorunluluk (Necessitas)</div>
+            <div class="sub-card-body">"Zorunlu olarak P'dir": Farklı türlü olmak mümkün değildir. Matematik ilkeleri böyledir. Bilimsel bilginin nesnesi zorunlu önermelere dayanır.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Olasılık (Possibilitas)</div>
+            <div class="sub-card-body">"Olası olarak P'dir": Farklı türlü de olabilir. Tikel olgusal önermeler genellikle bu modalite içindedir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">İmkânsızlık (Impossibilitas)</div>
+            <div class="sub-card-body">"Zorunlu olarak P değildir": Hiçbir koşulda gerçekleşmesi mümkün değildir. Çelişmezlik ilkesini ihlal eden durumlar imkânsızdır.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Olgusallık (De facto)</div>
+            <div class="sub-card-body">Şu an gerçek olan ama zorunlu olmayan durum. "Bugün deniz savaşı olacak" ünlü örneği bu modalitede değerlendirilir.</div>
+          </div>
+        </div>
+
+        <div class="quote-block">
+          <div class="quote-mark">"</div>
+          <p class="quote-text">Yarın bir deniz savaşı ya olacak ya da olmayacak; ama bunların hangisinin doğru olduğu şimdiden zorunlu olarak belirlenmiş değildir.</p>
+          <div class="quote-source">Aristoteles — De Interpretatione, 9. Bölüm (Deniz Savaşı Paradoksu)</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+<!-- END PAGE 3 -->
+
+
+<!-- ===================== PAGE 4: KIYAS ===================== -->
+<div class="page" id="page-kiyas">
+<div class="page-inner">
+
+  <div class="page-hero">
+    <div class="page-hero-num">KİTAP III–IV · ORGANON</div>
+    <h2 class="page-hero-title">Kıyas Teorisi</h2>
+    <div class="page-hero-greek">Syllogismos — Συλλογισμός</div>
+    <p class="page-hero-desc">
+      Kıyas (syllogismos), belirli öncüllerden zorunlu olarak bir sonucun çıktığı çıkarım biçimidir. Aristoteles Analytica Priora'da kıyasın salt biçimsel yapısını, Analytica Posteriora'da ise bilimsel uygulamasını inceler.
+    </p>
+  </div>
+
+  <div class="accordion-section">
+    <div class="section-header"><span class="section-label">Kıyasın Yapısı</span><div class="section-line"></div></div>
+
+    <!-- KIYAS TANIMI -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🔗</div>
+        <div style="flex:1">
+          <div class="accordion-title">Kıyasın Tanımı ve Unsurları</div>
+          <div class="accordion-sub">Büyük · Küçük · Orta Terim</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aristoteles kıyası şöyle tanımlar: "Belirli şeyler öncül olarak konulduğunda, bu öncüllerin zorunlu bir sonucu olarak, öncüllerden farklı bir başka şey ortaya çıkar." Kıyasın üç unsuru vardır: büyük terim (P), küçük terim (S) ve orta terim (M).</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Büyük Öncül (Major)</div>
+            <div class="sub-card-body">Büyük terimi (P) ve orta terimi (M) içeren öncül. Tümel olumlu önerme genellikle büyük öncül olur. Örnek: "Her hayvan ölümlüdür."</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Küçük Öncül (Minor)</div>
+            <div class="sub-card-body">Küçük terimi (S) ve orta terimi (M) içeren öncül. Örnek: "Her insan bir hayvandır."</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Sonuç (Conclusio)</div>
+            <div class="sub-card-body">Büyük ve küçük terimi içeren, orta terimi içermeyen çıkan önerme. Örnek: "Her insan ölümlüdür."</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Orta Terim (M)</div>
+            <div class="sub-card-body">Her iki öncülde de yer alır ama sonuçta yer almaz. Öncülleri birbirine bağlayan köprü terimdir. Kıyasın geçerliliği büyük ölçüde orta terimin doğru kullanımına bağlıdır.</div>
+          </div>
+        </div>
+
+        <div class="syllogism-box">
+          <div class="syllogism-premise">Her hayvan ölümlüdür. &nbsp;&nbsp; (M → P)</div>
+          <div class="syllogism-premise">Her insan bir hayvandır. &nbsp;&nbsp; (S → M)</div>
+          <div class="syllogism-conclusion">∴ Her insan ölümlüdür. &nbsp;&nbsp; (S → P)</div>
+          <div class="syllogism-name">BARBARA — Birinci Şekil — AAA</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÜÇ ŞEKİL -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">△</div>
+        <div style="flex:1">
+          <div class="accordion-title">Kıyasın Üç Şekli (Figurae)</div>
+          <div class="accordion-sub">Orta terimin konumuna göre</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Kıyasın şekli, orta terimin (M) öncüllerdeki konumuna göre belirlenir. Aristoteles üç şekil tespit etmiş; Galenos ya da onun çağdaşları dördüncü bir şekil eklemiştir (ancak bu Aristoteles'e atfedilmez).</p>
+
+        <!-- FİGURES SVG -->
+        <div class="mindmap-svg-container" style="min-height:280px">
+          <svg viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:260px">
+            <!-- Figure 1 -->
+            <rect x="20" y="20" width="220" height="220" rx="10" fill="rgba(0,200,255,0.04)" stroke="rgba(0,200,255,0.2)" stroke-width="1"/>
+            <text x="130" y="45" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="#00c8ff">BİRİNCİ ŞEKİL</text>
+            <text x="130" y="62" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.5)">Figura Prima</text>
+            <rect x="40" y="78" width="180" height="28" rx="5" fill="rgba(0,200,255,0.07)" stroke="rgba(0,200,255,0.2)" stroke-width="1"/>
+            <text x="130" y="97" text-anchor="middle" font-family="Verdana" font-size="10" fill="#a0bcd4">M — P (büyük öncül)</text>
+            <rect x="40" y="114" width="180" height="28" rx="5" fill="rgba(0,200,255,0.07)" stroke="rgba(0,200,255,0.2)" stroke-width="1"/>
+            <text x="130" y="133" text-anchor="middle" font-family="Verdana" font-size="10" fill="#a0bcd4">S — M (küçük öncül)</text>
+            <line x1="40" y1="154" x2="220" y2="154" stroke="rgba(0,255,163,0.4)" stroke-width="1.5"/>
+            <rect x="40" y="162" width="180" height="28" rx="5" fill="rgba(0,255,163,0.07)" stroke="rgba(0,255,163,0.3)" stroke-width="1"/>
+            <text x="130" y="181" text-anchor="middle" font-family="Verdana" font-size="10" fill="#00ffa3">S — P (sonuç)</text>
+            <text x="130" y="218" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Barbara, Celarent, Darii, Ferio</text>
+
+            <!-- Figure 2 -->
+            <rect x="290" y="20" width="220" height="220" rx="10" fill="rgba(123,45,255,0.04)" stroke="rgba(123,45,255,0.2)" stroke-width="1"/>
+            <text x="400" y="45" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="#9b6bff">İKİNCİ ŞEKİL</text>
+            <text x="400" y="62" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.5)">Figura Secunda</text>
+            <rect x="310" y="78" width="180" height="28" rx="5" fill="rgba(123,45,255,0.07)" stroke="rgba(123,45,255,0.2)" stroke-width="1"/>
+            <text x="400" y="97" text-anchor="middle" font-family="Verdana" font-size="10" fill="#a0bcd4">P — M (büyük öncül)</text>
+            <rect x="310" y="114" width="180" height="28" rx="5" fill="rgba(123,45,255,0.07)" stroke="rgba(123,45,255,0.2)" stroke-width="1"/>
+            <text x="400" y="133" text-anchor="middle" font-family="Verdana" font-size="10" fill="#a0bcd4">S — M (küçük öncül)</text>
+            <line x1="310" y1="154" x2="490" y2="154" stroke="rgba(0,255,163,0.4)" stroke-width="1.5"/>
+            <rect x="310" y="162" width="180" height="28" rx="5" fill="rgba(0,255,163,0.07)" stroke="rgba(0,255,163,0.3)" stroke-width="1"/>
+            <text x="400" y="181" text-anchor="middle" font-family="Verdana" font-size="10" fill="#00ffa3">S — P (sonuç)</text>
+            <text x="400" y="218" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Cesare, Camestres, Festino, Baroco</text>
+
+            <!-- Figure 3 -->
+            <rect x="560" y="20" width="220" height="220" rx="10" fill="rgba(255,107,53,0.04)" stroke="rgba(255,107,53,0.2)" stroke-width="1"/>
+            <text x="670" y="45" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="#ff6b35">ÜÇÜNCÜ ŞEKİL</text>
+            <text x="670" y="62" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.5)">Figura Tertia</text>
+            <rect x="580" y="78" width="180" height="28" rx="5" fill="rgba(255,107,53,0.07)" stroke="rgba(255,107,53,0.2)" stroke-width="1"/>
+            <text x="670" y="97" text-anchor="middle" font-family="Verdana" font-size="10" fill="#a0bcd4">M — P (büyük öncül)</text>
+            <rect x="580" y="114" width="180" height="28" rx="5" fill="rgba(255,107,53,0.07)" stroke="rgba(255,107,53,0.2)" stroke-width="1"/>
+            <text x="670" y="133" text-anchor="middle" font-family="Verdana" font-size="10" fill="#a0bcd4">M — S (küçük öncül)</text>
+            <line x1="580" y1="154" x2="760" y2="154" stroke="rgba(0,255,163,0.4)" stroke-width="1.5"/>
+            <rect x="580" y="162" width="180" height="28" rx="5" fill="rgba(0,255,163,0.07)" stroke="rgba(0,255,163,0.3)" stroke-width="1"/>
+            <text x="670" y="181" text-anchor="middle" font-family="Verdana" font-size="10" fill="#00ffa3">S — P (sonuç)</text>
+            <text x="670" y="218" text-anchor="middle" font-family="Verdana" font-size="9" fill="rgba(160,188,212,0.4)">Darapti, Disamis, Datisi, Felapton…</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ON DÖRT GEÇERLİ KİP -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🎯</div>
+        <div style="flex:1">
+          <div class="accordion-title">On Dört Geçerli Kip ve Mnemonik Adlar</div>
+          <div class="accordion-sub">Barbara, Celarent, Darii… Skolastik bellek sistemi</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aristoteles Analytica Priora'da üç şekil için toplam on dört geçerli kip tespit etmiştir. Orta Çağ'da her kipin önerme türleri (A/E/I/O) mnemonik Latince adlarla kodlanmıştır. Bu adlardaki sesli harfler sırasıyla büyük öncül, küçük öncül ve sonucun türünü gösterir.</p>
+
+        <table class="logic-table">
+          <thead>
+            <tr><th>Ad</th><th>Şekil</th><th>Büyük</th><th>Küçük</th><th>Sonuç</th><th>Şema</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="highlight">Barbara</span></td><td>I</td><td>A</td><td>A</td><td>A</td><td>Her M P'dir; Her S M'dir; Her S P'dir</td></tr>
+            <tr><td><span class="highlight">Celarent</span></td><td>I</td><td>E</td><td>A</td><td>E</td><td>Hiçbir M P değildir; Her S M'dir; Hiçbir S P değildir</td></tr>
+            <tr><td><span class="highlight">Darii</span></td><td>I</td><td>A</td><td>I</td><td>I</td><td>Her M P'dir; Bazı S M'dir; Bazı S P'dir</td></tr>
+            <tr><td><span class="highlight">Ferio</span></td><td>I</td><td>E</td><td>I</td><td>O</td><td>Hiçbir M P değildir; Bazı S M'dir; Bazı S P değildir</td></tr>
+            <tr><td><span class="highlight-purple">Cesare</span></td><td>II</td><td>E</td><td>A</td><td>E</td><td>Hiçbir P M değildir; Her S M'dir; Hiçbir S P değildir</td></tr>
+            <tr><td><span class="highlight-purple">Camestres</span></td><td>II</td><td>A</td><td>E</td><td>E</td><td>Her P M'dir; Hiçbir S M değildir; Hiçbir S P değildir</td></tr>
+            <tr><td><span class="highlight-purple">Festino</span></td><td>II</td><td>E</td><td>I</td><td>O</td><td>Hiçbir P M değildir; Bazı S M'dir; Bazı S P değildir</td></tr>
+            <tr><td><span class="highlight-purple">Baroco</span></td><td>II</td><td>A</td><td>O</td><td>O</td><td>Her P M'dir; Bazı S M değildir; Bazı S P değildir</td></tr>
+            <tr><td><span class="highlight" style="color:var(--accent5)">Darapti</span></td><td>III</td><td>A</td><td>A</td><td>I</td><td>Her M P'dir; Her M S'dir; Bazı S P'dir</td></tr>
+            <tr><td><span class="highlight" style="color:var(--accent5)">Felapton</span></td><td>III</td><td>E</td><td>A</td><td>O</td><td>Hiçbir M P değildir; Her M S'dir; Bazı S P değildir</td></tr>
+            <tr><td><span class="highlight" style="color:var(--accent5)">Disamis</span></td><td>III</td><td>I</td><td>A</td><td>I</td><td>Bazı M P'dir; Her M S'dir; Bazı S P'dir</td></tr>
+            <tr><td><span class="highlight" style="color:var(--accent5)">Datisi</span></td><td>III</td><td>A</td><td>I</td><td>I</td><td>Her M P'dir; Bazı M S'dir; Bazı S P'dir</td></tr>
+            <tr><td><span class="highlight" style="color:var(--accent5)">Bocardo</span></td><td>III</td><td>O</td><td>A</td><td>O</td><td>Bazı M P değildir; Her M S'dir; Bazı S P değildir</td></tr>
+            <tr><td><span class="highlight" style="color:var(--accent5)">Ferison</span></td><td>III</td><td>E</td><td>I</td><td>O</td><td>Hiçbir M P değildir; Bazı M S'dir; Bazı S P değildir</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KIYAS KİPLERİ EGZERSİZİ -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🧪</div>
+        <div style="flex:1">
+          <div class="accordion-title">Kıyas Analiz Aracı</div>
+          <div class="accordion-sub">İnteraktif önerme analizi</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aşağıdaki araçla bir kıyasın büyük öncülünü, küçük öncülünü ve sonucunu seçerek hangi şekle ve kipe ait olduğunu görebilirsiniz.</p>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0">
+          <div>
+            <div style="font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:6px;font-weight:bold">BÜYÜK ÖNCÜL</div>
+            <select id="selMajor" style="width:100%;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:11px" onchange="analyzeSyllogism()">
+              <option value="A">A — Her M, P'dir</option>
+              <option value="E">E — Hiçbir M, P değildir</option>
+              <option value="I">I — Bazı M, P'dir</option>
+              <option value="O">O — Bazı M, P değildir</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:6px;font-weight:bold">KÜÇÜK ÖNCÜL</div>
+            <select id="selMinor" style="width:100%;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:11px" onchange="analyzeSyllogism()">
+              <option value="A">A — Her S, M'dir</option>
+              <option value="E">E — Hiçbir S, M değildir</option>
+              <option value="I">I — Bazı S, M'dir</option>
+              <option value="O">O — Bazı S, M değildir</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:10px;letter-spacing:2px;color:var(--accent);margin-bottom:6px;font-weight:bold">ŞEKİL</div>
+            <select id="selFig" style="width:100%;padding:8px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:11px" onchange="analyzeSyllogism()">
+              <option value="1">Şekil I (M-P / S-M)</option>
+              <option value="2">Şekil II (P-M / S-M)</option>
+              <option value="3">Şekil III (M-P / M-S)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="sylResult" style="background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:16px;font-size:12px;color:var(--text2);line-height:1.8">
+          Seçimlerinizi yapınca sonuç burada görünecektir.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+<!-- END PAGE 4 -->
+
+
+<!-- ===================== PAGE 5: KANITLAMA ===================== -->
+<div class="page" id="page-kanitlama">
+<div class="page-inner">
+
+  <div class="page-hero">
+    <div class="page-hero-num">BİLİM KURAMI · ORGANON</div>
+    <h2 class="page-hero-title">Kanıtlama ve Bilimsel Bilgi</h2>
+    <div class="page-hero-greek">Apodeixis — Ἀπόδειξις · Episteme — Ἐπιστήμη</div>
+    <p class="page-hero-desc">
+      Analytica Posteriora, kıyasın bilimsel uygulamasını ele alır. Bir şeyi gerçekten bilmek (episteme) — onu neden öyle olduğunu zorunlu ve evrensel olarak kavramak demektir. Bu bilgi ancak kanıtlama (apodeixis) yoluyla elde edilir.
+    </p>
+  </div>
+
+  <div class="accordion-section">
+    <div class="section-header"><span class="section-label">Bilginin Temelleri</span><div class="section-line"></div></div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🏔️</div>
+        <div style="flex:1">
+          <div class="accordion-title">Bilimsel Bilginin Koşulları</div>
+          <div class="accordion-sub">Episteme vs. Doxa</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aristoteles'e göre bir şeyi gerçek anlamda bilmek ile sanmak ya da inanmak arasında köklü bir fark vardır. Bilimsel bilgi (episteme), zorunlu olan şeylerle ilgilidir ve nesnesinin farklı türlü olamayacağını kavramayı gerektirir.</p>
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Episteme (Bilimsel Bilgi)</div>
+            <div class="sub-card-body">Zorunlu, evrensel ve değişmez olana ilişkin bilgi. Nedenini bilerek bilmek. Kanıtlamanın ürünüdür.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Nous (Sezgisel Akıl)</div>
+            <div class="sub-card-body">İlk ilkeleri kavrayan bilme yetisi. Kanıtlanamaz; dolaysız, aracısız kavrayıştır. Kanıtlamanın başlangıç noktasını sağlar.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Doxa (Kanı)</div>
+            <div class="sub-card-body">Olası ve değişebilir şeylere ilişkin inanç. Farklı türlü de olabilecek şeyler hakkında oluşur. Bilimsel kesinlikten yoksundur.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Techne (Sanat/Beceri)</div>
+            <div class="sub-card-body">Tümelden tikele uygulamalı bilme. Nedenini bilerek yapabilmek. Episteme ile doxa arasında bir konumdadır.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🏛️</div>
+        <div style="flex:1">
+          <div class="accordion-title">Kanıtlamanın Koşulları ve İlk İlkeler</div>
+          <div class="accordion-sub">Archai — Axiomal Yapı</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Kanıtlama sonsuz gerileme içine düşmemek için ilk ilkelerde (archai) durmalıdır. Bu ilkeler kanıtlanmaz, dolaysız ve zorunlu doğrulardır. Aristoteles ilk ilkeleri türlerine göre sınıflandırır.</p>
+
+        <table class="logic-table">
+          <thead><tr><th>İlke Türü</th><th>Latince</th><th>Açıklama</th><th>Örnek</th></tr></thead>
+          <tbody>
+            <tr><td><span class="highlight">Aksiyom</span></td><td>Axioma</td><td>Her bilimin paylaştığı evrensel ilke</td><td>Çelişmezlik ilkesi</td></tr>
+            <tr><td><span class="highlight">Postülat</span></td><td>Postulatum</td><td>Belirli bir bilime özgü kabul</td><td>Nokta boyutsuz şeydir</td></tr>
+            <tr><td><span class="highlight">Tanım</span></td><td>Definitio</td><td>Bir terimin özsel içeriğini ortaya koyan</td><td>İnsan: akıllı hayvan</td></tr>
+            <tr><td><span class="highlight">Hipotez</span></td><td>Hypothesis</td><td>Var olduğu varsayılan şey</td><td>Geometrik noktanın varlığı</td></tr>
+          </tbody>
+        </table>
+
+        <div class="flow-chain">
+          <div class="flow-node">İlk İlkeler (Archai)</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node">Kanıtlayıcı Kıyas</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node">Zorunlu Sonuç</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node">Episteme</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">⬆️</div>
+        <div style="flex:1">
+          <div class="accordion-title">Tümevarım (Epagoge) ve İlk İlkelerin Kavranışı</div>
+          <div class="accordion-sub">Duyudan Nous'a Yükseliş</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Kanıtlama ilk ilkelerde durduğuna göre, bu ilkeler nasıl bilinir? Aristoteles duyudan başlayan bir bilgi yükselişini (epagoge) tasvir eder. Bu, "tümevarım" olarak çevrilse de tek tek olgulardan soyutlama yoluyla tümele yükselen bir kavrayış sürecidir.</p>
+
+        <div class="flow-chain" style="flex-direction:column;align-items:flex-start">
+          <div class="flow-node" style="width:300px">1. Duyum (Aisthesis) — Bireysel izlenim</div>
+          <div class="flow-arrow" style="transform:rotate(90deg);padding:4px">↓</div>
+          <div class="flow-node" style="width:300px">2. Bellek (Mneme) — İzlenimin kalıcılaşması</div>
+          <div class="flow-arrow" style="transform:rotate(90deg);padding:4px">↓</div>
+          <div class="flow-node" style="width:300px">3. Deney (Empeiria) — Belleklerin birikmesi</div>
+          <div class="flow-arrow" style="transform:rotate(90deg);padding:4px">↓</div>
+          <div class="flow-node" style="width:300px">4. Sanat/Bilim (Techne/Episteme) — Tümel kavrayış</div>
+          <div class="flow-arrow" style="transform:rotate(90deg);padding:4px">↓</div>
+          <div class="flow-node" style="width:300px; border-color:var(--accent4);color:var(--accent4)">5. Nous — İlk ilkelerin dolaysız kavranışı</div>
+        </div>
+
+        <div class="quote-block">
+          <div class="quote-mark">"</div>
+          <p class="quote-text">Duyum mevcut olmaksızın herhangi bir bilimi edinmek mümkün değildir; kanıtlama ise tümel şeylerle ilgilidir ve tümeller de ancak duyumdan elde edilebilir.</p>
+          <div class="quote-source">Aristoteles — Analytica Posteriora I, 18</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+<!-- END PAGE 5 -->
+
+
+<!-- ===================== PAGE 6: YANILMACALAR ===================== -->
+<div class="page" id="page-yanilmacalar">
+<div class="page-inner">
+
+  <div class="page-hero">
+    <div class="page-hero-num">KİTAP VI · ORGANON</div>
+    <h2 class="page-hero-title">Yanılmacalar</h2>
+    <div class="page-hero-greek">Sophistici Elenchi — Σοφιστικοὶ Ἔλεγχοι</div>
+    <p class="page-hero-desc">
+      Aristoteles sofistlerin kullandığı sahte çürütmeleri (elenchi) sistematik biçimde inceler ve bunların 13'ünün dilin yapısından, 7'sinin ise dilin dışındaki faktörlerden kaynaklandığını gösterir.
+    </p>
+  </div>
+
+  <div class="accordion-section">
+    <div class="section-header"><span class="section-label">Yanılmacaların Sınıflandırılması</span><div class="section-line"></div></div>
+
+    <!-- DİL KAYNAKLI -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🗣️</div>
+        <div style="flex:1">
+          <div class="accordion-title">Dile Bağlı Yanılmacalar (In Dictione)</div>
+          <div class="accordion-sub">13 tür · Dilsel muğlaklıktan kaynaklananlar</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Bu yanılmacalar dilin yapısındaki muğlaklıklardan beslenir. Aristoteles altı ana tür tespit etmiş; yorumcular bunları daha ayrıntılı biçimde ele almıştır.</p>
+
+        <table class="logic-table">
+          <thead><tr><th>#</th><th>Ad</th><th>Latince</th><th>Açıklama</th><th>Örnek</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1</td><td><span class="highlight">Equivocatio</span></td><td>Aequivocatio</td>
+              <td>Bir sözcüğün farklı anlamlarının karıştırılması</td>
+              <td>"Banka" sözcüğünün oturma yeri ve finans kurumu anlamlarının karıştırılması</td>
+            </tr>
+            <tr>
+              <td>2</td><td><span class="highlight">Amphibolia</span></td><td>Amphibolia</td>
+              <td>Sözdizimsel muğlaklık; tümcenin yapısal belirsizliği</td>
+              <td>"Adam köpeği gördü kaçarken" — kim kaçıyor?</td>
+            </tr>
+            <tr>
+              <td>3</td><td><span class="highlight">Compositio</span></td><td>Compositio</td>
+              <td>Ayrı değerlendirilmesi gereken şeyleri birlikte değerlendirme</td>
+              <td>"İki ve üç tek sayıdır" — ayrı ayrı doğru olabilir, birlikte değil</td>
+            </tr>
+            <tr>
+              <td>4</td><td><span class="highlight">Divisio</span></td><td>Divisio</td>
+              <td>Birlikte değerlendirilmesi gereken şeyleri ayırma</td>
+              <td>5'in 3 ve 2 olduğunu söyleyip biri çift öbürü tek demek</td>
+            </tr>
+            <tr>
+              <td>5</td><td><span class="highlight">Accentus</span></td><td>Accentus</td>
+              <td>Vurgu veya tonlamadan doğan anlam değişikliği</td>
+              <td>"Bu ADAM yapmadı" vs. "Bu adam YAPMADI"</td>
+            </tr>
+            <tr>
+              <td>6</td><td><span class="highlight">Figura Dictionis</span></td><td>Figura Dictionis</td>
+              <td>Dilbilgisel biçimden yanıltıcı çıkarım</td>
+              <td>Sona eren şey bozulmuştur; günün sonu; öyleyse gün bozulmuştur</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DİL DIŞI KAYNAKLI -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">⚠️</div>
+        <div style="flex:1">
+          <div class="accordion-title">Dil Dışı Yanılmacalar (Extra Dictionem)</div>
+          <div class="accordion-sub">7 tür · Konunun kendisinden kaynaklananlar</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <table class="logic-table">
+          <thead><tr><th>#</th><th>Ad</th><th>Açıklama</th><th>Örnek</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1</td><td><span class="highlight-purple">Accidentis</span></td>
+              <td>Asli özellik ile arızî özelliğin karıştırılması</td>
+              <td>Kör olan bir kişi "görmüyor" der; uyurken de görmüyor; öyleyse uykusu kör mu?</td>
+            </tr>
+            <tr>
+              <td>2</td><td><span class="highlight-purple">Secundum Quid</span></td>
+              <td>Mutlak anlamda söyleneni koşullu olarak ya da tersini alma</td>
+              <td>Ethiopialılar siyahtır; ama dişleri beyazdır; öyleyse hem siyah hem beyazdır</td>
+            </tr>
+            <tr>
+              <td>3</td><td><span class="highlight-purple">Ignoratio Elenchi</span></td>
+              <td>Asıl meseleyi geçiştirerek ilgisiz bir şeyi kanıtlamak</td>
+              <td>Suçlanan kişiyi aklamak için iyi bir vatandaş olduğunu kanıtlamak</td>
+            </tr>
+            <tr>
+              <td>4</td><td><span class="highlight-purple">Petitio Principii</span></td>
+              <td>Kanıtlanmak istenen şeyi öncül olarak almak (döngüsel muhakeme)</td>
+              <td>"Tanrı vardır çünkü Kutsal Kitap öyle der, Kutsal Kitap doğrudur çünkü Tanrı öyle söylemiştir"</td>
+            </tr>
+            <tr>
+              <td>5</td><td><span class="highlight-purple">Non Causa ut Causa</span></td>
+              <td>Gerçek neden olmayan şeyi neden olarak göstermek</td>
+              <td>A'dan önce B oldu; öyleyse A, B'ye yol açtı (post hoc ergo propter hoc)</td>
+            </tr>
+            <tr>
+              <td>6</td><td><span class="highlight-purple">Consequentis</span></td>
+              <td>Sonuçtan öncüle geçmek (tersine çıkarım)</td>
+              <td>Yağmur yağarsa zemin ıslanır; zemin ıslak; öyleyse yağmur yağmıştır</td>
+            </tr>
+            <tr>
+              <td>7</td><td><span class="highlight-purple">Plurium Interrogationum</span></td>
+              <td>Birden fazla soruyu tek soruymuş gibi sormak</td>
+              <td>"Babanı dövmeyi bıraktın mı?" sorusu hem evet hem hayır yanıtını tuzağa düşürür</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+<!-- END PAGE 6 -->
+
+
+<!-- ===================== PAGE 7: FİLOZOFLAR ===================== -->
+<div class="page" id="page-filozoflar">
+<div class="page-inner">
+
+  <div class="page-hero">
+    <div class="page-hero-num">GELENEK · TARİHSEL SÜREKLILIK</div>
+    <h2 class="page-hero-title">Klasik Mantık Geleneği</h2>
+    <div class="page-hero-greek">Traditio Logica — Ars Rationis</div>
+    <p class="page-hero-desc">
+      Aristoteles'ten başlayan büyük mantık geleneği, yüzyıllar boyunca farklı kültür ve coğrafyalarda zenginleşerek devam etmiştir. Her filozof Organon'un farklı boyutlarına katkıda bulunmuş; kimi onu şerh etmiş, kimi genişletmiş, kimi eleştirmiştir.
+    </p>
+  </div>
+
+  <!-- TIMELINE SVG -->
+  <div class="mindmap-svg-container" style="min-height:200px;margin-bottom:32px">
+    <svg viewBox="0 0 1050 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:180px">
+      <!-- Timeline line -->
+      <line x1="30" y1="90" x2="1020" y2="90" stroke="rgba(0,200,255,0.25)" stroke-width="1.5"/>
+      <polygon points="1020,86 1030,90 1020,94" fill="rgba(0,200,255,0.5)"/>
+
+      <!-- ARISTOTELES -->
+      <circle cx="80" cy="90" r="6" fill="#00c8ff" filter="url(#glow)"/>
+      <line x1="80" y1="84" x2="80" y2="50" stroke="rgba(0,200,255,0.4)" stroke-width="1"/>
+      <text x="80" y="44" text-anchor="middle" font-family="Verdana" font-size="9" font-weight="bold" fill="#00c8ff">Aristoteles</text>
+      <text x="80" y="104" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(160,188,212,0.5)">M.Ö. 384</text>
+
+      <!-- THEOPHRASTOS -->
+      <circle cx="170" cy="90" r="4" fill="rgba(0,200,255,0.6)"/>
+      <line x1="170" y1="96" x2="170" y2="130" stroke="rgba(0,200,255,0.25)" stroke-width="1"/>
+      <text x="170" y="142" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(160,188,212,0.6)">Theophrastos</text>
+      <text x="170" y="152" text-anchor="middle" font-family="Verdana" font-size="7" fill="rgba(160,188,212,0.4)">M.Ö. 371</text>
+
+      <!-- CHRYSIPPOS -->
+      <circle cx="270" cy="90" r="4" fill="rgba(123,45,255,0.7)"/>
+      <line x1="270" y1="84" x2="270" y2="50" stroke="rgba(123,45,255,0.3)" stroke-width="1"/>
+      <text x="270" y="44" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(123,45,255,0.8)">Chrysippos</text>
+      <text x="270" y="104" text-anchor="middle" font-family="Verdana" font-size="7" fill="rgba(160,188,212,0.4)">M.Ö. 280</text>
+
+      <!-- PORPHYRIOS -->
+      <circle cx="390" cy="90" r="6" fill="#00ffa3"/>
+      <line x1="390" y1="96" x2="390" y2="130" stroke="rgba(0,255,163,0.4)" stroke-width="1"/>
+      <text x="390" y="142" text-anchor="middle" font-family="Verdana" font-size="9" font-weight="bold" fill="#00ffa3">Porphyrios</text>
+      <text x="390" y="152" text-anchor="middle" font-family="Verdana" font-size="7" fill="rgba(160,188,212,0.4)">M.S. 234</text>
+
+      <!-- BOETHIUS -->
+      <circle cx="510" cy="90" r="6" fill="#f0c040"/>
+      <line x1="510" y1="84" x2="510" y2="50" stroke="rgba(240,192,64,0.4)" stroke-width="1"/>
+      <text x="510" y="44" text-anchor="middle" font-family="Verdana" font-size="9" font-weight="bold" fill="#f0c040">Boethius</text>
+      <text x="510" y="104" text-anchor="middle" font-family="Verdana" font-size="7" fill="rgba(160,188,212,0.4)">M.S. 477</text>
+
+      <!-- AL-FÂRÂBİ -->
+      <circle cx="620" cy="90" r="5" fill="rgba(0,200,255,0.7)"/>
+      <line x1="620" y1="96" x2="620" y2="130" stroke="rgba(0,200,255,0.3)" stroke-width="1"/>
+      <text x="620" y="142" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(0,200,255,0.8)">al-Fârâbî</text>
+      <text x="620" y="152" text-anchor="middle" font-family="Verdana" font-size="7" fill="rgba(160,188,212,0.4)">M.S. 872</text>
+
+      <!-- İBN SİNA -->
+      <circle cx="710" cy="90" r="6" fill="#9b6bff"/>
+      <line x1="710" y1="84" x2="710" y2="50" stroke="rgba(123,45,255,0.4)" stroke-width="1"/>
+      <text x="710" y="44" text-anchor="middle" font-family="Verdana" font-size="9" font-weight="bold" fill="#9b6bff">İbn Sînâ</text>
+      <text x="710" y="104" text-anchor="middle" font-family="Verdana" font-size="7" fill="rgba(160,188,212,0.4)">M.S. 980</text>
+
+      <!-- THOMAS AQUINAS -->
+      <circle cx="820" cy="90" r="5" fill="rgba(240,192,64,0.8)"/>
+      <line x1="820" y1="96" x2="820" y2="130" stroke="rgba(240,192,64,0.3)" stroke-width="1"/>
+      <text x="820" y="142" text-anchor="middle" font-family="Verdana" font-size="8" fill="rgba(240,192,64,0.8)">Aquinas</text>
+      <text x="820" y="152" text-anchor="middle" font-family="Verdana" font-size="7" fill="rgba(160,188,212,0.4)">M.S. 1225</text>
+
+      <!-- OCKHAM -->
+      <circle cx="930" cy="90" r="6" fill="#ff6b35"/>
+      <line x1="930" y1="84" x2="930" y2="50" stroke="rgba(255,107,53,0.4)" stroke-width="1"/>
+      <text x="930" y="44" text-anchor="middle" font-family="Verdana" font-size="9" font-weight="bold" fill="#ff6b35">Ockham</text>
+      <text x="930" y="104" text-anchor="middle" font-family="Verdana" font-size="7" fill="rgba(160,188,212,0.4)">M.S. 1287</text>
+    </svg>
+  </div>
+
+  <div class="accordion-section">
+    <div class="section-header"><span class="section-label">Filozofların Katkıları</span><div class="section-line"></div></div>
+
+    <!-- PORPHYRIOS -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🌳</div>
+        <div style="flex:1">
+          <div class="accordion-title">Porphyrios (M.S. 234–305)</div>
+          <div class="accordion-sub">Isagoge — Beş Tümel — Porphyrios Ağacı</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Suriyeli Yeni-Platoncu filozof Porphyrios, Aristoteles'in Kategoriler'ine yazdığı giriş (Isagoge) ile klasik mantık geleneğinin en etkili metnini kaleme almıştır. Boethius bu eseri Latince'ye çevirmiş ve Orta Çağ boyunca mantık eğitiminin temelini oluşturmuştur.</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Beş Tümel (Quinque Voces)</div>
+            <div class="sub-card-body">Cins, Tür, Ayrım, Özgün Özellik ve Aksidan. Her yüklemin bu beş türden birine gireceğini savunur. Daha sonra "yüklemlerin yüklemleri" olarak Kategoriler'e sistematik bir giriş işlevi görmüştür.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Porphyrios Ağacı</div>
+            <div class="sub-card-body">Cevherden başlayarak bireysel varlıkta biten hiyerarşik sınıflandırma şeması. Cins-tür-birey zinciri görsel bir ağaçla gösterilmiştir. Orta Çağ'da standart öğretim aracı olmuştur.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Tümeller Sorusu</div>
+            <div class="sub-card-body">Porphyrios tümellerin gerçekte var olup olmadığı sorusunu açık bırakmıştır. Bu soru Boethius'un yorumundan Ockham'a uzanan bir felsefi tartışmayı başlatmıştır.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOETHİUS -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🏺</div>
+        <div style="flex:1">
+          <div class="accordion-title">Boethius (M.S. 477–524)</div>
+          <div class="accordion-sub">Organon'un Latince çevirisi — Scholastiğin kurucusu</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Romalı filozof Boethius, Aristoteles'in tüm Organon'unu Latince'ye çevirme projesini başlatmış; ancak idam edilmeden önce Kategoriler ve De Interpretatione çevirilerini tamamlayabilmiştir. Orta Çağ Avrupası Aristoteles mantığını büyük ölçüde Boethius üzerinden öğrenmiştir.</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Çeviriler ve Yorumlar</div>
+            <div class="sub-card-body">Porphyrios'un Isagoge'si dahil birçok temel mantık metnini Latince'ye kazandırmış; kapsamlı şerhler yazmıştır.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Kategorik Kıyas Teorisi</div>
+            <div class="sub-card-body">Aristoteles'in kıyas şekillerini dizgeli biçimde açıklamış ve koşullu kıyaslar (kıyası şartî) üzerine özgün eserler kaleme almıştır.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Karşıtlık Karesi</div>
+            <div class="sub-card-body">A–E–I–O önermelerinin ilişkilerini gösteren "karşıtlık karesi" şemasının sistematik hâle getirilmesinde önemli katkısı vardır.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- İBN SİNA -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">✦</div>
+        <div style="flex:1">
+          <div class="accordion-title">İbn Sînâ / Avicenna (M.S. 980–1037)</div>
+          <div class="accordion-sub">eş-Şifâ — el-Mantık — Yüzen Adam</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">İbn Sînâ, Aristoteles mantığını İslam felsefesi içinde yeniden yorumlayarak özgün katkılar yapmıştır. Şifâ Ansiklopedisi'nin mantık bölümü, Aristoteles'in Organon'undan daha kapsamlı bir mantık külliyatı niteliği taşır.</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Beşinci Figür</div>
+            <div class="sub-card-body">Aristoteles'in üç kıyas şekline ek olarak dördüncü ve beşinci şekilleri tartışmış; bunların Aristoteles'inkine indirgeneceğini göstermiştir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Koşullu Kıyas</div>
+            <div class="sub-card-body">Aristoteles'te nispeten az gelişmiş olan koşullu (şartî) kıyas teorisini kapsamlı biçimde geliştirmiş; bağlaşık (muttasıl) ve ayrık (munfasıl) kıyasları sistemleştirmiştir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Yüzen Adam</div>
+            <div class="sub-card-body">Benliğin saf zihinsel bir deney yoluyla kavranabileceğine dair düşünce deneyi. Descartes'ın "Düşünüyorum, öyleyse varım" argümanının öncülü sayılır.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Mantık Bağımsızlığı</div>
+            <div class="sub-card-body">Mantığın dil biliminden (dilden) bağımsız olarak ele alınması gerektiğini savunmuştur; mantık zihnin işleyişini araştıran bir disiplindir.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OCKHAM -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">🗡️</div>
+        <div style="flex:1">
+          <div class="accordion-title">William Ockham (M.S. 1287–1347)</div>
+          <div class="accordion-sub">Nominalizm — Ockham'ın Usturası — Summa Logicae</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Fransisken keşiş ve filozof Ockham, tümeller tartışmasında Nominalist tutumu en güçlü biçimde savunmuştur. Ona göre tümeller gerçekte var olmayan, zihnin ve dilin ürünleri olan terimlerden (termini) ibarettir.</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Ockham'ın Usturası</div>
+            <div class="sub-card-body">"Çoğul varlıkları gereklilik olmaksızın varsaymama" ilkesi. Gereksiz ontolojik yükümlülükleri budayan tutum ekonomisi ilkesidir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Terminizm</div>
+            <div class="sub-card-body">Mantığın konusunun zihinsel, sözlü ya da yazılı terimler olduğunu savunur. "Tümel"ler yalnızca terimlerdir, gerçekte var olan şeyler değil.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Summa Logicae</div>
+            <div class="sub-card-body">Döneminin en kapsamlı mantık yapıtlarından biri. Terim mantığı, önerme teorisi ve kıyas üzerine sistematik bir inceleme sunar.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Gerçek Varlıklar</div>
+            <div class="sub-card-body">Yalnızca bireysel varlıklar gerçek anlamda vardır. İnsan türü ya da hayvan cinsi, tek tek bireylerden bağımsız bir gerçekliğe sahip değildir.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AL-FARABI -->
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div class="accordion-icon">⭐</div>
+        <div style="flex:1">
+          <div class="accordion-title">al-Fârâbî (M.S. 872–950)</div>
+          <div class="accordion-sub">Muallim-i Sâni — İkinci Öğretmen</div>
+        </div>
+        <div class="accordion-chevron">▼</div>
+      </div>
+      <div class="accordion-body">
+        <p class="acc-content">Aristoteles'in "Birinci Öğretmen" (Muallim-i Evvel) olarak anılmasına karşılık al-Fârâbî "İkinci Öğretmen" (Muallim-i Sânî) unvanını almıştır. İslam dünyasında Aristoteles'in Organon'unu sistematik biçimde yorumlayan ilk büyük isimdir.</p>
+
+        <div class="sub-grid">
+          <div class="sub-card">
+            <div class="sub-card-title">Organon Şerhleri</div>
+            <div class="sub-card-body">Categoriae, De Interpretatione ve Analytica'ya kapsamlı şerhler yazmıştır. Mantığın dille ilişkisini derinlemesine incelemiştir.</div>
+          </div>
+          <div class="sub-card">
+            <div class="sub-card-title">Mantık ve Dil</div>
+            <div class="sub-card-body">Mantığın evrensel, dilin ise kültüre özgü olduğunu savunarak mantık ile dilbilim arasındaki sınırı net biçimde çizmiştir.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+<!-- END PAGE 7 -->
+
+<button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ========== THEME ==========
+function setTheme(t, btn) {
+  document.body.setAttribute('data-theme', t);
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ========== PAGE NAVIGATION ==========
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab, .mobile-nav .nav-tab');
+  tabs.forEach(t => {
+    if (t.getAttribute('onclick') && t.getAttribute('onclick').includes("'" + id + "'")) {
+      t.classList.add('active');
+    }
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ========== ACCORDION ==========
+function toggleAcc(header) {
+  const body = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  // close all in same section
+  const section = header.closest('.accordion-section');
+  if(section) {
+    section.querySelectorAll('.accordion-header.open').forEach(h => {
+      h.classList.remove('open');
+      h.nextElementSibling.classList.remove('open');
+    });
+  }
+  if (!isOpen) {
+    header.classList.add('open');
+    body.classList.add('open');
+  }
+}
+
+// ========== MOBILE NAV ==========
+function toggleMobile() {
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+
+// ========== PROGRESS ==========
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const scroll = doc.scrollTop || document.body.scrollTop;
+  const height = doc.scrollHeight - doc.clientHeight;
+  const pct = height > 0 ? (scroll / height) * 100 : 0;
+  document.getElementById('progress').style.width = pct + '%';
+});
+
+// ========== SYLLOGISM ANALYZER ==========
+const VALID_MOODS = {
+  1: { 'AA': 'A', 'EA': 'E', 'AI': 'I', 'EI': 'O' },
+  2: { 'EA': 'E', 'AE': 'E', 'EI': 'O', 'AO': 'O' },
+  3: { 'AA': 'I', 'EA': 'O', 'IA': 'I', 'AI': 'I', 'OA': 'O', 'EI': 'O' }
+};
+
+const MOOD_NAMES = {
+  '1_AA': 'Barbara', '1_EA': 'Celarent', '1_AI': 'Darii', '1_EI': 'Ferio',
+  '2_EA': 'Cesare', '2_AE': 'Camestres', '2_EI': 'Festino', '2_AO': 'Baroco',
+  '3_AA': 'Darapti', '3_EA': 'Felapton', '3_IA': 'Disamis', '3_AI': 'Datisi', '3_OA': 'Bocardo', '3_EI': 'Ferison'
+};
+
+function analyzeSyllogism() {
+  const major = document.getElementById('selMajor').value;
+  const minor = document.getElementById('selMinor').value;
+  const fig = parseInt(document.getElementById('selFig').value);
+  const key = major + minor;
+  const valid = VALID_MOODS[fig];
+  const nameKey = fig + '_' + key;
+  const res = document.getElementById('sylResult');
+
+  if (valid && valid[key]) {
+    const concType = valid[key];
+    const concMap = { A: 'Her S, P\'dir (Tümel Olumlu)', E: 'Hiçbir S, P değildir (Tümel Olumsuz)', I: 'Bazı S, P\'dir (Tikel Olumlu)', O: 'Bazı S, P değildir (Tikel Olumsuz)' };
+    const name = MOOD_NAMES[nameKey] || '—';
+    res.innerHTML = `
+      <div style="color:var(--accent4);font-weight:bold;font-size:13px;margin-bottom:12px">✓ GEÇERLİ KİP: ${name}</div>
+      <div style="margin-bottom:8px"><span style="color:var(--accent)">Büyük Öncül:</span> ${major === 'A' ? 'Her M, P\'dir' : major === 'E' ? 'Hiçbir M, P değildir' : major === 'I' ? 'Bazı M, P\'dir' : 'Bazı M, P değildir'}</div>
+      <div style="margin-bottom:8px"><span style="color:var(--accent)">Küçük Öncül:</span> ${minor === 'A' ? 'Her S, M\'dir' : minor === 'E' ? 'Hiçbir S, M değildir' : minor === 'I' ? 'Bazı S, M\'dir' : 'Bazı S, M değildir'}</div>
+      <div style="border-top:1px solid var(--border);padding-top:8px;margin-top:8px"><span style="color:var(--accent4);font-weight:bold">∴ Sonuç:</span> ${concMap[concType]}</div>
+      <div style="margin-top:12px;font-size:10px;color:var(--text3);letter-spacing:2px">ŞEKİL ${fig} — KİP: ${major}${minor}${concType}</div>
+    `;
+  } else {
+    res.innerHTML = `<div style="color:var(--accent5);font-weight:bold;font-size:13px;margin-bottom:8px">✗ GEÇERSİZ KİP</div>
+    <div style="color:var(--text2)">Bu öncül kombinasyonu Şekil ${fig} için geçerli bir kıyas oluşturmaz. Aristoteles'in tespit ettiği on dört geçerli kipten birine girmiyor.</div>
+    <div style="margin-top:12px;font-size:10px;color:var(--text3)">Şekil ${fig}'in geçerli kipleri için tabloya başvurunuz.</div>`;
+  }
+}
+
+// Initialize
+analyzeSyllogism();
+</script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Implementation Notes — English Learning Engine v1</title>
+<link rel="stylesheet" href="./_engine/engine.css">
+<style>
+  .doc {max-width:880px; margin:0 auto; padding:24px 22px 80px;}
+  .doc h1 {font-size:22px; color:var(--accent); margin-bottom:6px; letter-spacing:1px;}
+  .doc .lede {color:var(--text2); font-size:13px; margin-bottom:20px; line-height:1.7;}
+  .doc h2 {font-size:16px; color:var(--accent2); margin:28px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);}
+  .doc h3 {font-size:13px; color:var(--accent3); margin:18px 0 6px; text-transform:uppercase; letter-spacing:1px;}
+  .doc p  {font-size:13px; line-height:1.75; margin-bottom:10px; color:var(--text);}
+  .doc ul {padding-left:22px; margin-bottom:10px;}
+  .doc li {font-size:13px; line-height:1.75; margin-bottom:5px;}
+  .doc code {background:var(--card2); padding:1px 5px; border-radius:4px; font-family:'Courier New',monospace; font-size:12px; color:var(--accent3);}
+  .doc .nb {background:var(--card); border-left:3px solid var(--accent2); padding:10px 14px; border-radius:0 8px 8px 0; margin:12px 0; font-size:12px;}
+  .doc .nb.warn {border-color:var(--accent3);}
+  .doc .nb.danger {border-color:var(--red);}
+  .doc .meta {display:flex; gap:14px; flex-wrap:wrap; font-size:11px; color:var(--text2); margin-bottom:18px;}
+  .doc .meta span {background:var(--card2); padding:3px 9px; border-radius:10px; border:1px solid var(--border);}
+  .doc table {width:100%; border-collapse:collapse; font-size:12px; margin:8px 0;}
+  .doc th, .doc td {padding:7px 9px; border-bottom:1px solid var(--border); text-align:left;}
+  .doc th {color:var(--text2); font-weight:normal; text-transform:uppercase; letter-spacing:1px; font-size:10px;}
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <h1>Implementation Notes — English Learning Engine v1</h1>
+  <p class="lede">SPEC'in nasıl yorumlandığı, hangi noktalarda saptığım, hangi alternatifleri elediğim ve hangi konuların kullanıcı onayına açık olduğu. Faz 1'in baş ucundaki not defteri.</p>
+  <div class="meta">
+    <span>📅 Faz 1 · 2026-05-18</span>
+    <span>📦 3 motor · 1 SRS · 56 konu seed</span>
+    <span>🔌 Köprü: <code>00_INBOX/*.json</code></span>
+    <span>👤 Hedef: B2 (mevcut tahmin B1)</span>
+  </div>
+
+  <!-- ============ DESIGN DECISIONS ============ -->
+  <h2>1. Design Decisions (belirsiz noktalar nasıl yorumlandı)</h2>
+
+  <h3>1.1 Köprü mekanizması: JSON + INBOX</h3>
+  <p>Spec "dosya indir → vault INBOX" öneriyordu. Bunu <b>tek köprü prensibi</b> olarak donduruldum: hiçbir motor doğrudan wiki .md dosyalarına yazmıyor, hepsi JSON üretiyor, Claude Code .md köprüsünü kuruyor. Avantajı:</p>
+  <ul>
+    <li>HTML çalışırken Obsidian açık olmak zorunda değil.</li>
+    <li>JSON dump'ları <code>00_INBOX/_archive/YYYY-MM/</code>'da kanıt olarak kalır.</li>
+    <li>Aynı kaynaktan hem human-readable .md hem ileride grafik üretilebilir.</li>
+  </ul>
+
+  <h3>1.2 Veri yükleme: <code>script src</code> + <code>window.ELV1_*</code></h3>
+  <p>file:// protokolünde <code>fetch()</code> CORS nedeniyle güvenilmez. <code>topics.json</code> ve <code>profile.json</code> dosyalarını <b>tek kaynak</b> olarak tutmak yerine, her birinin yanına <code>topics.js</code> ve <code>profile.js</code> wrapper'larını koydum (aynı JSON literal, <code>window.ELV1_TOPICS = {…}</code> sarmalında). HTML'ler <code>&lt;script src&gt;</code> ile yüklüyor — file:// üzerinden garantili çalışır. Bedeli: iki dosya senkron tutulmalı. Çözüm: tek kanonik olarak <code>.js</code> sürümünü işaretliyorum; <code>.json</code> sadece Claude Code'un kolay parse etmesi için duruyor.</p>
+
+  <h3>1.3 Rotation algoritması</h3>
+  <p>Spec "6-8 konu, ay-sonu kapsam garantisi, zayıf-konu önceliği, kategori dengesi" istiyordu. Algoritmayı şöyle çözdüm:</p>
+  <ol style="padding-left:22px; font-size:13px; line-height:1.7;">
+    <li><b>weak-topics zorunlu</b>: <code>weak_topics</code> localStorage anahtarındaki konular ilk önce alınır.</li>
+    <li><b>Borç skoru</b>: <code>(gün_farkı × (100 - güç)) / 100</code>. Skor en yüksek olanlar üstte. Hiç çalışılmamış konu güçsüz (100) sayılır → erken çıkar.</li>
+    <li><b>Kategori sınırı</b>: aynı kategoriden maks 2 (örn. 2'den fazla tense yok).</li>
+    <li><b>Hedef: 7 konu</b> (6-8 aralığının ortası). Reroll butonu yeni karışım üretir.</li>
+    <li><b>Aynı-gün cache</b>: Motor A ve B aynı set'i görür — çapraz teyit.</li>
+  </ol>
+
+  <h3>1.4 Quiz üretimi (template-based, jeneratif değil)</h3>
+  <p>Spec gerçek dünya örnekleri istedi; ama her gün dinamik üretim için tam jeneratif LLM motoruna ihtiyaç var ve onu burada barındırmayız. Bunun yerine her konunun <code>examples</code> ve <code>common_errors</code> alanlarından üç tip soru türetiyorum:</p>
+  <ul>
+    <li><b>MCQ</b> — doğru örnek + iki manipule edilmiş distractor</li>
+    <li><b>Fill-in</b> — örneğin ortasından bir kelime gizle</li>
+    <li><b>ErrSpot</b> — yaygın hata tanımı + öz-değerlendirme (knew/didn't)</li>
+  </ul>
+  <div class="nb warn">⚠️ Bu Faz 1 yaklaşımıdır. Faz 2'de Claude Code'a günlük 6-8 konu için zenginleştirilmiş quiz seti üretmesini öneriyorum — JSON olarak <code>_engine/daily-questions-YYYY-MM-DD.json</code> dosyasına yazsın, motor onu prefer etsin, yoksa template fallback.</div>
+
+  <h3>1.5 SRS algoritması (SM-2 sadeleştirilmiş)</h3>
+  <p>Anki'nin tam SM-2 implementasyonu daha karmaşık (learning steps, relearning queue). Burada 4-buton modeli (again/hard/good/easy) + interval büyütme yeterli oldu. Bedeli: lapsed cards için ayrı relearning queue yok; "again" sadece interval'i 1 güne sıfırlar. Faz 2'de gerekirse 10dk/1g iki adımlı learning eklenebilir.</p>
+
+  <h3>1.6 Word Bank → SRS köprüsü</h3>
+  <p>Save'lenen item önce <code>localStorage</code>'da bank'a gider, status: <code>new</code>. <code>vocab-srs.html</code> açıldığında <code>srs</code> alanı boş olanlar otomatik kuyruğa alınır. İlk review <code>srsInit()</code> ile başlatılır. Bu sayede "kaydet" ile "çalış" aşamaları gevşek bağlı kalıyor — kullanıcı istediğinde SRS'i açıyor.</p>
+
+  <h3>1.7 Tema ve font</h3>
+  <p>4 tema (default dark, light, forest, sunset) ve 4 font boyutu (s/m/l/xl) cycle eden butonlarla. Header'da iki tıkla erişim. Tema seçimi şu an persisted değil — her oturumda dark başlar. Faz 2 nice-to-have.</p>
+
+  <!-- ============ DEVIATIONS ============ -->
+  <h2>2. Deviations (Spec'ten kasıtlı sapmalar)</h2>
+
+  <h3>2.1 Tek kaynak yerine iki dosya (.js + .json)</h3>
+  <p><b>Sapma:</b> <code>_engine/topics.json</code> hem JSON hem JS wrapper olarak duruyor (drift riski).<br>
+  <b>Sebep:</b> file:// fetch güvenilir değil; Claude Code'un JSON parse'ı en güvenli. İki dosyayı tek source-of-truth olarak işaretledim ve bash script'le kolayca regenerate edilebilir hale getirdim:<br>
+  <code>cd Artifacts/_engine && { echo "window.ELV1_TOPICS = "; cat topics.json; echo ";"; } > topics.js</code></p>
+
+  <h3>2.2 "Aynı 6-8 konu iki motor için" — cache anahtarı</h3>
+  <p><b>Sapma:</b> Spec teorik olarak "aynı set" istiyor. Ben günlük cache anahtarı (<code>daily_topics_YYYY-MM-DD</code>) kullandım. Yani Motor A'yı 23:55'te açıp Motor B'yi 00:01'de açarsan farklı setler görürsün (tarih değişti).<br>
+  <b>Sebep:</b> Tarih sınırını zorlamak kullanıcı dostu değil. Edge case → user explicit reroll yapabilir.</p>
+
+  <h3>2.3 Kapanış metni (Motor A) jeneratif değil</h3>
+  <p><b>Sapma:</b> Spec'e göre kapanış metni "konuların hepsini ören" olmalı. Şu an her konunun ikinci/birinci örnek cümlesini yan yana diziyorum — gerçek bir akıcı metin değil.<br>
+  <b>Sebep:</b> Tam jeneratif metin → LLM çağrısı gerekir, bu da kefir prensibini bozar. Faz 2 önerisi: Claude Code, sabah günün set'i hazır olunca <code>_engine/daily-passage-YYYY-MM-DD.json</code> dosyasını üretsin (gerçek paragraf); motorlar fallback olarak şu anki örneklemeyi kullansın.</p>
+
+  <h3>2.4 TTS sadece Motor B'de</h3>
+  <p><b>Sapma:</b> Motor A'nın kapanış metninde TTS yok (Web Speech API entegre edilmedi).<br>
+  <b>Sebep:</b> A'nın ana ürünü modal/quiz akışı; TTS deneyimi B'ye daha doğal oturdu. Faz 2'de A'ya eklenebilir.</p>
+
+  <!-- ============ TRADEOFFS ============ -->
+  <h2>3. Tradeoffs (eledim, neden seçtiğim)</h2>
+
+  <table>
+    <thead><tr><th>Soru</th><th>Aday A</th><th>Aday B</th><th>Seçim</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Veri katmanı</td>
+        <td>Tarayıcıda IndexedDB (büyük, async)</td>
+        <td>localStorage (basit, sync, 5MB)</td>
+        <td><b>localStorage</b> — kefir prensibi; sınır şu an problem değil.</td>
+      </tr>
+      <tr>
+        <td>Köprü</td>
+        <td>File System Access API</td>
+        <td>İndir → manuel sürükle</td>
+        <td><b>İndir + manuel</b> — File System API Safari'de yok, izin akışı zor. Sürükle 2 saniye.</td>
+      </tr>
+      <tr>
+        <td>SRS</td>
+        <td>FSRS (modern)</td>
+        <td>SM-2 sadeleştirilmiş</td>
+        <td><b>SM-2</b> — anlaması kolay, parametre yok, edge case'ler az.</td>
+      </tr>
+      <tr>
+        <td>Quiz üretimi</td>
+        <td>LLM çağrısı (her gün)</td>
+        <td>Template-based fallback</td>
+        <td><b>Template</b> — Faz 1 için yeterli. Faz 2'de günlük JSON drop önerisi.</td>
+      </tr>
+      <tr>
+        <td>Tracking yazımı</td>
+        <td>Browser → file write</td>
+        <td>Browser → JSON dump → Claude Code</td>
+        <td><b>JSON dump</b> — tek köprü, kanıt arşivi, ofline-friendly.</td>
+      </tr>
+      <tr>
+        <td>UI framework</td>
+        <td>React/Vue/Svelte</td>
+        <td>Vanilla JS</td>
+        <td><b>Vanilla</b> — bisiklet prensibi, build yok, her HTML kendi başına.</td>
+      </tr>
+      <tr>
+        <td>Çapraz teyit</td>
+        <td>İki motor farklı konular</td>
+        <td>Aynı konular, farklı yön</td>
+        <td><b>Aynı + farklı yön</b> — gramer-first + text-first aynı 6-8 konuyu görür → çift kayıt.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============ EDGE CASES ============ -->
+  <h2>4. Edge Cases (düşünülmüş, kodda hesaba katılmış)</h2>
+
+  <h3>4.1 Aynı gün aynı motoru iki kez açma</h3>
+  <p>Sonuçlar üzerine eklenir — ikinci oturum bir "rehearsal" olarak işaretlenir. Güç skoru, son 3 puanın ağırlıklı ortalamasını alır (en yenisi ×3). Yani aynı günde tekrar çalışma overweight olmaz ama borç skoru sıfırlanır.</p>
+
+  <h3>4.2 Konuda hiç tıklama yapmadan export</h3>
+  <p>Text-first export'unda <code>perTopicResults[t.slug]</code> boş olan konular zero-score olarak gönderiliyor (<code>correct:0, total:0, completed:false</code>). Grammar-first'te ise yalnız tamamlanan konular payload'a giriyor — niyet farkı: A modal-merkezli ("bilerek girdiğin konu"), B tab-merkezli ("metni okudun, gramer otomatik etkide").</p>
+
+  <h3>4.3 Word Bank dolduğunda</h3>
+  <p>localStorage 5MB sınırı ~5000-10000 kart. Mature kartlar status'ü gereği seyrek görünür, otomatik temizlik yok. <b>Açık soru:</b> 3000+ karta yaklaşınca otomatik export + temizlik önerisi gösterilsin mi?</p>
+
+  <h3>4.4 Leech kartlar</h3>
+  <p>8+ defa "again" gelen kart <code>status: leech</code>'e geçer. Burada manuel müdahale gerekiyor: ya askıya alırsın (suspend butonu), ya da Claude Code'a "bu chunk'ı içeren bir mini-metin yazdır" diyebilirsin. Otomatik metin oluşturma şu an yok — Faz 2 önerisi.</p>
+
+  <h3>4.5 Tarih sıfırlama / saat farkı</h3>
+  <p><code>todayISO()</code> kullanıcının yerel saat dilimine göre çalışır. Seyahatte 12+ saat öne giderse "iki gün üst üste set yenilenir". Bu kasıtlı (lokal akış için doğal). Faz 2'de UTC takip eklenirse açılabilir.</p>
+
+  <h3>4.6 Boş seed / ilk açılış</h3>
+  <p>Hiç oturum yokken her konunun borcu = 30 (varsayılan), strength = null. Algoritma kategori sınırını koruyup ilk 7'yi seçer. İlk gün set'i random gibi görünür ama ay içinde tüm konuları kaplar.</p>
+
+  <h3>4.7 JSON dump aynı dakika içinde 2 indirme</h3>
+  <p>Dosya adı <code>YYYY-MM-DD-HHmm</code> dakika çözünürlükte. Hızlı arka arkaya iki indirmede dosya adı çakışır (browser otomatik <code>(1)</code> ekler). INBOX'ta isim çakışması Claude Code'u şaşırtmasın diye: process aşamasında <code>session_id</code>'ye bak, dosya adına değil.</p>
+
+  <h3>4.8 LocalStorage temizlenirse</h3>
+  <p>Tüm ilerleme silinir. Ama: Vault'a indirilen JSON'lar <code>_archive/</code>'da kalıyor. Geri yükleme aracı henüz yok — Faz 2 nice-to-have. <b>Şimdilik:</b> kullanıcıya export'u haftalık olarak yapması önerilir.</p>
+
+  <!-- ============ OPEN QUESTIONS ============ -->
+  <h2>5. Open Questions (kullanıcı onayına açık)</h2>
+
+  <div class="nb warn">
+    <b>Q1.</b> Günlük konu sayısı sabit 7 mi olsun, yoksa 6-8 arasında rastgele mi? Şu an sabit 7.
+  </div>
+  <div class="nb warn">
+    <b>Q2.</b> Motor A ve B'yi <b>aynı gün</b> çalışmak <b>zorunluluk</b> mu? Şu an opsiyonel — A çalışıp B atlanırsa o gün çapraz teyit kayıt da yarım.
+  </div>
+  <div class="nb warn">
+    <b>Q3.</b> Pazar günlerinde sadece <code>weak-topics</code> üzerinden özel "Boss Battle Day" modu açılsın mı? Faz 1'de bunu eklemedim; haftalık review derken Claude Code o gün için weak listesini büyütüyor — yeterli.
+  </div>
+  <div class="nb warn">
+    <b>Q4.</b> Faz 2'de Claude Code'un her sabah <code>_engine/daily-passage-YYYY-MM-DD.json</code> üretmesini istiyor musun? Bu seni LLM-jeneratif metne taşır ama kefir prensibinden bir tık uzaklaştırır.
+  </div>
+  <div class="nb warn">
+    <b>Q5.</b> "Yazarlık / felsefe bölüm-sonu metinleri" akışı bu motorla mı yoksa <code>compressed-galaxy/</code> serisi gibi ayrı bir akışla mı yürüsün? Faz 1'de iki sistem paralel; entegrasyon Faz 3 sorusu.
+  </div>
+  <div class="nb danger">
+    <b>Q6.</b> SRS'in <code>again_count >= 8 → leech</code> eşiği yüksek mi? Anki default 8. 5'e indirilsin mi?
+  </div>
+
+  <!-- ============ HOW TO USE ============ -->
+  <h2>6. Günlük Kullanım Akışı (özet)</h2>
+  <ol style="padding-left:22px; font-size:13px; line-height:1.85;">
+    <li>Sabah <code>grammar-first-daily.html</code>'i aç. 6-8 konu kartına dokun, modallarda mini quizleri çöz, beğendiğin chunk'ları "💾 Save" et.</li>
+    <li>Aynı gün içinde <code>text-first-daily.html</code>'i aç. Aynı konular metnin içinde renkli geliyor. Tab'ları dolaş: Read → Grammar → Vocab → Quiz → Reflect.</li>
+    <li>Akşam <code>vocab-srs.html</code>'i aç. Vakti gelmiş kartları çalış (again/hard/good/easy).</li>
+    <li>Üçünde de "📥 Vault'a İndir" → indirilen JSON'ları <code>00_INBOX/</code>'a sürükle.</li>
+    <li>Claude Code'a "INBOX'u işle" dediğinde tracking .md'leri güncellenir, log.md'ye giriş düşülür, JSON'lar <code>_archive/</code>'a taşınır.</li>
+    <li>Pazar: Claude Code haftalık review'u derler → <code>weekly-review.md</code> + yeni <code>weak-topics.md</code>.</li>
+  </ol>
+
+  <!-- ============ FILE MAP ============ -->
+  <h2>7. Dosya Haritası</h2>
+  <table>
+    <thead><tr><th>Yol</th><th>Sorumluluk</th></tr></thead>
+    <tbody>
+      <tr><td><code>Artifacts/_engine/topics.js</code></td><td>56 konu seed (canonical)</td></tr>
+      <tr><td><code>Artifacts/_engine/topics.json</code></td><td>aynı içerik, Claude Code referansı</td></tr>
+      <tr><td><code>Artifacts/_engine/profile.js</code></td><td>kullanıcı profili (ilgi alanları, hedef CEFR)</td></tr>
+      <tr><td><code>Artifacts/_engine/profile.json</code></td><td>aynı, referans</td></tr>
+      <tr><td><code>Artifacts/_engine/engine.css</code></td><td>ortak tema, layout, bileşenler</td></tr>
+      <tr><td><code>Artifacts/_engine/engine.js</code></td><td>rotation, storage, SRS, export, helpers</td></tr>
+      <tr><td><code>Artifacts/grammar-first-daily.html</code></td><td>Motor A — kart/modal/quiz akışı</td></tr>
+      <tr><td><code>Artifacts/text-first-daily.html</code></td><td>Motor B — metin/tab akışı</td></tr>
+      <tr><td><code>Artifacts/vocab-srs.html</code></td><td>SRS — kart-flip + 4-button</td></tr>
+      <tr><td><code>Artifacts/implementation-notes.html</code></td><td>(bu dosya)</td></tr>
+      <tr><td><code>00_INBOX/</code></td><td>JSON dump'larının düşeceği klasör</td></tr>
+      <tr><td><code>00_INBOX/_archive/YYYY-MM/</code></td><td>işlenen JSON'lar</td></tr>
+      <tr><td><code>wiki/tracking/_index.md</code></td><td>tracking hub</td></tr>
+      <tr><td><code>wiki/tracking/grammar-coverage.md</code></td><td>56 konunun mevcut durumu</td></tr>
+      <tr><td><code>wiki/tracking/weak-topics.md</code></td><td>haftalık zayıf-konu kuyruğu</td></tr>
+      <tr><td><code>wiki/tracking/word-bank-master.md</code></td><td>kaydedilen kelime/PV/chunk havuzu</td></tr>
+      <tr><td><code>wiki/tracking/srs-state.md</code></td><td>SRS snapshot</td></tr>
+      <tr><td><code>wiki/tracking/weekly-review.md</code></td><td>haftalık delta</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:30px; font-size:11px; color:var(--text3); text-align:center;">English Learning Engine v1 — Faz 1 · İlk kurulum 2026-05-18</p>
+
+</div>
+</body>
+</html>

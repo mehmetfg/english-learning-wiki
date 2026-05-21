@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Metamorphosis – Kafka</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+  :root {
+    --bg:#0d0d12;--surface:#16161f;--surface2:#1e1e2e;
+    --accent:#c084fc;--accent2:#f0abfc;--gold:#fbbf24;
+    --text:#e2e8f0;--muted:#94a3b8;--border:#2e2e42;
+    --green:#34d399;--red:#f87171;--blue:#60a5fa;--rose:#fb7185;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+  #splash{position:fixed;inset:0;background:radial-gradient(ellipse at 40% 50%,#1a0a2e 0%,#0d0d12 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;text-align:center;padding:2rem;transition:opacity .8s;}
+  .bug-icon{font-size:6rem;animation:float 3s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+  #splash h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,6vw,4rem);background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:1rem 0 .4rem;}
+  #splash .author{color:var(--accent2);font-style:italic;margin-bottom:.5rem;}
+  #splash .desc{color:var(--muted);font-size:.95rem;max-width:380px;line-height:1.7;margin-bottom:2rem;}
+  #start-btn{background:linear-gradient(135deg,var(--accent),#7c3aed);border:none;color:white;padding:.9rem 2.5rem;border-radius:50px;font-size:1.1rem;font-weight:600;cursor:pointer;box-shadow:0 0 30px #c084fc44;transition:transform .2s,box-shadow .2s;}
+  #start-btn:hover{transform:scale(1.05);box-shadow:0 0 40px #c084fc88;}
+
+  #app{display:none;}
+  #app.active{display:flex;flex-direction:column;min-height:100vh;}
+
+  nav{background:var(--surface);border-bottom:1px solid var(--border);padding:.9rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;position:sticky;top:0;z-index:50;}
+  .logo{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--accent);display:flex;align-items:center;gap:.4rem;}
+  .ch-nav{display:flex;gap:.4rem;flex-wrap:wrap;}
+  .ch-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:.35rem .8rem;border-radius:20px;font-size:.78rem;cursor:pointer;transition:all .2s;}
+  .ch-btn.active,.ch-btn:hover{background:var(--accent);color:white;border-color:var(--accent);}
+  .prog-wrap{display:flex;align-items:center;gap:.7rem;color:var(--muted);font-size:.8rem;}
+  .prog-outer{width:90px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+  .prog-inner{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:3px;transition:width .5s;}
+
+  main{flex:1;max-width:880px;margin:0 auto;padding:2rem 1.5rem;width:100%;}
+
+  .ch-header{text-align:center;margin-bottom:2rem;animation:fadeUp .6s ease;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .ch-num{color:var(--accent);font-size:.8rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;}
+  .ch-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2.3rem);margin:.4rem 0;background:linear-gradient(135deg,#fff,var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .ch-sub{color:var(--muted);font-size:.9rem;font-style:italic;}
+
+  .illus{width:100%;border-radius:16px;overflow:hidden;margin-bottom:1.5rem;background:var(--surface2);border:1px solid var(--border);}
+  .illus-inner{width:100%;padding:2.5rem 2rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;min-height:160px;font-size:4.5rem;flex-wrap:wrap;}
+  .illus-cap{padding:.7rem 1.5rem;background:rgba(0,0,0,.3);font-size:.78rem;color:var(--muted);font-style:italic;text-align:center;border-top:1px solid var(--border);}
+
+  .emotion-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+  .etag{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;border-radius:20px;font-size:.73rem;font-weight:600;}
+  .ef{background:#3b0764;color:#c4b5fd;}
+  .es{background:#0c4a6e;color:#7dd3fc;}
+  .et{background:#431407;color:#fdba74;}
+  .ei{background:#1c1917;color:#a8a29e;border:1px solid #57534e;}
+  .ed{background:#450a0a;color:#fca5a5;}
+
+  .read-meta{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;font-size:.78rem;color:var(--muted);}
+
+  .gram-legend{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.4rem;margin-bottom:1.5rem;}
+  .gram-legend h4{color:var(--accent);font-size:.75rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:.7rem;}
+  .gram-items{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;}
+  .gi{display:flex;align-items:center;gap:.35rem;font-size:.75rem;color:var(--muted);}
+  .gd{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+
+  .story-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.8rem;margin-bottom:1.5rem;line-height:1.95;font-size:1.02rem;animation:fadeUp .5s ease;}
+  .story-card p{margin-bottom:1.1rem;}
+  .story-card p:last-child{margin-bottom:0;}
+
+  .gpp{color:#f0abfc;font-weight:600;border-bottom:2px solid #f0abfc44;cursor:help;}
+  .gm{color:#fbbf24;font-weight:600;border-bottom:2px solid #fbbf2444;cursor:help;}
+  .gv{color:#34d399;font-weight:600;border-bottom:2px solid #34d39944;cursor:help;}
+  .gc{color:#60a5fa;font-weight:600;border-bottom:2px solid #60a5fa44;cursor:help;}
+  .gpres{color:#fb7185;font-weight:600;border-bottom:2px solid #fb718544;cursor:help;}
+
+  .tooltip-box{position:fixed;background:#1e1e2e;border:1px solid var(--border);color:var(--text);padding:.5rem .9rem;border-radius:8px;font-size:.78rem;z-index:200;max-width:260px;line-height:1.5;pointer-events:none;display:none;box-shadow:0 4px 20px #0008;}
+
+  .vocab-sec{margin-bottom:1.8rem;}
+  .vocab-sec h3{color:var(--accent);font-size:.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:.9rem;}
+  .vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:.6rem;}
+  .vc{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;cursor:pointer;transition:all .2s;}
+  .vc:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .vc-en{font-weight:600;color:var(--text);font-size:.9rem;}
+  .vc-tr{color:var(--accent);font-size:.78rem;margin-top:.15rem;}
+  .vc-ex{color:var(--muted);font-size:.72rem;margin-top:.25rem;font-style:italic;}
+
+  .quiz-sec{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.8rem;margin-bottom:1.5rem;}
+  .quiz-sec h3{color:var(--gold);margin-bottom:1.1rem;font-size:.95rem;}
+  .qq{margin-bottom:1.4rem;}
+  .qq p{margin-bottom:.7rem;font-size:.93rem;line-height:1.6;}
+  .qopts{display:flex;flex-direction:column;gap:.4rem;}
+  .qo{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.65rem 1rem;cursor:pointer;transition:all .2s;font-size:.87rem;}
+  .qo:hover:not(.done){border-color:var(--accent);}
+  .qo.cor{background:#064e3b;border-color:var(--green);color:var(--green);}
+  .qo.wrg{background:#450a0a;border-color:var(--red);color:var(--red);}
+
+  .nav-btns{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+  .nbtn{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.65rem 1.3rem;border-radius:10px;cursor:pointer;transition:all .2s;font-size:.88rem;font-weight:500;}
+  .nbtn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+  .nbtn:disabled{opacity:.3;cursor:not-allowed;}
+  .nbtn.pri{background:linear-gradient(135deg,var(--accent),#7c3aed);border:none;color:white;box-shadow:0 0 20px #c084fc33;}
+  .nbtn.pri:hover{box-shadow:0 0 30px #c084fc66;transform:scale(1.02);}
+
+  #scrollTop{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--accent);color:white;width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;font-size:.95rem;box-shadow:0 0 20px #c084fc44;display:none;align-items:center;justify-content:center;transition:all .2s;}
+  #scrollTop:hover{transform:scale(1.1);}
+  #scrollTop.vis{display:flex;}
+
+  @media(max-width:580px){nav{flex-direction:column;align-items:flex-start;}.ch-nav{width:100%;}}
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="bug-icon">🪲</div>
+  <h1>The Metamorphosis</h1>
+  <p class="author">Franz Kafka · 1915</p>
+  <p class="desc">An interactive English reading experience through one of literature's most iconic stories.<br><strong style="color:var(--accent)">B1 Level · 5 Chapters · Grammar Highlights</strong></p>
+  <button id="start-btn" onclick="startApp()">Start Reading 📖</button>
+</div>
+
+<div id="app">
+  <nav>
+    <div class="logo">🪲 The Metamorphosis</div>
+    <div class="ch-nav" id="chNav"></div>
+    <div class="prog-wrap">
+      <span>Progress</span>
+      <div class="prog-outer"><div class="prog-inner" id="progBar" style="width:20%"></div></div>
+      <span id="progTxt">1/5</span>
+    </div>
+  </nav>
+  <main id="mc"></main>
+</div>
+
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<div class="tooltip-box" id="tip"></div>
+
+<script>
+const C = [
+  {
+    num:"Chapter 1", title:"The Terrible Morning",
+    sub:"Gregor Samsa wakes up and discovers the horror",
+    emoji:["🛏️","😱","🪲"], bg:"linear-gradient(135deg,#1a0a2e,#0d1f2e)",
+    cap:"A cold morning. A dark room. Something has gone terribly wrong.",
+    emotions:[{l:"😰 Fear / Korku",c:"ef"},{l:"😮 Shock / Şok",c:"et"}],
+    rt:"~5 min", wc:"~320 words",
+    story:`<p>One morning, Gregor Samsa <span class="gpp" title="Past Simple: woke up — Geçmiş Zaman">woke up</span> from troubled dreams and found himself changed into a <span class="gv" title="Noun Phrase: monstrous insect — canavarca böcek">monstrous insect</span>. He was lying on his hard, armored back. When he lifted his head a little, he <span class="gm" title="could see — could = geçmişteki yetenek">could see</span> his brown belly, divided by stiff curved sections.</p>
+<p>His many legs, <span class="gpres" title="pitifully thin — sıfat tamlaması: acınacak derecede ince">pitifully thin</span> compared to the rest of his bulk, flickered helplessly before his eyes. "What <span class="gpp" title="has happened — Present Perfect: geçmişin şimdiye etkisi">has happened</span> to me?" he thought. It was not a dream. His room, a proper human room, looked normal all around him.</p>
+<p>Above the table <span class="gv" title="was hung — Passive Voice: asılıydı (edilgen)">was hung</span> a picture that he <span class="gpp" title="had recently cut out — Past Perfect: daha önce kesip çıkarmıştı">had recently cut out</span> of a magazine. It showed a lady in a fur hat, sitting upright and holding out a heavy fur muff to the viewer.</p>
+<p>Gregor's gaze turned to the window. The dreary weather — he <span class="gm" title="could hear — geçmişte duyabilmek">could hear</span> raindrops hitting the metal window frame — made him feel quite sad. "What if I went back to sleep and forgot all this nonsense?" he thought. But <span class="gc" title="that was impossible — 2nd Conditional logic: koşullu durum">that was impossible</span>, because he was used to sleeping on his right side, and in his current state he <span class="gm" title="couldn't — couldn't = yapamamak / imkânsızlık">couldn't</span> get himself into that position.</p>
+<p>He tried it a hundred times, closing his eyes so that he <span class="gm" title="wouldn't — wouldn't = istemezdi, yapmak istemezdi">wouldn't</span> have to see his struggling legs. He only stopped when he began to feel a mild, dull pain in his side that he <span class="gpp" title="had never felt — Past Perfect: daha önce hiç hissemtemişti">had never felt</span> before.</p>`,
+    vocab:[
+      {en:"troubled",tr:"rahatsız edici",ex:"troubled dreams"},
+      {en:"monstrous",tr:"canavarca",ex:"a monstrous insect"},
+      {en:"armored",tr:"zırhlı",ex:"armored back"},
+      {en:"pitifully",tr:"acınacak şekilde",ex:"pitifully thin"},
+      {en:"flickered",tr:"titredi / oynadı",ex:"legs flickered"},
+      {en:"bulk",tr:"hacim / kütle",ex:"the rest of his bulk"},
+      {en:"dreary",tr:"kasvetli / iç karartıcı",ex:"dreary weather"},
+      {en:"nonsense",tr:"saçmalık",ex:"forget all this nonsense"},
+    ],
+    quiz:[
+      {q:"What did Gregor find when he woke up?",tr:"Gregor uyandığında ne buldu?",
+       opts:["He found a letter on his desk.","He found himself changed into a giant insect.","He found his family in his room.","He found his job was gone."],ans:1},
+      {q:"Choose the correct form: Gregor _____ from troubled dreams. (Past Simple)",tr:"Doğru biçimi seçin (Past Simple):",
+       opts:["wakes up","is waking up","woke up","had woke up"],ans:2},
+    ]
+  },
+  {
+    num:"Chapter 2", title:"The Family Reacts",
+    sub:"His father, mother and sister face the shocking truth",
+    emoji:["👨‍👩‍👧","😰","🚪"], bg:"linear-gradient(135deg,#1a1200,#0d0a1a)",
+    cap:"Behind the door, three voices. Three reactions. Three kinds of pain.",
+    emotions:[{l:"😥 Worry / Endişe",c:"es"},{l:"😤 Anger / Öfke",c:"et"}],
+    rt:"~5 min", wc:"~310 words",
+    story:`<p>The family <span class="gpp" title="had been waiting — Past Perfect Continuous: o ana kadar bekliyordu">had been waiting</span> outside Gregor's bedroom door. His mother's voice was soft and worried. "Gregor? It is quarter to seven. <span class="gm" title="Didn't you have — Past Simple question: geçmiş soru cümlesi">Didn't you have</span> a train to catch?" There was no normal reply — only a strange, animal-like sound.</p>
+<p>His father <span class="gm" title="could hear — geçmişte duyabilmek">could hear</span> the strange voice and called the chief clerk immediately. The chief clerk was an important man who <span class="gv" title="had been sent — Passive Past Perfect: gönderilmişti (edilgen)">had been sent</span> by the office to check on Gregor. He spoke through the door in a cold, formal voice: "The manager <span class="gpres" title="wants to know — Present Simple: şu anki istek">wants to know</span> why you <span class="gpres" title="have not come — Present Perfect: gelmemişsin (sonucu şimdi görülüyor)">have not come</span> to work this morning."</p>
+<p>Gregor tried to speak, but his voice <span class="gm" title="would not — would not = red / itaatsizlik">would not</span> obey him. His words <span class="gv" title="were mixed — Passive Voice: karıştırıldı (edilgen)">were mixed</span> with an uncomfortable squeaking noise. He tried again and again. The chief clerk stepped back in surprise.</p>
+<p>Gregor's sister, Grete, was the kindest person in the family. She <span class="gm" title="could always understand — could = her zaman anlayabilmek">could always understand</span> her brother better than anyone. She <span class="gpp" title="had known — Past Perfect: zaten biliyordu">had known</span> for a long time that Gregor was working too hard.</p>
+<p>"We <span class="gm" title="should open — should = öneri: açmalıyız">should open</span> the door," Grete whispered to her mother. "We <span class="gm" title="must help — must = zorunluluk: yardım etmeliyiz">must help</span> him." But when Gregor finally managed to unlock the door, everybody <span class="gv" title="was shocked — Passive: şoke oldu (edilgen)">was shocked</span>. His father grabbed a walking stick and his mother fell to the ground.</p>`,
+    vocab:[
+      {en:"chief clerk",tr:"başkâtip / üst memur",ex:"the chief clerk spoke"},
+      {en:"formal",tr:"resmi / biçimsel",ex:"a formal voice"},
+      {en:"obey",tr:"itaat etmek",ex:"his voice would not obey"},
+      {en:"squeaking",tr:"cırlama / gıcırdama",ex:"squeaking noise"},
+      {en:"managed",tr:"başardı / becerebildi",ex:"managed to unlock"},
+      {en:"whispered",tr:"fısıldadı",ex:"Grete whispered"},
+      {en:"immediately",tr:"hemen / derhal",ex:"called immediately"},
+      {en:"uncomfortable",tr:"rahatsız edici",ex:"uncomfortable noise"},
+    ],
+    quiz:[
+      {q:"Why did the chief clerk come to Gregor's house?",tr:"Başkâtip neden Gregor'un evine geldi?",
+       opts:["To bring Gregor a gift.","To check why Gregor had not come to work.","To speak with Gregor's sister.","To repair something in the house."],ans:1},
+      {q:"Choose the modal: We _____ help him. (strong necessity — güçlü zorunluluk)",tr:"Doğru modal fiili seçin:",
+       opts:["might","should","must","would"],ans:2},
+    ]
+  },
+  {
+    num:"Chapter 3", title:"Life Behind Closed Doors",
+    sub:"Gregor adjusts to his strange new existence",
+    emoji:["🕷️","🪑","🍎"], bg:"linear-gradient(135deg,#0a1a0a,#0a0d1a)",
+    cap:"The room becomes his whole world. And the world slowly forgets him.",
+    emotions:[{l:"😔 Sadness / Üzüntü",c:"es"},{l:"🏠 Isolation / Yalnızlık",c:"ei"}],
+    rt:"~5 min", wc:"~290 words",
+    story:`<p>Weeks <span class="gpp" title="had passed — Past Perfect: haftalar geçmişti">had passed</span>. Gregor <span class="gpp" title="had learned — Past Perfect: öğrenmişti">had learned</span> to move around his room quite well. He <span class="gm" title="could crawl — could = sürünebilmek">could crawl</span> up the walls and across the ceiling. It was surprisingly pleasant — his body felt light up there.</p>
+<p>Grete <span class="gm" title="would bring — would + V = geçmişteki alışkanlık">would bring</span> him food twice a day. She <span class="gpp" title="had noticed — Past Perfect: fark etmişti">had noticed</span> that he no longer ate fresh food. He preferred old cheese, rotten vegetables, and leftover sauces — things that <span class="gc" title="would have disgusted — 3rd Conditional: iğrendirirdi (gerçekleşmemiş)">would have disgusted</span> him before his transformation.</p>
+<p>The family's financial situation was getting worse every day. Gregor <span class="gpp" title="had been — olmuştu, geçmişte tamamlanmış">had been</span> the only person who worked. Now his father <span class="gm" title="had to find — had to = zorunda kaldı (geçmiş zorunluluk)">had to find</span> a job, and his mother and sister <span class="gm" title="had to take — had to = zorunda kaldılar">had to take</span> in sewing work from home.</p>
+<p>One evening, Grete and her mother decided to move the furniture out of Gregor's room so that he <span class="gc" title="could move more freely — so that + could: amaç bildiren yan cümle">could move more freely</span>. But when his mother saw him on the wall, she <span class="gv" title="was overcome — Passive: bunaldı / alt edildi (edilgen)">was overcome</span> with panic and fell.</p>
+<p>His father came home and thought Gregor <span class="gpp" title="had attacked — Past Perfect: saldırmıştı (suçlama)">had attacked</span> his mother. Furiously, he began throwing apples. One apple <span class="gv" title="was embedded — Passive Past: saplandı (edilgen)">was embedded</span> deep in Gregor's back, and he <span class="gm" title="could not — could not = yapamamak">could not</span> remove it. The wound <span class="gm" title="would cause — Future in the Past: yol açacaktı">would cause</span> him pain for months.</p>`,
+    vocab:[
+      {en:"crawl",tr:"emeklemek / sürünmek",ex:"crawl up the walls"},
+      {en:"ceiling",tr:"tavan",ex:"across the ceiling"},
+      {en:"rotten",tr:"çürük / bozulmuş",ex:"rotten vegetables"},
+      {en:"transformation",tr:"dönüşüm / değişim",ex:"before his transformation"},
+      {en:"financial",tr:"mali / finansal",ex:"financial situation"},
+      {en:"furniture",tr:"mobilya / eşya",ex:"move the furniture"},
+      {en:"furiously",tr:"öfkeyle / kızgınca",ex:"he furiously threw apples"},
+      {en:"embedded",tr:"gömülü / saplanmış",ex:"was embedded in his back"},
+    ],
+    quiz:[
+      {q:"What kind of food did Gregor start to prefer?",tr:"Gregor hangi yiyecekleri tercih etmeye başladı?",
+       opts:["Fresh fruit and bread.","Old cheese and rotten vegetables.","Hot soup and rice.","Milk and cookies."],ans:1},
+      {q:"His father _____ a job after Gregor's transformation. (Past obligation — geçmiş zorunluluk)",tr:"Doğru yapıyı seçin:",
+       opts:["must find","should find","had to find","would find"],ans:2},
+    ]
+  },
+  {
+    num:"Chapter 4", title:"The World Moves On",
+    sub:"The family begins to give up on Gregor",
+    emoji:["💔","🧹","👥"], bg:"linear-gradient(135deg,#1a0a0a,#0d0d1a)",
+    cap:"Love has limits. And sometimes, even family gives up.",
+    emotions:[{l:"💔 Rejection / Reddedilme",c:"ed"},{l:"😶 Indifference / Kayıtsızlık",c:"ei"}],
+    rt:"~5 min", wc:"~300 words",
+    story:`<p>Three lodgers <span class="gpp" title="had moved in — Past Perfect: taşınmıştı">had moved</span> into the Samsa house. They were serious men who expected everything to be clean and quiet. Gregor's room <span class="gv" title="was kept locked — Passive Continuous: kilitli tutuluyordu (edilgen)">was kept</span> locked at all times.</p>
+<p>Grete <span class="gpp" title="had stopped — Past Perfect: artık bırakmıştı">had stopped</span> bringing food regularly. The room <span class="gv" title="was no longer cleaned — Passive: artık temizlenmiyordu (edilgen)">was no longer cleaned</span>. Gregor felt the change deeply. He understood that his family <span class="gpp" title="had begun to give up — Past Perfect: vazgeçmeye başlamıştı">had begun to give up</span> on him.</p>
+<p>One evening, Grete played violin for the lodgers. The sound traveled down the corridor, and Gregor felt deeply <span class="gm" title="moved — past participle as adjective: etkilenmiş / duygulanmış">moved</span>. He <span class="gm" title="could not resist — karşı koyamamak">could not resist</span> — he slowly opened his door and crept into the hallway. The lodgers, <span class="gpp" title="who had been listening — Past Perfect Continuous: o ana kadar dinliyordu">who had been listening</span>, saw the insect and <span class="gv" title="were disgusted — Passive: iğrendiler (edilgen)">were disgusted</span>.</p>
+<p>The lodgers said they <span class="gm" title="would leave — Reported Speech: ayrılacaklar (dolaylı anlatım)">would leave</span> immediately and <span class="gm" title="would not pay — Reported Speech olumsuz: ödemeyecekler">would not pay</span> any rent. The damage <span class="gv" title="had been done — Passive Past Perfect: zarar verilmişti (edilgen)">had been done</span>.</p>
+<p>That night, Grete spoke firmly: "We <span class="gm" title="must get rid of — must = güçlü zorunluluk: kurtulmalıyız">must get rid of</span> it. If <span class="gc" title="it were — 2nd Conditional: If + past simple (gerçek olmayan koşul)">it were</span> really Gregor, he <span class="gc" title="would have understood — 3rd Conditional: anlardı (gerçekleşmemiş)">would have understood</span> that we can't live like this." Her parents <span class="gm" title="could not disagree — could not = karşı çıkamadılar">could not</span> disagree.</p>`,
+    vocab:[
+      {en:"lodgers",tr:"kiracılar / pansiyonerler",ex:"three lodgers moved in"},
+      {en:"corridor",tr:"koridor / geçit",ex:"traveled down the corridor"},
+      {en:"crept",tr:"sessizce ilerledi",ex:"crept into the hallway"},
+      {en:"disgusted",tr:"iğrendi / tiksindi",ex:"were disgusted"},
+      {en:"rent",tr:"kira",ex:"would not pay any rent"},
+      {en:"firmly",tr:"kararlılıkla / sertçe",ex:"spoke firmly"},
+      {en:"creature",tr:"yaratık / canlı",ex:"this creature"},
+      {en:"damage",tr:"hasar / zarar",ex:"the damage had been done"},
+    ],
+    quiz:[
+      {q:"Why did the lodgers decide to leave?",tr:"Kiracılar neden gitmeye karar verdi?",
+       opts:["Because the house was too expensive.","Because they saw Gregor the insect in the hallway.","Because the food was bad.","Because Grete played violin too loudly."],ans:1},
+      {q:"Complete with 2nd Conditional: If it _____ (be) really Gregor, he _____ (understand).",tr:"2. Koşul Cümlesi ile tamamlayın:",
+       opts:["is / understands","was / would understand","were / would understand","had been / would have understood"],ans:2},
+    ]
+  },
+  {
+    num:"Chapter 5", title:"The Final Transformation",
+    sub:"Gregor's last night — and the family's new beginning",
+    emoji:["🌅","🕊️","🪟"], bg:"linear-gradient(135deg,#0a0a1a,#1a100a)",
+    cap:"The end of one story. The beginning of another.",
+    emotions:[{l:"😞 Despair / Umutsuzluk",c:"ed"},{l:"🕊️ Peace / Huzur",c:"es"}],
+    rt:"~5 min", wc:"~310 words",
+    story:`<p>Gregor lay in the dark and thought about his family. He <span class="gpp" title="had heard — Past Perfect: duymuştu">had heard</span> everything Grete said. He felt tired — more tired than he <span class="gpp" title="had ever felt — Past Perfect superlative: hayatında hiç bu kadar yorulmamıştı">had ever felt</span> in his life. Slowly, a feeling of peace came over him.</p>
+<p>"My family needs to be free," he thought. "As long as I am here, <span class="gc" title="they can never be — present reality conditional: asla olamazlar">they can never be</span> happy." He remembered his family with love and tenderness. His thoughts <span class="gpp" title="had returned — Past Perfect: dönmüştü">had returned</span> to Grete — to the girl who <span class="gpp" title="had played violin — Past Perfect: keman çalmıştı">had played</span> violin so beautifully.</p>
+<p>Then, early in the morning, before the sun <span class="gpp" title="had risen — Past Perfect: doğmamıştı henüz (before + Past Perfect)">had risen</span>, Gregor died quietly. The old cleaning woman, who <span class="gm" title="would come — would = geçmişteki alışkanlık: her sabah gelirdi">would come</span> early every morning, <span class="gv" title="was the first to find — Passive structure: bulan ilk kişiydi">was the first to find</span> him. She called the family.</p>
+<p>There were no tears. The family felt an unusual sense of relief. It was terrible to feel this way, but they could not deny it. The three lodgers <span class="gv" title="were asked to leave — Passive: gitmeleri istendi (edilgen)">were asked to leave</span> immediately, and they left without argument.</p>
+<p>That same morning, the family <span class="gm" title="decided to go — Past Simple decision: karar verdiler">decided to go</span> for a walk in the countryside. It was the first time in months that they <span class="gpp" title="had left — Past Perfect: birlikte çıkmıştı">had left</span> the house together. The sun was shining. Grete stood up first in the tram. Her parents <span class="gm" title="could see — could = görebiliyorlardı">could see</span> that she <span class="gpp" title="had grown — Past Perfect: büyümüştü">had grown</span> into a beautiful, confident young woman. Life, somehow, <span class="gm" title="would go on — Future in the Past: devam edecekti">would go on</span>.</p>`,
+    vocab:[
+      {en:"tenderness",tr:"şefkat / yumuşaklık",ex:"with love and tenderness"},
+      {en:"relief",tr:"rahatlama / ferahlama",ex:"a sense of relief"},
+      {en:"deny",tr:"inkâr etmek / reddetmek",ex:"could not deny it"},
+      {en:"argument",tr:"tartışma / itiraz",ex:"without argument"},
+      {en:"countryside",tr:"kırsal alan",ex:"walk in the countryside"},
+      {en:"confident",tr:"kendinden emin",ex:"a confident young woman"},
+      {en:"somehow",tr:"bir şekilde",ex:"somehow, life would go on"},
+      {en:"mourning",tr:"yas / matem",ex:"no time for mourning"},
+    ],
+    quiz:[
+      {q:"Why did Gregor feel at peace at the end?",tr:"Gregor sonunda neden huzur hissetti?",
+       opts:["Because he became human again.","Because he understood his family needed to be free.","Because the lodgers left.","Because Grete stopped playing violin."],ans:1},
+      {q:"Complete with Past Perfect: By the time the sun rose, Gregor _____ (die) quietly.",tr:"Past Perfect ile tamamlayın:",
+       opts:["died","has died","had died","was dying"],ans:2},
+    ]
+  }
+];
+
+let cur = 0;
+const answered = {};
+
+function startApp(){
+  const s = document.getElementById('splash');
+  s.style.opacity='0';
+  setTimeout(()=>{
+    s.style.display='none';
+    document.getElementById('app').classList.add('active');
+    buildNav(); render(0);
+  },800);
+}
+
+function buildNav(){
+  const nav = document.getElementById('chNav');
+  C.forEach((_,i)=>{
+    const b = document.createElement('button');
+    b.className='ch-btn'+(i===0?' active':'');
+    b.textContent=`Ch ${i+1}`;
+    b.onclick=()=>render(i);
+    nav.appendChild(b);
+  });
+}
+
+function render(idx){
+  cur = idx;
+  const ch = C[idx];
+  document.querySelectorAll('.ch-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  const pct = ((idx+1)/C.length)*100;
+  document.getElementById('progBar').style.width=pct+'%';
+  document.getElementById('progTxt').textContent=`${idx+1}/${C.length}`;
+
+  const m = document.getElementById('mc');
+  m.innerHTML='';
+
+  // Header
+  const h = el('div','ch-header');
+  h.innerHTML=`<div class="ch-num">${ch.num}</div><h1 class="ch-title">${ch.title}</h1><p class="ch-sub">${ch.sub}</p>`;
+  m.appendChild(h);
+
+  // Emotions
+  const er = el('div','emotion-row');
+  ch.emotions.forEach(e=>{
+    const t=el('span',`etag ${e.c}`); t.textContent=e.l; er.appendChild(t);
+  });
+  m.appendChild(er);
+
+  // Meta
+  const meta = el('div','read-meta');
+  meta.innerHTML=`<span>⏱ ${ch.rt}</span><span>📝 ${ch.wc}</span><span>📚 B1 Level</span>`;
+  m.appendChild(meta);
+
+  // Illustration
+  const ill = el('div','illus');
+  ill.innerHTML=`<div class="illus-inner" style="background:${ch.bg}">${ch.emoji.map(e=>`<span style="filter:drop-shadow(0 0 18px rgba(192,132,252,.5))">${e}</span>`).join('')}</div><div class="illus-cap">${ch.cap}</div>`;
+  m.appendChild(ill);
+
+  // Grammar legend
+  const gl = el('div','gram-legend');
+  gl.innerHTML=`<h4>📌 Grammar Focus — Bu Bölümdeki Gramer Yapıları</h4>
+  <div class="gram-items">
+    <div class="gi"><div class="gd" style="background:#f0abfc"></div><span style="color:#f0abfc;font-weight:600">Past Perfect</span>&nbsp;— had + V3 (Geçmişte daha önce olan)</div>
+    <div class="gi"><div class="gd" style="background:#fbbf24"></div><span style="color:#fbbf24;font-weight:600">Modal Verbs</span>&nbsp;— could/would/must (Kiplik fiilleri)</div>
+    <div class="gi"><div class="gd" style="background:#34d399"></div><span style="color:#34d399;font-weight:600">Passive Voice</span>&nbsp;— was/were + V3 (Edilgen yapı)</div>
+    <div class="gi"><div class="gd" style="background:#60a5fa"></div><span style="color:#60a5fa;font-weight:600">Conditional</span>&nbsp;— if + past simple (Koşul cümlesi)</div>
+    <div class="gi"><div class="gd" style="background:#fb7185"></div><span style="color:#fb7185;font-weight:600">Present Perfect</span>&nbsp;— have + V3 (Şimdiki mükemmel)</div>
+  </div>
+  <p style="color:var(--muted);font-size:.72rem;margin-top:.7rem;">💡 Vurgulu kelimelerin üzerine gelin (hover) → Türkçe gramer açıklamasını görün!</p>`;
+  m.appendChild(gl);
+
+  // Story
+  const sc = el('div','story-card');
+  sc.innerHTML = ch.story;
+  m.appendChild(sc);
+
+  // Vocab
+  const vs = el('div','vocab-sec');
+  vs.innerHTML='<h3>🔑 Key Vocabulary — Anahtar Kelimeler</h3>';
+  const vg = el('div','vocab-grid');
+  ch.vocab.forEach(v=>{
+    const vc = el('div','vc');
+    vc.innerHTML=`<div class="vc-en">${v.en}</div><div class="vc-tr">🇹🇷 ${v.tr}</div><div class="vc-ex">"${v.ex}"</div>`;
+    vg.appendChild(vc);
+  });
+  vs.appendChild(vg);
+  m.appendChild(vs);
+
+  // Quiz
+  const qs = el('div','quiz-sec');
+  qs.innerHTML='<h3>🧠 Comprehension Check — Anlama Soruları</h3>';
+  ch.quiz.forEach((q,qi)=>{
+    const qd = el('div','qq');
+    qd.innerHTML=`<p><strong>Q${qi+1}:</strong> ${q.q}<br><small style="color:var(--muted)">🇹🇷 ${q.tr}</small></p>`;
+    const opts = el('div','qopts');
+    q.opts.forEach((opt,oi)=>{
+      const b = el('div','qo');
+      b.textContent=`${String.fromCharCode(65+oi)}) ${opt}`;
+      const key=`${idx}-${qi}`;
+      if(answered[key]!==undefined){
+        b.classList.add('done');
+        if(oi===q.ans) b.classList.add('cor');
+        else if(oi===answered[key]) b.classList.add('wrg');
+      }
+      b.onclick=()=>{
+        if(answered[key]!==undefined) return;
+        answered[key]=oi;
+        opts.querySelectorAll('.qo').forEach((x,xi)=>{
+          x.classList.add('done');
+          if(xi===q.ans) x.classList.add('cor');
+          else if(xi===oi) x.classList.add('wrg');
+        });
+      };
+      opts.appendChild(b);
+    });
+    qd.appendChild(opts);
+    qs.appendChild(qd);
+  });
+  m.appendChild(qs);
+
+  // Nav buttons
+  const nb = el('div','nav-btns');
+  const prev = el('button','nbtn'); prev.innerHTML='← Previous'; prev.disabled=idx===0;
+  prev.onclick=()=>{render(idx-1);window.scrollTo({top:0,behavior:'smooth'});};
+  const next = el('button', idx<C.length-1?'nbtn pri':'nbtn pri');
+  next.innerHTML = idx<C.length-1 ? `Next: ${C[idx+1].title} →` : '🎉 Story Complete!';
+  next.onclick = idx<C.length-1 ? ()=>{render(idx+1);window.scrollTo({top:0,behavior:'smooth'});} : showEnd;
+  nb.appendChild(prev); nb.appendChild(next);
+  m.appendChild(nb);
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showEnd(){
+  document.getElementById('mc').innerHTML=`
+  <div style="text-align:center;padding:4rem 2rem;animation:fadeUp .7s ease">
+    <div style="font-size:5rem;margin-bottom:1.5rem">🎉🪲✨</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:2.4rem;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.8rem">Congratulations!</h1>
+    <p style="color:var(--muted);font-size:1.05rem;margin-bottom:.4rem">You finished <strong style="color:var(--text)">The Metamorphosis</strong> by Franz Kafka.</p>
+    <p style="color:var(--accent);margin-bottom:2rem">Tebrikler! Kafka'nın Dönüşüm'ünü tamamladınız. 🇹🇷</p>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.8rem;max-width:500px;margin:0 auto 2rem;text-align:left">
+      <h3 style="color:var(--gold);margin-bottom:1rem">📚 Gramer Konuları — Grammar Topics Covered</h3>
+      <div style="display:flex;flex-direction:column;gap:.55rem;color:var(--muted);font-size:.88rem;line-height:1.7">
+        <span>✅ <span style="color:#f0abfc">Past Perfect</span> — Geçmiş Mükemmel Zaman (had + V3)</span>
+        <span>✅ <span style="color:#fbbf24">Modal Verbs</span> — Kiplik Fiiller (could, would, must, should)</span>
+        <span>✅ <span style="color:#34d399">Passive Voice</span> — Edilgen Yapı (was/were + V3)</span>
+        <span>✅ <span style="color:#60a5fa">Conditional Sentences</span> — Koşul Cümleleri (2nd & 3rd)</span>
+        <span>✅ <span style="color:#fb7185">Present Perfect</span> — Şimdiki Mükemmel (have/has + V3)</span>
+        <span>✅ 40+ Key Vocabulary Words — Anahtar Kelimeler</span>
+      </div>
+    </div>
+    <button class="nbtn pri" onclick="render(0)" style="font-size:1rem;padding:.85rem 2rem">🔄 Read Again from Chapter 1</button>
+  </div>`;
+}
+
+function el(tag,cls){ const e=document.createElement(tag); e.className=cls; return e; }
+
+// Tooltip
+const tipBox = document.getElementById('tip');
+document.addEventListener('mouseover',e=>{
+  const t = e.target.closest('[title]');
+  if(t && t.classList.toString().match(/g(pp|m|v|c|pres)/)){
+    tipBox.textContent = t.getAttribute('title');
+    tipBox.style.display='block';
+  }
+});
+document.addEventListener('mousemove',e=>{
+  tipBox.style.left=(e.clientX+12)+'px';
+  tipBox.style.top=(e.clientY-30)+'px';
+});
+document.addEventListener('mouseout',e=>{
+  if(!e.target.closest('[title]')) tipBox.style.display='none';
+});
+
+window.addEventListener('scroll',()=>{
+  document.getElementById('scrollTop').classList.toggle('vis',window.scrollY>300);
+});
+</script>
+</body>
+</html>

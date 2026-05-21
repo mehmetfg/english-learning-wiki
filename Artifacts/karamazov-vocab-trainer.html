@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Karamazov Vocabulary — Word Study</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+/* ══ ROOT ══ */
+:root {
+  --bg:      #0D0A08;
+  --surface: #141008;
+  --card:    #1A1410;
+  --border:  rgba(201,168,76,0.15);
+  --red:     #8B1A1A;
+  --crimson: #C0392B;
+  --gold:    #C9A84C;
+  --amber:   #E8C56A;
+  --cream:   #F2E8D5;
+  --mist:    #9AA8B2;
+  --slate:   #6B7A8A;
+  --pine:    #2C4A3E;
+  --green:   #3E8B5A;
+  --ink:     #0A0806;
+
+  --new:       #4A4A5A;
+  --seen:      #8B6A1A;
+  --learning:  #8B3A1A;
+  --mastered:  #2C6A3E;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'EB Garamond',Georgia,serif;
+  background:var(--bg);
+  color:var(--cream);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.35;
+}
+
+/* ══ SCREENS ══ */
+.screen{display:none;min-height:100vh;animation:fadeIn .5s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══ TOP BAR ══ */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,8,6,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:12px 20px;
+  display:flex;align-items:center;gap:14px;
+}
+.topbar-back{
+  background:transparent;border:1px solid rgba(201,168,76,.25);
+  color:var(--slate);font-family:'EB Garamond',serif;font-size:13px;
+  letter-spacing:2px;padding:7px 16px;cursor:pointer;
+  transition:all .25s;text-transform:uppercase;
+}
+.topbar-back:hover{border-color:var(--gold);color:var(--gold)}
+.topbar-title{font-family:'Playfair Display',serif;font-size:15px;color:var(--cream);flex:1;text-align:center}
+.topbar-progress{font-family:'EB Garamond',serif;font-size:12px;color:var(--slate);letter-spacing:1px}
+
+/* ══ DASHBOARD ══ */
+#screen-home{padding:0 0 80px}
+.home-hero{
+  padding:50px 24px 36px;text-align:center;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(139,26,26,.12) 0%,transparent 70%);
+  border-bottom:1px solid var(--border);
+  margin-bottom:32px;
+}
+.home-hero-sub{
+  font-size:11px;letter-spacing:6px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:12px;opacity:.7;
+}
+.home-hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,6vw,44px);font-weight:900;
+  color:var(--cream);line-height:1.1;margin-bottom:8px;
+}
+.home-hero h1 em{color:var(--gold);font-style:italic}
+.home-hero-desc{font-size:14.5px;color:var(--mist);font-style:italic;margin-top:10px}
+
+/* Global stats bar */
+.stats-bar{
+  display:flex;gap:0;max-width:640px;margin:0 auto 32px;
+  border:1px solid var(--border);overflow:hidden;
+}
+.stat-box{
+  flex:1;padding:16px 14px;text-align:center;
+  border-right:1px solid var(--border);
+}
+.stat-box:last-child{border-right:none}
+.stat-num{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--amber)}
+.stat-label{font-size:11px;letter-spacing:2px;color:var(--slate);text-transform:uppercase;margin-top:2px}
+
+/* Total progress bar */
+.total-progress{max-width:640px;margin:0 auto 36px;padding:0 20px}
+.tp-label{display:flex;justify-content:space-between;margin-bottom:8px}
+.tp-label span{font-size:12px;letter-spacing:2px;color:var(--slate);text-transform:uppercase}
+.tp-track{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.tp-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:2px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+/* Chunk grid */
+.chunks-wrap{max-width:640px;margin:0 auto;padding:0 16px}
+.chunks-title{
+  font-size:11px;letter-spacing:5px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:20px;
+  display:flex;align-items:center;gap:14px;
+}
+.chunks-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+.chunk-card{
+  border:1px solid var(--border);
+  background:var(--card);
+  margin-bottom:12px;
+  cursor:pointer;
+  transition:all .3s;
+  overflow:hidden;
+  position:relative;
+}
+.chunk-card:hover:not(.locked){
+  border-color:rgba(201,168,76,.4);
+  background:rgba(30,24,18,1);
+  transform:translateY(-1px);
+  box-shadow:0 8px 30px rgba(0,0,0,.4);
+}
+.chunk-card.locked{
+  opacity:.45;cursor:not-allowed;
+  filter:grayscale(.4);
+}
+.chunk-card-inner{padding:18px 20px}
+.chunk-header{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.chunk-icon{font-size:26px;line-height:1;flex-shrink:0}
+.chunk-meta{flex:1}
+.chunk-num{font-size:10px;letter-spacing:4px;color:var(--red);text-transform:uppercase;margin-bottom:3px}
+.chunk-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--cream)}
+.chunk-count{font-size:12px;color:var(--mist);font-style:italic;margin-top:2px}
+.chunk-status{
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:4px 10px;border-radius:1px;font-family:'EB Garamond',serif;
+}
+.status-new{border:1px solid rgba(74,74,90,.6);color:rgba(154,168,178,.6)}
+.status-progress{border:1px solid rgba(139,58,26,.6);color:rgba(232,197,106,.7);background:rgba(139,58,26,.1)}
+.status-done{border:1px solid rgba(44,106,62,.6);color:rgba(100,200,120,.8);background:rgba(44,106,62,.1)}
+.status-locked{border:1px solid rgba(60,50,40,.6);color:rgba(100,90,80,.6)}
+
+/* Word pill strip */
+.chunk-words{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.word-pill{
+  font-size:12px;padding:3px 10px;border-radius:1px;
+  font-family:'EB Garamond',serif;border:1px solid;
+}
+.pill-new     {border-color:rgba(74,74,90,.5);    color:rgba(154,168,178,.5)}
+.pill-seen    {border-color:rgba(139,106,26,.6);  color:rgba(232,197,106,.6)}
+.pill-learning{border-color:rgba(139,58,26,.6);   color:rgba(232,140,80,.7)}
+.pill-mastered{border-color:rgba(44,106,62,.6);   color:rgba(100,200,120,.8)}
+
+/* Chunk progress bar */
+.chunk-prog-track{height:2px;background:rgba(255,255,255,.05);border-radius:1px;overflow:hidden}
+.chunk-prog-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:1px;transition:width .5s ease}
+
+.chunk-lock-badge{
+  position:absolute;top:16px;right:16px;
+  font-size:18px;opacity:.4;
+}
+
+/* ══ MODE SELECT ══ */
+#screen-mode{display:none;align-items:center;justify-content:center;padding:60px 20px}
+#screen-mode.active{display:flex;flex-direction:column}
+.mode-card-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:540px;width:100%;margin-top:30px}
+.mode-card{
+  border:1px solid var(--border);background:var(--card);
+  padding:28px 20px;text-align:center;cursor:pointer;
+  transition:all .3s;
+}
+.mode-card:hover{border-color:rgba(201,168,76,.5);background:rgba(30,24,18,1);transform:translateY(-2px)}
+.mode-icon{font-size:40px;margin-bottom:14px}
+.mode-name{font-family:'Playfair Display',serif;font-size:18px;color:var(--amber);margin-bottom:8px}
+.mode-desc{font-size:13px;color:var(--mist);line-height:1.5;font-style:italic}
+.mode-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--cream);text-align:center}
+.mode-sub{font-size:14px;color:var(--mist);font-style:italic;text-align:center;margin-top:8px}
+
+/* ══ FLASHCARD SCREEN ══ */
+#screen-flash{padding:0 0 60px}
+.flash-wrap{max-width:600px;margin:0 auto;padding:32px 20px}
+.flash-counter{
+  text-align:center;font-size:12px;letter-spacing:3px;
+  color:var(--slate);text-transform:uppercase;margin-bottom:24px;
+}
+
+/* The card */
+.card-scene{
+  width:100%;perspective:1000px;margin-bottom:24px;cursor:pointer;
+  min-height:380px;
+}
+.card-inner{
+  position:relative;width:100%;height:100%;min-height:380px;
+  transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.4,0,.2,1);
+}
+.card-inner.flipped{transform:rotateY(180deg)}
+.card-face,.card-back{
+  position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border:1px solid var(--border);
+  background:var(--card);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:36px 30px;min-height:380px;
+}
+.card-back{transform:rotateY(180deg);justify-content:flex-start;padding-top:30px}
+
+/* Front face */
+.card-chapter-tag{
+  font-size:10px;letter-spacing:5px;color:var(--red);
+  text-transform:uppercase;margin-bottom:16px;
+}
+.card-word{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(36px,8vw,54px);font-weight:900;
+  color:var(--cream);text-align:center;margin-bottom:16px;
+  line-height:1.1;
+}
+.card-pos{font-size:13px;color:var(--slate);font-style:italic;margin-bottom:20px}
+.card-emoji{font-size:56px;margin-bottom:16px;filter:drop-shadow(0 2px 12px rgba(0,0,0,.5))}
+.card-hint{font-size:12px;letter-spacing:2px;color:rgba(154,168,178,.4);text-transform:uppercase;margin-top:10px}
+
+/* Back face */
+.card-back-word{
+  font-family:'Playfair Display',serif;font-size:22px;font-weight:700;
+  color:var(--amber);margin-bottom:4px;text-align:center;width:100%;
+}
+.card-tr{
+  font-size:13px;color:var(--slate);font-style:italic;
+  text-align:center;margin-bottom:20px;letter-spacing:1px;
+}
+.card-def{
+  font-size:16px;line-height:1.75;color:var(--cream);
+  text-align:center;margin-bottom:22px;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:16px 0;width:100%;
+}
+.card-context{
+  font-size:14.5px;font-style:italic;color:rgba(242,232,213,.6);
+  line-height:1.7;text-align:center;margin-bottom:20px;
+  padding:0 10px;
+}
+.card-context .ctx-word{color:var(--amber);font-style:normal;font-weight:600;border-bottom:1px solid rgba(232,197,106,.4)}
+
+/* Rating buttons */
+.rating-row{display:flex;gap:12px;margin-top:4px;width:100%}
+.rate-btn{
+  flex:1;padding:14px 8px;border:1px solid;
+  font-family:'EB Garamond',serif;font-size:14px;letter-spacing:1px;
+  cursor:pointer;transition:all .25s;background:transparent;
+  text-transform:uppercase;
+}
+.rate-btn.again{
+  border-color:rgba(139,26,26,.6);color:rgba(200,100,80,.8);
+}
+.rate-btn.again:hover{background:rgba(139,26,26,.2);color:var(--cream)}
+.rate-btn.got-it{
+  border-color:rgba(44,106,62,.6);color:rgba(100,200,120,.8);
+}
+.rate-btn.got-it:hover{background:rgba(44,106,62,.2);color:var(--cream)}
+.rate-btn.hard{
+  border-color:rgba(139,106,26,.6);color:rgba(232,197,106,.7);
+}
+.rate-btn.hard:hover{background:rgba(139,106,26,.2);color:var(--cream)}
+
+/* Flip hint */
+.flip-hint{
+  text-align:center;font-size:12px;letter-spacing:3px;
+  color:rgba(154,168,178,.35);text-transform:uppercase;
+  margin-bottom:20px;
+}
+
+/* ══ QUIZ SCREEN ══ */
+#screen-quiz{padding:0 0 60px}
+.quiz-wrap{max-width:600px;margin:0 auto;padding:32px 20px}
+.quiz-question-box{
+  border:1px solid var(--border);background:var(--card);
+  padding:40px 28px;margin-bottom:24px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.quiz-qtype{font-size:10px;letter-spacing:5px;color:var(--red);text-transform:uppercase;margin-bottom:16px}
+.quiz-word{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(34px,7vw,50px);font-weight:900;
+  color:var(--cream);margin-bottom:12px;
+}
+.quiz-emoji{font-size:50px;margin-bottom:10px;filter:drop-shadow(0 2px 10px rgba(0,0,0,.5))}
+.quiz-chapter{font-size:12px;color:var(--slate);font-style:italic}
+
+.quiz-options{display:grid;gap:10px;margin-bottom:20px}
+.quiz-opt{
+  border:1px solid var(--border);background:transparent;
+  padding:16px 20px;text-align:left;cursor:pointer;
+  font-family:'EB Garamond',serif;font-size:15.5px;
+  color:rgba(242,232,213,.85);line-height:1.5;
+  transition:all .25s;position:relative;
+}
+.quiz-opt:hover:not(.revealed){border-color:rgba(201,168,76,.4);background:rgba(30,24,18,.8);color:var(--cream)}
+.quiz-opt.correct{
+  border-color:rgba(44,106,62,.8);background:rgba(44,106,62,.15);
+  color:rgba(100,220,130,1);
+}
+.quiz-opt.wrong{
+  border-color:rgba(139,26,26,.8);background:rgba(139,26,26,.1);
+  color:rgba(200,100,80,.9);
+}
+.quiz-opt.revealed{cursor:default}
+.opt-marker{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px}
+
+.quiz-feedback{
+  border:1px solid;padding:16px 20px;margin-bottom:20px;
+  font-size:15px;line-height:1.6;
+  display:none;
+}
+.quiz-feedback.correct-fb{border-color:rgba(44,106,62,.5);background:rgba(44,106,62,.08);color:rgba(100,220,130,.9)}
+.quiz-feedback.wrong-fb{border-color:rgba(139,26,26,.5);background:rgba(139,26,26,.08);color:rgba(220,130,100,.9)}
+.quiz-feedback.show{display:block}
+.quiz-context{font-style:italic;font-size:14px;color:var(--mist);margin-top:8px;line-height:1.6}
+.quiz-tr{font-size:13px;color:var(--slate);margin-top:6px}
+
+.quiz-next{
+  width:100%;padding:15px;background:rgba(139,26,26,.2);
+  border:1px solid rgba(139,26,26,.5);color:rgba(242,232,213,.85);
+  font-family:'EB Garamond',serif;font-size:15px;letter-spacing:2px;
+  cursor:pointer;text-transform:uppercase;transition:all .3s;
+  display:none;
+}
+.quiz-next.show{display:block}
+.quiz-next:hover{background:rgba(139,26,26,.35);color:var(--cream)}
+
+/* ══ RESULTS SCREEN ══ */
+#screen-results{display:none;align-items:center;justify-content:center;padding:60px 20px}
+#screen-results.active{display:flex;flex-direction:column}
+.results-wrap{max-width:540px;width:100%}
+.results-hero{
+  text-align:center;padding:40px 30px;
+  border:1px solid var(--border);background:var(--card);
+  margin-bottom:20px;
+}
+.results-emoji{font-size:60px;margin-bottom:16px}
+.results-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--gold);margin-bottom:8px}
+.results-sub{font-size:15px;color:var(--mist);font-style:italic}
+.results-score{
+  display:flex;gap:0;border:1px solid var(--border);overflow:hidden;margin-bottom:20px;
+}
+.rs-box{flex:1;padding:18px;text-align:center;border-right:1px solid var(--border)}
+.rs-box:last-child{border-right:none}
+.rs-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:700}
+.rs-label{font-size:11px;letter-spacing:2px;color:var(--slate);text-transform:uppercase;margin-top:3px}
+.rs-green{color:rgba(100,220,130,1)}
+.rs-amber{color:var(--amber)}
+.rs-red{color:rgba(220,130,100,1)}
+
+.results-words-title{font-size:11px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:12px}
+.results-words-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.result-word-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;border:1px solid;margin-bottom:8px;font-size:14px;
+}
+.rwr-mastered{border-color:rgba(44,106,62,.4);background:rgba(44,106,62,.05)}
+.rwr-learning{border-color:rgba(139,58,26,.4);background:rgba(139,58,26,.05)}
+.rw-word{font-family:'Playfair Display',serif;font-size:15px;color:var(--amber);flex:1}
+.rw-tr{font-size:12px;color:var(--slate);font-style:italic}
+.rw-badge{font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;border:1px solid;border-radius:1px}
+.badge-m{border-color:rgba(44,106,62,.6);color:rgba(100,220,130,.8)}
+.badge-l{border-color:rgba(139,58,26,.6);color:rgba(232,140,80,.7)}
+
+.results-btn-row{display:flex;gap:12px;margin-top:24px}
+.results-btn{
+  flex:1;padding:14px;border:1px solid;background:transparent;
+  font-family:'EB Garamond',serif;font-size:14px;letter-spacing:2px;
+  cursor:pointer;text-transform:uppercase;transition:all .3s;
+}
+.results-btn.primary{border-color:rgba(139,26,26,.6);color:rgba(220,180,140,.8)}
+.results-btn.primary:hover{background:rgba(139,26,26,.2);color:var(--cream)}
+.results-btn.secondary{border-color:var(--border);color:var(--slate)}
+.results-btn.secondary:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:0 auto 28px;max-width:640px;padding:0 16px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mist)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);border-radius:2px}
+
+@media(max-width:560px){
+  .card-word{font-size:32px}
+  .mode-card-wrap{grid-template-columns:1fr}
+  .quiz-word{font-size:30px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ SCREEN: HOME / DASHBOARD ══════════ -->
+<div id="screen-home" class="screen active">
+  <div class="home-hero">
+    <div class="home-hero-sub">The Brothers Karamazov</div>
+    <h1>Vocabulary <em>Trainer</em></h1>
+    <div class="home-hero-desc">30 words · 6 chunks · flashcards &amp; quizzes · your progress is saved</div>
+  </div>
+
+  <div class="stats-bar" style="max-width:640px;margin:0 auto 24px;border:1px solid var(--border);">
+    <div class="stat-box"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Mastered</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-learning" style="color:var(--amber)">0</div><div class="stat-label">Learning</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-new" style="color:var(--slate)">30</div><div class="stat-label">New</div></div>
+    <div class="stat-box"><div class="stat-num" id="stat-streak">0</div><div class="stat-label">Day Streak 🔥</div></div>
+  </div>
+
+  <div class="total-progress">
+    <div class="tp-label">
+      <span>Overall Progress</span>
+      <span id="tp-pct">0%</span>
+    </div>
+    <div class="tp-track"><div class="tp-fill" id="tp-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#4A4A5A"></div> New</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(139,106,26,.8)"></div> Seen</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(139,58,26,.8)"></div> Learning</div>
+    <div class="legend-item"><div class="legend-dot" style="background:rgba(44,106,62,.8)"></div> Mastered</div>
+  </div>
+
+  <div class="chunks-wrap">
+    <div class="chunks-title">Chunks — Kelime Grupları</div>
+    <div id="chunks-list"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: MODE SELECT ══════════ -->
+<div id="screen-mode" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showHome()">← Back</button>
+    <div class="topbar-title" id="mode-topbar-title">Choose Mode</div>
+    <div></div>
+  </div>
+  <div style="max-width:540px;width:100%;padding:40px 20px 0">
+    <div class="mode-title" id="mode-chunk-title"></div>
+    <div class="mode-sub" id="mode-chunk-sub"></div>
+    <div class="mode-card-wrap">
+      <div class="mode-card" onclick="startFlash()">
+        <div class="mode-icon">🃏</div>
+        <div class="mode-name">Flashcards</div>
+        <div class="mode-desc">Flip cards to reveal meaning, context, and Turkish — then rate yourself</div>
+      </div>
+      <div class="mode-card" onclick="startQuiz()">
+        <div class="mode-icon">🎯</div>
+        <div class="mode-name">Quiz</div>
+        <div class="mode-desc">Choose the correct definition from 4 options — test what you know</div>
+      </div>
+    </div>
+    <div class="mode-card" style="margin-top:12px;display:flex;align-items:center;gap:16px;padding:18px 20px;cursor:pointer;border:1px solid var(--border);background:var(--card);transition:all .3s" onclick="startReview()" onmouseover="this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:28px">🔁</div>
+      <div>
+        <div class="mode-name" style="font-size:16px;margin-bottom:4px">Review Mode</div>
+        <div class="mode-desc" style="font-size:13px">Only shows words you haven't mastered yet — smart repetition</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: FLASHCARDS ══════════ -->
+<div id="screen-flash" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="backToMode()">← Back</button>
+    <div class="topbar-title">Flashcards</div>
+    <div class="topbar-progress" id="flash-progress-top">1 / 5</div>
+  </div>
+  <div class="flash-wrap">
+    <div class="flash-counter" id="flash-counter">Word 1 of 5</div>
+    <div class="flip-hint" id="flip-hint">Tap the card to reveal</div>
+
+    <div class="card-scene" onclick="flipCard()">
+      <div class="card-inner" id="card-inner">
+        <div class="card-face">
+          <div class="card-chapter-tag" id="fc-chapter"></div>
+          <div class="card-emoji" id="fc-emoji"></div>
+          <div class="card-word" id="fc-word"></div>
+          <div class="card-pos" id="fc-pos"></div>
+          <div class="card-hint">tap to flip</div>
+        </div>
+        <div class="card-back">
+          <div class="card-back-word" id="bc-word"></div>
+          <div class="card-tr" id="bc-tr"></div>
+          <div class="card-def" id="bc-def"></div>
+          <div class="card-context" id="bc-ctx"></div>
+          <div class="rating-row" id="rating-row" onclick="event.stopPropagation()">
+            <button class="rate-btn again" onclick="rateCard(0)">✕ Again</button>
+            <button class="rate-btn hard"  onclick="rateCard(1)">~ Hard</button>
+            <button class="rate-btn got-it" onclick="rateCard(2)">✓ Got it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini progress dots -->
+    <div id="flash-dots" style="display:flex;gap:6px;justify-content:center;margin-top:16px;flex-wrap:wrap"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: QUIZ ══════════ -->
+<div id="screen-quiz" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="backToMode()">← Back</button>
+    <div class="topbar-title">Quiz</div>
+    <div class="topbar-progress" id="quiz-progress-top">1 / 5</div>
+  </div>
+  <div class="quiz-wrap">
+    <div class="flash-counter" id="quiz-counter">Question 1 of 5</div>
+    <div class="quiz-question-box">
+      <div class="quiz-qtype">What does this word mean?</div>
+      <div class="quiz-emoji" id="qz-emoji"></div>
+      <div class="quiz-word" id="qz-word"></div>
+      <div class="quiz-chapter" id="qz-chapter"></div>
+    </div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <div class="quiz-context" id="quiz-context-fb" style="display:none;margin-bottom:16px;"></div>
+    <button class="quiz-next" id="quiz-next" onclick="nextQuizQ()">Continue →</button>
+    <div id="quiz-dots" style="display:flex;gap:6px;justify-content:center;margin-top:16px;flex-wrap:wrap"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN: RESULTS ══════════ -->
+<div id="screen-results" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="showHome()">← Dashboard</button>
+    <div class="topbar-title">Session Complete</div>
+    <div></div>
+  </div>
+  <div class="results-wrap" style="padding:32px 20px">
+    <div class="results-hero">
+      <div class="results-emoji" id="res-emoji">🎉</div>
+      <div class="results-title" id="res-title">Well done!</div>
+      <div class="results-sub" id="res-sub"></div>
+    </div>
+    <div class="results-score">
+      <div class="rs-box"><div class="rs-num rs-green" id="res-correct">0</div><div class="rs-label">Correct</div></div>
+      <div class="rs-box"><div class="rs-num rs-red" id="res-wrong">0</div><div class="rs-label">Wrong</div></div>
+      <div class="rs-box"><div class="rs-num rs-amber" id="res-total-q">0</div><div class="rs-label">Total</div></div>
+    </div>
+    <div class="results-words-title">Words Reviewed</div>
+    <div id="res-words-list"></div>
+    <div class="results-btn-row">
+      <button class="results-btn primary" id="res-retry-btn" onclick="retrySession()">Retry Chunk</button>
+      <button class="results-btn secondary" onclick="showHome()">Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ JS ══════════════════════════════════════ -->
+<script>
+// ────────────────────────────────
+// DATA — 30 words, 6 chunks of 5
+// ────────────────────────────────
+const CHUNKS = [
+  {
+    id: 0,
+    name: "The Family",
+    nameTR: "Aile",
+    icon: "🏠",
+    chapter: "Chapters 1–2",
+    words: [
+      {
+        word:"represent", pos:"verb",
+        def:"To be a symbol or example of something",
+        tr:"temsil etmek",
+        ctx:"Each son <span class='ctx-word'>represents</span> a different part of the human soul.",
+        emoji:"🎭", chapter:"Ch. 1"
+      },
+      {
+        word:"passionate", pos:"adjective",
+        def:"Having very strong feelings; full of emotion and energy",
+        tr:"tutkulu, hevesli",
+        ctx:"Dmitri is <span class='ctx-word'>passionate</span>, wild, and emotional — he loves life too much.",
+        emoji:"🔥", chapter:"Ch. 1"
+      },
+      {
+        word:"intellectual", pos:"noun / adjective",
+        def:"Someone who thinks deeply and loves ideas; related to thinking",
+        tr:"entelektüel, fikir insanı",
+        ctx:"Ivan is the <span class='ctx-word'>intellectual</span> — he reads, thinks, and questions everything.",
+        emoji:"📚", chapter:"Ch. 1"
+      },
+      {
+        word:"monastery", pos:"noun",
+        def:"A place where monks or religious people live, work and pray",
+        tr:"manastır",
+        ctx:"Alyosha lives at the local <span class='ctx-word'>monastery</span> with his teacher, Elder Zosima.",
+        emoji:"⛪", chapter:"Ch. 1"
+      },
+      {
+        word:"inheritance", pos:"noun",
+        def:"Money or property that someone leaves you when they die",
+        tr:"miras",
+        ctx:"Dmitri accuses his father of stealing his <span class='ctx-word'>inheritance</span> — money from his dead mother.",
+        emoji:"💰", chapter:"Ch. 2"
+      }
+    ]
+  },
+  {
+    id: 1,
+    name: "Conflict & Belief",
+    nameTR: "Çatışma ve İnanç",
+    icon: "⚔️",
+    chapter: "Chapters 2–3",
+    words: [
+      {
+        word:"accuse", pos:"verb",
+        def:"To say that someone has done something wrong or illegal",
+        tr:"suçlamak, itham etmek",
+        ctx:"Dmitri <span class='ctx-word'>accuses</span> his father of stealing his inheritance.",
+        emoji:"👉", chapter:"Ch. 2"
+      },
+      {
+        word:"deny", pos:"verb",
+        def:"To say that something is not true; to refuse to admit something",
+        tr:"inkâr etmek, reddetmek",
+        ctx:"Fyodor laughs and <span class='ctx-word'>denies</span> everything. 'Prove it!' he says.",
+        emoji:"🙅", chapter:"Ch. 2"
+      },
+      {
+        word:"bow", pos:"verb / noun",
+        def:"To bend your body forward to show respect or honour",
+        tr:"eğilmek, reverans yapmak",
+        ctx:"Elder Zosima walked up to Dmitri and <span class='ctx-word'>bowed</span> deeply before him.",
+        emoji:"🙇", chapter:"Ch. 2"
+      },
+      {
+        word:"obey", pos:"verb",
+        def:"To follow someone's instructions, rules, or orders",
+        tr:"itaat etmek, uymak",
+        ctx:"Alyosha is sad to leave the monastery — but he <span class='ctx-word'>obeys</span> his teacher.",
+        emoji:"✅", chapter:"Ch. 3"
+      },
+      {
+        word:"faith", pos:"noun",
+        def:"A strong belief in something, especially in God or religion",
+        tr:"iman, inanç",
+        ctx:"When Zosima's body began to decay, Alyosha's <span class='ctx-word'>faith</span> was tested for the first time.",
+        emoji:"🕊️", chapter:"Ch. 3"
+      }
+    ]
+  },
+  {
+    id: 2,
+    name: "Passion & Pride",
+    nameTR: "Tutku ve Gurur",
+    icon: "💔",
+    chapter: "Chapters 3–4",
+    words: [
+      {
+        word:"decay", pos:"verb / noun",
+        def:"To slowly break down, rot, or become worse over time",
+        tr:"çürümek, bozulmak",
+        ctx:"Zosima's body began to <span class='ctx-word'>decay</span> quickly, and people were shocked.",
+        emoji:"🍂", chapter:"Ch. 3"
+      },
+      {
+        word:"shaken", pos:"adjective",
+        def:"Very upset, disturbed or troubled by something",
+        tr:"sarsılmış, etkilenmiş",
+        ctx:"Alyosha was deeply <span class='ctx-word'>shaken</span> by what happened. He cried, alone, in the dark.",
+        emoji:"😟", chapter:"Ch. 3"
+      },
+      {
+        word:"engaged", pos:"adjective",
+        def:"When two people have officially agreed to marry each other",
+        tr:"nişanlı",
+        ctx:"Dmitri was <span class='ctx-word'>engaged</span> to Katerina Ivanovna — but he fell in love with Grushenka.",
+        emoji:"💍", chapter:"Ch. 4"
+      },
+      {
+        word:"rival", pos:"noun",
+        def:"A person who competes with you for the same goal or person",
+        tr:"rakip",
+        ctx:"Old Fyodor was also in love with Grushenka — father and son became <span class='ctx-word'>rivals</span>.",
+        emoji:"⚔️", chapter:"Ch. 4"
+      },
+      {
+        word:"desperately", pos:"adverb",
+        def:"In a very urgent, worried, and extreme way",
+        tr:"çaresizce, can havliyle",
+        ctx:"Dmitri <span class='ctx-word'>desperately</span> needed money — he had spent everything he borrowed.",
+        emoji:"😰", chapter:"Ch. 4"
+      }
+    ]
+  },
+  {
+    id: 3,
+    name: "Big Questions",
+    nameTR: "Büyük Sorular",
+    icon: "❓",
+    chapter: "Chapters 4–5",
+    words: [
+      {
+        word:"judge", pos:"verb",
+        def:"To form a negative opinion about someone or their actions",
+        tr:"yargılamak, hüküm vermek",
+        ctx:"Alyosha listened to his brother without <span class='ctx-word'>judging</span> him — always.",
+        emoji:"⚖️", chapter:"Ch. 4"
+      },
+      {
+        word:"parable", pos:"noun",
+        def:"A short story that teaches a moral, spiritual, or philosophical lesson",
+        tr:"mesel, öğretici kısa hikaye",
+        ctx:"Ivan told Alyosha a <span class='ctx-word'>parable</span> he wrote himself — called The Grand Inquisitor.",
+        emoji:"📖", chapter:"Ch. 5"
+      },
+      {
+        word:"freedom", pos:"noun",
+        def:"The ability to do, think, or say what you want without being controlled",
+        tr:"özgürlük",
+        ctx:"The Inquisitor said: 'People don't want <span class='ctx-word'>freedom</span> — they want bread and order.'",
+        emoji:"🕊️", chapter:"Ch. 5"
+      },
+      {
+        word:"innocent", pos:"adjective",
+        def:"Not guilty of any crime; having done nothing wrong",
+        tr:"masum, suçsuz",
+        ctx:"Ivan asks: if God exists, why do <span class='ctx-word'>innocent</span> children suffer?",
+        emoji:"😇", chapter:"Ch. 5"
+      },
+      {
+        word:"rebellion", pos:"noun",
+        def:"A strong refusal to accept or obey authority or an idea",
+        tr:"isyan, başkaldırı",
+        ctx:"Alyosha said quietly: 'That is <span class='ctx-word'>rebellion</span>. But what about love?'",
+        emoji:"✊", chapter:"Ch. 5"
+      }
+    ]
+  },
+  {
+    id: 4,
+    name: "Crime & Evidence",
+    nameTR: "Suç ve Delil",
+    icon: "🔍",
+    chapter: "Chapters 6–7",
+    words: [
+      {
+        word:"murder", pos:"verb / noun",
+        def:"To kill someone on purpose; the act of deliberately killing someone",
+        tr:"cinayet (işlemek), öldürmek",
+        ctx:"One night, old Fyodor was found dead — someone had <span class='ctx-word'>murdered</span> him.",
+        emoji:"🗡️", chapter:"Ch. 6"
+      },
+      {
+        word:"investigation", pos:"noun",
+        def:"The official process of finding out what happened in a crime",
+        tr:"soruşturma, araştırma",
+        ctx:"The police began their <span class='ctx-word'>investigation</span> — and quickly pointed at Dmitri.",
+        emoji:"🔎", chapter:"Ch. 6"
+      },
+      {
+        word:"suspect", pos:"verb / noun",
+        def:"To think someone may be guilty; a person who may have done a crime",
+        tr:"şüphelenmek; şüpheli kişi",
+        ctx:"The police began to <span class='ctx-word'>suspect</span> Dmitri — he had motive, and he was covered in blood.",
+        emoji:"👤", chapter:"Ch. 6"
+      },
+      {
+        word:"coincidence", pos:"noun",
+        def:"When two things happen together by chance, with no connection between them",
+        tr:"tesadüf, rastlantı",
+        ctx:"Ivan left town that same night. Was it a <span class='ctx-word'>coincidence</span>? Or something else?",
+        emoji:"🎲", chapter:"Ch. 6"
+      },
+      {
+        word:"prosecutor", pos:"noun",
+        def:"The lawyer in court who argues that the accused person is guilty",
+        tr:"savcı",
+        ctx:"The <span class='ctx-word'>prosecutor</span> presented a powerful case against Dmitri.",
+        emoji:"👨‍⚖️", chapter:"Ch. 7"
+      }
+    ]
+  },
+  {
+    id: 5,
+    name: "Justice & Truth",
+    nameTR: "Adalet ve Gerçek",
+    icon: "⚖️",
+    chapter: "Chapters 7–8",
+    words: [
+      {
+        word:"evidence", pos:"noun",
+        def:"Information or objects that help prove whether something is true",
+        tr:"kanıt, delil",
+        ctx:"The defense lawyer argued: all the <span class='ctx-word'>evidence</span> is circumstantial — no one saw Dmitri do it.",
+        emoji:"🧩", chapter:"Ch. 7"
+      },
+      {
+        word:"verdict", pos:"noun",
+        def:"The official decision at the end of a court case: guilty or not guilty",
+        tr:"mahkeme kararı, hüküm",
+        ctx:"Before the <span class='ctx-word'>verdict</span>, Ivan had a shocking meeting with Smerdyakov.",
+        emoji:"🔨", chapter:"Ch. 7"
+      },
+      {
+        word:"confess", pos:"verb",
+        def:"To admit that you did something wrong, usually to someone in authority",
+        tr:"itiraf etmek",
+        ctx:"Ivan went to court and tried to <span class='ctx-word'>confess</span> the truth — but nobody believed him.",
+        emoji:"🗣️", chapter:"Ch. 7"
+      },
+      {
+        word:"philosophy", pos:"noun",
+        def:"The study of fundamental ideas about life, knowledge, morality, and existence",
+        tr:"felsefe",
+        ctx:"Ivan's great <span class='ctx-word'>philosophy</span> — 'everything is permitted' — ended in disaster.",
+        emoji:"🤔", chapter:"Ch. 8"
+      },
+      {
+        word:"grave", pos:"noun",
+        def:"A hole in the ground where a dead person is buried",
+        tr:"mezar",
+        ctx:"Alyosha spoke to the children standing at Ilyusha's <span class='ctx-word'>grave</span>, crying in the cold.",
+        emoji:"🪦", chapter:"Ch. 8"
+      }
+    ]
+  }
+];
+
+// ────────────────────────────────
+// STATE
+// ────────────────────────────────
+let wordProgress = {};   // word -> {score: 0-3, seen: bool}
+let currentChunkId = 0;
+let sessionWords = [];
+let sessionIdx = 0;
+let sessionMode = 'flash';  // 'flash' | 'quiz' | 'review'
+let sessionResults = { correct: 0, wrong: 0, words: [] };
+let isFlipped = false;
+let quizAnswered = false;
+let quizCorrectIdx = 0;
+let allWords = CHUNKS.flatMap(c => c.words.map(w => ({...w, chunkId: c.id})));
+let streak = 0;
+let lastStudyDate = null;
+
+const STORAGE_KEY = 'krmzv-vocab-v3';
+
+// ────────────────────────────────
+// STORAGE
+// ────────────────────────────────
+async function saveData() {
+  const data = JSON.stringify({ wordProgress, streak, lastStudyDate });
+  try {
+    await window.storage.set(STORAGE_KEY, data);
+  } catch(e) {
+    // fallback: sessionStorage not available
+    try { sessionStorage.setItem(STORAGE_KEY, data); } catch(_){}
+  }
+}
+
+async function loadData() {
+  let raw = null;
+  try {
+    const r = await window.storage.get(STORAGE_KEY);
+    if (r) raw = r.value;
+  } catch(e) {
+    try { raw = sessionStorage.getItem(STORAGE_KEY); } catch(_){}
+  }
+  if (raw) {
+    try {
+      const d = JSON.parse(raw);
+      wordProgress  = d.wordProgress  || {};
+      streak        = d.streak        || 0;
+      lastStudyDate = d.lastStudyDate || null;
+    } catch(_) {}
+  }
+  // Ensure all words initialized
+  allWords.forEach(w => {
+    if (!wordProgress[w.word]) wordProgress[w.word] = { score: 0 };
+  });
+  updateStreak();
+  renderDashboard();
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  if (lastStudyDate === today) return;
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  if (lastStudyDate === yesterday) {
+    streak++;
+  } else if (lastStudyDate !== null && lastStudyDate !== today) {
+    streak = 1;
+  } else if (lastStudyDate === null) {
+    streak = 0;
+  }
+  lastStudyDate = today;
+}
+
+// score: 0=new, 1=seen, 2=learning, 3=mastered
+function getStatus(word) {
+  const s = (wordProgress[word] || {score:0}).score;
+  if (s === 0) return 'new';
+  if (s === 1) return 'seen';
+  if (s === 2) return 'learning';
+  return 'mastered';
+}
+
+function getScore(word) {
+  return (wordProgress[word] || {score:0}).score;
+}
+
+function chunkMasteredPct(chunk) {
+  const total = chunk.words.length;
+  const mastered = chunk.words.filter(w => getScore(w.word) === 3).length;
+  return Math.round((mastered / total) * 100);
+}
+function chunkProgress(chunk) {
+  const total = chunk.words.length;
+  const done = chunk.words.filter(w => getScore(w.word) >= 1).length;
+  return Math.round((done / total) * 100);
+}
+function isChunkUnlocked(chunkId) {
+  if (chunkId === 0) return true;
+  const prev = CHUNKS[chunkId - 1];
+  return chunkMasteredPct(prev) >= 60;
+}
+
+// ────────────────────────────────
+// DASHBOARD RENDER
+// ────────────────────────────────
+function renderDashboard() {
+  // Stats
+  const mastered  = allWords.filter(w => getScore(w.word) === 3).length;
+  const learning  = allWords.filter(w => getScore(w.word) === 2).length;
+  const newWords  = allWords.filter(w => getScore(w.word) === 0).length;
+  document.getElementById('stat-total').textContent   = mastered;
+  document.getElementById('stat-learning').textContent= learning;
+  document.getElementById('stat-new').textContent     = newWords;
+  document.getElementById('stat-streak').textContent  = streak;
+
+  const overallPct = Math.round((mastered / allWords.length) * 100);
+  document.getElementById('tp-pct').textContent  = overallPct + '%';
+  document.getElementById('tp-fill').style.width = overallPct + '%';
+
+  // Chunks
+  const container = document.getElementById('chunks-list');
+  container.innerHTML = '';
+  CHUNKS.forEach((chunk, idx) => {
+    const unlocked = isChunkUnlocked(idx);
+    const pct = chunkProgress(chunk);
+    const mastPct = chunkMasteredPct(chunk);
+    const allMastered = mastPct === 100;
+    const started = pct > 0;
+
+    let statusLabel, statusClass;
+    if (!unlocked) { statusLabel = '🔒 Locked'; statusClass = 'status-locked'; }
+    else if (allMastered) { statusLabel = '✓ Complete'; statusClass = 'status-done'; }
+    else if (started) { statusLabel = 'In Progress'; statusClass = 'status-progress'; }
+    else { statusLabel = 'Not started'; statusClass = 'status-new'; }
+
+    const card = document.createElement('div');
+    card.className = 'chunk-card' + (unlocked ? '' : ' locked');
+    if (unlocked) card.onclick = () => openChunk(idx);
+
+    const pills = chunk.words.map(w => {
+      const st = getStatus(w.word);
+      return `<span class="word-pill pill-${st}">${w.word}</span>`;
+    }).join('');
+
+    card.innerHTML = `
+      ${!unlocked ? '<div class="chunk-lock-badge">🔒</div>' : ''}
+      <div class="chunk-card-inner">
+        <div class="chunk-header">
+          <div class="chunk-icon">${chunk.icon}</div>
+          <div class="chunk-meta">
+            <div class="chunk-num">Chunk ${idx + 1} · ${chunk.chapter}</div>
+            <div class="chunk-name">${chunk.name}</div>
+            <div class="chunk-count">${chunk.nameTR} · ${chunk.words.length} words</div>
+          </div>
+          <span class="chunk-status ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="chunk-words">${pills}</div>
+        <div class="chunk-prog-track">
+          <div class="chunk-prog-fill" style="width:${mastPct}%"></div>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ────────────────────────────────
+// NAVIGATION
+// ────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function showHome() {
+  renderDashboard();
+  showScreen('screen-home');
+}
+function openChunk(id) {
+  currentChunkId = id;
+  const chunk = CHUNKS[id];
+  document.getElementById('mode-topbar-title').textContent = chunk.name;
+  document.getElementById('mode-chunk-title').textContent = `${chunk.icon} ${chunk.name}`;
+  document.getElementById('mode-chunk-sub').textContent = `${chunk.nameTR} · ${chunk.chapter} · ${chunk.words.length} words`;
+  showScreen('screen-mode');
+}
+function backToMode() {
+  showScreen('screen-mode');
+}
+
+// ────────────────────────────────
+// FLASHCARDS
+// ────────────────────────────────
+function startFlash() {
+  sessionMode = 'flash';
+  sessionWords = [...CHUNKS[currentChunkId].words];
+  sessionIdx = 0;
+  sessionResults = { correct: 0, wrong: 0, words: [] };
+  showScreen('screen-flash');
+  renderFlashCard();
+}
+
+function startReview() {
+  sessionMode = 'review';
+  // Words not yet mastered from this chunk
+  const chunk = CHUNKS[currentChunkId];
+  sessionWords = chunk.words.filter(w => getScore(w.word) < 3);
+  if (sessionWords.length === 0) sessionWords = [...chunk.words];
+  sessionIdx = 0;
+  sessionResults = { correct: 0, wrong: 0, words: [] };
+  showScreen('screen-flash');
+  renderFlashCard();
+}
+
+function renderFlashCard() {
+  isFlipped = false;
+  document.getElementById('card-inner').classList.remove('flipped');
+  document.getElementById('flip-hint').style.opacity = '1';
+
+  const w = sessionWords[sessionIdx];
+  // Front
+  document.getElementById('fc-chapter').textContent = w.chapter;
+  document.getElementById('fc-emoji').textContent   = w.emoji;
+  document.getElementById('fc-word').textContent    = w.word;
+  document.getElementById('fc-pos').textContent     = w.pos;
+  // Back
+  document.getElementById('bc-word').textContent = w.word;
+  document.getElementById('bc-tr').textContent   = '🇹🇷 ' + w.tr;
+  document.getElementById('bc-def').textContent  = w.def;
+  document.getElementById('bc-ctx').innerHTML    = '"…' + w.ctx + '…"';
+
+  const total = sessionWords.length;
+  document.getElementById('flash-counter').textContent      = `Word ${sessionIdx + 1} of ${total}`;
+  document.getElementById('flash-progress-top').textContent = `${sessionIdx + 1} / ${total}`;
+  renderDots('flash-dots', total, sessionIdx, 'flash');
+}
+
+function flipCard() {
+  if (isFlipped) return;
+  isFlipped = true;
+  document.getElementById('card-inner').classList.add('flipped');
+  document.getElementById('flip-hint').style.opacity = '0';
+  // Mark as seen if new
+  const w = sessionWords[sessionIdx];
+  if (getScore(w.word) === 0) {
+    wordProgress[w.word].score = 1;
+  }
+}
+
+function rateCard(rating) {
+  // rating: 0=again(fail), 1=hard(partial), 2=got-it(pass)
+  const w = sessionWords[sessionIdx];
+  const current = getScore(w.word);
+
+  if (rating === 2) {
+    // Got it: increase score toward 3
+    wordProgress[w.word].score = Math.min(3, current + 1);
+    sessionResults.correct++;
+    sessionResults.words.push({ word: w.word, tr: w.tr, mastered: true });
+  } else if (rating === 1) {
+    // Hard: keep or slight bump
+    wordProgress[w.word].score = Math.max(1, current);
+    sessionResults.wrong++;
+    sessionResults.words.push({ word: w.word, tr: w.tr, mastered: false });
+  } else {
+    // Again: reset to learning
+    wordProgress[w.word].score = Math.max(1, Math.min(current, 1));
+    sessionResults.wrong++;
+    sessionResults.words.push({ word: w.word, tr: w.tr, mastered: false });
+  }
+
+  updateStreak();
+  saveData();
+
+  sessionIdx++;
+  if (sessionIdx >= sessionWords.length) {
+    showResults();
+  } else {
+    renderFlashCard();
+  }
+}
+
+// ────────────────────────────────
+// QUIZ
+// ────────────────────────────────
+let quizOrder = [];
+
+function startQuiz() {
+  sessionMode = 'quiz';
+  sessionWords = [...CHUNKS[currentChunkId].words];
+  // Shuffle
+  sessionWords = sessionWords.sort(() => Math.random() - 0.5);
+  sessionIdx = 0;
+  sessionResults = { correct: 0, wrong: 0, words: [] };
+  showScreen('screen-quiz');
+  renderQuizQ();
+}
+
+function renderQuizQ() {
+  quizAnswered = false;
+  const w = sessionWords[sessionIdx];
+  const total = sessionWords.length;
+  document.getElementById('quiz-counter').textContent      = `Question ${sessionIdx + 1} of ${total}`;
+  document.getElementById('quiz-progress-top').textContent = `${sessionIdx + 1} / ${total}`;
+  document.getElementById('qz-emoji').textContent   = w.emoji;
+  document.getElementById('qz-word').textContent    = w.word;
+  document.getElementById('qz-chapter').textContent = w.chapter + ' · ' + w.pos;
+  document.getElementById('quiz-feedback').className  = 'quiz-feedback';
+  document.getElementById('quiz-feedback').innerHTML  = '';
+  document.getElementById('quiz-context-fb').style.display = 'none';
+  document.getElementById('quiz-next').className = 'quiz-next';
+
+  // Build 4 options: 1 correct + 3 random distractors
+  const allDefs = allWords.map(x => ({word: x.word, def: x.def, tr: x.tr}));
+  const distractors = allDefs
+    .filter(x => x.word !== w.word)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3);
+  const options = [{ word: w.word, def: w.def, tr: w.tr }, ...distractors]
+    .sort(() => Math.random() - 0.5);
+  quizCorrectIdx = options.findIndex(o => o.word === w.word);
+
+  const container = document.getElementById('quiz-options');
+  container.innerHTML = '';
+  options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.innerHTML = `<span>${opt.def}</span>`;
+    btn.onclick = () => answerQuiz(i, quizCorrectIdx, w);
+    container.appendChild(btn);
+  });
+
+  renderDots('quiz-dots', total, sessionIdx, 'quiz');
+}
+
+function answerQuiz(chosen, correct, w) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const opts = document.querySelectorAll('.quiz-opt');
+
+  opts.forEach((btn, i) => {
+    btn.classList.add('revealed');
+    if (i === correct) {
+      btn.classList.add('correct');
+      btn.innerHTML += '<span class="opt-marker">✓</span>';
+    } else if (i === chosen && chosen !== correct) {
+      btn.classList.add('wrong');
+      btn.innerHTML += '<span class="opt-marker">✕</span>';
+    }
+  });
+
+  const fb = document.getElementById('quiz-feedback');
+  const isRight = chosen === correct;
+
+  if (isRight) {
+    fb.className = 'quiz-feedback correct-fb show';
+    fb.innerHTML = `✓ Correct! <strong>${w.word}</strong> — ${w.def}<br><small>🇹🇷 ${w.tr}</small>`;
+    wordProgress[w.word].score = Math.min(3, getScore(w.word) + 1);
+    sessionResults.correct++;
+    sessionResults.words.push({ word: w.word, tr: w.tr, mastered: true });
+  } else {
+    fb.className = 'quiz-feedback wrong-fb show';
+    fb.innerHTML = `✕ Not quite. <strong>${w.word}</strong> means: ${w.def}<br><small>🇹🇷 ${w.tr}</small>`;
+    wordProgress[w.word].score = Math.max(1, Math.min(getScore(w.word), 1));
+    sessionResults.wrong++;
+    sessionResults.words.push({ word: w.word, tr: w.tr, mastered: false });
+  }
+
+  // Show context
+  const ctxEl = document.getElementById('quiz-context-fb');
+  ctxEl.style.display = 'block';
+  ctxEl.innerHTML = `📖 Story context: <em>"…${w.ctx}…"</em>`;
+
+  document.getElementById('quiz-next').classList.add('show');
+  updateStreak();
+  saveData();
+}
+
+function nextQuizQ() {
+  sessionIdx++;
+  if (sessionIdx >= sessionWords.length) {
+    showResults();
+  } else {
+    renderQuizQ();
+  }
+}
+
+// ────────────────────────────────
+// RESULTS
+// ────────────────────────────────
+function showResults() {
+  const total   = sessionResults.correct + sessionResults.wrong;
+  const pct     = total > 0 ? Math.round((sessionResults.correct / total) * 100) : 0;
+
+  let emoji, title, sub;
+  if (pct >= 90) { emoji='🌟'; title='Excellent!'; sub='You are mastering these words!'; }
+  else if (pct >= 70) { emoji='🎉'; title='Great work!'; sub='Keep going — you are getting there.'; }
+  else if (pct >= 50) { emoji='💪'; title='Good effort!'; sub='Review the tricky words and try again.'; }
+  else { emoji='📚'; title='Keep studying!'; sub='Every attempt makes you stronger.'; }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+  document.getElementById('res-sub').textContent   = `${pct}% correct · ${sub}`;
+  document.getElementById('res-correct').textContent = sessionResults.correct;
+  document.getElementById('res-wrong').textContent   = sessionResults.wrong;
+  document.getElementById('res-total-q').textContent = total;
+
+  const list = document.getElementById('res-words-list');
+  list.innerHTML = '';
+  // Dedupe
+  const seen = new Set();
+  sessionResults.words.forEach(rw => {
+    if (seen.has(rw.word)) return;
+    seen.add(rw.word);
+    const row = document.createElement('div');
+    row.className = `result-word-row ${rw.mastered ? 'rwr-mastered' : 'rwr-learning'}`;
+    row.innerHTML = `
+      <span style="font-size:20px">${allWords.find(w=>w.word===rw.word)?.emoji||'📖'}</span>
+      <span class="rw-word">${rw.word}</span>
+      <span class="rw-tr">${rw.tr}</span>
+      <span class="rw-badge ${rw.mastered ? 'badge-m' : 'badge-l'}">${rw.mastered ? 'Mastered' : 'Review'}</span>
+    `;
+    list.appendChild(row);
+  });
+
+  showScreen('screen-results');
+}
+
+function retrySession() {
+  if (sessionMode === 'quiz') startQuiz();
+  else startFlash();
+}
+
+// ────────────────────────────────
+// DOTS
+// ────────────────────────────────
+function renderDots(containerId, total, current, mode) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('div');
+    dot.style.cssText = `
+      width:8px;height:8px;border-radius:50%;
+      transition:all .3s;
+      background:${i < current ? 'rgba(201,168,76,.6)' : i === current ? 'var(--gold)' : 'rgba(255,255,255,.1)'};
+      transform:${i === current ? 'scale(1.4)' : 'scale(1)'};
+    `;
+    container.appendChild(dot);
+  }
+}
+
+// ────────────────────────────────
+// INIT
+// ────────────────────────────────
+loadData();
+</script>
+</body>
+</html>

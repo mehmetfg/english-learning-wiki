@@ -1,0 +1,1112 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Space+Mono:wght@400;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1209;
+    --parchment: #f5f0e8;
+    --sepia: #8b6914;
+    --blood: #8b1a1a;
+    --storm: #2c3e5a;
+    --gold: #c9a227;
+    --ash: #6b6459;
+    --cream: #faf7f2;
+    --border-main: #c4a882;
+  }
+
+  body { background: transparent; }
+
+  .lab-container {
+    font-family: 'EB Garamond', serif;
+    background: var(--cream);
+    border: 1px solid var(--border-main);
+    border-radius: 4px;
+    overflow: hidden;
+    min-height: 600px;
+  }
+
+  .lab-header {
+    background: var(--ink);
+    color: #e8dcc8;
+    padding: 1.5rem 2rem;
+    border-bottom: 3px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .lab-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
+
+  .lab-header .subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    background: #2a2015;
+    border-bottom: 2px solid var(--gold);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .nav-tab {
+    padding: 12px 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { color: #c9a227; }
+  .nav-tab.active {
+    color: var(--gold);
+    border-bottom: 3px solid var(--gold);
+    background: rgba(201,162,39,0.08);
+  }
+
+  .tab-content { display: none; padding: 2rem; }
+  .tab-content.active { display: block; }
+
+  /* SECTION HEADINGS */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--ink);
+    border-left: 4px solid var(--blood);
+    padding-left: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 13px;
+    color: var(--ash);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border: 0.5px solid var(--border-main);
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sepia);
+    margin-bottom: 6px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .card-body {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #3a3028;
+  }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+
+  /* QUOTE BLOCK */
+  .quote-block {
+    background: #f0ebe0;
+    border-left: 4px solid var(--blood);
+    padding: 1rem 1.25rem;
+    margin: 1rem 0;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--ink);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* MIMESIS EXERCISE */
+  .mimesis-sentence {
+    background: #f9f5ee;
+    border: 1px solid var(--border-main);
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .original-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--blood);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .original-text {
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--storm);
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 0.5px solid var(--border-main);
+  }
+
+  .structure-note {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--ash);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .mimesis-input {
+    width: 100%;
+    border: 1px solid var(--border-main);
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-family: 'EB Garamond', serif;
+    font-size: 15px;
+    background: white;
+    color: var(--ink);
+    min-height: 70px;
+    resize: vertical;
+  }
+
+  .mimesis-input:focus {
+    outline: none;
+    border-color: var(--blood);
+  }
+
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 3px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-blood {
+    background: var(--blood);
+    color: #f0ebe0;
+    border-color: var(--blood);
+  }
+  .btn-blood:hover { background: #6b1212; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--border-main);
+  }
+  .btn-ghost:hover { background: #f0ebe0; }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--ink);
+    border-color: var(--gold);
+  }
+  .btn-gold:hover { background: #b8911f; }
+
+  .feedback-box {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 3px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .feedback-box.show { display: block; }
+  .feedback-loading { background: #f0ebe0; color: var(--ash); border: 0.5px solid var(--border-main); }
+  .feedback-done { background: #f0f8f0; color: #2d4a2d; border: 0.5px solid #a8c8a8; }
+
+  /* QUIZ */
+  .quiz-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+
+  .quiz-option {
+    padding: 10px 14px;
+    border: 1px solid var(--border-main);
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    background: white;
+    text-align: left;
+    color: var(--ink);
+    transition: all 0.15s;
+    font-family: 'EB Garamond', serif;
+  }
+  .quiz-option:hover { background: #f5f0e8; border-color: var(--sepia); }
+  .quiz-option.correct { background: #e8f5e8; border-color: #5a8a5a; color: #2a4a2a; }
+  .quiz-option.wrong { background: #faeaea; border-color: #c06060; color: #4a1a1a; }
+  .quiz-option.disabled { pointer-events: none; }
+
+  .quiz-feedback {
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 10px 14px;
+    border-radius: 3px;
+    display: none;
+    font-style: italic;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: #e8f5e8; color: #2a4a2a; }
+  .quiz-feedback.wrong { background: #faeaea; color: #4a1a1a; }
+
+  .quiz-nav { display: flex; gap: 8px; margin-top: 1rem; align-items: center; }
+  .quiz-progress { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--ash); flex: 1; }
+
+  /* VOCABULARY */
+  .vocab-word {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 0.5px solid #e0d8cc;
+    gap: 1rem;
+  }
+
+  .word-en {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--storm);
+    min-width: 140px;
+  }
+
+  .word-def { font-size: 14px; color: #3a3028; line-height: 1.5; flex: 1; }
+  .word-tr { font-size: 13px; color: var(--sepia); font-style: italic; min-width: 100px; text-align: right; }
+
+  /* THEME TAGS */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 3px 4px 3px 0;
+  }
+  .tag-blood { background: #faeaea; color: #8b1a1a; border: 0.5px solid #c06060; }
+  .tag-storm { background: #eaecf5; color: #2c3e5a; border: 0.5px solid #8899bb; }
+  .tag-gold { background: #faf4e0; color: #8b6400; border: 0.5px solid #c9a227; }
+  .tag-ash { background: #f2ede5; color: #5a5048; border: 0.5px solid #b8a88a; }
+
+  /* CHAPTER LIST */
+  .chapter-item {
+    display: flex;
+    gap: 1rem;
+    padding: 14px 0;
+    border-bottom: 0.5px solid #e0d8cc;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .chapter-item:hover { background: #f9f5ee; margin: 0 -2rem; padding: 14px 2rem; }
+
+  .chapter-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    min-width: 40px;
+    padding-top: 2px;
+  }
+
+  .chapter-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .chapter-info p { font-size: 13px; color: var(--ash); line-height: 1.5; }
+
+  /* TECHNIQUE CARDS */
+  .technique-card {
+    background: white;
+    border: 0.5px solid var(--border-main);
+    border-top: 3px solid var(--blood);
+    padding: 1.25rem;
+    border-radius: 0 0 4px 4px;
+  }
+
+  .technique-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blood);
+    margin-bottom: 8px;
+  }
+
+  /* STAT BAR */
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .stat-label { font-size: 13px; color: var(--ash); min-width: 130px; }
+  .stat-bar-bg { flex: 1; height: 6px; background: #e8e0d0; border-radius: 3px; }
+  .stat-bar-fill { height: 100%; background: var(--blood); border-radius: 3px; }
+  .stat-val { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--sepia); min-width: 30px; }
+
+  /* ENGLISH LESSON */
+  .lesson-block {
+    background: #f5f8ff;
+    border: 1px solid #c8d8f0;
+    border-radius: 4px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .lesson-block .en-sentence { font-size: 18px; color: var(--storm); margin-bottom: 8px; line-height: 1.6; }
+  .lesson-block .tr-sentence { font-size: 14px; color: #5a6a80; font-style: italic; margin-bottom: 12px; }
+  .lesson-block .grammar-note {
+    font-size: 12px;
+    background: white;
+    border: 0.5px solid #c8d8f0;
+    border-radius: 3px;
+    padding: 8px 12px;
+    color: #3a4a5a;
+    line-height: 1.6;
+  }
+
+  .fill-blank-input {
+    border: none;
+    border-bottom: 2px solid var(--storm);
+    background: transparent;
+    font-family: 'EB Garamond', serif;
+    font-size: 16px;
+    color: var(--storm);
+    width: 120px;
+    text-align: center;
+    outline: none;
+    padding: 0 4px;
+  }
+
+  .fill-blank-input.correct { border-bottom-color: green; color: green; }
+  .fill-blank-input.wrong { border-bottom-color: var(--blood); color: var(--blood); }
+
+  .check-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    background: var(--storm);
+    color: white;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+
+  .score-display {
+    font-family: 'Space Mono', monospace;
+    font-size: 24px;
+    color: var(--blood);
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .loading-dots::after {
+    content: '...';
+    animation: dots 1.2s steps(3, end) infinite;
+  }
+  @keyframes dots {
+    0%,20% { content: '.'; }
+    40%,60% { content: '..'; }
+    80%,100% { content: '...'; }
+  }
+</style>
+
+<h2 class="sr-only">Frankenstein Yazarlık ve İngilizce Laboratuvarı — Mary Shelley'nin eserini analiz eden, mimesis egzersizleri sunan ve İngilizce öğreten interaktif bir uygulama.</h2>
+
+<div class="lab-container">
+
+  <div class="lab-header">
+    <div>
+      <h1>Frankenstein; or, The Modern Prometheus</h1>
+      <div class="subtitle">Mary Shelley · 1818 · Yazarlık & İngilizce Laboratuvarı</div>
+    </div>
+    <div style="font-family:'Space Mono',monospace; font-size:10px; color:#666; text-align:right; line-height:1.8;">
+      5 Modül<br>Mimesis Atölyesi<br>Quiz & Dersler
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showTab('overview')">Genel Bakış</button>
+    <button class="nav-tab" onclick="showTab('structure')">Yapı & Teknik</button>
+    <button class="nav-tab" onclick="showTab('mimesis')">Mimesis Atölyesi</button>
+    <button class="nav-tab" onclick="showTab('quiz')">Edebiyat Quizi</button>
+    <button class="nav-tab" onclick="showTab('english')">İngilizce Dersi</button>
+  </div>
+
+  <!-- TAB 1: OVERVIEW -->
+  <div id="tab-overview" class="tab-content active">
+
+    <div class="section-title">Eser Kimliği & Yazarın Zihni</div>
+    <p class="section-subtitle">Bir yazar adayı olarak kitabı ilk okuduğunuzda şu soruyu sormalısınız: Bu yazar ne yapmak istedi? Neyin peşindeydi? Hangi araçları kullandı?</p>
+
+    <div class="grid-2" style="margin-bottom:1.5rem;">
+      <div class="card">
+        <div class="card-label">Yazılış Koşulları</div>
+        <div class="card-title">1816 — Yılsız Yaz</div>
+        <div class="card-body">Cenevre yakınlarında, Volkanik kış nedeniyle eve kapanan bir grup; Byron, Polidori ve Shelley ailesi. Lord Byron'ın hayalet hikayesi yarışması başlatır. 19 yaşındaki Mary Shelley bu geceyi bir rüyaya dönüştürür.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Tematik Çekirdek</div>
+        <div class="card-title">Modern Prometheus Neden?</div>
+        <div class="card-body">Prometheus tanrıların ateşini insanlara verdi ve bunun bedelini ödedi. Victor Frankenstein ölümü geri çevirmeye çalıştı ve bunun bedelini ödedi. Shelley'nin asıl sorusu: Yaratmak için ne ödenir?</div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:1.5rem;">Kişiler Haritası</div>
+
+    <div class="grid-3">
+      <div class="card" style="border-top:3px solid var(--blood);">
+        <div class="card-label">Protagonist</div>
+        <div class="card-title">Victor Frankenstein</div>
+        <div class="card-body" style="font-size:13px;">Hırs, bilim tutkusu, sorumsuzluk. Yaratır ama sahiplenmez. Kaçar. Modern Prometheus arketipi.</div>
+        <div style="margin-top:10px;">
+          <span class="tag tag-blood">Hırs</span>
+          <span class="tag tag-storm">Kaçış</span>
+          <span class="tag tag-ash">Suçluluk</span>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--storm);">
+        <div class="card-label">Antagonist / Kurban</div>
+        <div class="card-title">The Creature</div>
+        <div class="card-body" style="font-size:13px;">İsmsiz. Dili öğrenir, duygu geliştirir. Sevilmek ister. Sevilmeyince yıkar. En trajik karakterdir.</div>
+        <div style="margin-top:10px;">
+          <span class="tag tag-storm">Yalnızlık</span>
+          <span class="tag tag-blood">İntikam</span>
+          <span class="tag tag-gold">Öğrenme</span>
+        </div>
+      </div>
+      <div class="card" style="border-top:3px solid var(--gold);">
+        <div class="card-label">Anlatıcı / Tanık</div>
+        <div class="card-title">Robert Walton</div>
+        <div class="card-body" style="font-size:13px;">Kuzey kutbuna seyahat eden kaptan. Mektuplarla anlatır. Victor'u bulur ve hikayesini aktarır. Dış çerçeveyi oluşturur.</div>
+        <div style="margin-top:10px;">
+          <span class="tag tag-gold">Ayna</span>
+          <span class="tag tag-ash">Hırs</span>
+          <span class="tag tag-storm">Arayış</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:1.5rem;">Ana Temalar — Yoğunluk Analizi</div>
+    <div class="card">
+      <div class="stat-row"><div class="stat-label">Yaratma & Sorumluluk</div><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:95%"></div></div><div class="stat-val">95%</div></div>
+      <div class="stat-row"><div class="stat-label">Yalnızlık & Dışlanma</div><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:90%"></div></div><div class="stat-val">90%</div></div>
+      <div class="stat-row"><div class="stat-label">Bilimin Sınırları</div><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:85%"></div></div><div class="stat-val">85%</div></div>
+      <div class="stat-row"><div class="stat-label">Doğa & Yüce Güzellik</div><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:80%"></div></div><div class="stat-val">80%</div></div>
+      <div class="stat-row"><div class="stat-label">İntikam & Adalet</div><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:75%"></div></div><div class="stat-val">75%</div></div>
+      <div class="stat-row"><div class="stat-label">Ebeveynlik & Terk Etme</div><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:88%"></div></div><div class="stat-val">88%</div></div>
+    </div>
+
+    <div style="margin-top:1.5rem; display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn btn-blood" onclick="sendPrompt('Frankenstein\'da doğa ve Romantizm ilişkisini derinlemesine analiz et')">Romantizm & Doğa ↗</button>
+      <button class="btn btn-ghost" onclick="sendPrompt('Frankenstein ile Prometheus mitini karşılaştır')">Mit Karşılaştırması ↗</button>
+      <button class="btn btn-ghost" onclick="sendPrompt('The Creature\'ın sesini ve bakış açısını analiz et')">Yaratık'ın Sesi ↗</button>
+    </div>
+  </div>
+
+  <!-- TAB 2: STRUCTURE -->
+  <div id="tab-structure" class="tab-content">
+    <div class="section-title">Anlatı Yapısı & Teknikler</div>
+    <p class="section-subtitle">Bir yazarın en çok öğreneceği yer burası: Shelley nasıl anlattı? Hangi yapısal kararlar verdi?</p>
+
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="card-label">İç İçe Anlatı Yapısı (Frame Narrative)</div>
+      <div class="card-title">Matryoşka Kurgusu</div>
+      <div class="card-body">
+        <strong>Dış çerçeve:</strong> Walton'ın mektupları → <strong>Orta katman:</strong> Victor'un anlatısı → <strong>İç çekirdek:</strong> Yaratık'ın anlatısı. Her katman bir öncekinin güvenilirliğini sorgulatır. Bu yapı okuyucuyu pasif bırakmaz.
+      </div>
+      <div class="quote-block">"You will rejoice to hear that no disaster has accompanied the commencement of an enterprise which you have regarded with such evil forebodings."</div>
+      <div style="font-size:12px; color:var(--ash);">Walton'ın ilk cümlesi — güven yaratır, ironiyi gizler.</div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:1.5rem;">
+      <div class="technique-card">
+        <div class="technique-title">Epistolary Form</div>
+        <div class="card-body" style="font-size:14px;">Mektup biçimi mesafeyi kontrol eder. Okuyucu her zaman filtrelenmiş bir gerçeklikle karşılaşır. Güvenilmez anlatıcı otomatik olarak doğar.</div>
+      </div>
+      <div class="technique-card">
+        <div class="technique-title">Sublime Doğa Kullanımı</div>
+        <div class="card-body" style="font-size:14px;">Karakterlerin iç dünyası dışarıdaki manzarayla paraleldir. Alplar, fırtına, buz — hep bir ruh hali yansımasıdır. Bu teknik Romantizm'in imzasıdır.</div>
+      </div>
+      <div class="technique-card">
+        <div class="technique-title">Yansıma / Double Motifi</div>
+        <div class="card-body" style="font-size:14px;">Victor ve Yaratık birbirinin aynasıdır. İkisi de yalnızdır, ikisi de ailelerini kaybeder, ikisi de hırsla hareket eder. Bu yapı temayı derinleştirir.</div>
+      </div>
+      <div class="technique-card">
+        <div class="technique-title">Prolepsis & Ominous Foreshadowing</div>
+        <div class="card-body" style="font-size:14px;">"Nothing is so painful to the human mind as a great and sudden change." — Shelley gelecekteki felaketi şimdiden sinyaller. Okuyucuyu gergin tutar.</div>
+      </div>
+    </div>
+
+    <div class="section-title">Bölüm Haritası</div>
+    <div>
+      <div class="chapter-item" onclick="sendPrompt('Frankenstein Bölüm 1-4 analizi: Victor\'ın çocukluğu ve bilime girişi')">
+        <div class="chapter-num">I–IV</div>
+        <div class="chapter-info">
+          <h3>Victor'ın Dünyası & Arzunun Doğuşu</h3>
+          <p>Çocukluk, Cenevre, eski filozoflar, Ingolstadt'a yolculuk. Hırsın tohumları ekilir.</p>
+        </div>
+      </div>
+      <div class="chapter-item" onclick="sendPrompt('Frankenstein 5. bölüm analizi: Yaratılış sahnesi')">
+        <div class="chapter-num">V</div>
+        <div class="chapter-info">
+          <h3>Yaratılış Gecesi — Dönüm Noktası</h3>
+          <p>"It was on a dreary night of November..." En ünlü sahne. Doğum ve korku aynı anda gerçekleşir.</p>
+        </div>
+      </div>
+      <div class="chapter-item" onclick="sendPrompt('Frankenstein 11-16 bölüm analizi: Yaratık\'ın öğrenme yolculuğu')">
+        <div class="chapter-num">XI–XVI</div>
+        <div class="chapter-info">
+          <h3>Yaratık'ın İç Anlatısı</h3>
+          <p>Dil öğrenir, okur (Werther, Paradise Lost), sevilmek ister, reddedilir. En felsefi bölümler.</p>
+        </div>
+      </div>
+      <div class="chapter-item" onclick="sendPrompt('Frankenstein son bölümler analizi: yıkım ve sonuç')">
+        <div class="chapter-num">XVII–XXIV</div>
+        <div class="chapter-info">
+          <h3>Yıkım, Kovalamaca & Sona Doğru</h3>
+          <p>Victor peşinden kaçar, izler, ölür. Yaratık kaybolur. Hiçbir şey çözülmez.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: MIMESIS -->
+  <div id="tab-mimesis" class="tab-content">
+    <div class="section-title">Mimesis Atölyesi</div>
+    <p class="section-subtitle">Aşağıdaki her orijinal cümlenin yapısını, ritmini ve duygusal tonunu inceleyin. Sonra aynı yapıyı kendi kelimelerinizle, kendi hikayeniz için yeniden yazın. Yapay zeka geri bildirim verecek.</p>
+
+    <div id="mimesis-exercises">
+
+      <div class="mimesis-sentence" id="mex-1">
+        <div class="original-label">Orijinal Cümle — Bölüm I</div>
+        <div class="original-text">"I am by birth a Genevese, and my family is one of the most distinguished of that republic."</div>
+        <div class="structure-note">Yapı: [Yer/Köken] + [Aile/Statü İddiası]. Anlatıcı kendini toplumsal koordinatlarla tanımlar. Hemen güven/otorite kurar.</div>
+        <textarea class="mimesis-input" placeholder="Örn: I am by birth a child of the sea, and my family is one of the loneliest on that coast." id="m1-input"></textarea>
+        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+          <button class="btn btn-blood" onclick="getMimesisFeedback(1)">Geri Bildirim Al ↗</button>
+          <button class="btn btn-ghost" onclick="showHint(1)">İpucu Göster</button>
+        </div>
+        <div class="feedback-box" id="m1-feedback"></div>
+        <div style="display:none;" id="m1-hint" class="structure-note" style="margin-top:8px; background:#f9f5ee; padding:8px; border-radius:3px;">İpucu: "I am by birth a _____, and my family is one of the _____ of that _____." kalıbını kullanın. Yer adını, ailenizi tanımlayan bir sıfat seçin.</div>
+      </div>
+
+      <div class="mimesis-sentence" id="mex-2">
+        <div class="original-label">Orijinal Cümle — Bölüm V</div>
+        <div class="original-text">"It was on a dreary night of November that I beheld the accomplishment of my toils."</div>
+        <div class="structure-note">Yapı: [Zaman Bağlamı - atmosferik] + [Eylemin tamamlandığı an]. Tarih ve ay atmosfer yaratır. "Beheld" kelimesi sıradan "saw" yerine — dramatik bir tanıklık hissi.</div>
+        <textarea class="mimesis-input" placeholder="Örn: It was on a silent morning of January that I witnessed the collapse of everything I had built." id="m2-input"></textarea>
+        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+          <button class="btn btn-blood" onclick="getMimesisFeedback(2)">Geri Bildirim Al ↗</button>
+          <button class="btn btn-ghost" onclick="showHint(2)">İpucu Göster</button>
+        </div>
+        <div class="feedback-box" id="m2-feedback"></div>
+        <div style="display:none;" id="m2-hint" class="structure-note">"It was on a [sıfat] [zaman] of [ay] that I [fiil-past] the [sonuç/tamamlanma]." Atmosferik sıfatlar: dreary, grey, bitter, hollow.</div>
+      </div>
+
+      <div class="mimesis-sentence" id="mex-3">
+        <div class="original-label">Orijinal Cümle — Bölüm XV (Yaratık)</div>
+        <div class="original-text">"Like Adam, I was apparently united by no link to any other being in existence; but his state was far different from mine in every other respect."</div>
+        <div class="structure-note">Yapı: [Karşılaştırma + Benzerlik] + [Ama - ayrım noktası]. Yaratık kendini literatür tarihiyle kıyaslıyor. Bu yapı hem ego hem de acıyı aynı anda taşır.</div>
+        <textarea class="mimesis-input" placeholder="Örn: Like Robinson, I was stranded by no choice of my own on a deserted shore; but his despair never reached the depth of mine." id="m3-input"></textarea>
+        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+          <button class="btn btn-blood" onclick="getMimesisFeedback(3)">Geri Bildirim Al ↗</button>
+          <button class="btn btn-ghost" onclick="showHint(3)">İpucu Göster</button>
+        </div>
+        <div class="feedback-box" id="m3-feedback"></div>
+        <div style="display:none;" id="m3-hint" class="structure-note">"Like [mitolojik/edebi figür], I was [durum]; but [o kişi]'s [durum] was far different from mine in [bakış açısı]."</div>
+      </div>
+
+      <div class="mimesis-sentence" id="mex-4">
+        <div class="original-label">Orijinal Cümle — Bölüm IX (Victor, Alpler'de)</div>
+        <div class="original-text">"The weight of the fallen leaves, the purity of the snow, and the sharp and clear air of the mountains revived me."</div>
+        <div class="structure-note">Yapı: Üçlü doğa imgesi + karakter üzerindeki etkisi. Her öge bir duyuya hitap eder (görme, dokunma, soluma). Virgüllü liste ritmi oluşturur.</div>
+        <textarea class="mimesis-input" placeholder="Örn: The warmth of the old stone walls, the smell of rain on dust, and the silence of the empty street calmed me." id="m4-input"></textarea>
+        <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+          <button class="btn btn-blood" onclick="getMimesisFeedback(4)">Geri Bildirim Al ↗</button>
+          <button class="btn btn-ghost" onclick="showHint(4)">İpucu Göster</button>
+        </div>
+        <div class="feedback-box" id="m4-feedback"></div>
+        <div style="display:none;" id="m4-hint" class="structure-note">"The [A], the [B], and the [C] [fiil - etki] me." Üç farklı duyuya hitap eden imgeler seçin: görme, koku, dokunma veya ses.</div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center; margin-top:1.5rem;">
+      <button class="btn btn-gold" onclick="sendPrompt('Frankenstein\'dan mimesis için daha güzel ve zor bir cümle seç ve analiz et')">Yeni Cümle İste ↗</button>
+    </div>
+  </div>
+
+  <!-- TAB 4: QUIZ -->
+  <div id="tab-quiz" class="tab-content">
+    <div class="section-title">Edebiyat Quizi</div>
+    <p class="section-subtitle">Frankenstein'ı ne kadar içselleştirdiniz? Hem eser bilgisini hem de yazarlık perspektifini test eden sorular.</p>
+
+    <div id="quiz-container">
+      <div class="quiz-progress" id="quiz-prog">Soru 1 / 8</div>
+      <div style="height:12px;"></div>
+      <div class="quiz-question" id="quiz-q"></div>
+      <div class="quiz-options" id="quiz-opts"></div>
+      <div class="quiz-feedback" id="quiz-fb"></div>
+      <div class="quiz-nav">
+        <button class="btn btn-blood" id="quiz-next" onclick="nextQuestion()" style="display:none;">Sonraki Soru →</button>
+        <div style="flex:1;"></div>
+        <div id="quiz-score-display" style="font-family:'Space Mono',monospace; font-size:11px; color:var(--ash);"></div>
+      </div>
+    </div>
+
+    <div id="quiz-result" style="display:none; text-align:center; padding:2rem;">
+      <div class="score-display" id="final-score"></div>
+      <div style="font-size:15px; color:var(--ash); margin-bottom:1.5rem;" id="final-comment"></div>
+      <button class="btn btn-blood" onclick="resetQuiz()">Tekrar Başla</button>
+      <button class="btn btn-ghost" onclick="sendPrompt('Frankenstein hakkında daha zor ve derinlemesine sorular sor')" style="margin-left:8px;">Daha Zor Sorular ↗</button>
+    </div>
+  </div>
+
+  <!-- TAB 5: ENGLISH -->
+  <div id="tab-english" class="tab-content">
+    <div class="section-title">İngilizce Dersi — Frankenstein'la Öğren</div>
+    <p class="section-subtitle">Kitabın gerçek cümlelerinden İngilizce öğrenin. Her ders hem dilbilgisi hem de hikayeyi içselleştirir.</p>
+
+    <div id="english-section">
+
+      <div style="display:flex; gap:8px; margin-bottom:1.5rem; flex-wrap:wrap;">
+        <button class="btn btn-blood active" onclick="showEnglishSection('grammar')">Dilbilgisi</button>
+        <button class="btn btn-ghost" onclick="showEnglishSection('vocab')">Kelime Hazinesi</button>
+        <button class="btn btn-ghost" onclick="showEnglishSection('fillblank')">Boşluk Doldur</button>
+      </div>
+
+      <!-- GRAMMAR SECTION -->
+      <div id="en-grammar">
+
+        <div class="lesson-block">
+          <div class="card-label" style="color:#2c3e5a; font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px;">Ders 1 — Relative Clauses (İlgi Cümleleri)</div>
+          <div class="en-sentence">"I, who had ever been surrounded by amiable companions, continually engaged in endeavouring to bestow mutual pleasure..."</div>
+          <div class="tr-sentence">Ben ki, her zaman sevecen arkadaşlarla çevrilmiş, birbirimize zevk vermeye çalışmakla meşgul olan biri...</div>
+          <div class="grammar-note">
+            <strong>Yapı:</strong> "I, who had [past perfect]..." — "who" ile başlayan ilgi cümlesi özneyi tanımlar.<br>
+            <strong>Dikkat:</strong> "had been surrounded" → geçmişte bir süre devam eden durum (past perfect continuous).<br>
+            <strong>Türkçe'ye çeviri nüansı:</strong> Türkçe'de "ki" ile kurulan cümleler buna yakındır ama İngilizce'deki ağırlık "who" clauses'dadır.
+          </div>
+        </div>
+
+        <div class="lesson-block">
+          <div class="card-label" style="color:#2c3e5a; font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px;">Ders 2 — Inversion for Emphasis (Devrik Cümle)</div>
+          <div class="en-sentence">"Never did I behold a being so remarkable as he was."</div>
+          <div class="tr-sentence">Hiç onun kadar olağanüstü bir varlık görmedim.</div>
+          <div class="grammar-note">
+            <strong>Yapı:</strong> "Never + yardımcı fiil + özne + ana fiil" → vurgu için devrik yapı.<br>
+            <strong>Normal:</strong> "I never beheld..." → <strong>Vurgulu:</strong> "Never did I behold..."<br>
+            <strong>Ne zaman kullanılır?</strong> Edebi metinlerde, dramatik anlarda, konuşma dilinde de etki için.
+          </div>
+        </div>
+
+        <div class="lesson-block">
+          <div class="card-label" style="color:#2c3e5a; font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px;">Ders 3 — Participial Phrases (Ortaç Öbekleri)</div>
+          <div class="en-sentence">"Mingled with this horror, I felt the bitterness of disappointment."</div>
+          <div class="tr-sentence">Bu dehşetle karışık olarak, hayal kırıklığının acısını hissettim.</div>
+          <div class="grammar-note">
+            <strong>Yapı:</strong> "Mingled with X, I felt Y" — Başta gelen ortaç öbeği, ana eylemi niteler.<br>
+            <strong>Kullanım:</strong> İki duygu veya durum aynı anda yaşanıyorsa bu yapıyı kullanın.<br>
+            <strong>Pratik:</strong> "Filled with doubt, she opened the letter." / "Overcome by fatigue, he sat down."
+          </div>
+        </div>
+
+        <button class="btn btn-blood" onclick="sendPrompt('Frankenstein\'dan seçilmiş cümlelerle daha fazla İngilizce dilbilgisi dersi yap')">Daha Fazla Ders ↗</button>
+      </div>
+
+      <!-- VOCABULARY SECTION -->
+      <div id="en-vocab" style="display:none;">
+        <div class="card-label" style="margin-bottom:1rem;">Kitabın Temel Kelime Hazinesi — C1/C2 Seviye</div>
+
+        <div class="vocab-word">
+          <div class="word-en">ardent</div>
+          <div class="word-def">Extremely enthusiastic or passionate; burning with desire<br><em style="font-size:12px; color:var(--storm);">"I was ardent and eager; I longed to enter the world."</em></div>
+          <div class="word-tr">ateşli, hevesli</div>
+        </div>
+        <div class="vocab-word">
+          <div class="word-en">melancholy</div>
+          <div class="word-def">A deep, pensive sadness; a gloomy state of mind<br><em style="font-size:12px; color:var(--storm);">"A deep melancholy settled on my mind."</em></div>
+          <div class="word-tr">hüzün, keder</div>
+        </div>
+        <div class="vocab-word">
+          <div class="word-en">wretched</div>
+          <div class="word-def">In a very unhappy or unfortunate state; pitiable<br><em style="font-size:12px; color:var(--storm);">"I was a wretched, miserable creature."</em></div>
+          <div class="word-tr">sefil, perişan</div>
+        </div>
+        <div class="vocab-word">
+          <div class="word-en">sublime</div>
+          <div class="word-def">Of such excellence or grandeur as to inspire great admiration<br><em style="font-size:12px; color:var(--storm);">"The sublime shapes of the mountains..."</em></div>
+          <div class="word-tr">yüce, muhteşem</div>
+        </div>
+        <div class="vocab-word">
+          <div class="word-en">abhor</div>
+          <div class="word-def">To regard with disgust and hatred; to detest utterly<br><em style="font-size:12px; color:var(--storm);">"I abhorred the face of man."</em></div>
+          <div class="word-tr">nefret etmek, tiksinmek</div>
+        </div>
+        <div class="vocab-word">
+          <div class="word-en">countenance</div>
+          <div class="word-def">A person's face or expression; to accept or tolerate<br><em style="font-size:12px; color:var(--storm);">"His countenance expressed the utmost despair."</em></div>
+          <div class="word-tr">yüz ifadesi, çehre</div>
+        </div>
+        <div class="vocab-word">
+          <div class="word-en">benevolent</div>
+          <div class="word-def">Well-meaning, kindly disposed toward others<br><em style="font-size:12px; color:var(--storm);">"I was benevolent and good; misery made me a fiend."</em></div>
+          <div class="word-tr">iyi kalpli, hayırsever</div>
+        </div>
+        <div class="vocab-word">
+          <div class="word-en">languish</div>
+          <div class="word-def">To grow weak, to suffer; to exist in miserable conditions<br><em style="font-size:12px; color:var(--storm);">"I languished under the misery of my situation."</em></div>
+          <div class="word-tr">eriyip gitmek, sönmek</div>
+        </div>
+
+        <div style="margin-top:1rem;">
+          <button class="btn btn-blood" onclick="sendPrompt('Frankenstein\'dan seçilmiş 10 kelimeyle beni sorgula, kelime quizi yap')">Kelime Quizi ↗</button>
+        </div>
+      </div>
+
+      <!-- FILL IN THE BLANK -->
+      <div id="en-fillblank" style="display:none;">
+        <div class="card-label" style="margin-bottom:1rem;">Boşluk Doldurun — Kitabın Gerçek Cümlelerinden</div>
+
+        <div class="lesson-block" id="fb-1">
+          <div style="font-size:16px; line-height:2; color:var(--ink);">
+            "I am by birth a Genevese, and my family is one of the most 
+            <input class="fill-blank-input" id="fb1-in" placeholder="?"> 
+            of that republic."
+          </div>
+          <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+            <button class="check-btn" onclick="checkFillBlank('fb1-in','distinguished','fb1-result')">Kontrol Et</button>
+            <span style="font-size:12px; color:var(--ash); font-style:italic;">İpucu: En saygın, seçkin anlamında C1 kelime</span>
+          </div>
+          <div style="font-size:13px; margin-top:6px; display:none;" id="fb1-result"></div>
+        </div>
+
+        <div class="lesson-block" id="fb-2">
+          <div style="font-size:16px; line-height:2; color:var(--ink);">
+            "I was a wretched, miserable creature, who 
+            <input class="fill-blank-input" id="fb2-in" placeholder="?"> 
+            the face of man."
+          </div>
+          <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+            <button class="check-btn" onclick="checkFillBlank('fb2-in','abhorred','fb2-result')">Kontrol Et</button>
+            <span style="font-size:12px; color:var(--ash); font-style:italic;">İpucu: Şiddetle nefret etmek, iğrenmek</span>
+          </div>
+          <div style="font-size:13px; margin-top:6px; display:none;" id="fb2-result"></div>
+        </div>
+
+        <div class="lesson-block" id="fb-3">
+          <div style="font-size:16px; line-height:2; color:var(--ink);">
+            "The 
+            <input class="fill-blank-input" id="fb3-in" placeholder="?"> 
+            shapes of the mountains revived me and warmed my heart."
+          </div>
+          <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+            <button class="check-btn" onclick="checkFillBlank('fb3-in','sublime','fb3-result')">Kontrol Et</button>
+            <span style="font-size:12px; color:var(--ash); font-style:italic;">İpucu: Yüce, büyük hayranlık uyandıran</span>
+          </div>
+          <div style="font-size:13px; margin-top:6px; display:none;" id="fb3-result"></div>
+        </div>
+
+        <div class="lesson-block" id="fb-4">
+          <div style="font-size:16px; line-height:2; color:var(--ink);">
+            "I was 
+            <input class="fill-blank-input" id="fb4-in" placeholder="?"> 
+            and good; misery made me a fiend."
+          </div>
+          <div style="margin-top:10px; display:flex; align-items:center; gap:8px;">
+            <button class="check-btn" onclick="checkFillBlank('fb4-in','benevolent','fb4-result')">Kontrol Et</button>
+            <span style="font-size:12px; color:var(--ash); font-style:italic;">İpucu: İyilik seven, hayırsever</span>
+          </div>
+          <div style="font-size:13px; margin-top:6px; display:none;" id="fb4-result"></div>
+        </div>
+
+        <div id="fb-total-score" style="display:none; text-align:center; padding:1rem; font-family:'Space Mono',monospace; font-size:16px; color:var(--blood);"></div>
+        <button class="btn btn-gold" onclick="sendPrompt('Frankenstein\'dan boşluk doldurmak için 5 yeni cümle hazırla, cevapları gizle')" style="margin-top:1rem;">Yeni Sorular İste ↗</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function showHint(n) {
+  const h = document.getElementById('m'+n+'-hint');
+  h.style.display = h.style.display === 'none' ? 'block' : 'none';
+}
+
+async function getMimesisFeedback(n) {
+  const originals = {
+    1: "I am by birth a Genevese, and my family is one of the most distinguished of that republic.",
+    2: "It was on a dreary night of November that I beheld the accomplishment of my toils.",
+    3: "Like Adam, I was apparently united by no link to any other being in existence; but his state was far different from mine in every other respect.",
+    4: "The weight of the fallen leaves, the purity of the snow, and the sharp and clear air of the mountains revived me."
+  };
+
+  const userText = document.getElementById('m'+n+'-input').value.trim();
+  const fbEl = document.getElementById('m'+n+'-feedback');
+
+  if (!userText || userText.length < 10) {
+    fbEl.className = 'feedback-box show feedback-loading';
+    fbEl.textContent = 'Lütfen önce bir cümle yazın.';
+    return;
+  }
+
+  fbEl.className = 'feedback-box show feedback-loading';
+  fbEl.innerHTML = 'Analiz ediliyor<span class="loading-dots"></span>';
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: `Sen bir yazarlık koçusun. Kullanıcı aşağıdaki Mary Shelley cümlesini mimetik olarak kendi kelimesiyle yeniden yazmaya çalıştı.
+
+SHELLEY'NİN ORİJİNALİ: "${originals[n]}"
+
+KULLANICININ YAZDIĞI: "${userText}"
+
+Türkçe olarak şunları değerlendir:
+1. Yapısal benzerlik: Shelley'nin cümlesinin iskeletini yakalamış mı?
+2. Ton: Benzer bir ağırlık, ritim var mı?
+3. Özgünlük: Kendi sesini katmış mı?
+4. Güçlü yanlar ve bir iyileştirme önerisi.
+
+Kısa, samimi ve cesaretlendirici bir dil kullan. Maksimum 120 kelime.`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content && data.content[0] ? data.content[0].text : 'Bir hata oluştu.';
+    fbEl.className = 'feedback-box show feedback-done';
+    fbEl.textContent = text;
+  } catch(e) {
+    fbEl.className = 'feedback-box show feedback-loading';
+    fbEl.textContent = 'Bağlantı hatası oluştu. Lütfen tekrar deneyin.';
+  }
+}
+
+function showEnglishSection(sec) {
+  document.querySelectorAll('#en-grammar, #en-vocab, #en-fillblank').forEach(el => el.style.display = 'none');
+  document.getElementById('en-' + sec).style.display = 'block';
+}
+
+function checkFillBlank(inputId, answer, resultId) {
+  const input = document.getElementById(inputId);
+  const result = document.getElementById(resultId);
+  const val = input.value.trim().toLowerCase();
+  result.style.display = 'block';
+
+  if (val === answer.toLowerCase()) {
+    input.className = 'fill-blank-input correct';
+    result.style.color = 'green';
+    result.textContent = '✓ Doğru! "' + answer + '" — Harika!';
+  } else {
+    input.className = 'fill-blank-input wrong';
+    result.style.color = '#8b1a1a';
+    result.textContent = '✗ Doğru cevap: "' + answer + '". Tekrar deneyin!';
+  }
+}
+
+const quizData = [
+  {
+    q: "Mary Shelley Frankenstein'ı kaç yaşında yazdı ve hangi koşullarda başladı?",
+    opts: ["25 yaşında, bir yazarlık ödülü için", "19 yaşında, bir gecede yapılan yağmurlu bir hikaye yarışmasında", "17 yaşında, Lord Byron'ın tavsiyesiyle", "22 yaşında, kocasının teşvikiyle"],
+    correct: 1,
+    explanation: "1816 yılı, 'Yılsız Yaz' olarak anılır. Cenevre'de, Lord Byron'ın önerdiği hikaye yarışmasında 19 yaşındaki Mary rüyasından esinlenerek yazmaya başladı."
+  },
+  {
+    q: "Romanda 'çerçeve anlatı' (frame narrative) tekniği nasıl işler?",
+    opts: ["Tek bir anlatıcı tüm hikayeyi anlatır", "Victor mektup yazar, Walton okur ve aktarır, Yaratık iç katmanda konuşur", "Anlatı geriye dönük flashback'lerle ilerler", "Omniscient anlatıcı her karakterin zihnine girer"],
+    correct: 1,
+    explanation: "Walton → Victor → Yaratık şeklinde iç içe geçen üç katmanlı anlatı. Her katman öncekinin güvenilirliğini sorgulatır."
+  },
+  {
+    q: "Yaratık 'Paradise Lost', 'Werther' ve 'Plutarch'ın Hayatlar'ını okur. Bu detayın yazarlık açısından anlamı nedir?",
+    opts: ["Yaratık'ın üstün zekasını göstermek için", "Shelley'nin kendi okuma listesini yansıtmak için", "Yaratık'ın nasıl duygusal ve felsefi bir varlık haline geldiğini göstermek — eğitimin insanlaştırıcı gücü", "Dönemin popüler kitaplarına atıfta bulunmak için"],
+    correct: 2,
+    explanation: "Yaratık bu kitaplar aracılığıyla insan duygularını, adaleti, aşkı ve kendi durumunu anlamlandırır. Shelley, eğitimin yaratıcı/yıkıcı gücünü keşfeder."
+  },
+  {
+    q: "Victor Frankenstein ile Robert Walton arasındaki paralel nedir?",
+    opts: ["İkisi de doktor", "İkisi de hırslarıyla sınırları aşmaya çalışan, benzer uyarıları görmezden gelen erkekler", "İkisi de Cenevre'lidir", "İkisi de Yaratık'ı görür"],
+    correct: 1,
+    explanation: "Walton da sınırları zorlamak isteyen bir kaşiftir. Victor'un hikayesi, Walton'a aynadan bakan bir uyarı işlevi görür. Shelley bu çiftlemeyi kasıtlı kurmuştur."
+  },
+  {
+    q: "Shelley'nin romanında doğa neden bu kadar merkezi bir rol oynar? (Romantizm bağlamında)",
+    opts: ["Sadece atmosfer yaratmak için kullanılır", "Doğa, karakterlerin iç durumunu yansıtan bir ayna işlevi görür — Romantik 'Pathetic Fallacy'", "Bilimsel gözlem sahnesizdir, onun yerine doğa tanımlamaları konulur", "Shelley'nin gerçek coğrafyayı belgelemek istediği için"],
+    correct: 1,
+    explanation: "'Pathetic Fallacy' — dış dünya, karakterin ruh halini yansıtır. Victor acı çektikçe fırtına kopar, Alpler üzerindeki yıldırımlar Yaratık'ı getirir. Romantizm'in temel araçlarından biridir."
+  },
+  {
+    q: "'Modern Prometheus' alt başlığı ne anlama gelir ve romanı nasıl çerçeveler?",
+    opts: ["Frankenstein'ın Yunan mitolojisine ilgisini gösterir", "Victor da Prometheus gibi sınır tanımayan bir güç elde etti ve bunun bedelini ödedi — bu yapı romanın tematik şablonudur", "Shelley'nin ilk kitabına verdiği şiirsel bir isimdir", "Yaratık'ın Prometheus ile özdeşleşmesini tanımlar"],
+    correct: 1,
+    explanation: "Prometheus insanlara ateş verdi → cezalandırıldı. Victor insanlara yaşam sırrını getirmeye çalıştı → her şeyini kaybetti. Alt başlık romanın bütün ahlaki ağırlığını önceden haber verir."
+  },
+  {
+    q: "Bir yazar olarak, Shelley'nin Yaratık'a isim vermemesinin (anonim bırakmasının) edebi etkisi nedir?",
+    opts: ["Shelley isim düşünememiştir", "Yaratık'ın kimliksizliğini, toplum dışılığını ve evrensel özlemini vurgular — isim sosyal aidiyet gerektirir", "Okuyucunun kafasını karıştırmak için", "İngiliz edebiyat geleneğinde sık kullanılan bir tekniktir"],
+    correct: 1,
+    explanation: "İsim, kimliğin ve toplumsallığın işaretidir. İsimsiz kalan Yaratık, hiçbir yere ait değildir. Bu sessiz mimari karar, romanın en güçlü sembolik jestlerinden biridir."
+  },
+  {
+    q: "Romanın açılış cümlesi: 'You will rejoice to hear that no disaster has accompanied...' Bu cümlenin dramatik işlevi nedir?",
+    opts: ["Okuyucuyu rahatlatmak için — iyi haber veriyordur", "Dramatik ironi — okuyucu bilecek ki bu cümle yanlıştır, felaket ileride gelecektir", "Walton'ın iyimserliğini tanımlamak için", "Epistolary biçimin zorunlu bir açılış formülüdür"],
+    correct: 1,
+    explanation: "Dramatik ironi — açılışta 'hiçbir felaket olmadı' denir; roman boyunca her şey felakete gider. Bu ilk cümle romanın tonunu alt üst eder ve okuyucuyu tuzağa çeker."
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+let answered = false;
+
+function renderQuestion() {
+  if (currentQ >= quizData.length) {
+    showResult();
+    return;
+  }
+
+  const q = quizData[currentQ];
+  answered = false;
+  document.getElementById('quiz-prog').textContent = 'Soru ' + (currentQ+1) + ' / ' + quizData.length;
+  document.getElementById('quiz-q').textContent = q.q;
+  document.getElementById('quiz-next').style.display = 'none';
+
+  const fb = document.getElementById('quiz-fb');
+  fb.className = 'quiz-feedback';
+  fb.textContent = '';
+
+  const optsEl = document.getElementById('quiz-opts');
+  optsEl.innerHTML = '';
+
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(i, btn);
+    optsEl.appendChild(btn);
+  });
+
+  document.getElementById('quiz-score-display').textContent = 'Puan: ' + score + ' / ' + currentQ;
+}
+
+function selectAnswer(i, btn) {
+  if (answered) return;
+  answered = true;
+
+  const q = quizData[currentQ];
+  const allBtns = document.querySelectorAll('.quiz-option');
+  allBtns.forEach(b => b.classList.add('disabled'));
+
+  const fb = document.getElementById('quiz-fb');
+
+  if (i === q.correct) {
+    btn.classList.add('correct');
+    score++;
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✓ Doğru! ' + q.explanation;
+  } else {
+    btn.classList.add('wrong');
+    allBtns[q.correct].classList.add('correct');
+    fb.className = 'quiz-feedback show wrong';
+    fb.textContent = '✗ Yanlış. ' + q.explanation;
+  }
+
+  document.getElementById('quiz-next').style.display = 'block';
+  document.getElementById('quiz-score-display').textContent = 'Puan: ' + score + ' / ' + (currentQ+1);
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('quiz-result').style.display = 'block';
+  const pct = Math.round(score / quizData.length * 100);
+  document.getElementById('final-score').textContent = score + ' / ' + quizData.length + ' (' + pct + '%)';
+  let comment = '';
+  if (pct >= 88) comment = 'Mükemmel! Frankenstein\'ı hem bir okuyucu hem de yazar gözüyle içselleştirdiniz.';
+  else if (pct >= 62) comment = 'İyi gidiyorsunuz. Bazı bölümleri tekrar okumak faydalı olabilir.';
+  else comment = 'Endişelenmeyin — bu sorular kasıtlı olarak derin. Yapı ve Teknik sekmesini inceleyin.';
+  document.getElementById('final-comment').textContent = comment;
+}
+
+function resetQuiz() {
+  currentQ = 0; score = 0; answered = false;
+  document.getElementById('quiz-container').style.display = 'block';
+  document.getElementById('quiz-result').style.display = 'none';
+  renderQuestion();
+}
+
+renderQuestion();
+</script>

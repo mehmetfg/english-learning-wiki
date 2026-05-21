@@ -1,0 +1,458 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000; min-height: 14.0px}
+    span.s1 {font-kerning: none}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1">import React, { useState, useEffect } from 'react';</span></p>
+<p class="p1"><span class="s1">import {<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>Gamepad2, Image, Move, Grid3X3, Smile, Shuffle,<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>RotateCcw, Check, X, ArrowRight, Lightbulb, Trophy<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1">} from 'lucide-react';</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// --- DATA ---</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// 1. Pictionary Data (Visual Guessing)</span></p>
+<p class="p1"><span class="s1">const PICTIONARY_ITEMS = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ icon: "🍞", question: "What is this?", options: ["A bread", "A loaf of bread", "A bar of bread"], correct: "A loaf of bread" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ icon: "🍫", question: "What is this?", options: ["A bar of chocolate", "A chocolate", "A piece chocolate"], correct: "A bar of chocolate" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ icon: "🥛", question: "What is this?", options: ["A milk", "A carton of milk", "A white water"], correct: "A carton of milk" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ icon: "👖", question: "What are these?", options: ["A jean", "A pair of jeans", "Jeanses"], correct: "A pair of jeans" },</span></p>
+<p class="p1"><span class="s1">];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// 2. Anagrams Data</span></p>
+<p class="p1"><span class="s1">const ANAGRAM_WORDS = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ scrambled: "RETWA", original: "WATER", hint: "You drink it. (İçersin)" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ scrambled: "YENOM", original: "MONEY", hint: "You spend it. (Harcarsın)" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ scrambled: "RITUFNREU", original: "FURNITURE", hint: "Tables, chairs... (Mobilya)" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ scrambled: "ECHES", original: "CHEESE", hint: "Mice love it. (Fareler sever)" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ scrambled: "VICEDA", original: "ADVICE", hint: "A suggestion. (Tavsiye)" },</span></p>
+<p class="p1"><span class="s1">];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// 3. Charades (Emoji Logic)</span></p>
+<p class="p1"><span class="s1">const CHARADES_ITEMS = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ emojis: "🐄 + 🥛", answer: "MILK", hint: "From a cow." },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ emojis: "🌧️ + 🧥", answer: "RAIN", hint: "Water from sky." },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ emojis: "🐝 + 🍯", answer: "HONEY", hint: "Sweet and sticky." },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ emojis: "🚪 + 🔑", answer: "KEY", hint: "Opens the door." },</span></p>
+<p class="p1"><span class="s1">];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// 4. Crossword Data (Simplified 1-word hints for demo)</span></p>
+<p class="p1"><span class="s1">const CROSSWORD_CLUES = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ id: 1, clue: "Plural of Child", answer: "CHILDREN" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ id: 2, clue: "Opposite of Many (for countables)", answer: "FEW" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ id: 3, clue: "Container for Jam", answer: "JAR" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ id: 4, clue: "Uncountable word for 'Idea/Facts'", answer: "INFORMATION" },</span></p>
+<p class="p1"><span class="s1">];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// 5. Jigsaw (Logic Puzzle)</span></p>
+<p class="p1"><span class="s1">const JIGSAW_SENTENCES = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ parts: ["I", "would", "like", "some", "coffee"], correct: "I would like some coffee" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ parts: ["How", "many", "apples", "do", "you", "need"], correct: "How many apples do you need" },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>{ parts: ["There", "is", "little", "hope"], correct: "There is little hope" },</span></p>
+<p class="p1"><span class="s1">];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// --- MAIN APP ---</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">export default function EnglishArcadeLevel3() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [activeGame, setActiveGame] = useState(null);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div className="min-h-screen bg-slate-900 text-slate-100 font-sans p-4 md:p-6 flex flex-col"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;header className="w-full max-w-6xl mx-auto mb-6 flex items-center justify-between bg-slate-800/50 p-4 rounded-2xl border border-slate-700 backdrop-blur-sm"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div className="flex items-center gap-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div className="bg-gradient-to-br from-pink-500 to-rose-500 p-3 rounded-xl shadow-lg shadow-pink-500/20"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;Gamepad2 size={32} className="text-white" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>English Arcade: Level 3</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/h1&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p className="text-slate-400 text-xs md:text-sm"&gt;Görsel zeka ve kelime avı başlasın Sayın Hocam!&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{activeGame &amp;&amp; (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>onClick={() =&gt; setActiveGame(null)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>className="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-all border border-slate-600"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;RotateCcw size={18} /&gt; &lt;span className="hidden md:inline"&gt;Oyun Seçimi&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/header&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;main className="flex-1 w-full max-w-6xl mx-auto relative"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{!activeGame ? (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;GameMenu onSelect={setActiveGame} /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>) : (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div className="w-full h-full min-h-[600px] bg-slate-800 rounded-3xl shadow-2xl overflow-hidden border border-slate-700 relative"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">             </span>&lt;div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')] opacity-5 pointer-events-none"&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{activeGame === 'pictionary' &amp;&amp; &lt;PictionaryGame /&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{activeGame === 'anagrams' &amp;&amp; &lt;AnagramsGame /&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{activeGame === 'charades' &amp;&amp; &lt;CharadesGame /&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{activeGame === 'crossword' &amp;&amp; &lt;CrosswordGame /&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{activeGame === 'jigsaw' &amp;&amp; &lt;JigsawGame /&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/main&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">function GameMenu({ onSelect }) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const games = [</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{ id: 'pictionary', title: 'Pictionary', desc: 'Resme bak, doğru ifadeyi bul.', icon: &lt;Image size={32} /&gt;, color: 'from-blue-400 to-indigo-600' },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{ id: 'anagrams', title: 'Anagrams', desc: 'Karışık harfleri çöz.', icon: &lt;Shuffle size={32} /&gt;, color: 'from-orange-400 to-red-600' },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{ id: 'charades', title: 'Emoji Charades', desc: 'Emojilerden kelimeyi tahmin et.', icon: &lt;Smile size={32} /&gt;, color: 'from-yellow-400 to-amber-600' },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{ id: 'crossword', title: 'Mini Crossword', desc: 'İpuçlarını oku, bulmacayı çöz.', icon: &lt;Grid3X3 size={32} /&gt;, color: 'from-emerald-400 to-teal-600' },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>{ id: 'jigsaw', title: 'Sentence Jigsaw', desc: 'Parçaları birleştir, cümleyi kur.', icon: &lt;Move size={32} /&gt;, color: 'from-purple-400 to-violet-600' },</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{games.map((g) =&gt; (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>key={g.id}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>onClick={() =&gt; onSelect(g.id)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>className="group relative bg-slate-800 rounded-3xl p-6 border-2 border-slate-700 hover:border-slate-500 transition-all hover:-translate-y-2 hover:shadow-xl text-left overflow-hidden"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${g.color} opacity-10 rounded-bl-full group-hover:scale-110 transition-transform duration-500`}&gt;&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${g.color} flex items-center justify-center text-white shadow-lg mb-4 group-hover:rotate-6 transition-transform`}&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{g.icon}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;h3 className="text-xl font-bold text-slate-100 mb-2"&gt;{g.title}&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;p className="text-slate-400 text-sm leading-relaxed"&gt;{g.desc}&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div className="mt-4 flex items-center text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Oyna &lt;ArrowRight size={16} className="ml-1 text-white" /&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>))}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// ---------------- GAME 1: PICTIONARY ----------------</span></p>
+<p class="p1"><span class="s1">function PictionaryGame() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [currentIdx, setCurrentIdx] = useState(0);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong'</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [score, setScore] = useState(0);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const item = PICTIONARY_ITEMS[currentIdx];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const handleGuess = (option) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if (feedback) return;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if (option === item.correct) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFeedback('correct');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setScore(s =&gt; s + 1);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setFeedback(null);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setCurrentIdx(prev =&gt; (prev + 1) % PICTIONARY_ITEMS.length);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}, 1500);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setFeedback('wrong');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; setFeedback(null), 1000);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div className="flex flex-col items-center justify-center h-full p-8 text-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;h2 className="text-2xl font-bold text-blue-400 mb-8 flex items-center gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;Image /&gt; Pictionary</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="bg-slate-700 p-8 rounded-3xl mb-8 shadow-2xl border-4 border-slate-600 animate-in zoom-in"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div className="text-9xl mb-4 transform hover:scale-110 transition-transform cursor-pointer"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>{item.icon}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p className="text-slate-300 font-bold text-lg"&gt;{item.question}&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{item.options.map((opt, i) =&gt; (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>key={i}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>onClick={() =&gt; handleGuess(opt)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>disabled={feedback !== null}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>className={`p-4 rounded-xl font-bold text-lg border-2 transition-all</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>${feedback === 'correct' &amp;&amp; opt === item.correct<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>? 'bg-emerald-600 border-emerald-400 text-white'<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>: feedback === 'wrong'<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                  </span>? 'bg-slate-800 border-slate-600 opacity-50'<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                  </span>: 'bg-slate-800 border-slate-600 hover:border-blue-400 hover:bg-slate-700'}`}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{opt}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>))}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">      </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{feedback === 'correct' &amp;&amp; &lt;div className="mt-6 text-emerald-400 text-xl font-bold animate-bounce"&gt;Doğru Bildin! 🎉&lt;/div&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{feedback === 'wrong' &amp;&amp; &lt;div className="mt-6 text-rose-500 text-xl font-bold"&gt;Yanlış, tekrar dene. ❌&lt;/div&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// ---------------- GAME 2: ANAGRAMS ----------------</span></p>
+<p class="p1"><span class="s1">function AnagramsGame() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [currentIdx, setCurrentIdx] = useState(0);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [input, setInput] = useState("");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [status, setStatus] = useState('playing'); // playing, correct, wrong</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const wordData = ANAGRAM_WORDS[currentIdx];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const checkAnswer = () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if (input.toUpperCase() === wordData.original) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setStatus('correct');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setStatus('playing');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setInput("");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setCurrentIdx(prev =&gt; (prev + 1) % ANAGRAM_WORDS.length);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}, 1500);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setStatus('wrong');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setTimeout(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setInput("");</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>setStatus('playing');</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>}, 1500);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div className="flex flex-col items-center justify-center h-full p-8 text-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;h2 className="text-2xl font-bold text-orange-400 mb-8 flex items-center gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;Shuffle /&gt; Anagrams</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="mb-12"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p className="text-slate-500 mb-2 uppercase tracking-widest text-sm"&gt;Scrambled Word&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div className="flex gap-2 justify-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>{wordData.scrambled.split('').map((char, i) =&gt; (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div key={i} className="w-12 h-16 bg-slate-700 rounded-lg flex items-center justify-center text-3xl font-bold text-white shadow-lg border-b-4 border-slate-900"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>{char}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>))}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700 mb-8 max-w-md"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;span className="text-yellow-400 font-bold flex items-center justify-center gap-2 mb-1"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;Lightbulb size={16}/&gt; İpucu</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/span&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p className="text-slate-300"&gt;{wordData.hint}&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="flex gap-2 w-full max-w-md"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;input</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>type="text"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>value={input}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>onChange={(e) =&gt; setInput(e.target.value)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>placeholder="Doğrusunu yaz..."</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>className={`flex-1 bg-slate-900 border-2 rounded-xl px-4 py-3 text-white text-center font-bold text-xl uppercase tracking-widest focus:outline-none transition-colors</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>${status === 'wrong' ? 'border-rose-500 bg-rose-900/20' : 'border-slate-600 focus:border-orange-500'}`}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>onClick={checkAnswer}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>className="px-6 bg-orange-600 hover:bg-orange-500 text-white rounded-xl font-bold transition-all"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>Çöz</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{status === 'correct' &amp;&amp; &lt;div className="mt-8 text-emerald-400 text-2xl font-bold animate-bounce"&gt;HARİKA! ✅&lt;/div&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{status === 'wrong' &amp;&amp; &lt;div className="mt-8 text-rose-500 text-2xl font-bold animate-shake"&gt;YANLIŞ, TEKRAR DENE ❌&lt;/div&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// ---------------- GAME 3: CHARADES ----------------</span></p>
+<p class="p1"><span class="s1">function CharadesGame() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [currentIdx, setCurrentIdx] = useState(0);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [showAnswer, setShowAnswer] = useState(false);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const item = CHARADES_ITEMS[currentIdx];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const next = () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setShowAnswer(false);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setCurrentIdx(prev =&gt; (prev + 1) % CHARADES_ITEMS.length);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div className="flex flex-col items-center justify-center h-full p-8 text-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;h2 className="text-2xl font-bold text-yellow-400 mb-8 flex items-center gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;Smile /&gt; Emoji Charades</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="bg-slate-800 p-10 rounded-3xl shadow-2xl border-2 border-slate-700 mb-8 max-w-xl w-full"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div className="text-6xl mb-6 animate-pulse"&gt;{item.emojis}&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;p className="text-slate-400 text-lg italic mb-4"&gt;"{item.hint}"&lt;/p&gt;</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">        </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{!showAnswer ? (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>onClick={() =&gt; setShowAnswer(true)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>className="px-8 py-3 bg-slate-700 hover:bg-slate-600 rounded-full font-bold text-slate-200 transition-all border border-slate-500"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Cevabı Göster</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>) : (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;div className="animate-in zoom-in"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;h3 className="text-4xl font-bold text-emerald-400 mb-6"&gt;{item.answer}&lt;/h3&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>onClick={next}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>className="px-8 py-3 bg-yellow-500 hover:bg-yellow-400 text-slate-900 rounded-full font-bold transition-all hover:scale-105"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>Sonraki Soru &lt;ArrowRight className="inline ml-2" size={20}/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// ---------------- GAME 4: CROSSWORD ----------------</span></p>
+<p class="p1"><span class="s1">function CrosswordGame() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [answers, setAnswers] = useState({}); // { id: "ANSWER" }</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [activeClue, setActiveClue] = useState(null);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>// Simplified: Not a real grid, just a list of clues to fill</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const handleChange = (id, val) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setAnswers(prev =&gt; ({ ...prev, [id]: val.toUpperCase() }));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div className="flex flex-col items-center h-full p-8 overflow-y-auto"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;h2 className="text-2xl font-bold text-emerald-400 mb-8 flex items-center gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;Grid3X3 /&gt; Mini Crossword</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="grid gap-6 w-full max-w-2xl"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{CROSSWORD_CLUES.map((item) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>const isCorrect = answers[item.id] === item.answer;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>return (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div key={item.id} className="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col md:flex-row items-center gap-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div className="bg-slate-700 w-8 h-8 flex items-center justify-center rounded-full font-bold text-slate-300"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{item.id}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div className="flex-1 text-center md:text-left"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p className="text-slate-300 font-medium"&gt;{item.clue}&lt;/p&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;div className="relative"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>&lt;input<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                  </span>type="text"<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                  </span>maxLength={item.answer.length}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                  </span>className={`bg-slate-900 border-2 rounded-lg px-3 py-2 text-center font-mono tracking-[0.5em] uppercase w-48 md:w-64 focus:outline-none transition-colors</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                    </span>${isCorrect ? 'border-emerald-500 text-emerald-400' : 'border-slate-600 text-white focus:border-emerald-500/50'}`}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                  </span>onChange={(e) =&gt; handleChange(item.id, e.target.value)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                  </span>placeholder={"_".repeat(item.answer.length)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">                </span>{isCorrect &amp;&amp; &lt;Check className="absolute -right-8 top-1/2 -translate-y-1/2 text-emerald-500" size={24} /&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">              </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>})}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="mt-8 text-slate-500 text-sm italic"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>*Tüm harfleri büyük yazın. Doğruysa yeşil olur.</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1">// ---------------- GAME 5: JIGSAW ----------------</span></p>
+<p class="p1"><span class="s1">function JigsawGame() {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [currentIdx, setCurrentIdx] = useState(0);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [pieces, setPieces] = useState([]);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [userOrder, setUserOrder] = useState([]);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const [isCorrect, setIsCorrect] = useState(null);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const sentenceData = JIGSAW_SENTENCES[currentIdx];</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>useEffect(() =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>// Shuffle pieces</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>const shuffled = [...sentenceData.parts].sort(() =&gt; Math.random() - 0.5);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setPieces(shuffled);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setUserOrder([]);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setIsCorrect(null);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>}, [currentIdx]);</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const addToLine = (word) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setUserOrder([...userOrder, word]);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setPieces(pieces.filter(p =&gt; p !== word)); // Simple filter (assumes unique words for demo)</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const removeFromLine = (word) =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setPieces([...pieces, word]);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setUserOrder(userOrder.filter(w =&gt; w !== word));</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setIsCorrect(null);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const check = () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>if (userOrder.join(' ') === sentenceData.correct) {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setIsCorrect(true);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>} else {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>setIsCorrect(false);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>const next = () =&gt; {</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>setCurrentIdx(prev =&gt; (prev + 1) % JIGSAW_SENTENCES.length);</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>};</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>return (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div className="flex flex-col items-center justify-center h-full p-8 text-center"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;h2 className="text-2xl font-bold text-violet-400 mb-8 flex items-center gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>&lt;Move /&gt; Sentence Jigsaw</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/h2&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{/* Drop Zone */}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className={`w-full max-w-3xl min-h-[100px] bg-slate-900 rounded-2xl border-2 border-dashed flex flex-wrap gap-2 p-6 mb-8 items-center justify-center transition-all</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>${isCorrect === true ? 'border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.2)]' : 'border-slate-600'}`}&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{userOrder.length === 0 &amp;&amp; &lt;span className="text-slate-600"&gt;Kelimeleri buraya taşı...&lt;/span&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{userOrder.map((word, i) =&gt; (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button key={i} onClick={() =&gt; removeFromLine(word)} className="bg-violet-600 hover:bg-violet-500 px-4 py-2 rounded-lg text-white font-bold animate-in zoom-in"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{word}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>))}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{/* Pieces */}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="flex flex-wrap gap-3 justify-center max-w-2xl mb-12"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{pieces.map((word, i) =&gt; (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>key={i}<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>onClick={() =&gt; addToLine(word)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-slate-200 font-medium border border-slate-600 transition-all hover:-translate-y-1"</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>{word}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>))}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;div className="flex gap-4"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{isCorrect !== true &amp;&amp; (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button onClick={check} className="px-8 py-3 bg-slate-100 text-slate-900 rounded-full font-bold hover:scale-105 transition-all"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Kontrol Et</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>{isCorrect === true &amp;&amp; (</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;button onClick={next} className="px-8 py-3 bg-emerald-500 text-white rounded-full font-bold hover:scale-105 transition-all flex items-center gap-2"&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">            </span>Sonraki &lt;ArrowRight size={20}/&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">        </span>)}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</span></p>
+<p class="p2"><span class="s1"><span class="Apple-converted-space">      </span></span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">      </span>{isCorrect === false &amp;&amp; &lt;p className="mt-4 text-rose-500 font-bold"&gt;Sıralama yanlış, tekrar dene.&lt;/p&gt;}</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></p>
+<p class="p1"><span class="s1"><span class="Apple-converted-space">  </span>);</span></p>
+<p class="p1"><span class="s1">}</span></p>
+</body>
+</html>

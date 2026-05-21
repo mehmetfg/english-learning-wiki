@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IF CONDITIONS QUEST</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --panel: #0d1525;
+    --panel2: #111e35;
+    --border: #1a3a6e;
+    --zero: #00e5ff;
+    --first: #39ff14;
+    --second: #ff9500;
+    --third: #ff2d78;
+    --mixed: #bf5fff;
+    --text: #c8d8f0;
+    --muted: #4a6080;
+    --gold: #ffd700;
+    --white: #ffffff;
+    --glow-zero: 0 0 20px #00e5ff80;
+    --glow-first: 0 0 20px #39ff1480;
+    --glow-second: 0 0 20px #ff950080;
+    --glow-third: 0 0 20px #ff2d7880;
+    --glow-mixed: 0 0 20px #bf5fff80;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, #001a3320 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, #00113320 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, #0d002a15 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(26,58,110,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,58,110,0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 30px 0 20px;
+  }
+
+  header h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--zero), var(--first), var(--second), var(--third));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    animation: titlePulse 3s ease-in-out infinite;
+  }
+
+  header p {
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    margin-top: 8px;
+  }
+
+  @keyframes titlePulse {
+    0%,100% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+  }
+
+  /* SCORE BAR */
+  .score-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .score-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+  }
+
+  .score-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .xp-bar-wrap {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .xp-bar-bg {
+    background: var(--border);
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .xp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--zero), var(--first));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px var(--zero);
+  }
+
+  /* MAIN CONTENT */
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeIn 0.4s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ====== HOME SCREEN ====== */
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .type-card {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .type-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 14px;
+  }
+
+  .type-card:hover { transform: translateY(-4px); }
+
+  .type-card[data-type="zero"] { border-color: var(--zero); }
+  .type-card[data-type="zero"]:hover { box-shadow: var(--glow-zero); background: #001a2a; }
+  .type-card[data-type="zero"] .type-icon { color: var(--zero); text-shadow: var(--glow-zero); }
+
+  .type-card[data-type="first"] { border-color: var(--first); }
+  .type-card[data-type="first"]:hover { box-shadow: var(--glow-first); background: #001a00; }
+  .type-card[data-type="first"] .type-icon { color: var(--first); text-shadow: var(--glow-first); }
+
+  .type-card[data-type="second"] { border-color: var(--second); }
+  .type-card[data-type="second"]:hover { box-shadow: var(--glow-second); background: #1a0c00; }
+  .type-card[data-type="second"] .type-icon { color: var(--second); text-shadow: var(--glow-second); }
+
+  .type-card[data-type="third"] { border-color: var(--third); }
+  .type-card[data-type="third"]:hover { box-shadow: var(--glow-third); background: #1a0010; }
+  .type-card[data-type="third"] .type-icon { color: var(--third); text-shadow: var(--glow-third); }
+
+  .type-card[data-type="mixed"] { border-color: var(--mixed); }
+  .type-card[data-type="mixed"]:hover { box-shadow: var(--glow-mixed); background: #0d001a; }
+  .type-card[data-type="mixed"] .type-icon { color: var(--mixed); text-shadow: var(--glow-mixed); }
+
+  .type-icon { font-size: 2.5rem; margin-bottom: 10px; }
+
+  .type-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .type-formula {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .type-stars {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .type-stars .earned { color: var(--gold); }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  /* ====== LEARN SCREEN ====== */
+  .learn-panel {
+    background: var(--panel);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .learn-type-badge {
+    display: inline-block;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+
+  .learn-formula-box {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    line-height: 1.8;
+    border-left: 4px solid currentColor;
+  }
+
+  .learn-desc {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+
+  .example-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .example-card {
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 14px 18px;
+    border-left: 3px solid currentColor;
+  }
+
+  .example-en {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+
+  .example-tr {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .timeline-visual {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    margin: 14px 0;
+    flex-wrap: wrap;
+  }
+
+  .tl-item {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .tl-arrow {
+    color: var(--muted);
+    font-size: 1.2rem;
+  }
+
+  /* ====== QUIZ SCREEN ====== */
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .quiz-progress {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .quiz-type-tag {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  .question-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .question-mode-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .question-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    color: var(--white);
+  }
+
+  .blank {
+    display: inline-block;
+    min-width: 120px;
+    border-bottom: 2px solid currentColor;
+    color: var(--muted);
+    padding: 2px 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    background: var(--bg);
+    border-radius: 4px 4px 0 0;
+    vertical-align: bottom;
+  }
+
+  /* MCQ Options */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  @media (max-width: 500px) {
+    .options-grid { grid-template-columns: 1fr; }
+  }
+
+  .option-btn {
+    background: var(--panel2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.25s ease;
+    line-height: 1.4;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--zero);
+    color: var(--white);
+    box-shadow: var(--glow-zero);
+    transform: scale(1.02);
+  }
+
+  .option-btn.correct {
+    border-color: var(--first);
+    background: #001a00;
+    color: var(--first);
+    box-shadow: var(--glow-first);
+  }
+
+  .option-btn.wrong {
+    border-color: var(--third);
+    background: #1a0010;
+    color: var(--third);
+    box-shadow: var(--glow-third);
+  }
+
+  /* Arrange mode */
+  .arrange-area {
+    min-height: 60px;
+    background: var(--bg);
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 12px;
+    transition: border-color 0.3s;
+  }
+
+  .arrange-area.over {
+    border-color: var(--zero);
+    box-shadow: var(--glow-zero);
+  }
+
+  .word-chip {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .word-chip:hover { border-color: var(--zero); color: var(--zero); }
+  .word-chip.placed { opacity: 0.3; pointer-events: none; }
+
+  /* Translation mode */
+  .translation-input {
+    width: 100%;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--white);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .translation-input:focus { border-color: var(--zero); box-shadow: var(--glow-zero); }
+
+  /* Feedback */
+  .feedback-box {
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-top: 16px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .feedback-box.show { display: block; }
+  .feedback-box.correct-fb { background: #001a00; border: 1px solid var(--first); }
+  .feedback-box.wrong-fb { background: #1a0010; border: 1px solid var(--third); }
+
+  .feedback-icon { font-size: 1.5rem; margin-bottom: 6px; }
+
+  .feedback-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .correct-answer-reveal {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    color: var(--first);
+  }
+
+  /* Action Buttons */
+  .action-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-transform: uppercase;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--zero), #0088bb);
+    color: var(--bg);
+    box-shadow: var(--glow-zero);
+  }
+
+  .btn-primary:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+
+  .btn-success {
+    background: linear-gradient(135deg, var(--first), #228800);
+    color: var(--bg);
+    box-shadow: var(--glow-first);
+  }
+
+  .btn-success:hover { filter: brightness(1.2); }
+
+  /* ====== RESULTS SCREEN ====== */
+  .results-panel {
+    text-align: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 30px;
+  }
+
+  .results-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+
+  .results-score-big {
+    font-family: 'Orbitron', monospace;
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--gold);
+    text-shadow: 0 0 30px var(--gold);
+    margin: 20px 0;
+  }
+
+  .stars-display {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    letter-spacing: 8px;
+  }
+
+  .medals-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+
+  .medal {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+  }
+
+  /* ====== THEORY SHEET ====== */
+  .theory-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .theory-table th {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .theory-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .theory-table tr:last-child td { border-bottom: none; }
+
+  .theory-table tbody tr:hover { background: var(--panel2); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+    background: var(--panel);
+    padding: 6px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 80px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .tab-btn.active {
+    background: var(--border);
+    color: var(--white);
+  }
+
+  /* Nav */
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 6px;
+    margin-bottom: 20px;
+  }
+
+  .nav-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'Orbitron', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+    padding: 10px 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .nav-btn.active { background: var(--border); color: var(--white); }
+
+  /* Tooltip */
+  .tip {
+    display: inline-block;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin: 2px;
+  }
+
+  /* Streaks */
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #ff6600, #ff9500);
+    color: #fff;
+    font-family: 'Orbitron', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    box-shadow: 0 0 15px #ff950060;
+  }
+
+  /* Confetti */
+  .confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall 1.5s ease-in forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .shake { animation: shake 0.4s ease; }
+
+  /* Progress dots */
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s;
+  }
+
+  .dot.done-correct { background: var(--first); box-shadow: 0 0 6px var(--first); }
+  .dot.done-wrong { background: var(--third); box-shadow: 0 0 6px var(--third); }
+  .dot.current { background: var(--zero); box-shadow: 0 0 8px var(--zero); animation: blink 1s ease infinite; }
+
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .back-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: all 0.2s;
+  }
+
+  .back-btn:hover { color: var(--text); border-color: var(--text); }
+
+  .hint-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  .submit-btn {
+    margin-top: 14px;
+  }
+
+  /* Boss level */
+  .boss-aura {
+    animation: bossGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes bossGlow {
+    0%,100% { box-shadow: 0 0 20px var(--mixed); }
+    50% { box-shadow: 0 0 50px var(--mixed), 0 0 80px #ff00ff40; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div id="app">
+  <!-- HEADER -->
+  <header>
+    <h1>⚡ IF CONDITIONS QUEST ⚡</h1>
+    <p>MASTER ENGLISH CONDITIONALS · LEVEL UP YOUR GRAMMAR</p>
+  </header>
+
+  <!-- SCORE BAR -->
+  <div class="score-bar">
+    <div class="score-item">
+      <span class="score-label">SCORE</span>
+      <span class="score-val" id="totalScore">0</span>
+    </div>
+    <div class="score-item">
+      <span class="score-label">STREAK</span>
+      <span id="streakDisplay" class="streak-badge">🔥 0</span>
+    </div>
+    <div class="xp-bar-wrap score-item" style="align-items:stretch">
+      <span class="score-label" style="text-align:center">XP — LEVEL <span id="levelNum">1</span></span>
+      <div class="xp-bar-bg"><div class="xp-bar-fill" id="xpBar" style="width:0%"></div></div>
+    </div>
+    <div class="score-item">
+      <span class="score-label">CORRECT</span>
+      <span class="score-val" id="correctCount" style="color:var(--first)">0</span>
+    </div>
+  </div>
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="homeScreen">
+    <div class="section-title">📚 Konu Seç — Choose Your Conditional</div>
+    <div class="type-grid">
+      <div class="type-card" data-type="zero" onclick="selectType('zero')">
+        <div class="type-icon">🌍</div>
+        <div class="type-name" style="color:var(--zero)">ZERO</div>
+        <div class="type-formula">If + present<br>→ present</div>
+        <div class="type-stars" id="stars-zero">★★★ 0/3</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:6px">Evrensel gerçekler</div>
+      </div>
+      <div class="type-card" data-type="first" onclick="selectType('first')">
+        <div class="type-icon">🚀</div>
+        <div class="type-name" style="color:var(--first)">FIRST</div>
+        <div class="type-formula">If + present<br>→ will + V</div>
+        <div class="type-stars" id="stars-first">★★★ 0/3</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:6px">Gerçek olasılıklar</div>
+      </div>
+      <div class="type-card" data-type="second" onclick="selectType('second')">
+        <div class="type-icon">🌙</div>
+        <div class="type-name" style="color:var(--second)">SECOND</div>
+        <div class="type-formula">If + past<br>→ would + V</div>
+        <div class="type-stars" id="stars-second">★★★ 0/3</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:6px">Hayali durumlar</div>
+      </div>
+      <div class="type-card" data-type="third" onclick="selectType('third')">
+        <div class="type-icon">⏳</div>
+        <div class="type-name" style="color:var(--third)">THIRD</div>
+        <div class="type-formula">If + past perfect<br>→ would have + V3</div>
+        <div class="type-stars" id="stars-third">★★★ 0/3</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:6px">Geçmiş pişmanlıklar</div>
+      </div>
+      <div class="type-card" data-type="mixed" onclick="selectType('mixed')">
+        <div class="type-icon boss-aura">💥</div>
+        <div class="type-name" style="color:var(--mixed)">MIXED</div>
+        <div class="type-formula">Tümünü karıştır<br>BOSS LEVEL</div>
+        <div class="type-stars" id="stars-mixed">★★★ 0/3</div>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:6px">Usta seviyesi!</div>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="section-title">📖 Hızlı Başvuru — Quick Reference</div>
+      <div style="overflow-x:auto">
+        <table class="theory-table" style="background:var(--panel);border-radius:12px;overflow:hidden;border:1px solid var(--border)">
+          <thead>
+            <tr>
+              <th>TİP</th>
+              <th>KULLANIM</th>
+              <th>YAPI</th>
+              <th>ÖRNEK</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="color:var(--zero);font-family:'Orbitron',monospace;font-weight:700;font-size:0.75rem">ZERO</span></td>
+              <td>Her zaman doğru olan gerçekler</td>
+              <td><code style="font-size:0.75rem;color:var(--zero)">If + S + V(s/es), S + V(s/es)</code></td>
+              <td style="font-size:0.8rem">If water <b>reaches</b> 100°C, it <b>boils</b>.</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--first);font-family:'Orbitron',monospace;font-weight:700;font-size:0.75rem">FIRST</span></td>
+              <td>Gerçekleşebilecek durumlar</td>
+              <td><code style="font-size:0.75rem;color:var(--first)">If + S + V(present), S + will + V</code></td>
+              <td style="font-size:0.8rem">If it <b>rains</b>, I <b>will stay</b> home.</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--second);font-family:'Orbitron',monospace;font-weight:700;font-size:0.75rem">SECOND</span></td>
+              <td>Hayali / gerçek olmayan durumlar</td>
+              <td><code style="font-size:0.75rem;color:var(--second)">If + S + V(past), S + would + V</code></td>
+              <td style="font-size:0.8rem">If I <b>were</b> rich, I <b>would travel</b>.</td>
+            </tr>
+            <tr>
+              <td><span style="color:var(--third);font-family:'Orbitron',monospace;font-weight:700;font-size:0.75rem">THIRD</span></td>
+              <td>Geçmişte yaşanmayan durumlar</td>
+              <td><code style="font-size:0.75rem;color:var(--third)">If + S + had V3, S + would have + V3</code></td>
+              <td style="font-size:0.8rem">If I <b>had studied</b>, I <b>would have passed</b>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEARN SCREEN -->
+  <div class="screen" id="learnScreen">
+    <button class="back-btn" onclick="showHome()">← Ana Menü</button>
+    <div id="learnContent"></div>
+    <div class="action-row">
+      <button class="btn btn-primary" onclick="startQuiz()">⚡ QUIZ BAŞLAT</button>
+      <button class="btn btn-secondary" onclick="showHome()">← Geri</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="quizScreen">
+    <button class="back-btn" onclick="showHome()">← Ana Menü</button>
+    <div class="quiz-header">
+      <div>
+        <div class="quiz-progress">Soru <span id="qNum">1</span> / <span id="qTotal">10</span></div>
+        <div class="progress-dots" id="progressDots"></div>
+      </div>
+      <div id="quizTypeTag" class="quiz-type-tag"></div>
+    </div>
+    <div class="question-card" id="questionCard">
+      <div class="question-mode-badge" id="questionMode"></div>
+      <div class="question-text" id="questionText"></div>
+      <div id="questionInput"></div>
+      <div class="hint-box" id="hintBox" style="display:none"></div>
+      <div class="feedback-box" id="feedbackBox">
+        <div class="feedback-icon" id="feedbackIcon"></div>
+        <div class="feedback-text" id="feedbackText"></div>
+        <div class="correct-answer-reveal" id="correctReveal"></div>
+      </div>
+    </div>
+    <div class="action-row" id="actionRow">
+      <button class="btn btn-secondary" onclick="showHint()" id="hintBtn">💡 İpucu</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="resultsScreen">
+    <div class="results-panel" id="resultsPanel">
+      <div class="results-title" id="resultsTitle">TEBRIKLER!</div>
+      <div class="results-score-big" id="resultsPct">0%</div>
+      <div class="stars-display" id="resultsStars">⭐⭐⭐</div>
+      <div class="medals-row" id="medalRow"></div>
+      <div style="color:var(--muted);font-size:0.85rem;margin-bottom:20px" id="resultsDetail"></div>
+      <div class="action-row" style="justify-content:center">
+        <button class="btn btn-primary" onclick="startQuiz()">🔄 Tekrar Oyna</button>
+        <button class="btn btn-secondary" onclick="showHome()">🏠 Ana Menü</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="confetti-container" id="confetti"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const TYPES = {
+  zero: {
+    name: 'ZERO CONDITIONAL',
+    color: 'var(--zero)',
+    icon: '🌍',
+    description: 'Evrensel gerçekler, bilimsel yasalar ve her zaman doğru olan şeyler için kullanılır. Hem IF cümlesinde hem de sonuç cümlesinde Simple Present kullanılır.',
+    formula: 'If + Subject + V(s/es) → Subject + V(s/es)',
+    usage: 'Her zaman doğru olan: bilimsel gerçekler, doğa olayları, alışkanlıklar',
+    timeline: ['Geçmiş', '→', 'ŞİMDİ', '→', 'Gelecek', '→', 'Her Zaman Geçerli'],
+    timelineColors: ['var(--muted)', 'var(--muted)', 'var(--zero)', 'var(--muted)', 'var(--muted)', 'var(--muted)', 'var(--zero)'],
+    examples: [
+      { en: 'If you heat water to 100°C, it boils.', tr: 'Su 100°C\'ye ısıtırsan, kaynar.' },
+      { en: 'If plants don\'t get water, they die.', tr: 'Bitkiler su almazsa, ölür.' },
+      { en: 'If you mix red and blue, you get purple.', tr: 'Kırmızı ve maviyi karıştırırsan, mor elde edersin.' },
+    ],
+    notes: ['Sonuç her zaman aynıdır → bilimsel yasa gibi', '"When" ile de kullanılabilir: When you heat ice, it melts.', 'Her iki cümlede de Simple Present kullanılır'],
+  },
+  first: {
+    name: 'FIRST CONDITIONAL',
+    color: 'var(--first)',
+    icon: '🚀',
+    description: 'Gelecekte gerçekleşmesi mümkün olan durumları anlatır. IF cümlesinde Simple Present, sonuç cümlesinde "will + V1" kullanılır.',
+    formula: 'If + Subject + V(present) → Subject + will + V1',
+    usage: 'Gerçek olasılıklar, uyarılar, teklifler, söz vermek',
+    timeline: ['Geçmiş', '→', 'ŞİMDİ', '→', 'Gerçekleşebilir!'],
+    timelineColors: ['var(--muted)', 'var(--muted)', 'var(--first)', 'var(--muted)', 'var(--first)'],
+    examples: [
+      { en: 'If it rains tomorrow, I will stay home.', tr: 'Yarın yağmur yağarsa, evde kalacağım.' },
+      { en: 'If you study hard, you will pass the exam.', tr: 'Sıkı çalışırsan, sınavı geçeceksin.' },
+      { en: 'If she calls me, I will answer.', tr: 'Beni ararsa, cevap vereceğim.' },
+    ],
+    notes: ['IF cümlesinde "will" KULLANILMAZ!', '"Unless" = "if not" anlamına gelir', '"Can, may, might, should" da kullanılabilir'],
+  },
+  second: {
+    name: 'SECOND CONDITIONAL',
+    color: 'var(--second)',
+    icon: '🌙',
+    description: 'Şu an gerçek olmayan veya gerçekleşmesi pek mümkün olmayan hayali durumları anlatır. IF cümlesinde Simple Past, sonuç cümlesinde "would + V1" kullanılır.',
+    formula: 'If + Subject + V(past) → Subject + would + V1',
+    usage: 'Hayaller, dilekler, tavsiyelik durumlar, şu an gerçek olmayan şeyler',
+    timeline: ['ŞİMDİ (Hayali)', '→', 'GERÇEK DEĞİL'],
+    timelineColors: ['var(--second)', 'var(--muted)', 'var(--muted)'],
+    examples: [
+      { en: 'If I were rich, I would travel the world.', tr: 'Zengin olsaydım, dünyayı gezerdum. (Ama değilim)' },
+      { en: 'If I had a car, I would drive to work.', tr: 'Arabam olsaydı, işe arabayla giderdim.' },
+      { en: 'If she knew the answer, she would tell us.', tr: 'Cevabı bilseydi, söylerdi. (Ama bilmiyor)' },
+    ],
+    notes: ['"Were" tüm öznelerle kullanılır: If I WERE, If he WERE...', '"If I were you..." = tavsiye vermek için', 'Şu an gerçek olmayan bir durum → would ile hayal'],
+  },
+  third: {
+    name: 'THIRD CONDITIONAL',
+    color: 'var(--third)',
+    icon: '⏳',
+    description: 'GEÇMİŞTE gerçekleşmeyen olayları ve pişmanlıkları anlatır. IF cümlesinde Past Perfect, sonuç cümlesinde "would have + V3" kullanılır.',
+    formula: 'If + had + V3 → would have + V3',
+    usage: 'Geçmiş pişmanlıklar, yaşanmayan alternatif geçmişler',
+    timeline: ['GEÇMIŞ (Olmadı!)', '→', 'ŞİMDİ (Hayıf)'],
+    timelineColors: ['var(--third)', 'var(--muted)', 'var(--muted)'],
+    examples: [
+      { en: 'If I had studied, I would have passed the exam.', tr: 'Çalışsaydım, sınavı geçerdim. (Çalışmadım, geçemedim)' },
+      { en: 'If she had taken the bus, she would have arrived on time.', tr: 'Otobüse binmiş olsaydı, zamanında gelirdi.' },
+      { en: 'If they hadn\'t forgotten the map, they wouldn\'t have gotten lost.', tr: 'Haritayı unutmasalardı, kaybolmazlardı.' },
+    ],
+    notes: ['GEÇMIŞTE olan ve değiştirilemeyen bir durum', '"wouldn\'t have" = olumsuz sonuç', '"could/might have" da kullanılabilir'],
+  },
+};
+
+// Questions bank
+const QUESTIONS = {
+  zero: [
+    { type:'mcq', q:'If you ___ ice, it melts.', choices:['heated','heat','will heat','had heated'], answer:1, hint:'Zero conditional → Simple Present kullan', explain:'Zero conditional\'da her iki cümlede Simple Present kullanılır.' },
+    { type:'arrange', q:'Kelimeleri doğru sıraya diz:', words:['If','mix','you','red','and','yellow,','you','orange.','get'], answer:'If you mix red and yellow, you get orange.', hint:'If ile başla, Simple Present kullan', explain:'Zero conditional: If + present → present. Evrensel gerçek!' },
+    { type:'mcq', q:'If plants ___ enough sunlight, they don\'t grow.', choices:['don\'t get','didn\'t get','won\'t get','wouldn\'t get'], answer:0, hint:'Zero conditional → Simple Present negative', explain:'"Don\'t get" → Simple Present negative. Zero conditional\'da her zaman Simple Present.' },
+    { type:'mcq', q:'If you touch fire, it ___', choices:['burns you','burned you','would burn you','will burn you'], answer:0, hint:'Bu bir bilimsel gerçek → Zero conditional', explain:'Fire always burns → evrensel gerçek = Zero conditional, Simple Present.' },
+    { type:'translate', q:'Türkçeden İngilizceye çevir:\n"Şeker suya eklenirse, çözülür."', answer:'If you add sugar to water, it dissolves.', alternates:['If sugar is added to water, it dissolves.','Sugar dissolves if you add it to water.'], hint:'Zero conditional: add → dissolve', explain:'Add (ekle) → dissolves (çözülür). Her zaman geçerli bir gerçek!' },
+    { type:'mcq', q:'Hangisi ZERO conditional değildir?', choices:['If you freeze water, it becomes ice.','If I had money, I would buy a car.','If dogs eat chocolate, they get sick.','If you heat metal, it expands.'], answer:1, hint:'Zero = her zaman geçerli gerçekler', explain:'"If I had money, I would buy a car" → Second conditional! Diğerleri evrensel gerçeklerdir.' },
+    { type:'arrange', q:'Bu zero conditional cümlesini oluştur:', words:['If','you','cut','onions,','your','eyes','water.'], answer:'If you cut onions, your eyes water.', hint:'Her zaman doğru olan bir şey', explain:'Soğan kesildiğinde gözler her zaman sulanır → Zero conditional.' },
+  ],
+  first: [
+    { type:'mcq', q:'If it ___ tomorrow, we will cancel the trip.', choices:['rained','rains','will rain','had rained'], answer:1, hint:'First conditional → If cümlesinde Simple Present', explain:'First conditional\'da IF cümlesinde "will" KULLANILMAZ. Simple Present kullanılır.' },
+    { type:'arrange', q:'Kelimeleri doğru sıraya diz:', words:['If','study','you','hard,','you','will','the','pass','exam.'], answer:'If you study hard, you will pass the exam.', hint:'If + present → will + V1', explain:'First conditional: If + Simple Present → will + V1' },
+    { type:'mcq', q:'If she ___ late, the boss ___ angry.', choices:['arrive / will get','arrives / will get','arrives / gets','arrived / would get'], answer:1, hint:'First conditional: real future possibility', explain:'"arrives" (Simple Present) + "will get" (will + V1) = First conditional.' },
+    { type:'mcq', q:'Bu cümle hangi conditional?  "Unless you hurry, we will miss the train."', choices:['Zero','First','Second','Third'], answer:1, hint:'"Unless" = "if not" anlamına gelir', explain:'"Unless you hurry" = "If you don\'t hurry" → First conditional.' },
+    { type:'translate', q:'Türkçeden İngilizceye çevir:\n"Erken kalkarsam, kahvaltı yapacağım."', answer:'If I wake up early, I will have breakfast.', alternates:['I will have breakfast if I wake up early.'], hint:'wake up → will have', explain:'First conditional: If + present → will + V. Gerçekleşebilir gelecek durumu!' },
+    { type:'mcq', q:'If you ___ (not study), you ___ (fail) the test.', choices:['don\'t study / will fail','won\'t study / fail','didn\'t study / would fail','hadn\'t studied / would have failed'], answer:0, hint:'Negative first conditional', explain:'"don\'t study" (negative present) + "will fail" (will + V1) = First conditional.' },
+    { type:'arrange', q:'First conditional cümle kur:', words:['I','call','will','if','you','free.','are','you'], answer:'I will call you if you are free.', hint:'"will" = sonuç cümlesinde, "are" = if cümlesinde', explain:'Result + if + condition de olabilir! "I will call you if you are free."' },
+  ],
+  second: [
+    { type:'mcq', q:'If I ___ a superpower, I would fly everywhere.', choices:['had','have','will have','would have'], answer:0, hint:'Second conditional → If cümlesinde Simple Past', explain:'Second conditional: If + Simple Past. "Had" burada Simple Past of "have".' },
+    { type:'arrange', q:'Kelimeleri doğru sıraya diz:', words:['If','were','I','you,','I','apply','would','for','that','job.'], answer:'If I were you, I would apply for that job.', hint:'Tavsiye vermek için → If I were you...', explain:'"If I were you" → Second conditional ile tavsiye. "Were" tüm öznelerle kullanılır!' },
+    { type:'mcq', q:'If she ___ the answer, she ___ tell us.', choices:['knows / would','knew / would','knew / will','know / would'], answer:1, hint:'Second conditional: past → would', explain:'"knew" (Simple Past) + "would tell" (would + V1) = Second conditional. Ama bilmiyor!' },
+    { type:'mcq', q:'Hangi cümle YANLIŞ?', choices:['If I were rich, I would help everyone.','If he were here, we would be happy.','If I would be a bird, I would fly.','If it were warmer, I would swim.'], answer:2, hint:'IF cümlesinde "would" KULLANILMAZ!', explain:'"If I would be" YANLIŞ! Second conditional\'da if cümlesinde "would" olmaz → "If I were a bird..."' },
+    { type:'translate', q:'Türkçeden İngilizceye çevir:\n"Daha fazla zamanım olsaydı, gitar çalmayı öğrenirdim."', answer:'If I had more time, I would learn to play the guitar.', alternates:['I would learn to play guitar if I had more time.'], hint:'had more time → would learn', explain:'Şu an zamanım yok → hayali durum = Second conditional!' },
+    { type:'mcq', q:'If I ___ (be) a cat, I ___ (sleep) all day.', choices:['were / would sleep','was / will sleep','am / would sleep','be / would sleep'], answer:0, hint:'"Were" tüm öznelerle kullanılır', explain:'"If I were a cat" → "were" kullanılır! "would sleep" = sonuç.' },
+    { type:'arrange', q:'Second conditional kur:', words:['What','you','do','would','if','won','you','the','lottery?'], answer:'What would you do if you won the lottery?', hint:'Soru formu: What would you do...', explain:'Second conditional soru: "What would you do if + Simple Past?"' },
+  ],
+  third: [
+    { type:'mcq', q:'If she had studied harder, she ___ the exam.', choices:['would pass','will have passed','would have passed','had passed'], answer:2, hint:'Third conditional → would have + V3', explain:'"Would have passed" = geçmişte olmayan sonuç. Çalışmadı, geçemedi!' },
+    { type:'arrange', q:'Kelimeleri doğru sıraya diz:', words:['If','had','I','earlier,','left','I','have','would','the','missed','not','bus.'], answer:'If I had left earlier, I would not have missed the bus.', hint:'had left → would not have missed', explain:'Third conditional: If + had + V3 → would have + V3. Geçmişte yaşanmadı!' },
+    { type:'mcq', q:'If they ___ (not forget) the tickets, they ___ (see) the concert.', choices:['hadn\'t forgotten / would have seen','didn\'t forget / would see','hadn\'t forgot / would have seen','haven\'t forgotten / will have seen'], answer:0, hint:'"hadn\'t forgotten" = Past Perfect negative', explain:'"hadn\'t forgotten" (Past Perfect negative) + "would have seen" = Third conditional!' },
+    { type:'mcq', q:'Bu cümle hangi conditional?\n"If the weather had been better, we would have had a picnic."', choices:['Zero','First','Second','Third'], answer:3, hint:'"had been" → Past Perfect', explain:'"had been" = Past Perfect → Third conditional. Hava güzel değildi, piknik yapamadık!' },
+    { type:'translate', q:'Türkçeden İngilizceye çevir:\n"Daha erken uyusaydım, yorgun olmazdım."', answer:'If I had slept earlier, I would not have been tired.', alternates:['If I had gone to bed earlier, I wouldn\'t have been tired.'], hint:'had slept → would not have been', explain:'Erken uyumadım → yorgunum. Geçmiş pişmanlık = Third conditional!' },
+    { type:'mcq', q:'If he ___ (take) the medicine, he ___ (recover) faster.', choices:['had taken / would have recovered','took / would recover','has taken / will have recovered','takes / will recover'], answer:0, hint:'Third conditional: geçmişte olmadı', explain:'"had taken" (Past Perfect) + "would have recovered" (would have + V3) = Third conditional.' },
+    { type:'arrange', q:'Third conditional pişmanlık cümlesi kur:', words:['I','have','would','passed','had','if','I','more.','studied'], answer:'I would have passed if I had studied more.', hint:'Sıraya dikkat: result → if → condition', explain:'Result clause önce de gelebilir: "I would have passed if I had studied more."' },
+  ],
+};
+
+// Mixed = all questions with proper srcType
+QUESTIONS.mixed = [
+  ...QUESTIONS.zero.map(q => ({ ...q, srcType: 'zero' })),
+  ...QUESTIONS.first.map(q => ({ ...q, srcType: 'first' })),
+  ...QUESTIONS.second.map(q => ({ ...q, srcType: 'second' })),
+  ...QUESTIONS.third.map(q => ({ ...q, srcType: 'third' })),
+];
+
+// ============================================================
+// STATE
+// ============================================================
+
+let state = {
+  currentType: null,
+  questions: [],
+  qIndex: 0,
+  answers: [],
+  totalScore: parseInt(localStorage.getItem('ifq_score') || '0'),
+  xp: parseInt(localStorage.getItem('ifq_xp') || '0'),
+  streak: 0,
+  correct: parseInt(localStorage.getItem('ifq_correct') || '0'),
+  stars: JSON.parse(localStorage.getItem('ifq_stars') || '{"zero":0,"first":0,"second":0,"third":0,"mixed":0}'),
+  arranged: [],
+  answerSubmitted: false,
+  hintUsed: false,
+};
+
+function saveState() {
+  localStorage.setItem('ifq_score', state.totalScore);
+  localStorage.setItem('ifq_xp', state.xp);
+  localStorage.setItem('ifq_correct', state.correct);
+  localStorage.setItem('ifq_stars', JSON.stringify(state.stars));
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showHome() { showScreen('homeScreen'); updateScoreBar(); updateStars(); }
+
+function selectType(type) {
+  state.currentType = type;
+  showLearn(type);
+}
+
+function showLearn(type) {
+  const t = TYPES[type];
+  const color = t.color;
+  
+  const learnHTML = `
+    <div class="learn-panel" style="border-color:${color}">
+      <span class="learn-type-badge" style="background:${color}20;color:${color};border:1px solid ${color}">${t.icon} ${t.name}</span>
+      <p class="learn-desc">${t.description}</p>
+      
+      <div class="learn-formula-box" style="color:${color};border-color:${color}">
+        📐 FORMÜL: <b>${t.formula}</b>
+      </div>
+
+      <div class="timeline-visual">
+        ${t.timeline.map((item, i) => `<span class="tl-item" style="background:${t.timelineColors[i]}20;color:${t.timelineColors[i]}">${item}</span>`).join('')}
+      </div>
+
+      <div style="margin:14px 0">
+        <div class="section-title" style="color:${color}">💡 KULLANIM</div>
+        <p style="font-size:0.9rem;color:var(--text)">${t.usage}</p>
+      </div>
+
+      <div class="section-title" style="color:${color}">📝 ÖRNEKLER</div>
+      <div class="example-cards">
+        ${t.examples.map(ex => `
+          <div class="example-card" style="color:${color}">
+            <div class="example-en">${ex.en}</div>
+            <div class="example-tr">🇹🇷 ${ex.tr}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="margin-top:16px">
+        <div class="section-title" style="color:${color}">⚠️ ÖNEMLİ NOTLAR</div>
+        ${t.notes.map(n => `<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px"><span style="color:${color}">▶</span><span style="font-size:0.85rem">${n}</span></div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('learnContent').innerHTML = learnHTML;
+  showScreen('learnScreen');
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+
+function startQuiz() {
+  const type = state.currentType;
+  let pool = [...QUESTIONS[type]];
+  // Shuffle
+  pool.sort(() => Math.random() - 0.5);
+  state.questions = pool.slice(0, 7);
+  state.qIndex = 0;
+  state.answers = [];
+  state.streak = 0;
+  updateScoreBar();
+  showScreen('quizScreen');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.questions[state.qIndex];
+  const type = state.currentType;
+  const t = TYPES[type === 'mixed' ? (q.srcType || 'zero') : type];
+  const total = state.questions.length;
+  state.answerSubmitted = false;
+  state.hintUsed = false;
+  state.arranged = [];
+
+  document.getElementById('qNum').textContent = state.qIndex + 1;
+  document.getElementById('qTotal').textContent = total;
+  
+  const tag = document.getElementById('quizTypeTag');
+  tag.textContent = type === 'mixed' ? `🎲 MIXED MODE` : `${t.icon} ${t.name}`;
+  tag.style.background = t.color + '20';
+  tag.style.color = t.color;
+  tag.style.border = `1px solid ${t.color}`;
+
+  // Progress dots
+  const dotsEl = document.getElementById('progressDots');
+  dotsEl.innerHTML = state.questions.map((_, i) => {
+    let cls = 'dot';
+    if (i < state.qIndex) cls += state.answers[i] ? ' done-correct' : ' done-wrong';
+    else if (i === state.qIndex) cls += ' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+
+  // Mode badge
+  const modes = { mcq: '🎯 DOĞRU CEVABI SEÇ', arrange: '🔀 KELİMELERİ SIRALA', translate: '🌐 İNGİLİZCEYE ÇEVİR' };
+  document.getElementById('questionMode').textContent = modes[q.type];
+
+  // Question text
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('questionText').style.whiteSpace = 'pre-line';
+
+  // Input area
+  const inputEl = document.getElementById('questionInput');
+  document.getElementById('hintBox').style.display = 'none';
+  const feedbackBox = document.getElementById('feedbackBox');
+  feedbackBox.classList.remove('show', 'correct-fb', 'wrong-fb');
+
+  if (q.type === 'mcq') {
+    inputEl.innerHTML = `
+      <div class="options-grid">
+        ${q.choices.map((c, i) => `<button class="option-btn" onclick="selectMCQ(${i})">${String.fromCharCode(65+i)}. ${c}</button>`).join('')}
+      </div>
+    `;
+  } else if (q.type === 'arrange') {
+    const shuffled = [...q.words].sort(() => Math.random() - 0.5);
+    inputEl.innerHTML = `
+      <div style="margin-bottom:8px;font-size:0.8rem;color:var(--muted)">Yukarıya yerleştirilmiş cümlen:</div>
+      <div class="arrange-area" id="arrangeZone"></div>
+      <div style="margin-top:10px;margin-bottom:6px;font-size:0.8rem;color:var(--muted)">Kelime havuzu:</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;" id="wordPool">
+        ${shuffled.map((w,i)=>`<div class="word-chip" id="chip-${i}" onclick="placeWord('${w}',${i})">${w}</div>`).join('')}
+      </div>
+      <button class="btn btn-secondary submit-btn" style="margin-top:10px" onclick="clearArrange()">🗑️ Temizle</button>
+    `;
+    state.arranged = [];
+  } else if (q.type === 'translate') {
+    inputEl.innerHTML = `
+      <textarea class="translation-input" id="translationInput" placeholder="İngilizce cümlenizi buraya yazın..."></textarea>
+    `;
+  }
+
+  // Action row
+  const actionRow = document.getElementById('actionRow');
+  actionRow.innerHTML = `
+    <button class="btn btn-secondary" onclick="showHint()" id="hintBtn">💡 İpucu</button>
+    ${q.type !== 'mcq' ? `<button class="btn btn-primary" onclick="submitAnswer()">✔ Kontrol Et</button>` : ''}
+  `;
+}
+
+function placeWord(word, chipId) {
+  state.arranged.push(word);
+  document.getElementById(`chip-${chipId}`).classList.add('placed');
+  const zone = document.getElementById('arrangeZone');
+  zone.innerHTML = state.arranged.map((w, i) => `<span class="word-chip" style="opacity:1">${w}</span>`).join(' ');
+}
+
+function clearArrange() {
+  state.arranged = [];
+  document.querySelectorAll('.word-chip').forEach(c => c.classList.remove('placed'));
+  document.getElementById('arrangeZone').innerHTML = '';
+}
+
+function selectMCQ(idx) {
+  if (state.answerSubmitted) return;
+  state.answerSubmitted = true;
+  const q = state.questions[state.qIndex];
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(b => b.disabled = true);
+
+  const isCorrect = idx === q.answer;
+  buttons[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) buttons[q.answer].classList.add('correct');
+
+  handleResult(isCorrect, q.choices[q.answer]);
+}
+
+function submitAnswer() {
+  if (state.answerSubmitted) return;
+  state.answerSubmitted = true;
+  const q = state.questions[state.qIndex];
+
+  let userAnswer = '';
+  let isCorrect = false;
+
+  if (q.type === 'arrange') {
+    userAnswer = state.arranged.join(' ').trim();
+    isCorrect = normalize(userAnswer) === normalize(q.answer);
+  } else if (q.type === 'translate') {
+    userAnswer = (document.getElementById('translationInput')?.value || '').trim();
+    const alts = [q.answer, ...(q.alternates || [])];
+    isCorrect = alts.some(a => normalize(userAnswer) === normalize(a));
+  }
+
+  if (!isCorrect) {
+    document.getElementById('questionCard').classList.add('shake');
+    setTimeout(() => document.getElementById('questionCard').classList.remove('shake'), 400);
+  }
+
+  handleResult(isCorrect, q.answer);
+}
+
+function normalize(str) {
+  return str.toLowerCase().replace(/['']/g,"'").replace(/\s+/g,' ').trim();
+}
+
+function handleResult(isCorrect, correctAnswer) {
+  state.answers.push(isCorrect);
+
+  const feedbackBox = document.getElementById('feedbackBox');
+  const type = state.currentType;
+  const t = TYPES[type === 'mixed' ? (state.questions[state.qIndex].srcType || 'zero') : type];
+
+  if (isCorrect) {
+    state.streak++;
+    const pts = state.hintUsed ? 5 : 10;
+    state.totalScore += pts;
+    state.xp += pts;
+    state.correct++;
+    if (state.streak > 0 && state.streak % 3 === 0) {
+      state.totalScore += 15;
+      state.xp += 15;
+      launchConfetti();
+    }
+    feedbackBox.className = 'feedback-box show correct-fb';
+    document.getElementById('feedbackIcon').textContent = ['✅','🎉','⚡','🔥','💪'][Math.floor(Math.random()*5)];
+    document.getElementById('feedbackText').innerHTML = `<b style="color:var(--first)">Harika!</b> ${state.questions[state.qIndex].explain || 'Doğru cevap!'}`;
+    document.getElementById('correctReveal').textContent = '';
+  } else {
+    state.streak = 0;
+    feedbackBox.className = 'feedback-box show wrong-fb';
+    document.getElementById('feedbackIcon').textContent = '❌';
+    document.getElementById('feedbackText').innerHTML = `<b style="color:var(--third)">Yanlış!</b> ${state.questions[state.qIndex].explain || ''}`;
+    document.getElementById('correctReveal').innerHTML = `✅ Doğru cevap: <b>${correctAnswer}</b>`;
+  }
+
+  updateScoreBar();
+  saveState();
+
+  // Next button
+  const actionRow = document.getElementById('actionRow');
+  const isLast = state.qIndex >= state.questions.length - 1;
+  actionRow.innerHTML = `
+    <button class="btn ${isLast ? 'btn-success' : 'btn-primary'}" onclick="nextQuestion()">
+      ${isLast ? '🏆 SONUÇLARI GÖR' : '→ SONRAKI SORU'}
+    </button>
+  `;
+}
+
+function nextQuestion() {
+  state.qIndex++;
+  if (state.qIndex >= state.questions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showHint() {
+  const q = state.questions[state.qIndex];
+  const hintBox = document.getElementById('hintBox');
+  hintBox.style.display = 'block';
+  hintBox.textContent = '💡 ' + q.hint;
+  state.hintUsed = true;
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+
+function showResults() {
+  const total = state.questions.length;
+  const correct = state.answers.filter(Boolean).length;
+  const pct = Math.round((correct / total) * 100);
+  
+  let stars = 0;
+  if (pct >= 90) stars = 3;
+  else if (pct >= 60) stars = 2;
+  else if (pct >= 30) stars = 1;
+
+  const type = state.currentType;
+  if (stars > (state.stars[type] || 0)) {
+    state.stars[type] = stars;
+    saveState();
+    updateStars();
+  }
+
+  const titles = {
+    100: '🏆 MÜKEMMEL! USTALADIN!',
+    90: '⚡ OLAĞANÜSTü PERFORMANS!',
+    70: '🚀 ÇOK İYİ!',
+    50: '💪 GÜZEL, DAHA İYİSİNİ YAPABİLİRSİN!',
+    0: '📚 TEKRAR ÇALIŞMAN GEREKİYOR!',
+  };
+  
+  let title = titles[0];
+  if (pct === 100) title = titles[100];
+  else if (pct >= 90) title = titles[90];
+  else if (pct >= 70) title = titles[70];
+  else if (pct >= 50) title = titles[50];
+
+  document.getElementById('resultsTitle').textContent = title;
+  document.getElementById('resultsPct').textContent = `${pct}%`;
+  document.getElementById('resultsStars').textContent = '⭐'.repeat(stars) + '☆'.repeat(3-stars);
+  document.getElementById('resultsDetail').textContent = `${correct} / ${total} doğru · +${correct * 10} XP kazandın`;
+
+  const medals = [];
+  if (pct === 100) medals.push('🏆 Mükemmel');
+  if (state.streak >= 5) medals.push('🔥 5 Ardışık');
+  if (!state.answers.includes(false)) medals.push('✨ Hatasız');
+  medals.push(`📊 ${pct}% Başarı`);
+
+  document.getElementById('medalRow').innerHTML = medals.map(m => `<div class="medal">${m}</div>`).join('');
+
+  if (pct >= 70) launchConfetti();
+
+  showScreen('resultsScreen');
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+
+function updateScoreBar() {
+  document.getElementById('totalScore').textContent = state.totalScore;
+  document.getElementById('correctCount').textContent = state.correct;
+  
+  const streakEl = document.getElementById('streakDisplay');
+  streakEl.textContent = `🔥 ${state.streak}`;
+  if (state.streak >= 3) streakEl.style.background = 'linear-gradient(135deg, #ff3300, #ff6600)';
+  else streakEl.style.background = 'linear-gradient(135deg, #ff6600, #ff9500)';
+
+  const level = Math.floor(state.xp / 100) + 1;
+  document.getElementById('levelNum').textContent = level;
+  const xpInLevel = state.xp % 100;
+  document.getElementById('xpBar').style.width = xpInLevel + '%';
+}
+
+function updateStars() {
+  Object.keys(state.stars).forEach(type => {
+    const el = document.getElementById(`stars-${type}`);
+    if (!el) return;
+    const s = state.stars[type] || 0;
+    el.innerHTML = `<span class="earned">${'★'.repeat(s)}</span>${'★'.repeat(3-s)} ${s}/3`;
+  });
+}
+
+function launchConfetti() {
+  const container = document.getElementById('confetti');
+  const colors = ['#00e5ff','#39ff14','#ff9500','#ff2d78','#bf5fff','#ffd700'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.top = '-20px';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.width = (Math.random() * 10 + 6) + 'px';
+    piece.style.height = (Math.random() * 10 + 6) + 'px';
+    piece.style.animationDelay = Math.random() * 0.8 + 's';
+    piece.style.animationDuration = (Math.random() * 1 + 1) + 's';
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.innerHTML = '', 2500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+updateScoreBar();
+updateStars();
+</script>
+</body>
+</html>

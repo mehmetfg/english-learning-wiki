@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phrasal Verbs Hub</title>
+<style>
+:root {
+  --bg:#f8fafc; --surface:#fff; --border:#e2e8f0;
+  --text:#1e293b; --muted:#64748b; --accent:#3b82f6;
+  --A1:#22c55e; --A2:#16a34a; --B1:#3b82f6; --B2:#a855f7; --C1:#f97316; --C2:#ef4444;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+header{background:#1e293b;color:white;padding:16px 24px;}
+header h1{font-size:1.3rem;font-weight:700;}
+header p{font-size:0.8rem;opacity:0.7;margin-top:4px;}
+.stats-bar{display:flex;gap:12px;margin-top:10px;flex-wrap:wrap;}
+.stat{background:rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px;font-size:0.8rem;}
+.controls{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;
+  display:flex;gap:10px;flex-wrap:wrap;align-items:center;position:sticky;top:0;z-index:10;}
+#search{border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:0.88rem;width:200px;outline:none;}
+#search:focus{border-color:var(--accent);}
+.pills{display:flex;gap:4px;flex-wrap:wrap;}
+.pill{border:1px solid var(--border);background:var(--bg);border-radius:20px;
+  padding:4px 11px;font-size:0.78rem;cursor:pointer;transition:all 0.15s;font-weight:500;}
+.pill.active{background:#1e293b;color:white;border-color:#1e293b;}
+.pill.lv.A1.active{background:var(--A1);border-color:var(--A1);}
+.pill.lv.A2.active{background:var(--A2);border-color:var(--A2);}
+.pill.lv.B1.active{background:var(--B1);border-color:var(--B1);}
+.pill.lv.B2.active{background:var(--B2);border-color:var(--B2);}
+.pill.lv.C1.active{background:var(--C1);border-color:var(--C1);}
+#count{font-size:0.8rem;color:var(--muted);margin-left:auto;}
+.tabs-nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;}
+.tnav{padding:11px 18px;font-size:0.88rem;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;color:var(--muted);}
+.tnav.active{color:var(--accent);border-bottom-color:var(--accent);}
+.main{padding:20px 24px;}
+/* PV TABLE */
+.pv-table{width:100%;border-collapse:collapse;background:var(--surface);border-radius:12px;overflow:hidden;border:1px solid var(--border);}
+.pv-table th{background:#f1f5f9;padding:10px 14px;text-align:left;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);}
+.pv-table td{padding:10px 14px;border-top:1px solid var(--border);font-size:0.87rem;vertical-align:top;}
+.pv-table tr:hover{background:#f8fafc;}
+.pv-table tr.learned-row{opacity:0.5;}
+.pv{font-weight:700;color:var(--text);}
+.base-tag{display:inline-block;background:#f1f5f9;border-radius:4px;padding:1px 6px;font-size:0.72rem;color:var(--muted);margin-left:4px;}
+.sep-tag{display:inline-block;background:#dbeafe;border-radius:4px;padding:1px 6px;font-size:0.68rem;color:#1d4ed8;margin-left:4px;}
+.badge{font-size:0.68rem;font-weight:700;padding:2px 6px;border-radius:8px;color:white;white-space:nowrap;}
+.ex-text{font-style:italic;color:var(--muted);font-size:0.82rem;margin-top:3px;}
+.row-actions{display:flex;gap:6px;white-space:nowrap;}
+.btn-sm{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;
+  font-size:0.72rem;cursor:pointer;transition:all 0.15s;font-weight:600;}
+.btn-sm:hover{background:var(--A1);color:white;border-color:var(--A1);}
+.btn-sm.done{background:var(--A1);color:white;border-color:var(--A1);}
+.btn-speak-sm{background:none;border:1px solid var(--border);border-radius:6px;
+  padding:3px 6px;font-size:0.78rem;cursor:pointer;}
+.group-header{background:#f1f5f9;padding:8px 14px;font-size:0.82rem;font-weight:700;
+  color:var(--text);border-top:2px solid var(--border);}
+/* CHUNKS */
+.chunks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.chunk-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.chunk-pv{font-weight:700;font-size:1rem;color:var(--accent);margin-bottom:6px;}
+.chunk-list{list-style:none;}
+.chunk-list li{font-size:0.85rem;padding:4px 0;border-bottom:1px solid #f1f5f9;color:var(--text);}
+.chunk-list li:last-child{border-bottom:none;}
+.chunk-list li span{color:var(--muted);font-size:0.78rem;display:block;}
+/* GUIDE */
+.guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.guide-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.guide-card h3{font-size:0.95rem;font-weight:700;margin-bottom:8px;color:var(--text);}
+.guide-card p,.guide-card li{font-size:0.83rem;color:var(--muted);line-height:1.6;}
+.guide-card ul{padding-left:16px;}
+.tip-box{background:#eff6ff;border-left:4px solid var(--B1);padding:10px 14px;
+  border-radius:0 8px 8px 0;font-size:0.83rem;color:#1d4ed8;margin-bottom:12px;}
+.empty{text-align:center;padding:40px;color:var(--muted);}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔗 Phrasal Verbs Hub</h1>
+  <p>200+ phrasal verbs · Chunk sentences · CEFR levels · Progress tracking</p>
+  <div class="stats-bar" id="stats-bar"></div>
+</header>
+<div class="controls">
+  <input type="text" id="search" placeholder="🔍  Search phrasal verbs…">
+  <div class="pills" id="base-pills"></div>
+  <div class="pills" id="level-pills"></div>
+  <div class="pills" id="filter-pills">
+    <button class="pill active" data-f="all">All</button>
+    <button class="pill" data-f="unlearned">Not Learned</button>
+    <button class="pill" data-f="learned">Learned ✓</button>
+  </div>
+  <span id="count"></span>
+</div>
+<div class="tabs-nav">
+  <div class="tnav active" data-tab="list">📋 All Phrasal Verbs</div>
+  <div class="tnav" data-tab="chunks">💬 Chunk Sentences</div>
+  <div class="tnav" data-tab="guide">📖 Usage Guide</div>
+</div>
+<div class="main" id="main"></div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+// {id, pv, base, d, ex, l, sep (separable?)}
+const PVS = [
+// ── BREAK ──
+{id:1,pv:"break down",base:"break",d:"(machine) stop working; (person) lose emotional control; (talks) fail",ex:"My car broke down on the highway.",l:"B1",sep:false},
+{id:2,pv:"break up",base:"break",d:"end a relationship; (crowd) disperse; break into pieces",ex:"They broke up after three years.",l:"B1",sep:true},
+{id:3,pv:"break in",base:"break",d:"enter by force; interrupt a conversation; train something new",ex:"Someone broke in while we were on holiday.",l:"B1",sep:false},
+{id:4,pv:"break out",base:"break",d:"start suddenly (fire, war, disease); escape from prison",ex:"A fire broke out in the kitchen.",l:"B1",sep:false},
+{id:5,pv:"break through",base:"break",d:"achieve success despite obstacles; pass through a barrier",ex:"Scientists finally broke through with a new vaccine.",l:"B2",sep:false},
+{id:6,pv:"break off",base:"break",d:"end something suddenly; detach a piece",ex:"She broke off the engagement.",l:"B2",sep:true},
+{id:7,pv:"break into",base:"break",d:"enter illegally; interrupt; suddenly start doing something",ex:"He broke into a run when he saw the bus.",l:"B1",sep:false},
+// ── BRING ──
+{id:8,pv:"bring about",base:"bring",d:"cause something to happen",ex:"The new policy brought about many changes.",l:"B2",sep:true},
+{id:9,pv:"bring up",base:"bring",d:"raise a child; mention a topic in conversation",ex:"She brought up an interesting point.",l:"B1",sep:true},
+{id:10,pv:"bring back",base:"bring",d:"return something; cause a memory to return",ex:"That song brings back memories.",l:"A2",sep:true},
+{id:11,pv:"bring down",base:"bring",d:"reduce; make fall; cause to collapse",ex:"The government was brought down by the scandal.",l:"B2",sep:true},
+{id:12,pv:"bring in",base:"bring",d:"earn money; introduce a law; involve someone",ex:"The new law was brought in last year.",l:"B2",sep:true},
+{id:13,pv:"bring out",base:"bring",d:"publish or release; emphasize a quality",ex:"The sun brings out her freckles.",l:"B1",sep:true},
+{id:14,pv:"bring forward",base:"bring",d:"move to an earlier time; propose an idea",ex:"Can we bring the meeting forward to Monday?",l:"B2",sep:true},
+// ── CALL ──
+{id:15,pv:"call off",base:"call",d:"cancel something planned",ex:"They called off the wedding.",l:"B1",sep:true},
+{id:16,pv:"call up",base:"call",d:"telephone; summon for military service",ex:"I'll call you up later tonight.",l:"A2",sep:true},
+{id:17,pv:"call back",base:"call",d:"return a phone call; call again",ex:"He said he'd call back in an hour.",l:"A2",sep:true},
+{id:18,pv:"call for",base:"call",d:"require or demand; collect someone",ex:"This situation calls for immediate action.",l:"B2",sep:false},
+{id:19,pv:"call on",base:"call",d:"visit briefly; ask someone to do something formally",ex:"The teacher called on her to answer.",l:"B2",sep:false},
+{id:20,pv:"call out",base:"call",d:"shout; criticize publicly; summon emergency services",ex:"She called out his name in the crowd.",l:"B1",sep:true},
+// ── CARRY ──
+{id:21,pv:"carry on",base:"carry",d:"continue; behave badly (informal)",ex:"Please carry on with your work.",l:"A2",sep:false},
+{id:22,pv:"carry out",base:"carry",d:"perform or complete a task",ex:"The surgeon carried out the operation.",l:"B1",sep:true},
+{id:23,pv:"carry through",base:"carry",d:"complete something successfully despite difficulties",ex:"She carried her plan through despite the obstacles.",l:"B2",sep:true},
+{id:24,pv:"carry off",base:"carry",d:"succeed in doing something difficult; win a prize",ex:"He carried off the award for best actor.",l:"C1",sep:true},
+// ── COME ──
+{id:25,pv:"come across",base:"come",d:"find or meet by chance; seem to others",ex:"I came across this photo while tidying up.",l:"B1",sep:false},
+{id:26,pv:"come up",base:"come",d:"arise; approach; be mentioned",ex:"An unexpected problem came up.",l:"A2",sep:false},
+{id:27,pv:"come back",base:"come",d:"return; return to memory",ex:"When is she coming back?",l:"A1",sep:false},
+{id:28,pv:"come out",base:"come",d:"be published; become known; declare one's sexuality",ex:"The results came out last Friday.",l:"A2",sep:false},
+{id:29,pv:"come over",base:"come",d:"visit informally; influence a feeling",ex:"Why don't you come over for dinner?",l:"A2",sep:false},
+{id:30,pv:"come through",base:"come",d:"survive a difficulty; arrive (news/result)",ex:"Your test results have just come through.",l:"B2",sep:false},
+{id:31,pv:"come up with",base:"come",d:"think of an idea or solution",ex:"She came up with a brilliant solution.",l:"B1",sep:false},
+{id:32,pv:"come around",base:"come",d:"change opinion; regain consciousness; visit",ex:"He'll come around to our way of thinking.",l:"B2",sep:false},
+{id:33,pv:"come down to",base:"come",d:"be reduced to a basic issue",ex:"It all comes down to money.",l:"B2",sep:false},
+// ── CUT ──
+{id:34,pv:"cut off",base:"cut",d:"stop supply; interrupt; isolate",ex:"The village was cut off by the flood.",l:"B1",sep:true},
+{id:35,pv:"cut down",base:"cut",d:"reduce; fell a tree",ex:"You should cut down on sugar.",l:"B1",sep:true},
+{id:36,pv:"cut out",base:"cut",d:"remove by cutting; stop doing something; (engine) stop",ex:"Cut out the junk food.",l:"B1",sep:true},
+{id:37,pv:"cut back",base:"cut",d:"reduce expenditure or activity",ex:"Companies have cut back on spending.",l:"B2",sep:true},
+{id:38,pv:"cut in",base:"cut",d:"interrupt; pull in front of another vehicle",ex:"She cut in while I was speaking.",l:"B2",sep:false},
+// ── FALL ──
+{id:39,pv:"fall out",base:"fall",d:"quarrel; lose hair/teeth; leave a formation",ex:"They fell out over money.",l:"B1",sep:false},
+{id:40,pv:"fall back",base:"fall",d:"retreat; rely on something as a backup",ex:"We can fall back on the old system.",l:"B2",sep:false},
+{id:41,pv:"fall through",base:"fall",d:"fail to happen; not be completed",ex:"The deal fell through at the last minute.",l:"B2",sep:false},
+{id:42,pv:"fall apart",base:"fall",d:"break into pieces; lose emotional control",ex:"Their marriage fell apart.",l:"B1",sep:false},
+{id:43,pv:"fall behind",base:"fall",d:"fail to keep up with; make less progress than expected",ex:"Don't fall behind with your payments.",l:"B1",sep:false},
+{id:44,pv:"fall for",base:"fall",d:"be deceived by; become attracted to",ex:"I can't believe I fell for that trick.",l:"B1",sep:false},
+{id:45,pv:"fall over",base:"fall",d:"accidentally fall to the ground; trip",ex:"She fell over on the ice.",l:"A2",sep:false},
+// ── GET ──
+{id:46,pv:"get up",base:"get",d:"rise from bed; stand up",ex:"I get up at seven every morning.",l:"A1",sep:false},
+{id:47,pv:"get out",base:"get",d:"leave; remove; become known",ex:"Get out of the car, please.",l:"A1",sep:true},
+{id:48,pv:"get over",base:"get",d:"recover from illness or shock; communicate successfully",ex:"It took weeks to get over the flu.",l:"B1",sep:false},
+{id:49,pv:"get away",base:"get",d:"escape; go on holiday",ex:"We finally got away for the weekend.",l:"B1",sep:false},
+{id:50,pv:"get back",base:"get",d:"return; recover something",ex:"What time will you get back?",l:"A2",sep:true},
+{id:51,pv:"get through",base:"get",d:"survive a difficult experience; finish; make contact by phone",ex:"How did you get through such a hard time?",l:"B1",sep:false},
+{id:52,pv:"get along",base:"get",d:"have a friendly relationship; manage",ex:"Do you get along with your boss?",l:"B1",sep:false},
+{id:53,pv:"get on",base:"get",d:"board a vehicle; make progress; have a good relationship",ex:"How are you getting on with the project?",l:"A2",sep:false},
+{id:54,pv:"get off",base:"get",d:"leave a vehicle; avoid punishment; start a journey",ex:"Get off at the next stop.",l:"A2",sep:false},
+{id:55,pv:"get down",base:"get",d:"depress; write down; get to the matter; kneel",ex:"Don't let it get you down.",l:"B1",sep:true},
+{id:56,pv:"get around",base:"get",d:"travel to many places; avoid a problem; become known",ex:"News gets around fast in small towns.",l:"B2",sep:false},
+{id:57,pv:"get ahead",base:"get",d:"make progress; be more successful than others",ex:"Hard work is the best way to get ahead.",l:"B2",sep:false},
+{id:58,pv:"get together",base:"get",d:"meet socially; organize a gathering",ex:"Let's get together for coffee soon.",l:"A2",sep:false},
+{id:59,pv:"get rid of",base:"get",d:"remove; dispose of; free yourself from",ex:"It's time to get rid of old clothes.",l:"B1",sep:false},
+{id:60,pv:"get away with",base:"get",d:"do something wrong without being punished",ex:"He got away with cheating on the test.",l:"B2",sep:false},
+// ── GIVE ──
+{id:61,pv:"give up",base:"give",d:"stop doing something; surrender",ex:"Never give up on your dreams.",l:"A2",sep:true},
+{id:62,pv:"give in",base:"give",d:"admit defeat; stop resisting",ex:"After hours of negotiation, she gave in.",l:"B1",sep:false},
+{id:63,pv:"give away",base:"give",d:"give for free; reveal a secret",ex:"She gave away all her old books.",l:"B1",sep:true},
+{id:64,pv:"give back",base:"give",d:"return something to its owner",ex:"He finally gave back my money.",l:"A2",sep:true},
+{id:65,pv:"give out",base:"give",d:"distribute; stop working (energy/machine)",ex:"They gave out free samples.",l:"B1",sep:true},
+{id:66,pv:"give off",base:"give",d:"produce or emit (smell, heat, light)",ex:"The flowers give off a lovely scent.",l:"B2",sep:true},
+// ── GO ──
+{id:67,pv:"go on",base:"go",d:"continue; happen; time passes",ex:"What's going on here?",l:"A2",sep:false},
+{id:68,pv:"go off",base:"go",d:"(alarm) ring; explode; (food) go bad; stop liking",ex:"The alarm went off at 6 am.",l:"B1",sep:false},
+{id:69,pv:"go out",base:"go",d:"leave home for social activity; (light/fire) stop burning; date someone",ex:"They've been going out for two years.",l:"A2",sep:false},
+{id:70,pv:"go back",base:"go",d:"return to a place; have an origin in the past",ex:"We need to go back to basics.",l:"A2",sep:false},
+{id:71,pv:"go through",base:"go",d:"experience something difficult; examine carefully",ex:"She went through a lot last year.",l:"B1",sep:false},
+{id:72,pv:"go over",base:"go",d:"review or examine carefully; repeat",ex:"Let's go over the main points again.",l:"B1",sep:false},
+{id:73,pv:"go ahead",base:"go",d:"proceed; give permission",ex:"Go ahead — we're ready.",l:"A2",sep:false},
+{id:74,pv:"go along with",base:"go",d:"agree to or support something",ex:"I'll go along with your suggestion.",l:"B2",sep:false},
+{id:75,pv:"go for",base:"go",d:"choose; attack; apply for; like",ex:"I'll go for the chicken.",l:"B1",sep:false},
+{id:76,pv:"go down",base:"go",d:"decrease; be recorded; (sun) set; (computer) stop working",ex:"Prices have gone down this month.",l:"B1",sep:false},
+// ── HOLD ──
+{id:77,pv:"hold on",base:"hold",d:"wait; grip tightly; not give in",ex:"Hold on, I'll be right back.",l:"A2",sep:false},
+{id:78,pv:"hold up",base:"hold",d:"delay; rob at gunpoint; remain strong",ex:"Sorry I'm late — I was held up in traffic.",l:"B1",sep:true},
+{id:79,pv:"hold back",base:"hold",d:"prevent from moving forward; hide feelings; not fully commit",ex:"Don't hold back — tell me what you really think.",l:"B2",sep:true},
+{id:80,pv:"hold out",base:"hold",d:"resist; last; offer hope",ex:"How long can they hold out without water?",l:"B2",sep:false},
+// ── KEEP ──
+{id:81,pv:"keep up",base:"keep",d:"maintain at the same level; not fall behind",ex:"Keep up the good work!",l:"B1",sep:true},
+{id:82,pv:"keep on",base:"keep",d:"continue doing something",ex:"Keep on practising and you'll improve.",l:"A2",sep:false},
+{id:83,pv:"keep back",base:"keep",d:"not reveal information; hold at a distance",ex:"Are you keeping something back from me?",l:"B2",sep:true},
+{id:84,pv:"keep out",base:"keep",d:"prevent from entering",ex:"Keep out! Private property.",l:"A2",sep:true},
+{id:85,pv:"keep up with",base:"keep",d:"stay at the same level as; follow the latest news",ex:"I can't keep up with all the changes.",l:"B1",sep:false},
+// ── LOOK ──
+{id:86,pv:"look up",base:"look",d:"search for information; improve",ex:"Look it up in the dictionary.",l:"A2",sep:true},
+{id:87,pv:"look for",base:"look",d:"search for; try to find",ex:"I'm looking for my keys.",l:"A1",sep:false},
+{id:88,pv:"look after",base:"look",d:"take care of; be responsible for",ex:"Can you look after my cat this weekend?",l:"A2",sep:false},
+{id:89,pv:"look into",base:"look",d:"investigate; examine in detail",ex:"The police are looking into the matter.",l:"B1",sep:false},
+{id:90,pv:"look forward to",base:"look",d:"feel excited about something coming",ex:"I look forward to hearing from you.",l:"B1",sep:false},
+{id:91,pv:"look out",base:"look",d:"be careful; watch for danger",ex:"Look out! There's a car coming!",l:"A2",sep:false},
+{id:92,pv:"look through",base:"look",d:"examine quickly; ignore deliberately",ex:"She looked through the old documents.",l:"B1",sep:false},
+{id:93,pv:"look over",base:"look",d:"examine quickly; check",ex:"Can you look over my report?",l:"B1",sep:true},
+{id:94,pv:"look back",base:"look",d:"think about the past; review",ex:"Looking back, I made the right choice.",l:"B2",sep:false},
+{id:95,pv:"look up to",base:"look",d:"respect and admire someone",ex:"She looks up to her older sister.",l:"B1",sep:false},
+// ── MAKE ──
+{id:96,pv:"make up",base:"make",d:"invent a story; reconcile after argument; apply cosmetics; constitute",ex:"She made up an excuse.",l:"B1",sep:true},
+{id:97,pv:"make out",base:"make",d:"claim; understand; see or hear with difficulty; manage",ex:"I couldn't make out what he was saying.",l:"B2",sep:true},
+{id:98,pv:"make up for",base:"make",d:"compensate for something missing or lost",ex:"He worked extra hours to make up for lost time.",l:"B2",sep:false},
+{id:99,pv:"make do",base:"make",d:"manage with what is available",ex:"We'll have to make do without extra help.",l:"B2",sep:false},
+{id:100,pv:"make for",base:"make",d:"move toward; contribute to a result",ex:"This design makes for easy reading.",l:"C1",sep:false},
+// ── PUT ──
+{id:101,pv:"put up",base:"put",d:"provide accommodation; display; increase a price; resist",ex:"Can you put me up for the night?",l:"B1",sep:true},
+{id:102,pv:"put off",base:"put",d:"postpone; discourage; cause dislike",ex:"Don't put off what you can do today.",l:"B1",sep:true},
+{id:103,pv:"put on",base:"put",d:"dress in; start playing; gain weight; pretend",ex:"Put on your coat — it's cold.",l:"A2",sep:true},
+{id:104,pv:"put out",base:"put",d:"extinguish; inconvenience; publish",ex:"Put out the fire before you leave.",l:"B1",sep:true},
+{id:105,pv:"put back",base:"put",d:"return to original place; delay",ex:"Put everything back where you found it.",l:"A2",sep:true},
+{id:106,pv:"put away",base:"put",d:"store in the correct place; send to prison",ex:"Please put away your toys.",l:"A2",sep:true},
+{id:107,pv:"put down",base:"put",d:"place on a surface; euthanize; humiliate; write",ex:"He was always putting her down.",l:"B2",sep:true},
+{id:108,pv:"put through",base:"put",d:"connect by phone; cause to suffer",ex:"Can you put me through to the manager?",l:"B2",sep:true},
+{id:109,pv:"put forward",base:"put",d:"propose or suggest an idea; move to an earlier time",ex:"She put forward an interesting proposal.",l:"B2",sep:true},
+{id:110,pv:"put up with",base:"put",d:"tolerate something unpleasant",ex:"I can't put up with this noise any longer.",l:"B2",sep:false},
+// ── RUN ──
+{id:111,pv:"run out",base:"run",d:"have no more left; expire",ex:"We've run out of milk.",l:"A2",sep:false},
+{id:112,pv:"run into",base:"run",d:"meet by accident; encounter a problem",ex:"I ran into an old friend yesterday.",l:"B1",sep:false},
+{id:113,pv:"run away",base:"run",d:"flee; leave secretly",ex:"Don't run away from your problems.",l:"A2",sep:false},
+{id:114,pv:"run over",base:"run",d:"hit with a vehicle; exceed time; quickly review",ex:"The presentation ran over by ten minutes.",l:"B1",sep:true},
+{id:115,pv:"run through",base:"run",d:"rehearse or review quickly; use up money",ex:"Let's run through the plan one more time.",l:"B1",sep:true},
+{id:116,pv:"run down",base:"run",d:"criticize; reduce in size; (battery) lose power; hit",ex:"The battery has run down.",l:"B2",sep:true},
+// ── SET ──
+{id:117,pv:"set up",base:"set",d:"arrange or organize; establish a business; trap someone",ex:"She set up her own company.",l:"B1",sep:true},
+{id:118,pv:"set out",base:"set",d:"start a journey; explain a plan",ex:"We set out early to avoid the traffic.",l:"B1",sep:false},
+{id:119,pv:"set off",base:"set",d:"start a journey; cause an alarm or reaction",ex:"We set off at dawn.",l:"B1",sep:true},
+{id:120,pv:"set back",base:"set",d:"delay progress; cost money",ex:"The delay set us back by two weeks.",l:"B2",sep:true},
+{id:121,pv:"set aside",base:"set",d:"save for a purpose; disregard temporarily",ex:"Set aside some money each month.",l:"B2",sep:true},
+// ── TAKE ──
+{id:122,pv:"take off",base:"take",d:"(aircraft) leave ground; remove clothing; become successful; imitate",ex:"The plane took off on time.",l:"A2",sep:true},
+{id:123,pv:"take on",base:"take",d:"accept work or responsibility; employ; compete against",ex:"She took on too much work.",l:"B1",sep:true},
+{id:124,pv:"take up",base:"take",d:"start a hobby; occupy time or space",ex:"She took up yoga last year.",l:"B1",sep:true},
+{id:125,pv:"take back",base:"take",d:"return something; withdraw a statement",ex:"I take back everything I said.",l:"B1",sep:true},
+{id:126,pv:"take in",base:"take",d:"understand and absorb; deceive; provide accommodation; alter clothing",ex:"There was so much to take in.",l:"B2",sep:true},
+{id:127,pv:"take out",base:"take",d:"remove; borrow from library; invite on a date; destroy",ex:"Can I take out this book?",l:"A2",sep:true},
+{id:128,pv:"take over",base:"take",d:"take control of; do someone's job",ex:"She took over as manager.",l:"B1",sep:true},
+{id:129,pv:"take after",base:"take",d:"resemble in appearance or character (family)",ex:"She takes after her father.",l:"B1",sep:false},
+{id:130,pv:"take down",base:"take",d:"write down; dismantle; humiliate",ex:"Take down this address.",l:"B1",sep:true},
+// ── TURN ──
+{id:131,pv:"turn up",base:"turn",d:"arrive unexpectedly; increase volume; be found",ex:"He turned up an hour late.",l:"B1",sep:true},
+{id:132,pv:"turn off",base:"turn",d:"switch off; cause to lose interest",ex:"Turn off the lights when you leave.",l:"A1",sep:true},
+{id:133,pv:"turn on",base:"turn",d:"switch on; suddenly attack; excite",ex:"Turn on the TV please.",l:"A1",sep:true},
+{id:134,pv:"turn down",base:"turn",d:"reduce volume; reject an offer",ex:"He turned down the job offer.",l:"B1",sep:true},
+{id:135,pv:"turn out",base:"turn",d:"happen in the end; produce; switch off (light)",ex:"Things turned out better than expected.",l:"B1",sep:true},
+{id:136,pv:"turn back",base:"turn",d:"reverse direction; return",ex:"We had to turn back because of the storm.",l:"B1",sep:false},
+{id:137,pv:"turn into",base:"turn",d:"change from one thing to another",ex:"The caterpillar turns into a butterfly.",l:"B1",sep:false},
+{id:138,pv:"turn around",base:"turn",d:"reverse; change to be successful",ex:"The new manager turned the company around.",l:"B2",sep:true},
+// ── WORK ──
+{id:139,pv:"work out",base:"work",d:"solve; exercise; happen successfully; calculate",ex:"I can't work out why she left.",l:"B1",sep:true},
+{id:140,pv:"work up",base:"work",d:"develop gradually; make excited or upset",ex:"I can't work up the courage to ask.",l:"B2",sep:true},
+{id:141,pv:"work on",base:"work",d:"be in the process of improving or completing",ex:"She's working on a new novel.",l:"A2",sep:false},
+{id:142,pv:"work through",base:"work",d:"deal with a problem step by step; complete",ex:"We need to work through our differences.",l:"B2",sep:true},
+// ── CHECK / PICK / PULL / SHOW / THINK / WAKE ──
+{id:143,pv:"check in",base:"check",d:"register at a hotel or airport",ex:"What time do we need to check in?",l:"A2",sep:false},
+{id:144,pv:"check out",base:"check",d:"leave a hotel; look at; investigate",ex:"Check out this amazing view!",l:"A2",sep:true},
+{id:145,pv:"check up on",base:"check",d:"investigate to verify; monitor health",ex:"The boss keeps checking up on us.",l:"B1",sep:false},
+{id:146,pv:"pick up",base:"pick",d:"collect; learn casually; improve; answer phone",ex:"I'll pick you up at eight.",l:"A2",sep:true},
+{id:147,pv:"pick out",base:"pick",d:"choose; distinguish from a group",ex:"Can you pick out the odd one?",l:"B1",sep:true},
+{id:148,pv:"pick on",base:"pick",d:"repeatedly treat someone unfairly; bully",ex:"Stop picking on your little sister.",l:"B1",sep:false},
+{id:149,pv:"pull off",base:"pull",d:"succeed in doing something difficult",ex:"She pulled off an amazing performance.",l:"B2",sep:true},
+{id:150,pv:"pull out",base:"pull",d:"withdraw; leave a traffic lane",ex:"They pulled out of the deal.",l:"B2",sep:true},
+{id:151,pv:"pull through",base:"pull",d:"survive a serious illness or difficult situation",ex:"The doctors say he'll pull through.",l:"B2",sep:false},
+{id:152,pv:"pull together",base:"pull",d:"cooperate; regain composure",ex:"We need to pull together as a team.",l:"B2",sep:false},
+{id:153,pv:"show up",base:"show",d:"arrive; become visible",ex:"He didn't show up for the meeting.",l:"B1",sep:false},
+{id:154,pv:"show off",base:"show",d:"display to impress; exhibit the best qualities",ex:"Stop showing off!",l:"B1",sep:true},
+{id:155,pv:"think over",base:"think",d:"consider carefully before deciding",ex:"I need to think it over.",l:"B1",sep:true},
+{id:156,pv:"think through",base:"think",d:"consider all aspects of a problem",ex:"Make sure you think this through.",l:"B2",sep:true},
+{id:157,pv:"think up",base:"think",d:"invent or create something",ex:"Can you think up a better solution?",l:"B2",sep:true},
+{id:158,pv:"wake up",base:"wake",d:"stop sleeping; become alert to a situation",ex:"Wake up — the alarm has been ringing!",l:"A1",sep:true},
+{id:159,pv:"end up",base:"end",d:"eventually arrive at a place or situation",ex:"We got lost and ended up in the wrong city.",l:"B1",sep:false},
+{id:160,pv:"find out",base:"find",d:"discover or learn information",ex:"Did you find out what happened?",l:"A2",sep:true},
+{id:161,pv:"fill in",base:"fill",d:"complete a form; substitute for someone",ex:"Please fill in the application form.",l:"A2",sep:true},
+{id:162,pv:"fill up",base:"fill",d:"make or become full",ex:"Fill up the car with petrol.",l:"A2",sep:true},
+{id:163,pv:"hang on",base:"hang",d:"wait; grip tightly",ex:"Hang on, I'll be with you in a moment.",l:"A2",sep:false},
+{id:164,pv:"hang up",base:"hang",d:"end a phone call; put on a hook",ex:"She hung up without saying goodbye.",l:"A2",sep:true},
+{id:165,pv:"log in",base:"log",d:"sign in to a computer system",ex:"You need to log in to access the account.",l:"A2",sep:false},
+{id:166,pv:"log out",base:"log",d:"sign out of a computer system",ex:"Always log out when finished.",l:"A2",sep:false},
+{id:167,pv:"point out",base:"point",d:"direct attention to; indicate; make aware of",ex:"He pointed out several mistakes.",l:"B1",sep:true},
+{id:168,pv:"sign up",base:"sign",d:"register for a course or service",ex:"I signed up for a yoga class.",l:"A2",sep:false},
+{id:169,pv:"stand out",base:"stand",d:"be very noticeable; be much better than others",ex:"Her red coat really stands out.",l:"B1",sep:false},
+{id:170,pv:"stand up for",base:"stand",d:"defend a person or principle",ex:"Always stand up for what you believe.",l:"B2",sep:false},
+{id:171,pv:"grow up",base:"grow",d:"become an adult; mature",ex:"Where did you grow up?",l:"A2",sep:false},
+{id:172,pv:"grow apart",base:"grow",d:"gradually lose a close relationship",ex:"Over the years they grew apart.",l:"B2",sep:false},
+{id:173,pv:"deal with",base:"deal",d:"handle a situation or problem",ex:"How do you deal with stress?",l:"B1",sep:false},
+{id:174,pv:"count on",base:"count",d:"rely or depend on",ex:"You can always count on her.",l:"B1",sep:false},
+{id:175,pv:"account for",base:"account",d:"explain; make up a proportion",ex:"How do you account for the missing money?",l:"B2",sep:false},
+{id:176,pv:"back down",base:"back",d:"withdraw from a position or argument",ex:"He refused to back down.",l:"B2",sep:false},
+{id:177,pv:"back up",base:"back",d:"support; copy data; move backwards",ex:"Can you back up that claim with evidence?",l:"B1",sep:true},
+{id:178,pv:"blow up",base:"blow",d:"explode; inflate; lose one's temper; enlarge a photo",ex:"He blew up when he heard the news.",l:"B1",sep:true},
+{id:179,pv:"build up",base:"build",d:"increase gradually; develop over time",ex:"She built up a loyal following.",l:"B1",sep:true},
+{id:180,pv:"clear up",base:"clear",d:"tidy; (weather) improve; explain or resolve",ex:"It should clear up by afternoon.",l:"B1",sep:true},
+{id:181,pv:"close down",base:"close",d:"cease to operate; shut permanently",ex:"Many small shops have closed down.",l:"B1",sep:true},
+{id:182,pv:"draw up",base:"draw",d:"prepare a document; move closer",ex:"The lawyer drew up the contract.",l:"B2",sep:true},
+{id:183,pv:"drive at",base:"drive",d:"be trying to say or suggest",ex:"What exactly are you driving at?",l:"C1",sep:false},
+{id:184,pv:"drop off",base:"drop",d:"deliver; fall asleep; decrease",ex:"She dropped the kids off at school.",l:"B1",sep:true},
+{id:185,pv:"face up to",base:"face",d:"accept and deal with something unpleasant",ex:"You need to face up to your responsibilities.",l:"B2",sep:false},
+{id:186,pv:"figure out",base:"figure",d:"solve or understand something",ex:"I can't figure out the answer.",l:"B1",sep:true},
+{id:187,pv:"hand out",base:"hand",d:"distribute; give to each person",ex:"Please hand out the worksheets.",l:"B1",sep:true},
+{id:188,pv:"head off",base:"head",d:"intercept; prevent; leave",ex:"We headed off the problem early.",l:"B2",sep:true},
+{id:189,pv:"join in",base:"join",d:"participate in an activity",ex:"Come and join in the fun!",l:"A2",sep:false},
+{id:190,pv:"lay off",base:"lay",d:"dismiss workers; stop doing something annoying",ex:"The factory laid off fifty workers.",l:"B2",sep:true},
+{id:191,pv:"live up to",base:"live",d:"meet expectations or standards",ex:"The film didn't live up to the hype.",l:"B2",sep:false},
+{id:192,pv:"narrow down",base:"narrow",d:"reduce a list of options",ex:"We've narrowed down the candidates to three.",l:"B2",sep:true},
+{id:193,pv:"pass on",base:"pass",d:"transmit; decline an offer; die (euphemism)",ex:"Can you pass on this message?",l:"B1",sep:true},
+{id:194,pv:"pay off",base:"pay",d:"be successful/worth the effort; pay a debt completely",ex:"All your hard work has paid off.",l:"B2",sep:true},
+{id:195,pv:"rule out",base:"rule",d:"eliminate as a possibility",ex:"We can't rule out human error.",l:"B2",sep:true},
+{id:196,pv:"sort out",base:"sort",d:"organise; resolve a problem",ex:"Let's sort out this confusion.",l:"B1",sep:true},
+{id:197,pv:"switch off",base:"switch",d:"stop paying attention; turn off a device",ex:"My brain just switches off after 9pm.",l:"A2",sep:true},
+{id:198,pv:"switch on",base:"switch",d:"turn on; start paying attention",ex:"Switch on your creativity.",l:"A2",sep:true},
+{id:199,pv:"wear out",base:"wear",d:"make tired; damage by use",ex:"Walking all day wore me out.",l:"B1",sep:true},
+{id:200,pv:"wind up",base:"wind",d:"end up in a situation; finish; irritate; close a business",ex:"We wound up staying until midnight.",l:"B2",sep:true}
+];
+
+// ─── CHUNK SENTENCES ─────────────────────────────────────────────────────────
+const CHUNKS = [
+{pv:"come up with",sentences:[
+  {s:"She came up with a brilliant solution at the last minute.",t:"Son dakikada parlak bir çözüm buldu."},
+  {s:"We need to come up with a plan by tomorrow.",t:"Yarına kadar bir plan bulmamız gerekiyor."},
+  {s:"Can you come up with a better excuse than that?",t:"Bundan daha iyi bir mazeret bulamaz mısın?"}
+]},
+{pv:"look forward to",sentences:[
+  {s:"I look forward to hearing from you.",t:"Senden haber almayı dört gözle bekliyorum."},
+  {s:"We're really looking forward to the holiday.",t:"Tatili gerçekten dört gözle bekliyoruz."},
+  {s:"She doesn't look forward to Mondays.",t:"Pazartesilerden nefret eder."}
+]},
+{pv:"put up with",sentences:[
+  {s:"I can't put up with this noise any longer.",t:"Bu gürültüye daha fazla dayanamam."},
+  {s:"How do you put up with him?",t:"Ona nasıl katlanıyorsun?"},
+  {s:"We had to put up with difficult conditions.",t:"Zor koşullara katlanmak zorunda kaldık."}
+]},
+{pv:"get along with",sentences:[
+  {s:"Do you get along with your neighbours?",t:"Komşularınla iyi geçiniyor musun?"},
+  {s:"They don't get along at all.",t:"Hiç anlaşamıyorlar."},
+  {s:"It's important to get along with your colleagues.",t:"İş arkadaşlarınla iyi geçinmek önemli."}
+]},
+{pv:"end up",sentences:[
+  {s:"We ended up staying until midnight.",t:"Gece yarısına kadar kaldık."},
+  {s:"If you don't study, you'll end up failing.",t:"Çalışmazsan başarısız olursun."},
+  {s:"She ended up getting the job she wanted.",t:"Sonunda istediği işi aldı."}
+]},
+{pv:"turn out",sentences:[
+  {s:"Everything turned out fine in the end.",t:"Sonunda her şey yoluna girdi."},
+  {s:"It turned out that he was right.",t:"Haklı olduğu ortaya çıktı."},
+  {s:"The party turned out to be a great success.",t:"Parti büyük bir başarı oldu."}
+]},
+{pv:"go through",sentences:[
+  {s:"She went through a very difficult period.",t:"Çok zor bir dönemden geçti."},
+  {s:"Let's go through the main points one more time.",t:"Ana noktaları bir kez daha gözden geçirelim."},
+  {s:"The deal finally went through.",t:"Anlaşma sonunda gerçekleşti."}
+]},
+{pv:"work out",sentences:[
+  {s:"I can't work out why he did that.",t:"Bunu neden yaptığını anlayamıyorum."},
+  {s:"Things will work out in the end.",t:"Her şey sonunda yoluna girecek."},
+  {s:"She works out at the gym every morning.",t:"Her sabah spor salonunda egzersiz yapıyor."}
+]},
+{pv:"keep up with",sentences:[
+  {s:"It's hard to keep up with all the latest technology.",t:"En son teknolojiyi takip etmek zor."},
+  {s:"She struggled to keep up with the class.",t:"Sınıfla aynı hızda ilerlemeye çalıştı."},
+  {s:"I can't keep up with the pace of change.",t:"Değişim hızına ayak uyduramıyorum."}
+]},
+{pv:"get over",sentences:[
+  {s:"It took me months to get over the breakup.",t:"Ayrılığı atlatmam aylar sürdü."},
+  {s:"I can't get over how much she's changed.",t:"Ne kadar değiştiğine inanamıyorum."},
+  {s:"He got over the illness quickly.",t:"Hastalığı çabuk atlattı."}
+]},
+{pv:"give up",sentences:[
+  {s:"Never give up on your dreams.",t:"Hayallerinden asla vazgeçme."},
+  {s:"She gave up smoking last year.",t:"Geçen yıl sigarayı bıraktı."},
+  {s:"Don't give up — you're nearly there.",t:"Pes etme — neredeyse başardın."}
+]},
+{pv:"find out",sentences:[
+  {s:"I need to find out what time the train leaves.",t:"Trenin kaçta kalktığını öğrenmem gerekiyor."},
+  {s:"How did you find out about this?",t:"Bunu nasıl öğrendin?"},
+  {s:"She found out the truth eventually.",t:"Sonunda gerçeği öğrendi."}
+]},
+{pv:"carry out",sentences:[
+  {s:"The plan was carried out successfully.",t:"Plan başarıyla uygulandı."},
+  {s:"Scientists carried out a series of experiments.",t:"Bilim insanları bir dizi deney yaptı."},
+  {s:"Please carry out the instructions carefully.",t:"Lütfen talimatları dikkatlice uygulayın."}
+]},
+{pv:"pay off",sentences:[
+  {s:"All the hard work finally paid off.",t:"Tüm çalışma sonunda karşılığını buldu."},
+  {s:"It pays off to be honest.",t:"Dürüst olmak her zaman karşılığını verir."},
+  {s:"She paid off her student loan.",t:"Öğrenci kredisini ödedi."}
+]},
+{pv:"break down",sentences:[
+  {s:"My car broke down on the way to work.",t:"Arabam işe giderken bozuldu."},
+  {s:"The negotiations broke down after three days.",t:"Müzakereler üç günün ardından çöktü."},
+  {s:"She broke down and started crying.",t:"Dayanamadı ve ağlamaya başladı."}
+]},
+{pv:"take off",sentences:[
+  {s:"The plane took off thirty minutes late.",t:"Uçak otuz dakika geç kalktı."},
+  {s:"Her career really took off after the film.",t:"Kariyeri filmden sonra gerçekten uçuşa geçti."},
+  {s:"Take off your shoes at the door.",t:"Kapıda ayakkabılarını çıkar."}
+]},
+{pv:"set up",sentences:[
+  {s:"She set up her own business at 25.",t:"25 yaşında kendi işini kurdu."},
+  {s:"Can you set up a meeting for Friday?",t:"Cuma için bir toplantı ayarlayabilir misin?"},
+  {s:"The tent was set up in minutes.",t:"Çadır birkaç dakikada kuruldu."}
+]},
+{pv:"make up",sentences:[
+  {s:"Don't make up excuses.",t:"Bahane uydurma."},
+  {s:"They had a fight but made up quickly.",t:"Kavga ettiler ama hızlıca barıştılar."},
+  {s:"Women make up 60% of the workforce here.",t:"Kadınlar buradaki iş gücünün %60'ını oluşturuyor."}
+]},
+{pv:"run out of",sentences:[
+  {s:"We've run out of time.",t:"Zamanımız bitti."},
+  {s:"I ran out of ideas.",t:"Fikirlerim tükendi."},
+  {s:"The car ran out of petrol.",t:"Arabanın benzini bitti."}
+]},
+{pv:"deal with",sentences:[
+  {s:"How do you deal with stress?",t:"Stresle nasıl başa çıkıyorsun?"},
+  {s:"We need to deal with this problem immediately.",t:"Bu sorunla hemen ilgilenmemiz gerekiyor."},
+  {s:"The manager dealt with the complaint professionally.",t:"Müdür şikayeti profesyonelce ele aldı."}
+]}
+];
+
+// ─── APP STATE ────────────────────────────────────────────────────────────────
+const BASES = [...new Set(PVS.map(p=>p.base))].sort();
+let state = {
+  tab: "list",
+  base: "all",
+  level: "all",
+  filter: "all",
+  search: "",
+  learned: JSON.parse(localStorage.getItem("pv_learned")||"{}"),
+  starred: JSON.parse(localStorage.getItem("pv_starred")||"{}")
+};
+function save(){
+  localStorage.setItem("pv_learned",JSON.stringify(state.learned));
+}
+function toggleLearned(id){ state.learned[id]=!state.learned[id]; save(); render(); }
+function speak(text){ const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=0.8;
+  window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }
+function lvColor(l){ return {A1:"#22c55e",A2:"#16a34a",B1:"#3b82f6",B2:"#a855f7",C1:"#f97316",C2:"#ef4444"}[l]||"#94a3b8"; }
+
+function getVisible(){
+  return PVS.filter(p=>{
+    if(state.base!=="all" && p.base!==state.base) return false;
+    if(state.level!=="all" && p.l!==state.level) return false;
+    if(state.filter==="learned" && !state.learned[p.id]) return false;
+    if(state.filter==="unlearned" && state.learned[p.id]) return false;
+    if(state.search){
+      const q=state.search.toLowerCase();
+      return p.pv.includes(q)||p.d.toLowerCase().includes(q)||p.ex.toLowerCase().includes(q);
+    }
+    return true;
+  });
+}
+
+function buildStats(){
+  const ln=PVS.filter(p=>state.learned[p.id]).length;
+  document.getElementById("stats-bar").innerHTML=`
+    <span class="stat">🔗 ${PVS.length} phrasal verbs</span>
+    <span class="stat">✅ ${ln} learned</span>
+    <span class="stat">💬 ${CHUNKS.length} chunk sets</span>
+    <span class="stat">${Math.round(ln/PVS.length*100)}% complete</span>
+  `;
+}
+
+function buildPills(){
+  const bp=document.getElementById("base-pills");
+  bp.innerHTML=["all",...BASES].map(b=>`
+    <button class="pill ${state.base===b?"active":""}" data-base="${b}">${b==="all"?"All Verbs":b}</button>
+  `).join("");
+  bp.querySelectorAll(".pill").forEach(p=>p.addEventListener("click",()=>{state.base=p.dataset.base;render();}));
+
+  const lp=document.getElementById("level-pills");
+  lp.innerHTML=["all","A1","A2","B1","B2","C1","C2"].map(l=>`
+    <button class="pill lv ${l} ${state.level===l?"active":""}" data-lv="${l}">${l==="all"?"All Levels":l}</button>
+  `).join("");
+  lp.querySelectorAll(".pill").forEach(p=>p.addEventListener("click",()=>{state.level=p.dataset.lv;render();}));
+
+  document.querySelectorAll("#filter-pills .pill").forEach(p=>
+    p.addEventListener("click",()=>{state.filter=p.dataset.f;render();}));
+}
+
+function renderList(){
+  const vis=getVisible();
+  document.getElementById("count").textContent=`${vis.length} results`;
+  if(!vis.length) return`<div class="empty">No phrasal verbs found.</div>`;
+  // Group by base
+  const groups={};
+  vis.forEach(p=>{ if(!groups[p.base]) groups[p.base]=[]; groups[p.base].push(p); });
+  let html=`<table class="pv-table"><thead><tr>
+    <th>Phrasal Verb</th><th>Definition</th><th>Example</th><th>Level</th><th>Actions</th>
+  </tr></thead><tbody>`;
+  for(const base of Object.keys(groups).sort()){
+    html+=`<tr><td colspan="5" class="group-header">▸ ${base.toUpperCase()}</td></tr>`;
+    groups[base].forEach(p=>{
+      const ln=!!state.learned[p.id];
+      html+=`<tr class="${ln?"learned-row":""}">
+        <td><span class="pv">${p.pv}</span>
+          ${p.sep?'<span class="sep-tag">SEP</span>':''}</td>
+        <td>${p.d}</td>
+        <td><span class="ex-text">${p.ex}</span></td>
+        <td><span class="badge" style="background:${lvColor(p.l)}">${p.l}</span></td>
+        <td><div class="row-actions">
+          <button class="btn-speak-sm" onclick="speak('${p.pv.replace(/'/g,"\\'")}')">🔊</button>
+          <button class="btn-sm ${ln?"done":""}" onclick="toggleLearned(${p.id})">
+            ${ln?"✓":"Learn"}
+          </button>
+        </div></td>
+      </tr>`;
+    });
+  }
+  html+=`</tbody></table>`;
+  return html;
+}
+
+function renderChunks(){
+  return`<div class="chunks-grid">${CHUNKS.map(c=>`
+    <div class="chunk-card">
+      <div class="chunk-pv">🔗 ${c.pv}</div>
+      <ul class="chunk-list">
+        ${c.sentences.map(s=>`<li>${s.s}<span>${s.t}</span></li>`).join("")}
+      </ul>
+    </div>
+  `).join("")}</div>`;
+}
+
+function renderGuide(){
+  return`<div>
+    <div class="tip-box">💡 <strong>Separable (SEP)</strong>: The object can go between the verb and particle — <em>turn off the light</em> = <em>turn the light off</em>. But with pronouns, you MUST separate: <em>turn it off</em> ✓ (NOT: turn off it ✗)</div>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3>🔵 What is a Phrasal Verb?</h3>
+        <p>A phrasal verb = verb + particle (preposition or adverb). The meaning is often idiomatic — very different from the literal meaning of the words.</p>
+        <ul>
+          <li><strong>run</strong> = koşmak</li>
+          <li><strong>run out of</strong> = tükenmek</li>
+          <li><strong>run into</strong> = tesadüfen karşılaşmak</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>✂️ Separable vs Inseparable</h3>
+        <ul>
+          <li><strong>Separable</strong>: verb + object + particle<br><em>Pick up the book</em> = <em>Pick the book up</em></li>
+          <li><strong>Inseparable</strong>: verb + particle always together<br><em>Look after the baby</em> ✓ (never: look the baby after)</li>
+          <li>With pronouns: ALWAYS separate — <em>pick it up</em></li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>🎨 Register</h3>
+        <p>Phrasal verbs are typically <strong>informal/neutral</strong>. In formal writing, use single-word equivalents:</p>
+        <ul>
+          <li>put off → <strong>postpone</strong></li>
+          <li>find out → <strong>discover</strong></li>
+          <li>carry out → <strong>conduct/execute</strong></li>
+          <li>give up → <strong>abandon/relinquish</strong></li>
+          <li>look into → <strong>investigate</strong></li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>🧩 Multiple Meanings</h3>
+        <p>Most phrasal verbs have 2–4 meanings. Context is key:</p>
+        <ul>
+          <li><strong>pick up</strong> = collect / learn casually / improve / answer phone</li>
+          <li><strong>go off</strong> = alarm rings / food goes bad / explode</li>
+          <li><strong>make up</strong> = invent / reconcile / constitute / cosmetics</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>📚 Learning Strategy</h3>
+        <ul>
+          <li>Learn in <strong>base verb groups</strong> (all GET phrasal verbs together)</li>
+          <li>Learn with <strong>example sentences</strong>, not just definitions</li>
+          <li>Focus on the <strong>most frequent</strong> first: get, put, take, come, go</li>
+          <li>Notice phrasal verbs in <strong>real context</strong> — films, podcasts, books</li>
+          <li>Use the <strong>Chunks tab</strong> for natural sentence patterns</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>🏆 Top 10 Most Common</h3>
+        <ul>
+          <li>1. get up / get on / get over</li>
+          <li>2. look after / look forward to</li>
+          <li>3. take off / take on</li>
+          <li>4. put off / put up with</li>
+          <li>5. come up with</li>
+          <li>6. find out</li>
+          <li>7. work out</li>
+          <li>8. go on / go through</li>
+          <li>9. give up / give in</li>
+          <li>10. turn out / turn up</li>
+        </ul>
+      </div>
+    </div>
+  </div>`;
+}
+
+function render(){
+  buildStats(); buildPills();
+  document.querySelectorAll("#filter-pills .pill").forEach(p=>
+    p.classList.toggle("active",p.dataset.f===state.filter));
+  const m=document.getElementById("main");
+  if(state.tab==="list") m.innerHTML=renderList();
+  else if(state.tab==="chunks") m.innerHTML=renderChunks();
+  else m.innerHTML=renderGuide();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+document.querySelectorAll(".tnav").forEach(t=>t.addEventListener("click",()=>{
+  state.tab=t.dataset.tab;
+  document.querySelectorAll(".tnav").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  render();
+}));
+document.getElementById("search").addEventListener("input",e=>{state.search=e.target.value;render();});
+buildPills();
+render();
+</script>
+</body>
+</html>

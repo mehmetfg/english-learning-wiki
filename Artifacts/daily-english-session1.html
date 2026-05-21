@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily English Mastery — Oturum #1</title>
+<style>
+:root {
+  --bg: #1a1a2e;
+  --bg2: #16213e;
+  --bg3: #0f3460;
+  --text: #e0e0e0;
+  --text2: #a0a0b0;
+  --accent: #e94560;
+  --success: #4ecca3;
+  --warning: #ffc107;
+  --info: #00b4d8;
+  --grammar: #5b9bd5;
+  --phrasal: #4ecca3;
+  --vocab: #f4a261;
+  --chunk: #b48ead;
+  --card: #16213e;
+  --border: #2a2a4a;
+  --shadow: rgba(0,0,0,0.3);
+  --font: Verdana, Geneva, Tahoma, sans-serif;
+  --radius: 12px;
+  --transition: 0.3s ease;
+}
+.light {
+  --bg: #f0f2f5;
+  --bg2: #ffffff;
+  --bg3: #e8eaf0;
+  --text: #1a1a2e;
+  --text2: #555570;
+  --card: #ffffff;
+  --border: #d0d0e0;
+  --shadow: rgba(0,0,0,0.08);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  transition: background var(--transition), color var(--transition);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+}
+/* SIDEBAR */
+.sidebar {
+  position: fixed; left:0; top:0; bottom:0; width:220px;
+  background: var(--bg2); border-right: 1px solid var(--border);
+  display:flex; flex-direction:column; padding:20px 0; z-index:100;
+  transition: background var(--transition);
+}
+.sidebar-logo {
+  text-align:center; padding:0 15px 20px; border-bottom:1px solid var(--border);
+  margin-bottom:15px;
+}
+.sidebar-logo h2 { font-size:16px; color:var(--accent); margin-bottom:2px; }
+.sidebar-logo small { font-size:11px; color:var(--text2); }
+.nav-item {
+  display:flex; align-items:center; gap:10px; padding:12px 20px;
+  cursor:pointer; transition: all var(--transition); color:var(--text2);
+  font-size:13px; border-left:3px solid transparent;
+}
+.nav-item:hover { background:var(--bg3); color:var(--text); }
+.nav-item.active { color:var(--accent); border-left-color:var(--accent); background:var(--bg3); font-weight:bold; }
+.nav-item .nav-icon { font-size:18px; width:24px; text-align:center; }
+.nav-item .nav-badge {
+  margin-left:auto; background:var(--accent); color:#fff;
+  font-size:10px; padding:2px 7px; border-radius:10px;
+}
+.theme-toggle {
+  margin-top:auto; padding:15px 20px; border-top:1px solid var(--border);
+  display:flex; align-items:center; gap:10px; cursor:pointer;
+  color:var(--text2); font-size:12px; transition: color var(--transition);
+}
+.theme-toggle:hover { color:var(--text); }
+
+/* MAIN */
+.main { margin-left:220px; padding:25px 30px; min-height:100vh; }
+.topbar {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:25px; padding-bottom:15px; border-bottom:1px solid var(--border);
+}
+.topbar h1 { font-size:20px; }
+.topbar-date { color:var(--text2); font-size:12px; }
+
+/* SECTIONS */
+.section { display:none; animation: fadeIn 0.4s ease; }
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* CARDS */
+.card {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px; margin-bottom:16px; transition: all var(--transition);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.card:hover { transform:translateY(-2px); box-shadow: 0 4px 16px var(--shadow); }
+
+/* DASHBOARD */
+.dash-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:16px; margin-bottom:20px; }
+.stat-card {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:18px; text-align:center; transition: all var(--transition);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.stat-card:hover { transform:translateY(-3px); }
+.stat-number { font-size:28px; font-weight:bold; margin:8px 0 4px; }
+.stat-label { font-size:11px; color:var(--text2); text-transform:uppercase; letter-spacing:1px; }
+.stat-card.accent .stat-number { color:var(--accent); }
+.stat-card.success .stat-number { color:var(--success); }
+.stat-card.warning .stat-number { color:var(--warning); }
+.stat-card.info .stat-number { color:var(--info); }
+
+.topic-list { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0; }
+.topic-tag {
+  background:var(--bg3); border:1px solid var(--border); border-radius:20px;
+  padding:6px 14px; font-size:12px; display:flex; align-items:center; gap:6px;
+}
+.topic-tag .dot { width:8px; height:8px; border-radius:50%; }
+.motivation-box {
+  background: linear-gradient(135deg, var(--accent), #ff6b6b);
+  border-radius:var(--radius); padding:20px; color:#fff; margin-top:16px;
+  position:relative; overflow:hidden;
+}
+.motivation-box::after {
+  content:''; position:absolute; right:-20px; top:-20px;
+  width:100px; height:100px; background:rgba(255,255,255,0.1);
+  border-radius:50%;
+}
+.motivation-box h3 { font-size:15px; margin-bottom:6px; }
+.motivation-box p { font-size:13px; opacity:0.9; }
+
+.plan-box { border-left:3px solid var(--info); padding-left:15px; margin-top:12px; }
+.plan-box h4 { color:var(--info); font-size:13px; margin-bottom:6px; }
+.plan-step { font-size:12px; color:var(--text2); padding:3px 0; }
+
+/* QUIZ */
+.quiz-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.quiz-progress {
+  width:100%; height:8px; background:var(--bg3); border-radius:4px; margin:10px 0;
+  overflow:hidden;
+}
+.quiz-progress-fill { height:100%; background:var(--accent); border-radius:4px; transition:width 0.5s ease; }
+.quiz-counter { font-size:12px; color:var(--text2); }
+.quiz-topic-tag {
+  display:inline-block; font-size:10px; padding:3px 10px; border-radius:10px;
+  background:var(--bg3); color:var(--info); margin-bottom:10px;
+  border:1px solid var(--info);
+}
+.quiz-type-tag {
+  display:inline-block; font-size:10px; padding:3px 10px; border-radius:10px;
+  margin-left:6px; background:var(--bg3); color:var(--warning); border:1px solid var(--warning);
+}
+.question-text { font-size:15px; margin:12px 0 16px; line-height:1.7; }
+.options { display:flex; flex-direction:column; gap:10px; }
+.option-btn {
+  background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius);
+  padding:12px 16px; cursor:pointer; transition: all var(--transition);
+  text-align:left; font-family:var(--font); font-size:13px; color:var(--text);
+  display:flex; align-items:center; gap:10px;
+}
+.option-btn:hover { border-color:var(--accent); transform:translateX(4px); }
+.option-btn.correct { border-color:var(--success); background:rgba(78,204,163,0.15); }
+.option-btn.wrong { border-color:var(--accent); background:rgba(233,69,96,0.15); }
+.option-btn .option-letter {
+  width:28px; height:28px; border-radius:50%; background:var(--bg2);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:bold; font-size:12px; flex-shrink:0;
+}
+.option-btn.correct .option-letter { background:var(--success); color:#fff; }
+.option-btn.wrong .option-letter { background:var(--accent); color:#fff; }
+
+.tf-options { display:flex; gap:12px; }
+.tf-btn {
+  flex:1; padding:14px; border-radius:var(--radius); cursor:pointer;
+  border:2px solid var(--border); background:var(--bg3); font-family:var(--font);
+  font-size:14px; font-weight:bold; color:var(--text); transition: all var(--transition);
+  text-align:center;
+}
+.tf-btn:hover { border-color:var(--accent); }
+.tf-btn.correct { border-color:var(--success); background:rgba(78,204,163,0.15); }
+.tf-btn.wrong { border-color:var(--accent); background:rgba(233,69,96,0.15); }
+
+.fill-input {
+  width:100%; padding:12px 16px; border:2px solid var(--border); border-radius:var(--radius);
+  background:var(--bg3); color:var(--text); font-family:var(--font); font-size:14px;
+  transition: border-color var(--transition); margin-bottom:10px;
+}
+.fill-input:focus { outline:none; border-color:var(--accent); }
+.check-btn, .next-btn {
+  padding:10px 24px; border:none; border-radius:var(--radius);
+  font-family:var(--font); font-size:13px; cursor:pointer;
+  transition: all var(--transition); font-weight:bold;
+}
+.check-btn { background:var(--accent); color:#fff; }
+.check-btn:hover { transform:scale(1.03); }
+.next-btn { background:var(--info); color:#fff; margin-left:10px; }
+.next-btn:hover { transform:scale(1.03); }
+
+.explanation-box {
+  margin-top:14px; padding:14px; border-radius:var(--radius);
+  font-size:12px; line-height:1.7; display:none;
+}
+.explanation-box.show { display:block; animation: fadeIn 0.3s ease; }
+.explanation-box.correct-exp { background:rgba(78,204,163,0.1); border:1px solid var(--success); }
+.explanation-box.wrong-exp { background:rgba(233,69,96,0.1); border:1px solid var(--accent); }
+.explanation-box h4 { margin-bottom:6px; }
+
+/* READING */
+.reading-passage {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:24px; line-height:2; font-size:14px; margin-bottom:20px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.reading-passage h3 { margin-bottom:14px; color:var(--accent); }
+.grammar-hl { border-bottom:2px solid var(--grammar); cursor:help; position:relative; transition:background 0.2s; }
+.grammar-hl:hover { background:rgba(91,155,213,0.15); }
+.phrasal-hl { border-bottom:2px solid var(--phrasal); cursor:help; position:relative; }
+.phrasal-hl:hover { background:rgba(78,204,163,0.15); }
+.vocab-hl { border-bottom:2px solid var(--vocab); cursor:help; position:relative; }
+.vocab-hl:hover { background:rgba(244,162,97,0.15); }
+.chunk-hl { border-bottom:2px solid var(--chunk); cursor:help; position:relative; }
+.chunk-hl:hover { background:rgba(180,142,173,0.15); }
+
+.tooltip-box {
+  display:none; position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+  background:var(--bg2); border:1px solid var(--border); border-radius:8px;
+  padding:12px; min-width:260px; max-width:340px; z-index:50;
+  box-shadow:0 4px 16px var(--shadow); font-size:12px; line-height:1.6;
+}
+.tooltip-box::after {
+  content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+  border:6px solid transparent; border-top-color:var(--border);
+}
+*:hover > .tooltip-box { display:block; animation: fadeIn 0.2s ease; }
+.tooltip-type { font-size:10px; padding:2px 8px; border-radius:8px; margin-bottom:6px; display:inline-block; color:#fff; }
+.tooltip-type.grammar-type { background:var(--grammar); }
+.tooltip-type.phrasal-type { background:var(--phrasal); }
+.tooltip-type.vocab-type { background:var(--vocab); }
+.tooltip-type.chunk-type { background:var(--chunk); }
+
+.legend-bar {
+  display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px; font-size:11px; color:var(--text2);
+}
+.legend-item { display:flex; align-items:center; gap:5px; }
+.legend-color { width:20px; height:3px; border-radius:2px; }
+
+/* GAME */
+.game-area {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:24px; min-height:400px; text-align:center;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.game-title { font-size:18px; color:var(--accent); margin-bottom:6px; }
+.game-subtitle { font-size:12px; color:var(--text2); margin-bottom:20px; }
+.game-score { font-size:14px; color:var(--success); margin-bottom:16px; }
+
+.memory-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  max-width:500px; margin:0 auto;
+}
+.memory-card {
+  aspect-ratio:1; background:var(--bg3); border:2px solid var(--border);
+  border-radius:var(--radius); display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:12px; padding:8px; transition: all 0.3s ease;
+  text-align:center; word-break:break-word;
+}
+.memory-card:hover { border-color:var(--accent); transform:scale(1.03); }
+.memory-card.flipped { background:var(--info); color:#fff; border-color:var(--info); }
+.memory-card.matched { background:var(--success); color:#fff; border-color:var(--success); opacity:0.7; }
+.memory-card .card-back { font-size:22px; }
+
+.scramble-area { max-width:600px; margin:0 auto; }
+.scramble-sentence { font-size:13px; color:var(--text2); margin-bottom:16px; font-style:italic; }
+.scramble-words { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:16px; }
+.scramble-word {
+  padding:8px 14px; background:var(--bg3); border:1px solid var(--border);
+  border-radius:8px; cursor:grab; font-size:13px; transition: all 0.2s ease;
+  user-select:none;
+}
+.scramble-word:hover { border-color:var(--accent); transform:translateY(-2px); }
+.scramble-word.placed { opacity:0.3; pointer-events:none; }
+.scramble-target {
+  min-height:50px; border:2px dashed var(--border); border-radius:var(--radius);
+  padding:10px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+  margin-bottom:16px;
+}
+.scramble-target .scramble-word { background:var(--info); color:#fff; border-color:var(--info); cursor:pointer; }
+
+.bookmark-btn {
+  padding:6px 14px; border:1px solid var(--warning); border-radius:8px;
+  background:transparent; color:var(--warning); font-family:var(--font);
+  font-size:11px; cursor:pointer; transition: all var(--transition);
+}
+.bookmark-btn:hover { background:var(--warning); color:#000; }
+.bookmark-btn.bookmarked { background:var(--warning); color:#000; }
+
+/* WORD BANK */
+.wb-controls { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.wb-filter {
+  padding:8px 16px; border:1px solid var(--border); border-radius:20px;
+  background:var(--bg3); color:var(--text); font-family:var(--font);
+  font-size:12px; cursor:pointer; transition: all var(--transition);
+}
+.wb-filter.active { border-color:var(--accent); color:var(--accent); }
+.wb-filter:hover { border-color:var(--accent); }
+
+.flashcard {
+  max-width:400px; margin:20px auto; perspective:1000px; cursor:pointer;
+}
+.flashcard-inner {
+  width:100%; min-height:200px; position:relative;
+  transition:transform 0.6s; transform-style:preserve-3d;
+}
+.flashcard.flipped .flashcard-inner { transform:rotateY(180deg); }
+.flashcard-front, .flashcard-back {
+  position:absolute; width:100%; min-height:200px;
+  backface-visibility:hidden; border-radius:var(--radius);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:24px; border:2px solid var(--border);
+}
+.flashcard-front { background:var(--card); }
+.flashcard-back { background:var(--bg3); transform:rotateY(180deg); }
+.flashcard-word { font-size:22px; font-weight:bold; margin-bottom:8px; }
+.flashcard-phonetic { font-size:12px; color:var(--text2); font-style:italic; }
+.flashcard-meaning { font-size:18px; color:var(--accent); margin-bottom:8px; }
+.flashcard-example { font-size:12px; color:var(--text2); text-align:center; font-style:italic; }
+
+.rating-btns { display:flex; gap:10px; justify-content:center; margin-top:16px; }
+.rate-btn {
+  padding:10px 20px; border:none; border-radius:var(--radius);
+  font-family:var(--font); font-size:12px; cursor:pointer; font-weight:bold;
+  transition: all var(--transition);
+}
+.rate-btn.know { background:var(--success); color:#fff; }
+.rate-btn.partial { background:var(--warning); color:#000; }
+.rate-btn.dont-know { background:var(--accent); color:#fff; }
+.rate-btn:hover { transform:scale(1.05); }
+
+/* PROGRESS */
+.progress-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.progress-bar-container { margin:8px 0; }
+.progress-bar-label { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+.progress-bar { height:10px; background:var(--bg3); border-radius:5px; overflow:hidden; }
+.progress-bar-fill { height:100%; border-radius:5px; transition:width 1s ease; }
+
+/* CONFETTI */
+.confetti-container { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
+.confetti-piece {
+  position:absolute; width:10px; height:10px; top:-10px;
+  animation:confettiFall 3s ease-in forwards;
+}
+@keyframes confettiFall {
+  0% { transform:translateY(0) rotate(0deg); opacity:1; }
+  100% { transform:translateY(100vh) rotate(720deg); opacity:0; }
+}
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+  .sidebar { width:60px; }
+  .sidebar .nav-text, .sidebar-logo small, .sidebar-logo h2, .theme-toggle span { display:none; }
+  .sidebar-logo { padding:10px 5px 15px; }
+  .nav-item { justify-content:center; padding:12px 0; }
+  .main { margin-left:60px; padding:15px; }
+  .dash-grid { grid-template-columns:1fr 1fr; }
+  .progress-grid { grid-template-columns:1fr; }
+  .memory-grid { grid-template-columns:repeat(3,1fr); }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--text2); }
+
+/* QUIZ RESULT */
+.quiz-result { text-align:center; }
+.quiz-result .score-circle {
+  width:120px; height:120px; border-radius:50%; margin:20px auto;
+  display:flex; align-items:center; justify-content:center; flex-direction:column;
+  border:4px solid var(--accent); font-size:28px; font-weight:bold;
+}
+.quiz-result .score-circle.good { border-color:var(--success); color:var(--success); }
+.topic-breakdown { text-align:left; margin-top:20px; }
+.topic-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <h2>Daily English</h2>
+    <small>Mastery Platform</small>
+  </div>
+  <div class="nav-item active" data-section="dashboard">
+    <span class="nav-icon">📊</span>
+    <span class="nav-text">Dashboard</span>
+  </div>
+  <div class="nav-item" data-section="quiz">
+    <span class="nav-icon">📝</span>
+    <span class="nav-text">Gramer Quiz</span>
+    <span class="nav-badge">30</span>
+  </div>
+  <div class="nav-item" data-section="reading">
+    <span class="nav-icon">📖</span>
+    <span class="nav-text">Okuma</span>
+  </div>
+  <div class="nav-item" data-section="game">
+    <span class="nav-icon">🎮</span>
+    <span class="nav-text">Oyun</span>
+  </div>
+  <div class="nav-item" data-section="wordbank">
+    <span class="nav-icon">📚</span>
+    <span class="nav-text">Kelime Bankası</span>
+  </div>
+  <div class="nav-item" data-section="progress">
+    <span class="nav-icon">📈</span>
+    <span class="nav-text">İlerleme</span>
+  </div>
+  <div class="theme-toggle" id="themeToggle">
+    <span class="nav-icon">🌙</span>
+    <span>Tema Değiştir</span>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <h1 id="sectionTitle">📊 Dashboard</h1>
+      <div class="topbar-date" id="topDate"></div>
+    </div>
+    <div style="font-size:12px;color:var(--text2)">Oturum #1 — Hafta 1</div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div class="section active" id="sec-dashboard">
+    <div class="dash-grid">
+      <div class="stat-card accent">
+        <div class="stat-label">Quiz Skoru</div>
+        <div class="stat-number" id="dashQuizScore">—</div>
+        <div style="font-size:11px;color:var(--text2)">Henuz tamamlanmadi</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-label">Okuma Skoru</div>
+        <div class="stat-number" id="dashReadScore">—</div>
+        <div style="font-size:11px;color:var(--text2)">Henuz tamamlanmadi</div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-label">Oyun Skoru</div>
+        <div class="stat-number" id="dashGameScore">—</div>
+        <div style="font-size:11px;color:var(--text2)">Henuz tamamlanmadi</div>
+      </div>
+      <div class="stat-card warning">
+        <div class="stat-label">Kelime Bankasi</div>
+        <div class="stat-number" id="dashWordCount">0</div>
+        <div style="font-size:11px;color:var(--text2)">kelime kayitli</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-bottom:10px;">📅 Bu Haftanin Gramer Konulari</h3>
+      <div class="topic-list">
+        <div class="topic-tag"><span class="dot" style="background:var(--grammar)"></span> Reported Speech</div>
+        <div class="topic-tag"><span class="dot" style="background:var(--success)"></span> Conditionals (0,1,2,3)</div>
+        <div class="topic-tag"><span class="dot" style="background:var(--vocab)"></span> Causative Verbs</div>
+      </div>
+      <div class="plan-box">
+        <h4>📋 Bugunku Calisma Plani</h4>
+        <div class="plan-step">1️⃣ Gramer Quiz ile basla — 30 soru, 3 konudan</div>
+        <div class="plan-step">2️⃣ Okuma parcasini oku — Deniz'in hikayesi</div>
+        <div class="plan-step">3️⃣ Kavrama testini coz — 10 soru</div>
+        <div class="plan-step">4️⃣ Oyun bolumunde eğlen ve ogren</div>
+        <div class="plan-step">5️⃣ Zor kelimeleri isaretleyip kelime bankasina ekle</div>
+      </div>
+    </div>
+
+    <div class="motivation-box">
+      <h3>💪 Gunun Motivasyonu</h3>
+      <p>"Bir dili ogrenmek, yeni bir dunya kesfetmektir. Bugun o dunyaya bir adim daha yaklasiyorsun!"</p>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div class="section" id="sec-quiz">
+    <div class="quiz-header">
+      <div>
+        <div class="quiz-counter">Soru <span id="qNum">1</span> / 30</div>
+        <div class="quiz-progress"><div class="quiz-progress-fill" id="qProgress" style="width:3.3%"></div></div>
+      </div>
+      <div style="text-align:right">
+        <span style="color:var(--success);font-size:13px" id="qCorrectCount">✅ 0</span>
+        <span style="color:var(--accent);font-size:13px;margin-left:8px" id="qWrongCount">❌ 0</span>
+      </div>
+    </div>
+    <div id="quizArea"></div>
+    <div id="quizResult" style="display:none"></div>
+  </div>
+
+  <!-- ===== READING ===== -->
+  <div class="section" id="sec-reading">
+    <div class="legend-bar">
+      <div class="legend-item"><div class="legend-color" style="background:var(--grammar)"></div> Gramer Yapisi</div>
+      <div class="legend-item"><div class="legend-color" style="background:var(--phrasal)"></div> Phrasal Verb</div>
+      <div class="legend-item"><div class="legend-color" style="background:var(--vocab)"></div> Zor Kelime</div>
+      <div class="legend-item"><div class="legend-color" style="background:var(--chunk)"></div> Chunk / Sozu Obegi</div>
+    </div>
+    <div class="reading-passage" id="readingPassage"></div>
+    <h3 style="margin:20px 0 14px">📋 Kavrama Testi (10 Soru)</h3>
+    <div id="readingQuizArea"></div>
+    <div id="readingResult" style="display:none"></div>
+  </div>
+
+  <!-- ===== GAME ===== -->
+  <div class="section" id="sec-game">
+    <div class="game-area" id="gameArea"></div>
+  </div>
+
+  <!-- ===== WORD BANK ===== -->
+  <div class="section" id="sec-wordbank">
+    <div class="card">
+      <h3 style="margin-bottom:6px">📚 Kelime Bankasi — Aralıklı Tekrar</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:16px">
+        Isaretledigin kelimeler burada toplanir. Flashcard modunda calis!
+      </p>
+      <div class="wb-controls">
+        <div class="wb-filter active" data-filter="all">Tumu</div>
+        <div class="wb-filter" data-filter="due">Tekrar Zamani Gelenler</div>
+        <div class="wb-filter" data-filter="grammar">Gramer</div>
+        <div class="wb-filter" data-filter="vocab">Kelime</div>
+        <div class="wb-filter" data-filter="phrasal">Phrasal Verb</div>
+      </div>
+      <div id="wordBankContent">
+        <p style="text-align:center;color:var(--text2);padding:40px 0">
+          Henuz kelime eklenmedi. Okuma parcasi ve oyun bolumunden kelimeleri isaretleyerek ekleyebilirsin! 🔖
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PROGRESS ===== -->
+  <div class="section" id="sec-progress">
+    <div id="progressContent">
+      <div class="card" style="text-align:center;padding:40px">
+        <h3>📈 Ilerleme Raporu</h3>
+        <p style="color:var(--text2);margin-top:10px">
+          Tum bolumleri tamamladiktan sonra ilerleme raporun burada gorunecek.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA & STATE
+// ============================================================
+const STATE_KEY = 'dailyEnglish_session1';
+let state = loadState();
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STATE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return {
+    quizAnswers: [], quizScore: null, quizTopicScores: {},
+    readingAnswers: [], readingScore: null,
+    gameScore: null, gameType: null,
+    wordBank: JSON.parse(localStorage.getItem('dailyEnglish_wordBank') || '[]'),
+    completed: { quiz: false, reading: false, game: false }
+  };
+}
+function saveState() {
+  localStorage.setItem(STATE_KEY, JSON.stringify(state));
+  localStorage.setItem('dailyEnglish_wordBank', JSON.stringify(state.wordBank));
+}
+
+// ============================================================
+// QUIZ DATA — 30 Questions
+// ============================================================
+const quizQuestions = [
+  // REPORTED SPEECH — Multiple Choice (3)
+  {id:1, topic:"Reported Speech", type:"MC", question:'She said, "I am learning English." → Reported form:', options:["She said she is learning English.","She said she was learning English.","She said she has been learning English.","She said she had been learning English."], correct:1, explanation:{tr:"Direct speech'te 'am learning' (Present Continuous) reported speech'e cevrildiginde bir zaman geri gider: 'was learning' (Past Continuous) olur. Buna 'tense backshift' (zaman geri kaydirma) denir.",en:"In reported speech, Present Continuous 'am learning' shifts back to Past Continuous 'was learning'. This is called tense backshift."}},
+  {id:2, topic:"Reported Speech", type:"MC", question:'He asked me, "Where do you live?" → Reported form:', options:["He asked me where do I live.","He asked me where I lived.","He asked me where did I live.","He asked me where I live."], correct:1, explanation:{tr:"Reported questions'da soru cumlesi duze doner: 'where do you live' → 'where I lived'. Soru isareti ve devrik yapi kalkar. 'do' yardimci fiili duser, zaman geri kayar.",en:"In reported questions, the word order changes to statement order, the question mark drops, and tense backshift applies: 'where do you live' → 'where I lived'."}},
+  {id:3, topic:"Reported Speech", type:"MC", question:'The teacher told us, "Don\'t use your phones." → Reported:', options:["The teacher told us to not use our phones.","The teacher told us not to use our phones.","The teacher told us don't use our phones.","The teacher said us not to use our phones."], correct:1, explanation:{tr:"Emir cumlelerinde olumsuz reported speech: 'told + someone + not to + fiil' yapisi kullanilir. 'Don't use' → 'not to use'. 'said' degil 'told' kullanilir cunku bir muhatap var.",en:"Negative commands in reported speech: told + object + not to + verb. 'Don't use' becomes 'not to use'. We use 'told' (not 'said') because there's a direct object."}},
+
+  // CONDITIONALS — Multiple Choice (3)
+  {id:4, topic:"Conditionals", type:"MC", question:'If I ___ rich, I would travel the world. (Type 2)', options:["am","was","were","would be"], correct:2, explanation:{tr:"Type 2 Conditional (gercek disi/hayali durumlar) 'if + past simple' yapisi kullanir. 'Be' fiili icin tum oznelerde 'were' tercih edilir (formal). 'If I were rich...' = 'Zengin olsaydim...'",en:"Type 2 Conditional uses 'if + past simple'. For the verb 'be', 'were' is preferred for all subjects in formal English. 'If I were rich...' expresses an unreal present situation."}},
+  {id:5, topic:"Conditionals", type:"MC", question:'If she had studied harder, she ___ the exam. (Type 3)', options:["would pass","would have passed","will pass","had passed"], correct:1, explanation:{tr:"Type 3 Conditional (gecmiste gerceklesmemis durumlar): 'if + past perfect, would have + V3'. 'Had studied' → 'would have passed'. Gecmiste olmayi diledimiz ama olmamis bir durumu ifade eder.",en:"Type 3 Conditional: if + past perfect, would have + past participle. It expresses regret or hypothetical past situations that didn't happen."}},
+  {id:6, topic:"Conditionals", type:"MC", question:'Water ___ if you heat it to 100°C. (Type 0)', options:["will boil","would boil","boils","is boiling"], correct:2, explanation:{tr:"Type 0 Conditional (bilimsel gercekler, genel dogular): 'if + present simple, present simple'. Her iki tarafi da present simple. Su 100°C'de kaynar — bu degismez bir gercek.",en:"Type 0 Conditional uses present simple in both clauses. It expresses general truths and scientific facts. Water always boils at 100°C."}},
+
+  // CAUSATIVE — Multiple Choice (2)
+  {id:7, topic:"Causative Verbs", type:"MC", question:'I ___ my car washed yesterday. (Causative)', options:["had","have","got","was"], correct:0, explanation:{tr:"Causative yapisinda 'had + nesne + V3' gecmis zaman icin kullanilir. 'I had my car washed' = 'Arabami yikattim' (baskasina yaptirdim). Isi kendin yapmadin, birine yaptirdin.",en:"Causative structure: had + object + past participle (V3) for past tense. 'I had my car washed' means someone else washed it for you."}},
+  {id:8, topic:"Causative Verbs", type:"MC", question:'She ___ her hair cut every month.', options:["gets","makes","lets","does"], correct:0, explanation:{tr:"'Get + nesne + V3' causative yapisi: 'She gets her hair cut' = 'Sacini kestiriyor'. 'Get' burada 'have' ile ayni anlama gelir. 'Make' ve 'let' farkli yapilardir (make + someone + V1, let + someone + V1).",en:"'Get + object + V3' is a causative structure similar to 'have + object + V3'. 'Gets her hair cut' = has someone cut her hair. 'Make' and 'let' use base verb, not V3."}},
+
+  // REPORTED SPEECH — Fill in the Blank (3)
+  {id:9, topic:"Reported Speech", type:"FILL", question:'"I will help you," she said. → She said she _______ help me.', correct:"would", explanation:{tr:"'will' reported speech'te 'would' olur (tense backshift). Direct: 'I will help' → Reported: 'she would help'. Modal fiiller de zaman geri kaydirmasina uğrar: will→would, can→could, may→might.",en:"'will' becomes 'would' in reported speech (tense backshift). Modal verbs also shift back: will→would, can→could, may→might."}},
+  {id:10, topic:"Reported Speech", type:"FILL", question:'He asked me _______ I liked coffee. (reported yes/no question)', correct:"if", explanation:{tr:"Evet/hayir sorulari reported speech'te 'if' veya 'whether' ile baslar. 'Do you like coffee?' → 'He asked me if/whether I liked coffee.' Soru yapisi duz cumleye doner.",en:"Yes/no questions use 'if' or 'whether' in reported speech. The question form changes to statement order."}},
+  {id:11, topic:"Reported Speech", type:"FILL", question:'"Don\'t touch that!" the mother told her child. → The mother told her child _______ to touch that.', correct:"not", explanation:{tr:"Olumsuz emir cumlelerinde reported speech: 'told + someone + not to + fiil'. 'Don't touch' → 'not to touch'. 'not' kelimesi 'to' dan once gelir.",en:"Negative imperatives in reported speech: told + object + not to + verb. The word 'not' comes before 'to'."}},
+
+  // CONDITIONALS — Fill in the Blank (3)
+  {id:12, topic:"Conditionals", type:"FILL", question:'If it _______ tomorrow, we will cancel the picnic. (Type 1 — rain)', correct:"rains", explanation:{tr:"Type 1 Conditional: 'if + present simple, will + V1'. Gelecekte gerceklesmesi muhtemel durumlar icin. 'rains' present simple — 'it' icin 3. tekil saha eki '-s' eklenir.",en:"Type 1 Conditional: if + present simple, will + base verb. 'Rains' takes the third-person singular '-s' because the subject is 'it'."}},
+  {id:13, topic:"Conditionals", type:"FILL", question:'If I _______ you, I would apologize. (Type 2 — be)', correct:"were", explanation:{tr:"Type 2 Conditional'da 'be' fiili tum ozneler icin 'were' olur (formal). 'If I were you' = 'Senin yerinde olsam'. Gunluk konusmada 'was' da kullanilir ama 'were' daha dogrudur.",en:"In Type 2 Conditionals, 'were' is used for all subjects with 'be' (formal). 'If I were you' gives advice about hypothetical situations."}},
+  {id:14, topic:"Conditionals", type:"FILL", question:'If they had left earlier, they _______ have missed the train. (Type 3 — not)', correct:"wouldn't", explanation:{tr:"Type 3 Conditional olumsuz: 'would not have + V3'. 'Eger daha erken ciksalardi, treni kacirmazlardi.' Gecmiste olmayi diledigimiz ama olmayan bir durum.",en:"Type 3 Conditional negative: wouldn't have + V3. Expresses regret about a past event that didn't happen differently."}},
+
+  // CAUSATIVE — Fill in the Blank (2)
+  {id:15, topic:"Causative Verbs", type:"FILL", question:'I need to get my phone _______. (repair — V3)', correct:"repaired", explanation:{tr:"'Get + nesne + V3' causative yapisi. 'repair' fiilinin V3 hali 'repaired'. 'Telefonumu tamir ettirmem gerekiyor.' Isi baskasina yaptirma anlami var.",en:"Causative: get + object + past participle. 'Repair' → 'repaired' (V3). It means you arrange for someone else to repair it."}},
+  {id:16, topic:"Causative Verbs", type:"FILL", question:'The boss made the employees _______ overtime. (work)', correct:"work", explanation:{tr:"'Make + someone + V1 (yalin fiil)' yapisi: zorla yaptirma anlami. 'Made the employees work' = 'Calisanlari fazla mesai yapmaya zorladi'. Make'ten sonra 'to' KULLANILMAZ.",en:"Make + someone + base verb (no 'to'). It implies forcing someone to do something. 'Made them work' = forced them to work."}},
+
+  // REPORTED SPEECH — True/False (2)
+  {id:17, topic:"Reported Speech", type:"TF", question:'"She told that she was tired." — Bu cumle gramer olarak DOGRU mu?', correct:false, explanation:{tr:"YANLIS! 'tell' fiili mutlaka bir nesne (kime soyledigini) ister: 'She told ME that...' veya 'She said that...' 'tell' = birine soylemek, 'say' = soylemek (nesne almaz direkt olarak).",en:"WRONG! 'Tell' requires an object (who you're telling): 'She told ME that...' OR 'She said that...' Tell = tell someone, Say = say something."}},
+  {id:18, topic:"Reported Speech", type:"TF", question:'Reported speech\'te "yesterday" → "the day before" olarak degisir. Bu DOGRU mu?', correct:true, explanation:{tr:"DOGRU! Zaman ve yer ifadeleri de degisir: yesterday→the day before, today→that day, tomorrow→the next day/the following day, here→there, this→that, ago→before.",en:"CORRECT! Time and place expressions also change in reported speech: yesterday→the day before, today→that day, tomorrow→the following day."}},
+
+  // CONDITIONALS — True/False (3)
+  {id:19, topic:"Conditionals", type:"TF", question:'Type 2 Conditional gercekte olmayan, hayali durumlar icin kullanilir. DOGRU mu?', correct:true, explanation:{tr:"DOGRU! Type 2 = Unreal/hypothetical present. 'If I were a bird, I would fly.' = 'Kus olsaydim ucardim.' Simdi veya gelecekte gerceklesmesi dusuk durumlar.",en:"CORRECT! Type 2 expresses unreal or hypothetical present/future situations. Low probability or imaginary scenarios."}},
+  {id:20, topic:"Conditionals", type:"TF", question:'"If I will study hard, I will pass." — Bu cumle DOGRU mu?', correct:false, explanation:{tr:"YANLIS! Type 1 Conditional'in if-clause'unda 'will' KULLANILMAZ. Dogru hali: 'If I study hard, I will pass.' If-clause'da present simple, main clause'da will + V1.",en:"WRONG! Never use 'will' in the if-clause of Type 1 Conditionals. Correct: 'If I study hard, I will pass.' If-clause = present simple."}},
+  {id:21, topic:"Conditionals", type:"TF", question:'Mixed conditional: "If I had studied medicine, I would be a doctor now." DOGRU mu?', correct:true, explanation:{tr:"DOGRU! Bu bir Mixed Conditional: if + past perfect (gecmis kosul), would + V1 (simdiki sonuc). Gecmisteki bir eylemin simdiki sonucunu ifade eder.",en:"CORRECT! This is a Mixed Conditional: if + past perfect (past condition), would + base verb (present result). Past action → present consequence."}},
+
+  // CAUSATIVE — True/False (2)
+  {id:22, topic:"Causative Verbs", type:"TF", question:'"I had cut my hair" ve "I had my hair cut" ayni anlama gelir. DOGRU mu?', correct:false, explanation:{tr:"YANLIS! 'I had cut my hair' = Past Perfect (sacimi kesmistim — kendim kestim). 'I had my hair cut' = Causative (sacimi kestirdim — baskasina yaptirdim). Yapilari tamamen farkli!",en:"WRONG! 'I had cut my hair' = Past Perfect (I did it myself). 'I had my hair cut' = Causative (someone else did it for me). Completely different structures!"}},
+  {id:23, topic:"Causative Verbs", type:"TF", question:'"Let" causative yapisinda "izin vermek" anlamina gelir. DOGRU mu?', correct:true, explanation:{tr:"DOGRU! 'let + someone + V1' = birine bir sey yapmasina izin vermek. 'My parents let me stay up late.' = 'Ailem gec yatmama izin verdi.' Make=zorla, Let=izin ver, Have/Get=yaptir.",en:"CORRECT! 'Let + someone + base verb' = allow someone to do something. Let=allow, Make=force, Have/Get=arrange for someone to do."}},
+
+  // REPORTED SPEECH — Translation (2)
+  {id:24, topic:"Reported Speech", type:"TRANSLATE", question:'Turkce→Ingilizce: "Ogretmen bize sinava calismamuzi soyledi."', correct:"The teacher told us to study for the exam.", alts:["The teacher told us to study for the test.","The teacher told us that we should study for the exam."], explanation:{tr:"'told us to study' = bize calismamizi soyledi. Emir/rica iceren reported speech: told + nesne + to + fiil. 'study for the exam' = sinava calismak.",en:"Reported commands: told + object + to + verb. 'Told us to study for the exam' reports the command/instruction."}},
+  {id:25, topic:"Reported Speech", type:"TRANSLATE", question:'Ingilizce→Turkce: "He asked her whether she had finished the project."', correct:"Projeyi bitirip bitirmedigini ona sordu.", alts:["Ona projeyi bitirip bitirmedigini sordu.","Projeyi tamamlayip tamamlamadigini ona sordu."], explanation:{tr:"'asked her whether' = ona ...ip ...madigini sordu. 'whether' = olup olmadigini (if ile ayni). 'had finished' = past perfect → bitirip bitirmedigini.",en:"'Asked her whether she had finished' = reported yes/no question with tense backshift. Whether = if (for reported yes/no questions)."}},
+
+  // CONDITIONALS — Translation (3)
+  {id:26, topic:"Conditionals", type:"TRANSLATE", question:'Turkce→Ingilizce: "Yagmur yagarsa, evde kaliriz." (Type 1)', correct:"If it rains, we will stay at home.", alts:["If it rains, we'll stay home.","If it rains, we will stay home."], explanation:{tr:"Type 1: if + present simple, will + V1. 'Yagmur yagarsa' = 'If it rains' (present simple). 'evde kaliriz' = 'we will stay at home'.",en:"Type 1 Conditional: real future possibility. If-clause uses present simple, main clause uses will + base verb."}},
+  {id:27, topic:"Conditionals", type:"TRANSLATE", question:'Ingilizce→Turkce: "If I had known about the party, I would have come."', correct:"Partiyi bilseydim, gelirdim.", alts:["Parti hakkinda bilseydim, gelirdim.","Eger partiyi bilmis olsaydim, gelmis olurdum."], explanation:{tr:"Type 3 Conditional: 'If + past perfect, would have + V3'. Gecmiste gerceklesmemis bir durum icin pisman olma. 'had known' = bilseydim, 'would have come' = gelirdim.",en:"Type 3 Conditional expresses regret about the past. 'If I had known' = past perfect, 'would have come' = hypothetical past result."}},
+  {id:28, topic:"Conditionals", type:"TRANSLATE", question:'Turkce→Ingilizce: "Su 100 derecede kaynar." (Type 0)', correct:"Water boils at 100 degrees.", alts:["If you heat water to 100 degrees, it boils.","Water boils at 100 degrees Celsius."], explanation:{tr:"Type 0: Bilimsel gercekler. Present simple + present simple. 'Su kaynar' = 'Water boils'. Genel dogru oldugu icin Type 0 kullanilir.",en:"Type 0 Conditional for scientific facts. Both clauses use present simple. General truths that are always valid."}},
+
+  // CAUSATIVE — Translation (2)
+  {id:29, topic:"Causative Verbs", type:"TRANSLATE", question:'Turkce→Ingilizce: "Dislerimi kontrol ettirdim." (Causative — have)', correct:"I had my teeth checked.", alts:["I got my teeth checked.","I had my teeth examined."], explanation:{tr:"Causative: had + nesne + V3. 'Dislerimi' = 'my teeth', 'kontrol ettirdim' = 'had checked'. Isi baskasina (disce) yaptirdin.",en:"Causative: had + object + V3. 'Had my teeth checked' means you arranged for a dentist to check them."}},
+  {id:30, topic:"Causative Verbs", type:"TRANSLATE", question:'Ingilizce→Turkce: "The manager made everyone attend the meeting."', correct:"Mudur herkesi toplantiya katilmaya zorladi.", alts:["Yonetici herkesi toplantiya katilmak zorunda birakti.","Mudur herkesin toplantiya katilmasini sagladi."], explanation:{tr:"'make + someone + V1' = birini bir sey yapmaya zorlamak. 'made everyone attend' = herkesi katilmaya zorladi. 'Make' zorunluluk/baski ifade eder.",en:"Make + someone + base verb = force/compel someone to do something. 'Made everyone attend' implies the manager forced participation."}}
+];
+
+// ============================================================
+// READING PASSAGE DATA
+// ============================================================
+const readingData = {
+  title: "Deniz's Unexpected Day in London",
+  passage: `<p>Deniz had been living in London for six months, but she still <span class="chunk-hl">felt like a fish out of water<span class="tooltip-box"><span class="tooltip-type chunk-type">Chunk / Soz Obegi</span><b>feel like a fish out of water</b><br><b>Anlam:</b> Kendini yabanci/uyumsuz hissetmek<br><b>Ornek:</b> Moving to a new city, I felt like a fish out of water at first.</span></span> sometimes. Last Tuesday, her flatmate Sarah <span class="grammar-hl">told her that the landlord wanted to have the kitchen renovated<span class="tooltip-box"><span class="tooltip-type grammar-type">Reported Speech + Causative</span><b>told her that... wanted to have... renovated</b><br><b>Reported Speech:</b> Sarah'nin soyledigi rapor ediliyor (told + object + that clause)<br><b>Causative:</b> 'have the kitchen renovated' = mutfagi yenilettirmek (baskasina yaptirmak)<br><b>Turkce:</b> Sarah ona ev sahibinin mutfagi yenilettirmek istedigini soyledi.</span></span>.</p>
+
+<p>Deniz <span class="grammar-hl">asked Sarah whether they would need to move out<span class="tooltip-box"><span class="tooltip-type grammar-type">Reported Question</span><b>asked... whether they would need to</b><br><b>Kural:</b> Yes/No reported question: asked + object + whether/if + duz cumle<br><b>Tense backshift:</b> will → would<br><b>Turkce:</b> Deniz, Sarah'a tasinimlari gerekip gerekmeyecegini sordu.</span></span> during the renovation. Sarah laughed and said they could stay. "But," she added, "<span class="grammar-hl">if I were you, I would get my room painted too<span class="tooltip-box"><span class="tooltip-type grammar-type">Type 2 Conditional + Causative</span><b>If I were you, I would get... painted</b><br><b>Type 2:</b> Hayali/oneri durumu — 'were' tum oznelerde kullanilir<br><b>Causative:</b> 'get my room painted' = odami boyattirmak<br><b>Turkce:</b> Senin yerinde olsam, odami da boyattirirdim.</span></span>."</p>
+
+<p>That evening, Deniz <span class="vocab-hl">reluctantly<span class="tooltip-box"><span class="tooltip-type vocab-type">Zor Kelime</span><b>reluctantly</b> /rɪˈlʌktəntli/<br><b>Anlam:</b> isteksizce, gonulsuzce<br><b>Ornek:</b> He reluctantly agreed to help with the project.</span></span> called her landlord, Mr. Bennett. He <span class="grammar-hl">explained that if she had told him earlier, he could have included her room in the renovation plan<span class="tooltip-box"><span class="tooltip-type grammar-type">Type 3 Conditional (Reported)</span><b>if she had told him earlier, he could have included</b><br><b>Kural:</b> Type 3 = if + past perfect, would/could have + V3<br><b>Anlam:</b> Gecmiste gerceklesmemis durum — eger daha once soylseydi, dahil edebilirdi<br><b>Turkce:</b> Eger daha once soylseydi, odasini da plana dahil edebilecegini acikladi.</span></span>. However, he <span class="grammar-hl">promised that he would get a painter to come the following week<span class="tooltip-box"><span class="tooltip-type grammar-type">Reported Speech + Causative</span><b>promised that he would get a painter to come</b><br><b>Reported:</b> 'would' — will'in reported hali<br><b>Causative:</b> 'get someone to do' = birine yaptirmak (to ile)<br><b>Turkce:</b> Gelecek hafta bir boyaci getirtecegine soz verdi.</span></span>.</p>
+
+<p>Deniz was <span class="vocab-hl">thrilled<span class="tooltip-box"><span class="tooltip-type vocab-type">Zor Kelime</span><b>thrilled</b> /θrɪld/<br><b>Anlam:</b> cok heyecanli, cok mutlu<br><b>Ornek:</b> She was thrilled to hear the good news.</span></span>! She immediately <span class="phrasal-hl">looked into<span class="tooltip-box"><span class="tooltip-type phrasal-type">Phrasal Verb</span><b>look into</b><br><b>Anlam:</b> arastirmak, incelemek (investigate)<br><b>Literal:</b> icine bakmak → mecazi: derinlemesine incelemek<br><b>Ornek:</b> The police are looking into the case.</span></span> different paint colors online. She thought, "<span class="grammar-hl">If I choose a warm color, the room will feel cozier<span class="tooltip-box"><span class="tooltip-type grammar-type">Type 1 Conditional</span><b>If I choose..., the room will feel...</b><br><b>Kural:</b> Type 1 = if + present simple, will + V1<br><b>Anlam:</b> Gerceklesmesi muhtemel gelecek durumu<br><b>Turkce:</b> Sicak bir renk secersem, oda daha sicak hissedecek.</span></span>."</p>
+
+<p>The next day, Sarah <span class="grammar-hl">suggested that Deniz should have the walls checked for damp before painting<span class="tooltip-box"><span class="tooltip-type grammar-type">Reported Suggestion + Causative</span><b>suggested that... should have... checked</b><br><b>Reported Suggestion:</b> suggested that + subject + should + V1<br><b>Causative:</b> 'have the walls checked' = duvarlari kontrol ettirmek<br><b>Turkce:</b> Sarah, boyamadan once duvarlari nem icin kontrol ettirmesini onerdi.</span></span>. Deniz <span class="chunk-hl">took her advice to heart<span class="tooltip-box"><span class="tooltip-type chunk-type">Chunk / Soz Obegi</span><b>take something to heart</b><br><b>Anlam:</b> bir seyi ciddiye almak, icten benimsemek<br><b>Ornek:</b> Don't take his criticism to heart — he was just having a bad day.</span></span> and made the landlord <span class="grammar-hl">let a specialist inspect the walls<span class="tooltip-box"><span class="tooltip-type grammar-type">Causative — make + let</span><b>made the landlord let a specialist inspect</b><br><b>make + someone + V1:</b> zorla yaptirmak (made the landlord)<br><b>let + someone + V1:</b> izin vermek (let a specialist inspect)<br><b>Turkce:</b> Ev sahibini bir uzmana duvarlari inceletmeye zorladi.</span></span>. <span class="chunk-hl">As it turned out<span class="tooltip-box"><span class="tooltip-type chunk-type">Chunk / Soz Obegi</span><b>as it turned out</b><br><b>Anlam:</b> sonunda ortaya cikti ki, meğer<br><b>Ornek:</b> As it turned out, the restaurant was closed on Mondays.</span></span>, there was a small <span class="vocab-hl">leak<span class="tooltip-box"><span class="tooltip-type vocab-type">Zor Kelime</span><b>leak</b> /liːk/<br><b>Anlam:</b> sizinti, kacak<br><b>Ornek:</b> There was a leak in the roof after the storm.</span></span> behind the wall. <span class="grammar-hl">If Sarah hadn't warned her, the problem would have gotten much worse<span class="tooltip-box"><span class="tooltip-type grammar-type">Type 3 Conditional</span><b>If Sarah hadn't warned her, ... would have gotten worse</b><br><b>Kural:</b> Type 3 = if + past perfect, would have + V3<br><b>Anlam:</b> Sarah uyarmasaydi, sorun cok daha kotulesecekti<br><b>Turkce:</b> Sarah onu uyarmasaydi, sorun cok daha kotu olacakti.</span></span>.</p>
+
+<p>Deniz <span class="phrasal-hl">ended up<span class="tooltip-box"><span class="tooltip-type phrasal-type">Phrasal Verb</span><b>end up</b><br><b>Anlam:</b> sonunda ...ile bitmek, bir sekilde ...yapmak<br><b>Literal:</b> sona ermek → mecazi: beklenmedik bir sonuca ulasmak<br><b>Ornek:</b> We ended up staying until midnight.</span></span> with a beautifully painted room and a fixed wall. She later told her mother on the phone that <span class="grammar-hl">she wished she had moved to London sooner<span class="tooltip-box"><span class="tooltip-type grammar-type">Reported Speech — wish + past perfect</span><b>she wished she had moved... sooner</b><br><b>Kural:</b> wish + past perfect = gecmise dair pimanlik<br><b>Turkce:</b> Keske daha once Londra'ya tassaymis.</span></span>. Her mother <span class="vocab-hl">reassured<span class="tooltip-box"><span class="tooltip-type vocab-type">Zor Kelime</span><b>reassure</b> /ˌriːəˈʃʊr/<br><b>Anlam:</b> teselli etmek, icini rahatlatmak<br><b>Ornek:</b> The doctor reassured the patient that everything was fine.</span></span> her and <span class="grammar-hl">reminded her not to forget to have the locks changed<span class="tooltip-box"><span class="tooltip-type grammar-type">Reported Speech + Causative</span><b>reminded her not to forget to have the locks changed</b><br><b>Reported:</b> reminded + object + not to + V1<br><b>Causative:</b> 'have the locks changed' = kilitleri degistirtmek<br><b>Turkce:</b> Ona kilitleri degistirtmeyi unutmamasini hatirlatti.</span></span> — <span class="chunk-hl">better safe than sorry<span class="tooltip-box"><span class="tooltip-type chunk-type">Chunk / Soz Obegi</span><b>better safe than sorry</b><br><b>Anlam:</b> Tedbirli olmak, pismanliktan iyidir (atasoz)<br><b>Ornek:</b> Take an umbrella — better safe than sorry!</span></span>!</p>`,
+
+  questions: [
+    {id:1, type:"comprehension", question:"Deniz'in ev sahibi mutfak icin ne yapmak istiyordu?", options:["Mutfagi tamamen yikmak","Mutfagi yenilettirmek (renovate)","Mutfagi boyatmak","Mutfagi genisletmek"], correct:1, ref:"Paragraf 1"},
+    {id:2, type:"comprehension", question:"Mr. Bennett neden Deniz'in odasini plana dahil edememisti?", options:["Parasi yetmediginden","Deniz daha once soylemediginden","Sarah engelledigi icin","Odasi cok buyuk oldugu icin"], correct:1, ref:"Paragraf 3 — Type 3 Conditional ile ifade edilmis"},
+    {id:3, type:"comprehension", question:"Duvarlarin arkasinda ne bulundu?", options:["Eski bir boya tabakasi","Bir sizinti (leak)","Bocekler","Eski duvar kagidi"], correct:1, ref:"Paragraf 5"},
+    {id:4, type:"comprehension", question:"Deniz'in annesi ona ne hatirlatmisti?", options:["Kira odemesini","Kilitleri degistirtmesini","Sarah'a tesekkur etmesini","Turkiye'ye donmesini"], correct:1, ref:"Son paragraf"},
+    {id:5, type:"inference", question:"Sarah'nin Deniz'e 'nem kontrolu yaptir' demesinden ne cikarabiliriz?", options:["Sarah boyaci","Sarah tecrubeli/deneyimli biri","Sarah ev sahibini sevmiyor","Sarah tasiniyor"], correct:1, ref:"Sarah'nin pratik bilgisi ve onerisi bunu gosteriyor"},
+    {id:6, type:"inference", question:"Hikayenin genel mesaji nedir?", options:["Londra'da yasam pahali","Yardim istemekten cekinmemeli","Ev sahibiyle iletisim ve tavsiye dinlemek onemli","Boyama kolay bir is"], correct:2, ref:"Deniz'in Sarah'i dinleyip sorunun erken fark edilmesi ana mesaj"},
+    {id:7, type:"vocab_context", question:"'Reluctantly' kelimesi metinde nasil bir ruh halini anlatir?", options:["Heyecanli","Isteksiz, gonulsuz","Kizgin","Kararli"], correct:1, ref:"Deniz isteksizce ev sahibini aradi"},
+    {id:8, type:"vocab_context", question:"'Took her advice to heart' ifadesi ne anlama gelir?", options:["Tavsiyeyi reddetti","Tavsiyeyi ciddiye aldi","Tavsiyeyi unuttu","Tavsiyeden kirildi"], correct:1, ref:"Deniz, Sarah'nin tavsiyesini ciddiye alip harekete gecti"},
+    {id:9, type:"grammar_id", question:"'If Sarah hadn't warned her, the problem would have gotten worse' hangi conditional type?", options:["Type 0","Type 1","Type 2","Type 3"], correct:3, ref:"Paragraf 5 — gecmiste gerceklesmemis durum"},
+    {id:10, type:"grammar_id", question:"'She wished she had moved to London sooner' yapisinda hangi gramer kullanilmis?", options:["Reported Speech + Type 2","wish + past perfect (pimanlik)","Type 1 Conditional","Causative yapisi"], correct:1, ref:"Son paragraf — gecmise dair pimanlik ifadesi"}
+  ]
+};
+
+// ============================================================
+// GAME DATA
+// ============================================================
+const gameWords = [
+  {en:"feel like a fish out of water", tr:"kendini yabanci hissetmek", type:"chunk"},
+  {en:"take something to heart", tr:"ciddiye almak", type:"chunk"},
+  {en:"as it turned out", tr:"sonunda ortaya cikti ki", type:"chunk"},
+  {en:"better safe than sorry", tr:"tedbirli olmak iyidir", type:"chunk"},
+  {en:"look into", tr:"arastirmak, incelemek", type:"phrasal"},
+  {en:"end up", tr:"sonunda ...ile bitmek", type:"phrasal"},
+  {en:"reluctantly", tr:"isteksizce, gonulsuzce", type:"vocab"},
+  {en:"thrilled", tr:"cok heyecanli, mutlu", type:"vocab"},
+  {en:"leak", tr:"sizinti, kacak", type:"vocab"},
+  {en:"reassure", tr:"teselli etmek, icini rahatlatmak", type:"vocab"},
+  {en:"renovation", tr:"yenileme, tadilat", type:"vocab"},
+  {en:"damp", tr:"nemli, rutubetli", type:"vocab"},
+  {en:"landlord", tr:"ev sahibi", type:"vocab"},
+  {en:"flatmate", tr:"ev arkadasi", type:"vocab"},
+  {en:"inspect", tr:"incelemek, denetlemek", type:"vocab"},
+  {en:"cozy", tr:"sicak, rahat (mekan icin)", type:"vocab"}
+];
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const navItems = document.querySelectorAll('.nav-item');
+const sections = document.querySelectorAll('.section');
+const titles = {
+  dashboard:'📊 Dashboard', quiz:'📝 Gramer Quiz (30 Soru)',
+  reading:'📖 Okuma Parcasi & Kavrama Testi', game:'🎮 Kelime Oyunu',
+  wordbank:'📚 Kelime Bankasi', progress:'📈 Ilerleme Raporu'
+};
+
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const sec = item.dataset.section;
+    navItems.forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    sections.forEach(s => s.classList.remove('active'));
+    document.getElementById('sec-' + sec).classList.add('active');
+    document.getElementById('sectionTitle').textContent = titles[sec];
+  });
+});
+
+// Date
+const now = new Date();
+document.getElementById('topDate').textContent = now.toLocaleDateString('tr-TR', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+// Theme
+const themeToggle = document.getElementById('themeToggle');
+let isDark = true;
+themeToggle.addEventListener('click', () => {
+  isDark = !isDark;
+  document.body.classList.toggle('light', !isDark);
+  themeToggle.querySelector('.nav-icon').textContent = isDark ? '🌙' : '☀️';
+});
+
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+let currentQ = 0;
+let quizCorrect = 0;
+let quizWrong = 0;
+let quizTopicScores = {
+  "Reported Speech": {correct:0, total:0},
+  "Conditionals": {correct:0, total:0},
+  "Causative Verbs": {correct:0, total:0}
+};
+
+function renderQuiz() {
+  if (currentQ >= quizQuestions.length) { showQuizResult(); return; }
+  const q = quizQuestions[currentQ];
+  const area = document.getElementById('quizArea');
+  document.getElementById('qNum').textContent = currentQ + 1;
+  document.getElementById('qProgress').style.width = ((currentQ + 1) / 30 * 100) + '%';
+
+  let html = `<div class="card">`;
+  html += `<span class="quiz-topic-tag">${q.topic}</span>`;
+  html += `<span class="quiz-type-tag">${{MC:'Coktan Secmeli',FILL:'Bosluk Doldurma',TF:'Dogru/Yanlis',TRANSLATE:'Ceviri'}[q.type]}</span>`;
+  html += `<div class="question-text">${q.question}</div>`;
+
+  if (q.type === 'MC') {
+    html += `<div class="options" id="optionsArea">`;
+    const letters = ['A','B','C','D'];
+    q.options.forEach((opt, i) => {
+      html += `<div class="option-btn" data-idx="${i}"><span class="option-letter">${letters[i]}</span><span>${opt}</span></div>`;
+    });
+    html += `</div>`;
+  } else if (q.type === 'TF') {
+    html += `<div class="tf-options" id="optionsArea">`;
+    html += `<div class="tf-btn" data-val="true">✅ DOGRU (True)</div>`;
+    html += `<div class="tf-btn" data-val="false">❌ YANLIS (False)</div>`;
+    html += `</div>`;
+  } else if (q.type === 'FILL') {
+    html += `<input type="text" class="fill-input" id="fillInput" placeholder="Cevabini yaz..." autocomplete="off">`;
+    html += `<button class="check-btn" id="checkFillBtn">Kontrol Et</button>`;
+  } else if (q.type === 'TRANSLATE') {
+    html += `<input type="text" class="fill-input" id="fillInput" placeholder="Cevirini yaz..." autocomplete="off">`;
+    html += `<button class="check-btn" id="checkFillBtn">Kontrol Et</button>`;
+  }
+
+  html += `<div class="explanation-box" id="expBox"></div>`;
+  html += `<div style="margin-top:12px;display:none" id="nextArea"><button class="next-btn" id="nextBtn">Sonraki Soru →</button></div>`;
+  html += `</div>`;
+  area.innerHTML = html;
+
+  // Event listeners
+  if (q.type === 'MC') {
+    document.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleMCAnswer(parseInt(btn.dataset.idx)));
+    });
+  } else if (q.type === 'TF') {
+    document.querySelectorAll('.tf-btn').forEach(btn => {
+      btn.addEventListener('click', () => handleTFAnswer(btn.dataset.val === 'true'));
+    });
+  } else if (q.type === 'FILL' || q.type === 'TRANSLATE') {
+    document.getElementById('checkFillBtn').addEventListener('click', handleFillAnswer);
+    document.getElementById('fillInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleFillAnswer();
+    });
+  }
+}
+
+function handleMCAnswer(idx) {
+  const q = quizQuestions[currentQ];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => { b.style.pointerEvents = 'none'; });
+  btns[q.correct].classList.add('correct');
+  const isCorrect = idx === q.correct;
+  if (!isCorrect) btns[idx].classList.add('wrong');
+  finishQuestion(isCorrect);
+}
+
+function handleTFAnswer(val) {
+  const q = quizQuestions[currentQ];
+  const btns = document.querySelectorAll('.tf-btn');
+  btns.forEach(b => { b.style.pointerEvents = 'none'; });
+  const isCorrect = val === q.correct;
+  btns.forEach(b => {
+    if ((b.dataset.val === 'true') === q.correct) b.classList.add('correct');
+    else if ((b.dataset.val === String(val)) && !isCorrect) b.classList.add('wrong');
+  });
+  finishQuestion(isCorrect);
+}
+
+function handleFillAnswer() {
+  const q = quizQuestions[currentQ];
+  const input = document.getElementById('fillInput');
+  const userAns = input.value.trim().toLowerCase();
+  input.disabled = true;
+  document.getElementById('checkFillBtn').style.display = 'none';
+
+  let isCorrect = false;
+  if (q.type === 'FILL') {
+    isCorrect = userAns === q.correct.toLowerCase();
+  } else {
+    const allCorrect = [q.correct, ...(q.alts || [])].map(a => a.toLowerCase());
+    isCorrect = allCorrect.some(a => {
+      const sim = similarity(userAns, a);
+      return sim > 0.75;
+    });
+  }
+
+  input.style.borderColor = isCorrect ? 'var(--success)' : 'var(--accent)';
+  if (!isCorrect) {
+    input.insertAdjacentHTML('afterend', `<div style="color:var(--success);font-size:13px;margin-top:6px">Dogru cevap: <b>${q.correct}</b></div>`);
+  }
+  finishQuestion(isCorrect);
+}
+
+function similarity(a, b) {
+  if (a === b) return 1;
+  const longer = a.length > b.length ? a : b;
+  const shorter = a.length > b.length ? b : a;
+  if (longer.length === 0) return 1;
+  let matches = 0;
+  for (let i = 0; i < shorter.length; i++) {
+    if (shorter[i] === longer[i]) matches++;
+  }
+  return matches / longer.length;
+}
+
+function finishQuestion(isCorrect) {
+  const q = quizQuestions[currentQ];
+  if (isCorrect) { quizCorrect++; } else { quizWrong++; }
+  quizTopicScores[q.topic].total++;
+  if (isCorrect) quizTopicScores[q.topic].correct++;
+
+  document.getElementById('qCorrectCount').textContent = '✅ ' + quizCorrect;
+  document.getElementById('qWrongCount').textContent = '❌ ' + quizWrong;
+
+  const expBox = document.getElementById('expBox');
+  expBox.className = 'explanation-box show ' + (isCorrect ? 'correct-exp' : 'wrong-exp');
+  expBox.innerHTML = `<h4>${isCorrect ? '✅ Harika! Dogru cevap!' : '❌ Yanlis cevap!'}</h4>
+    <p><b>🇹🇷 Turkce:</b> ${q.explanation.tr}</p>
+    <p style="margin-top:6px"><b>🇬🇧 English:</b> ${q.explanation.en}</p>`;
+
+  document.getElementById('nextArea').style.display = 'block';
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    currentQ++;
+    renderQuiz();
+  });
+}
+
+function showQuizResult() {
+  const pct = Math.round(quizCorrect / 30 * 100);
+  state.quizScore = pct;
+  state.quizTopicScores = quizTopicScores;
+  state.completed.quiz = true;
+  saveState();
+  updateDashboard();
+
+  document.getElementById('quizArea').style.display = 'none';
+  document.querySelector('.quiz-header').style.display = 'none';
+  const res = document.getElementById('quizResult');
+  res.style.display = 'block';
+
+  let html = `<div class="quiz-result"><h2>Quiz Tamamlandi!</h2>`;
+  html += `<div class="score-circle ${pct >= 80 ? 'good' : ''}">${pct}%<div style="font-size:12px;font-weight:normal">${quizCorrect}/30</div></div>`;
+  html += `<p style="margin:10px 0;color:var(--text2)">${pct >= 80 ? 'Muthis! Harika bir performans!' : pct >= 60 ? 'Iyi gidiyorsun, biraz daha pratik yap!' : 'Endise etme, tekrar ile guclenir!'}</p>`;
+  html += `<div class="topic-breakdown"><h4 style="margin-bottom:10px">Konu Bazli Sonuclar:</h4>`;
+  for (const [topic, data] of Object.entries(quizTopicScores)) {
+    const tpct = data.total > 0 ? Math.round(data.correct / data.total * 100) : 0;
+    const color = tpct >= 80 ? 'var(--success)' : tpct >= 60 ? 'var(--warning)' : 'var(--accent)';
+    html += `<div class="topic-row"><span>${topic}</span><span style="color:${color};font-weight:bold">${data.correct}/${data.total} (${tpct}%)</span></div>`;
+  }
+  html += `</div></div>`;
+  res.innerHTML = html;
+
+  if (pct >= 80) launchConfetti();
+}
+
+// ============================================================
+// READING SECTION
+// ============================================================
+function initReading() {
+  document.getElementById('readingPassage').innerHTML = `<h3>📖 ${readingData.title}</h3>${readingData.passage}`;
+  renderReadingQuiz();
+}
+
+let readingQIndex = 0;
+let readingCorrect = 0;
+
+function renderReadingQuiz() {
+  const area = document.getElementById('readingQuizArea');
+  if (readingQIndex >= readingData.questions.length) { showReadingResult(); return; }
+  const q = readingData.questions[readingQIndex];
+  const typeLabels = {comprehension:'Metin Anlama', inference:'Cikarim', vocab_context:'Baglamdan Anlam', grammar_id:'Gramer Tanima'};
+
+  let html = `<div class="card">`;
+  html += `<span class="quiz-topic-tag">${typeLabels[q.type]}</span>`;
+  html += `<div class="quiz-counter" style="margin:6px 0">Soru ${readingQIndex + 1}/10</div>`;
+  html += `<div class="question-text">${q.question}</div>`;
+  html += `<div class="options" id="readOptArea">`;
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    html += `<div class="option-btn" data-idx="${i}"><span class="option-letter">${letters[i]}</span><span>${opt}</span></div>`;
+  });
+  html += `</div>`;
+  html += `<div class="explanation-box" id="readExpBox"></div>`;
+  html += `<div style="margin-top:12px;display:none" id="readNextArea"><button class="next-btn" id="readNextBtn">Sonraki →</button></div>`;
+  html += `</div>`;
+  area.innerHTML = html;
+
+  document.querySelectorAll('#readOptArea .option-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      const btns = document.querySelectorAll('#readOptArea .option-btn');
+      btns.forEach(b => b.style.pointerEvents = 'none');
+      btns[q.correct].classList.add('correct');
+      const isCorrect = idx === q.correct;
+      if (!isCorrect) btns[idx].classList.add('wrong');
+      if (isCorrect) readingCorrect++;
+
+      const exp = document.getElementById('readExpBox');
+      exp.className = 'explanation-box show ' + (isCorrect ? 'correct-exp' : 'wrong-exp');
+      exp.innerHTML = `<h4>${isCorrect ? '✅ Dogru!' : '❌ Yanlis!'}</h4><p>Referans: ${q.ref}</p>`;
+
+      document.getElementById('readNextArea').style.display = 'block';
+      document.getElementById('readNextBtn').addEventListener('click', () => {
+        readingQIndex++;
+        renderReadingQuiz();
+      });
+    });
+  });
+}
+
+function showReadingResult() {
+  const pct = Math.round(readingCorrect / 10 * 100);
+  state.readingScore = pct;
+  state.completed.reading = true;
+  saveState();
+  updateDashboard();
+
+  const area = document.getElementById('readingQuizArea');
+  area.innerHTML = `<div class="card" style="text-align:center">
+    <h3>Kavrama Testi Tamamlandi!</h3>
+    <div class="score-circle ${pct >= 80 ? 'good' : ''}" style="width:100px;height:100px;margin:16px auto;border-radius:50%;border:3px solid ${pct>=80?'var(--success)':'var(--accent)'};display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:bold;color:${pct>=80?'var(--success)':'var(--accent)'}">
+      ${pct}%
+    </div>
+    <p style="color:var(--text2)">${readingCorrect}/10 dogru — ${pct >= 80 ? 'Harika okuma anlayisi!' : 'Parcayi tekrar oku ve detaylara dikkat et.'}</p>
+  </div>`;
+}
+
+// ============================================================
+// GAME ENGINE — Random selection
+// ============================================================
+function initGame() {
+  const gameTypes = ['memory', 'scramble'];
+  const chosen = gameTypes[Math.floor(Math.random() * gameTypes.length)];
+  state.gameType = chosen;
+
+  if (chosen === 'memory') initMemoryGame();
+  else initScrambleGame();
+}
+
+// MEMORY MATCH GAME
+function initMemoryGame() {
+  const area = document.getElementById('gameArea');
+  const pairs = gameWords.slice(0, 8);
+  let cards = [];
+  pairs.forEach((w, i) => {
+    cards.push({id: i*2, pairId: i, text: w.en, type: 'en'});
+    cards.push({id: i*2+1, pairId: i, text: w.tr, type: 'tr'});
+  });
+  cards = cards.sort(() => Math.random() - 0.5);
+
+  let html = `<div class="game-title">🃏 Hafiza Kartlari (Memory Match)</div>`;
+  html += `<div class="game-subtitle">Ingilizce kelimeyi Turkce anlamiyla eslesir!</div>`;
+  html += `<div class="game-score" id="memScore">Eslesme: 0/${pairs.length} | Deneme: 0</div>`;
+  html += `<div class="memory-grid" id="memGrid">`;
+  cards.forEach(c => {
+    html += `<div class="memory-card" data-id="${c.id}" data-pair="${c.pairId}"><span class="card-back">?</span><span class="card-front" style="display:none">${c.text}</span></div>`;
+  });
+  html += `</div>`;
+  html += `<div style="margin-top:16px"><button class="bookmark-btn" id="memBookmarkBtn">🔖 Tum Kelimeleri Kelime Bankasina Ekle</button></div>`;
+  area.innerHTML = html;
+
+  let flipped = [];
+  let matched = 0;
+  let tries = 0;
+
+  document.querySelectorAll('.memory-card').forEach(card => {
+    card.addEventListener('click', () => {
+      if (flipped.length >= 2 || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+      card.classList.add('flipped');
+      card.querySelector('.card-back').style.display = 'none';
+      card.querySelector('.card-front').style.display = 'block';
+      flipped.push(card);
+
+      if (flipped.length === 2) {
+        tries++;
+        const [a, b] = flipped;
+        if (a.dataset.pair === b.dataset.pair && a.dataset.id !== b.dataset.id) {
+          matched++;
+          setTimeout(() => {
+            a.classList.add('matched');
+            b.classList.add('matched');
+            flipped = [];
+            document.getElementById('memScore').textContent = `Eslesme: ${matched}/${pairs.length} | Deneme: ${tries}`;
+            if (matched === pairs.length) finishGame(Math.max(0, 100 - (tries - pairs.length) * 5));
+          }, 500);
+        } else {
+          setTimeout(() => {
+            a.classList.remove('flipped');
+            b.classList.remove('flipped');
+            a.querySelector('.card-back').style.display = 'block';
+            a.querySelector('.card-front').style.display = 'none';
+            b.querySelector('.card-back').style.display = 'block';
+            b.querySelector('.card-front').style.display = 'none';
+            flipped = [];
+            document.getElementById('memScore').textContent = `Eslesme: ${matched}/${pairs.length} | Deneme: ${tries}`;
+          }, 800);
+        }
+      }
+    });
+  });
+
+  document.getElementById('memBookmarkBtn').addEventListener('click', () => addAllToWordBank(pairs));
+}
+
+// SCRAMBLE GAME
+function initScrambleGame() {
+  const area = document.getElementById('gameArea');
+  const sentences = [
+    {original: "She told me that she was learning English.", hint: "Reported Speech — tense backshift", tr: "Bana Ingilizce ogrendigini soyledi."},
+    {original: "If I were you I would study harder.", hint: "Type 2 Conditional — hayali oneri", tr: "Senin yerinde olsam daha cok calisirdim."},
+    {original: "I had my car repaired at the garage.", hint: "Causative — have + object + V3", tr: "Arabami tamircide tamir ettirdim."},
+    {original: "He asked me where I lived.", hint: "Reported Question — duz cumle yapisi", tr: "Bana nerede yasadigimi sordu."},
+    {original: "If she had studied she would have passed.", hint: "Type 3 Conditional — gecmis pimanlik", tr: "Calissaydi gecerdi."},
+    {original: "Water boils if you heat it to one hundred degrees.", hint: "Type 0 Conditional — bilimsel gercek", tr: "Su yuz dereceye isitirsan kaynar."},
+    {original: "The teacher made the students read the chapter.", hint: "Causative — make + someone + V1", tr: "Ogretmen ogrencilere bolumon okuttu."},
+    {original: "She got her nails done before the party.", hint: "Causative — get + object + V3", tr: "Partiden once tirnaklarini yaptirdi."}
+  ];
+
+  let sIdx = 0;
+  let scrambleScore = 0;
+
+  function renderScramble() {
+    if (sIdx >= sentences.length) { finishGame(Math.round(scrambleScore / sentences.length * 100)); return; }
+    const s = sentences[sIdx];
+    const words = s.original.replace(/[.,!?]/g, '').split(' ').sort(() => Math.random() - 0.5);
+
+    let html = `<div class="game-title">🔀 Cumle Karistirma (Sentence Scramble)</div>`;
+    html += `<div class="game-subtitle">Kelimeleri dogru siraya diz!</div>`;
+    html += `<div class="game-score">Cumle ${sIdx + 1}/${sentences.length} | Skor: ${scrambleScore}</div>`;
+    html += `<div class="scramble-area">`;
+    html += `<div class="scramble-sentence">💡 Ipucu: ${s.hint}<br>🇹🇷 ${s.tr}</div>`;
+    html += `<div class="scramble-target" id="scrTarget"></div>`;
+    html += `<div class="scramble-words" id="scrWords">`;
+    words.forEach((w, i) => {
+      html += `<div class="scramble-word" data-idx="${i}" data-word="${w}">${w}</div>`;
+    });
+    html += `</div>`;
+    html += `<button class="check-btn" id="scrCheckBtn" style="margin-top:10px">Kontrol Et</button>`;
+    html += `<button class="next-btn" id="scrClearBtn" style="margin-left:8px">Temizle</button>`;
+    html += `<div class="explanation-box" id="scrExp"></div>`;
+    html += `</div>`;
+    area.innerHTML = html;
+
+    let placed = [];
+
+    document.querySelectorAll('#scrWords .scramble-word').forEach(w => {
+      w.addEventListener('click', () => {
+        if (w.classList.contains('placed')) return;
+        w.classList.add('placed');
+        const clone = document.createElement('div');
+        clone.className = 'scramble-word';
+        clone.textContent = w.dataset.word;
+        clone.dataset.srcIdx = w.dataset.idx;
+        clone.addEventListener('click', () => {
+          clone.remove();
+          w.classList.remove('placed');
+          placed = placed.filter(p => p !== w.dataset.word + '_' + w.dataset.idx);
+        });
+        document.getElementById('scrTarget').appendChild(clone);
+        placed.push(w.dataset.word + '_' + w.dataset.idx);
+      });
+    });
+
+    document.getElementById('scrCheckBtn').addEventListener('click', () => {
+      const targetWords = Array.from(document.getElementById('scrTarget').children).map(c => c.textContent);
+      const correctWords = s.original.replace(/[.,!?]/g, '').split(' ');
+      const isCorrect = targetWords.join(' ').toLowerCase() === correctWords.join(' ').toLowerCase();
+
+      if (isCorrect) scrambleScore++;
+      const exp = document.getElementById('scrExp');
+      exp.className = 'explanation-box show ' + (isCorrect ? 'correct-exp' : 'wrong-exp');
+      exp.innerHTML = `<h4>${isCorrect ? '✅ Mukemmel!' : '❌ Dogru sira degil'}</h4><p><b>Dogru cumle:</b> ${s.original}</p>`;
+
+      document.getElementById('scrCheckBtn').style.display = 'none';
+      document.getElementById('scrClearBtn').textContent = 'Sonraki →';
+      document.getElementById('scrClearBtn').onclick = () => { sIdx++; renderScramble(); };
+    });
+
+    document.getElementById('scrClearBtn').addEventListener('click', () => {
+      document.getElementById('scrTarget').innerHTML = '';
+      document.querySelectorAll('#scrWords .scramble-word').forEach(w => w.classList.remove('placed'));
+      placed = [];
+    });
+  }
+  renderScramble();
+}
+
+function finishGame(score) {
+  state.gameScore = score;
+  state.completed.game = true;
+  saveState();
+  updateDashboard();
+
+  const area = document.getElementById('gameArea');
+  area.innerHTML += `<div class="card" style="text-align:center;margin-top:20px">
+    <h3>🎮 Oyun Tamamlandi!</h3>
+    <div style="font-size:28px;font-weight:bold;color:${score>=80?'var(--success)':'var(--accent)'};margin:12px 0">${score} puan</div>
+    <p style="color:var(--text2)">${score >= 80 ? 'Harika performans!' : 'Pratik yaptikca daha iyi olacaksin!'}</p>
+    <button class="bookmark-btn" style="margin-top:12px" onclick="addAllToWordBank(gameWords)">🔖 Tum Kelimeleri Bankaya Ekle</button>
+  </div>`;
+}
+
+// ============================================================
+// WORD BANK
+// ============================================================
+function addToWordBank(word) {
+  if (state.wordBank.find(w => w.en === word.en)) return;
+  state.wordBank.push({
+    ...word,
+    addedDate: new Date().toISOString(),
+    nextReview: new Date().toISOString(),
+    interval: 1,
+    reviewCount: 0,
+    level: 0
+  });
+  saveState();
+  updateDashboard();
+  renderWordBank();
+}
+
+function addAllToWordBank(words) {
+  let added = 0;
+  words.forEach(w => {
+    if (!state.wordBank.find(wb => wb.en === w.en)) {
+      state.wordBank.push({
+        ...w,
+        addedDate: new Date().toISOString(),
+        nextReview: new Date().toISOString(),
+        interval: 1,
+        reviewCount: 0,
+        level: 0
+      });
+      added++;
+    }
+  });
+  saveState();
+  updateDashboard();
+  renderWordBank();
+  alert(`✅ ${added} yeni kelime eklendi! (Zaten kayitli olanlar atlanidi)`);
+}
+
+function renderWordBank() {
+  const container = document.getElementById('wordBankContent');
+  if (state.wordBank.length === 0) {
+    container.innerHTML = `<p style="text-align:center;color:var(--text2);padding:40px 0">Henuz kelime eklenmedi. 🔖</p>`;
+    return;
+  }
+
+  let currentIdx = 0;
+  const words = [...state.wordBank];
+
+  function renderFlashcard() {
+    if (currentIdx >= words.length) {
+      container.innerHTML = `<div style="text-align:center;padding:30px"><h3 style="color:var(--success)">✅ Tum kartlar tamamlandi!</h3><p style="color:var(--text2);margin-top:8px">${words.length} kelime calisildi</p></div>`;
+      return;
+    }
+    const w = words[currentIdx];
+    container.innerHTML = `
+      <div style="text-align:center;margin-bottom:12px;color:var(--text2);font-size:12px">
+        Kart ${currentIdx + 1} / ${words.length}
+        <span style="margin-left:10px;padding:3px 8px;border-radius:10px;background:var(--bg3);font-size:10px">${w.type || 'vocab'}</span>
+      </div>
+      <div class="flashcard" id="flashcard">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <div class="flashcard-word">${w.en}</div>
+            <div class="flashcard-phonetic">Kartı cevirmeye tikla</div>
+          </div>
+          <div class="flashcard-back">
+            <div class="flashcard-meaning">${w.tr}</div>
+            <div class="flashcard-example" style="margin-top:8px">Tekrar: ${w.reviewCount || 0} kez</div>
+          </div>
+        </div>
+      </div>
+      <div class="rating-btns">
+        <button class="rate-btn dont-know" data-rate="0">Bilmiyorum</button>
+        <button class="rate-btn partial" data-rate="1">Biraz Biliyorum</button>
+        <button class="rate-btn know" data-rate="2">Biliyorum</button>
+      </div>`;
+
+    document.getElementById('flashcard').addEventListener('click', () => {
+      document.getElementById('flashcard').classList.toggle('flipped');
+    });
+
+    document.querySelectorAll('.rate-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const rate = parseInt(btn.dataset.rate);
+        const intervals = [1, 3, 7, 14, 30];
+        const bankItem = state.wordBank.find(wb => wb.en === w.en);
+        if (bankItem) {
+          bankItem.reviewCount = (bankItem.reviewCount || 0) + 1;
+          if (rate === 0) { bankItem.level = 0; bankItem.interval = 1; }
+          else if (rate === 1) { bankItem.interval = bankItem.interval; }
+          else { bankItem.level = Math.min((bankItem.level || 0) + 1, 4); bankItem.interval = intervals[bankItem.level]; }
+          const next = new Date();
+          next.setDate(next.getDate() + bankItem.interval);
+          bankItem.nextReview = next.toISOString();
+        }
+        saveState();
+        currentIdx++;
+        renderFlashcard();
+      });
+    });
+  }
+  renderFlashcard();
+}
+
+// Filter buttons
+document.querySelectorAll('.wb-filter').forEach(f => {
+  f.addEventListener('click', () => {
+    document.querySelectorAll('.wb-filter').forEach(ff => ff.classList.remove('active'));
+    f.classList.add('active');
+    renderWordBank();
+  });
+});
+
+// ============================================================
+// DASHBOARD UPDATE
+// ============================================================
+function updateDashboard() {
+  document.getElementById('dashQuizScore').textContent = state.quizScore !== null ? state.quizScore + '%' : '—';
+  document.getElementById('dashReadScore').textContent = state.readingScore !== null ? state.readingScore + '%' : '—';
+  document.getElementById('dashGameScore').textContent = state.gameScore !== null ? state.gameScore : '—';
+  document.getElementById('dashWordCount').textContent = state.wordBank.length;
+
+  // Update progress section
+  if (state.completed.quiz || state.completed.reading || state.completed.game) {
+    updateProgress();
+  }
+}
+
+function updateProgress() {
+  const container = document.getElementById('progressContent');
+  let html = `<div class="progress-grid">`;
+
+  // Quiz card
+  html += `<div class="card"><h4 style="margin-bottom:12px">📝 Gramer Quiz</h4>`;
+  if (state.quizScore !== null) {
+    html += `<div style="font-size:24px;font-weight:bold;color:${state.quizScore>=80?'var(--success)':'var(--accent)'}">${state.quizScore}%</div>`;
+    for (const [topic, data] of Object.entries(state.quizTopicScores || {})) {
+      const pct = data.total > 0 ? Math.round(data.correct / data.total * 100) : 0;
+      html += `<div class="progress-bar-container">
+        <div class="progress-bar-label"><span>${topic}</span><span>${pct}%</span></div>
+        <div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%;background:${pct>=80?'var(--success)':pct>=60?'var(--warning)':'var(--accent)'}"></div></div>
+      </div>`;
+    }
+  } else { html += `<p style="color:var(--text2)">Henuz tamamlanmadi</p>`; }
+  html += `</div>`;
+
+  // Reading card
+  html += `<div class="card"><h4 style="margin-bottom:12px">📖 Okuma Testi</h4>`;
+  if (state.readingScore !== null) {
+    html += `<div style="font-size:24px;font-weight:bold;color:${state.readingScore>=80?'var(--success)':'var(--accent)'}">${state.readingScore}%</div>`;
+    html += `<p style="color:var(--text2);font-size:12px;margin-top:6px">10 sorudan ${Math.round(state.readingScore/10)} dogru</p>`;
+  } else { html += `<p style="color:var(--text2)">Henuz tamamlanmadi</p>`; }
+  html += `</div>`;
+
+  // Game card
+  html += `<div class="card"><h4 style="margin-bottom:12px">🎮 Oyun</h4>`;
+  if (state.gameScore !== null) {
+    html += `<div style="font-size:24px;font-weight:bold;color:${state.gameScore>=80?'var(--success)':'var(--accent)'}">${state.gameScore} puan</div>`;
+    html += `<p style="color:var(--text2);font-size:12px;margin-top:6px">Tur: ${state.gameType === 'memory' ? 'Hafiza Kartlari' : 'Cumle Karistirma'}</p>`;
+  } else { html += `<p style="color:var(--text2)">Henuz tamamlanmadi</p>`; }
+  html += `</div>`;
+
+  // Word bank card
+  html += `<div class="card"><h4 style="margin-bottom:12px">📚 Kelime Bankasi</h4>`;
+  html += `<div style="font-size:24px;font-weight:bold;color:var(--info)">${state.wordBank.length}</div>`;
+  html += `<p style="color:var(--text2);font-size:12px;margin-top:6px">toplam kelime kayitli</p>`;
+  html += `</div>`;
+
+  html += `</div>`;
+
+  // Recommendations
+  html += `<div class="card" style="margin-top:16px"><h4 style="margin-bottom:10px">💡 Oneriler</h4>`;
+  const recommendations = [];
+  if (state.quizTopicScores) {
+    for (const [topic, data] of Object.entries(state.quizTopicScores)) {
+      const pct = data.total > 0 ? Math.round(data.correct / data.total * 100) : 0;
+      if (pct < 70) recommendations.push(`⚠️ <b>${topic}</b> konusunda %${pct} aldin — bu konuyu tekrar etmeni oneririm.`);
+    }
+  }
+  if (state.readingScore !== null && state.readingScore < 70) {
+    recommendations.push('⚠️ Okuma kavrama skorun dusuk — parcayi tekrar oku ve detaylara odaklan.');
+  }
+  if (recommendations.length === 0) recommendations.push('🎉 Harika gidiyorsun! Tum konularda iyi bir performans gosterdin.');
+  recommendations.forEach(r => { html += `<p style="font-size:13px;margin-bottom:6px">${r}</p>`; });
+  html += `</div>`;
+
+  container.innerHTML = html;
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function launchConfetti() {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+  const colors = ['#e94560','#4ecca3','#ffc107','#00b4d8','#b48ead','#f4a261'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = Math.random() * 2 + 's';
+    piece.style.width = (Math.random() * 8 + 5) + 'px';
+    piece.style.height = (Math.random() * 8 + 5) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.remove(), 4000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderQuiz();
+initReading();
+initGame();
+updateDashboard();
+renderWordBank();
+</script>
+</body>
+</html>

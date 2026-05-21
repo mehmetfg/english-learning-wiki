@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Threads #001 — A Tiny Lens, A Big Story</title>
+<style>
+:root{--bg:#0a1020;--surface:#121a30;--card:#1a2540;--card2:#1e2d4a;--border:#2d3f5e;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--accent:#3b82f6;--accent2:#60a5fa;--success:#22c55e;--error:#ef4444;--warn:#f59e0b;--gold:#fbbf24;--g1:#4fc3f7;--g2:#ce93d8;--g3:#ffb74d;--g4:#80cbc4;--g5:#a5d6a7;--g6:#ef9a9a}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Verdana,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.7}
+.sticky-top{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border)}
+.header-bar{background:linear-gradient(135deg,#0f1f3d,#1a2f5a);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:var(--accent);color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;border-radius:12px;letter-spacing:.5px}
+.badge.series{background:#8b5cf6}
+.header-bar h1{font-size:14px;font-weight:bold;color:#fff;flex:1;min-width:160px}
+.header-bar .meta{font-size:11px;color:var(--text2)}
+.source-bar{background:var(--surface);padding:6px 16px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border)}
+.source-bar a{color:var(--accent2);text-decoration:none}
+.source-bar a:hover{text-decoration:underline}
+.nav-arrows{margin-left:auto;display:flex;gap:6px}
+.nav-arrows a{padding:3px 9px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text2);font-size:11px;text-decoration:none}
+.nav-arrows a:hover{color:var(--accent2);border-color:var(--accent)}
+.nav-arrows a.disabled{opacity:.35;pointer-events:none}
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto}
+.tab-btn{padding:11px 16px;background:none;border:none;color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;min-width:44px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.content{max-width:860px;margin:0 auto;padding:20px 16px 80px}
+.tab-panel{display:none;animation:fadeIn .25s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.shake{animation:shake .35s ease}
+.passage{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;line-height:2;font-size:15px}
+.passage h2{font-size:20px;color:var(--accent2);margin-bottom:6px}
+.passage h3{font-size:16px;color:var(--accent2);margin:22px 0 8px;padding-top:14px;border-top:1px solid var(--border)}
+.passage .subtitle{font-size:12px;color:var(--text2);margin-bottom:18px}
+.passage p{margin-bottom:14px}
+[data-g]{border-radius:3px;padding:1px 4px;cursor:pointer;position:relative;font-weight:500}
+[data-g="1"]{background:rgba(79,195,247,.18);color:var(--g1);border-bottom:1px solid var(--g1)}
+[data-g="2"]{background:rgba(206,147,216,.18);color:var(--g2);border-bottom:1px solid var(--g2)}
+[data-g="3"]{background:rgba(255,183,77,.18);color:var(--g3);border-bottom:1px solid var(--g3)}
+[data-g="4"]{background:rgba(128,203,196,.18);color:var(--g4);border-bottom:1px solid var(--g4)}
+[data-g="5"]{background:rgba(165,214,167,.18);color:var(--g5);border-bottom:1px solid var(--g5)}
+[data-g="6"]{background:rgba(239,154,154,.18);color:var(--g6);border-bottom:1px solid var(--g6)}
+.g-tooltip{display:none;position:fixed;background:#1a2d4a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;max-width:290px;font-size:12px;line-height:1.5;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.6)}
+.tt-name{font-weight:bold;margin-bottom:3px;color:var(--accent2)}
+.tt-tr{color:var(--text2);margin-bottom:3px}
+.tt-formula{color:#94a3b8;font-style:italic;font-size:11px;font-family:'Courier New',monospace}
+.reading-meta{display:flex;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--text2);flex-wrap:wrap}
+.grammar-legend{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;font-size:11px}
+.gl-item{display:flex;align-items:center;gap:5px;color:var(--text2);cursor:pointer;padding:3px 6px;border-radius:6px}
+.gl-item:hover{background:var(--card);color:var(--text)}
+.gl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tts-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px}
+.tts-btn{padding:7px 13px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:12px;border-radius:18px;cursor:pointer;min-height:36px;display:inline-flex;align-items:center;gap:5px}
+.tts-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent2)}
+.tts-btn:disabled{opacity:.4;cursor:not-allowed}
+.tts-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tts-rate{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);margin-left:auto}
+.tts-rate input{accent-color:var(--accent);width:90px}
+.section-title{font-size:16px;font-weight:bold;color:var(--text);margin-bottom:6px}
+.section-sub{font-size:12px;color:var(--text2);margin-bottom:14px}
+.vocab-dash{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap;font-size:12px}
+.vd-item{display:flex;flex-direction:column;gap:2px;min-width:60px}
+.vd-num{font-size:18px;font-weight:bold;color:var(--accent2)}
+.vd-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.vd-num.gold{color:var(--gold)}
+.vocab-controls{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.vocab-btn{padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:18px;color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;min-height:36px}
+.vocab-btn:hover,.vocab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.flip-card{height:150px;cursor:pointer;perspective:1000px;position:relative}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center;border:1px solid var(--border)}
+.flip-front{background:var(--card)}
+.flip-front .fw{font-size:15px;font-weight:bold;color:var(--accent2)}
+.flip-front .fp{font-size:10px;color:var(--text2);margin-top:3px}
+.flip-front .fspk{margin-top:8px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:10px;padding:4px 9px;border-radius:10px;cursor:pointer;min-height:30px}
+.flip-front .fspk:hover{color:var(--accent2);border-color:var(--accent)}
+.flip-back{background:var(--card2);transform:rotateY(180deg)}
+.flip-back .ft{font-size:13px;color:var(--text);margin-bottom:4px}
+.flip-back .fe{font-size:11px;color:var(--text2);font-style:italic;line-height:1.4}
+.quiz-area{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+.q-stem{font-size:14px;color:var(--text);margin-bottom:12px}
+.q-num{color:var(--accent2);font-weight:bold;margin-right:6px}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt-btn{padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;text-align:left;transition:all .15s;min-height:44px}
+.opt-btn:hover{border-color:var(--accent)}
+.opt-btn.correct{background:rgba(34,197,94,.18);border-color:var(--success);color:var(--success)}
+.opt-btn.wrong{background:rgba(239,68,68,.18);border-color:var(--error);color:var(--error)}
+.opt-btn:disabled{cursor:not-allowed}
+.quiz-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:12px;color:var(--text2)}
+.gram-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.gram-card.expanded{border-color:var(--accent)}
+.gram-title{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:15px;color:var(--accent2);font-weight:bold}
+.gram-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.gram-arrow{margin-left:auto;color:var(--text3);transition:transform .2s}
+.gram-card.expanded .gram-arrow{transform:rotate(90deg)}
+.gram-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.gram-card.expanded .gram-body{display:block}
+.gram-formula{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 11px;font-family:'Courier New',monospace;font-size:12px;color:var(--accent2);margin-bottom:10px;line-height:1.5}
+.gram-explain{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6}
+.gram-ex-list{margin-bottom:14px}
+.gram-ex{padding:7px 11px;background:var(--card);border-left:3px solid var(--accent);border-radius:5px;margin-bottom:5px;font-size:12px}
+.gram-ex .en{color:var(--text);margin-bottom:2px}
+.gram-ex .tr{color:var(--text2);font-style:italic;font-size:11px}
+.mini-q{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.mq-text{font-size:12px;margin-bottom:8px;color:var(--text)}
+.mq-opts{display:flex;flex-direction:column;gap:5px}
+.mini-opt{padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;cursor:pointer;text-align:left;min-height:36px}
+.mini-opt:hover{border-color:var(--accent)}
+.mini-opt.correct{background:rgba(34,197,94,.18);border-color:var(--success);color:var(--success)}
+.mini-opt.wrong{background:rgba(239,68,68,.18);border-color:var(--error);color:var(--error)}
+.tf-grid{display:flex;flex-direction:column;gap:10px}
+.tf-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tf-stem{font-size:13px;color:var(--text);margin-bottom:10px}
+.tf-btns{display:flex;gap:8px}
+.tf-btn{flex:1;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;min-height:40px}
+.tf-btn:hover{border-color:var(--accent)}
+.tf-btn.correct{background:rgba(34,197,94,.18);border-color:var(--success);color:var(--success)}
+.tf-btn.wrong{background:rgba(239,68,68,.18);border-color:var(--error);color:var(--error)}
+.tf-explain{display:none;margin-top:8px;padding:8px 11px;background:var(--surface);border-radius:6px;font-size:11px;color:var(--text2);font-style:italic;border-left:3px solid var(--accent)}
+.tf-explain.show{display:block}
+.match-area{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-item{padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;text-align:center;transition:all .15s;min-height:42px;display:flex;align-items:center;justify-content:center}
+.match-item:hover:not(.matched){border-color:var(--accent)}
+.match-item.selected{border-color:var(--accent);background:var(--card2)}
+.match-item.matched{background:rgba(34,197,94,.18);border-color:var(--success);color:var(--success);cursor:default}
+.match-item.wrong-flash{animation:shake .35s ease;border-color:var(--error)}
+.explore-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.explore-card h3{font-size:15px;color:var(--accent2);margin-bottom:10px}
+.explore-card p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.explore-card ul{margin-left:20px;font-size:13px;color:var(--text2);line-height:1.8}
+.explore-card textarea{width:100%;min-height:120px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;padding:10px;resize:vertical}
+.btn-check{padding:9px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;min-height:40px}
+.btn-check:hover{background:var(--accent2)}
+.btn-show{padding:9px 16px;background:var(--card);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;margin-left:8px;min-height:40px}
+.btn-show:hover{color:var(--text)}
+.quiz-score-bar{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:14px;font-size:12px;flex-wrap:wrap}
+.score-num{font-size:18px;font-weight:bold;color:var(--accent2)}
+.score-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+@media(max-width:600px){.header-bar h1{font-size:13px}.passage{padding:18px 14px}.passage h2{font-size:18px}.cards-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.match-area{grid-template-columns:1fr;gap:6px}.match-col{gap:6px}.tab-btn{padding:10px 12px;font-size:11px}.content{padding:14px 12px 60px}}
+</style>
+</head>
+<body>
+<div class="sticky-top">
+  <div class="header-bar">
+    <span class="badge series">DAILY THREADS</span>
+    <span class="badge">#001</span>
+    <h1>A Tiny Lens, A Big Story</h1>
+    <span class="meta">A2-B1 · ~920 words · iPhone Photography</span>
+  </div>
+  <div class="source-bar">
+    📄 Source: <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fseries%2Fdaily-threads%2F001-iphone-photography">001-iphone-photography.md</a>
+    <span class="nav-arrows">
+      <a class="disabled" href="#">← Prev</a>
+      <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fseries%2Fdaily-threads%2Findex">Index</a>
+      <a href="daily-threads-002-ai-thinking.html">Next →</a>
+    </span>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('reading',this)">📖 Reading</button>
+    <button class="tab-btn" onclick="showTab('vocabulary',this)">📚 Vocabulary</button>
+    <button class="tab-btn" onclick="showTab('grammar',this)">🔧 Grammar</button>
+    <button class="tab-btn" onclick="showTab('quiz',this)">✏️ Quiz</button>
+    <button class="tab-btn" onclick="showTab('explore',this)">🌍 Explore</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- READING -->
+<div id="t-reading" class="tab-panel active">
+  <div class="grammar-legend">
+    <span style="font-size:11px;color:var(--text2);font-weight:bold;align-self:center">Grammar colours:</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g1)"></span>Present Simple</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g2)"></span>Present Perfect</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g3)"></span>Used to / past habit</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g4)"></span>1st Conditional</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g5)"></span>Relative Clauses</span>
+  </div>
+  <div class="tts-bar">
+    <button class="tts-btn" id="tts-play" onclick="ttsPlay()">▶ Play</button>
+    <button class="tts-btn" id="tts-pause" onclick="ttsPause()" disabled>⏸ Pause</button>
+    <button class="tts-btn" id="tts-stop" onclick="ttsStop()" disabled>⏹ Stop</button>
+    <div class="tts-rate"><span>Speed: <span id="rate-val">0.9×</span></span><input type="range" id="tts-rate" min="0.6" max="1.4" step="0.05" value="0.9" oninput="updateRate()"></div>
+  </div>
+  <div class="passage" id="passage">
+    <h2>A Tiny Lens, A Big Story</h2>
+    <div class="subtitle">Daily Threads #001 · iPhone Photography · A2-B1</div>
+    <p><span data-g="1">You pull your iPhone out of your pocket</span>. <span data-g="1">You tap the camera icon</span>. You frame a small moment — your friend laughing, the morning light on a coffee cup, the dog jumping over a puddle. You press the button. You move on with your day.</p>
+    <p>You probably do this many times a day. Most of us do. But <span data-g="2">have you ever stopped to think about what is actually happening</span> inside that little glass lens? Because it is much more interesting than people realise.</p>
+    <h3>The Idea</h3>
+    <p>A camera, at heart, is a simple machine. Light goes in. The camera captures that light. Then it shows you a picture. That has been true since the very first camera, two hundred years ago.</p>
+    <p>But a phone camera is not just a small version of an old camera. It does something old cameras could never do. When you press the button, your iPhone does not take <strong>one</strong> picture. It takes many — sometimes ten or fifteen — in less than a second. Then, while you are still smiling, the phone uses a small piece of software to pick the best parts of each picture and put them together. Sharp eyes from one shot. Good light from another. A clean background from a third.</p>
+    <p>By the time the picture shows up on your screen, <span data-g="2">it has already been built</span> — not just taken. The phone has done the work <span data-g="5">that a professional photographer used to do</span> in a dark room. And it all happened in less than half a second.</p>
+    <h3>Deeper</h3>
+    <p>This is why your iPhone photos look good even when you do not know much about photography. The phone is helping you all the time. <span data-g="4">If there is too little light, the phone keeps the shutter</span> — the little door <span data-g="5">that lets light in</span> — open a tiny bit longer, and it brightens up the dark areas. <span data-g="4">If your hand shakes, the phone uses a small motor</span> inside to keep the lens still. <span data-g="4">If the colours look strange, the phone fixes them</span>.</p>
+    <p>People sometimes complain about this. They say, <em>"It's not a real picture. The phone made it look better than it really was."</em> And they have a point. But here is another way to look at it. Old cameras did not really show "reality" either. They showed the choices of the photographer — what to focus on, what to leave out, when to press the button. A photo has always been a choice, not a copy of the world.</p>
+    <p>Your iPhone is just making different choices. And often, it is making them better than your eyes did in that moment. <span data-g="2">Have you ever taken a photo and thought, "It looks even nicer than what I saw"?</span> That is the phone helping you remember the feeling more than the exact view.</p>
+    <h3>The Twist</h3>
+    <p>Here is the part that most people miss. The biggest change in phone cameras is not the lens. It is not the size of the camera. It is not even the speed.</p>
+    <p>The biggest change is <strong>language</strong>. Your phone can now understand what is in the picture.</p>
+    <p>When you point your iPhone at a face, the phone knows it is a face. When you point it at food, it knows it is food. When you point it at a sunset, it knows that too. And because the phone knows, it can change the settings on its own. More warm colour for the sunset. Sharper focus for the face. Brighter light for the food.</p>
+    <p>This is <span data-g="5">what people mean when they say cameras now have "intelligence."</span> Some of it is real intelligence — the same kind of thinking that goes on inside AI tools you have probably heard about. The lens has not changed much in ten years. The brain behind the lens has changed completely.</p>
+    <p>So when your friend says, <em>"Your iPhone takes amazing photos,"</em> what they really mean is: <em>"Your iPhone understands what it is looking at."</em></p>
+    <h3>Landing</h3>
+    <p>The next time you snap a picture, pause for a second. Think about what just happened. A tiny machine in your pocket captured light, took ten pictures, picked the best parts of each, fixed the colour, recognised the face, sharpened the eyes — and gave you something you can hold onto for years. All while you were busy living the moment.</p>
+    <p>You did not need to know any of this to use it. That is the magic of good technology — it gets out of your way. But knowing about it changes how you see the picture. The picture is not just a flat image. It is a small story about light, software, choice, and time.</p>
+    <p>A tiny lens. A big story. Right in your pocket.</p>
+    <div class="reading-meta">
+      <span>📊 ~920 words</span>
+      <span>⏱ 5-7 min read</span>
+      <span>🎯 Level: A2-B1</span>
+      <span>🔧 5 grammar structures</span>
+    </div>
+  </div>
+  <div class="g-tooltip" id="g-tt"></div>
+</div>
+
+<!-- VOCABULARY -->
+<div id="t-vocabulary" class="tab-panel">
+  <div class="section-title">📚 Vocabulary — 16 Words</div>
+  <div class="section-sub">Flip the card. Listen to the word. Then test yourself with the quiz.</div>
+  <div class="vocab-dash">
+    <div class="vd-item"><span class="vd-num" id="vd-total">16</span><span class="vd-label">Total</span></div>
+    <div class="vd-item"><span class="vd-num gold" id="vd-learned">0</span><span class="vd-label">Flipped</span></div>
+    <div class="vd-item"><span class="vd-num" id="vd-quiz">0</span><span class="vd-label">Quiz Score</span></div>
+  </div>
+  <div class="vocab-controls">
+    <button class="vocab-btn active" onclick="setVMode('flash',this)">🃏 Flashcards</button>
+    <button class="vocab-btn" onclick="setVMode('quiz',this)">❓ Quiz</button>
+  </div>
+  <div id="vocab-content"></div>
+</div>
+
+<!-- GRAMMAR -->
+<div id="t-grammar" class="tab-panel">
+  <div class="section-title">🔧 Grammar — 5 Structures from the Text</div>
+  <div class="section-sub">Each colour in the reading matches one structure. Tap a card to open. Try the mini-test.</div>
+  <div id="grammar-content"></div>
+</div>
+
+<!-- QUIZ -->
+<div id="t-quiz" class="tab-panel">
+  <div class="section-title">✏️ Quiz</div>
+  <div class="section-sub">Three rounds: comprehension MCQ, true/false, and word matching.</div>
+  <div class="quiz-score-bar">
+    <div><span class="score-num" id="qs-mcq">0/8</span> <span class="score-label">MCQ</span></div>
+    <div><span class="score-num" id="qs-tf">0/6</span> <span class="score-label">True/False</span></div>
+    <div><span class="score-num" id="qs-match">0/6</span> <span class="score-label">Match</span></div>
+  </div>
+  <div class="vocab-controls">
+    <button class="vocab-btn active" onclick="setQMode('mcq',this)">📝 MCQ (8)</button>
+    <button class="vocab-btn" onclick="setQMode('tf',this)">✓✗ True/False (6)</button>
+    <button class="vocab-btn" onclick="setQMode('match',this)">🔗 Match (6)</button>
+  </div>
+  <div id="quiz-content"></div>
+</div>
+
+<!-- EXPLORE -->
+<div id="t-explore" class="tab-panel">
+  <div class="section-title">🌍 Explore</div>
+  <div class="section-sub">Culture, translation, and a writing prompt to make the words yours.</div>
+  <div class="explore-card">
+    <h3>📷 Culture Note — Why "Take" a Photo?</h3>
+    <p>In English we "<strong>take</strong>" a photo, but in some languages people say "make" or "shoot" or "draw" a photo. Each verb tells you what the culture thinks the photo is.</p>
+    <ul>
+      <li>🇬🇧 <strong>take</strong> a photo — quick, like picking it from the world</li>
+      <li>🇫🇷 <em>prendre</em> une photo — also "take" (same idea)</li>
+      <li>🇩🇪 <em>machen</em> ein Foto — "make," like building it</li>
+      <li>🇹🇷 fotoğraf <em>çekmek</em> — "to pull," like pulling the moment out</li>
+    </ul>
+    <p>The Turkish verb "çekmek" is interesting — you <em>pull</em> a photo. In English it might sound strange, but it captures the feeling of grabbing a moment from time.</p>
+  </div>
+  <div class="explore-card">
+    <h3>🔄 Translation Notes</h3>
+    <ul>
+      <li><strong>capture a moment</strong> → bir anı yakalamak (the English "capture" is wider than "yakalamak" — it includes light, attention, story)</li>
+      <li><strong>show up</strong> → ortaya çıkmak / belirmek (very common phrasal verb)</li>
+      <li><strong>hold onto</strong> → tutmak / saklamak (emotional flavour, not just physical)</li>
+      <li><strong>get out of (someone's) way</strong> → yoldan çekilmek (used for design, people, ideas)</li>
+      <li><strong>at heart</strong> → özünde / temelde ("a camera is, at heart, a simple machine")</li>
+    </ul>
+  </div>
+  <div class="explore-card">
+    <h3>✍️ Writing Prompt</h3>
+    <p style="margin-bottom:12px"><strong>"A photo I keep coming back to."</strong> Write 5-8 sentences in English. Describe one photo on your phone that means something to you. What is in it? When did you take it? Why do you keep it?</p>
+    <p style="margin-bottom:12px;font-size:12px;color:var(--text3)">Try to use at least 3 of these words: <em>capture · moment · frame · hold onto · show up · background</em>.</p>
+    <textarea id="write-area" placeholder="Start writing here..."></textarea>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-check" onclick="saveWrite()">💾 Save</button>
+      <button class="btn-show" onclick="loadWrite()">📂 Load</button>
+      <button class="btn-show" onclick="clearWrite()">🗑️ Clear</button>
+    </div>
+    <div id="write-status" style="margin-top:8px;font-size:11px;color:var(--text2)"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SKEY='dt-001-';
+
+const GRAMMAR_INFO={
+  1:{name:'Present Simple',tr:'Geniş Zaman — alışkanlık, genel doğru',formula:'subj + V1/Vs',hint:'You pull, You tap...'},
+  2:{name:'Present Perfect',tr:'Yakın Geçmiş — deneyim, sonuç şimdi',formula:'have/has + V3',hint:'Have you ever stopped...'},
+  3:{name:'Used to / Past Habit',tr:'Eskiden — geçmişte yaptığın artık yapmadığın',formula:'used to + V1',hint:'used to do in a dark room'},
+  4:{name:'1st Conditional',tr:'Birinci Koşul — olası gelecek',formula:'If + V1, will/Present V1',hint:'If there is too little light, the phone keeps...'},
+  5:{name:'Relative Clauses',tr:'Sıfat Cümleleri — that/which/who',formula:'noun + that/who/which + clause',hint:'the door that lets light in'}
+};
+
+const VOCAB=[
+ {w:'lens',p:'/lenz/',tr:'mercek; kameranın camı',ex:'My phone has three lenses on the back.'},
+ {w:'capture',p:'/ˈkæp.tʃər/',tr:'yakalamak (an, ışık, dikkat)',ex:'This photo captures the energy of the city.'},
+ {w:'frame',p:'/freɪm/',tr:'çerçevelemek; kadraja almak',ex:'She framed the shot to include the bridge.'},
+ {w:'shutter',p:'/ˈʃʌt.ər/',tr:'objektif kapağı; deklanşör',ex:'You can hear the shutter click.'},
+ {w:'focus',p:'/ˈfəʊ.kəs/',tr:'odak; netlik',ex:'The face is in focus, but the background is soft.'},
+ {w:'background',p:'/ˈbæk.ɡraʊnd/',tr:'arka plan',ex:'The trees in the background look beautiful.'},
+ {w:'software',p:'/ˈsɒft.weər/',tr:'yazılım',ex:'New software makes old phones take better photos.'},
+ {w:'setting',p:'/ˈset.ɪŋ/',tr:'ayar; seçenek',ex:'Change the camera setting to night mode.'},
+ {w:'brighten',p:'/ˈbraɪ.tən/',tr:'aydınlatmak; ışığı arttırmak',ex:'The phone brightens up dark areas.'},
+ {w:'sharpen',p:'/ˈʃɑː.pən/',tr:'keskinleştirmek; netleştirmek',ex:'The software sharpens the eyes a little.'},
+ {w:'recognise',p:'/ˈrek.əɡ.naɪz/',tr:'tanımak',ex:'The phone recognises your face.'},
+ {w:'realise',p:'/ˈrɪə.laɪz/',tr:'fark etmek; anlamak',ex:'I did not realise how clever the camera was.'},
+ {w:'moment',p:'/ˈməʊ.mənt/',tr:'an; çok kısa süre',ex:'Cameras help us keep small moments.'},
+ {w:'choice',p:'/tʃɔɪs/',tr:'seçim; tercih',ex:'A photo is always a choice.'},
+ {w:'snap',p:'/snæp/',tr:'(fotoğraf) çekmek (hızlı)',ex:'He snapped a picture of the cat.'},
+ {w:'zoom in',p:'/zuːm ɪn/',tr:'yakınlaştırmak',ex:'Zoom in on her face.'}
+];
+
+const GRAMMAR=[
+ {id:1,title:'Present Simple — Daily Actions',dot:'var(--g1)',formula:'subj + V1 (he/she/it + Vs)',explain:'Her gün, her sabah, her zaman olan şeyler için kullanırız. Alışkanlıklar, genel gerçekler.',ex:[
+   {en:'You pull your iPhone out of your pocket.',tr:'iPhone\'unu cebinden çıkarırsın.'},
+   {en:'The camera captures light.',tr:'Kamera ışığı yakalar.'},
+   {en:'She takes photos every weekend.',tr:'Her hafta sonu fotoğraf çeker.'},
+   {en:'My friend doesn\'t use his camera much.',tr:'Arkadaşım kamerasını çok kullanmaz.'}
+ ],mini:[
+   {q:'Choose the correct form: "She _____ her phone to take photos."',opts:['use','uses','using'],ans:1},
+   {q:'Which is correct?',opts:['He don\'t take photos.','He doesn\'t takes photos.','He doesn\'t take photos.'],ans:2}
+ ]},
+ {id:2,title:'Present Perfect — Experience',dot:'var(--g2)',formula:'have/has + V3 (past participle)',explain:'"Hiç şunu yaptın mı?" sorularında. Geçmişte oldu ama zaman önemli değil — sonuç ya da deneyim önemli.',ex:[
+   {en:'Have you ever stopped to think about this?',tr:'Hiç bunu düşünmek için durdun mu?'},
+   {en:'The picture has already been built.',tr:'Resim çoktan kurulmuş bile.'},
+   {en:'I have taken many photos this year.',tr:'Bu yıl birçok fotoğraf çektim.'},
+   {en:'She hasn\'t seen that photo yet.',tr:'O fotoğrafı henüz görmedi.'}
+ ],mini:[
+   {q:'Choose: "_____ you _____ to Paris?"',opts:['Did / go','Have / been','Are / going'],ans:1},
+   {q:'"I _____ that movie three times." Best:',opts:['saw','have seen','was seeing'],ans:1}
+ ]},
+ {id:3,title:'Used to — Past Habit',dot:'var(--g3)',formula:'used to + V1 (base form)',explain:'Eskiden yapıyordun ama artık yapmıyorsun. Sadece geçmiş için; "use to" değil, "used to".',ex:[
+   {en:'Photographers used to develop photos in a dark room.',tr:'Fotoğrafçılar eskiden fotoğrafları karanlık odada çıkarırdı.'},
+   {en:'I used to take photos with film.',tr:'Eskiden filmli kameralarla fotoğraf çekerdim.'},
+   {en:'She used to live in Istanbul.',tr:'Eskiden İstanbul\'da yaşardı.'},
+   {en:'We didn\'t use to have smartphones.',tr:'Eskiden akıllı telefonumuz yoktu.'}
+ ],mini:[
+   {q:'Which is correct?',opts:['I use to play tennis.','I used to play tennis.','I used to playing tennis.'],ans:1},
+   {q:'"_____ smoke?" (Eskiden sigara içer miydin?)',opts:['Do you used to','Did you use to','Are you used to'],ans:1}
+ ]},
+ {id:4,title:'First Conditional — Real Future Possibility',dot:'var(--g4)',formula:'If + Present Simple, will/Present',explain:'Olabilir bir durum + onun sonucu. Burada metinde "will" yerine present (geniş zaman) kullanılmış — bu da çok yaygın: ardışık genel kural.',ex:[
+   {en:'If there is too little light, the phone keeps the shutter open longer.',tr:'Eğer çok az ışık varsa, telefon objektifi daha uzun açık tutar.'},
+   {en:'If you press the button, the phone takes many pictures.',tr:'Düğmeye basarsan, telefon birçok resim çeker.'},
+   {en:'If it rains tomorrow, I will stay home.',tr:'Yarın yağmur yağarsa, evde kalacağım.'},
+   {en:'If you tap the icon, the camera opens.',tr:'Simgeye dokunursan, kamera açılır.'}
+ ],mini:[
+   {q:'"If the weather _____ nice, we will go out."',opts:['will be','is','was'],ans:1},
+   {q:'"If you _____ the button, the photo _____."',opts:['will press / will save','press / saves','press / will save'],ans:2}
+ ]},
+ {id:5,title:'Relative Clauses — that/which/who',dot:'var(--g5)',formula:'noun + that/who/which + verb...',explain:'İki cümleyi tek cümlede birleştir. İnsanlar için "who", nesneler için "that" ya da "which".',ex:[
+   {en:'The door that lets light in is called the shutter.',tr:'Işığı içeri alan kapağa shutter denir.'},
+   {en:'The work that a photographer used to do is now done by software.',tr:'Eskiden fotoğrafçının yaptığı iş şimdi yazılım tarafından yapılıyor.'},
+   {en:'The person who took this photo is my sister.',tr:'Bu fotoğrafı çeken kişi kız kardeşim.'},
+   {en:'The phone which I bought last year still works.',tr:'Geçen yıl aldığım telefon hâlâ çalışıyor.'}
+ ],mini:[
+   {q:'"The man _____ called you is my uncle."',opts:['which','who','what'],ans:1},
+   {q:'"The camera _____ I use is small."',opts:['who','that','where'],ans:1}
+ ]}
+];
+
+const MCQ=[
+ {q:'According to the article, what does an iPhone do when you press the camera button?',opts:['Takes one perfect picture','Takes many pictures and combines the best parts','Asks you what you want','Sends the photo to the cloud'],ans:1},
+ {q:'Why does the phone keep the shutter open longer in low light?',opts:['To save battery','To make the photo darker','To brighten dark areas','To use a different lens'],ans:2},
+ {q:'What does the article say a photo has always been?',opts:['A copy of reality','A choice, not a copy of the world','A picture of a person','A printed image'],ans:1},
+ {q:'According to the text, what is the biggest change in phone cameras?',opts:['A bigger lens','A faster shutter','The camera understands what it sees','A better battery'],ans:2},
+ {q:'What kind of "intelligence" is in modern phone cameras?',opts:['Human intelligence inside the phone','The same kind of thinking used in AI tools','Magic invented by Apple','Old chemistry from film cameras'],ans:1},
+ {q:'How long does it take a phone to take and build a photo?',opts:['About 10 seconds','About half a second','About 1 minute','It depends on the light'],ans:1},
+ {q:'What does "good technology gets out of your way" mean here?',opts:['It tells you what to do','It moves physically aside','You don\'t need to think about it to use it','It works only at night'],ans:2},
+ {q:'Why does the writer mention "old cameras did not really show reality either"?',opts:['To say old cameras were broken','To say phones are worse','To say even old photos were a choice by the photographer','To say film was expensive'],ans:2}
+];
+
+const TF=[
+ {q:'When you press the iPhone camera button, the phone takes only one picture.',ans:false,exp:'Çoğu zaman 10-15 resim çeker ve en iyi parçaları birleştirir.'},
+ {q:'A camera, at heart, lets light in and shows you a picture.',ans:true,exp:'Doğru. Yazar "a camera, at heart, is a simple machine" diye anlatıyor.'},
+ {q:'The biggest change in modern phone cameras is the lens itself.',ans:false,exp:'Hayır — en büyük değişiklik mercek değil, kameranın "ne gördüğünü anlaması".'},
+ {q:'The phone can recognise a face, food, or a sunset and change its settings.',ans:true,exp:'Doğru. Yazar bu yeteneği "language" diye adlandırıyor.'},
+ {q:'The article says a phone photo is exactly the same as what your eyes saw.',ans:false,exp:'Hayır — yazar fotoğrafın anı daha güzel hatırlatmaya yardım ettiğini söylüyor.'},
+ {q:'According to the writer, good technology should make you stop and think about it constantly.',ans:false,exp:'Tersine — "good technology gets out of your way".'}
+];
+
+const MATCH=[
+ {en:'capture',tr:'yakalamak'},
+ {en:'shutter',tr:'objektif kapağı'},
+ {en:'focus',tr:'odak / netlik'},
+ {en:'brighten',tr:'aydınlatmak'},
+ {en:'recognise',tr:'tanımak'},
+ {en:'snap',tr:'çabuk fotoğraf çekmek'}
+];
+
+// ============ TABS ============
+function showTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('t-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='vocabulary')renderVocab();
+  if(id==='grammar')renderGrammar();
+  if(id==='quiz')renderQuiz();
+}
+
+// ============ READING TOOLTIP ============
+const tt=document.getElementById('g-tt');
+let flipped=new Set();
+document.querySelectorAll('[data-g]').forEach(el=>{
+  el.addEventListener('click',e=>{
+    const g=el.dataset.g;
+    const info=GRAMMAR_INFO[g];
+    tt.innerHTML=`<div class="tt-name">${info.name}</div><div class="tt-tr">${info.tr}</div><div class="tt-formula">${info.formula}</div>`;
+    tt.style.display='block';
+    const r=el.getBoundingClientRect();
+    let top=r.bottom+8,left=r.left;
+    if(left+290>window.innerWidth)left=window.innerWidth-300;
+    if(top+150>window.innerHeight)top=r.top-160;
+    tt.style.left=left+'px';tt.style.top=top+'px';
+    e.stopPropagation();
+  });
+});
+document.addEventListener('click',e=>{if(!e.target.dataset.g)tt.style.display='none';});
+
+// ============ TTS ============
+let utter=null,ttsRate=0.9;
+function getText(){return document.getElementById('passage').innerText;}
+function ttsPlay(){
+  if(speechSynthesis.paused){speechSynthesis.resume();setTTSState('play');return;}
+  speechSynthesis.cancel();
+  utter=new SpeechSynthesisUtterance(getText());
+  utter.lang='en-US';utter.rate=ttsRate;utter.pitch=1;
+  utter.onend=()=>setTTSState('stop');
+  speechSynthesis.speak(utter);
+  setTTSState('play');
+}
+function ttsPause(){speechSynthesis.pause();setTTSState('pause');}
+function ttsStop(){speechSynthesis.cancel();setTTSState('stop');}
+function setTTSState(s){
+  document.getElementById('tts-play').disabled=(s==='play');
+  document.getElementById('tts-pause').disabled=(s!=='play');
+  document.getElementById('tts-stop').disabled=(s==='stop');
+}
+function updateRate(){
+  ttsRate=parseFloat(document.getElementById('tts-rate').value);
+  document.getElementById('rate-val').textContent=ttsRate.toFixed(2).replace(/\.?0+$/,'')+'×';
+  if(utter&&speechSynthesis.speaking){const wasPaused=speechSynthesis.paused;ttsStop();ttsPlay();if(wasPaused)ttsPause();}
+}
+
+// ============ VOCABULARY ============
+let vMode='flash',quizIdx=0,quizScore=0,quizOrder=[];
+function setVMode(m,btn){
+  vMode=m;
+  document.querySelectorAll('#t-vocabulary .vocab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderVocab();
+}
+function speakWord(w){
+  const u=new SpeechSynthesisUtterance(w);u.lang='en-US';u.rate=0.85;speechSynthesis.speak(u);
+}
+function renderVocab(){
+  const c=document.getElementById('vocab-content');
+  if(vMode==='flash'){
+    c.innerHTML='<div class="cards-grid">'+VOCAB.map((v,i)=>`
+      <div class="flip-card" id="fc-${i}" onclick="flipCard(${i})">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="fw">${v.w}</div>
+            <div class="fp">${v.p}</div>
+            <button class="fspk" onclick="event.stopPropagation();speakWord('${v.w.replace(/'/g,"\\'")}')">🔊 listen</button>
+          </div>
+          <div class="flip-back">
+            <div class="ft">${v.tr}</div>
+            <div class="fe">${v.ex}</div>
+          </div>
+        </div>
+      </div>`).join('')+'</div>';
+  } else {
+    quizIdx=0;quizScore=0;
+    quizOrder=VOCAB.map((_,i)=>i).sort(()=>Math.random()-0.5).slice(0,12);
+    renderVQuiz();
+  }
+}
+function flipCard(i){
+  const el=document.getElementById('fc-'+i);
+  el.classList.toggle('flipped');
+  if(el.classList.contains('flipped'))flipped.add(i);
+  document.getElementById('vd-learned').textContent=flipped.size;
+}
+function renderVQuiz(){
+  const c=document.getElementById('vocab-content');
+  if(quizIdx>=quizOrder.length){
+    c.innerHTML=`<div class="quiz-area" style="text-align:center"><div style="font-size:38px">🎉</div><div style="font-size:18px;color:var(--accent2);margin-top:10px">Quiz Complete!</div><div style="color:var(--text2);margin-top:6px">Score: ${quizScore} / ${quizOrder.length}</div><button class="btn-check" style="margin-top:14px" onclick="quizIdx=0;quizScore=0;quizOrder=VOCAB.map((_,i)=>i).sort(()=>Math.random()-0.5).slice(0,12);renderVQuiz()">Try Again</button></div>`;
+    document.getElementById('vd-quiz').textContent=quizScore;
+    localStorage.setItem(SKEY+'vq-score',quizScore);
+    return;
+  }
+  const i=quizOrder[quizIdx];
+  const v=VOCAB[i];
+  const wrongs=VOCAB.filter((_,j)=>j!==i).sort(()=>Math.random()-0.5).slice(0,3);
+  const opts=[v,...wrongs].sort(()=>Math.random()-0.5);
+  c.innerHTML=`<div class="quiz-area">
+    <div class="quiz-progress"><span>Question ${quizIdx+1} / ${quizOrder.length}</span><span>Score: ${quizScore}</span></div>
+    <div class="q-stem"><span class="q-num">${quizIdx+1}.</span>What does <strong>${v.w}</strong> mean?</div>
+    <div class="options">${opts.map(o=>`<button class="opt-btn" onclick="pickVQ(this,'${o.w.replace(/'/g,"\\'")}','${v.w.replace(/'/g,"\\'")}')">${o.tr}</button>`).join('')}</div>
+  </div>`;
+}
+function pickVQ(btn,picked,correct){
+  document.querySelectorAll('#vocab-content .opt-btn').forEach(b=>b.disabled=true);
+  if(picked===correct){btn.classList.add('correct');quizScore++;}
+  else{
+    btn.classList.add('wrong');
+    document.querySelectorAll('#vocab-content .opt-btn').forEach(b=>{
+      const v=VOCAB.find(x=>x.tr===b.textContent);
+      if(v&&v.w===correct)b.classList.add('correct');
+    });
+  }
+  setTimeout(()=>{quizIdx++;renderVQuiz();},900);
+}
+
+// ============ GRAMMAR ============
+function renderGrammar(){
+  const c=document.getElementById('grammar-content');
+  c.innerHTML=GRAMMAR.map(g=>`
+    <div class="gram-card" id="gc-${g.id}">
+      <div class="gram-title" onclick="document.getElementById('gc-${g.id}').classList.toggle('expanded')">
+        <span class="gram-dot" style="background:${g.dot}"></span>
+        <span>${g.title}</span>
+        <span class="gram-arrow">▶</span>
+      </div>
+      <div class="gram-body">
+        <div class="gram-formula">📐 ${g.formula}</div>
+        <div class="gram-explain">${g.explain}</div>
+        <div class="gram-ex-list">${g.ex.map(e=>`<div class="gram-ex"><div class="en">• ${e.en}</div><div class="tr">${e.tr}</div></div>`).join('')}</div>
+        <div style="font-size:12px;color:var(--accent2);margin-bottom:8px;font-weight:bold">Quick Check:</div>
+        ${g.mini.map((m,mi)=>`<div class="mini-q"><div class="mq-text">${mi+1}. ${m.q}</div><div class="mq-opts">${m.opts.map((o,oi)=>`<button class="mini-opt" onclick="chkMini(this,${oi},${m.ans})">${o}</button>`).join('')}</div></div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+function chkMini(btn,picked,correct){
+  const sib=btn.parentElement.querySelectorAll('.mini-opt');
+  sib.forEach(b=>b.disabled=true);
+  if(picked===correct)btn.classList.add('correct');
+  else{btn.classList.add('wrong');sib[correct].classList.add('correct');}
+}
+
+// ============ QUIZ TAB ============
+let qMode='mcq';
+let mcqScore=0,tfScore=0,matchScore=0;
+let mcqAnswered=new Set(),tfAnswered=new Set();
+let matchSel=null,matchedPairs=new Set();
+function setQMode(m,btn){
+  qMode=m;
+  document.querySelectorAll('#t-quiz .vocab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderQuiz();
+}
+function renderQuiz(){
+  const c=document.getElementById('quiz-content');
+  if(qMode==='mcq')renderMCQ(c);
+  else if(qMode==='tf')renderTF(c);
+  else renderMatch(c);
+}
+function renderMCQ(c){
+  c.innerHTML='<div class="quiz-area">'+MCQ.map((q,i)=>`
+    <div style="margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)">
+      <div class="q-stem"><span class="q-num">${i+1}.</span>${q.q}</div>
+      <div class="options" id="mcq-${i}">${q.opts.map((o,oi)=>`<button class="opt-btn" onclick="pickMCQ(${i},${oi},${q.ans},this)">${o}</button>`).join('')}</div>
+    </div>`).join('')+`<div style="text-align:right;font-size:13px;color:var(--text2)">Score: <strong id="mcq-running">${mcqScore}</strong> / ${MCQ.length}</div></div>`;
+}
+function pickMCQ(qi,oi,correct,btn){
+  if(mcqAnswered.has(qi))return;
+  mcqAnswered.add(qi);
+  const opts=document.querySelectorAll(`#mcq-${qi} .opt-btn`);
+  opts.forEach(b=>b.disabled=true);
+  if(oi===correct){btn.classList.add('correct');mcqScore++;}
+  else{btn.classList.add('wrong');opts[correct].classList.add('correct');}
+  document.getElementById('mcq-running').textContent=mcqScore;
+  document.getElementById('qs-mcq').textContent=mcqScore+'/'+MCQ.length;
+  localStorage.setItem(SKEY+'mcq',mcqScore);
+}
+function renderTF(c){
+  c.innerHTML='<div class="quiz-area"><div class="tf-grid">'+TF.map((t,i)=>`
+    <div class="tf-item">
+      <div class="tf-stem"><span class="q-num">${i+1}.</span>${t.q}</div>
+      <div class="tf-btns" id="tf-${i}">
+        <button class="tf-btn" onclick="pickTF(${i},true,${t.ans},this)">✓ True</button>
+        <button class="tf-btn" onclick="pickTF(${i},false,${t.ans},this)">✗ False</button>
+      </div>
+      <div class="tf-explain" id="tfx-${i}">${t.exp}</div>
+    </div>`).join('')+`</div><div style="text-align:right;margin-top:12px;font-size:13px;color:var(--text2)">Score: <strong id="tf-running">${tfScore}</strong> / ${TF.length}</div></div>`;
+}
+function pickTF(qi,picked,correct,btn){
+  if(tfAnswered.has(qi))return;
+  tfAnswered.add(qi);
+  document.querySelectorAll(`#tf-${qi} .tf-btn`).forEach(b=>b.disabled=true);
+  if(picked===correct){btn.classList.add('correct');tfScore++;}
+  else{
+    btn.classList.add('wrong');
+    document.querySelectorAll(`#tf-${qi} .tf-btn`).forEach(b=>{
+      if((correct&&b.textContent.includes('True'))||(!correct&&b.textContent.includes('False')))b.classList.add('correct');
+    });
+  }
+  document.getElementById('tfx-'+qi).classList.add('show');
+  document.getElementById('tf-running').textContent=tfScore;
+  document.getElementById('qs-tf').textContent=tfScore+'/'+TF.length;
+  localStorage.setItem(SKEY+'tf',tfScore);
+}
+function renderMatch(c){
+  const left=MATCH.map((m,i)=>({...m,i,col:'l'}));
+  const right=MATCH.map((m,i)=>({...m,i,col:'r'})).sort(()=>Math.random()-0.5);
+  c.innerHTML=`<div class="quiz-area">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Tap an English word, then tap its Turkish meaning.</div>
+    <div class="match-area">
+      <div class="match-col" id="match-left">${left.map(m=>`<div class="match-item" data-i="${m.i}" data-col="l" onclick="pickMatch(this)">${m.en}</div>`).join('')}</div>
+      <div class="match-col" id="match-right">${right.map(m=>`<div class="match-item" data-i="${m.i}" data-col="r" onclick="pickMatch(this)">${m.tr}</div>`).join('')}</div>
+    </div>
+    <div style="text-align:right;margin-top:14px;font-size:13px;color:var(--text2)">Matched: <strong id="match-running">${matchedPairs.size}</strong> / ${MATCH.length}</div>
+  </div>`;
+}
+function pickMatch(el){
+  if(el.classList.contains('matched'))return;
+  if(!matchSel){matchSel=el;el.classList.add('selected');return;}
+  if(matchSel===el){el.classList.remove('selected');matchSel=null;return;}
+  if(matchSel.dataset.col===el.dataset.col){matchSel.classList.remove('selected');matchSel=el;el.classList.add('selected');return;}
+  if(matchSel.dataset.i===el.dataset.i){
+    matchSel.classList.remove('selected');
+    matchSel.classList.add('matched');el.classList.add('matched');
+    matchedPairs.add(el.dataset.i);
+    matchScore=matchedPairs.size;
+    document.getElementById('match-running').textContent=matchScore;
+    document.getElementById('qs-match').textContent=matchScore+'/'+MATCH.length;
+    localStorage.setItem(SKEY+'match',matchScore);
+    matchSel=null;
+  } else {
+    el.classList.add('wrong-flash');
+    const sel=matchSel;sel.classList.add('wrong-flash');
+    setTimeout(()=>{el.classList.remove('wrong-flash','selected');sel.classList.remove('wrong-flash','selected');},400);
+    matchSel=null;
+  }
+}
+
+// ============ WRITE ============
+function saveWrite(){
+  const t=document.getElementById('write-area').value;
+  localStorage.setItem(SKEY+'write',t);
+  document.getElementById('write-status').textContent='✓ Saved at '+new Date().toLocaleTimeString();
+}
+function loadWrite(){
+  const t=localStorage.getItem(SKEY+'write')||'';
+  document.getElementById('write-area').value=t;
+  document.getElementById('write-status').textContent='📂 Loaded.';
+}
+function clearWrite(){
+  document.getElementById('write-area').value='';
+  localStorage.removeItem(SKEY+'write');
+  document.getElementById('write-status').textContent='🗑️ Cleared.';
+}
+
+// ============ INIT ============
+window.addEventListener('load',()=>{
+  const w=localStorage.getItem(SKEY+'write');if(w)document.getElementById('write-area').value=w;
+  const m=localStorage.getItem(SKEY+'mcq');if(m){mcqScore=+m;document.getElementById('qs-mcq').textContent=m+'/'+MCQ.length;}
+  const t=localStorage.getItem(SKEY+'tf');if(t){tfScore=+t;document.getElementById('qs-tf').textContent=t+'/'+TF.length;}
+  const ma=localStorage.getItem(SKEY+'match');if(ma){matchScore=+ma;document.getElementById('qs-match').textContent=ma+'/'+MATCH.length;}
+  const vq=localStorage.getItem(SKEY+'vq-score');if(vq)document.getElementById('vd-quiz').textContent=vq;
+});
+</script>
+</body>
+</html>

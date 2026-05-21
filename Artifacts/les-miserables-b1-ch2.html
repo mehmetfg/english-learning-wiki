@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Misérables — Bölüm 2</title>
+<style>
+:root { --font: Verdana, Geneva, Tahoma, sans-serif; --radius: 10px; --radius-sm: 6px; --trans: 0.25s ease; }
+[data-theme="dark"] {
+  --bg:#0d0c0a; --surface:#161411; --card:#1e1b17; --card-hover:#252117;
+  --border:#2e2a22; --border-light:#3a3528; --text:#e5dfd4; --text-muted:#948b7e;
+  --text-dim:#5e574e; --accent:#c9a84c; --accent-dim:rgba(201,168,76,0.18);
+  --tt-bg:#13110e; --tt-border:#2e2a22;
+  --correct:#22c55e; --wrong:#ef4444; --correct-bg:rgba(34,197,94,0.12); --wrong-bg:rgba(239,68,68,0.12);
+}
+[data-theme="light"] {
+  --bg:#f2ece0; --surface:#e8e0d0; --card:#ddd6c5; --card-hover:#d4ccba;
+  --border:#c0b89e; --border-light:#cfc7b0; --text:#1c1812; --text-muted:#5a5040;
+  --text-dim:#8a8070; --accent:#8a5f1a; --accent-dim:rgba(138,95,26,0.15);
+  --tt-bg:#1a1510; --tt-border:#2e2a22;
+  --correct:#16a34a; --wrong:#dc2626; --correct-bg:rgba(22,163,74,0.1); --wrong-bg:rgba(220,38,38,0.1);
+}
+:root {
+  --c-pperf:#60a5fa; --c-usedto:#c084fc; --c-time:#4ade80;
+  --c-rep:#f59e0b; --c-adv:#2dd4bf; --c-prep:#f43f5e;
+  --c-enough:#fb923c; --c-qtag:#e879f9;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+button{cursor:pointer;font-family:var(--font)} input,textarea{font-family:var(--font)}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:13.5px;line-height:1.75;transition:background var(--trans),color var(--trans)}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.header-left{display:flex;align-items:center;gap:14px}
+.book-icon{font-size:26px}
+header h1{font-size:18px;font-weight:bold;color:var(--accent);letter-spacing:.02em}
+.header-sub{font-size:11px;color:var(--text-muted);margin-top:1px}
+.header-right{display:flex;align-items:center;gap:12px}
+.chapter-badge{font-size:11px;background:var(--accent-dim);color:var(--accent);border:1px solid rgba(201,168,76,0.25);padding:5px 12px;border-radius:20px;letter-spacing:.04em}
+.theme-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;transition:background var(--trans)}
+.theme-btn:hover{background:var(--card-hover)}
+
+.level-banner{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-left:3px solid #4ade80;padding:10px 18px;font-size:12px;color:#4ade80;display:flex;align-items:center;gap:10px}
+.level-banner strong{letter-spacing:.06em;font-size:11px;text-transform:uppercase}
+
+.tab-nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;gap:2px;overflow-x:auto}
+.tab-nav::-webkit-scrollbar{height:3px} .tab-nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.tab-btn{background:none;border:none;color:var(--text-muted);padding:13px 18px;font-size:12.5px;font-weight:bold;letter-spacing:.03em;position:relative;white-space:nowrap;transition:color var(--trans)}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transition:transform .2s}
+.tab-btn.active{color:var(--accent)} .tab-btn.active::after{transform:scaleX(1)} .tab-btn:hover{color:var(--text)}
+
+main{max-width:900px;margin:0 auto;padding:28px 28px 60px}
+.tab-panel{display:none;animation:fadeIn .25s ease} .tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.section-title{font-size:11px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.section-title span{color:var(--accent)}
+
+.reading-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:22px;flex-wrap:wrap}
+.reading-meta h2{font-size:20px;color:var(--accent);margin-bottom:4px}
+.reading-meta p{font-size:12px;color:var(--text-muted)}
+.level-badge{background:var(--card);border:1px solid var(--border);padding:6px 14px;border-radius:20px;font-size:11px;font-weight:bold;color:var(--text-muted);white-space:nowrap}
+.level-badge span{color:#4ade80}
+
+.recall-box{background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.2);border-left:3px solid #60a5fa;border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:22px;font-size:12.5px;color:var(--text-muted);line-height:1.7}
+.recall-box strong{color:#60a5fa;font-size:11px;letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:4px}
+
+.grammar-legend{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;display:flex;flex-wrap:wrap;gap:8px 20px}
+.legend-title{width:100%;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--text-muted)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.legend-item span{font-size:10px;color:var(--text-dim)}
+
+.context-box{background:var(--accent-dim);border:1px solid rgba(201,168,76,0.2);border-left:3px solid var(--accent);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:22px;font-size:12.5px;color:var(--text-muted);line-height:1.7}
+.context-box strong{color:var(--accent)}
+
+.passage-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px 34px;margin-bottom:8px}
+.passage-box p{margin-bottom:15px;font-size:14.5px;line-height:2;color:var(--text);text-align:justify}
+.passage-box p:last-child{margin-bottom:0}
+.passage-footer{display:flex;justify-content:flex-end;font-size:11px;color:var(--text-dim);margin-bottom:24px;padding-top:8px}
+
+.gtag{cursor:help;border-bottom:2px solid;border-radius:1px;padding-bottom:1px;transition:opacity .15s}
+.gtag:hover{opacity:.8}
+.gtag.pperf  {color:var(--c-pperf);  border-color:var(--c-pperf)}
+.gtag.usedto {color:var(--c-usedto); border-color:var(--c-usedto)}
+.gtag.time   {color:var(--c-time);   border-color:var(--c-time)}
+.gtag.rep    {color:var(--c-rep);    border-color:var(--c-rep)}
+.gtag.adv    {color:var(--c-adv);    border-color:var(--c-adv)}
+.gtag.prep   {color:var(--c-prep);   border-color:var(--c-prep)}
+.gtag.enough {color:var(--c-enough); border-color:var(--c-enough)}
+.gtag.qtag   {color:var(--c-qtag);   border-color:var(--c-qtag)}
+
+#tooltip{position:fixed;z-index:9999;background:var(--tt-bg);border:1px solid var(--tt-border);border-radius:var(--radius);padding:14px 16px;width:340px;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 8px 32px rgba(0,0,0,0.6)}
+#tooltip.visible{opacity:1}
+.tt-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.tt-icon{font-size:16px} .tt-name{font-size:13px;font-weight:bold} .tt-tr{font-size:10.5px;color:#7a7060;margin-left:auto}
+.tt-formula{font-size:11px;font-style:italic;padding:6px 10px;background:rgba(255,255,255,0.05);border-radius:4px;color:#a09080;margin-bottom:8px}
+.tt-explain{font-size:12px;color:#c0b8a8;margin-bottom:8px;line-height:1.6}
+.tt-ex-item{border-left:2px solid #3a3428;padding:4px 8px;margin-bottom:4px}
+.tt-ex-en{font-size:11.5px;color:#d0c8b8;margin-bottom:1px} .tt-ex-tr{font-size:11px;color:#7a7060}
+.tt-edge{font-size:11px;background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.2);border-radius:4px;padding:6px 8px;color:#fb923c;line-height:1.5;margin-top:6px}
+
+.vocab-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.filter-btn{background:var(--card);border:1px solid var(--border);color:var(--text-muted);padding:6px 14px;border-radius:20px;font-size:12px;font-family:var(--font);transition:all .2s}
+.filter-btn:hover{background:var(--card-hover)} .filter-btn.active{background:var(--accent);color:#111;border-color:var(--accent);font-weight:bold}
+.vocab-count{font-size:11px;color:var(--text-dim);margin-bottom:18px} .vocab-count span{color:var(--accent)}
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.vocab-card{height:150px;perspective:800px;cursor:pointer}
+.vocab-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+.vocab-card.flipped .vocab-card-inner{transform:rotateY(180deg)}
+.vocab-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:var(--radius);padding:16px;border:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;background:var(--card)}
+.vocab-face:hover{border-color:var(--border-light)}
+.vocab-back{transform:rotateY(180deg);background:var(--card-hover)}
+.vocab-word{font-size:17px;font-weight:bold;color:var(--text)}
+.vocab-phonetic{font-size:11.5px;color:var(--accent);margin-top:4px}
+.vocab-cat-tag{font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:10px;align-self:flex-start}
+.vocab-flip-hint{font-size:10px;color:var(--text-dim);text-align:right}
+.vocab-tr{font-size:15px;font-weight:bold;color:var(--accent);margin-bottom:6px}
+.vocab-example{font-size:12px;color:var(--text-muted);line-height:1.5;font-style:italic}
+.vocab-back-hint{font-size:10px;color:var(--text-dim)}
+.cat-action  {background:rgba(96,165,250,.15);color:#60a5fa}
+.cat-emotion {background:rgba(244,63,94,.15);color:#f43f5e}
+.cat-describe{background:rgba(45,212,191,.15);color:#2dd4bf}
+.cat-object  {background:rgba(250,204,21,.15);color:#facc15}
+.cat-phrase  {background:rgba(201,168,76,.2);color:#c9a84c}
+.cat-person  {background:rgba(74,222,128,.15);color:#4ade80}
+.cat-place   {background:rgba(192,132,252,.15);color:#c084fc}
+
+.grammar-intro{font-size:12.5px;color:var(--text-muted);margin-bottom:20px;line-height:1.7;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px}
+.grammar-grid{display:flex;flex-direction:column;gap:12px}
+.grammar-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.grammar-card:hover{border-color:var(--border-light)}
+.grammar-card-header{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none}
+.grammar-color-bar{width:4px;height:32px;border-radius:2px;flex-shrink:0}
+.grammar-card-title{flex:1}
+.grammar-card-title strong{font-size:14px;display:block;margin-bottom:2px}
+.grammar-card-title small{font-size:11px;color:var(--text-dim)}
+.grammar-toggle{font-size:16px;color:var(--text-dim);transition:transform .2s}
+.grammar-card.open .grammar-toggle{transform:rotate(90deg)}
+.grammar-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border)}
+.grammar-card.open .grammar-body{display:block}
+.grammar-formula{font-family:monospace;font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;margin:12px 0;color:var(--accent)}
+.grammar-explain{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:14px}
+.grammar-ex{border-left:3px solid var(--border);padding:6px 12px;margin-bottom:6px;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.grammar-ex-en{font-size:13px;margin-bottom:2px} .grammar-ex-tr{font-size:11.5px;color:var(--text-dim)}
+.grammar-edge{background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:#fb923c;line-height:1.6;margin-bottom:14px}
+.grammar-edge-title{font-weight:bold;margin-bottom:4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.grammar-mini-quiz{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px}
+.mini-quiz-title{font-size:11px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+.mini-quiz-q{font-size:13px;margin-bottom:8px}
+.mini-quiz-options{display:flex;flex-direction:column;gap:6px}
+.mq-btn{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:var(--radius-sm);font-size:12.5px;font-family:var(--font);text-align:left;transition:all .15s}
+.mq-btn:hover{background:var(--card-hover)}
+.mq-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.mq-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.mq-feedback{font-size:12px;margin-top:8px;padding:6px 10px;border-radius:var(--radius-sm);display:none}
+.mq-feedback.show{display:block} .mq-feedback.ok{background:var(--correct-bg);color:var(--correct)} .mq-feedback.bad{background:var(--wrong-bg);color:var(--wrong)}
+
+.exercises-header{margin-bottom:22px}
+.exercises-header h2{font-size:17px;color:var(--accent);margin-bottom:6px}
+.exercises-header p{font-size:12.5px;color:var(--text-muted)}
+.score-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.score-label{font-size:12px;color:var(--text-muted);flex-shrink:0}
+.score-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.score-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s ease}
+.score-num{font-size:13px;font-weight:bold;color:var(--accent);flex-shrink:0}
+.exercise-block{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:18px}
+.exercise-block-title{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.ex-num{width:26px;height:26px;background:var(--accent);color:#111;border-radius:50%;font-size:12px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ex-title{font-size:14px;font-weight:bold}
+.ex-subtitle{font-size:11.5px;color:var(--text-dim);margin-bottom:16px;margin-left:36px}
+.ex-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.ex-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.ex-q{font-size:13.5px;margin-bottom:8px;line-height:1.65}
+.ex-input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 13px;border-radius:var(--radius-sm);font-size:13px;outline:none;transition:border-color var(--trans)}
+.ex-input:focus{border-color:var(--accent)}
+.ex-textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 13px;border-radius:var(--radius-sm);font-size:13px;resize:vertical;min-height:80px;outline:none;transition:border-color var(--trans)}
+.ex-textarea:focus{border-color:var(--accent)}
+.ex-hint{font-size:11px;color:var(--text-dim);margin-top:4px;font-style:italic}
+.ex-btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.ex-check-btn{background:var(--accent);color:#111;border:none;padding:8px 18px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:bold}
+.ex-check-btn:hover{opacity:.88}
+.ex-reveal-btn{background:var(--card-hover);border:1px solid var(--border);color:var(--text-muted);padding:8px 16px;border-radius:var(--radius-sm);font-size:12.5px}
+.ex-reveal-btn:hover{color:var(--text)}
+.ex-ai-btn{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.3);color:#60a5fa;padding:8px 16px;border-radius:var(--radius-sm);font-size:12.5px}
+.ex-ai-btn:hover{background:rgba(96,165,250,.2)}
+.ex-feedback{margin-top:10px;padding:10px 14px;border-radius:var(--radius-sm);font-size:12.5px;line-height:1.6;display:none}
+.ex-feedback.show{display:block}
+.ex-feedback.correct{background:var(--correct-bg);border:1px solid rgba(34,197,94,.3);color:var(--correct)}
+.ex-feedback.wrong{background:var(--wrong-bg);border:1px solid rgba(239,68,68,.3);color:var(--wrong)}
+.ex-feedback.info{background:var(--accent-dim);border:1px solid rgba(201,168,76,.25);color:var(--accent)}
+.ex-feedback.ai{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.25);color:var(--text-muted)}
+.ec-options{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.ec-opt{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);padding:8px 14px;border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);text-align:left;transition:all .15s}
+.ec-opt:hover{background:var(--card);color:var(--text);border-color:var(--border-light)}
+.ec-opt.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.ec-opt.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+
+.explore-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:18px}
+.explore-section h3{font-size:15px;color:var(--accent);margin-bottom:4px}
+.explore-section .sub{font-size:11px;color:var(--text-dim);margin-bottom:14px}
+.explore-section p{font-size:13px;color:var(--text-muted);line-height:1.75;margin-bottom:12px}
+.explore-section p:last-child{margin-bottom:0}
+.vocab-inline{font-weight:bold;color:var(--text)}
+.vocab-inline small{font-size:10.5px;color:var(--text-dim);font-weight:normal}
+.highlight-phrase{background:var(--accent-dim);border-radius:3px;padding:1px 5px;color:var(--accent);font-style:italic}
+.compare-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px}
+.compare-table th{background:var(--surface);padding:8px 12px;text-align:left;font-size:11px;color:var(--text-dim);border-bottom:1px solid var(--border);letter-spacing:.05em;text-transform:uppercase}
+.compare-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6}
+.compare-table tr:last-child td{border-bottom:none}
+.writing-prompt{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;margin-top:14px}
+.writing-prompt-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(96,165,250,.3);border-top-color:#60a5fa;border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:620px){
+  header{padding:14px 16px} main{padding:16px 16px 50px}
+  .tab-nav{padding:0 12px} .tab-btn{padding:11px 12px;font-size:11.5px}
+  .passage-box{padding:20px 18px} .passage-box p{font-size:13.5px}
+  .vocab-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  #tooltip{width:280px} .chapter-badge{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="tooltip">
+  <div class="tt-header">
+    <span class="tt-icon" id="tt-icon"></span>
+    <span class="tt-name" id="tt-name"></span>
+    <span class="tt-tr"  id="tt-tr"></span>
+  </div>
+  <div class="tt-formula"  id="tt-formula"></div>
+  <div class="tt-explain"  id="tt-explain"></div>
+  <div class="tt-examples" id="tt-examples"></div>
+  <div class="tt-edge"     id="tt-edge"></div>
+</div>
+
+<header>
+  <div class="header-left">
+    <div class="book-icon">📖</div>
+    <div>
+      <h1>Les Misérables</h1>
+      <div class="header-sub">English Reading System &middot; Victor Hugo</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="chapter-badge">Bölüm 2 &middot; The Coin</div>
+    <button class="theme-btn" onclick="toggleTheme()">🌙 / ☀️</button>
+  </div>
+</header>
+
+<div class="level-banner">
+  <span>🎯</span>
+  <div><strong>Seviye: B1</strong> — Bölüm 1'den devam. Yeni 8 gramer yapısı. Renklere hover et.</div>
+</div>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="reading">📖 Reading</button>
+  <button class="tab-btn" data-tab="vocabulary">📚 Vocabulary</button>
+  <button class="tab-btn" data-tab="grammar">⚙️ Grammar</button>
+  <button class="tab-btn" data-tab="exercises">✏️ Exercises</button>
+  <button class="tab-btn" data-tab="explore">💭 Explore</button>
+</nav>
+
+<main>
+
+<!-- ██ READING -->
+<div class="tab-panel active" id="tab-reading">
+
+  <div class="reading-header">
+    <div class="reading-meta">
+      <h2>The Coin</h2>
+      <p>Les Misérables, Part One &middot; ~430 kelime &middot; Bölüm 2</p>
+    </div>
+    <div class="level-badge">Seviye: <span>B1</span> &nbsp;|&nbsp; Hover: <span>renkli kelimeler</span></div>
+  </div>
+
+  <div class="recall-box">
+    <strong>📌 Bölüm 1'den hatırla</strong>
+    Valjean gümüş tabakları çaldı. Polisler onu piskoposun evine geri getirdi. Ama piskopos ona "Ben verdim" dedi ve şamdanları da verdi. Valjean serbest kaldı — ama içinde bir şeyler değişmişti.
+  </div>
+
+  <div class="grammar-legend">
+    <div class="legend-title">Yeni gramer yapıları — imleci üstüne getir</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-pperf)"></div>Past Perfect <span>(had + V3)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-usedto)"></div>Used to <span>(geçmişteki alışkanlık)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-time)"></div>Time Connectors <span>(when / after / before / until)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-rep)"></div>Reported Speech <span>(he said that...)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-adv)"></div>Adverbs of Manner <span>(slowly / quietly / suddenly)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-prep)"></div>Prepositions of Movement <span>(into / out of / along / past)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-enough)"></div>Too / Enough <span>(too cold / old enough)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-qtag)"></div>Question Tags <span>(isn't it? / didn't he?)</span></div>
+  </div>
+
+  <div class="context-box">
+    <strong>Bu bölümde ne oluyor?</strong> Valjean piskoposun evinden çıktıktan sonra yollarda yürüyor. Yolda küçük bir çocukla karşılaşıyor — Petit-Gervais adında bir sokak çocuğu. Çocuğun bir gümüş parası düşüyor. Valjean farkında olmadan ayağını paranın üstüne koyuyor. Sonra ne olduğunu anlıyor. Bu an, hikayenin dönüm noktasıdır.
+  </div>
+
+  <div class="passage-box">
+
+    <p>Valjean <span class="gtag prep" data-g="prep">walked out of</span> the Bishop's house <span class="gtag adv" data-g="adv">slowly</span>. He carried the silver candlesticks in his hands. The morning was cold, and the road was empty. He did not know where he was going. He just walked.</p>
+
+    <p>For nineteen years, he <span class="gtag usedto" data-g="usedto">used to</span> wake up every morning in a prison cell. He <span class="gtag usedto" data-g="usedto">used to</span> hear the sound of keys and metal doors. Now there was only silence and birds. It felt strange — <span class="gtag enough" data-g="enough">almost too</span> quiet.</p>
+
+    <p><span class="gtag time" data-g="time">After</span> walking for an hour, he sat down by the road. He put the candlesticks on the ground next to him. He looked at them for a long time. The Bishop <span class="gtag pperf" data-g="pperf">had given</span> him these things. Nobody <span class="gtag pperf" data-g="pperf">had ever given</span> him anything before.</p>
+
+    <p><span class="gtag time" data-g="time">While</span> he was sitting there, he heard a sound. A small boy was coming <span class="gtag prep" data-g="prep">along</span> the road. He was singing and jumping. In his hand, he had a small bag. A coin fell <span class="gtag prep" data-g="prep">out of</span> the bag and rolled <span class="gtag prep" data-g="prep">past</span> Valjean's foot. <span class="gtag adv" data-g="adv">Automatically</span>, without thinking, Valjean put his foot on the coin.</p>
+
+    <p>The boy stopped. He looked at Valjean. "Monsieur," <span class="gtag rep" data-g="rep">he said</span>, "that is my coin. Could you please move your foot?"</p>
+
+    <p>Valjean did not answer. He was looking at the ground.</p>
+
+    <p>"Monsieur, please," <span class="gtag rep" data-g="rep">the boy said again</span>. "It's my money. You can see it <span class="gtag prep" data-g="prep">under</span> your foot, <span class="gtag qtag" data-g="qtag">can't you?</span>"</p>
+
+    <p>Still no answer. The boy did not know what to do. He was <span class="gtag enough" data-g="enough">too</span> afraid to touch Valjean's foot. He waited for a moment. Then he <span class="gtag adv" data-g="adv">quickly</span> picked up his bag and ran away. He ran <span class="gtag prep" data-g="prep">into</span> the trees and disappeared.</p>
+
+    <p>Valjean stayed there <span class="gtag time" data-g="time">until</span> the sound of the boy's feet was gone. Then he looked down. The coin was still under his foot.</p>
+
+    <p>Something hit him hard — not from outside, but from inside. He looked at his hands. These were the same hands <span class="gtag pperf" data-g="pperf">that had taken</span> the Bishop's silver. Now they <span class="gtag pperf" data-g="pperf">had taken</span> a poor child's only coin.</p>
+
+    <p>He stood up <span class="gtag adv" data-g="adv">suddenly</span>. "Petit-Gervais!" he shouted. "Petit-Gervais!" But the road was empty. The boy was gone. Valjean ran <span class="gtag prep" data-g="prep">into</span> the trees, shouting the name again and again. No answer.</p>
+
+    <p>He came back to the road and sat down. He put his head in his hands.</p>
+
+    <p><span class="gtag rep" data-g="rep">He told himself</span> that he was a bad man. He <span class="gtag pperf" data-g="pperf">had not changed</span>. The Bishop <span class="gtag pperf" data-g="pperf">had trusted</span> him, and he <span class="gtag pperf" data-g="pperf">had stolen</span> from a child. He was not <span class="gtag enough" data-g="enough">good enough</span> for the Bishop's kindness.</p>
+
+    <p><span class="gtag time" data-g="time">When</span> the sun went down, a woman <span class="gtag prep" data-g="prep">walked past</span>. She saw a large man sitting alone on the road, crying.</p>
+
+    <p>She did not stop. But she looked back once, <span class="gtag adv" data-g="adv">nervously</span>.</p>
+
+    <p>That night, Valjean made a decision. He <span class="gtag usedto" data-g="usedto">used to</span> think only about himself — about surviving, about getting free. <span class="gtag time" data-g="time">From that day on</span>, things would be different. They <span class="gtag pperf" data-g="pperf">had to</span> be.</p>
+
+  </div>
+  <div class="passage-footer">~430 kelime &nbsp;·&nbsp; B1 Seviye &nbsp;·&nbsp; Bölüm 2</div>
+</div>
+
+<!-- ██ VOCABULARY -->
+<div class="tab-panel" id="tab-vocabulary">
+  <div class="section-title"><span>Vocabulary</span> — Kelime Hazinesi</div>
+  <div class="vocab-filters" id="vocabFilters">
+    <button class="filter-btn active" data-filter="all">Tümü (20)</button>
+    <button class="filter-btn" data-filter="action">Eylem</button>
+    <button class="filter-btn" data-filter="emotion">Duygu</button>
+    <button class="filter-btn" data-filter="describe">Tanımlama</button>
+    <button class="filter-btn" data-filter="object">Nesne</button>
+    <button class="filter-btn" data-filter="phrase">Kalıp</button>
+  </div>
+  <div class="vocab-count">Toplam <span id="visibleCount">20</span> kelime — tıkla, çevir!</div>
+  <div class="vocab-grid" id="vocabGrid"></div>
+</div>
+
+<!-- ██ GRAMMAR -->
+<div class="tab-panel" id="tab-grammar">
+  <div class="section-title"><span>Grammar</span> — 8 Yeni Yapı</div>
+  <div class="grammar-intro">
+    Bölüm 1'deki 8 yapıyı biliyorsun. Bu bölümde 8 yeni yapı var. Hepsini bir oturumda bitirmek zorunda değilsin — her kartı aç, oku, mini testi yap, kapat.
+  </div>
+  <div class="grammar-grid" id="grammarGrid"></div>
+</div>
+
+<!-- ██ EXERCISES -->
+<div class="tab-panel" id="tab-exercises">
+  <div class="exercises-header">
+    <h2>Exercises — Alıştırmalar</h2>
+    <p>Önce dene, sonra kontrol et. Hata yapmak öğrenmenin parçası.</p>
+  </div>
+  <div class="score-bar">
+    <div class="score-label">İlerleme:</div>
+    <div class="score-track"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
+    <div class="score-num" id="scoreNum">0 / 12 doğru</div>
+  </div>
+
+  <!-- EX 1: Past Perfect -->
+  <div class="exercise-block">
+    <div class="exercise-block-title"><div class="ex-num">1</div><div class="ex-title">Past Perfect — had + V3</div></div>
+    <div class="ex-subtitle">Parantez içindeki fiili Past Perfect'e çevir.</div>
+
+    <div class="ex-item" data-answer="had given" data-exid="ex1">
+      <div class="ex-q">1. The Bishop ______ (give) him the candlesticks. Nobody else was so kind.</div>
+      <input class="ex-input" placeholder="had..." data-item="ex1">
+      <div class="ex-hint">💡 had + V3. give'in V3'ü: given.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('ex1')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('ex1')">Cevabı Gör</button>
+      </div>
+      <div class="ex-feedback" id="fb-ex1"></div>
+    </div>
+
+    <div class="ex-item" data-answer="had never seen" data-exid="ex2">
+      <div class="ex-q">2. Valjean looked at the trees. He ______ (never / see) so many birds before.</div>
+      <input class="ex-input" placeholder="had never..." data-item="ex2">
+      <div class="ex-hint">💡 had + never + V3. see'nin V3'ü: seen.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('ex2')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('ex2')">Cevabı Gör</button>
+      </div>
+      <div class="ex-feedback" id="fb-ex2"></div>
+    </div>
+
+    <div class="ex-item" data-answer="had not changed" data-exid="ex3">
+      <div class="ex-q">3. He told himself that he ______ (not / change). He was still the same man.</div>
+      <input class="ex-input" placeholder="had not..." data-item="ex3">
+      <div class="ex-hint">💡 Olumsuz: had not + V3. change'in V3'ü: changed.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('ex3')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('ex3')">Cevabı Gör</button>
+      </div>
+      <div class="ex-feedback" id="fb-ex3"></div>
+    </div>
+  </div>
+
+  <!-- EX 2: Used to + Too/Enough -->
+  <div class="exercise-block">
+    <div class="exercise-block-title"><div class="ex-num">2</div><div class="ex-title">Used to & Too / Enough</div></div>
+    <div class="ex-subtitle">Boşluğu "used to", "too" veya "enough" ile doldur.</div>
+
+    <div class="ex-item" data-answer="used to" data-exid="ex4">
+      <div class="ex-q">1. Valjean ______ wake up in a prison cell every morning. Now he was free.</div>
+      <input class="ex-input" placeholder="used to..." data-item="ex4">
+      <div class="ex-hint">💡 Geçmişte tekrarlanan bir alışkanlık.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('ex4')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('ex4')">Cevabı Gör</button>
+      </div>
+      <div class="ex-feedback" id="fb-ex4"></div>
+    </div>
+
+    <div class="ex-item" data-answer="too" data-exid="ex5">
+      <div class="ex-q">2. The boy was ______ afraid to touch Valjean's foot. He just waited.</div>
+      <input class="ex-input" placeholder="too / enough..." data-item="ex5">
+      <div class="ex-hint">💡 "Çok korkmuş" = ______ afraid. Olumsuz bir sonuç var.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('ex5')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('ex5')">Cevabı Gör</button>
+      </div>
+      <div class="ex-feedback" id="fb-ex5"></div>
+    </div>
+
+    <div class="ex-item" data-answer="enough" data-exid="ex6">
+      <div class="ex-q">3. He was not good ______ for the Bishop's kindness. He felt ashamed.</div>
+      <input class="ex-input" placeholder="..." data-item="ex6">
+      <div class="ex-hint">💡 "Yeterince iyi değil" = not good ______. Sıfattan sonra gelir.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('ex6')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('ex6')">Cevabı Gör</button>
+      </div>
+      <div class="ex-feedback" id="fb-ex6"></div>
+    </div>
+  </div>
+
+  <!-- EX 3: Hata Bulma -->
+  <div class="exercise-block">
+    <div class="exercise-block-title"><div class="ex-num">3</div><div class="ex-title">Hata Bulma</div></div>
+    <div class="ex-subtitle">Doğru cümleyi seç ve neden doğru olduğunu anla.</div>
+
+    <div class="ex-item" id="ec1">
+      <div class="ex-q">1. "Used to" için doğru cümle hangisi?</div>
+      <div class="ec-options">
+        <button class="ec-opt" onclick="checkEC('ec1',false,'Hayır. "Used to" geçmişte artık yapılmayan bir şey için. "Now" ile kullanılmaz — "now" şimdiki zamana işaret eder.')">A) I used to live here now.</button>
+        <button class="ec-opt" onclick="checkEC('ec1',true,'✓ Doğru! "Used to" + base verb. Geçmişte düzenli yapılırdı, şimdi yapılmıyor. Tam doğru kullanım.')">B) He used to walk to school every day.</button>
+        <button class="ec-opt" onclick="checkEC('ec1',false,'Hayır. "Use to" değil, "used to" — "d" harfi şart. Soru ve olumsuzda: "Did he use to..." ✓ ama olumlu cümlede "used to".')">C) He use to walk to school every day.</button>
+      </div>
+      <div class="ex-feedback" id="fb-ec1"></div>
+    </div>
+
+    <div class="ex-item" id="ec2">
+      <div class="ex-q">2. "Too" ve "enough" için doğru cümle hangisi?</div>
+      <div class="ec-options">
+        <button class="ec-opt" onclick="checkEC('ec2',false,'Hayır. "Enough" sıfattan SONRA gelir: "old enough" ✓. "Enough old" ❌.')">A) He is enough old to understand.</button>
+        <button class="ec-opt" onclick="checkEC('ec2',false,'Hayır. "Too" + sıfat + to + fiil. "Too much old" yanlış — "much" burada kullanılmaz. Sadece "too old".')">B) He is too much old to run.</button>
+        <button class="ec-opt" onclick="checkEC('ec2',true,'✓ Doğru! "Too" + sıfat (cold) → olumsuz sonuç (couldn\'t sleep). Klasik too + adjective kullanımı.')">C) It was too cold. He couldn't sleep.</button>
+      </div>
+      <div class="ex-feedback" id="fb-ec2"></div>
+    </div>
+
+    <div class="ex-item" id="ec3">
+      <div class="ex-q">3. Question tag için doğru cümle hangisi?</div>
+      <div class="ec-options">
+        <button class="ec-opt" onclick="checkEC('ec3',true,'✓ Doğru! Olumlu cümle → olumsuz tag. "He came" → "didn\'t he?" Ana fiil "came" (did) → tag "didn\'t he".')">A) He came yesterday, didn't he?</button>
+        <button class="ec-opt" onclick="checkEC('ec3',false,'Hayır. "He came" → olumlu, bu yüzden tag olumsuz olmalı. "Did he?" değil, "didn\'t he?"')">B) He came yesterday, did he?</button>
+        <button class="ec-opt" onclick="checkEC('ec3',false,'Hayır. Tag\'da özne her zaman zamir olur. "He came, didn\'t the man?" ❌ → "didn\'t he?" ✓')">C) He came yesterday, didn't the man?</button>
+      </div>
+      <div class="ex-feedback" id="fb-ec3"></div>
+    </div>
+
+    <div class="ex-item" id="ec4">
+      <div class="ex-q">4. Reported speech için doğru cümle hangisi?</div>
+      <div class="ec-options">
+        <button class="ec-opt" onclick="checkEC('ec4',false,'Hayır. "Says" = present tense → zaman kaymaz. Ama burada geçmiş bağlam var, "said" gerekli.')">A) He says that it was his coin.</button>
+        <button class="ec-opt" onclick="checkEC('ec4',false,'Hayır. "Said" geçmiş zaman → clause\'da zaman kayar. "is" → "was" olmalı. "He said that it was his coin." ✓')">B) He said that it is his coin.</button>
+        <button class="ec-opt" onclick="checkEC('ec4',true,'✓ Doğru! "Said" geçmiş → zaman kayar. "is" → "was". Basit reported speech.')">C) He said that it was his coin.</button>
+      </div>
+      <div class="ex-feedback" id="fb-ec4"></div>
+    </div>
+  </div>
+
+  <!-- EX 4: Türkçeden İngilizceye -->
+  <div class="exercise-block">
+    <div class="exercise-block-title"><div class="ex-num">4</div><div class="ex-title">Türkçeden İngilizceye</div></div>
+    <div class="ex-subtitle">Parantezdeki yapıyı kullan. Önce kendin dene.</div>
+
+    <div class="ex-item" id="tr1">
+      <div class="ex-q">1. Çocukluğumda her gün futbol oynardım. <em style="color:var(--text-dim)">(used to)</em></div>
+      <textarea class="ex-textarea" placeholder="I used to..."></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-reveal-btn" onclick="revealAnswer('tr1','I used to play football every day when I was a child.')">Örnek Cevap</button>
+        <button class="ex-ai-btn" onclick="checkWithAI('tr1')">🤖 AI Kontrol</button>
+      </div>
+      <div class="ex-feedback" id="fb-tr1"></div>
+    </div>
+
+    <div class="ex-item" id="tr2">
+      <div class="ex-q">2. Hava çok soğuktu. Dışarı çıkamadım. <em style="color:var(--text-dim)">(too ... to)</em></div>
+      <textarea class="ex-textarea" placeholder="It was too cold..."></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-reveal-btn" onclick="revealAnswer('tr2','It was too cold to go outside. / The weather was too cold for me to go out.')">Örnek Cevap</button>
+        <button class="ex-ai-btn" onclick="checkWithAI('tr2')">🤖 AI Kontrol</button>
+      </div>
+      <div class="ex-feedback" id="fb-tr2"></div>
+    </div>
+
+    <div class="ex-item" id="tr3">
+      <div class="ex-q">3. Kapıyı açtığımda herkes gitmişti. <em style="color:var(--text-dim)">(when / Past Perfect)</em></div>
+      <textarea class="ex-textarea" placeholder="When I opened the door, everyone had..."></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-reveal-btn" onclick="revealAnswer('tr3','When I opened the door, everyone had already left.')">Örnek Cevap</button>
+        <button class="ex-ai-btn" onclick="checkWithAI('tr3')">🤖 AI Kontrol</button>
+      </div>
+      <div class="ex-feedback" id="fb-tr3"></div>
+    </div>
+  </div>
+
+  <!-- EX 5: Serbest yazma -->
+  <div class="exercise-block">
+    <div class="exercise-block-title"><div class="ex-num">5</div><div class="ex-title">Serbest Yazma — AI Değerlendirmesi</div></div>
+    <div class="ex-subtitle">3–4 cümle İngilizce yaz.</div>
+    <div class="ex-item" id="fw1">
+      <div class="ex-q">Petit-Gervais olsaydın, ne hissederdin? O büyük adama ne söylerdin?<br><em style="color:var(--text-dim);font-size:12px">Kullanmayı dene: I used to / too afraid / I said that / when / had</em></div>
+      <textarea class="ex-textarea" style="min-height:100px" id="fw1-text" placeholder="Write 3-4 sentences in English..."></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-ai-btn" onclick="gradeWriting('fw1')">🤖 AI ile Değerlendir</button>
+      </div>
+      <div class="ex-feedback" id="fb-fw1"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ██ EXPLORE -->
+<div class="tab-panel" id="tab-explore">
+  <div class="section-title"><span>Explore</span> — Felsefi & Edebi Katman</div>
+
+  <div class="explore-section">
+    <h3>💭 Felsefe — İngilizce Kelimelerle</h3>
+    <div class="sub">Kavramları İngilizce öğrenmek için kullanıyoruz</div>
+    <p>This scene is about <span class="vocab-inline">conscience <small>(vicdan)</small></span>. Valjean does not plan to steal the coin. He does it <span class="vocab-inline">automatically <small>(otomatik olarak, düşünmeden)</small></span>. Then he realizes what he has done — and feels <span class="vocab-inline">ashamed <small>(utanmış, mahcup)</small></span>.</p>
+    <p>Aristotle said that a person's <span class="vocab-inline">character <small>(karakter)</small></span> is like a <span class="vocab-inline">habit <small>(alışkanlık)</small></span>. For nineteen years, Valjean's habit was to <span class="vocab-inline">take <small>(almak)</small></span> things to survive. This is why he put his foot on the coin — without thinking. But the Bishop's kindness created something new in him: a <span class="vocab-inline">feeling of guilt <small>(suçluluk hissi)</small></span>.</p>
+    <p>The important thing: Valjean <span class="vocab-inline">cries <small>(ağlıyor)</small></span>. This is new. In prison, he <span class="vocab-inline">used to</span> feel only <span class="vocab-inline">anger <small>(öfke)</small></span>. Now he feels <span class="vocab-inline">regret <small>(pişmanlık)</small></span>. This is the beginning of <span class="vocab-inline">change <small>(değişim)</small></span>.</p>
+    <p><strong style="color:var(--accent)">Yeni kelimeler:</strong> conscience (vicdan) / automatically (otomatik) / ashamed (utanmış) / habit (alışkanlık) / guilt (suçluluk) / regret (pişmanlık) / anger (öfke) / survive (hayatta kalmak) / realize (fark etmek) / character (karakter)</p>
+  </div>
+
+  <div class="explore-section">
+    <h3>📚 Çeviri Karşılaştırması</h3>
+    <div class="sub">Aynı an — üç dilde</div>
+    <table class="compare-table">
+      <tr><th>Dil</th><th>Cümle</th><th>Dikkat</th></tr>
+      <tr>
+        <td><strong>Français</strong></td>
+        <td><span class="highlight-phrase">Il posa le pied dessus machinalement.</span></td>
+        <td>"machinalement" = otomatik olarak, düşünmeden. İngilizce: "automatically" veya "without thinking".</td>
+      </tr>
+      <tr>
+        <td><strong>English</strong></td>
+        <td><span class="highlight-phrase">Automatically, without thinking, he put his foot on the coin.</span></td>
+        <td>İki zarf yan yana: "automatically" + "without thinking". Aynı fikri iki farklı şekilde söylüyor — güçlü etki.</td>
+      </tr>
+      <tr>
+        <td><strong>Türkçe</strong></td>
+        <td><span class="highlight-phrase">Düşünmeden, otomatik olarak ayağını paranın üstüne koydu.</span></td>
+        <td>Türkçede sıra ters: zarf önce, fiil sonda. İngilizcede zarf sona veya başa gelebilir.</td>
+      </tr>
+    </table>
+    <p><strong>Yazarlık notu:</strong> Hugo bu bölümde Valjean'ın içini göstermiyor — sadece davranışını gösteriyor. "He put his head in his hands." Neden? Hugo söylemiyor. Sen anlıyorsun. Bu tekniğin adı: <span class="vocab-inline">show, don't tell <small>(anlatma, göster)</small></span>. Yazar olarak en değerli araçlardan biri.</p>
+  </div>
+
+  <div class="explore-section">
+    <h3>✍️ Yazma Görevi</h3>
+    <div class="writing-prompt">
+      <div class="writing-prompt-title">Bu Hafta</div>
+      <p>Valjean'ın bakış açısından yaz. O gece — sikkeyi aldıktan sonra — ne düşündü? <strong>4–5 cümle</strong> yeterli.</p>
+      <p><em style="color:var(--text-dim);font-size:12px">Kullanmayı dene: I used to... / I had... / I was too... / when / I told myself that...</em></p>
+      <textarea class="ex-textarea" style="min-height:110px" id="ep-text" placeholder="Write Valjean's thoughts in English..."></textarea>
+      <div class="ex-btn-row" style="margin-top:10px">
+        <button class="ex-ai-btn" onclick="gradeWriting('ep')">🤖 AI ile Değerlendir</button>
+      </div>
+      <div class="ex-feedback" id="fb-ep"></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const GRAMMAR = {
+  pperf:{
+    name:'Past Perfect', tr:'Geçmişin Geçmişi', icon:'⏮️', color:'#60a5fa',
+    formula:'had + V3 (past participle)',
+    explain:'Geçmişte iki şey oldu. Past Perfect, daha eski olanı gösterir. "Gelmeden önce yemişti" — yemek önce, gelmek sonra. Türkçede: "-mıştı / -mişti".',
+    examples:[
+      {en:'The Bishop <u>had given</u> him the candlesticks.',tr:'Piskopos ona şamdanları vermişti. (daha önce)'},
+      {en:'Nobody <u>had ever given</u> him anything before.',tr:'Daha önce kimse ona hiçbir şey vermemişti.'},
+      {en:'He <u>had not changed</u>. He knew it.',tr:'Değişmemişti. Bunu biliyordu.'}
+    ],
+    edge:'⚠️ Past Perfect her zaman başka bir geçmiş zaman ile birlikte kullanılır. "When I arrived, she had left." — iki eylem var: gelmek (simple past) + gitmek (past perfect, daha önce). Yalnız kullanılmaz.',
+    quiz:{
+      q:'"When Valjean looked down, the boy ______ (go)." — doğru?',
+      opts:[
+        {t:'the boy went.',correct:false,fb:'"Went" = simple past. Ama Valjean bakmadan önce çocuk gitmişti — daha önceki eylem. Past Perfect gerekli.'},
+        {t:'the boy had gone.',correct:true,fb:'✓ Doğru! "Had gone" = past perfect. Valjean bakışından önce çocuk çoktan gitmişti.'},
+        {t:'the boy has gone.',correct:false,fb:'"Has gone" = present perfect. Geçmiş bir anlatımda past perfect kullanılır.'}
+      ]
+    }
+  },
+  usedto:{
+    name:'Used to', tr:'Geçmişteki Alışkanlık', icon:'🔁', color:'#c084fc',
+    formula:'used to + V1 (base verb)',
+    explain:'"Eskiden ... yapardım" — geçmişte düzenli yapılan ama artık yapılmayan bir şey. Türkçede "-ardı / -erdi / -ırdı".',
+    examples:[
+      {en:'He <u>used to</u> wake up in a prison cell.',tr:'Eskiden bir hücrede uyanırdı. (artık değil)'},
+      {en:'She <u>used to</u> sing every morning.',tr:'Eskiden her sabah şarkı söylerdi.'},
+      {en:'I <u>used to</u> think only about myself.',tr:'Eskiden sadece kendim hakkında düşünürdüm.'}
+    ],
+    edge:'⚠️ Soru ve olumsuzda "used" değil "use" yazılır: "Did he use to...?" ✓ / "He didn\'t use to..." ✓ — "d" düşer çünkü "did" zaten geçmiş zamanı taşır. "Used to" yalnızca geçmiş için — "I use to" ❌ diye şimdiki zaman yok.',
+    quiz:{
+      q:'"Eskiden her gün koşardım." — doğru?',
+      opts:[
+        {t:'I use to run every day.',correct:false,fb:'"Use to" yok — olumlu cümlede her zaman "used to". "I used to run every day." ✓'},
+        {t:'I used to run every day.',correct:true,fb:'✓ Doğru! "Used to" + base verb. Artık koşmadığı anlaşılıyor.'},
+        {t:'I used to ran every day.',correct:false,fb:'"Used to" + base verb — V2 değil! "Ran" yanlış. "Run" (base form) gelir.'}
+      ]
+    }
+  },
+  time:{
+    name:'Time Connectors', tr:'Zaman Bağlaçları', icon:'⏱️', color:'#4ade80',
+    formula:'when / after / before / until / while / from ... on',
+    explain:'İki eylemi zamana göre birbirine bağlar. Her birinin farklı bir anlamı var.',
+    examples:[
+      {en:'<u>When</u> the sun went down, she walked past.',tr:'Güneş batınca, yanından geçti.'},
+      {en:'<u>After</u> walking for an hour, he sat down.',tr:'Bir saat yürüdükten sonra oturdu.'},
+      {en:'He waited <u>until</u> the sound was gone.',tr:'Ses kaybolana kadar bekledi.'}
+    ],
+    edge:'⚠️ "until" vs "by": "Wait until 5 PM" = 5\'e kadar bekle (sürekli). "Finish it by 5 PM" = 5\'e kadar bitir (son nokta). "While" = aynı anda süren iki eylem: "While he was sleeping, she left." — ikisi de devam ediyordu.',
+    quiz:{
+      q:'"Gidene kadar orada oturdu." — doğru?',
+      opts:[
+        {t:'He sat there when she left.',correct:false,fb:'"When" = o anda / tam o zaman. "Until she left" = gidene kadar (süreklilik). "When" burada yanlış anlam verir.'},
+        {t:'He sat there until she left.',correct:true,fb:'✓ Doğru! "Until" = bir şey olana kadar devam etti. Tam bu anlam.'},
+        {t:'He sat there while she left.',correct:false,fb:'"While" = aynı anda süren eylemler. Ama "leave" anlık — "while she was leaving" olabilir, ama "until" daha doğal burada.'}
+      ]
+    }
+  },
+  rep:{
+    name:'Reported Speech (Basit)', tr:'Dolaylı Anlatım', icon:'💬', color:'#f59e0b',
+    formula:'said (that) + geçmiş zaman cümlesi',
+    explain:'Birinin söylediklerini aktarırken zamanlar bir adım geri kayar. "I am hungry" → He said (that) he was hungry.',
+    examples:[
+      {en:'"It is my coin." → He said <u>that it was</u> his coin.',tr:'"is" → "was"'},
+      {en:'"I have done nothing." → She said <u>that she had done</u> nothing.',tr:'"have done" → "had done"'},
+      {en:'He <u>told himself</u> that he was a bad man.',tr:'Kendine kötü bir adam olduğunu söyledi.'}
+    ],
+    edge:'⚠️ "say" vs "tell": "He said that..." ✓ / "He told me that..." ✓ / "He said me..." ❌ — "say" doğrudan nesne almaz. "Tell" her zaman kişi ister: "tell + kişi + that". Ayrıca: present tense ile söylendiğinde evrensel gerçekler kaymaZ: "He said the sun rises in the east." ✓',
+    quiz:{
+      q:'"He said me that he was tired." — doğru mu?',
+      opts:[
+        {t:'Doğru.',correct:false,fb:'"Say" doğrudan kişi almaz. "He said to me" veya "He told me" olmalı. "Said me" ❌'},
+        {t:'Yanlış — "He told me that he was tired." olmalı.',correct:true,fb:'✓ Doğru! "Tell" + kişi (me) + that. "Said me" yanlış yapı.'},
+        {t:'Yanlış — "He said that he is tired." olmalı.',correct:false,fb:'Zaman kaymaz mı? Kayar! Geçmişte söylenmiş — "was" gerekli, "is" değil.'}
+      ]
+    }
+  },
+  adv:{
+    name:'Adverbs of Manner', tr:'Hal Zarfları', icon:'🎭', color:'#2dd4bf',
+    formula:'adjective + -ly  (slow → slowly, quiet → quietly)',
+    explain:'Bir eylemin nasıl yapıldığını söyler. Genellikle fiilin sonuna veya cümle başına gelir.',
+    examples:[
+      {en:'He walked <u>slowly</u>.',tr:'Yavaşça yürüdü. (slow → slowly)'},
+      {en:'He stood up <u>suddenly</u>.',tr:'Aniden ayağa kalktı. (sudden → suddenly)'},
+      {en:'She looked back <u>nervously</u>.',tr:'Sinirli bir şekilde arkasına baktı. (nervous → nervously)'}
+    ],
+    edge:'⚠️ Düzensizler: good → well (not "goodly"). fast → fast (not "fastly"). hard → hard (not "hardly" — "hardly" = neredeyse hiç, farklı anlam!). "She works hardly." ❌ anlamsız. "She works hard." ✓ / "She hardly works." = neredeyse hiç çalışmıyor.',
+    quiz:{
+      q:'"She sings good." — doğru mu?',
+      opts:[
+        {t:'Doğru.',correct:false,fb:'"Good" sıfat — fiili tanımlamaz. Fiili tanımlayan zarf gerekir: "She sings well." ✓ (good → well)'},
+        {t:'Yanlış — "She sings well." olmalı.',correct:true,fb:'✓ Doğru! "Good" → "well". Düzensiz zarf. Fiil için "well" kullanılır.'},
+        {t:'Yanlış — "She sings goodly." olmalı.',correct:false,fb:'"Goodly" diye bir zarf yok. "Good" → "well". Bu en önemli düzensiz zarftır.'}
+      ]
+    }
+  },
+  prep:{
+    name:'Prepositions of Movement', tr:'Hareket Edatları', icon:'🧭', color:'#f43f5e',
+    formula:'into / out of / along / past / through / across',
+    explain:'Hareketin yönünü gösterir. Türkçede "-e, -den, -boyunca, -dan geçerek" gibi eklerle karşılık bulur.',
+    examples:[
+      {en:'He walked <u>out of</u> the house.',tr:'Evden çıktı. (içeriden dışarıya)'},
+      {en:'He ran <u>into</u> the trees.',tr:'Ağaçların içine koştu. (dışarıdan içeriye)'},
+      {en:'A boy came <u>along</u> the road.',tr:'Bir çocuk yol boyunca geldi.'}
+    ],
+    edge:'⚠️ into vs in: "He walked INTO the room." = içeri girdi (hareket). "He is IN the room." = içinde (konum). "past" = yanından geçmek: "She walked past me." = yanımdan geçti. "through" = bir şeyin içinden geçmek: "walk through the forest".',
+    quiz:{
+      q:'"The cat jumped ______ the window." — içeri girdi.',
+      opts:[
+        {t:'The cat jumped in the window.',correct:false,fb:'"In" konum belirtir — hareketi değil. Hareket için "into": "jumped into the window" ✓'},
+        {t:'The cat jumped into the window.',correct:true,fb:'✓ Doğru! "Into" = dışarıdan içeriye hareket. Kedi dışarıdaydı, içeri atladı.'},
+        {t:'The cat jumped out of the window.',correct:false,fb:'"Out of" = içeriden dışarıya. Ama burada içeri giriyor — "into" doğru.'}
+      ]
+    }
+  },
+  enough:{
+    name:'Too / Enough', tr:'"Çok fazla" / "Yeterince"', icon:'⚖️', color:'#fb923c',
+    formula:'too + adjective (+to+verb)  |  adjective/adverb + enough (+to+verb)',
+    explain:'"Too" = fazla/aşırı — olumsuz sonuç doğurur. "Enough" = yeterli — olumlu sonuç. Yerleşim farkına dikkat: "too" sıfattan önce, "enough" sıfattan sonra.',
+    examples:[
+      {en:'He was <u>too</u> afraid to speak.',tr:'Konuşmak için çok korkmuştu. (konuşamadı)'},
+      {en:'She was not strong <u>enough</u> to lift it.',tr:'Kaldıracak kadar güçlü değildi.'},
+      {en:'It was almost <u>too</u> quiet.',tr:'Neredeyse gereğinden sessizdi.'}
+    ],
+    edge:'⚠️ Sıralama: "too + ADJ": "too cold" ✓ / "cold too" ❌. "ADJ + enough": "warm enough" ✓ / "enough warm" ❌. Sonrasına "to + verb" eklenebilir: "too cold to swim" / "warm enough to swim". "Enough" isimden önce de gelebilir: "enough money" / "enough time".',
+    quiz:{
+      q:'"Yüzmek için yeterince iyiydi." — doğru çeviri?',
+      opts:[
+        {t:'She was enough good to swim.',correct:false,fb:'"Enough" sıfattan sonra gelir: "good enough" ✓. "Enough good" ❌.'},
+        {t:'She was good enough to swim.',correct:true,fb:'✓ Doğru! adjective (good) + enough + to + verb (swim). Tam doğru sıralama.'},
+        {t:'She was too good to swim.',correct:false,fb:'"Too good to swim" = yüzmek için fazla iyi — bu olumsuz anlam verir (yüzmez). Oysa burada yüzebildiği söyleniyor. "Enough" doğru.'}
+      ]
+    }
+  },
+  qtag:{
+    name:'Question Tags', tr:'Onay Soruları (Ek Soru)', icon:'❓', color:'#e879f9',
+    formula:'olumlu cümle, olumsuz tag?  |  olumsuz cümle, olumlu tag?',
+    explain:'Cümle sonuna eklenen kısa soru. "Değil mi? / Öyle değil mi?" anlamı. Onay veya emin olmak için kullanılır.',
+    examples:[
+      {en:'You can see it, <u>can\'t you?</u>',tr:'Görebiliyorsun, değil mi?'},
+      {en:'He came yesterday, <u>didn\'t he?</u>',tr:'Dün geldi, değil mi?'},
+      {en:'She isn\'t here, <u>is she?</u>',tr:'Burada değil, değil mi?'}
+    ],
+    edge:'⚠️ Kural: olumlu cümle → olumsuz tag. Olumsuz cümle → olumlu tag. Tag\'da: (1) yardımcı fiil + (2) öznenin zamiri. "He left, didn\'t he?" — left = did → "didn\'t". "She can swim, can\'t she?" — can → "can\'t". "I am right, aren\'t I?" — "am I?" değil, "aren\'t I?" (özel durum).',
+    quiz:{
+      q:'"She doesn\'t know, ____?"',
+      opts:[
+        {t:"doesn't she?",correct:false,fb:'Olumsuz cümle → olumlu tag. "Doesn\'t" olumsuz → tag "does she?" olmalı.'},
+        {t:'does she?',correct:true,fb:'✓ Doğru! Olumsuz cümle (doesn\'t) → olumlu tag (does she?).'},
+        {t:"didn't she?",correct:false,fb:'"Didn\'t" geçmiş zaman olurdu. Cümlede "doesn\'t" var — present tense. Tag da present: "does she?"'}
+      ]
+    }
+  }
+};
+
+const VOCAB = [
+  {word:'coin',ph:'/kɔɪn/',tr:'madeni para, sikke',cat:'object',ex:'A coin fell out of the boy\'s bag and rolled past Valjean\'s foot.'},
+  {word:'automatically',ph:'/ˌɔː.tə.ˈmæt.ɪ.kli/',tr:'otomatik olarak, düşünmeden',cat:'phrase',ex:'Automatically, without thinking, he put his foot on the coin.'},
+  {word:'roll',ph:'/roʊl/',tr:'yuvarlanmak',cat:'action',ex:'The coin rolled past his foot and stopped.'},
+  {word:'realize',ph:'/ˈriː.ə.laɪz/',tr:'fark etmek, anlamak',cat:'action',ex:'Then he realized what he had done — and felt ashamed.'},
+  {word:'ashamed',ph:'/əˈʃeɪmd/',tr:'utanmış, mahcup',cat:'emotion',ex:'He was ashamed of what he had done to the child.'},
+  {word:'silence',ph:'/ˈsaɪ.ləns/',tr:'sessizlik, sükut',cat:'object',ex:'Now there was only silence and birds. It felt strange.'},
+  {word:'disappear',ph:'/ˌdɪs.əˈpɪər/',tr:'kaybolmak, gözden kaybolmak',cat:'action',ex:'He ran into the trees and disappeared.'},
+  {word:'guilt',ph:'/ɡɪlt/',tr:'suçluluk (hissi)',cat:'emotion',ex:'He felt a deep sense of guilt about the coin.'},
+  {word:'regret',ph:'/rɪˈɡret/',tr:'pişmanlık; pişman olmak',cat:'emotion',ex:'He had no regret in prison. Now he had too much.'},
+  {word:'survive',ph:'/səˈvaɪv/',tr:'hayatta kalmak, atlатmak',cat:'action',ex:'For nineteen years, he had thought only about how to survive.'},
+  {word:'kindness',ph:'/ˈkaɪnd.nəs/',tr:'iyilik, şefkat, naziklik',cat:'object',ex:'He was not good enough for the Bishop\'s kindness.'},
+  {word:'decision',ph:'/dɪˈsɪʒ.ən/',tr:'karar',cat:'object',ex:'That night, Valjean made a decision.'},
+  {word:'conscience',ph:'/ˈkɒn.ʃəns/',tr:'vicdan',cat:'object',ex:'Something hit him — not from outside, but from his conscience.'},
+  {word:'nervously',ph:'/ˈnɜːr.vəs.li/',tr:'sinirli bir şekilde, tedirginlikle',cat:'phrase',ex:'She looked back once, nervously.'},
+  {word:'suddenly',ph:'/ˈsʌd.ən.li/',tr:'aniden, birdenbire',cat:'phrase',ex:'He stood up suddenly and shouted the boy\'s name.'},
+  {word:'empty',ph:'/ˈemp.ti/',tr:'boş, tenha, ıssız',cat:'describe',ex:'He shouted, but the road was empty. The boy was gone.'},
+  {word:'poor',ph:'/pɔːr/',tr:'yoksul, fakir; zavallı',cat:'describe',ex:'He had stolen from a poor child. He felt terrible.'},
+  {word:'pick up',ph:'/ˈpɪk ʌp/',tr:'yerden almak, kaldırmak',cat:'action',ex:'The boy quickly picked up his bag and ran away.'},
+  {word:'stranger',ph:'/ˈstreɪn.dʒər/',tr:'yabancı, tanımadık kişi',cat:'person',ex:'To the woman on the road, Valjean was just a strange stranger.'},
+  {word:'ashamed of',ph:'/əˈʃeɪmd əv/',tr:'-den utanmak (kalıp)',cat:'phrase',ex:'He was ashamed of himself. He could not look up.'}
+];
+
+let score=0; let answered=new Set();
+
+document.addEventListener('DOMContentLoaded',()=>{
+  initTabs(); initTooltip(); buildVocab(); buildGrammar(); updateScore();
+});
+
+function toggleTheme(){
+  document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark';
+}
+
+function initTabs(){
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+let tooltipEl;
+function initTooltip(){
+  tooltipEl=document.getElementById('tooltip');
+  document.querySelectorAll('.gtag').forEach(el=>{
+    el.addEventListener('mouseenter',showTooltip);
+    el.addEventListener('mouseleave',()=>tooltipEl.classList.remove('visible'));
+    el.addEventListener('mousemove',moveTooltip);
+  });
+}
+function showTooltip(e){
+  const g=GRAMMAR[e.target.dataset.g]; if(!g) return;
+  document.getElementById('tt-icon').textContent=g.icon;
+  document.getElementById('tt-name').textContent=g.name;
+  document.getElementById('tt-name').style.color=g.color;
+  document.getElementById('tt-tr').textContent=g.tr;
+  document.getElementById('tt-formula').textContent=g.formula;
+  document.getElementById('tt-explain').textContent=g.explain;
+  document.getElementById('tt-examples').innerHTML=g.examples.map(ex=>`
+    <div class="tt-ex-item" style="border-color:${g.color}33">
+      <div class="tt-ex-en">${ex.en}</div>
+      <div class="tt-ex-tr">${ex.tr}</div>
+    </div>`).join('');
+  document.getElementById('tt-edge').textContent=g.edge;
+  tooltipEl.classList.add('visible');
+  moveTooltip(e);
+}
+function moveTooltip(e){
+  let x=e.clientX+18,y=e.clientY+18;
+  if(x+350>window.innerWidth-10) x=e.clientX-350-10;
+  if(y+300>window.innerHeight-10) y=e.clientY-300-10;
+  tooltipEl.style.left=x+'px'; tooltipEl.style.top=y+'px';
+}
+
+function buildVocab(){
+  document.getElementById('vocabGrid').innerHTML=VOCAB.map(v=>`
+    <div class="vocab-card" data-cat="${v.cat}" onclick="this.classList.toggle('flipped')">
+      <div class="vocab-card-inner">
+        <div class="vocab-face">
+          <div><div class="vocab-word">${v.word}</div><div class="vocab-phonetic">${v.ph}</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end">
+            <span class="vocab-cat-tag cat-${v.cat}">${v.cat}</span>
+            <span class="vocab-flip-hint">↩ çevir</span>
+          </div>
+        </div>
+        <div class="vocab-face vocab-back">
+          <div><div class="vocab-tr">${v.tr}</div><div class="vocab-example">"${v.ex}"</div></div>
+          <div class="vocab-back-hint">↩ geri</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('vocabFilters').addEventListener('click',e=>{
+    if(!e.target.matches('.filter-btn')) return;
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    e.target.classList.add('active');
+    const f=e.target.dataset.filter;
+    let vis=0;
+    document.querySelectorAll('.vocab-card').forEach(c=>{
+      const show=f==='all'||c.dataset.cat===f;
+      c.style.display=show?'':'none';
+      if(show) vis++;
+    });
+    document.getElementById('visibleCount').textContent=vis;
+  });
+}
+
+function buildGrammar(){
+  document.getElementById('grammarGrid').innerHTML=Object.entries(GRAMMAR).map(([key,g])=>`
+    <div class="grammar-card" id="gc-${key}">
+      <div class="grammar-card-header" onclick="toggleGC('${key}')">
+        <div class="grammar-color-bar" style="background:${g.color}"></div>
+        <div class="grammar-card-title">
+          <strong style="color:${g.color}">${g.icon} ${g.name}</strong>
+          <small>${g.tr}</small>
+        </div>
+        <div class="grammar-toggle">▶</div>
+      </div>
+      <div class="grammar-body">
+        <div class="grammar-formula">${g.formula}</div>
+        <div class="grammar-explain">${g.explain}</div>
+        <div>${g.examples.map(ex=>`
+          <div class="grammar-ex" style="border-color:${g.color}44">
+            <div class="grammar-ex-en">${ex.en}</div>
+            <div class="grammar-ex-tr">${ex.tr}</div>
+          </div>`).join('')}
+        </div>
+        <div class="grammar-edge"><div class="grammar-edge-title">⚠️ Dikkat Noktası</div>${g.edge}</div>
+        <div class="grammar-mini-quiz" id="mq-${key}">
+          <div class="mini-quiz-title">🎯 Mini Test</div>
+          <div class="mini-quiz-q">${g.quiz.q}</div>
+          <div class="mini-quiz-options">${g.quiz.opts.map((o,i)=>`
+            <button class="mq-btn" onclick="answerMQ('${key}',${i})">${String.fromCharCode(65+i)}) ${o.t}</button>`).join('')}
+          </div>
+          <div class="mq-feedback" id="mqfb-${key}"></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleGC(k){ document.getElementById('gc-'+k).classList.toggle('open'); }
+
+function answerMQ(key,oi){
+  const g=GRAMMAR[key];
+  document.querySelectorAll(`#mq-${key} .mq-btn`).forEach((b,i)=>{
+    b.classList.add(g.quiz.opts[i].correct?'correct':'wrong'); b.disabled=true;
+  });
+  const fb=document.getElementById('mqfb-'+key);
+  fb.textContent=g.quiz.opts[oi].fb;
+  fb.className='mq-feedback show '+(g.quiz.opts[oi].correct?'ok':'bad');
+}
+
+function checkFill(id){
+  const item=document.querySelector(`[data-exid="${id}"]`);
+  const input=document.querySelector(`input[data-item="${id}"]`);
+  const answer=item.dataset.answer.toLowerCase().trim();
+  const user=input.value.toLowerCase().trim();
+  const fb=document.getElementById('fb-'+id);
+  if(!user){ fb.className='ex-feedback show info'; fb.textContent='Lütfen bir cevap yaz.'; return; }
+  const ok=user===answer;
+  if(ok){
+    fb.className='ex-feedback show correct';
+    fb.innerHTML='✓ Doğru! <strong>'+item.dataset.answer+'</strong>';
+    input.style.borderColor='var(--correct)';
+    if(!input.dataset.scored){ score++; input.dataset.scored='1'; updateScore(); }
+  } else {
+    fb.className='ex-feedback show wrong';
+    fb.textContent='✗ Tam değil. "Cevabı Gör" butonuna bas.';
+    input.style.borderColor='var(--wrong)';
+  }
+}
+
+function revealFill(id){
+  const item=document.querySelector(`[data-exid="${id}"]`);
+  const fb=document.getElementById('fb-'+id);
+  fb.className='ex-feedback show info';
+  fb.innerHTML='Cevap: <strong>'+item.dataset.answer+'</strong>';
+}
+
+function revealAnswer(id,answer){
+  document.getElementById('fb-'+id).className='ex-feedback show info';
+  document.getElementById('fb-'+id).innerHTML='<strong>Örnek cevap:</strong> '+answer;
+}
+
+function checkEC(id,correct,fbText){
+  document.querySelectorAll(`#${id} .ec-opt`).forEach(b=>b.disabled=true);
+  const fb=document.getElementById('fb-'+id);
+  fb.className='ex-feedback show '+(correct?'correct':'wrong');
+  fb.innerHTML=fbText;
+  if(!answered.has(id)){ answered.add(id); if(correct){ score++; updateScore(); } }
+}
+
+function updateScore(){
+  const pct=Math.round((score/12)*100);
+  document.getElementById('scoreFill').style.width=pct+'%';
+  document.getElementById('scoreNum').textContent=score+' / 12 doğru';
+}
+
+async function checkWithAI(id){
+  const c=document.getElementById(id);
+  const ta=c.querySelector('textarea');
+  const text=ta?.value?.trim();
+  const q=c.querySelector('.ex-q')?.textContent?.trim()||'';
+  if(!text){ const fb=document.getElementById('fb-'+id); fb.className='ex-feedback show info'; fb.textContent='Önce bir cevap yaz.'; return; }
+  const fb=document.getElementById('fb-'+id);
+  fb.className='ex-feedback show ai';
+  fb.innerHTML='<span class="spinner"></span>Kontrol ediliyor...';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:600,
+        system:`B1 seviye İngilizce öğrencisine kısa ve net geri bildirim ver. Türkçe yaz. 1) Gramer hatası var mı? (varsa Türkçe açıkla) 2) Daha iyi versiyon öner (varsa). 3) Kısa bir bravo. Max 4 cümle. Basit ve sıcak dil.`,
+        messages:[{role:'user',content:`Görev: "${q}"\nCevap: "${text}"`}]
+      })
+    });
+    const d=await r.json();
+    fb.className='ex-feedback show ai';
+    fb.innerHTML='🤖 '+(d.content?.[0]?.text||'Yanıt alınamadı.').replace(/\n/g,'<br>');
+  }catch(e){ fb.className='ex-feedback show wrong'; fb.textContent='Bağlantı hatası.'; }
+}
+
+async function gradeWriting(id){
+  const isEp=id==='ep';
+  const textEl=isEp?document.getElementById('ep-text'):document.getElementById(id+'-text');
+  const text=textEl?.value?.trim();
+  const question=isEp
+    ? 'Valjean\'ın bakış açısından yaz. O gece — sikkeyi aldıktan sonra — ne düşündü? 4-5 cümle. Kullan: I used to / I had / I was too / when / I told myself that.'
+    : document.querySelector(`#${id} .ex-q`)?.textContent||'';
+  if(!text){ const fb=document.getElementById('fb-'+id); fb.className='ex-feedback show info'; fb.textContent='Önce bir şeyler yaz.'; return; }
+  const fb=document.getElementById('fb-'+id);
+  fb.className='ex-feedback show ai';
+  fb.innerHTML='<span class="spinner"></span>Değerlendiriliyor...';
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:800,
+        system:`B1 seviye İngilizce öğrencisine yazarlık geri bildirimi ver. Türkçe yaz. Sırayla: 1) Gramer hataları (varsa, her birini bir cümleyle açıkla) 2) Hangi yapıları kullandı (Past Perfect, Used to vb.) 3) Bir iyileştirme önerisi. 4) Kısa bir bravo. Max 6 cümle. Basit ve cesaretlendirici dil.`,
+        messages:[{role:'user',content:`Görev: "${question}"\nYazı:\n"${text}"`}]
+      })
+    });
+    const d=await r.json();
+    fb.className='ex-feedback show ai';
+    fb.innerHTML='🤖 <strong>AI:</strong><br><br>'+(d.content?.[0]?.text||'Yanıt alınamadı.').replace(/\n/g,'<br>');
+  }catch(e){ fb.className='ex-feedback show wrong'; fb.textContent='Bağlantı hatası.'; }
+}
+</script>
+</body>
+</html>

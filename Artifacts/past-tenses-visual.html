@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Tenses - Görsel Rehber</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0e27;
+            --surface: #151b3d;
+            --simple: #ff6b6b;
+            --continuous: #4ecdc4;
+            --perfect: #ffe66d;
+            --perfect-cont: #a8dadc;
+            --text: #f1faee;
+            --text-dim: #94a3b8;
+            --accent: #f72585;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #1a1f4d 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--continuous), var(--perfect));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+
+        /* Timeline Base */
+        .timeline {
+            position: relative;
+            padding: 3rem 0;
+            margin: 3rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                var(--simple) 0%, 
+                var(--continuous) 33%, 
+                var(--perfect) 66%, 
+                var(--perfect-cont) 100%);
+            border-radius: 2px;
+        }
+
+        /* Tense Card */
+        .tense-card {
+            position: relative;
+            margin: 4rem 0;
+            animation: fadeInUp 0.6s ease backwards;
+        }
+
+        .tense-card:nth-child(1) { animation-delay: 0.1s; }
+        .tense-card:nth-child(2) { animation-delay: 0.2s; }
+        .tense-card:nth-child(3) { animation-delay: 0.3s; }
+        .tense-card:nth-child(4) { animation-delay: 0.4s; }
+
+        .card-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .tense-card:nth-child(odd) .card-wrapper {
+            flex-direction: row;
+        }
+
+        .tense-card:nth-child(even) .card-wrapper {
+            flex-direction: row-reverse;
+        }
+
+        .card-content {
+            flex: 1;
+            background: var(--surface);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+
+        .card-content:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .simple-past .card-content { border-color: var(--simple); }
+        .simple-past .card-content:hover { box-shadow: 0 20px 60px rgba(255, 107, 107, 0.3); }
+
+        .past-continuous .card-content { border-color: var(--continuous); }
+        .past-continuous .card-content:hover { box-shadow: 0 20px 60px rgba(78, 205, 196, 0.3); }
+
+        .past-perfect .card-content { border-color: var(--perfect); }
+        .past-perfect .card-content:hover { box-shadow: 0 20px 60px rgba(255, 230, 109, 0.3); }
+
+        .past-perfect-cont .card-content { border-color: var(--perfect-cont); }
+        .past-perfect-cont .card-content:hover { box-shadow: 0 20px 60px rgba(168, 218, 220, 0.3); }
+
+        /* Timeline Dot */
+        .timeline-dot {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+            z-index: 2;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tense-card:hover .timeline-dot {
+            transform: scale(1.2) rotate(360deg);
+        }
+
+        .simple-past .timeline-dot { background: var(--simple); }
+        .past-continuous .timeline-dot { background: var(--continuous); }
+        .past-perfect .timeline-dot { background: var(--perfect); color: var(--bg); }
+        .past-perfect-cont .timeline-dot { background: var(--perfect-cont); color: var(--bg); }
+
+        /* Card Headers */
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .tense-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .simple-past .tense-name { color: var(--simple); }
+        .past-continuous .tense-name { color: var(--continuous); }
+        .past-perfect .tense-name { color: var(--perfect); }
+        .past-perfect-cont .tense-name { color: var(--perfect-cont); }
+
+        .formula {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.05);
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.5rem;
+            display: inline-block;
+            font-size: 0.95rem;
+            border-left: 4px solid;
+            margin-bottom: 1rem;
+        }
+
+        .simple-past .formula { border-color: var(--simple); }
+        .past-continuous .formula { border-color: var(--continuous); }
+        .past-perfect .formula { border-color: var(--perfect); }
+        .past-perfect-cont .formula { border-color: var(--perfect-cont); }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+        }
+
+        .examples {
+            margin-top: 1.5rem;
+        }
+
+        .example-item {
+            background: rgba(255,255,255,0.03);
+            padding: 1rem 1.3rem;
+            border-radius: 0.8rem;
+            margin: 0.8rem 0;
+            border-left: 3px solid;
+            transition: all 0.3s ease;
+        }
+
+        .example-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(8px);
+        }
+
+        .simple-past .example-item { border-color: var(--simple); }
+        .past-continuous .example-item { border-color: var(--continuous); }
+        .past-perfect .example-item { border-color: var(--perfect); }
+        .past-perfect-cont .example-item { border-color: var(--perfect-cont); }
+
+        .example-en {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .example-tr {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        /* Visual Indicator */
+        .visual-indicator {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .indicator-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .visual-bars {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+            height: 60px;
+        }
+
+        .bar {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tense-card:hover .bar {
+            filter: brightness(1.3);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 4rem 0;
+            animation: fadeInUp 0.8s ease 0.5s backwards;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--surface);
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .legend-item:hover {
+            transform: translateY(-4px);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .legend-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 30px;
+            }
+
+            .card-wrapper {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                padding-left: 80px;
+            }
+
+            .timeline-dot {
+                position: absolute;
+                left: 0;
+            }
+
+            .legend {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Key Points */
+        .key-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .key-point {
+            background: rgba(255,255,255,0.04);
+            padding: 0.8rem 1rem;
+            border-radius: 0.6rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .key-point::before {
+            content: '→';
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .simple-past .key-point::before { color: var(--simple); }
+        .past-continuous .key-point::before { color: var(--continuous); }
+        .past-perfect .key-point::before { color: var(--perfect); }
+        .past-perfect-cont .key-point::before { color: var(--perfect-cont); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PAST TENSES</h1>
+            <p class="subtitle">Geçmiş Zamanları Görsel Zaman Çizelgesi</p>
+        </header>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--simple)"></div>
+                <span class="legend-label">Simple Past</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--continuous)"></div>
+                <span class="legend-label">Past Continuous</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--perfect)"></div>
+                <span class="legend-label">Past Perfect</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: var(--perfect-cont)"></div>
+                <span class="legend-label">Past Perfect Continuous</span>
+            </div>
+        </div>
+
+        <div class="timeline">
+            <!-- SIMPLE PAST -->
+            <div class="tense-card simple-past">
+                <div class="card-wrapper">
+                    <div class="timeline-dot">1</div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <h2 class="tense-name">Simple Past</h2>
+                            <div class="formula">Subject + V2 (worked / went / was)</div>
+                            <p class="description">
+                                📸 <strong>Fotoğraf gibi</strong> - Geçmişte başlayıp biten, tamamlanmış eylemler. Şimdiki zamanla bağlantısı YOK.
+                            </p>
+                        </div>
+
+                        <div class="key-points">
+                            <div class="key-point">Kesin bitmiş</div>
+                            <div class="key-point">Zamanı belli</div>
+                            <div class="key-point">Tek olay</div>
+                        </div>
+
+                        <div class="examples">
+                            <div class="example-item">
+                                <div class="example-en">I lived in Paris for 5 years.</div>
+                                <div class="example-tr">Paris'te 5 yıl yaşadım. (artık yaşamıyorum)</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-en">She called me yesterday.</div>
+                                <div class="example-tr">Dün beni aradı. (bu eylem tamamlandı)</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-en">They built this bridge in 1950.</div>
+                                <div class="example-tr">Bu köprüyü 1950'de inşa ettiler.</div>
+                            </div>
+                        </div>
+
+                        <div class="visual-indicator">
+                            <div class="indicator-title">Görsel Temsil</div>
+                            <div class="visual-bars">
+                                <div class="bar" style="height: 100%; background: var(--simple);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAST CONTINUOUS -->
+            <div class="tense-card past-continuous">
+                <div class="card-wrapper">
+                    <div class="timeline-dot">2</div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <h2 class="tense-name">Past Continuous</h2>
+                            <div class="formula">Subject + was/were + V-ing</div>
+                            <p class="description">
+                                🎬 <strong>Video gibi</strong> - Geçmişte belirli bir anda devam etmekte olan eylemler. O anı yaşıyormuş gibi anlatırsınız.
+                            </p>
+                        </div>
+
+                        <div class="key-points">
+                            <div class="key-point">O anda devam ediyor</div>
+                            <div class="key-point">Süreç halinde</div>
+                            <div class="key-point">Kesintiye uğrayabilir</div>
+                        </div>
+
+                        <div class="examples">
+                            <div class="example-item">
+                                <div class="example-en">I was watching TV at 9 pm last night.</div>
+                                <div class="example-tr">Dün gece 9'da TV izliyordum. (tam o saatte)</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-en">It was raining when I left home.</div>
+                                <div class="example-tr">Evden çıktığımda yağmur yağıyordu.</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-en">While I was studying, she was cooking.</div>
+                                <div class="example-tr">Ben çalışırken, o yemek pişiriyordu. (paralel)</div>
+                            </div>
+                        </div>
+
+                        <div class="visual-indicator">
+                            <div class="indicator-title">Görsel Temsil</div>
+                            <div class="visual-bars">
+                                <div class="bar" style="height: 40%; background: linear-gradient(to top, var(--continuous), transparent);"></div>
+                                <div class="bar" style="height: 80%; background: linear-gradient(to top, var(--continuous), transparent);"></div>
+                                <div class="bar" style="height: 100%; background: var(--continuous);"></div>
+                                <div class="bar" style="height: 80%; background: linear-gradient(to top, var(--continuous), transparent);"></div>
+                                <div class="bar" style="height: 40%; background: linear-gradient(to top, var(--continuous), transparent);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAST PERFECT -->
+            <div class="tense-card past-perfect">
+                <div class="card-wrapper">
+                    <div class="timeline-dot">3</div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <h2 class="tense-name">Past Perfect</h2>
+                            <div class="formula">Subject + had + V3 (past participle)</div>
+                            <p class="description">
+                                🌉 <strong>Köprü gibi</strong> - Geçmişin geçmişi. İki geçmiş olay varsa, daha önce olan için kullanılır.
+                            </p>
+                        </div>
+
+                        <div class="key-points">
+                            <div class="key-point">Daha önceki geçmiş</div>
+                            <div class="key-point">Sıralama var</div>
+                            <div class="key-point">Sebep-sonuç</div>
+                        </div>
+
+                        <div class="examples">
+                            <div class="example-item">
+                                <div class="example-en">When I arrived, the movie had already started.</div>
+                                <div class="example-tr">Ben vardığımda, film çoktan başlamıştı. (önce film başladı)</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-en">She had left before I came home.</div>
+                                <div class="example-tr">Ben eve gelmeden önce o ayrılmıştı.</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-en">He was tired because he had worked all day.</div>
+                                <div class="example-tr">Yorgundu çünkü bütün gün çalışmıştı. (sebep)</div>
+                            </div>
+                        </div>
+
+                        <div class="visual-indicator">
+                            <div class="indicator-title">Görsel Temsil - Zaman Sıralaması</div>
+                            <div class="visual-bars">
+                                <div class="bar" style="height: 100%; background: var(--perfect); opacity: 0.5;"></div>
+                                <div class="bar" style="height: 60%; background: rgba(255,255,255,0.2);"></div>
+                                <div class="bar" style="height: 70%; background: var(--simple);"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-dim);">
+                                <span>← Daha önce (Past Perfect)</span>
+                                <span>Sonra (Simple Past) →</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAST PERFECT CONTINUOUS -->
+            <div class="tense-card past-perfect-cont">
+                <div class="card-wrapper">
+                    <div class="timeline-dot">4</div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <h2 class="tense-name">Past Perfect Continuous</h2>
+                            <div class="formula">Subject + had been + V-ing</div>
+                            <p class="description">
+                                🎞️ <strong>Uzun film gibi</strong> - Geçmişte bir noktadan önce başlayıp sürekli devam eden eylemler. Süre ve süreklilik vurgulanır.
+                            </p>
+                        </div>
+
+                        <div class="key-points">
+                            <div class="key-point">Süreklilik vurgusu</div>
+                            <div class="key-point">Ne kadar süre?</div>
+                            <div class="key-point">Neden/sonuç</div>
+                        </div>
+
+                        <div class="examples">
+                            <div class="example-item">
+                                <div class="example-en">I had been waiting for 2 hours when she arrived.</div>
+                                <div class="example-tr">O geldiğinde 2 saattir bekliyordum. (süre vurgusu)</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-en">The ground was wet because it had been raining.</div>
+                                <div class="example-tr">Zemin ıslaktı çünkü yağmur yağıyordu. (iz bıraktı)</div>
+                            </div>
+                            <div class="example-item">
+                                <div class="example-en">They had been living in London for 10 years before moving.</div>
+                                <div class="example-tr">Taşınmadan önce Londra'da 10 yıldır yaşıyorlardı.</div>
+                            </div>
+                        </div>
+
+                        <div class="visual-indicator">
+                            <div class="indicator-title">Görsel Temsil - Sürekli Akış</div>
+                            <div class="visual-bars">
+                                <div class="bar" style="height: 30%; background: linear-gradient(to top, var(--perfect-cont), transparent);"></div>
+                                <div class="bar" style="height: 50%; background: linear-gradient(to top, var(--perfect-cont), transparent);"></div>
+                                <div class="bar" style="height: 70%; background: linear-gradient(to top, var(--perfect-cont), transparent);"></div>
+                                <div class="bar" style="height: 90%; background: linear-gradient(to top, var(--perfect-cont), transparent);"></div>
+                                <div class="bar" style="height: 100%; background: var(--perfect-cont);"></div>
+                                <div class="bar" style="height: 100%; background: var(--perfect-cont);"></div>
+                                <div class="bar" style="height: 100%; background: var(--perfect-cont);"></div>
+                            </div>
+                            <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-dim);">
+                                ← Sürekli devam ediyor (bir noktaya kadar)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Misérables — English Reader</title>
+<style>
+/* ═══════════════════════════════════════════════ VARIABLES */
+:root {
+  --font: Verdana, Geneva, Tahoma, sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --trans: 0.25s ease;
+}
+[data-theme="dark"] {
+  --bg: #0d0c0a;
+  --surface: #161411;
+  --card: #1e1b17;
+  --card-hover: #252117;
+  --border: #2e2a22;
+  --border-light: #3a3528;
+  --text: #e5dfd4;
+  --text-muted: #948b7e;
+  --text-dim: #5e574e;
+  --accent: #c9a84c;
+  --accent-dim: rgba(201,168,76,0.18);
+  --accent-glow: rgba(201,168,76,0.08);
+  --shadow: rgba(0,0,0,0.55);
+  --tt-bg: #13110e;
+  --tt-border: #2e2a22;
+  --correct: #22c55e;
+  --wrong: #ef4444;
+  --correct-bg: rgba(34,197,94,0.12);
+  --wrong-bg: rgba(239,68,68,0.12);
+}
+[data-theme="light"] {
+  --bg: #f2ece0;
+  --surface: #e8e0d0;
+  --card: #ddd6c5;
+  --card-hover: #d4ccba;
+  --border: #c0b89e;
+  --border-light: #cfc7b0;
+  --text: #1c1812;
+  --text-muted: #5a5040;
+  --text-dim: #8a8070;
+  --accent: #8a5f1a;
+  --accent-dim: rgba(138,95,26,0.15);
+  --accent-glow: rgba(138,95,26,0.07);
+  --shadow: rgba(0,0,0,0.12);
+  --tt-bg: #1a1510;
+  --tt-border: #2e2a22;
+  --correct: #16a34a;
+  --wrong: #dc2626;
+  --correct-bg: rgba(22,163,74,0.1);
+  --wrong-bg: rgba(220,38,38,0.1);
+}
+/* Grammar tag colors — same for both themes */
+:root {
+  --c-pp: #60a5fa;
+  --c-passive: #c084fc;
+  --c-rel: #4ade80;
+  --c-ing: #f59e0b;
+  --c-modal: #2dd4bf;
+  --c-idiom: #f43f5e;
+  --c-conc: #34d399;
+  --c-find: #fb923c;
+}
+
+/* ═══════════════════════════════════════════════ RESET */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+button{cursor:pointer;font-family:var(--font)}
+input,textarea{font-family:var(--font)}
+a{color:inherit}
+
+/* ═══════════════════════════════════════════════ BODY */
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 13.5px;
+  line-height: 1.75;
+  transition: background var(--trans), color var(--trans);
+}
+
+/* ═══════════════════════════════════════════════ HEADER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.book-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+header h1 {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+.header-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.chapter-badge {
+  font-size: 11px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 5px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+.theme-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  transition: background var(--trans), border-color var(--trans);
+}
+.theme-btn:hover { background: var(--card-hover); }
+
+/* ═══════════════════════════════════════════════ TAB NAV */
+.tab-nav {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  gap: 2px;
+  overflow-x: auto;
+}
+.tab-nav::-webkit-scrollbar { height: 3px; }
+.tab-nav::-webkit-scrollbar-track { background: transparent; }
+.tab-nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.tab-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 13px 18px;
+  font-size: 12.5px;
+  font-weight: bold;
+  letter-spacing: 0.03em;
+  position: relative;
+  white-space: nowrap;
+  transition: color var(--trans);
+}
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+.tab-btn.active { color: var(--accent); }
+.tab-btn.active::after { transform: scaleX(1); }
+.tab-btn:hover { color: var(--text); }
+
+/* ═══════════════════════════════════════════════ MAIN */
+main { max-width: 900px; margin: 0 auto; padding: 28px 28px 60px; }
+
+/* ═══════════════════════════════════════════════ TAB PANELS */
+.tab-panel { display: none; animation: fadeIn 0.25s ease; }
+.tab-panel.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════ SECTION TITLES */
+.section-title {
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title span { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════ READING TAB */
+.reading-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.reading-meta h2 {
+  font-size: 20px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.reading-meta p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.level-badge {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.level-badge span { color: var(--accent); }
+
+/* Grammar Legend */
+.grammar-legend {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+.legend-title {
+  width: 100%;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  cursor: default;
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.legend-item span { font-size: 10px; color: var(--text-dim); }
+
+/* Context Box */
+.context-box {
+  background: var(--accent-dim);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.context-box strong { color: var(--accent); }
+
+/* Passage */
+.passage-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 36px;
+  margin-bottom: 24px;
+  position: relative;
+}
+.passage-box p {
+  margin-bottom: 16px;
+  font-size: 14.5px;
+  line-height: 1.9;
+  color: var(--text);
+  text-align: justify;
+}
+.passage-box p:last-child { margin-bottom: 0; }
+
+/* Grammar Tags in Passage */
+.gtag {
+  cursor: help;
+  border-bottom: 2px solid;
+  transition: opacity 0.15s;
+  border-radius: 1px;
+  padding-bottom: 1px;
+}
+.gtag:hover { opacity: 0.85; }
+.gtag.pp    { color: var(--c-pp);      border-color: var(--c-pp); }
+.gtag.passive { color: var(--c-passive); border-color: var(--c-passive); }
+.gtag.rel   { color: var(--c-rel);     border-color: var(--c-rel); }
+.gtag.ing   { color: var(--c-ing);     border-color: var(--c-ing); }
+.gtag.modal { color: var(--c-modal);   border-color: var(--c-modal); }
+.gtag.idiom { color: var(--c-idiom);   border-color: var(--c-idiom); }
+.gtag.conc  { color: var(--c-conc);    border-color: var(--c-conc); }
+.gtag.find  { color: var(--c-find);    border-color: var(--c-find); }
+
+/* Word count */
+.passage-footer {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: -16px;
+  margin-bottom: 24px;
+}
+
+/* ═══════════════════════════════════════════════ TOOLTIP */
+#tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: var(--tt-bg);
+  border: 1px solid var(--tt-border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  width: 340px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+#tooltip.visible { opacity: 1; }
+.tt-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.tt-icon { font-size: 16px; }
+.tt-name {
+  font-size: 13px;
+  font-weight: bold;
+  color: #e8e0d0;
+}
+.tt-tr {
+  font-size: 10.5px;
+  color: #7a7060;
+  margin-left: auto;
+}
+.tt-formula {
+  font-size: 11px;
+  font-style: italic;
+  padding: 6px 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  color: #a09080;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+.tt-explain {
+  font-size: 12px;
+  color: #c0b8a8;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.tt-examples {
+  margin-bottom: 8px;
+}
+.tt-ex-item {
+  border-left: 2px solid #3a3428;
+  padding: 4px 8px;
+  margin-bottom: 4px;
+}
+.tt-ex-en {
+  font-size: 11.5px;
+  color: #d0c8b8;
+  margin-bottom: 1px;
+}
+.tt-ex-tr {
+  font-size: 11px;
+  color: #7a7060;
+}
+.tt-edge {
+  font-size: 11px;
+  background: rgba(251,146,60,0.1);
+  border: 1px solid rgba(251,146,60,0.2);
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #fb923c;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════ VOCABULARY TAB */
+.vocab-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.filter-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: var(--font);
+  transition: all 0.2s;
+}
+.filter-btn:hover { background: var(--card-hover); }
+.filter-btn.active {
+  background: var(--accent);
+  color: #111;
+  border-color: var(--accent);
+  font-weight: bold;
+}
+.vocab-count {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+.vocab-count span { color: var(--accent); }
+
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+.vocab-card {
+  height: 150px;
+  perspective: 800px;
+  cursor: pointer;
+}
+.vocab-card-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.vocab-card.flipped .vocab-card-inner { transform: rotateY(180deg); }
+.vocab-face {
+  position: absolute;
+  width: 100%; height: 100%;
+  backface-visibility: hidden;
+  border-radius: var(--radius);
+  padding: 16px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--card);
+}
+.vocab-face:hover { border-color: var(--border-light); }
+.vocab-back {
+  transform: rotateY(180deg);
+  background: var(--card-hover);
+}
+.vocab-word {
+  font-size: 17px;
+  font-weight: bold;
+  color: var(--text);
+  line-height: 1.2;
+}
+.vocab-phonetic {
+  font-size: 11.5px;
+  color: var(--accent);
+  margin-top: 4px;
+}
+.vocab-cat-tag {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 10px;
+  align-self: flex-start;
+}
+.vocab-flip-hint {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: right;
+}
+.vocab-tr {
+  font-size: 14.5px;
+  font-weight: bold;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.vocab-example {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-style: italic;
+}
+.vocab-back-hint {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+/* Category tag colors */
+.cat-action    { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.cat-emotion   { background: rgba(244,63,94,0.15);  color: #f43f5e; }
+.cat-work      { background: rgba(251,146,60,0.15); color: #fb923c; }
+.cat-person    { background: rgba(74,222,128,0.15); color: #4ade80; }
+.cat-place     { background: rgba(192,132,252,0.15);color: #c084fc; }
+.cat-object    { background: rgba(250,204,21,0.15); color: #facc15; }
+.cat-character { background: rgba(45,212,191,0.15); color: #2dd4bf; }
+.cat-phrase    { background: rgba(201,168,76,0.2);  color: #c9a84c; }
+.cat-concept   { background: rgba(148,163,184,0.15);color: #94a3b8; }
+.cat-time      { background: rgba(52,211,153,0.15); color: #34d399; }
+.cat-appearance{ background: rgba(244,114,182,0.15);color: #f472b6; }
+
+/* ═══════════════════════════════════════════════ GRAMMAR TAB */
+.grammar-intro {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+  line-height: 1.7;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+}
+.grammar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.grammar-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color var(--trans);
+}
+.grammar-card:hover { border-color: var(--border-light); }
+.grammar-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+}
+.grammar-color-bar {
+  width: 4px;
+  height: 32px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.grammar-card-title {
+  flex: 1;
+}
+.grammar-card-title strong {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 2px;
+}
+.grammar-card-title small {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.grammar-toggle {
+  font-size: 16px;
+  color: var(--text-dim);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.grammar-card.open .grammar-toggle { transform: rotate(90deg); }
+.grammar-body {
+  display: none;
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--border);
+}
+.grammar-card.open .grammar-body { display: block; }
+.grammar-formula {
+  font-family: monospace;
+  font-size: 12.5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  margin: 12px 0;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+.grammar-explain {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+.grammar-examples {
+  margin-bottom: 14px;
+}
+.grammar-ex {
+  border-left: 3px solid var(--border);
+  padding: 6px 12px;
+  margin-bottom: 6px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.grammar-ex-en {
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+.grammar-ex-tr {
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+.grammar-edge {
+  background: rgba(251,146,60,0.08);
+  border: 1px solid rgba(251,146,60,0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #fb923c;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.grammar-edge-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* Mini quiz inside grammar card */
+.grammar-mini-quiz {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+}
+.mini-quiz-title {
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+.mini-quiz-q {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.mini-quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mq-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-family: var(--font);
+  text-align: left;
+  transition: all 0.15s;
+}
+.mq-btn:hover { background: var(--card-hover); border-color: var(--border-light); }
+.mq-btn.correct { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+.mq-btn.wrong { background: var(--wrong-bg); border-color: var(--wrong); color: var(--wrong); }
+.mq-feedback {
+  font-size: 12px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  display: none;
+}
+.mq-feedback.show { display: block; }
+.mq-feedback.ok { background: var(--correct-bg); color: var(--correct); }
+.mq-feedback.bad { background: var(--wrong-bg); color: var(--wrong); }
+
+/* ═══════════════════════════════════════════════ EXERCISES TAB */
+.exercises-header {
+  margin-bottom: 24px;
+}
+.exercises-header h2 { font-size: 17px; color: var(--accent); margin-bottom: 6px; }
+.exercises-header p { font-size: 12.5px; color: var(--text-muted); }
+.exercise-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 18px;
+}
+.exercise-block-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.ex-num {
+  width: 26px; height: 26px;
+  background: var(--accent);
+  color: #111;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ex-title { font-size: 14px; font-weight: bold; }
+.ex-subtitle { font-size: 11.5px; color: var(--text-dim); margin-bottom: 16px; margin-left: 36px; }
+.ex-item {
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.ex-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.ex-q {
+  font-size: 13.5px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+.ex-input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 13px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  transition: border-color var(--trans);
+  outline: none;
+}
+.ex-input:focus { border-color: var(--accent); }
+.ex-textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 13px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  resize: vertical;
+  min-height: 80px;
+  outline: none;
+  transition: border-color var(--trans);
+}
+.ex-textarea:focus { border-color: var(--accent); }
+.ex-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  font-style: italic;
+}
+.ex-btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.ex-check-btn {
+  background: var(--accent);
+  color: #111;
+  border: none;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: bold;
+  transition: opacity 0.2s;
+}
+.ex-check-btn:hover { opacity: 0.88; }
+.ex-reveal-btn {
+  background: var(--card-hover);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  transition: all 0.2s;
+}
+.ex-reveal-btn:hover { color: var(--text); }
+.ex-ai-btn {
+  background: rgba(96,165,250,0.12);
+  border: 1px solid rgba(96,165,250,0.3);
+  color: #60a5fa;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  transition: all 0.2s;
+}
+.ex-ai-btn:hover { background: rgba(96,165,250,0.2); }
+.ex-feedback {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  line-height: 1.6;
+  display: none;
+}
+.ex-feedback.show { display: block; }
+.ex-feedback.correct { background: var(--correct-bg); border: 1px solid rgba(34,197,94,0.3); color: var(--correct); }
+.ex-feedback.wrong { background: var(--wrong-bg); border: 1px solid rgba(239,68,68,0.3); color: var(--wrong); }
+.ex-feedback.info { background: var(--accent-dim); border: 1px solid rgba(201,168,76,0.25); color: var(--accent); }
+.ex-feedback.ai { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.25); color: var(--text-muted); }
+/* Error correction special */
+.ec-options { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.ec-opt {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: var(--font);
+  text-align: left;
+  transition: all 0.15s;
+}
+.ec-opt:hover { background: var(--card); border-color: var(--border-light); color: var(--text); }
+.ec-opt.correct { background: var(--correct-bg); border-color: var(--correct); color: var(--correct); }
+.ec-opt.wrong { background: var(--wrong-bg); border-color: var(--wrong); color: var(--wrong); }
+/* Score bar */
+.score-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.score-label { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+.score-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.5s ease; }
+.score-num { font-size: 13px; font-weight: bold; color: var(--accent); flex-shrink: 0; white-space: nowrap; }
+
+/* ═══════════════════════════════════════════════ EXPLORE TAB */
+.explore-section {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 26px;
+  margin-bottom: 18px;
+}
+.explore-section h3 {
+  font-size: 15px;
+  color: var(--accent);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.explore-section .subtitle-sm {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+.explore-section p {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+.explore-section p:last-child { margin-bottom: 0; }
+.vocab-inline {
+  display: inline-block;
+  font-weight: bold;
+  color: var(--text);
+}
+.vocab-inline small {
+  font-size: 10.5px;
+  color: var(--text-dim);
+  font-weight: normal;
+}
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 12.5px;
+}
+.compare-table th {
+  background: var(--surface);
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.6;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.highlight-phrase {
+  background: var(--accent-dim);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--accent);
+  font-style: italic;
+}
+.writing-prompt {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  margin-top: 14px;
+}
+.writing-prompt-title {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.writing-prompt p { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+
+/* ═══════════════════════════════════════════════ LOADING SPINNER */
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid rgba(96,165,250,0.3);
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════ RESPONSIVE */
+@media (max-width: 620px) {
+  header { padding: 14px 16px; }
+  main { padding: 16px 16px 50px; }
+  .tab-nav { padding: 0 16px; }
+  .tab-btn { padding: 11px 12px; font-size: 11.5px; }
+  .passage-box { padding: 20px 18px; }
+  .passage-box p { font-size: 13.5px; }
+  .vocab-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  #tooltip { width: 280px; }
+  .chapter-badge { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════ TOOLTIP -->
+<div id="tooltip">
+  <div class="tt-header">
+    <span class="tt-icon" id="tt-icon"></span>
+    <span class="tt-name" id="tt-name"></span>
+    <span class="tt-tr"  id="tt-tr"></span>
+  </div>
+  <div class="tt-formula" id="tt-formula"></div>
+  <div class="tt-explain" id="tt-explain"></div>
+  <div class="tt-examples" id="tt-examples"></div>
+  <div class="tt-edge" id="tt-edge"></div>
+</div>
+
+<!-- ═══════════════════════ HEADER -->
+<header>
+  <div class="header-left">
+    <div class="book-icon">📖</div>
+    <div>
+      <h1>Les Misérables</h1>
+      <div class="header-sub">English Reading System &middot; Victor Hugo</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="chapter-badge">Chapter II &middot; Fantine's Secret</div>
+    <button class="theme-btn" onclick="toggleTheme()" title="Tema değiştir">🌙 / ☀️</button>
+  </div>
+</header>
+
+<!-- ═══════════════════════ TAB NAV -->
+<nav class="tab-nav" id="tabNav">
+  <button class="tab-btn active" data-tab="reading">📖 Reading</button>
+  <button class="tab-btn" data-tab="vocabulary">📚 Vocabulary</button>
+  <button class="tab-btn" data-tab="grammar">⚙️ Grammar</button>
+  <button class="tab-btn" data-tab="exercises">✏️ Exercises</button>
+  <button class="tab-btn" data-tab="explore">💭 Explore</button>
+</nav>
+
+<!-- ═══════════════════════ MAIN -->
+<main>
+
+<!-- ██████████████████ TAB: READING -->
+<div class="tab-panel active" id="tab-reading">
+  <div class="reading-header">
+    <div class="reading-meta">
+      <h2>Fantine's Secret</h2>
+      <p>Les Misérables, Part Two &middot; ~480 words</p>
+    </div>
+    <div class="level-badge">Level: <span>B2</span> &nbsp;|&nbsp; Grammar tags: <span>hover to explore</span></div>
+  </div>
+
+  <div class="context-box">
+    <strong>Bağlam (Context):</strong> Three years have passed since the Bishop freed Valjean with the silver candlesticks. Valjean, now using the name <em>Monsieur Madeleine</em>, has built a successful factory in the town of Montreuil-sur-Mer. Among his workers is a young woman named <strong>Fantine</strong> — and she carries a dangerous secret.
+  </div>
+
+  <div class="grammar-legend">
+    <div class="legend-title">Grammar Legend — hover any underlined word in the passage to learn its structure</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-pp)"></div>Past Perfect <span>(had + V3)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-passive)"></div>Passive Voice <span>(be + V3)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-rel)"></div>Relative Clause <span>(who/which/that)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-ing)"></div>-ing Clause <span>(eş zamanlı eylem)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-modal)"></div>Modal Verb <span>(would/could/might)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-idiom)"></div>Idiom <span>(deyimsel ifade)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-conc)"></div>Concessive <span>(no matter how)</span></div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--c-find)"></div>Find + Obj + V3 <span>(durumda bulmak)</span></div>
+  </div>
+
+  <div class="passage-box">
+    <p>Three years <span class="gtag pp" data-g="past-perfect">had passed</span> since Jean Valjean left the Bishop's town. The silver candlesticks stood on the mantelpiece of a house in Montreuil-sur-Mer, where they <span class="gtag modal" data-g="modal">would remain</span> for the rest of his life — a daily reminder of the promise <span class="gtag rel" data-g="relative">he had made</span> to himself.</p>
+
+    <p>He <span class="gtag pp" data-g="past-perfect">had changed</span> his name to Monsieur Madeleine, and <span class="gtag pp" data-g="past-perfect">had built</span> a factory <span class="gtag rel" data-g="relative">that gave</span> work to hundreds of people. The town <span class="gtag pp" data-g="past-perfect">had prospered</span>, and the townspeople, <span class="gtag rel" data-g="relative">who had once been</span> poor and desperate, now had steady wages and warm homes. They were grateful to him, though they knew nothing of his past.</p>
+
+    <p>Among those <span class="gtag rel" data-g="relative">who worked</span> in his factory was a young woman named Fantine. She was twenty-three years old, pretty, and hardworking, but she carried a secret <span class="gtag modal" data-g="modal">that she would not have shared</span> with anyone for the world. She had a daughter — a little girl named Cosette — <span class="gtag passive" data-g="passive">who had been left</span> in the care of an innkeeper and his wife in a distant village called Montfermeil.</p>
+
+    <p>The innkeeper's name was Thenardier. He was a small, cunning man <span class="gtag ing" data-g="ing-clause">who had the habit of smiling</span> when he wanted something, and frowning when he <span class="gtag pp" data-g="past-perfect">had already taken</span> it. His wife was no better. They <span class="gtag pp" data-g="past-perfect">had agreed</span> to look after Cosette in exchange for a monthly payment, but they treated the child as a servant rather than as a guest, <span class="gtag ing" data-g="ing-clause">dressing</span> their own daughters in fine clothes while Cosette went barefoot even in winter.</p>
+
+    <p>Every month, Fantine sent them what little she <span class="gtag pp" data-g="past-perfect">had managed</span> to save. She worked longer hours than anyone else in the factory, <span class="gtag ing" data-g="ing-clause">taking on extra tasks</span> whenever they <span class="gtag passive" data-g="passive">were offered</span>, spending almost nothing on herself. Her hair, <span class="gtag rel" data-g="relative">which had once been</span> her great beauty, she cut off and sold. Her teeth — two white, healthy teeth — she <span class="gtag pp" data-g="past-perfect">had extracted</span> and sold to a dentist for enough money to pay the Thenardiers for three months.</p>
+
+    <p>No one in the factory knew about Cosette. Fantine <span class="gtag pp" data-g="past-perfect">had kept</span> her secret carefully, fearing that if her fellow workers discovered she was an unmarried mother, she <span class="gtag modal" data-g="modal">would be dismissed</span>. In those days, such things <span class="gtag passive" data-g="passive">were not forgiven</span> easily.</p>
+
+    <p>But secrets, <span class="gtag conc" data-g="concessive">no matter how carefully</span> they <span class="gtag passive" data-g="passive">are kept</span>, <span class="gtag idiom" data-g="idiom">have a way of coming out</span>.</p>
+
+    <p>One afternoon, a fellow worker <span class="gtag rel" data-g="relative">who had grown</span> suspicious followed the postman and learned the truth. By the next morning, the entire factory knew. The forelady — a bitter woman <span class="gtag rel" data-g="relative">who had never liked</span> Fantine — went directly to the manager's office.</p>
+
+    <p>Monsieur Madeleine was not there. In his absence, the forelady made the decision herself.</p>
+
+    <p>When Fantine returned from her midday break, she <span class="gtag find" data-g="find-obj">found</span> her place at the workbench <span class="gtag passive" data-g="passive">taken</span> by another woman, and her few belongings wrapped in a cloth by the door.</p>
+
+    <p>She <span class="gtag pp" data-g="past-perfect">had been dismissed</span> without warning, without explanation, and without pay.</p>
+  </div>
+
+  <div class="passage-footer">~480 words &nbsp;&middot;&nbsp; B2 Level &nbsp;&middot;&nbsp; Victor Hugo / adapted</div>
+</div>
+
+<!-- ██████████████████ TAB: VOCABULARY -->
+<div class="tab-panel" id="tab-vocabulary">
+  <div class="section-title"><span>Vocabulary</span> — Kelime Hazinesi</div>
+
+  <div class="vocab-filters" id="vocabFilters">
+    <button class="filter-btn active" data-filter="all">Tümü (20)</button>
+    <button class="filter-btn" data-filter="action">Eylem</button>
+    <button class="filter-btn" data-filter="emotion">Duygu</button>
+    <button class="filter-btn" data-filter="work">İş / Çalışma</button>
+    <button class="filter-btn" data-filter="character">Karakter</button>
+    <button class="filter-btn" data-filter="phrase">Deyim / Kalıp</button>
+    <button class="filter-btn" data-filter="concept">Kavram</button>
+  </div>
+  <div class="vocab-count">Toplam <span id="visibleCount">20</span> kelime — tıkla, çevir!</div>
+
+  <div class="vocab-grid" id="vocabGrid"></div>
+</div>
+
+<!-- ██████████████████ TAB: GRAMMAR -->
+<div class="tab-panel" id="tab-grammar">
+  <div class="section-title"><span>Grammar</span> — Gramer Yapıları (Pasajdan)</div>
+  <div class="grammar-intro">
+    Bu pasajdaki <strong>8 temel yapıyı</strong> aşağıda bulacaksın. Her kart genişleyince: formül, açıklama, Türkçe karşılık, pasajdan ve günlük hayattan örnekler, ve — en önemlisi — <strong>çoğu kaynağın atladığı edge case'ler</strong>. Sonunda her kartta mini bir test var. Kartlardaki örnekler doğrudan okuma pasajından alınmıştır.
+  </div>
+  <div class="grammar-grid" id="grammarGrid"></div>
+</div>
+
+<!-- ██████████████████ TAB: EXERCISES -->
+<div class="tab-panel" id="tab-exercises">
+  <div class="exercises-header">
+    <h2>Exercises — Alıştırmalar</h2>
+    <p>Pasajdan gelen yapıları pekiştir. Hata yapmak öğrenmenin parçası — yanlışınla birlikte gönder.</p>
+  </div>
+
+  <div class="score-bar">
+    <div class="score-label">İlerleme:</div>
+    <div class="score-track"><div class="score-fill" id="scoreFill" style="width:0%"></div></div>
+    <div class="score-num" id="scoreNum">0 / 14</div>
+  </div>
+
+  <!-- EX 1: Past Perfect -->
+  <div class="exercise-block">
+    <div class="exercise-block-title">
+      <div class="ex-num">1</div>
+      <div class="ex-title">Past Perfect — Boşluk Doldurma</div>
+    </div>
+    <div class="ex-subtitle">Parantez içindeki fiili doğru zamana çevir. Past simple mi, past perfect mi?</div>
+
+    <div class="ex-item" data-answer="had already opened" data-exid="pp1">
+      <div class="ex-q">1. When Fantine arrived at the factory, it ______ (already / open) for two hours.</div>
+      <input class="ex-input" placeholder="Cevabını yaz..." data-item="pp1">
+      <div class="ex-hint">💡 Fantine gelmeden önce fabrika zaten açılmıştı.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('pp1')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('pp1')">İpucu Göster</button>
+      </div>
+      <div class="ex-feedback" id="fb-pp1"></div>
+    </div>
+
+    <div class="ex-item" data-answer="had never seen" data-exid="pp2">
+      <div class="ex-q">2. Fantine ______ (never / see) such cruelty before she met the Thenardiers.</div>
+      <input class="ex-input" placeholder="Cevabını yaz..." data-item="pp2">
+      <div class="ex-hint">💡 Thenardier'lerle tanışmadan önce hiç böyle bir zalimlik görmemişti.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('pp2')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('pp2')">İpucu Göster</button>
+      </div>
+      <div class="ex-feedback" id="fb-pp2"></div>
+    </div>
+
+    <div class="ex-item" data-answer="had left" data-exid="pp3">
+      <div class="ex-q">3. By the time the forelady reached the manager's office, Madeleine ______ (leave).</div>
+      <input class="ex-input" placeholder="Cevabını yaz..." data-item="pp3">
+      <div class="ex-hint">💡 Forelady geldiğinde Madeleine çoktan gitmişti.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('pp3')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('pp3')">İpucu Göster</button>
+      </div>
+      <div class="ex-feedback" id="fb-pp3"></div>
+    </div>
+
+    <div class="ex-item" data-answer="had agreed" data-exid="pp4">
+      <div class="ex-q">4. The Thenardiers ______ (agree) to care for Cosette, but they never kept their word.</div>
+      <input class="ex-input" placeholder="Cevabını yaz..." data-item="pp4">
+      <div class="ex-hint">💡 Anlaşma geçmişte yapılmıştı, ihlal ise sonradan geldi.</div>
+      <div class="ex-btn-row">
+        <button class="ex-check-btn" onclick="checkFill('pp4')">Kontrol Et</button>
+        <button class="ex-reveal-btn" onclick="revealFill('pp4')">İpucu Göster</button>
+      </div>
+      <div class="ex-feedback" id="fb-pp4"></div>
+    </div>
+  </div>
+
+  <!-- EX 2: Turkish to English -->
+  <div class="exercise-block">
+    <div class="exercise-block-title">
+      <div class="ex-num">2</div>
+      <div class="ex-title">Türkçeden İngilizceye Çeviri</div>
+    </div>
+    <div class="ex-subtitle">Pasajdaki kalıpları kullan. Cevabını yaz, sonra örnek cevabı aç.</div>
+
+    <div class="ex-item" id="tr1">
+      <div class="ex-q">1. Ne kadar dikkatli saklanırsa saklansın, her sır er ya da geç ortaya çıkar. <em style="color:var(--text-dim)">(no matter how / have a way of)</em></div>
+      <textarea class="ex-textarea" placeholder="İngilizce cevabını buraya yaz..."></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-reveal-btn" onclick="revealAnswer('tr1', 'No matter how carefully it is kept, every secret has a way of coming out.')">Örnek Cevap</button>
+        <button class="ex-ai-btn" onclick="checkWithAI('tr1')">🤖 AI Değerlendirmesi</button>
+      </div>
+      <div class="ex-feedback" id="fb-tr1"></div>
+    </div>
+
+    <div class="ex-item" id="tr2">
+      <div class="ex-q">2. Döndüğümde, kapının kilitlenmiş olduğunu gördüm. <em style="color:var(--text-dim)">(find + object + V3)</em></div>
+      <textarea class="ex-textarea" placeholder="İngilizce cevabını buraya yaz..."></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-reveal-btn" onclick="revealAnswer('tr2', 'When I returned, I found the door locked.')">Örnek Cevap</button>
+        <button class="ex-ai-btn" onclick="checkWithAI('tr2')">🤖 AI Değerlendirmesi</button>
+      </div>
+      <div class="ex-feedback" id="fb-tr2"></div>
+    </div>
+
+    <div class="ex-item" id="tr3">
+      <div class="ex-q">3. Yokluğumda sen karar ver. <em style="color:var(--text-dim)">(in my absence)</em></div>
+      <textarea class="ex-textarea" placeholder="İngilizce cevabını buraya yaz..."></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-reveal-btn" onclick="revealAnswer('tr3', 'In my absence, you make the decision.' )">Örnek Cevap</button>
+        <button class="ex-ai-btn" onclick="checkWithAI('tr3')">🤖 AI Değerlendirmesi</button>
+      </div>
+      <div class="ex-feedback" id="fb-tr3"></div>
+    </div>
+
+    <div class="ex-item" id="tr4">
+      <div class="ex-q">4. İşten çıkarılacağından korkuyordu. <em style="color:var(--text-dim)">(afraid of being dismissed — gerund passive)</em></div>
+      <textarea class="ex-textarea" placeholder="İngilizce cevabını buraya yaz..."></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-reveal-btn" onclick="revealAnswer('tr4', 'She was afraid of being dismissed.')">Örnek Cevap</button>
+        <button class="ex-ai-btn" onclick="checkWithAI('tr4')">🤖 AI Değerlendirmesi</button>
+      </div>
+      <div class="ex-feedback" id="fb-tr4"></div>
+    </div>
+  </div>
+
+  <!-- EX 3: Error Correction -->
+  <div class="exercise-block">
+    <div class="exercise-block-title">
+      <div class="ex-num">3</div>
+      <div class="ex-title">Hata Bulma (Error Correction)</div>
+    </div>
+    <div class="ex-subtitle">Her cümlede bir gramer hatası var. Doğru versiyonu seç.</div>
+
+    <div class="ex-item" id="ec1">
+      <div class="ex-q">1. Hangi cümle doğru?</div>
+      <div class="ec-options">
+        <button class="ec-opt" onclick="checkEC('ec1', false, 'Hayır. &quot;Has left&quot; = Present Perfect. Ama cümle zaten &quot;before the gendarmes arrived&quot; diyerek geçmiş zaman anlaşılıyor. Geçmişteki daha önceki eylem için Past Perfect gerekir.')">A) She has left the town before the gendarmes arrived.</button>
+        <button class="ec-opt" onclick="checkEC('ec1', true,  '✓ Doğru! &quot;Had left&quot; = Past Perfect. Gendarmes geldiğinde (past) o zaten ayrılmıştı (daha önce). Geçmişin geçmişi.')">B) She had left the town before the gendarmes arrived.</button>
+        <button class="ec-opt" onclick="checkEC('ec1', false, 'Hayır. &quot;Have left&quot; = Present Perfect çoğul. Yanlış zaman ve yanlış yardımcı fiil.')">C) She have left the town before the gendarmes arrived.</button>
+      </div>
+      <div class="ex-feedback" id="fb-ec1"></div>
+    </div>
+
+    <div class="ex-item" id="ec2">
+      <div class="ex-q">2. Hangi cümle doğru?</div>
+      <div class="ec-options">
+        <button class="ec-opt" onclick="checkEC('ec2', false, 'Hayır. &quot;No matter how careful&quot; — &quot;careful&quot; bir sıfat (adjective). Ama burada bir fiili (are kept) nitelendiriyor, bu yüzden zarf (adverb) gerekir.')">A) No matter how careful they are kept, secrets come out.</button>
+        <button class="ec-opt" onclick="checkEC('ec2', true,  '✓ Doğru! &quot;Carefully&quot; bir zarf (adverb) — fiili (are kept) niteler. Sıfat değil, zarf! No matter how + adverb.')">B) No matter how carefully they are kept, secrets come out.</button>
+        <button class="ec-opt" onclick="checkEC('ec2', false, 'Hayır. &quot;Careful enough&quot; tamamen farklı bir anlam: &quot;yeterince dikkatli&quot;. Bu cümle bağlamına uymaz.')">C) No matter how careful enough they are kept, secrets come out.</button>
+      </div>
+      <div class="ex-feedback" id="fb-ec2"></div>
+    </div>
+
+    <div class="ex-item" id="ec3">
+      <div class="ex-q">3. Hangi cümle doğru?</div>
+      <div class="ec-options">
+        <button class="ec-opt" onclick="checkEC('ec3', false, 'Hayır. &quot;Took&quot; = past simple (took). Ama find + object + V3 yapısında past participle (taken) gerekir.')">A) She found her place took by another woman.</button>
+        <button class="ec-opt" onclick="checkEC('ec3', false, 'Hayır. &quot;Find + object + to take&quot; = böyle bir yapı İngilizcede yok. Bu bir karıştırma.')">B) She found her place to take by another woman.</button>
+        <button class="ec-opt" onclick="checkEC('ec3', true,  '✓ Doğru! find + object + V3 (past participle). &quot;Taken&quot; doğru form. &quot;She found [her place] [taken by another]&quot;')">C) She found her place taken by another woman.</button>
+      </div>
+      <div class="ex-feedback" id="fb-ec3"></div>
+    </div>
+
+    <div class="ex-item" id="ec4">
+      <div class="ex-q">4. Hangi cümle doğru?</div>
+      <div class="ec-options">
+        <button class="ec-opt" onclick="checkEC('ec4', false, 'Hayır. &quot;Have the habit to smile&quot; yanlış yapı. &quot;Habit&quot; sonrası &quot;of + V-ing&quot; gelir, infinitive değil.')">A) He had the habit to smile when he wanted something.</button>
+        <button class="ec-opt" onclick="checkEC('ec4', true,  '✓ Doğru! &quot;Have the habit of + V-ing&quot; — bu kalıbın standart formu. &quot;Of smiling&quot; = gerund.')">B) He had the habit of smiling when he wanted something.</button>
+        <button class="ec-opt" onclick="checkEC('ec4', false, 'Hayır. &quot;For smile&quot; tamamen yanlış — preposition + V-ing (for smiling) olabilirdi ama &quot;habit&quot; with &quot;for&quot; kullanılmaz.')">C) He had the habit for smile when he wanted something.</button>
+      </div>
+      <div class="ex-feedback" id="fb-ec4"></div>
+    </div>
+  </div>
+
+  <!-- EX 4: Free Writing -->
+  <div class="exercise-block">
+    <div class="exercise-block-title">
+      <div class="ex-num">4</div>
+      <div class="ex-title">Serbest Yazma — AI Değerlendirmesi</div>
+    </div>
+    <div class="ex-subtitle">Bu soruyu 3–5 cümleyle İngilizce yanıtla. AI hatalarını düzeltecek ve açıklayacak.</div>
+
+    <div class="ex-item" id="fw1">
+      <div class="ex-q">Why do you think Fantine never told anyone about Cosette? Use at least one past perfect and one passive voice structure in your answer.</div>
+      <textarea class="ex-textarea" style="min-height:110px" placeholder="Write your answer here in English. Don't worry about mistakes — the AI will help you." id="fw1-text"></textarea>
+      <div class="ex-btn-row">
+        <button class="ex-ai-btn" onclick="gradeWriting('fw1')">🤖 AI ile Değerlendir</button>
+      </div>
+      <div class="ex-feedback" id="fb-fw1"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ██████████████████ TAB: EXPLORE -->
+<div class="tab-panel" id="tab-explore">
+  <div class="section-title"><span>Explore</span> — Felsefi & Edebi Katman</div>
+
+  <!-- Philosophy layer -->
+  <div class="explore-section">
+    <h3>💭 Philosophy Layer <small style="font-size:11px;color:var(--text-dim);font-weight:normal">(İngilizce kelime servisiyle birlikte)</small></h3>
+    <div class="subtitle-sm">%20 ağırlık — kavramlar İngilizce ediniminin aracı</div>
+
+    <p>Fantine's story is about <span class="vocab-inline">sacrifice <small>(fedakarlık)</small></span> — but it is a sacrifice <span class="vocab-inline">without recognition <small>(tanınma/fark edilme olmadan)</small></span>. She gives everything: her wages, her hair, her teeth. Hugo uses this <span class="vocab-inline">accumulation <small>(birikim, üst üste yığma)</small></span> — wage, hair, teeth — to show that poverty does not take all at once; it takes <span class="vocab-inline">piece by piece <small>(parça parça)</small></span>.</p>
+
+    <p>This connects to a question Aristotle asks in the <em>Nicomachean Ethics</em>: can a person remain <span class="vocab-inline">virtuous <small>(erdemli)</small></span> under extreme <span class="vocab-inline">deprivation <small>(yoksunluk)</small></span>? Aristotle says that <span class="vocab-inline">external goods <small>(dışsal iyiler — para, sağlık, statü)</small></span> matter: a person cannot flourish in total poverty. Fantine is Hugo's answer: she tries to remain good, but the system makes it <span class="vocab-inline">structurally impossible <small>(yapısal olarak imkansız)</small></span>.</p>
+
+    <p>The forelady's decision is also worth examining. She acts <span class="vocab-inline">in the absence of <small>(yokluğunda)</small></span> the one person who might have shown mercy. This is not coincidence — Hugo is saying that <span class="vocab-inline">institutional cruelty <small>(kurumsal zalimlik)</small></span> often depends on the <span class="vocab-inline">absence of the merciful <small>(merhametlinin yokluğu)</small></span>.</p>
+
+    <p><strong style="color:var(--accent)">Key English vocabulary from this analysis:</strong> sacrifice, recognition, accumulation, piece by piece, virtuous, deprivation, external goods, structurally impossible, in the absence of, institutional, mercy, merciful.</p>
+  </div>
+
+  <!-- Literary comparison -->
+  <div class="explore-section">
+    <h3>📚 Literary Layer <small style="font-size:11px;color:var(--text-dim);font-weight:normal">(Karşılaştırmalı okuma)</small></h3>
+    <div class="subtitle-sm">%10 ağırlık — çeviri ve üslup karşılaştırması</div>
+
+    <table class="compare-table">
+      <tr>
+        <th>Dil</th>
+        <th>Hugo'nun cümlesi</th>
+        <th>Dikkat edilecek nokta</th>
+      </tr>
+      <tr>
+        <td><strong>Fransızca</strong></td>
+        <td><span class="highlight-phrase">elle n'eût partagé avec personne au monde</span></td>
+        <td>Subjunctif kullanımı — imkansız koşul. Türkçede "-sa bile paylaşmazdı" ile karşılık bulur.</td>
+      </tr>
+      <tr>
+        <td><strong>İngilizce</strong></td>
+        <td><span class="highlight-phrase">she would not have shared with anyone for the world</span></td>
+        <td>"For the world" = hiçbir koşulda. Modal + perfect = geçmişe dair güçlü ret.</td>
+      </tr>
+      <tr>
+        <td><strong>Türkçe</strong></td>
+        <td><span class="highlight-phrase">dünya için kimseyle paylaşmayacağı bir sır</span></td>
+        <td>"Dünya için" — Fransızca ve İngilizce idiom birebir karşılık buluyor.</td>
+      </tr>
+    </table>
+
+    <p><strong>Cümle ritmi:</strong> "without warning, without explanation, and without pay" — üç kez "without" tekrarı bir retorik figürdür: <span class="vocab-inline">anaphora <small>(aynı sözcükle başlayan paralel yapı)</small></span>. Hugo son cümlesini kasıtlı olarak kısa ve sert tutar. Tüm dramayı o üç <em>without</em> taşır. Yazar olarak not al.</p>
+
+    <p><strong>Kendi yazmanda kullanabileceğin yapı:</strong> "without X, without Y, without Z" — güçlü, ritmik bir sonuç cümlesi için.</p>
+  </div>
+
+  <!-- Writing prompt -->
+  <div class="explore-section">
+    <h3>✍️ Writing Prompt</h3>
+    <div class="subtitle-sm">Hem dil pratiği hem de edebi deneme</div>
+    <div class="writing-prompt">
+      <div class="writing-prompt-title">Bu Haftanın Yazma Görevi</div>
+      <p>Write a short paragraph (5–7 sentences) from <strong>Fantine's point of view</strong> on the day she was dismissed. Use at least: one past perfect, one passive voice, and one -ing clause. Focus on her internal thoughts and feelings.</p>
+      <p style="color:var(--text-dim);font-size:11.5px">Bir sonraki oturumda bu yazdıklarını birlikte inceleyeceğiz — hem gramer hem de anlatı kalitesi açısından.</p>
+      <div id="explore-write-area">
+        <textarea class="ex-textarea" style="min-height:120px" id="ep-text" placeholder="Write Fantine's thoughts in English here..."></textarea>
+        <div class="ex-btn-row" style="margin-top:10px">
+          <button class="ex-ai-btn" onclick="gradeWriting('ep')">🤖 AI ile Değerlendir</button>
+        </div>
+        <div class="ex-feedback" id="fb-ep"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════ DATA
+
+const GRAMMAR = {
+  'past-perfect': {
+    name: 'Past Perfect',
+    tr: 'Geçmişin Geçmişi',
+    icon: '⏮️',
+    color: '#60a5fa',
+    formula: 'had + past participle (V3)',
+    explain: 'Geçmişte olan bir olaydan daha önce tamamlanmış eylemi gösterir. Türkçede "-mıştı / -miştir" ile karşılık bulur.',
+    examples: [
+      { en: 'Three years <u>had passed</u> since Valjean left.', tr: 'Valjean ayrılalı üç yıl geçmişti.' },
+      { en: 'She <u>had managed</u> to save very little.', tr: 'Çok az biriktirmeyi başarmıştı.' }
+    ],
+    edge: 'Edge Case: "had been + V3" = Passive Past Perfect. "She had been dismissed" = İşten çıkarılmıştı. Ayrıca: geçmişte sırayı vurgulamak istemiyorsan past simple yeterlidir — past perfect sadece sıra belirsizse zorunludur.',
+    quiz: {
+      q: 'Doğru seçenek hangisi?',
+      opts: [
+        { t: 'When I arrived, she already left.', correct: false, fb: 'Hayır. "Already left" = past simple ama sıra belirsiz. "Had already left" = "benden önce gitmişti" anlamı netleşir.' },
+        { t: 'When I arrived, she had already left.', correct: true, fb: '✓ Doğru. Past perfect (had left) = ben gelmeden önce gitmişti. Sıra açık.' },
+        { t: 'When I arrived, she has already left.', correct: false, fb: 'Hayır. "Has left" = Present Perfect. Geçmiş anlatımda past perfect kullanılır.' }
+      ]
+    }
+  },
+  'passive': {
+    name: 'Passive Voice',
+    tr: 'Edilgen Yapı',
+    icon: '🔄',
+    color: '#c084fc',
+    formula: 'be (conjugated) + past participle (V3)',
+    explain: 'Eylemi yapan kişi bilinmiyorsa, önemsizse ya da belirtilmek istenmiyorsa kullanılır. Türkçede "-ldı/-ldi/-ıldı/-ildi" gibi eklere karşılık gelir.',
+    examples: [
+      { en: 'Such things <u>were not forgiven</u> easily.', tr: 'Böyle şeyler kolay kolay affedilmezdi.' },
+      { en: 'Tasks whenever they <u>were offered</u>.', tr: 'Teklif edildiklerinde görevler...' },
+      { en: 'She <u>had been dismissed</u>.', tr: 'İşten çıkarılmıştı. (Passive Past Perfect)' }
+    ],
+    edge: 'Edge Case 1: "By + agent" eklenebilir ama isteğe bağlı. "She was dismissed [by the forelady]" — bazen fail önemsizdir, söylemeyiz. Edge Case 2: Passive ile present/past/future değişir — be fiili zamanı taşır: is taken / was taken / will be taken / has been taken.',
+    quiz: {
+      q: 'Edilgen yapı için hangisi doğru?',
+      opts: [
+        { t: 'The factory built by Madeleine.', correct: false, fb: 'Hayır. "be" fiili eksik. "The factory was built by Madeleine." olmalı.' },
+        { t: 'The factory was built by Madeleine.', correct: true, fb: '✓ Doğru. was (be - past) + built (V3). Klasik passive yapı.' },
+        { t: 'The factory was build by Madeleine.', correct: false, fb: 'Hayır. "Build" yanlış. Passive\'da V3 (past participle) gerekir: "built".' }
+      ]
+    }
+  },
+  'relative': {
+    name: 'Relative Clause',
+    tr: 'Sıfat Cümleciği',
+    icon: '🔗',
+    color: '#4ade80',
+    formula: 'noun + who / which / that + verb',
+    explain: 'Bir ismi tanımlar, sınırlandırır veya açıklar. "who" = kişiler için; "which" = nesneler/hayvanlar için; "that" = her ikisi için (ama resmi yazımda "which/who" tercih edilir).',
+    examples: [
+      { en: 'a woman <u>who had grown</u> suspicious', tr: 'şüphelenmeye başlamış bir kadın' },
+      { en: 'a factory <u>that gave</u> work to hundreds', tr: 'yüzlerce kişiye iş veren bir fabrika' },
+      { en: 'her hair, <u>which had once been</u> her beauty', tr: 'bir zamanlar güzelliği olan saçı (ek bilgi — virgüllü)' }
+    ],
+    edge: 'Edge Case — Defining vs Non-defining: "The woman who called is my boss." (virgülsüz = hangi kadın? belirtir) vs "My boss, who called, is abroad." (virgüllü = ek bilgi, kaldırılabilir). Virgül farkı anlam değiştirir! "That" non-defining\'de kullanılamaz.',
+    quiz: {
+      q: 'Hangi cümle doğru ve neden?',
+      opts: [
+        { t: 'The secret that she kept was dangerous.', correct: true, fb: '✓ Doğru. Defining relative clause — hangi sır? "that she kept" belirtiyor. "That" burada doğru.' },
+        { t: 'The secret which she kept, was dangerous.', correct: false, fb: 'Hayır. Defining clause\'da virgül konmaz. Virgül olsaydı non-defining olurdu ve "which" kalırdı ama virgül gereksiz.' },
+        { t: 'The secret whom she kept was dangerous.', correct: false, fb: '"Whom" sadece kişiler için. "Secret" bir nesne, "which" veya "that" kullanılır.' }
+      ]
+    }
+  },
+  'ing-clause': {
+    name: '-ing Clause',
+    tr: 'Eş Zamanlı / Ardışık Eylem',
+    icon: '🔀',
+    color: '#f59e0b',
+    formula: 'main clause + , + verb-ing ...',
+    explain: 'Ana eylemle aynı anda ya da hemen ardından gerçekleşen ikincil eylemi gösterir. Ekonomik bir yapıdır — iki cümle yerine bir cümle.',
+    examples: [
+      { en: '<u>Taking on extra tasks</u> whenever they were offered...', tr: 'Teklif edildiklerinde ek işler alarak...' },
+      { en: '<u>Dressing</u> their daughters in fine clothes...', tr: 'Kızlarını güzel giydirirken...' },
+      { en: 'She left, <u>crying</u>.', tr: 'Ağlayarak çıktı gitti.' }
+    ],
+    edge: 'KRITIK Edge Case: -ing clause\'un öznesi, ana cümlenin öznesiyle AYNI olmalı. "She left, crying." ✓ (She cried). "She left, the door slamming." ✗ (farklı özne — ambiguous). Yanlış özne edebi hatanın en yaygınıdır!',
+    quiz: {
+      q: 'Hangi cümle dilbilgisel açıdan doğru?',
+      opts: [
+        { t: 'She walked out, leaving the door open.', correct: true, fb: '✓ Doğru. Özne aynı: She walked + she left the door open. -ing clause kural içinde.' },
+        { t: 'She walked out, the door left open.', correct: false, fb: 'Hayır. "The door left open" farklı bir özne. -ing clause\'da özneler aynı olmalı. Bu yapı "absolute clause" — farklı bir gramer kategorisi.' },
+        { t: 'Walking out, the door closed.', correct: false, fb: 'Hayır. Dangling participle! "Walking" öznesi cümlede "the door" oluyor — kapı yürüyemez. Klasik hata.' }
+      ]
+    }
+  },
+  'modal': {
+    name: 'Modal Verb',
+    tr: 'Kiplik Fiili',
+    icon: '🎛️',
+    color: '#2dd4bf',
+    formula: 'modal + base verb (to\'suz infinitive)',
+    explain: 'Olasılık (might/could), gereklilik (must/should), izin (can/may), koşul (would) ifade eder. Modal\'dan sonra daima "to" olmadan saf fiil gelir.',
+    examples: [
+      { en: 'she <u>would be dismissed</u>', tr: 'işten çıkarılacaktı (koşullu tahmin)' },
+      { en: 'she <u>would not have shared</u> it for the world', tr: 'dünya için paylaşmazdı (güçlü ret — modal perfect)' },
+      { en: 'where they <u>would remain</u> for life', tr: 'ömür boyu kalacakları yer (geleceğe atıf)' }
+    ],
+    edge: 'Edge Cases: (1) "Would have + V3" = geçmişte gerçekleşmemiş eylem: "She would not have shared" = paylaşmamıştı / paylaşmazdı. (2) "For the world" idiom: "not for the world" = hiçbir koşulda. "I wouldn\'t hurt you for the world." (3) Modal + passive: would + be + V3 = "would be dismissed".',
+    quiz: {
+      q: 'Doğru form hangisi?',
+      opts: [
+        { t: 'She would to leave if she could.', correct: false, fb: 'Hayır. Modal\'dan sonra "to" yok: "would leave" — saf fiil.' },
+        { t: 'She would leave if she could.', correct: true, fb: '✓ Doğru. would + leave (to\'suz). Modal + base verb.' },
+        { t: 'She would leaving if she could.', correct: false, fb: 'Hayır. Modal + V-ing olmaz. "Would leaving" yanlış. Base verb gerekir.' }
+      ]
+    }
+  },
+  'idiom': {
+    name: 'Idiomatic Expression',
+    tr: 'Deyimsel İfade',
+    icon: '💬',
+    color: '#f43f5e',
+    formula: 'have a way of + verb-ing',
+    explain: '"Have a way of doing something" = bir şeyin doğası gereği o eylemi yapma eğiliminde olduğunu ifade eder. Kaçınılmazlık, kalıcı eğilim anlatır.',
+    examples: [
+      { en: 'Secrets <u>have a way of coming out</u>.', tr: 'Sırların ortaya çıkma alışkanlığı vardır.' },
+      { en: 'He <u>has a way of making</u> you feel heard.', tr: 'Seni duyulmuş hissettirme becerisi var.' },
+      { en: 'Problems <u>have a way of solving themselves</u>.', tr: 'Sorunlar kendiliğinden çözülme eğilimindedir.' }
+    ],
+    edge: 'Phrasal verb ayrımı: "come out" = ortaya çıkmak (sır, gerçek). "Come up" = gündeme gelmek. "Come in" = girmek. "Come across" = tesadüfen bulmak. "Come around" = ikna olmak. Preposition anlam değiştirir — her birini ayrı öğren.',
+    quiz: {
+      q: '"have a way of" ile doğru kullanım hangisi?',
+      opts: [
+        { t: 'He has a way of to make everyone laugh.', correct: false, fb: 'Hayır. "have a way of + V-ing". "To make" değil, "making" gerekir.' },
+        { t: 'He has a way of making everyone laugh.', correct: true, fb: '✓ Doğru. have a way of + V-ing (gerund). "Making" doğru form.' },
+        { t: 'He has a way to make everyone laugh.', correct: false, fb: 'Yakın ama yanlış. "Have a way to do" ≠ "have a way of doing". "Way to" farklı anlam: "a way to solve" = çözüm yolu. "Have a way of" = eğilim.' }
+      ]
+    }
+  },
+  'concessive': {
+    name: 'Concessive Clause',
+    tr: 'Kabul / Zıtlık Cümleciği',
+    icon: '↔️',
+    color: '#34d399',
+    formula: 'no matter how + adj/adv + subject + verb',
+    explain: '"No matter how" = ne kadar ... olursa olsun. Koşul ne değişirse değişsin, sonuç aynı kalır anlamı verir.',
+    examples: [
+      { en: '<u>No matter how carefully</u> they are kept, secrets come out.', tr: 'Ne kadar dikkatli saklanırsa saklansın, sırlar çıkar.' },
+      { en: '<u>No matter how</u> hard she tried, she failed.', tr: 'Ne kadar uğraşırsa uğraşsın, başaramadı.' },
+      { en: '<u>However</u> carefully it is done, mistakes happen.', tr: 'Ne kadar dikkatli yapılırsa yapılsın, hatalar olur. (Resmi alternatif)' }
+    ],
+    edge: '"No matter" ailesi: "no matter what" (ne olursa), "no matter who" (kim olursa), "no matter when" (ne zaman), "no matter where" (nerede). Tümü aynı yapıyla devam eder. "However" daha resmi alternatiftir.',
+    quiz: {
+      q: 'Doğru cümle hangisi?',
+      opts: [
+        { t: 'No matter how she tries hard, she cannot succeed.', correct: false, fb: 'Hayır. "No matter how + adj/adv + S + V" sıralaması: "No matter how hard she tries" — sıfat/zarf "how"dan hemen sonra gelir.' },
+        { t: 'No matter how hard she tries, she cannot succeed.', correct: true, fb: '✓ Doğru. "No matter how + hard (adv) + she (S) + tries (V)". Sıralama mükemmel.' },
+        { t: 'No matter she tries how hard, she cannot succeed.', correct: false, fb: 'Hayır. Sözdizimi bozuk. "How" ile sıfat/zarf yan yana olmalı: "no matter how hard".' }
+      ]
+    }
+  },
+  'find-obj': {
+    name: 'Find + Object + Participle',
+    tr: 'Nesneyi Belirli Durumda Bulmak',
+    icon: '🔍',
+    color: '#fb923c',
+    formula: 'find + object + past participle / adjective / V-ing',
+    explain: 'Birini ya da bir şeyi belirli bir durumda ya da tamamlanmış halde bulmak. İngilizceye özgü, güçlü bir yapıdır.',
+    examples: [
+      { en: 'She <u>found her place taken</u> by another.', tr: 'Yerinin alınmış olduğunu gördü.' },
+      { en: 'I <u>found the door locked</u>.', tr: 'Kapıyı kilitli buldum.' },
+      { en: 'We <u>found him sleeping</u>.', tr: 'Onu uyurken bulduk. (-ing = devam eden)' }
+    ],
+    edge: 'KRİTİK fark: "found + obj + V3" (tamamlanmış) vs "found + obj + V-ing" (devam eden). "I found the door locked" = kapı kilitliydi (tamamlanmış durum). "I found him standing at the door" = kapıda duruyordu (devam ediyordu). Anlam farkı büyük.',
+    quiz: {
+      q: 'Doğru cümle hangisi?',
+      opts: [
+        { t: 'She found her belongings wrap in a cloth.', correct: false, fb: 'Hayır. "Wrap" yanlış form. "Find + object + V3" gerekir: "wrapped" (past participle).' },
+        { t: 'She found her belongings wrapped in a cloth.', correct: true, fb: '✓ Doğru. find + her belongings (obj) + wrapped (V3). Eşyalar paketlenmiş bulundu.' },
+        { t: 'She found her belongings to wrap in a cloth.', correct: false, fb: 'Hayır. "Find + obj + to-infinitive" farklı anlam verir: "onları sarmak için buldu" gibi yanlış. Bu bağlamda V3 gerekir.' }
+      ]
+    }
+  }
+};
+
+const VOCAB = [
+  { word:'mantelpiece', ph:'/ˈmæn.tl.piːs/', tr:'şömine rafı', cat:'place', ex:'The candlesticks stood on the mantelpiece, always visible.' },
+  { word:'prosper', ph:'/ˈprɒs.pər/', tr:'refaha kavuşmak, gelişmek', cat:'action', ex:'The town had prospered since the factory opened.' },
+  { word:'steady wages', ph:'/ˈsted.i weɪdʒɪz/', tr:'düzenli, sabit ücret', cat:'work', ex:'For the first time, workers had steady wages and warm homes.' },
+  { word:'cunning', ph:'/ˈkʌn.ɪŋ/', tr:'kurnaz, sinsi, hesapçı', cat:'character', ex:'He was a cunning man who always got what he wanted.' },
+  { word:'frown', ph:'/fraʊn/', tr:'kaşlarını çatmak, surat asmak', cat:'emotion', ex:'She frowned when she saw how little she had earned.' },
+  { word:'in exchange for', ph:'/ɪn ɪksˈtʃeɪndʒ fɔːr/', tr:'karşılığında, bedeli olarak', cat:'phrase', ex:'They looked after Cosette in exchange for a monthly payment.' },
+  { word:'barefoot', ph:'/ˈbeər.fʊt/', tr:'yalınayak', cat:'appearance', ex:'Cosette went barefoot even in the coldest months of winter.' },
+  { word:'extract', ph:'/ɪkˈstrækt/', tr:'çekip çıkarmak (diş vb.)', cat:'action', ex:'She had her teeth extracted and sold them for money.' },
+  { word:'dismiss', ph:'/dɪˈsmɪs/', tr:'işten çıkarmak, kovmak', cat:'work', ex:'She was dismissed without warning or explanation.' },
+  { word:'suspicious', ph:'/səˈspɪʃ.əs/', tr:'şüpheci, kuşkulu', cat:'emotion', ex:'A fellow worker who had grown suspicious followed her.' },
+  { word:'forelady', ph:'/ˈfɔːr.leɪ.di/', tr:'baş kadın işçi, usta, ustabaşı', cat:'work', ex:'The forelady went directly to the manager\'s office.' },
+  { word:'workbench', ph:'/ˈwɜːrk.bentʃ/', tr:'iş tezgahı', cat:'place', ex:'She found her place at the workbench taken by another.' },
+  { word:'belongings', ph:'/bɪˈlɒŋ.ɪŋz/', tr:'kişisel eşyalar (daima çoğul!)', cat:'concept', ex:'Her few belongings were wrapped in a cloth by the door.' },
+  { word:'desperate', ph:'/ˈdes.pər.ət/', tr:'çaresiz, umutsuz', cat:'emotion', ex:'The townspeople had once been poor and desperate.' },
+  { word:'grateful', ph:'/ˈɡreɪt.fʊl/', tr:'minnettar, şükran duyan', cat:'emotion', ex:'They were grateful to him, though they knew nothing of his past.' },
+  { word:'innkeeper', ph:'/ˈɪn.kiː.pər/', tr:'hancı, pansiyon / han sahibi', cat:'person', ex:'The innkeeper\'s name was Thenardier.' },
+  { word:'midday break', ph:'/ˈmɪd.deɪ breɪk/', tr:'öğle arası, öğle tatili', cat:'time', ex:'When Fantine returned from her midday break, her place was gone.' },
+  { word:'hardworking', ph:'/ˈhɑːrd.wɜːr.kɪŋ/', tr:'çalışkan, azimli', cat:'character', ex:'She was twenty-three, pretty, and hardworking.' },
+  { word:'absence', ph:'/ˈæb.səns/', tr:'yokluk, gıyap, bulunmama hali', cat:'concept', ex:'In his absence, the forelady made the decision herself.' },
+  { word:'reminder', ph:'/rɪˈmaɪn.dər/', tr:'hatırlatıcı (nesne veya olay)', cat:'concept', ex:'The candlesticks were a daily reminder of his promise.' }
+];
+
+// ══════════════════════════════════════════ STATE
+let score = 0;
+let total = 14;
+let answered = new Set();
+
+// ══════════════════════════════════════════ INIT
+document.addEventListener('DOMContentLoaded', () => {
+  initTabs();
+  initTooltip();
+  buildVocab();
+  buildGrammar();
+  updateScore();
+});
+
+// ══════════════════════════════════════════ THEME
+function toggleTheme() {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+}
+
+// ══════════════════════════════════════════ TABS
+function initTabs() {
+  const btns = document.querySelectorAll('.tab-btn');
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+}
+
+// ══════════════════════════════════════════ TOOLTIP
+let tooltipEl;
+function initTooltip() {
+  tooltipEl = document.getElementById('tooltip');
+  document.querySelectorAll('.gtag').forEach(el => {
+    el.addEventListener('mouseenter', showTooltip);
+    el.addEventListener('mouseleave', hideTooltip);
+    el.addEventListener('mousemove', moveTooltip);
+  });
+}
+
+function showTooltip(e) {
+  const key = e.target.dataset.g;
+  const g = GRAMMAR[key];
+  if (!g) return;
+
+  const c = g.color;
+  document.getElementById('tt-icon').textContent = g.icon;
+  document.getElementById('tt-name').textContent = g.name;
+  document.getElementById('tt-name').style.color = c;
+  document.getElementById('tt-tr').textContent = g.tr;
+  document.getElementById('tt-formula').textContent = g.formula;
+  document.getElementById('tt-explain').textContent = g.explain;
+
+  const exBox = document.getElementById('tt-examples');
+  exBox.innerHTML = g.examples.map(ex => `
+    <div class="tt-ex-item" style="border-color:${c}33">
+      <div class="tt-ex-en">${ex.en}</div>
+      <div class="tt-ex-tr">${ex.tr}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('tt-edge').textContent = g.edge;
+  tooltipEl.classList.add('visible');
+  moveTooltip(e);
+}
+
+function hideTooltip() { tooltipEl.classList.remove('visible'); }
+
+function moveTooltip(e) {
+  const tw = 340, th = 300;
+  let x = e.clientX + 18;
+  let y = e.clientY + 18;
+  if (x + tw > window.innerWidth - 10) x = e.clientX - tw - 10;
+  if (y + th > window.innerHeight - 10) y = e.clientY - th - 10;
+  tooltipEl.style.left = x + 'px';
+  tooltipEl.style.top  = y + 'px';
+}
+
+// ══════════════════════════════════════════ VOCABULARY
+function buildVocab() {
+  const grid = document.getElementById('vocabGrid');
+  grid.innerHTML = VOCAB.map((v, i) => `
+    <div class="vocab-card" data-cat="${v.cat}" onclick="this.classList.toggle('flipped')">
+      <div class="vocab-card-inner">
+        <div class="vocab-face">
+          <div>
+            <div class="vocab-word">${v.word}</div>
+            <div class="vocab-phonetic">${v.ph}</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-end">
+            <span class="vocab-cat-tag cat-${v.cat}">${v.cat}</span>
+            <span class="vocab-flip-hint">↩ çevir</span>
+          </div>
+        </div>
+        <div class="vocab-face vocab-back">
+          <div>
+            <div class="vocab-tr">${v.tr}</div>
+            <div class="vocab-example">"${v.ex}"</div>
+          </div>
+          <div class="vocab-back-hint">↩ geri</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('vocabFilters').addEventListener('click', e => {
+    if (!e.target.matches('.filter-btn')) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    const f = e.target.dataset.filter;
+    const cards = document.querySelectorAll('.vocab-card');
+    let vis = 0;
+    cards.forEach(c => {
+      const show = f === 'all' || c.dataset.cat === f;
+      c.style.display = show ? '' : 'none';
+      if (show) vis++;
+    });
+    document.getElementById('visibleCount').textContent = vis;
+  });
+}
+
+// ══════════════════════════════════════════ GRAMMAR CARDS
+function buildGrammar() {
+  const grid = document.getElementById('grammarGrid');
+  grid.innerHTML = Object.entries(GRAMMAR).map(([key, g], idx) => `
+    <div class="grammar-card" id="gc-${key}">
+      <div class="grammar-card-header" onclick="toggleGC('${key}')">
+        <div class="grammar-color-bar" style="background:${g.color}"></div>
+        <div class="grammar-card-title">
+          <strong style="color:${g.color}">${g.icon} ${g.name}</strong>
+          <small>${g.tr} &nbsp;·&nbsp; <span style="font-family:monospace">${g.formula}</span></small>
+        </div>
+        <div class="grammar-toggle">▶</div>
+      </div>
+      <div class="grammar-body">
+        <div class="grammar-formula">${g.formula}</div>
+        <div class="grammar-explain">${g.explain}</div>
+        <div class="grammar-examples">
+          ${g.examples.map(ex => `
+            <div class="grammar-ex" style="border-color:${g.color}55">
+              <div class="grammar-ex-en">${ex.en}</div>
+              <div class="grammar-ex-tr">${ex.tr}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="grammar-edge">
+          <div class="grammar-edge-title">⚠️ Edge Case</div>
+          ${g.edge}
+        </div>
+        <div class="grammar-mini-quiz" id="mq-${key}">
+          <div class="mini-quiz-title">🎯 Mini Test</div>
+          <div class="mini-quiz-q">${g.quiz.q}</div>
+          <div class="mini-quiz-options">
+            ${g.quiz.opts.map((opt, oi) => `
+              <button class="mq-btn" onclick="answerMQ('${key}', ${oi})">
+                ${String.fromCharCode(65+oi)}) ${opt.t}
+              </button>
+            `).join('')}
+          </div>
+          <div class="mq-feedback" id="mqfb-${key}"></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleGC(key) {
+  const card = document.getElementById('gc-' + key);
+  card.classList.toggle('open');
+}
+
+function answerMQ(key, oi) {
+  const g = GRAMMAR[key];
+  const opt = g.quiz.opts[oi];
+  const btns = document.querySelectorAll(`#mq-${key} .mq-btn`);
+  btns.forEach((b, i) => {
+    if (g.quiz.opts[i].correct) b.classList.add('correct');
+    else b.classList.add('wrong');
+    b.disabled = true;
+  });
+  const fb = document.getElementById('mqfb-' + key);
+  fb.textContent = opt.fb;
+  fb.className = 'mq-feedback show ' + (opt.correct ? 'ok' : 'bad');
+}
+
+// ══════════════════════════════════════════ EXERCISES
+
+function checkFill(id) {
+  const item = document.querySelector(`[data-exid="${id}"]`);
+  const input = document.querySelector(`input[data-item="${id}"]`);
+  const answer = item.dataset.answer.toLowerCase().trim();
+  const user = input.value.toLowerCase().trim();
+  const fb = document.getElementById('fb-' + id);
+  if (!user) { fb.className='ex-feedback show info'; fb.textContent='Lütfen bir cevap yaz.'; return; }
+
+  if (!answered.has(id)) { answered.add(id); total = 14; }
+
+  if (user === answer || isCloseEnough(user, answer)) {
+    fb.className = 'ex-feedback show correct';
+    fb.innerHTML = '✓ Doğru! <strong>' + item.dataset.answer + '</strong>';
+    input.style.borderColor = 'var(--correct)';
+    if (!input.dataset.scored) { score++; input.dataset.scored = '1'; updateScore(); }
+  } else {
+    fb.className = 'ex-feedback show wrong';
+    fb.innerHTML = '✗ Tam değil. İpucu için "İpucu Göster" butonuna bas.';
+    input.style.borderColor = 'var(--wrong)';
+  }
+}
+
+function revealFill(id) {
+  const item = document.querySelector(`[data-exid="${id}"]`);
+  const fb = document.getElementById('fb-' + id);
+  fb.className = 'ex-feedback show info';
+  fb.innerHTML = 'Cevap: <strong>' + item.dataset.answer + '</strong>';
+}
+
+function isCloseEnough(a, b) {
+  // Accept minor typo or extra space
+  return a.replace(/\s+/g,' ') === b.replace(/\s+/g,' ');
+}
+
+function revealAnswer(id, answer) {
+  const fb = document.getElementById('fb-' + id);
+  fb.className = 'ex-feedback show info';
+  fb.innerHTML = '<strong>Örnek cevap:</strong> ' + answer;
+  if (!answered.has(id)) { answered.add(id); updateScore(); }
+}
+
+function checkEC(id, correct, fb_text) {
+  const container = document.getElementById(id);
+  const btns = container.querySelectorAll('.ec-opt');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById('fb-' + id);
+  fb.className = 'ex-feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = fb_text;
+  if (!answered.has(id) && correct) { answered.add(id); score++; updateScore(); }
+  else if (!answered.has(id)) { answered.add(id); updateScore(); }
+}
+
+function updateScore() {
+  const correctCount = score;
+  const pct = Math.round((correctCount / 10) * 100);
+  document.getElementById('scoreFill').style.width = pct + '%';
+  document.getElementById('scoreNum').textContent = correctCount + ' / 10 doğru';
+}
+
+// ══════════════════════════════════════════ AI FUNCTIONS
+
+async function checkWithAI(id) {
+  const container = document.getElementById(id);
+  const ta = container.querySelector('textarea');
+  const text = ta ? ta.value.trim() : '';
+  const qEl = container.querySelector('.ex-q');
+  const question = qEl ? qEl.textContent.trim() : '';
+
+  if (!text) {
+    const fb = document.getElementById('fb-' + id);
+    fb.className = 'ex-feedback show info';
+    fb.textContent = 'Lütfen önce bir cevap yaz.';
+    return;
+  }
+
+  const fb = document.getElementById('fb-' + id);
+  fb.className = 'ex-feedback show ai';
+  fb.innerHTML = '<span class="spinner"></span>AI değerlendiriyor...';
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `Sen B2 seviyesinde İngilizce öğrenen bir Türk öğrenciye yardım eden bir dil öğretmenisin. 
+Görevin: öğrencinin İngilizce cümlesini değerlendirmek.
+Yanıtını şu formatta ver:
+1. Dilbilgisel hatalar (varsa) — her hatayı Türkçe açıkla
+2. Öneri: daha doğal/güçlü alternatif (varsa)
+3. Olumlu geri bildirim (1 cümle)
+Türkçe yaz. Maksimum 5 cümle. Dostane ama düzeltici ol.`,
+        messages: [{
+          role: 'user',
+          content: `Soru/görev: "${question}"\n\nÖğrencinin cevabı: "${text}"`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const reply = data.content?.[0]?.text || 'Yanıt alınamadı.';
+    fb.className = 'ex-feedback show ai';
+    fb.innerHTML = '🤖 <strong>AI Değerlendirmesi:</strong><br><br>' + reply.replace(/\n/g, '<br>');
+  } catch (err) {
+    fb.className = 'ex-feedback show wrong';
+    fb.textContent = 'Bağlantı hatası. Lütfen tekrar dene.';
+  }
+}
+
+async function gradeWriting(id) {
+  let textEl, question;
+  if (id === 'ep') {
+    textEl = document.getElementById('ep-text');
+    question = "Write a short paragraph from Fantine's point of view on the day she was dismissed. Use past perfect, passive voice, and -ing clause.";
+  } else {
+    textEl = document.getElementById(id + '-text');
+    question = document.querySelector(`#${id} .ex-q`)?.textContent || '';
+  }
+
+  const text = textEl?.value?.trim();
+  if (!text) {
+    const fb = document.getElementById('fb-' + id);
+    fb.className = 'ex-feedback show info';
+    fb.textContent = 'Lütfen önce bir şeyler yaz.';
+    return;
+  }
+
+  const fb = document.getElementById('fb-' + id);
+  fb.className = 'ex-feedback show ai';
+  fb.innerHTML = '<span class="spinner"></span>AI değerlendiriyor...';
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `Sen B2 seviyesinde İngilizce öğrenen bir Türk öğrenciye yardım eden deneyimli bir İngilizce yazarlık öğretmenisin.
+Öğrenci Les Misérables roman pasajı üzerine çalışıyor.
+Değerlendirmeni şu sırayla Türkçe yap:
+1. Dilbilgisi (gramer hataları varsa her birini tek tek açıkla)
+2. Hedeflenen yapıların kullanımı (past perfect, passive, -ing clause)
+3. Anlatı gücü (1–2 cümle)
+4. 1 somut iyileştirme önerisi
+Dostane, teşvik edici ama dürüst ol. Mükemmel olmayan İngilizce normaldir — onu cesaretlendir.`,
+        messages: [{
+          role: 'user',
+          content: `Görev: "${question}"\n\nYazı:\n"${text}"`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const reply = data.content?.[0]?.text || 'Yanıt alınamadı.';
+    fb.className = 'ex-feedback show ai';
+    fb.innerHTML = '🤖 <strong>AI Yazarlık Değerlendirmesi:</strong><br><br>' + reply.replace(/\n/g, '<br>');
+  } catch (err) {
+    fb.className = 'ex-feedback show wrong';
+    fb.textContent = 'Bağlantı hatası. Lütfen tekrar dene.';
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Learning — Artifact Dashboard</title>
+<style>
+  :root {
+    --bg: #f8f7f4;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: #e2ddd7;
+    --border-h: #c9c2b8;
+    --text: #1a1814;
+    --text2: #5a5550;
+    --text3: #9a9590;
+    --accent: #2d6be4;
+    --accent-l: #eef3fd;
+    --green: #1a7f4e;
+    --green-l: #eaf7f0;
+    --orange: #c45c0e;
+    --orange-l: #fff3ea;
+    --purple: #6e3fd4;
+    --purple-l: #f3eeff;
+    --teal: #0e7a72;
+    --teal-l: #eaf7f5;
+    --rose: #b8284e;
+    --rose-l: #fdeef2;
+    --amber: #9a6200;
+    --amber-l: #fdf7e8;
+    --gray: #6a6560;
+    --gray-l: #f0ede8;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+    --shadow-h: 0 2px 6px rgba(0,0,0,.08), 0 8px 24px rgba(0,0,0,.1);
+  }
+  [data-theme="dark"] {
+    --bg: #131210;
+    --surface: #1e1c1a;
+    --surface2: #262420;
+    --border: #302e2a;
+    --border-h: #484440;
+    --text: #f0ede8;
+    --text2: #a09890;
+    --text3: #686460;
+    --accent: #5b8ef0;
+    --accent-l: #1a2240;
+    --green: #3dc87a;
+    --green-l: #0e2018;
+    --orange: #e88040;
+    --orange-l: #281808;
+    --purple: #a070f0;
+    --purple-l: #1e1030;
+    --teal: #30c8b8;
+    --teal-l: #081e1c;
+    --rose: #e06080;
+    --rose-l: #280e18;
+    --amber: #e0b040;
+    --amber-l: #201808;
+    --gray: #888078;
+    --gray-l: #1e1c1a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background .2s, color .2s;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+  }
+  .header-top {
+    display: flex; align-items: center; gap: 16px;
+    height: 60px;
+  }
+  .logo { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -.3px; flex-shrink: 0; }
+  .logo span { color: var(--accent); }
+  .search-wrap { flex: 1; max-width: 420px; position: relative; }
+  .search {
+    width: 100%; padding: 8px 12px 8px 36px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface2); color: var(--text);
+    font-size: 13px; outline: none; transition: border-color .15s;
+  }
+  .search:focus { border-color: var(--accent); }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; pointer-events: none; }
+  .header-actions { display: flex; gap: 8px; margin-left: auto; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text2); cursor: pointer; font-size: 15px;
+    display: flex; align-items: center; justify-content: center; transition: all .15s;
+  }
+  .icon-btn:hover { background: var(--border); color: var(--text); }
+
+  /* ── FILTER TABS ── */
+  .filter-bar { display: flex; gap: 4px; padding: 10px 0; overflow-x: auto; scrollbar-width: none; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text2); font-size: 12px; cursor: pointer;
+    white-space: nowrap; transition: all .15s; font-family: inherit;
+  }
+  .filter-btn:hover { border-color: var(--border-h); color: var(--text); }
+  .filter-btn.active { border-color: var(--accent); background: var(--accent-l); color: var(--accent); font-weight: 600; }
+  .count-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 18px; height: 18px; border-radius: 9px;
+    background: var(--surface2); color: var(--text3);
+    font-size: 10px; font-weight: 600; padding: 0 4px; margin-left: 4px;
+  }
+  .filter-btn.active .count-badge { background: var(--accent); color: white; }
+
+  /* ── MAIN ── */
+  .main { padding: 24px; max-width: 1280px; margin: 0 auto; }
+  .section { margin-bottom: 32px; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; cursor: pointer; user-select: none; }
+  .section-icon { font-size: 18px; }
+  .section-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .section-count { font-size: 12px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1px 8px; }
+  .section-header .chevron { font-size: 12px; color: var(--text3); transition: transform .2s; margin-left: auto; }
+  .section.collapsed .chevron { transform: rotate(-90deg); }
+  .section.collapsed .card-grid { display: none; }
+
+  /* ── CARDS ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    transition: all .15s; cursor: default;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .card:hover { border-color: var(--border-h); box-shadow: var(--shadow-h); transform: translateY(-1px); }
+  .card.hidden { display: none; }
+  .card-top { display: flex; align-items: flex-start; gap: 10px; }
+  .card-emoji {
+    font-size: 22px; flex-shrink: 0;
+    width: 40px; height: 40px;
+    background: var(--surface2); border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-meta { flex: 1; min-width: 0; }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.3; margin-bottom: 3px; }
+  .card-subtitle { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; border: 1px solid transparent; }
+
+  /* ── ACTIONS ── */
+  .card-actions { display: flex; gap: 6px; margin-top: auto; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: var(--radius-sm);
+    font-size: 11px; font-weight: 500; font-family: inherit;
+    border: 1px solid var(--border); cursor: pointer;
+    text-decoration: none; transition: all .15s; color: var(--text2);
+    background: var(--surface2);
+  }
+  .btn:hover { border-color: var(--border-h); color: var(--text); background: var(--surface); }
+  .btn-primary { background: var(--accent-l); border-color: var(--accent); color: var(--accent); }
+  .btn-primary:hover { background: var(--accent); color: white; }
+  .btn-wiki { background: var(--green-l); border-color: var(--green); color: var(--green); }
+  .btn-wiki:hover { background: var(--green); color: white; }
+
+  /* ── FILE CHIPS ── */
+  .file-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip {
+    font-size: 10px; font-family: 'SF Mono', 'Monaco', monospace;
+    padding: 2px 7px; border-radius: 4px;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text3);
+  }
+
+  /* ── STATS BAR ── */
+  .stats {
+    display: flex; gap: 20px; padding: 12px 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* ── EMPTY ── */
+  .empty { text-align: center; padding: 40px; color: var(--text3); font-size: 14px; }
+  #emptyMsg { display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">English Learning <span>·</span> Artifacts</div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search" type="text" placeholder="Artifact ara…" id="searchInput" oninput="filterCards()">
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleTheme()" title="Tema değiştir">🌓</button>
+      <button class="icon-btn" onclick="expandAll()" title="Tümünü aç">⊞</button>
+      <button class="icon-btn" onclick="collapseAll()" title="Tümünü kapat">⊟</button>
+    </div>
+  </div>
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-cat="all" onclick="setCat('all')">Tümü <span class="count-badge" id="cnt-all">82</span></button>
+    <button class="filter-btn" data-cat="engine" onclick="setCat('engine')">⚙️ Daily Engine <span class="count-badge" id="cnt-engine">4</span></button>
+    <button class="filter-btn" data-cat="hub" onclick="setCat('hub')">🏠 Hubs <span class="count-badge" id="cnt-hub">9</span></button>
+    <button class="filter-btn" data-cat="ref" onclick="setCat('ref')">📊 Grammar Ref <span class="count-badge" id="cnt-ref">6</span></button>
+    <button class="filter-btn" data-cat="tense" onclick="setCat('tense')">⏰ Tenses <span class="count-badge" id="cnt-tense">3</span></button>
+    <button class="filter-btn" data-cat="topic" onclick="setCat('topic')">🎯 Topics <span class="count-badge" id="cnt-topic">8</span></button>
+    <button class="filter-btn" data-cat="vocab" onclick="setCat('vocab')">📖 Vocabulary <span class="count-badge" id="cnt-vocab">5</span></button>
+    <button class="filter-btn" data-cat="practice" onclick="setCat('practice')">📝 Pratik <span class="count-badge" id="cnt-practice">4</span></button>
+    <button class="filter-btn" data-cat="writing" onclick="setCat('writing')">✍️ Yazma <span class="count-badge" id="cnt-writing">3</span></button>
+    <button class="filter-btn" data-cat="lit" onclick="setCat('lit')">📚 Literary <span class="count-badge" id="cnt-lit">20</span></button>
+    <button class="filter-btn" data-cat="reader" onclick="setCat('reader')">📰 Readers <span class="count-badge" id="cnt-reader">7</span></button>
+    <button class="filter-btn" data-cat="guide" onclick="setCat('guide')">🗺️ Rehber <span class="count-badge" id="cnt-guide">6</span></button>
+    <button class="filter-btn" data-cat="tool" onclick="setCat('tool')">🔧 Tools <span class="count-badge" id="cnt-tool">7</span></button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-num">82</div><div class="stat-label">Toplam Dosya</div></div>
+    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Kategori</div></div>
+    <div class="stat"><div class="stat-num">20</div><div class="stat-label">Edebi Okuma</div></div>
+    <div class="stat"><div class="stat-num">2026-05-20</div><div class="stat-label">Son Güncelleme</div></div>
+  </div>
+
+  <!-- ── HIGHLIGHT: WIZARD ── -->
+  <div class="section" id="sec-wizard">
+    <div class="section-header" onclick="toggleSection('wizard')">
+      <span class="section-icon">🧙</span>
+      <span class="section-title">Feature Picker Wizard — Yeni Micro-App Tasarla</span>
+      <span class="section-count">⭐ Önerilen</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+      <div class="card" data-cat="wizard" data-search="feature picker wizard json spec mikro app tasarım sihirbaz">
+        <div class="card-top"><div class="card-emoji">🧙</div><div class="card-meta">
+          <div class="card-title">Feature Picker Wizard</div>
+          <div class="card-subtitle">~80 özellik · 13 kategori · JSON export</div>
+        </div></div>
+        <div class="card-desc">Yeni bir micro-app tasarlamak için sihirbaz. Tema/layout/etkileşim/öğrenme/edge-case özelliklerini seç, varyant belirle, not ekle, JSON indir → Claude'a ver → tam istediğin uygulama gelsin.</div>
+        <div class="file-chips"><span class="chip">_feature-wizard.html</span></div>
+        <div class="card-actions">
+          <a href="_feature-wizard.html" class="btn btn-primary" target="_blank">▶ Sihirbazı Aç</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 1. DAILY ENGINE ── -->
+  <div class="section" id="sec-engine">
+    <div class="section-header" onclick="toggleSection('engine')">
+      <span class="section-icon">⚙️</span>
+      <span class="section-title">Daily Engine v1 — Yeni Sistem</span>
+      <span class="section-count">4 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="engine" data-search="grammar first daily motor a kavram modal quiz">
+        <div class="card-top"><div class="card-emoji">📐</div><div class="card-meta">
+          <div class="card-title">Grammar-First Daily — Motor A</div>
+          <div class="card-subtitle">Kavram kartı + modal + mini quiz</div>
+        </div></div>
+        <div class="card-desc">Günün 6-8 konusu otomatik seçilir. Her karta dokun → TR köprü + formül + örnekler + mini quiz. Save chunk → word bank.</div>
+        <div class="file-chips"><span class="chip">grammar-first-daily.html</span></div>
+        <div class="card-actions">
+          <a href="grammar-first-daily.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fgrammar-first-daily" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="engine" data-search="text first daily motor b metin gramer vurgu tts">
+        <div class="card-top"><div class="card-emoji">📖</div><div class="card-meta">
+          <div class="card-title">Text-First Daily — Motor B</div>
+          <div class="card-subtitle">Metin + renkli gramer + 5 sekme</div>
+        </div></div>
+        <div class="card-desc">Aynı 6-8 konu metnin içine renkli olarak örülmüş gelir. Read → Grammar → Vocab → Quiz → Reflect. TTS destekli.</div>
+        <div class="file-chips"><span class="chip">text-first-daily.html</span></div>
+        <div class="card-actions">
+          <a href="text-first-daily.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Ftext-first-daily" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="engine" data-search="vocab srs anki sm2 kelime flashcard spaced repetition">
+        <div class="card-top"><div class="card-emoji">🎴</div><div class="card-meta">
+          <div class="card-title">Vocab SRS — Anki Mantığı</div>
+          <div class="card-subtitle">SM-2 · Word bank'tan beslenir</div>
+        </div></div>
+        <div class="card-desc">Save'lediğin kelime/phrasal/chunk SRS kartına dönüşür. 4 buton (again/hard/good/easy). Leech işaretlenir. new → learning → young → mature.</div>
+        <div class="file-chips"><span class="chip">vocab-srs.html</span></div>
+        <div class="card-actions">
+          <a href="vocab-srs.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fvocab-srs" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="engine" data-search="implementation notes spec kararlar edge case faz 1">
+        <div class="card-top"><div class="card-emoji">📋</div><div class="card-meta">
+          <div class="card-title">Implementation Notes</div>
+          <div class="card-subtitle">Faz 1 baş ucu defteri</div>
+        </div></div>
+        <div class="card-desc">SPEC'in nasıl yorumlandığı, hangi alternatifler elendiği (FSRS vs SM-2, IndexedDB vs localStorage), 8+ edge case ve açık sorular.</div>
+        <div class="file-chips"><span class="chip">implementation-notes.html</span></div>
+        <div class="card-actions">
+          <a href="implementation-notes.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fimplementation-notes" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 2. LEARNING HUBS ── -->
+  <div class="section" id="sec-hub">
+    <div class="section-header" onclick="toggleSection('hub')">
+      <span class="section-icon">🏠</span>
+      <span class="section-title">Learning Hubs</span>
+      <span class="section-count">9 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="hub" data-search="english mastery hub navigasyon kapsamlı merkez emh">
+        <div class="card-top"><div class="card-emoji">🏠</div><div class="card-meta">
+          <div class="card-title">English Mastery Hub</div>
+          <div class="card-subtitle">Hub · Navigasyon merkezi</div>
+        </div></div>
+        <div class="card-desc">Kategoriler bazında organize edilmiş kapsamlı İngilizce öğrenim merkezi. Gramer, kelime, pratik ve takip bölümlerini tek çatı altında toplar.</div>
+        <div class="file-chips">
+          <span class="chip">english_mastery_hub.html</span>
+          <span class="chip">english_mastery.html</span>
+          <span class="chip">remixed-8fb951f4.html</span>
+          <span class="chip">emh_v5.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="english_mastery_hub.html" class="btn btn-primary" target="_blank">▶ Hub</a>
+          <a href="emh_v5.html" class="btn" target="_blank">v5</a>
+          <a href="remixed-8fb951f4.html" class="btn" target="_blank">Remix</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fenglish-mastery-hub" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="hub" data-search="framework frame first then fill metodoloji öğrenme çerçeve">
+        <div class="card-top"><div class="card-emoji">🗺️</div><div class="card-meta">
+          <div class="card-title">English Learning Framework</div>
+          <div class="card-subtitle">Frame First, Then Fill metodolojisi</div>
+        </div></div>
+        <div class="card-desc">5 sütun: Grammar, Vocabulary, Listening, Speaking, Writing. -2 versiyonu güncellenmiş 740 satır. Önce yapı, sonra detay.</div>
+        <div class="file-chips">
+          <span class="chip">english_learning_complete_framework-2.html</span>
+          <span class="chip">english_learning_complete_framework.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="english_learning_complete_framework-2.html" class="btn btn-primary" target="_blank">▶ v2</a>
+          <a href="english_learning_complete_framework.html" class="btn" target="_blank">v1</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fenglish-learning-framework" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="hub" data-search="lingualab mfgocgun akademi interaktif kişisel platform">
+        <div class="card-top"><div class="card-emoji">🎓</div><div class="card-meta">
+          <div class="card-title">LinguaLab — MFGOCGUN AKADEMİ</div>
+          <div class="card-subtitle">3 versiyon · Kişisel Akademi</div>
+        </div></div>
+        <div class="card-desc">Kişisel akademi formatında interaktif İngilizce öğrenim platformu. İkon bazlı arayüz, practice card sistemi, tema desteği. 3 farklı versiyon.</div>
+        <div class="file-chips">
+          <span class="chip">lingualab-2.html</span>
+          <span class="chip">lingualab 2.html</span>
+          <span class="chip">lingualab.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="lingualab-2.html" class="btn btn-primary" target="_blank">▶ v2</a>
+          <a href="lingualab 2.html" class="btn" target="_blank">v2b</a>
+          <a href="lingualab.html" class="btn" target="_blank">v1</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Flingualab" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 3. GRAMMAR REFERENCE ── -->
+  <div class="section" id="sec-ref">
+    <div class="section-header" onclick="toggleSection('ref')">
+      <span class="section-icon">📊</span>
+      <span class="section-title">Grammar Reference</span>
+      <span class="section-count">6 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="ref" data-search="grammar diagram harita genel bakış overview visual">
+        <div class="card-top"><div class="card-emoji">🗂️</div><div class="card-meta">
+          <div class="card-title">English Grammar Diagram</div>
+          <div class="card-subtitle">Görsel genel bakış haritası</div>
+        </div></div>
+        <div class="card-desc">İngilizce gramerinin tüm yapısını görsel olarak sunan interaktif diyagram. Kavramlar arası ilişkileri harita üzerinde keşfet.</div>
+        <div class="file-chips"><span class="chip">english-grammar-diagram.html</span></div>
+        <div class="card-actions">
+          <a href="english-grammar-diagram.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fenglish-grammar-diagram" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="ref" data-search="grammar roadmap öğrenme sırası bağımlılıklar yol haritası">
+        <div class="card-top"><div class="card-emoji">🛣️</div><div class="card-meta">
+          <div class="card-title">Grammar Roadmap</div>
+          <div class="card-subtitle">Öğrenme sırası + bağımlılık haritası</div>
+        </div></div>
+        <div class="card-desc">Hangi gramer konusunu hangi sırayla öğreneceğini gösteren kapsamlı yol haritası. Bağımlılık grafı ile önkoşul ilişkileri.</div>
+        <div class="file-chips"><span class="chip">grammar-roadmap.html</span></div>
+        <div class="card-actions">
+          <a href="grammar-roadmap.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fgrammar-roadmap" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="ref" data-search="grammar explorer 11 yapı active passive causative modal perfect">
+        <div class="card-top"><div class="card-emoji">🔬</div><div class="card-meta">
+          <div class="card-title">Grammar Explorer</div>
+          <div class="card-subtitle">11 yapı: Active/Passive/Causative/Modal…</div>
+        </div></div>
+        <div class="card-desc">11 farklı gramer yapısını derinlemesine inceleyen interaktif araç. Her yapı için formül, örnek ve pratik alıştırmalar.</div>
+        <div class="file-chips"><span class="chip">grammar_explorer.html</span></div>
+        <div class="card-actions">
+          <a href="grammar_explorer.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fgrammar-explorer" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="ref" data-search="grammar app grammarforge aktif pratik uygulama">
+        <div class="card-top"><div class="card-emoji">⚒️</div><div class="card-meta">
+          <div class="card-title">GrammarForge</div>
+          <div class="card-subtitle">Aktif pratik aracı</div>
+        </div></div>
+        <div class="card-desc">Gramer konularını aktif olarak pekiştirmek için tasarlanmış uygulama. Alıştırma odaklı yaklaşım ile yapıları içselleştir.</div>
+        <div class="file-chips"><span class="chip">grammar-app.html</span></div>
+        <div class="card-actions">
+          <a href="grammar-app.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fgrammar-app" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="ref" data-search="grammar quiz test sınav alıştırma quiz">
+        <div class="card-top"><div class="card-emoji">❓</div><div class="card-meta">
+          <div class="card-title">Grammar Quiz</div>
+          <div class="card-subtitle">Test ve değerlendirme</div>
+        </div></div>
+        <div class="card-desc">Gramer bilgisini ölçen quiz aracı. Çeşitli yapıları kapsayan sorularla kendini test et ve eksiklerini belirle.</div>
+        <div class="file-chips"><span class="chip">grammar_quiz.html</span></div>
+        <div class="card-actions">
+          <a href="grammar_quiz.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="ref" data-search="ingilizce dilbilgisi temel tenses modals bolum 1">
+        <div class="card-top"><div class="card-emoji">📘</div><div class="card-meta">
+          <div class="card-title">İngilizce Dilbilgisi — Bölüm 1</div>
+          <div class="card-subtitle">Temel tenses ve modals</div>
+        </div></div>
+        <div class="card-desc">Temel İngilizce gramer konularını kapsayan başlangıç modülü. Tense'ler ve modal yapılar Türkçe açıklamalarla.</div>
+        <div class="file-chips"><span class="chip">eng_bolum1.html</span></div>
+        <div class="card-actions">
+          <a href="eng_bolum1.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 4. TENSES ── -->
+  <div class="section" id="sec-tense">
+    <div class="section-header" onclick="toggleSection('tense')">
+      <span class="section-icon">⏰</span>
+      <span class="section-title">Tenses</span>
+      <span class="section-count">3 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="tense" data-search="english tenses app 12 zaman aspect kombinasyon">
+        <div class="card-top"><div class="card-emoji">🕐</div><div class="card-meta">
+          <div class="card-title">English Tenses App</div>
+          <div class="card-subtitle">12 zaman · aspect kombinasyonları</div>
+        </div></div>
+        <div class="card-desc">Tüm 12 İngilizce zamanı interaktif olarak öğreten uygulama. Simple/Continuous/Perfect/Perfect Continuous kombinasyonları ile kapsamlı.</div>
+        <div class="file-chips"><span class="chip">english-tenses-app.html</span></div>
+        <div class="card-actions">
+          <a href="english-tenses-app.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fenglish-tenses-app" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="tense" data-search="future tenses will be going to continuous perfect">
+        <div class="card-top"><div class="card-emoji">🔮</div><div class="card-meta">
+          <div class="card-title">Future Tenses</div>
+          <div class="card-subtitle">Will / be going to / continuous / perfect</div>
+        </div></div>
+        <div class="card-desc">Gelecek zaman yapılarını karşılaştıran detaylı rehber. Hangi durumda hangisini kullanacağını pratik örneklerle açıklar.</div>
+        <div class="file-chips"><span class="chip">future-tenses.html</span></div>
+        <div class="card-actions">
+          <a href="future-tenses.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Ffuture-tenses" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="tense" data-search="past tenses visual b1 simple continuous perfect perfect continuous görsel">
+        <div class="card-top"><div class="card-emoji">📅</div><div class="card-meta">
+          <div class="card-title">Past Tenses Visual Guide</div>
+          <div class="card-subtitle">B1 · Görsel rehber · 4 geçmiş zaman</div>
+        </div></div>
+        <div class="card-desc">Simple/Continuous/Perfect/Perfect Continuous karşılaştırması görsel şemalarla. B1 seviyesi öğrenciler için optimize edilmiş.</div>
+        <div class="file-chips"><span class="chip">past-tenses-visual.html</span></div>
+        <div class="card-actions">
+          <a href="past-tenses-visual.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fpast-tenses-visual" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 5. GRAMMAR TOPICS ── -->
+  <div class="section" id="sec-topic">
+    <div class="section-header" onclick="toggleSection('topic')">
+      <span class="section-icon">🎯</span>
+      <span class="section-title">Grammar Topics</span>
+      <span class="section-count">8 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="topic" data-search="passive voice edilgen yapı be verb">
+        <div class="card-top"><div class="card-emoji">🔄</div><div class="card-meta">
+          <div class="card-title">Passive Voice</div>
+          <div class="card-subtitle">Edilgen yapı · Tüm tense'ler</div>
+        </div></div>
+        <div class="card-desc">Passive voice yapılarını tüm tense kombinasyonlarıyla kapsayan 498 satırlık interaktif rehber. Alıştırma ve çeviri egzersizleri.</div>
+        <div class="file-chips"><span class="chip">pasive voice.html</span></div>
+        <div class="card-actions">
+          <a href="pasive voice.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fpassive-voice" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="topic" data-search="reported speech dolaylı anlatım said told">
+        <div class="card-top"><div class="card-emoji">💬</div><div class="card-meta">
+          <div class="card-title">Reported Speech</div>
+          <div class="card-subtitle">Dolaylı anlatım aktivitesi</div>
+        </div></div>
+        <div class="card-desc">Reported speech (dolaylı anlatım) gramer aktivitesi. Said/told/asked yapıları ve tense backshift kuralları interaktif alıştırmalarla.</div>
+        <div class="file-chips"><span class="chip">report_grammar_aktivite.html</span></div>
+        <div class="card-actions">
+          <a href="report_grammar_aktivite.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Freported-speech" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="topic" data-search="supposed to modal beklenti yükümlülük be supposed">
+        <div class="card-top"><div class="card-emoji">📌</div><div class="card-meta">
+          <div class="card-title">Be Supposed To</div>
+          <div class="card-subtitle">Modal yapı · 745 satır · Kapsamlı</div>
+        </div></div>
+        <div class="card-desc">"Be supposed to" modal yapısını derinlemesine inceleyen 745 satırlık ders. Beklenti, kural ve hayal kırıklığı kullanımları ile.</div>
+        <div class="file-chips"><span class="chip">supposed_to_grammar_lesson.html</span></div>
+        <div class="card-actions">
+          <a href="supposed_to_grammar_lesson.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fsupposed-to" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="topic" data-search="if conditionals koşul cümleleri interaktif">
+        <div class="card-top"><div class="card-emoji">🔀</div><div class="card-meta">
+          <div class="card-title">Conditionals — İnteraktif</div>
+          <div class="card-subtitle">If yapıları · 258 satır</div>
+        </div></div>
+        <div class="card-desc">IF koşul cümlelerini interaktif biçimde öğreten araç. 0'dan 3'e tüm conditional tipler Türkçe açıklamalar ve örneklerle.</div>
+        <div class="file-chips"><span class="chip">english_conditionals_interaktif.html</span></div>
+        <div class="card-actions">
+          <a href="english_conditionals_interaktif.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fconditionals" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="topic" data-search="if conditionals all types tüm tipler 0 1 2 3 mixed">
+        <div class="card-top"><div class="card-emoji">🔢</div><div class="card-meta">
+          <div class="card-title">Conditionals — Tüm Tipler</div>
+          <div class="card-subtitle">0-1-2-3 + Mixed conditionals</div>
+        </div></div>
+        <div class="card-desc">Tüm conditional tipleri (0, 1, 2, 3 ve mixed) kapsayan referans sayfası. Formüller, kullanım alanları ve karşılaştırmalı örnekler.</div>
+        <div class="file-chips"><span class="chip">if_conditionals_all_types.html</span></div>
+        <div class="card-actions">
+          <a href="if_conditionals_all_types.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="topic" data-search="if conditions game quest oyun eğlenceli">
+        <div class="card-top"><div class="card-emoji">🎮</div><div class="card-meta">
+          <div class="card-title">IF Conditions Quest</div>
+          <div class="card-subtitle">Oyunlaştırılmış IF alıştırması</div>
+        </div></div>
+        <div class="card-desc">IF koşul cümlelerini oyun formatında öğreten interaktif quest. Seviyeler ilerledikçe zorluk artar, anlık geri bildirimle.</div>
+        <div class="file-chips"><span class="chip">if-conditions-game.html</span></div>
+        <div class="card-actions">
+          <a href="if-conditions-game.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="topic" data-search="if wish guide rehber kapsamlı dilekler">
+        <div class="card-top"><div class="card-emoji">🌟</div><div class="card-meta">
+          <div class="card-title">IF & WISH Guide</div>
+          <div class="card-subtitle">Kapsamlı IF ve WISH rehberi</div>
+        </div></div>
+        <div class="card-desc">IF ve WISH yapılarını birlikte kapsayan kapsamlı rehber. Gerçek ve gerçek dışı koşullar, wish+past/perfect yapıları.</div>
+        <div class="file-chips"><span class="chip">if-wish-guide.html</span></div>
+        <div class="card-actions">
+          <a href="if-wish-guide.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fif-wish-guide" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="topic" data-search="if wish quiz master academy test sorular">
+        <div class="card-top"><div class="card-emoji">🏆</div><div class="card-meta">
+          <div class="card-title">IF & WISH Master Academy</div>
+          <div class="card-subtitle">Quiz ve değerlendirme</div>
+        </div></div>
+        <div class="card-desc">IF ve WISH yapılarını ölçen quiz aracı. Kapsamlı soru bankası, anlık geri bildirim ve puan takibi ile ustalaşma yolculuğu.</div>
+        <div class="file-chips"><span class="chip">if-wish-quiz.html</span></div>
+        <div class="card-actions">
+          <a href="if-wish-quiz.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fif-wish-quiz" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 6. VOCABULARY ── -->
+  <div class="section" id="sec-vocab">
+    <div class="section-header" onclick="toggleSection('vocab')">
+      <span class="section-icon">📖</span>
+      <span class="section-title">Vocabulary</span>
+      <span class="section-count">5 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="vocab" data-search="vocabulary hub 3000 kelime kapsamlı sözcük">
+        <div class="card-top"><div class="card-emoji">📚</div><div class="card-meta">
+          <div class="card-title">Vocabulary Hub</div>
+          <div class="card-subtitle">3000 kelime · Merkez arayüzü</div>
+        </div></div>
+        <div class="card-desc">3000 İngilizce kelimeyi kapsayan merkezi kelime öğrenme platformu. Tematik gruplar, frekans listeleri ve pratik alıştırmalar.</div>
+        <div class="file-chips"><span class="chip">vocabulary-hub.html</span></div>
+        <div class="card-actions">
+          <a href="vocabulary-hub.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fvocabulary-hub" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="vocab" data-search="phrasal verbs hub phrasal verb referans koleksiyon">
+        <div class="card-top"><div class="card-emoji">🔗</div><div class="card-meta">
+          <div class="card-title">Phrasal Verbs Hub</div>
+          <div class="card-subtitle">Phrasal verb referans koleksiyonu</div>
+        </div></div>
+        <div class="card-desc">Phrasal verb'leri kategorilere göre düzenleyen kapsamlı referans aracı. Anlamlar, bağlam örnekleri ve kullanım notları.</div>
+        <div class="file-chips"><span class="chip">phrasal-verbs-hub.html</span></div>
+        <div class="card-actions">
+          <a href="phrasal-verbs-hub.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fphrasal-verbs-hub" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="vocab" data-search="sozluk dunyasi sözcük dünyası a2 b2 seviye">
+        <div class="card-top"><div class="card-emoji">🌍</div><div class="card-meta">
+          <div class="card-title">Sözcük Dünyası</div>
+          <div class="card-subtitle">A2→B2 seviye kelime öğrenme</div>
+        </div></div>
+        <div class="card-desc">A2'den B2 seviyesine sistematik kelime öğrenim aracı. Seviye bazlı ilerleme takibi ve tekrar sistemi ile.</div>
+        <div class="file-chips"><span class="chip">sozluk_dunyasi.html</span></div>
+        <div class="card-actions">
+          <a href="sozluk_dunyasi.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fsozluk-dunyasi" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="vocab" data-search="living room vocabulary tematik oturma odası eşya">
+        <div class="card-top"><div class="card-emoji">🛋️</div><div class="card-meta">
+          <div class="card-title">Living Room Vocabulary</div>
+          <div class="card-subtitle">Tematik kelime: oturma odası</div>
+        </div></div>
+        <div class="card-desc">Oturma odası temalı tematik kelime seti. Ev eşyaları, mobilya ve ilgili ifadeler görsel destekli öğrenme formatında.</div>
+        <div class="file-chips"><span class="chip">living-room-vocabulary.html</span></div>
+        <div class="card-actions">
+          <a href="living-room-vocabulary.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="vocab" data-search="flashcard kelime kartı h.html interaktif">
+        <div class="card-top"><div class="card-emoji">🃏</div><div class="card-meta">
+          <div class="card-title">Word Cards</div>
+          <div class="card-subtitle">Interaktif flashcard sistemi</div>
+        </div></div>
+        <div class="card-desc">İngilizce kelime kartları sistemi. Hızlı gözden geçirme ve aktif hatırlama için optimize edilmiş flashcard formatı.</div>
+        <div class="file-chips"><span class="chip">h.html</span></div>
+        <div class="card-actions">
+          <a href="h.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 7. PRACTICE & TRACKING ── -->
+  <div class="section" id="sec-practice">
+    <div class="section-header" onclick="toggleSection('practice')">
+      <span class="section-icon">📝</span>
+      <span class="section-title">Practice & Tracking</span>
+      <span class="section-count">4 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="practice" data-search="grammar tracker grammarpath gamified ilerleme takip">
+        <div class="card-top"><div class="card-emoji">📈</div><div class="card-meta">
+          <div class="card-title">GrammarPath — Takip</div>
+          <div class="card-subtitle">Oyunlaştırılmış ilerleme takibi</div>
+        </div></div>
+        <div class="card-desc">Gramer öğrenim ilerlemesini oyunlaştırılmış sistemle takip eden araç. XP, rozet, seviye ve streak mekanizmaları.</div>
+        <div class="file-chips"><span class="chip">grammar-tracker.html</span></div>
+        <div class="card-actions">
+          <a href="grammar-tracker.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fgrammar-tracker" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="practice" data-search="lingoforge günlük pratik atölye workshop">
+        <div class="card-top"><div class="card-emoji">🔨</div><div class="card-meta">
+          <div class="card-title">LingoForge — Günlük Pratik</div>
+          <div class="card-subtitle">Günlük pratik atölyesi</div>
+        </div></div>
+        <div class="card-desc">Günlük İngilizce pratiği için atölye ortamı. Çeşitli alıştırma türleri, üretim hedefleri ve geri bildirim mekanizmaları.</div>
+        <div class="file-chips"><span class="chip">lingoforge.html</span></div>
+        <div class="card-actions">
+          <a href="lingoforge.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Flingoforge" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="practice" data-search="daily english session günlük oturum pratik">
+        <div class="card-top"><div class="card-emoji">☀️</div><div class="card-meta">
+          <div class="card-title">Daily English Session</div>
+          <div class="card-subtitle">Günlük pratik oturumu</div>
+        </div></div>
+        <div class="card-desc">Yapılandırılmış günlük İngilizce pratik oturumu. Isınma, ana alıştırma ve değerlendirme aşamalarıyla bütünleşik yaklaşım.</div>
+        <div class="file-chips"><span class="chip">daily-english-session1.html</span></div>
+        <div class="card-actions">
+          <a href="daily-english-session1.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="practice" data-search="irfan pilot ingilizce özel kişisel">
+        <div class="card-top"><div class="card-emoji">🧪</div><div class="card-meta">
+          <div class="card-title">İngilizce Pilot</div>
+          <div class="card-subtitle">Kişisel pilot modül</div>
+        </div></div>
+        <div class="card-desc">Kişiselleştirilmiş İngilizce öğrenim pilot modülü. Deney amaçlı yapılar ve özel pratik formatları.</div>
+        <div class="file-chips"><span class="chip">irfan_ingilizce_pilot.html</span></div>
+        <div class="card-actions">
+          <a href="irfan_ingilizce_pilot.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 8. WRITING ── -->
+  <div class="section" id="sec-writing">
+    <div class="section-header" onclick="toggleSection('writing')">
+      <span class="section-icon">✍️</span>
+      <span class="section-title">Writing</span>
+      <span class="section-count">3 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="writing" data-search="daily writing loop production cell box a b referans TR">
+        <div class="card-top"><div class="card-emoji">🔁</div><div class="card-meta">
+          <div class="card-title">Daily Writing Loop</div>
+          <div class="card-subtitle">Production Cell · Box A + B sistemi</div>
+        </div></div>
+        <div class="card-desc">TR referans → Box A (diff view) → Box B (memory recall) → check döngüsü ile günlük yazma pratiği. L1 Production Cell protokolü.</div>
+        <div class="file-chips"><span class="chip">daily-writing-loop.html</span></div>
+        <div class="card-actions">
+          <a href="daily-writing-loop.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fdaily-writing-loop" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="writing" data-search="writing atelier bloomsday joyce ulysses anlatı geçmiş zaman">
+        <div class="card-top"><div class="card-emoji">🎭</div><div class="card-meta">
+          <div class="card-title">Writing Atelier — Bloomsday</div>
+          <div class="card-subtitle">Joyce / Ulysses · Narrative past tense</div>
+        </div></div>
+        <div class="card-desc">James Joyce / Ulysses tarzında anlatı yazma atölyesi. Past tense kullanımını edebi metin üretimi ile pekiştirme. 1422 satır.</div>
+        <div class="file-chips"><span class="chip">writing-atelier-001-bloomsday.html</span></div>
+        <div class="card-actions">
+          <a href="writing-atelier-001-bloomsday.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fwriting-atelier-bloomsday" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="writing" data-search="yazakademik akademik yazma chunk yaz akademi üretim">
+        <div class="card-top"><div class="card-emoji">🏛️</div><div class="card-meta">
+          <div class="card-title">YazAkademik</div>
+          <div class="card-subtitle">Akademik chunk-based yazma · 925 satır</div>
+        </div></div>
+        <div class="card-desc">Akademik İngilizce yazma için chunk bazlı üretim sistemi. Hazır ifadeler, bağlaç kalıpları ve akademik tone rehberi.</div>
+        <div class="file-chips"><span class="chip">remixed-0a7e2ae1.html</span></div>
+        <div class="card-actions">
+          <a href="remixed-0a7e2ae1.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fyazakademik" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 9. LITERARY READERS ── -->
+  <div class="section" id="sec-lit">
+    <div class="section-header" onclick="toggleSection('lit')">
+      <span class="section-icon">📚</span>
+      <span class="section-title">Literary Readers</span>
+      <span class="section-count">20 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="lit" data-search="les miserables b1 hugo ana okuyucu reader chapters">
+        <div class="card-top"><div class="card-emoji">📖</div><div class="card-meta">
+          <div class="card-title">Les Misérables — B1 Reader</div>
+          <div class="card-subtitle">Victor Hugo · B1 seviye · Ana okuyucu + 9 bölüm</div>
+        </div></div>
+        <div class="card-desc">Victor Hugo'nun Les Misérables'ı B1 seviyesine uyarlanmış interaktif okuyucu. Ana reader + 9 bölüm + cart sahnesi + çalışma kitabı.</div>
+        <div class="file-chips">
+          <span class="chip">les-miserables-reader.html</span>
+          <span class="chip">les-miserables-b1.html</span>
+          <span class="chip">les_miserables_interactive_lesson.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="les-miserables-reader.html" class="btn btn-primary" target="_blank">▶ Reader</a>
+          <a href="les-miserables-b1.html" class="btn" target="_blank">B1</a>
+          <a href="les_miserables_interactive_lesson.html" class="btn" target="_blank">Lesson</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fles-miserables" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="lit" data-search="les miserables b1 bölüm chapter 2 3 4 5 chapters">
+        <div class="card-top"><div class="card-emoji">📕</div><div class="card-meta">
+          <div class="card-title">Les Misérables — Bölümler 2-5</div>
+          <div class="card-subtitle">Ch2 · Ch3 · Ch4 · Ch5</div>
+        </div></div>
+        <div class="card-desc">Les Misérables B1 bölüm serisi: Chapter 2 (Fantine), Chapter 3, Chapter 4 ve Chapter 5. Her bölüm bağımsız interaktif okuma deneyimi.</div>
+        <div class="file-chips">
+          <span class="chip">les-miserables-b1-ch2.html</span>
+          <span class="chip">les-miserables-b1-ch3.html</span>
+          <span class="chip">les-miserables-b1-ch4.html</span>
+          <span class="chip">les-miserables-b1-ch5.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="les-miserables-b1-ch2.html" class="btn btn-primary" target="_blank">▶ Ch2</a>
+          <a href="les-miserables-b1-ch3.html" class="btn" target="_blank">Ch3</a>
+          <a href="les-miserables-b1-ch4.html" class="btn" target="_blank">Ch4</a>
+          <a href="les-miserables-b1-ch5.html" class="btn" target="_blank">Ch5</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="lit" data-search="les miserables b1 bölüm chapter 6 7 8 9 chapters">
+        <div class="card-top"><div class="card-emoji">📗</div><div class="card-meta">
+          <div class="card-title">Les Misérables — Bölümler 6-9</div>
+          <div class="card-subtitle">Ch6 · Ch7 · Ch8 · Ch9 · Cart sahnesi</div>
+        </div></div>
+        <div class="card-desc">Les Misérables devam bölümleri: Ch6, Ch7 (vocabulary-yoğun), Ch8 ve alternatif Ch8, Ch9 (Letters), Cart sahnesi ekstresi.</div>
+        <div class="file-chips">
+          <span class="chip">les-miserables-b1-ch6.html</span>
+          <span class="chip">les-miserables-b1-ch7.html</span>
+          <span class="chip">les-miserables-b1-ch8.html</span>
+          <span class="chip">les-miserables-b1-ch8-2.html</span>
+          <span class="chip">lm_ch9.html</span>
+          <span class="chip">les-miserables-cart-scene-b1.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="les-miserables-b1-ch6.html" class="btn btn-primary" target="_blank">▶ Ch6</a>
+          <a href="les-miserables-b1-ch7.html" class="btn" target="_blank">Ch7</a>
+          <a href="les-miserables-b1-ch8.html" class="btn" target="_blank">Ch8</a>
+          <a href="lm_ch9.html" class="btn" target="_blank">Ch9</a>
+          <a href="les-miserables-cart-scene-b1.html" class="btn" target="_blank">Cart</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="lit" data-search="les miserables workbook study fantine ch04 ch07">
+        <div class="card-top"><div class="card-emoji">📓</div><div class="card-meta">
+          <div class="card-title">Les Misérables — Çalışma Kitapları</div>
+          <div class="card-subtitle">Ch04 Workbook · Ch07 Study</div>
+        </div></div>
+        <div class="card-desc">Fantine'nin Hikayesi çalışma kitabı (Ch04) ve yoğun kelime çalışması (Ch07). Egzersizler, sözlük ve anlama soruları.</div>
+        <div class="file-chips">
+          <span class="chip">les-miserables-ch04-workbook.html</span>
+          <span class="chip">les-miserables-ch07-study.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="les-miserables-ch04-workbook.html" class="btn btn-primary" target="_blank">▶ Ch04 Workbook</a>
+          <a href="les-miserables-ch07-study.html" class="btn" target="_blank">Ch07 Study</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="lit" data-search="anna karenina tolstoy rus edebiyatı interaktif okuma">
+        <div class="card-top"><div class="card-emoji">🌹</div><div class="card-meta">
+          <div class="card-title">Anna Karenina</div>
+          <div class="card-subtitle">Tolstoy · İnteraktif okuma · 465 satır</div>
+        </div></div>
+        <div class="card-desc">Tolstoy'un Anna Karenina'sı İngilizce öğrenim odaklı interaktif format. Kelime vurguları, notlar ve anlama soruları ile.</div>
+        <div class="file-chips"><span class="chip">anna-karenina.html</span></div>
+        <div class="card-actions">
+          <a href="anna-karenina.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fanna-karenina" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="lit" data-search="brothers karamazov dostoevsky storybook kitap">
+        <div class="card-top"><div class="card-emoji">📔</div><div class="card-meta">
+          <div class="card-title">Brothers Karamazov — Storybook</div>
+          <div class="card-subtitle">Dostoevsky · Storybook formatı</div>
+        </div></div>
+        <div class="card-desc">Dostoevsky'nin Karamazov Kardeşler'i storybook formatında. Öğrenme odaklı uyarlamayla edebi İngilizce pratiği.</div>
+        <div class="file-chips"><span class="chip">brothers-karamazov-storybook.html</span></div>
+        <div class="card-actions">
+          <a href="brothers-karamazov-storybook.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fbrothers-karamazov" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="lit" data-search="karamazov vocab trainer dostoevsky kelime vocabulary">
+        <div class="card-top"><div class="card-emoji">🎯</div><div class="card-meta">
+          <div class="card-title">Karamazov Vocab Trainer</div>
+          <div class="card-subtitle">Dostoevsky'den kelime çalışması</div>
+        </div></div>
+        <div class="card-desc">Karamazov Kardeşler metninden çıkarılan kelimelerle vocabulary trainer. Edebi bağlamda kelime öğrenme.</div>
+        <div class="file-chips"><span class="chip">karamazov-vocab-trainer.html</span></div>
+        <div class="card-actions">
+          <a href="karamazov-vocab-trainer.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="lit" data-search="kafka metamorphosis dönüşüm edebi metafor">
+        <div class="card-top"><div class="card-emoji">🪲</div><div class="card-meta">
+          <div class="card-title">Kafka — Metamorphosis</div>
+          <div class="card-subtitle">Franz Kafka · Edebi İngilizce · 465 satır</div>
+        </div></div>
+        <div class="card-desc">Kafka'nın Dönüşüm'ü İngilizce öğrenim formatında. Metaforlar, edebi dil ve kelime analizi odaklı interaktif okuma.</div>
+        <div class="file-chips"><span class="chip">kafka-metamorphosis.html</span></div>
+        <div class="card-actions">
+          <a href="kafka-metamorphosis.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fkafka-metamorphosis" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="lit" data-search="frankenstein shelley literary lab edebi laboratuvar">
+        <div class="card-top"><div class="card-emoji">⚗️</div><div class="card-meta">
+          <div class="card-title">Frankenstein — Literary Lab</div>
+          <div class="card-subtitle">Mary Shelley · Edebi analiz laboratuvarı</div>
+        </div></div>
+        <div class="card-desc">Mary Shelley'nin Frankenstein'ı edebi analiz laboratuvarı formatında. Dil, tema ve kelime çalışması odaklı interaktif araç.</div>
+        <div class="file-chips"><span class="chip">frankenstein_literary_lab.html</span></div>
+        <div class="card-actions">
+          <a href="frankenstein_literary_lab.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Ffrankenstein" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 10. DAILY THREADS & READERS ── -->
+  <div class="section" id="sec-reader">
+    <div class="section-header" onclick="toggleSection('reader')">
+      <span class="section-icon">📰</span>
+      <span class="section-title">Daily Threads & Specialized Readers</span>
+      <span class="section-count">7 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="reader" data-search="daily threads iphone photography günlük konu okuma">
+        <div class="card-top"><div class="card-emoji">📸</div><div class="card-meta">
+          <div class="card-title">Daily Thread — iPhone Photography</div>
+          <div class="card-subtitle">Günlük konu okuma · Teknoloji</div>
+        </div></div>
+        <div class="card-desc">iPhone fotoğrafçılığı temalı günlük İngilizce okuma. Gerçek dünya konularında dil pratiği — teknoloji bağlamında.</div>
+        <div class="file-chips"><span class="chip">daily-threads-001-iphone-photography.html</span></div>
+        <div class="card-actions">
+          <a href="daily-threads-001-iphone-photography.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="reader" data-search="daily threads ai thinking yapay zeka düşünme">
+        <div class="card-top"><div class="card-emoji">🤖</div><div class="card-meta">
+          <div class="card-title">Daily Thread — AI Thinking</div>
+          <div class="card-subtitle">Günlük konu okuma · Yapay Zeka</div>
+        </div></div>
+        <div class="card-desc">Yapay zeka ve düşünme temalı günlük İngilizce okuma. Teknoloji ve felsefe kesişiminde İngilizce dil pratiği.</div>
+        <div class="file-chips"><span class="chip">daily-threads-002-ai-thinking.html</span></div>
+        <div class="card-actions">
+          <a href="daily-threads-002-ai-thinking.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="reader" data-search="compressed galaxy loss aversion a2 b1 interaktif kayıp">
+        <div class="card-top"><div class="card-emoji">🌌</div><div class="card-meta">
+          <div class="card-title">Compressed Galaxy — Loss Aversion</div>
+          <div class="card-subtitle">A2-B1 · İnteraktif okuyucu · Kayıptan kaçınma</div>
+        </div></div>
+        <div class="card-desc">Kayıptan kaçınma (loss aversion) temalı A2-B1 arası interaktif okuyucu. Psikoloji kavramları İngilizce pratiğiyle birleşiyor.</div>
+        <div class="file-chips"><span class="chip">compressed-galaxy-001-loss-aversion.html</span></div>
+        <div class="card-actions">
+          <a href="compressed-galaxy-001-loss-aversion.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fcompressed-galaxy-001" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="reader" data-search="compressed galaxy cogito felsefe descartes a2 b1">
+        <div class="card-top"><div class="card-emoji">💭</div><div class="card-meta">
+          <div class="card-title">Compressed Galaxy — Cogito</div>
+          <div class="card-subtitle">A2-B1 · Descartes / Felsefe okuma</div>
+        </div></div>
+        <div class="card-desc">Descartes'ın Cogito'su temalı A2-B1 interaktif okuyucu. Felsefi İngilizce kavramlar erişilebilir bir formatta sunuluyor.</div>
+        <div class="file-chips"><span class="chip">compressed-galaxy-002-cogito.html</span></div>
+        <div class="card-actions">
+          <a href="compressed-galaxy-002-cogito.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fcompressed-galaxy-002" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="reader" data-search="iphone 18 ios 27 b1 reader teknoloji okuma">
+        <div class="card-top"><div class="card-emoji">📱</div><div class="card-meta">
+          <div class="card-title">iPhone 18 / iOS 27 — B1 Reader</div>
+          <div class="card-subtitle">B1 · Teknoloji bağlamı</div>
+        </div></div>
+        <div class="card-desc">iPhone 18 ve iOS 27 temalı B1 seviye okuma. Teknoloji jargonu ve günlük İngilizce bir arada. Anlama soruları dahil.</div>
+        <div class="file-chips"><span class="chip">iphone-18-ios27-b1-reader.html</span></div>
+        <div class="card-actions">
+          <a href="iphone-18-ios27-b1-reader.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="reader" data-search="iphone fold b1 reader grammar katlanabilir telefon">
+        <div class="card-top"><div class="card-emoji">📲</div><div class="card-meta">
+          <div class="card-title">iPhone Fold — B1 Reader & Grammar</div>
+          <div class="card-subtitle">B1 okuma + gramer odaklı</div>
+        </div></div>
+        <div class="card-desc">Katlanabilir iPhone temalı B1 okuma ve ayrı gramer odaklı versiyon. Teknoloji konusu üzerinden gramer yapılarını pekiştirme.</div>
+        <div class="file-chips">
+          <span class="chip">iphone-fold-b1.html</span>
+          <span class="chip">iphone-fold-grammar.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="iphone-fold-b1.html" class="btn btn-primary" target="_blank">▶ B1</a>
+          <a href="iphone-fold-grammar.html" class="btn" target="_blank">Grammar</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 11. GUIDES / REHBER ── -->
+  <div class="section" id="sec-guide">
+    <div class="section-header" onclick="toggleSection('guide')">
+      <span class="section-icon">🗺️</span>
+      <span class="section-title">Guides / Rehber</span>
+      <span class="section-count">6 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="guide" data-search="english rehber bölüm 1 2 3 temel orta ileri">
+        <div class="card-top"><div class="card-emoji">📗</div><div class="card-meta">
+          <div class="card-title">English Rehber Serisi (1-2-3)</div>
+          <div class="card-subtitle">Temel → Orta → İleri · 3 bölüm</div>
+        </div></div>
+        <div class="card-desc">3 bölümlük kapsamlı İngilizce rehber serisi: Bölüm 1 (Fundamentals), Bölüm 2 (Intermediate), Bölüm 3 (Advanced).</div>
+        <div class="file-chips">
+          <span class="chip">english_rehber.html</span>
+          <span class="chip">english_rehber2.html</span>
+          <span class="chip">english_rehber3.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="english_rehber.html" class="btn btn-primary" target="_blank">▶ Bölüm 1</a>
+          <a href="english_rehber2.html" class="btn" target="_blank">Bölüm 2</a>
+          <a href="english_rehber3.html" class="btn" target="_blank">Bölüm 3</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fenglish-rehber" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="guide" data-search="ingilizce rehber ustalık kapsamlı">
+        <div class="card-top"><div class="card-emoji">⭐</div><div class="card-meta">
+          <div class="card-title">İngilizce Ustalık Rehberi</div>
+          <div class="card-subtitle">Kapsamlı ustalık kılavuzu</div>
+        </div></div>
+        <div class="card-desc">İngilizce'de ustalık hedefleyen kapsamlı Türkçe açıklamalı rehber. Strateji, yöntem ve uzun vadeli öğrenim planlaması.</div>
+        <div class="file-chips"><span class="chip">ingilizce_rehber.html</span></div>
+        <div class="card-actions">
+          <a href="ingilizce_rehber.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fingilizce-rehber" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="guide" data-search="claude language guide yapay zeka dil öğrenme">
+        <div class="card-top"><div class="card-emoji">🤖</div><div class="card-meta">
+          <div class="card-title">Claude Language Guide</div>
+          <div class="card-subtitle">AI destekli dil öğrenim rehberi</div>
+        </div></div>
+        <div class="card-desc">Claude ile İngilizce öğrenme stratejileri rehberi. Yapay zeka destekli dil pratiği için en iyi pratikler ve prompt stratejileri.</div>
+        <div class="file-chips"><span class="chip">claude-language-guide.html</span></div>
+        <div class="card-actions">
+          <a href="claude-language-guide.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fclaude-language-guide" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="guide" data-search="english learning wizard eduprompt tasarım araç prompt">
+        <div class="card-top"><div class="card-emoji">🧙</div><div class="card-meta">
+          <div class="card-title">EduPrompt Wizard</div>
+          <div class="card-subtitle">Öğrenim tasarım aracı</div>
+        </div></div>
+        <div class="card-desc">Kişiselleştirilmiş İngilizce öğrenim deneyimleri tasarlamak için wizard arayüzü. Hedef, seviye ve stil tercihlerine göre öneriler.</div>
+        <div class="file-chips"><span class="chip">english-learning-wizard.html</span></div>
+        <div class="card-actions">
+          <a href="english-learning-wizard.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+          <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fartifacts%2Fenglish-learning-wizard" class="btn btn-wiki">📝 Wiki</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── 12. TOOLS & OTHER ── -->
+  <div class="section" id="sec-tool">
+    <div class="section-header" onclick="toggleSection('tool')">
+      <span class="section-icon">🔧</span>
+      <span class="section-title">Tools & Other</span>
+      <span class="section-count">7 dosya</span>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="card-grid">
+
+      <div class="card" data-cat="tool" data-search="arcade vocab games oyun kelime t.html interaktif">
+        <div class="card-top"><div class="card-emoji">🕹️</div><div class="card-meta">
+          <div class="card-title">Vocabulary Arcade Games</div>
+          <div class="card-subtitle">React tabanlı kelime oyunları</div>
+        </div></div>
+        <div class="card-desc">React tabanlı interaktif kelime oyunları koleksiyonu. Eğlenceli oyun formatlarıyla kelime pratiği. Arcade tarzı arayüz.</div>
+        <div class="file-chips"><span class="chip">t.html</span></div>
+        <div class="card-actions">
+          <a href="t.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="tool" data-search="vocabulary interactive guide interaktif rehber 2.html">
+        <div class="card-top"><div class="card-emoji">📋</div><div class="card-meta">
+          <div class="card-title">Vocabulary Interactive Guide</div>
+          <div class="card-subtitle">İnteraktif kelime rehberi · 536 satır</div>
+        </div></div>
+        <div class="card-desc">İngilizce kelime öğrenimi için interaktif rehber. Kapsamlı içerik ve kullanıcı dostu arayüz ile kelime çalışması.</div>
+        <div class="file-chips"><span class="chip">2.html</span></div>
+        <div class="card-actions">
+          <a href="2.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="tool" data-search="anatomy workshop anatomi atölye beden kelime">
+        <div class="card-top"><div class="card-emoji">🫀</div><div class="card-meta">
+          <div class="card-title">Anatomy Workshop</div>
+          <div class="card-subtitle">Anatomi kelime atölyesi</div>
+        </div></div>
+        <div class="card-desc">İnsan anatomisi temalı kelime ve kavram atölyesi. Tıp ve biyoloji terminolojisini İngilizce ile öğrenmek için.</div>
+        <div class="file-chips"><span class="chip">anatomy_workshop.html</span></div>
+        <div class="card-actions">
+          <a href="anatomy_workshop.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="tool" data-search="gorsellesturme görselleştirme araçları harita atölye">
+        <div class="card-top"><div class="card-emoji">🗺️</div><div class="card-meta">
+          <div class="card-title">Görselleştirme Araçları</div>
+          <div class="card-subtitle">Harita + Atölye</div>
+        </div></div>
+        <div class="card-desc">Öğrenim sürecinde görselleştirme araçlarını ve tekniklerini gösteren rehber harita ve atölye uygulaması.</div>
+        <div class="file-chips">
+          <span class="chip">gorsellesturme_araclari_haritasi.html</span>
+          <span class="chip">gorselletirme-atolyesi.html</span>
+        </div>
+        <div class="card-actions">
+          <a href="gorsellesturme_araclari_haritasi.html" class="btn btn-primary" target="_blank">▶ Harita</a>
+          <a href="gorselletirme-atolyesi.html" class="btn" target="_blank">Atölye</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="tool" data-search="saatleri ayarlama rehber zaman saat telling time">
+        <div class="card-top"><div class="card-emoji">🕰️</div><div class="card-meta">
+          <div class="card-title">Saatleri Söyleme Rehberi</div>
+          <div class="card-subtitle">Telling the time · Saat ifadeleri</div>
+        </div></div>
+        <div class="card-desc">İngilizce'de saat ve zaman ifadelerini öğreten interaktif rehber. At, past, to, quarter, half yapıları ile kapsamlı pratik.</div>
+        <div class="file-chips"><span class="chip">saatleri-ayarlama-rehberi.html</span></div>
+        <div class="card-actions">
+          <a href="saatleri-ayarlama-rehberi.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+      <div class="card" data-cat="tool" data-search="15 05 2024 tarihli arşiv dosya eski">
+        <div class="card-top"><div class="card-emoji">📁</div><div class="card-meta">
+          <div class="card-title">Arşiv — 15/05/2024</div>
+          <div class="card-subtitle">Tarihli arşiv dosyası</div>
+        </div></div>
+        <div class="card-desc">15 Mayıs 2024 tarihli arşiv HTML dosyası.</div>
+        <div class="file-chips"><span class="chip">15_05_2024.html</span></div>
+        <div class="card-actions">
+          <a href="15_05_2024.html" class="btn btn-primary" target="_blank">▶ Aç</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="empty" id="emptyMsg">Arama sonucu bulunamadı.</div>
+
+</div>
+
+<script>
+let currentCat = 'all';
+
+function toggleTheme() {
+  const d = document.documentElement;
+  d.dataset.theme = d.dataset.theme === 'dark' ? '' : 'dark';
+  localStorage.setItem('theme', d.dataset.theme);
+}
+
+function toggleSection(id) {
+  document.getElementById('sec-' + id).classList.toggle('collapsed');
+}
+
+function expandAll() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('collapsed'));
+}
+
+function collapseAll() {
+  document.querySelectorAll('.section').forEach(s => s.classList.add('collapsed'));
+}
+
+function setCat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  filterCards();
+}
+
+function filterCards() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  let anyVisible = false;
+
+  document.querySelectorAll('.card').forEach(card => {
+    const catMatch = currentCat === 'all' || card.dataset.cat === currentCat;
+    const searchMatch = !q || card.dataset.search.includes(q) ||
+      card.querySelector('.card-title')?.textContent.toLowerCase().includes(q) ||
+      card.querySelector('.card-desc')?.textContent.toLowerCase().includes(q);
+    const show = catMatch && searchMatch;
+    card.classList.toggle('hidden', !show);
+    if (show) anyVisible = true;
+  });
+
+  document.getElementById('emptyMsg').style.display = anyVisible ? 'none' : 'block';
+
+  // Expand sections that have visible cards
+  if (q || currentCat !== 'all') {
+    document.querySelectorAll('.section').forEach(sec => {
+      const hasVisible = [...sec.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+      sec.classList.toggle('collapsed', !hasVisible);
+    });
+  }
+}
+
+// Init theme
+const saved = localStorage.getItem('theme');
+if (saved) document.documentElement.dataset.theme = saved;
+</script>
+</body>
+</html>

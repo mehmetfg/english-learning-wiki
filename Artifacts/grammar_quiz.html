@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İngilizce Gramer Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --card: #13162b;
+    --border: #1e2340;
+    --accent1: #f5c842;
+    --accent2: #4fc3f7;
+    --accent3: #a78bfa;
+    --accent4: #f97316;
+    --text: #e8eaf6;
+    --muted: #6b7280;
+    --correct: #22c55e;
+    --wrong: #ef4444;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(167,139,250,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(79,195,247,0.07) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 760px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.6s ease both;
+  }
+  .header .tag {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 6vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    margin-bottom: 28px;
+    animation: fadeDown 0.6s 0.1s ease both;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── TOPIC BADGE ── */
+  .topic-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(167,139,250,0.12);
+    border: 1px solid rgba(167,139,250,0.25);
+    border-radius: 99px;
+    font-size: 11px;
+    color: var(--accent3);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .q-number {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+
+  .q-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(16px, 3vw, 20px);
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .q-text span.blank {
+    display: inline-block;
+    min-width: 80px;
+    border-bottom: 2px solid var(--accent1);
+    color: var(--accent1);
+    font-style: italic;
+    text-align: center;
+    padding: 0 4px;
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: grid;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--accent2), var(--accent3));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent2);
+    transform: translateX(4px);
+  }
+  .option-btn:hover:not(:disabled)::before { opacity: 0.05; }
+
+  .option-btn .letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    position: relative;
+    z-index: 1;
+  }
+  .option-btn .opt-text { position: relative; z-index: 1; }
+
+  .option-btn.correct {
+    border-color: var(--correct);
+    background: rgba(34,197,94,0.1);
+  }
+  .option-btn.correct .letter {
+    background: var(--correct);
+    color: #000;
+  }
+
+  .option-btn.wrong {
+    border-color: var(--wrong);
+    background: rgba(239,68,68,0.1);
+  }
+  .option-btn.wrong .letter {
+    background: var(--wrong);
+    color: #fff;
+  }
+
+  .option-btn:disabled { cursor: default; transform: none; }
+
+  /* ── EXPLANATION ── */
+  .explanation {
+    display: none;
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-left: 3px solid var(--accent1);
+    background: rgba(245,200,66,0.06);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: #d1c89a;
+    line-height: 1.7;
+    animation: fadeUp 0.3s ease both;
+  }
+  .explanation.show { display: block; }
+  .explanation strong { color: var(--accent1); }
+
+  /* ── NEXT BUTTON ── */
+  .next-btn {
+    display: none;
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent3), var(--accent2));
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .next-btn:hover { transform: translateY(-2px); filter: brightness(1.1); box-shadow: 0 8px 24px rgba(79,195,247,0.3); }
+  .next-btn.show { display: block; animation: fadeUp 0.3s ease both; }
+
+  /* ── RESULT SCREEN ── */
+  .result-screen {
+    display: none;
+    text-align: center;
+    animation: fadeUp 0.5s ease both;
+  }
+  .result-screen.show { display: block; }
+  .result-screen .trophy {
+    font-size: 64px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .result-screen h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .score-big {
+    font-size: 72px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: var(--accent1);
+    line-height: 1;
+    margin: 20px 0;
+  }
+  .score-label { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+
+  .grade-badge {
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 99px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    margin-bottom: 32px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 12px;
+  }
+  .stat-box .val {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+  }
+  .stat-box .lbl { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
+
+  .restart-btn {
+    padding: 16px 40px;
+    background: transparent;
+    border: 2px solid var(--accent2);
+    border-radius: 10px;
+    color: var(--accent2);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .restart-btn:hover { background: var(--accent2); color: #000; transform: translateY(-2px); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="tag">📚 İngilizce Gramer</div>
+    <h1>Grammar Challenge</h1>
+    <p>8 konu · 20 soru · Türkçe açıklamalar</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-info">
+      <span id="progressText">Soru 1 / 20</span>
+      <span id="scoreText">0 doğru</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:5%"></div></div>
+  </div>
+
+  <!-- QUIZ AREA -->
+  <div id="quizArea">
+    <div class="topic-badge" id="topicBadge">Konu yükleniyor...</div>
+    <div class="question-card" id="questionCard">
+      <div class="q-number" id="qNumber">SORU 01</div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="options"></div>
+      <div class="explanation" id="explanation"></div>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Sonraki Soru →</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-screen" id="resultScreen">
+    <span class="trophy" id="trophy">🏆</span>
+    <h2 id="resultTitle">Tebrikler!</h2>
+    <div class="score-big" id="scoreBig">0</div>
+    <div class="score-label">20 sorudan doğru</div>
+    <div class="grade-badge" id="gradeBadge">A+</div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="val" id="statCorrect" style="color:var(--correct)">0</div>
+        <div class="lbl">✓ DOĞRU</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" id="statWrong" style="color:var(--wrong)">0</div>
+        <div class="lbl">✗ YANLIŞ</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" id="statPct" style="color:var(--accent1)">0%</div>
+        <div class="lbl">BAŞARI</div>
+      </div>
+    </div>
+    <button class="restart-btn" onclick="restartQuiz()">↺ Tekrar Başla</button>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  // 1. Future Continuous
+  {
+    topic: "Future Continuous — Gelecekte Devam Eden Eylem",
+    topicShort: "1 · Future Continuous",
+    question: "This time tomorrow, she ___ a presentation to the board.",
+    options: ["will give", "will be giving", "is giving", "gives"],
+    answer: 1,
+    explanation: "<strong>will be giving</strong> doğrudur. Future Continuous, gelecekte belirli bir anda devam ediyor olacak eylemleri anlatır. Yapısı: <em>will + be + V-ing</em>. 'This time tomorrow' ifadesi bu zamanın sinyalidir."
+  },
+  {
+    topic: "Future Continuous — Gelecekte Devam Eden Eylem",
+    topicShort: "1 · Future Continuous",
+    question: "Don't call me at 8 PM — I ___ dinner with my family.",
+    options: ["will have", "will be having", "am having", "had"],
+    answer: 1,
+    explanation: "<strong>will be having</strong> doğrudur. Saat 8'de yemek yeme eylemi devam ediyor olacak. 'At 8 PM' gibi gelecekteki bir anı gösteren ifadeler Future Continuous ile kullanılır."
+  },
+  {
+    topic: "Future Continuous — Gelecekte Devam Eden Eylem",
+    topicShort: "1 · Future Continuous",
+    question: "By this weekend, the team ___ on the new project.",
+    options: ["works", "will work", "will be working", "worked"],
+    answer: 2,
+    explanation: "<strong>will be working</strong> doğrudur. 'By this weekend' ifadesi gelecekte belirli bir noktaya kadar ya da o noktada devam eden eylemi ifade eder."
+  },
+  // 2. 3rd Conditional
+  {
+    topic: "3rd Conditional — Geçmişe Yönelik Hayali Koşul",
+    topicShort: "2 · 3rd Conditional",
+    question: "If she ___ harder, she would have passed the exam.",
+    options: ["studied", "had studied", "has studied", "studies"],
+    answer: 1,
+    explanation: "<strong>had studied</strong> doğrudur. 3. Koşul Cümlesinde if-clause'da <em>had + V3</em> kullanılır. Geçmişte olmayan bir durumu ve sonucunu anlatır."
+  },
+  {
+    topic: "3rd Conditional — Geçmişe Yönelik Hayali Koşul",
+    topicShort: "2 · 3rd Conditional",
+    question: "They wouldn't have missed the flight if they ___ earlier.",
+    options: ["left", "would leave", "had left", "have left"],
+    answer: 2,
+    explanation: "<strong>had left</strong> doğrudur. 3rd Conditional yapısı: <em>If + had + V3, would have + V3</em>. Geçmişte daha erken ayrılsalardı uçağı kaçırmazlardı — ama ayrılmadılar."
+  },
+  // 3. Modal Perfect
+  {
+    topic: "Modal Perfect — Geçmişe Yönelik Modal",
+    topicShort: "3 · Modal Perfect",
+    question: "He looks exhausted. He ___ stayed up all night.",
+    options: ["must have", "should", "would", "can have"],
+    answer: 0,
+    explanation: "<strong>must have stayed</strong> doğrudur. Geçmişe yönelik güçlü çıkarım yaparken <em>must have + V3</em> kullanılır. 'Bütün gece uyumamış olmalı' anlamını verir."
+  },
+  {
+    topic: "Modal Perfect — Geçmişe Yönelik Modal",
+    topicShort: "3 · Modal Perfect",
+    question: "You ___ told me about the meeting! I completely missed it.",
+    options: ["could have", "should have", "might have", "would have"],
+    answer: 1,
+    explanation: "<strong>should have told</strong> doğrudur. Geçmişte yapılması gereken ama yapılmayan eylemler için <em>should have + V3</em> kullanılır. Eleştiri ya da pişmanlık ifadesi taşır."
+  },
+  {
+    topic: "Modal Perfect — Geçmişe Yönelik Modal",
+    topicShort: "3 · Modal Perfect",
+    question: "She ___ taken the wrong bus — she arrived two hours late.",
+    options: ["should have", "would have", "must have", "can have"],
+    answer: 2,
+    explanation: "<strong>must have taken</strong> doğrudur. Kanıta dayalı geçmiş çıkarım. İki saat geç gelmesi, yanlış otobüse bindiğini düşündürüyor."
+  },
+  // 4. Cleft Sentences
+  {
+    topic: "Cleft Sentences — Yarık Cümleler",
+    topicShort: "4 · Cleft Sentences",
+    question: "___ John gave Mary, not a ring.",
+    options: ["It was a book that", "It is a book which", "What", "That"],
+    answer: 0,
+    explanation: "<strong>It was a book that</strong> doğrudur. Cleft (yarık) cümle yapısı: <em>It + be + vurgulanan unsur + that/who + kalan kısım</em>. 'Kitap' vurgulanmak istenmiştir."
+  },
+  {
+    topic: "Cleft Sentences — Yarık Cümleler",
+    topicShort: "4 · Cleft Sentences",
+    question: "___ surprised me was how quickly he solved the problem.",
+    options: ["That", "It", "What", "Which"],
+    answer: 2,
+    explanation: "<strong>What</strong> doğrudur. <em>What-cleft</em> yapısı: <em>What + clause + be + ...</em> Bu yapı özneyi vurgulamak için kullanılır."
+  },
+  // 5. Passive with Modal Verbs
+  {
+    topic: "Passive with Modal Verbs — Modal Fiilli Pasif",
+    topicShort: "5 · Passive w/ Modals",
+    question: "The report ___ by Friday at the latest.",
+    options: ["must finish", "must be finished", "must finished", "must have finished"],
+    answer: 1,
+    explanation: "<strong>must be finished</strong> doğrudur. Modal fiilli pasif yapı: <em>modal + be + V3</em>. Raporun bitirilmesi gerekiyor — özne belirtilmiyor."
+  },
+  {
+    topic: "Passive with Modal Verbs — Modal Fiilli Pasif",
+    topicShort: "5 · Passive w/ Modals",
+    question: "Mistakes ___ if more attention had been paid.",
+    options: ["could avoid", "could be avoided", "could have avoided", "could have been avoided"],
+    answer: 3,
+    explanation: "<strong>could have been avoided</strong> doğrudur. Geçmişe yönelik pasif modal: <em>modal + have been + V3</em>. Hatalar daha dikkatli olunsaydı önlenebilirdi."
+  },
+  {
+    topic: "Passive with Modal Verbs — Modal Fiilli Pasif",
+    topicShort: "5 · Passive w/ Modals",
+    question: "This button ___ in case of emergency only.",
+    options: ["should press", "should be pressed", "should pressing", "should pressed"],
+    answer: 1,
+    explanation: "<strong>should be pressed</strong> doğrudur. <em>should + be + V3</em> pasif yapısı. Butona acil durumda basılmalıdır."
+  },
+  // 6. Quantifiers
+  {
+    topic: "Quantifiers — Niceleyiciler",
+    topicShort: "6 · Quantifiers",
+    question: "There is ___ milk left in the fridge — we need to buy more.",
+    options: ["little", "few", "a few", "many"],
+    answer: 0,
+    explanation: "<strong>little</strong> doğrudur. Sayılamayan isimlerle <em>little/a little</em> kullanılır. <em>little</em> = az (neredeyse yok), <em>a little</em> = biraz (yeterli miktarda). Milk sayılamaz."
+  },
+  {
+    topic: "Quantifiers — Niceleyiciler",
+    topicShort: "6 · Quantifiers",
+    question: "Only ___ students passed the advanced exam.",
+    options: ["little", "a little", "a few", "much"],
+    answer: 2,
+    explanation: "<strong>a few</strong> doğrudur. Sayılabilir çoğul isimlerle <em>few/a few</em> kullanılır. <em>a few</em> = biraz (olumlu çağrışım), <em>few</em> = çok az (olumsuz çağrışım). Students sayılabilir."
+  },
+  {
+    topic: "Quantifiers — Niceleyiciler",
+    topicShort: "6 · Quantifiers",
+    question: "We don't have ___ time left before the deadline.",
+    options: ["many", "few", "much", "some"],
+    answer: 2,
+    explanation: "<strong>much</strong> doğrudur. Olumsuz ve soru cümlelerinde sayılamayan isimlerle <em>much</em> kullanılır. <em>many</em> sayılabilir isimlerle kullanılır."
+  },
+  // 7. unless / as long as
+  {
+    topic: "unless / as long as — Koşul Bağlaçları",
+    topicShort: "7 · unless / as long as",
+    question: "You'll succeed ___ you keep practising every day.",
+    options: ["unless", "as long as", "even if", "in case"],
+    answer: 1,
+    explanation: "<strong>as long as</strong> doğrudur. <em>As long as</em> = '...olduğu sürece' anlamında olumlu koşul bildirir. Unless ise olumsuz koşul bildirir (if not)."
+  },
+  {
+    topic: "unless / as long as — Koşul Bağlaçları",
+    topicShort: "7 · unless / as long as",
+    question: "___ you apologise, she won't forgive you.",
+    options: ["As long as", "Unless", "Even though", "Provided"],
+    answer: 1,
+    explanation: "<strong>Unless</strong> doğrudur. <em>Unless</em> = <em>if not</em> anlamına gelir. 'Özür dilemezsen affetmeyecek.' = 'Eğer özür dilemezsen...' Olumsuz koşul."
+  },
+  // 8. The more... the more...
+  {
+    topic: "The more... the more... — Orantılı Karşılaştırma",
+    topicShort: "8 · The more… the more…",
+    question: "___ you read, ___ you know.",
+    options: ["More / more", "The more / the more", "The more / more", "More / the more"],
+    answer: 1,
+    explanation: "<strong>The more / the more</strong> doğrudur. Bu yapı iki olayın orantılı ilişkisini gösterir. Hem birinci hem ikinci kısımda <em>the</em> kullanılmalıdır."
+  },
+  {
+    topic: "The more... the more... — Orantılı Karşılaştırma",
+    topicShort: "8 · The more… the more…",
+    question: "The harder she worked, ___ she felt.",
+    options: ["the happier", "happier", "the most happy", "most happy"],
+    answer: 0,
+    explanation: "<strong>the happier</strong> doğrudur. Yapı: <em>The + comparative..., the + comparative</em>. İkinci kısım da <em>the + karşılaştırma derecesi</em> ile oluşturulur."
+  },
+  {
+    topic: "The more... the more... — Orantılı Karşılaştırma",
+    topicShort: "8 · The more… the more…",
+    question: "___ expensive a product is, ___ people assume it's high quality.",
+    options: ["More / the more", "The more / the more", "More / more", "The most / more"],
+    answer: 1,
+    explanation: "<strong>The more / the more</strong> doğrudur. Ürün ne kadar pahalı olursa, insanlar kaliteli olduğunu o kadar varsayar. Her iki kısımda da <em>the</em> zorunludur."
+  }
+];
+
+let current = 0;
+let score = 0;
+let answered = 0;
+
+function loadQuestion() {
+  const q = questions[current];
+  document.getElementById('topicBadge').textContent = q.topicShort;
+  document.getElementById('qNumber').textContent = `SORU ${String(current + 1).padStart(2,'0')}`;
+  document.getElementById('qText').innerHTML = q.question.replace('___', '<span class="blank">___</span>');
+
+  const optContainer = document.getElementById('options');
+  optContainer.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="letter">${letters[i]}</span><span class="opt-text">${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optContainer.appendChild(btn);
+  });
+
+  document.getElementById('explanation').className = 'explanation';
+  document.getElementById('explanation').innerHTML = '';
+  document.getElementById('nextBtn').className = 'next-btn';
+
+  // Progress
+  const pct = ((current) / questions.length) * 100;
+  document.getElementById('progressFill').style.width = Math.max(5, pct) + '%';
+  document.getElementById('progressText').textContent = `Soru ${current + 1} / ${questions.length}`;
+  document.getElementById('scoreText').textContent = `${score} doğru`;
+
+  // Card animation
+  const card = document.getElementById('questionCard');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'fadeUp 0.4s ease both';
+}
+
+function selectAnswer(chosen) {
+  const q = questions[current];
+  const btns = document.querySelectorAll('.option-btn');
+
+  btns.forEach(b => b.disabled = true);
+
+  if (chosen === q.answer) {
+    btns[chosen].classList.add('correct');
+    score++;
+    answered++;
+  } else {
+    btns[chosen].classList.add('wrong');
+    btns[q.answer].classList.add('correct');
+    answered++;
+  }
+
+  const exp = document.getElementById('explanation');
+  exp.innerHTML = '💡 ' + q.explanation;
+  exp.classList.add('show');
+
+  document.getElementById('scoreText').textContent = `${score} doğru`;
+
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.textContent = current < questions.length - 1 ? 'Sonraki Soru →' : 'Sonuçları Gör 🎯';
+  nextBtn.classList.add('show');
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('quizArea').style.display = 'none';
+
+  const wrong = questions.length - score;
+  const pct = Math.round((score / questions.length) * 100);
+
+  document.getElementById('scoreBig').textContent = score;
+  document.getElementById('statCorrect').textContent = score;
+  document.getElementById('statWrong').textContent = wrong;
+  document.getElementById('statPct').textContent = pct + '%';
+
+  let grade, title, trophy, color;
+  if (pct >= 90) { grade = 'A+'; title = 'Mükemmel!'; trophy = '🏆'; color = 'linear-gradient(135deg,#f5c842,#f97316)'; }
+  else if (pct >= 75) { grade = 'B+'; title = 'Çok İyi!'; trophy = '🥇'; color = 'linear-gradient(135deg,#4fc3f7,#a78bfa)'; }
+  else if (pct >= 60) { grade = 'C+'; title = 'İyi İş!'; trophy = '👏'; color = 'linear-gradient(135deg,#22c55e,#4fc3f7)'; }
+  else { grade = 'D'; title = 'Çalışmaya devam!'; trophy = '📚'; color = 'linear-gradient(135deg,#f97316,#ef4444)'; }
+
+  document.getElementById('trophy').textContent = trophy;
+  document.getElementById('resultTitle').textContent = title;
+  const badge = document.getElementById('gradeBadge');
+  badge.textContent = grade;
+  badge.style.background = color;
+  badge.style.color = '#000';
+  badge.style.padding = '8px 28px';
+
+  document.getElementById('resultScreen').classList.add('show');
+}
+
+function restartQuiz() {
+  current = 0; score = 0; answered = 0;
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('quizArea').style.display = 'block';
+  document.getElementById('resultScreen').classList.remove('show');
+  loadQuestion();
+}
+
+// Init
+loadQuestion();
+</script>
+</body>
+</html>

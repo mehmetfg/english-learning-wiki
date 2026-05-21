@@ -1,0 +1,770 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: var(--color-text-primary);
+    --muted: var(--color-text-secondary);
+    --faint: var(--color-text-tertiary);
+    --surface: var(--color-background-primary);
+    --raised: var(--color-background-secondary);
+    --border: var(--color-border-tertiary);
+    --border-md: var(--color-border-secondary);
+    --accent-gold: #8B6914;
+    --accent-gold-light: #C9A84C;
+    --r: var(--border-radius-lg);
+  }
+
+  .kant-app {
+    font-family: 'Spectral', Georgia, serif;
+    color: var(--ink);
+    min-height: 600px;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── HOME ── */
+  .home-header {
+    padding: 2.5rem 2rem 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+    position: relative;
+  }
+  .home-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8B6914, #C9A84C, #8B6914);
+  }
+  .era-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin-bottom: 0.5rem;
+  }
+  .main-title {
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .main-sub {
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--muted);
+    font-weight: 300;
+  }
+  .kant-dates {
+    font-size: 12px;
+    color: var(--faint);
+    margin-top: 0.8rem;
+    letter-spacing: 0.05em;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding: 1.5rem 2rem 0.6rem;
+  }
+
+  /* İzlek */
+  .izlek-strip {
+    padding: 0 2rem 1.5rem;
+  }
+  .izlek-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border: 0.5px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+  }
+  .izlek-node {
+    flex: 1;
+    padding: 0.9rem 0.7rem;
+    border-right: 0.5px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: center;
+    position: relative;
+  }
+  .izlek-node:last-child { border-right: none; }
+  .izlek-node:hover { background: var(--raised); }
+  .izlek-node .node-num {
+    font-size: 10px;
+    color: var(--accent-gold);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .izlek-node .node-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+    display: block;
+    margin-bottom: 3px;
+  }
+  .izlek-node .node-sub {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .izlek-arrow {
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    z-index: 2;
+    color: var(--accent-gold-light);
+    font-size: 13px;
+    display: none;
+  }
+
+  /* Kavram kartları */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 2rem 2rem;
+  }
+  .kavram-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--r);
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .kavram-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2.5px;
+    background: var(--card-accent, #8B6914);
+  }
+  .kavram-card:hover {
+    border-color: var(--border-md);
+    background: var(--raised);
+  }
+  .card-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--card-accent, var(--accent-gold));
+    margin-bottom: 5px;
+  }
+  .card-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 5px;
+    line-height: 1.2;
+  }
+  .card-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .card-arrow {
+    position: absolute;
+    bottom: 0.8rem; right: 1rem;
+    font-size: 14px;
+    color: var(--faint);
+  }
+
+  /* ── DETAIL SCREEN ── */
+  .detail-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 1.2rem 2rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .back-btn {
+    font-family: 'Spectral', serif;
+    font-size: 13px;
+    color: var(--muted);
+    background: none;
+    border: 0.5px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .back-btn:hover { border-color: var(--border-md); color: var(--ink); }
+  .detail-breadcrumb {
+    font-size: 12px;
+    color: var(--faint);
+  }
+  .detail-breadcrumb span { color: var(--ink); }
+
+  .detail-body {
+    padding: 2rem;
+  }
+  .detail-tag {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .detail-title {
+    font-family: 'IM Fell English', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 0.3rem;
+  }
+  .detail-latin {
+    font-style: italic;
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+  .detail-lead {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    border-left: 2.5px solid var(--accent-gold);
+    padding-left: 1rem;
+    font-style: italic;
+  }
+  .detail-section {
+    margin-bottom: 1.5rem;
+  }
+  .detail-section h3 {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+    padding-bottom: 0.4rem;
+  }
+  .detail-section p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+  .subconcept-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0.8rem;
+  }
+  .pill {
+    font-size: 12px;
+    padding: 4px 12px;
+    border: 0.5px solid var(--border-md);
+    border-radius: 999px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.12s;
+    background: var(--surface);
+  }
+  .pill:hover { background: var(--raised); color: var(--ink); }
+
+  .eser-list {
+    list-style: none;
+    margin-top: 0.5rem;
+  }
+  .eser-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 0.5px solid var(--border);
+    color: var(--ink);
+  }
+  .eser-list li:last-child { border-bottom: none; }
+  .eser-list .year {
+    font-size: 11px;
+    color: var(--faint);
+    letter-spacing: 0.05em;
+  }
+  .eser-list .eser-name { font-style: italic; }
+
+  .insight-box {
+    background: var(--raised);
+    border: 0.5px solid var(--border);
+    border-radius: var(--r);
+    padding: 1rem 1.2rem;
+    margin-top: 0.8rem;
+  }
+  .insight-box p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .insight-box strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .nav-sub {
+    display: flex;
+    gap: 8px;
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    border-top: 0.5px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .nav-sub-btn {
+    font-family: 'Spectral', serif;
+    font-size: 12px;
+    padding: 5px 14px;
+    border: 0.5px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--muted);
+    transition: all 0.12s;
+  }
+  .nav-sub-btn:hover { border-color: var(--border-md); color: var(--ink); }
+  .gold-line {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-gold), transparent);
+    margin: 1.2rem 0;
+    opacity: 0.4;
+  }
+</style>
+
+<div class="kant-app">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+
+    <div class="home-header">
+      <div class="era-label">Alman İdealizmi · 18. Yüzyıl Felsefesi</div>
+      <div class="main-title">Immanuel Kant<br>Felsefesi</div>
+      <div class="main-sub">Saf Aklın Eleştirisi'nden Ahlak Metafiziğine</div>
+      <div class="kant-dates">1724 — 1804 · Königsberg, Prusya</div>
+    </div>
+
+    <div class="section-label">Kavramsal İzlek — Temel Akış</div>
+    <div class="izlek-strip">
+      <div class="izlek-flow">
+        <div class="izlek-node" onclick="showDetail('epistemoloji')">
+          <span class="node-num">I</span>
+          <span class="node-title">Epistemoloji</span>
+          <span class="node-sub">Bilginin koşulları</span>
+        </div>
+        <div class="izlek-node" onclick="showDetail('kategoriler')">
+          <span class="node-num">II</span>
+          <span class="node-title">Kategoriler</span>
+          <span class="node-sub">Anlığın formları</span>
+        </div>
+        <div class="izlek-node" onclick="showDetail('ahlak')">
+          <span class="node-num">III</span>
+          <span class="node-title">Ahlak</span>
+          <span class="node-sub">Pratik akıl</span>
+        </div>
+        <div class="izlek-node" onclick="showDetail('estetik')">
+          <span class="node-num">IV</span>
+          <span class="node-title">Estetik</span>
+          <span class="node-sub">Yargı gücü</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Ana Kavramlar</div>
+    <div class="cards-grid">
+
+      <div class="kavram-card" style="--card-accent:#8B6914" onclick="showDetail('epistemoloji')">
+        <div class="card-tag">Bilgi Kuramı</div>
+        <div class="card-title">Saf Aklın Eleştirisi</div>
+        <div class="card-desc">Deneyimden bağımsız bilginin sınırları ve olanakları</div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="kavram-card" style="--card-accent:#1D9E75" onclick="showDetail('kategoriler')">
+        <div class="card-tag">Anlık · Verstand</div>
+        <div class="card-title">Saf Anlık Kategorileri</div>
+        <div class="card-desc">Deneyimi mümkün kılan 12 a priori kavram</div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="kavram-card" style="--card-accent:#534AB7" onclick="showDetail('apriori')">
+        <div class="card-tag">Bilginin Kökeni</div>
+        <div class="card-title">A Priori / A Posteriori</div>
+        <div class="card-desc">Deneyden önce ve deneyimle kazanılan bilgi ayrımı</div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="kavram-card" style="--card-accent:#993C1D" onclick="showDetail('fenomen-numen')">
+        <div class="card-tag">Görüngü · Kendinde Şey</div>
+        <div class="card-title">Fenomen & Numen</div>
+        <div class="card-desc">Bize göründüğü haliyle dünya ve kendinde-şey sınırı</div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="kavram-card" style="--card-accent:#185FA5" onclick="showDetail('ahlak')">
+        <div class="card-tag">Pratik Akıl</div>
+        <div class="card-title">Kategorik İmperatif</div>
+        <div class="card-desc">Evrenselleştirilebilir ahlak yasasının ilkesi</div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="kavram-card" style="--card-accent:#639922" onclick="showDetail('estetik')">
+        <div class="card-tag">Yargı Gücü</div>
+        <div class="card-title">Güzellik & Yüce</div>
+        <div class="card-desc">Estetik deneyimin öznel evrenselliği</div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="kavram-card" style="--card-accent:#993556" onclick="showDetail('uzay-zaman')">
+        <div class="card-tag">Sezginin Formları</div>
+        <div class="card-title">Uzay & Zaman</div>
+        <div class="card-desc">Duyarlığın saf a priori formları olarak zaman ve mekan</div>
+        <div class="card-arrow">→</div>
+      </div>
+
+      <div class="kavram-card" style="--card-accent:#5F5E5A" onclick="showDetail('kopernikus')">
+        <div class="card-tag">Felsefi Devrim</div>
+        <div class="card-title">Kopernik Devrimi</div>
+        <div class="card-desc">Öznenin bilgiye katkısının keşfi: zihin dünyayı kurar</div>
+        <div class="card-arrow">→</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DETAIL: EPİSTEMOLOJİ -->
+  <div class="screen" id="screen-epistemoloji">
+    <div class="detail-nav">
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+      <div class="detail-breadcrumb">Kant Felsefesi · <span>Epistemoloji</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tag" style="color:#8B6914">Bilgi Kuramı · Erkenntnistheorie</div>
+      <div class="detail-title">Bilginin Koşulları Üzerine</div>
+      <div class="detail-latin">Kritik der reinen Vernunft, 1781</div>
+      <div class="detail-lead">
+        Kant'a göre bilgi ne yalnızca duyumdan (Hume), ne de yalnızca akıldan (Leibniz) gelir. Bilgi, duyarlık aracılığıyla gelen malzemenin anlık tarafından işlenmesiyle doğar. Bu sentez Kant'ın "Kopernik Devrimi"dir.
+      </div>
+      <div class="detail-section">
+        <h3>Temel Soru</h3>
+        <p>Kant'ın başlangıç sorusu şudur: <em>"Sentetik a priori yargılar nasıl mümkündür?"</em> Yani hem zorunlu hem de bilgimizi genişleten önermeler nasıl olabilir? Matematik ve fizik yasaları bunun canlı örnekleridir: "Her olayın bir nedeni vardır" cümlesi deneyden öğrenilmez, ama deneyimi mümkün kılar.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Bilginin İki Kaynağı</h3>
+        <p><strong style="color:var(--ink)">Duyarlık (Sinnlichkeit):</strong> Nesneler bize duyular aracılığıyla verilir. Uzay ve zaman duyarlığın saf formlarıdır; deneyimden önce gelirler.<br><br>
+        <strong style="color:var(--ink)">Anlık (Verstand):</strong> Anlık, duyarlıktan gelen verileri kategoriler aracılığıyla kavramlaştırır. Kavramsız sezgiler kör, sezgisiz kavramlar boştur.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Bilginin Sınırı</h3>
+        <p>Bilgi yalnızca fenomenler (görüngüler) alanında geçerlidir. Kendinde-şey (Ding an sich) — yani nesnelerin bize bağımsız varlığı — bilinemez. Tanrı, özgür irade ve ölümsüzlük teorik aklın sınırları dışındadır; bunlar pratik aklın postulatlarıdır.</p>
+      </div>
+      <div class="insight-box">
+        <p><strong>Çarpıcı Fikir:</strong> Kant, zihnin pasif bir alıcı olmadığını gösterdi. Zihin, deneyimi <em>şekillendiren</em> aktif bir kurucu güçtür. Gökyüzünün "nedensellik" bağıyla birbirine bağlı göründüğü şey, dünyada değil — zihninizdedir.</p>
+      </div>
+      <div class="nav-sub">
+        <button class="nav-sub-btn" onclick="showDetail('kategoriler')">Kategoriler →</button>
+        <button class="nav-sub-btn" onclick="showDetail('apriori')">A Priori Bilgi →</button>
+        <button class="nav-sub-btn" onclick="showDetail('fenomen-numen')">Fenomen & Numen →</button>
+        <button class="nav-sub-btn" onclick="showDetail('kopernikus')">Kopernik Devrimi →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL: KATEGORİLER -->
+  <div class="screen" id="screen-kategoriler">
+    <div class="detail-nav">
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+      <div class="detail-breadcrumb">Kant Felsefesi · <span>Saf Anlık Kategorileri</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tag" style="color:#1D9E75">Anlık · Verstand · Kategorientafel</div>
+      <div class="detail-title">On İki Saf Kategori</div>
+      <div class="detail-latin">Saf Anlığın Yargı Tablosundan Türetilen A Priori Formlar</div>
+      <div class="detail-lead">
+        Kategoriler, deneyimin ham malzemesini anlamlı bir dünyaya dönüştüren zihinsel kalıplardır. Bunlar öğrenilmez; insan anlığının yapısına içkindirler. Kant bunları mantığın dört yargı sınıfından türetir.
+      </div>
+      <div class="detail-section">
+        <h3>I. Nicelik Kategorileri</h3>
+        <div class="subconcept-pills">
+          <span class="pill">Birlik (Einheit)</span>
+          <span class="pill">Çokluk (Vielheit)</span>
+          <span class="pill">Bütünlük (Allheit)</span>
+        </div>
+        <p style="margin-top:0.7rem">Bir nesneyi kaç tane, ne miktarda olduğunu düşünmemizi sağlar. "Bu bir elma" demek bile Birlik kategorisini kullanmaktır.</p>
+      </div>
+      <div class="gold-line"></div>
+      <div class="detail-section">
+        <h3>II. Nitelik Kategorileri</h3>
+        <div class="subconcept-pills">
+          <span class="pill">Gerçeklik (Realität)</span>
+          <span class="pill">Olumsuzlama (Negation)</span>
+          <span class="pill">Sınırlama (Limitation)</span>
+        </div>
+        <p style="margin-top:0.7rem">Bir şeyin var olup olmadığını veya ne ölçüde var olduğunu düşünmemizi sağlar.</p>
+      </div>
+      <div class="gold-line"></div>
+      <div class="detail-section">
+        <h3>III. Bağıntı Kategorileri</h3>
+        <div class="subconcept-pills">
+          <span class="pill">Töz-İlinek (Substanz-Akzidenz)</span>
+          <span class="pill">Nedensellik (Kausalität)</span>
+          <span class="pill">Karşılıklı Etki (Gemeinschaft)</span>
+        </div>
+        <p style="margin-top:0.7rem">En kritik grup budur. Nedensellik kategorisi olmaksızın "A, B'ye yol açtı" düşüncesi imkansızdır. Hume'un nedensellik şüphesine Kant'ın yanıtı tam da burada yatar: nedensellik deneyimden değil, deneyimi olanaklı kılan anlık yapısından gelir.</p>
+      </div>
+      <div class="gold-line"></div>
+      <div class="detail-section">
+        <h3>IV. Modalite Kategorileri</h3>
+        <div class="subconcept-pills">
+          <span class="pill">Olabilirlik (Möglichkeit)</span>
+          <span class="pill">Varoluş (Dasein)</span>
+          <span class="pill">Zorunluluk (Notwendigkeit)</span>
+        </div>
+        <p style="margin-top:0.7rem">Bir nesnenin olası mı, gerçek mi yoksa zorunlu mu olduğunu düşünmemizi sağlar.</p>
+      </div>
+      <div class="insight-box">
+        <p><strong>Derin Fikir:</strong> Bu kategoriler nesnel gerçekliğin değil, zihnin yapısının izlerini taşır. Kant şunu sorar: "Deneyim neden düzenli bir bütün olarak görünür?" — Çünkü zihin onu düzenler. Kategoriler olmadan dünya kaotik ve kavranamaz bir gürültü olurdu.</p>
+      </div>
+      <div class="nav-sub">
+        <button class="nav-sub-btn" onclick="showDetail('epistemoloji')">← Epistemoloji</button>
+        <button class="nav-sub-btn" onclick="showDetail('uzay-zaman')">Uzay & Zaman →</button>
+        <button class="nav-sub-btn" onclick="showDetail('fenomen-numen')">Fenomen & Numen →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL: A PRİORİ -->
+  <div class="screen" id="screen-apriori">
+    <div class="detail-nav">
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+      <div class="detail-breadcrumb">Kant Felsefesi · <span>A Priori / A Posteriori</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tag" style="color:#534AB7">Bilginin Kökeni · Analitik / Sentetik Ayrımı</div>
+      <div class="detail-title">A Priori Bilgi Nedir?</div>
+      <div class="detail-latin">Deneyimden önce gelen zorunlu bilgi</div>
+      <div class="detail-lead">
+        A priori bilgi, deneyimden önce gelen ve deneyimden bağımsız geçerliliğe sahip olan bilgidir. Kant bu ayrımı "analitik / sentetik" ayrımıyla birleştirerek felsefeyi dört türe böler.
+      </div>
+      <div class="detail-section">
+        <h3>Dört Bilgi Türü</h3>
+        <p><strong style="color:var(--ink)">1. Analitik a priori:</strong> "Tüm bekarlar evlenmemiştir." Yüklem zaten özneye içkindir. Bilgiyi genişletmez, açıklar.<br><br>
+        <strong style="color:var(--ink)">2. Sentetik a posteriori:</strong> "Güneş bugün battı." Deneyimden öğrenilir, bilgiyi genişletir ama zorunlu değildir.<br><br>
+        <strong style="color:var(--ink)">3. Sentetik a priori (Kant'ın keşfi):</strong> "Her olayın bir nedeni vardır." Hem bilgiyi genişletir (sentetik) hem de zorunlu ve evrenseldir (a priori). Matematik bütünüyle böyledir: 7 + 5 = 12 deneyimle değil, saf sezgiyle bilinir.<br><br>
+        <strong style="color:var(--ink)">4. Analitik a posteriori:</strong> Kant'a göre bu tür mantıksal olarak imkansızdır.</p>
+      </div>
+      <div class="insight-box">
+        <p><strong>Neden Önemli?</strong> Kant bu ayrımla hem ampirizmi (Hume) hem de rasyonalizmi (Leibniz) aşar. Matematik ve doğa yasaları ne saf akıldan ne de saf deneyimden doğar — ikisinin zorunlu birlikteliğinden doğar. Bu, felsefe tarihinin en radikal kesişim noktalarından biridir.</p>
+      </div>
+      <div class="nav-sub">
+        <button class="nav-sub-btn" onclick="showDetail('epistemoloji')">← Epistemoloji</button>
+        <button class="nav-sub-btn" onclick="showDetail('kategoriler')">Kategoriler →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL: FENOMEN & NUMEN -->
+  <div class="screen" id="screen-fenomen-numen">
+    <div class="detail-nav">
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+      <div class="detail-breadcrumb">Kant Felsefesi · <span>Fenomen & Numen</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tag" style="color:#993C1D">Görüngü & Kendinde-Şey · Erscheinung & Ding an sich</div>
+      <div class="detail-title">Fenomen & Numen</div>
+      <div class="detail-latin">Bize göründüğü ile gerçekten var olduğu arasındaki sonsuz mesafe</div>
+      <div class="detail-lead">
+        Kant'a göre biz dünyayı olduğu gibi değil, zihnimizin formları aracılığıyla görürüz. Bize görünen şey fenomendir; arka plandaki bilinmez gerçeklik ise noumendır — kendinde-şey.
+      </div>
+      <div class="detail-section">
+        <h3>Fenomen (Erscheinung)</h3>
+        <p>Duyularımıza ve anlığımıza görünen şeydir. Uzay, zaman ve kategoriler aracılığıyla biçimlendirilen bu dünya, bilimin ve günlük deneyimin dünyasıdır. Bilgi yalnızca fenomenler alanında mümkündür. Newton fiziği bu alana aittir ve tamamen geçerlidir.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Numen / Kendinde-Şey (Ding an sich)</h3>
+        <p>Nesnelerin zihnimizden bağımsız, ham varlığıdır. Kant bunu "bilinebilir değil ama düşünülebilir" olarak tanımlar. Tanrı, ruh ve özgürlük bu alana aittir. Bunlar teorik akılla kanıtlanamaz; ancak pratik aklın — ahlakın — zorunlu gerektirdiği postulatlardır.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Neden Bu Ayrım Kritik?</h3>
+        <p>Bu ayrım hem bilimi kurtarır hem de özgür iradeye yer açar. Newton fiziği fenomenler dünyasını açıklar. Ama insan özgür iradesiyle hareket eden bir varlık olarak noumenal alana aittir — bu yüzden nedensellik bütün anlamıyla insan davranışına uygulanamaz. Ahlak bu boşlukta var olur.</p>
+      </div>
+      <div class="insight-box">
+        <p><strong>Gözlemleyin:</strong> Şu an gördüğünüz her nesne, zihninizin inşasıdır. Kant bu fikri savunurken metafor değil, kesin felsefi argüman kullanır: nesnenin "gerçek" hali size hiçbir zaman doğrudan ulaşmaz.</p>
+      </div>
+      <div class="nav-sub">
+        <button class="nav-sub-btn" onclick="showDetail('epistemoloji')">← Epistemoloji</button>
+        <button class="nav-sub-btn" onclick="showDetail('ahlak')">Pratik Akıl →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL: AHLAK -->
+  <div class="screen" id="screen-ahlak">
+    <div class="detail-nav">
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+      <div class="detail-breadcrumb">Kant Felsefesi · <span>Kategorik İmperatif</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tag" style="color:#185FA5">Pratik Akıl · Ahlak Metafiziği</div>
+      <div class="detail-title">Kategorik İmperatif</div>
+      <div class="detail-latin">Der kategorische Imperativ — Koşulsuz Buyruk</div>
+      <div class="detail-lead">
+        Kant'a göre ahlak, sonuçlardan, duygulardan veya tanrısal emirden türetilemez. Gerçek ahlaki yasa saf pratik aklın ürünüdür: evrenselleştirilebilir, koşulsuz, salt görevden yapılan eylemdir.
+      </div>
+      <div class="detail-section">
+        <h3>Birinci Formül: Evrensellik</h3>
+        <p><em>"Yalnızca aynı zamanda evrensel bir yasa olmasını isteyebileceğin maksim uyarınca hareket et."</em><br><br>
+        Bir eylemde bulunmadan önce sor: "Herkes böyle yapsaydı ne olurdu?" Yalan söylemek bu testi geçemez — herkes yalan söylese dil anlamsızlaşır ve yalan da mümkün olmaz hale gelir.</p>
+      </div>
+      <div class="detail-section">
+        <h3>İkinci Formül: İnsanlık</h3>
+        <p><em>"İnsanlığa — ister kendin ister başkası olsun — hiçbir zaman yalnızca araç olarak değil, her zaman aynı zamanda amaç olarak davran."</em><br><br>
+        Bu formül insan onurunun felsefi temelidir. İnsanı bir araç olarak kullanmak — manipülasyon, sömürü, aldatma — koşulsuz olarak ahlaki açıdan yanlıştır.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Ödev Etiği</h3>
+        <p>Kant'a göre bir eylemin ahlaki değeri sonucuna değil, güdüsüne bağlıdır. Yardım etmek için yardım etmek değil; <em>yardım etmek görevimdir</em> diye yardım etmek ahlaki değer taşır. Bu, Aristoteles'in erdem etiğinden ve faydacılıktan radikal biçimde ayrışır.</p>
+      </div>
+      <div class="insight-box">
+        <p><strong>Günümüz Bağlantısı:</strong> BM İnsan Hakları Bildirisi, Kant'ın "insanlık formülü"nün doğrudan mirasçısıdır. Bireyin salt araç olarak kullanılamayacağı fikri modern hukuk ve etiğin temel taşıdır.</p>
+      </div>
+      <div class="nav-sub">
+        <button class="nav-sub-btn" onclick="showDetail('fenomen-numen')">← Fenomen & Numen</button>
+        <button class="nav-sub-btn" onclick="showDetail('estetik')">Estetik Yargı →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL: ESTETİK -->
+  <div class="screen" id="screen-estetik">
+    <div class="detail-nav">
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+      <div class="detail-breadcrumb">Kant Felsefesi · <span>Güzellik & Yüce</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tag" style="color:#639922">Yargı Gücü Eleştirisi · Ästhetik</div>
+      <div class="detail-title">Estetik Yargı</div>
+      <div class="detail-latin">Kritik der Urteilskraft, 1790 — Güzellik ve Yüce</div>
+      <div class="detail-lead">
+        Bir şeyin güzel olduğunu söylemek öznel bir duygu ifadesi midir, yoksa nesnel bir iddia mıdır? Kant bu ikiliği "öznel evrensellik" kavramıyla çözer: güzellik yargısı öznel ama evrensel geçerlilik iddiası taşır.
+      </div>
+      <div class="detail-section">
+        <h3>Güzellik (Das Schöne)</h3>
+        <p>Güzellik, bir nesnenin kavramlara indirgenmeden veren hazdır. "Bu güzel" derken herkesin aynı fikirde olmasını bekleriz — ama bunu bir olgu iddiasıyla değil, paylaşılan bir duyarlılık çağrısıyla yaparız. Güzel, amacın biçimidir — ama belirli bir amaç olmaksızın.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Yüce (Das Erhabene)</h3>
+        <p>Yüce, güzellikten farklıdır: ilkin baskı ve korku verir, sonra bir haz doğar. Sonsuz okyanus, fırtınalı dağlar — bunlar akılımızın sonsuzluğunu çağrıştırır. Yüce, doğanın büyüklüğü karşısında aklımızın kendi yüceliğini keşfetmesidir.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Sanat ve Doğa</h3>
+        <p>Kant için güzelliğin en yüce örneği sanatta değil, doğadadır. Sanat güzel olabilir; ama bir gülün güzelliği, en mükemmel tablodan daha derin bir hayranlık uyandırır. Deha, doğanın sanata verdiği kuralsız bir armağandır.</p>
+      </div>
+      <div class="insight-box">
+        <p><strong>Köprü:</strong> Yargı Gücü Eleştirisi, teorik akıl (doğa) ile pratik akıl (özgürlük) arasında köprü kurar. Estetik deneyim, doğal dünyada ahlaki amacın işaretlerini görmenin sezgisel yoludur.</p>
+      </div>
+      <div class="nav-sub">
+        <button class="nav-sub-btn" onclick="showDetail('ahlak')">← Kategorik İmperatif</button>
+        <button class="nav-sub-btn" onclick="showDetail('epistemoloji')">Bilgi Kuramına Dön →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL: UZAY & ZAMAN -->
+  <div class="screen" id="screen-uzay-zaman">
+    <div class="detail-nav">
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+      <div class="detail-breadcrumb">Kant Felsefesi · <span>Uzay & Zaman</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tag" style="color:#993556">Duyarlığın Saf Formları · Raum & Zeit</div>
+      <div class="detail-title">Uzay ve Zaman</div>
+      <div class="detail-latin">Sezginin A Priori Formları — Transcendentale Ästhetik</div>
+      <div class="detail-lead">
+        Newton için uzay ve zaman nesnelerin içinde var olduğu mutlak kaplardır. Kant'a göre tam tersi: uzay ve zaman duyarlığımızın biçimleridir; nesneleri onların içinde deneyimleriz çünkü zihnimiz onları dayatır.
+      </div>
+      <div class="detail-section">
+        <h3>Uzay — Dış Duyunun Formu</h3>
+        <p>Dışarıdan gelen hiçbir nesneyi uzaysal formdan bağımsız deneyimleyemeyiz. Uzay nesnelerden çıkarılmış bir kavram değil, onları algılamamızın ön koşuludur. Öklid geometrisi bu yüzden kesin ve zorunludur — çünkü uzayın yapısını değil, zihnimizin uzaysal sezgi formunu betimler.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Zaman — İç Duyunun Formu</h3>
+        <p>Zaman hem dış deneyimin hem iç deneyimin formudur. Bütün düşüncelerimiz zamansal akış içinde gerçekleşir. Bu yüzden "zamanın dışında bir an" düşünemeyiz — bu bir deneyim değil, çelişkidir.</p>
+      </div>
+      <div class="insight-box">
+        <p><strong>Einstein Bağlantısı:</strong> Einstein'ın görelilik teorisi Kant'ın uzay-zaman anlayışını sarsmış gibi görünür — ama Kant'ın tezi nesneler hakkında değil, deneyimin koşulları hakkındaydı. Bu tartışma bugün hâlâ sürmektedir.</p>
+      </div>
+      <div class="nav-sub">
+        <button class="nav-sub-btn" onclick="showDetail('kategoriler')">Kategoriler →</button>
+        <button class="nav-sub-btn" onclick="showDetail('apriori')">A Priori Bilgi →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL: KOPERNİKUS -->
+  <div class="screen" id="screen-kopernikus">
+    <div class="detail-nav">
+      <button class="back-btn" onclick="goHome()">← Geri</button>
+      <div class="detail-breadcrumb">Kant Felsefesi · <span>Kopernik Devrimi</span></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-tag" style="color:#5F5E5A">Felsefi Devrim · Kopernikanische Wende</div>
+      <div class="detail-title">Felsefede Kopernik Devrimi</div>
+      <div class="detail-latin">Öznenin Nesneyi Kurması — Epistemik Paradigma Değişimi</div>
+      <div class="detail-lead">
+        Kopernik Dünya'yı evrenin merkezinden çekip Güneş'e yerleştirdi. Kant felsefeyi de aynı şekilde devirdi: artık zihin nesneye göre şekillenmez — nesne, zihne göre şekillenir.
+      </div>
+      <div class="detail-section">
+        <h3>Önceki Görüş: Zihin Nesneye Uyar</h3>
+        <p>Klasik anlayışta zihin, dışarıdan gelen gerçekliği olduğu gibi yansıtan pasif bir ayna gibi çalışır. Bilgi, nesnelerin zihinimize baskı yapmasıyla oluşur. Hume bu anlayışa göre şunu sorar: o zaman nedensellik nerede? Hiçbir yerde — çünkü biz yalnızca art ardalığı görürüz.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Kant'ın Devrimi: Nesne Zihne Uyar</h3>
+        <p>Kant şunu savunur: nesneler bize ancak zihnimizin yapısı aracılığıyla görünür. Uzay, zaman, nedensellik, töz — bunlar dışarıdan gelmiyor; zihnimizin dünyayı işlemesinin araçlarıdır. Deneyim, zihnin dünyaya uyguladığı bir sentezin ürünüdür.</p>
+      </div>
+      <div class="detail-section">
+        <h3>Sonuçları</h3>
+        <p>Bu devrim ile Kant hem ampirizmi (Hume) hem rasyonalizmi (Descartes, Leibniz) aşar ve felsefeyi kelimenin tam anlamıyla yeniden kurar. Alman İdealizmi (Fichte, Schelling, Hegel), Fenomenoloji (Husserl) ve modern bilim felsefesi bu dönüşümün çocuklarıdır.</p>
+      </div>
+      <div class="insight-box">
+        <p><strong>Kişisel Anlam:</strong> Bu fikri anladığınızda dünyayı farklı görmeye başlarsınız. Gördüğünüz "gerçeklik" hiçbir zaman ham gerçeklik değildir — her zaman sizin zihinsel yapınızın içinden geçmiş, biçimlendirilmiş bir gerçekliktir.</p>
+      </div>
+      <div class="nav-sub">
+        <button class="nav-sub-btn" onclick="showDetail('epistemoloji')">Epistemoloji →</button>
+        <button class="nav-sub-btn" onclick="showDetail('kategoriler')">Kategoriler →</button>
+        <button class="nav-sub-btn" onclick="showDetail('fenomen-numen')">Fenomen & Numen →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showDetail(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  var target = document.getElementById('screen-' + id);
+  if (target) {
+    target.classList.add('active');
+    target.scrollTop = 0;
+  }
+}
+function goHome() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-home').classList.add('active');
+}
+</script>

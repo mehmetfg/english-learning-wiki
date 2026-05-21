@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrammarForge — İngilizce Gramer Ustası</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a23;
+    --surface2: #1e2330;
+    --border: #2a3040;
+    --accent: #e8c547;
+    --accent2: #4fc3f7;
+    --text: #e8eaf0;
+    --text-muted: #7a8099;
+    --correct: #4caf7d;
+    --wrong: #e05a5a;
+    --panel-left: #13161e;
+    --panel-right: #111420;
+    --modal-bg: rgba(5,7,12,0.92);
+    --formula-bg: #1a2035;
+    --tag-bg: #232840;
+  }
+  [data-theme="light"] {
+    --bg: #f0ede8;
+    --surface: #faf8f4;
+    --surface2: #ede9e0;
+    --border: #d5cfc0;
+    --accent: #c9922a;
+    --accent2: #2472a4;
+    --text: #1a1710;
+    --text-muted: #7a7060;
+    --correct: #2e7d52;
+    --wrong: #b83030;
+    --panel-left: #f5f2ec;
+    --panel-right: #f8f5ef;
+    --modal-bg: rgba(240,237,232,0.96);
+    --formula-bg: #e8e2d5;
+    --tag-bg: #e0d9cc;
+  }
+  [data-theme="ocean"] {
+    --bg: #071020;
+    --surface: #0d1a30;
+    --surface2: #102040;
+    --border: #1a3055;
+    --accent: #00d4aa;
+    --accent2: #7eb8f7;
+    --text: #d0e8f5;
+    --text-muted: #4a7090;
+    --correct: #00c896;
+    --wrong: #f06060;
+    --panel-left: #0a1525;
+    --panel-right: #091220;
+    --modal-bg: rgba(4,10,20,0.95);
+    --formula-bg: #102035;
+    --tag-bg: #0f2040;
+  }
+  [data-theme="crimson"] {
+    --bg: #160a08;
+    --surface: #221210;
+    --surface2: #2e1815;
+    --border: #4a2020;
+    --accent: #ff7043;
+    --accent2: #ffcc80;
+    --text: #f5e0d8;
+    --text-muted: #8a5548;
+    --correct: #76c442;
+    --wrong: #ff5252;
+    --panel-left: #1c100d;
+    --panel-right: #180e0c;
+    --modal-bg: rgba(12,5,4,0.95);
+    --formula-bg: #2a1512;
+    --tag-bg: #321a18;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.4s, color 0.4s;
+  }
+  .font-mono { font-family: 'DM Mono', monospace; }
+  .font-syne { font-family: 'Syne', sans-serif; }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0.65rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.5px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .logo span { color: var(--text); }
+  .progress-wrap {
+    flex: 1;
+    min-width: 160px;
+  }
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+  .progress-bar-bg {
+    height: 5px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+  .stage-pills {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .stage-pill {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    background: var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    position: relative;
+  }
+  .stage-pill.done { background: var(--correct); color: #fff; }
+  .stage-pill.active { background: var(--accent); color: #000; font-weight: 700; }
+  .stage-pill:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-size: 0.6rem;
+    white-space: nowrap;
+    z-index: 200;
+    pointer-events: none;
+  }
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  select, .btn-sm {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+  }
+  select:hover, .btn-sm:hover { border-color: var(--accent); }
+  .btn-sm { display: flex; align-items: center; gap: 5px; }
+  .btn-ai {
+    background: var(--accent);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    border: none;
+    border-radius: 8px;
+    padding: 0.35rem 0.8rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-ai:hover { opacity: 0.88; transform: scale(1.02); }
+  .btn-modal {
+    background: var(--surface2);
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    font-size: 0.7rem;
+    font-family: 'DM Mono', monospace;
+    border-radius: 8px;
+    padding: 0.35rem 0.7rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-modal:hover { background: var(--accent2); color: #000; }
+
+  /* MAIN LAYOUT */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 0;
+  }
+  @media (max-width: 768px) {
+    main { grid-template-columns: 1fr; }
+  }
+
+  /* LEFT PANEL */
+  .panel-left {
+    background: var(--panel-left);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    overflow-y: auto;
+  }
+  .stage-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 99px;
+    padding: 3px 10px;
+    width: fit-content;
+  }
+  .topic-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .formula-box {
+    background: var(--formula-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+  .formula-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .formula-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.95rem;
+    color: var(--accent);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .meaning-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .meaning-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .meaning-text {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .context-block {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 10px 10px 0;
+    padding: 0.85rem 1.1rem;
+  }
+  .context-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+  .context-text {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .base-action {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .base-action strong { color: var(--accent); }
+
+  /* RIGHT PANEL */
+  .panel-right {
+    background: var(--panel-right);
+    padding: 2rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    overflow-y: auto;
+  }
+  .task-prompt {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .input-area {
+    position: relative;
+  }
+  .input-area input {
+    width: 100%;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 1.05rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.25s, background 0.25s;
+    caret-color: var(--accent);
+  }
+  .input-area input:focus { border-color: var(--accent); }
+  .input-area input.correct { border-color: var(--correct) !important; background: color-mix(in srgb, var(--correct) 8%, var(--surface)); }
+  .input-area input.wrong { border-color: var(--wrong) !important; animation: shake 0.4s; }
+  .input-area input:disabled { opacity: 0.75; cursor: not-allowed; }
+
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 15%{transform:translateX(-7px)} 40%{transform:translateX(7px)} 65%{transform:translateX(-5px)} 85%{transform:translateX(5px)}
+  }
+
+  .hint-reveal {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent2);
+    min-height: 1.4rem;
+    padding: 4px 2px;
+    transition: opacity 0.3s;
+  }
+  .action-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-check {
+    background: var(--accent);
+    color: #000;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-check:hover { opacity: 0.85; transform: scale(1.02); }
+  .btn-hint {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    border-radius: 10px;
+    padding: 0.6rem 1.1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-hint:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn-speak {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    border-radius: 10px;
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    display: none;
+  }
+  .btn-speak.visible { display: flex; align-items: center; }
+  .btn-speak:hover { border-color: var(--correct); color: var(--correct); }
+  .btn-next {
+    background: var(--correct);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1.2rem;
+    cursor: pointer;
+    display: none;
+    transition: opacity 0.2s;
+  }
+  .btn-next.visible { display: flex; align-items: center; gap: 5px; }
+  .btn-next:hover { opacity: 0.85; }
+
+  .feedback-msg {
+    font-family: 'Lora', serif;
+    font-size: 0.88rem;
+    min-height: 1.4rem;
+    padding: 2px 0;
+  }
+  .feedback-msg.ok { color: var(--correct); }
+  .feedback-msg.err { color: var(--wrong); }
+
+  /* VOCAB */
+  .vocab-section {
+    border-top: 1px solid var(--border);
+    padding-top: 1.25rem;
+    margin-top: auto;
+  }
+  .vocab-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 0.6rem;
+  }
+  .vocab-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .vocab-chip {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+  }
+  .vocab-chip .en { color: var(--accent); }
+  .vocab-chip .tr { color: var(--text-muted); font-style: italic; }
+  .vocab-chip .sep { color: var(--border); margin: 0 4px; }
+
+  /* CORRECT SENTENCE REVEAL */
+  .answer-reveal {
+    background: color-mix(in srgb, var(--correct) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--correct) 30%, transparent);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--correct);
+    display: none;
+  }
+  .answer-reveal.visible { display: block; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--modal-bg);
+    z-index: 500;
+    overflow-y: auto;
+    backdrop-filter: blur(8px);
+  }
+  .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 1100px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+  .modal-close {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: var(--wrong); color: #fff; border-color: var(--wrong); }
+  .modal-body { padding: 1.5rem; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+  th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tr:hover td { background: var(--surface2); }
+  td:first-child { font-family: 'DM Mono', monospace; color: var(--accent); white-space: nowrap; }
+  td:nth-child(2) { font-family: 'DM Mono', monospace; font-size: 0.75rem; }
+  td:nth-child(3) { font-family: 'DM Mono', monospace; color: var(--text); }
+  td:nth-child(4) { font-family: 'Lora', serif; font-style: italic; color: var(--text-muted); }
+  td:nth-child(5) { font-size: 0.72rem; color: var(--text-muted); }
+
+  /* LOADING OVERLAY */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1.25rem;
+    backdrop-filter: blur(6px);
+  }
+  .loading-overlay.open { display: flex; }
+  .brain-spin {
+    font-size: 3.5rem;
+    animation: spinBrain 1.2s linear infinite;
+    filter: drop-shadow(0 0 20px var(--accent));
+  }
+  @keyframes spinBrain {
+    0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.15)} 100%{transform:rotate(360deg) scale(1)}
+  }
+  .loading-text {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  /* ERROR BOX */
+  .error-toast {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--wrong);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    z-index: 600;
+    max-width: 340px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+  .error-toast.open { display: block; }
+  .error-toast-title { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--wrong); margin-bottom: 4px; }
+  .error-toast-msg { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+  .error-close { position: absolute; top: 8px; right: 10px; cursor: pointer; color: var(--text-muted); font-size: 1rem; }
+
+  /* GEMINI KEY INPUT */
+  .key-bar {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+  }
+  .key-bar input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 7px;
+    padding: 4px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    outline: none;
+    max-width: 320px;
+  }
+  .key-bar input:focus { border-color: var(--accent); }
+  .key-note { color: var(--text-muted); font-size: 0.65rem; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* Smooth transitions */
+  .panel-left, .panel-right, header, .key-bar { transition: background 0.4s, border-color 0.4s; }
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- KEY BAR -->
+<div class="key-bar">
+  <span>🔑 Gemini API Key:</span>
+  <input type="password" id="geminiKey" placeholder="AIza... (AI Senaryo için gerekli)" autocomplete="off">
+  <span class="key-note">Tarayıcı oturumunuzda tutulur, gönderilmez.</span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Grammar<span>Forge</span></div>
+  <div class="progress-wrap">
+    <div class="progress-label font-mono" id="progLabel">Aşama 1 / 15</div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progBar" style="width:6.67%"></div></div>
+  </div>
+  <div class="stage-pills" id="stagePills"></div>
+  <div class="header-controls">
+    <select id="themeSelect" onchange="setTheme(this.value)">
+      <option value="dark">🌑 Gece</option>
+      <option value="light">☀️ Gündüz</option>
+      <option value="ocean">🌊 Okyanus</option>
+      <option value="crimson">🔥 Kırmızı</option>
+    </select>
+    <button class="btn-modal" onclick="openModal()">📋 Mimari Tabloyu İncele</button>
+    <button class="btn-ai" onclick="generateAIScenario()">✨ AI Senaryo Üret</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main>
+  <!-- LEFT PANEL -->
+  <div class="panel-left">
+    <div>
+      <div class="stage-badge" id="stageBadge">● Aşama 1</div>
+    </div>
+    <div class="topic-title" id="topicTitle">Active Voice</div>
+    <div class="base-action" id="baseActionLabel"></div>
+    <div class="formula-box">
+      <div class="formula-label">Mühendislik Formülü</div>
+      <div class="formula-text" id="formulaText">Subject + Verb + Object</div>
+    </div>
+    <div class="meaning-block">
+      <div class="meaning-label">🇹🇷 Türkçe Hedef Anlam</div>
+      <div class="meaning-text" id="meaningText">—</div>
+    </div>
+    <div class="context-block">
+      <div class="context-label">💡 Neden Bu Yapı?</div>
+      <div class="context-text" id="contextText">—</div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="panel-right">
+    <div class="task-prompt">✍️ Cümleyi İngilizce Yazın</div>
+
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Cümlenizi buraya yazın..." autocomplete="off" autocorrect="off" spellcheck="false">
+    </div>
+
+    <div class="hint-reveal" id="hintReveal"></div>
+
+    <div class="action-row">
+      <button class="btn-check" onclick="checkAnswer()">Kontrol Et</button>
+      <button class="btn-hint" onclick="showHint()">💡 İpucu Al</button>
+      <button class="btn-speak" id="btnSpeak" onclick="speakSentence()">🔊</button>
+      <button class="btn-next" id="btnNext" onclick="nextStage()">Sonraki ›</button>
+    </div>
+
+    <div class="feedback-msg" id="feedbackMsg"></div>
+    <div class="answer-reveal" id="answerReveal"></div>
+
+    <div class="vocab-section">
+      <div class="vocab-label">📖 Sözlük</div>
+      <div class="vocab-grid" id="vocabGrid"></div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📋 15 Gramer Yapısı — Mimari Tablo</div>
+      <button class="modal-close" onclick="closeModal()">✕ Kapat</button>
+    </div>
+    <div class="modal-body">
+      <table id="archTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Yapı</th>
+            <th>Formül</th>
+            <th>İngilizce Örnek</th>
+            <th>Türkçe Anlam</th>
+            <th>Kullanım Amacı</th>
+          </tr>
+        </thead>
+        <tbody id="archTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="brain-spin">🧠</div>
+  <div class="loading-text">Simya Gerçekleşiyor...</div>
+</div>
+
+<!-- ERROR TOAST -->
+<div class="error-toast" id="errorToast">
+  <span class="error-close" onclick="closeError()">✕</span>
+  <div class="error-toast-title">Bağlantı Hatası</div>
+  <div class="error-toast-msg" id="errorMsg">—</div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const FALLBACK_CURRICULUM = [
+  {
+    stage: 1,
+    topic: "Active Voice",
+    topicTR: "Etken Çatı",
+    formula: "Subject + Verb (base) + Object",
+    meaning: "Ali raporu yazar.",
+    context: "Öznenin eylemi bizzat yaptığını ifade eder. Doğrudan, net ve güçlü.",
+    target: ["Ali", "writes", "the", "report"],
+    vocab: [{ en: "report", tr: "rapor" }]
+  },
+  {
+    stage: 2,
+    topic: "Passive Voice",
+    topicTR: "Edilgen Çatı",
+    formula: "Object + is/are + V3 + (by Subject)",
+    meaning: "Rapor (Ali tarafından) yazılır.",
+    context: "Eylemi yapanı değil, yapılanı öne çıkarmak için kullanılır. Akademik yazıda sık.",
+    target: ["The", "report", "is", "written", "by", "Ali"],
+    vocab: [{ en: "written", tr: "yazılmış (V3)" }]
+  },
+  {
+    stage: 3,
+    topic: "Causative — HAVE",
+    topicTR: "Ettirgen — Yetki",
+    formula: "Subject + have + Object + V1 (base)",
+    meaning: "Ali raporu birine yazdırır. (Yetki ile)",
+    context: "Biri sizi bu işi yapması için görevlendirdiğinde veya para ödediğinizde kullanılır.",
+    target: ["Ali", "has", "someone", "write", "the", "report"],
+    vocab: [{ en: "someone", tr: "biri, birisi" }]
+  },
+  {
+    stage: 4,
+    topic: "Causative — GET",
+    topicTR: "Ettirgen — İkna",
+    formula: "Subject + get + Object + to + V1",
+    meaning: "Ali birisini raporu yazmaya ikna eder.",
+    context: "İkna etme veya teşvik ederek yaptırma anlamı taşır.",
+    target: ["Ali", "gets", "someone", "to", "write", "the", "report"],
+    vocab: [{ en: "gets", tr: "ikna eder, sağlar" }]
+  },
+  {
+    stage: 5,
+    topic: "Causative — MAKE",
+    topicTR: "Ettirgen — Zorunluluk",
+    formula: "Subject + make + Object + V1 (base)",
+    meaning: "Ali birisini raporu yazmaya zorlar.",
+    context: "Zorunluluk veya baskı yoluyla yaptırma. Seçenek bırakmaz.",
+    target: ["Ali", "makes", "someone", "write", "the", "report"],
+    vocab: [{ en: "makes", tr: "zorlar, mecbur eder" }]
+  },
+  {
+    stage: 6,
+    topic: "Causative — LET",
+    topicTR: "Ettirgen — İzin",
+    formula: "Subject + let + Object + V1 (base)",
+    meaning: "Ali birinin raporu yazmasına izin verir.",
+    context: "İzin verme veya engel olmama anlamı taşır. Gönüllü bırakma.",
+    target: ["Ali", "lets", "someone", "write", "the", "report"],
+    vocab: [{ en: "lets", tr: "izin verir, bırakır" }]
+  },
+  {
+    stage: 7,
+    topic: "Present Perfect",
+    topicTR: "Tamamlanmış Zaman",
+    formula: "Subject + have/has + V3",
+    meaning: "Ali raporu yazmış. (Tamamladı, şu an etkisi var.)",
+    context: "Geçmişte tamamlanan ama şimdiki zamanla bağlantılı eylemler için. 'just', 'already', 'yet' ile.",
+    target: ["Ali", "has", "written", "the", "report"],
+    vocab: [{ en: "written", tr: "yazmış (V3)" }, { en: "already", tr: "zaten, artık" }]
+  },
+  {
+    stage: 8,
+    topic: "Past Perfect",
+    topicTR: "Miş'li Geçmiş (Geçmişte Önce Olan)",
+    formula: "Subject + had + V3 + before/when ...",
+    meaning: "Ali toplantıdan önce raporu yazmıştı.",
+    context: "Geçmişte iki olay olduğunda, önce gerçekleşeni anlatmak için kullanılır.",
+    target: ["Ali", "had", "written", "the", "report", "before", "the", "meeting"],
+    vocab: [{ en: "meeting", tr: "toplantı" }, { en: "before", tr: "önce, -dan önce" }]
+  },
+  {
+    stage: 9,
+    topic: "Modal Verbs — MUST",
+    topicTR: "Modal Fiiller — Zorunluluk",
+    formula: "Subject + must + V1 (base)",
+    meaning: "Ali raporu yazmak zorunda.",
+    context: "Güçlü zorunluluk veya çıkarım anlatmak için. 'have to' ile yakın anlamlı.",
+    target: ["Ali", "must", "write", "the", "report"],
+    vocab: [{ en: "must", tr: "zorunda, gerekli" }]
+  },
+  {
+    stage: 10,
+    topic: "Conditionals — Type 2",
+    topicTR: "Koşul — Gerçek Dışı (Şimdiki)",
+    formula: "If + Subject + V2, Subject + would + V1",
+    meaning: "Eğer Ali raporu yazsaydı (yazsa), işler daha iyi olurdu.",
+    context: "Şu an gerçek olmayan, hayali durumları anlatır. Eleştiri veya hayal kurmak için.",
+    target: ["If", "Ali", "wrote", "the", "report", "things", "would", "be", "better"],
+    vocab: [{ en: "would", tr: "olurdu, -ardı" }, { en: "things", tr: "işler, durumlar" }]
+  },
+  {
+    stage: 11,
+    topic: "Conditionals — Type 3",
+    topicTR: "Koşul — Geçmiş Pişmanlık",
+    formula: "If + Subject + had + V3, Subject + would have + V3",
+    meaning: "Eğer Ali raporu yazmış olsaydı, işler daha iyi olmuş olurdu.",
+    context: "Geçmişte değiştirilemeyen durumlar için pişmanlık veya eleştiri ifade eder.",
+    target: ["If", "Ali", "had", "written", "the", "report", "things", "would", "have", "been", "better"],
+    vocab: [{ en: "would have been", tr: "olmuş olurdu" }]
+  },
+  {
+    stage: 12,
+    topic: "Reported Speech",
+    topicTR: "Dolaylı Anlatım",
+    formula: "Subject + said (that) + Subject + V2",
+    meaning: "Ali, raporu yazacağını söyledi.",
+    context: "Başkasının söylediklerini aktarırken kullanılır. Zaman ve zamir kayması olur.",
+    target: ["Ali", "said", "that", "he", "would", "write", "the", "report"],
+    vocab: [{ en: "said", tr: "dedi, söyledi" }, { en: "that", tr: "ki, olduğunu" }]
+  },
+  {
+    stage: 13,
+    topic: "Relative Clause",
+    topicTR: "Sıfat Cümleciği",
+    formula: "Noun + who/which/that + Verb ...",
+    meaning: "Ali, raporu yazan kişidir.",
+    context: "Bir ismi tanımlamak veya nitelendirmek için. Uzun açıklamalar yerine kısa bağımlı cümleler.",
+    target: ["Ali", "is", "the", "person", "who", "writes", "the", "report"],
+    vocab: [{ en: "person", tr: "kişi, insan" }, { en: "who", tr: "kim (sıfat cümlecikleri için)" }]
+  },
+  {
+    stage: 14,
+    topic: "Gerund",
+    topicTR: "İsim-Fiil (-ing)",
+    formula: "V-ing + is/requires ...",
+    meaning: "Raporu yazmak zaman alır.",
+    context: "Eylem adlandırıldığında, cümlenin öznesi veya nesnesi olduğunda -ing eki alır.",
+    target: ["Writing", "the", "report", "takes", "time"],
+    vocab: [{ en: "takes time", tr: "zaman alır" }, { en: "writing", tr: "yazmak (gerund)" }]
+  },
+  {
+    stage: 15,
+    topic: "Cleft Sentence",
+    topicTR: "Vurgulu Cümle",
+    formula: "It + is/was + [vurgulanan] + that/who + ...",
+    meaning: "Raporu yazan Ali'dir. (Başkası değil, tam olarak Ali.)",
+    context: "Cümledeki belirli bir ögeyi güçlü şekilde vurgulamak için. Sözlü İngilizcede çok kullanılır.",
+    target: ["It", "is", "Ali", "who", "writes", "the", "report"],
+    vocab: [{ en: "it is ... who", tr: "... olan kişi şudur" }]
+  }
+];
+
+// Modal table static data (Sign the document)
+const MODAL_DATA = [
+  { n:1, name:"Active Voice", formula:"S + V + O", en:"Ali signs the document.", tr:"Ali belgeyi imzalar.", purpose:"Özne eylemi bizzat yapar. Güçlü ve net." },
+  { n:2, name:"Passive Voice", formula:"O + is/are + V3 (by S)", en:"The document is signed by Ali.", tr:"Belge Ali tarafından imzalanır.", purpose:"Eylemi yapanı değil, yapılanı öne çıkarır." },
+  { n:3, name:"Causative HAVE", formula:"S + have + O + V1", en:"Ali has someone sign the document.", tr:"Ali belgeyi birine imzalatır.", purpose:"Yetki ile başkasına yaptırma." },
+  { n:4, name:"Causative GET", formula:"S + get + O + to + V1", en:"Ali gets someone to sign the document.", tr:"Ali birini belgeyi imzalamaya ikna eder.", purpose:"İkna veya teşvik ile yaptırma." },
+  { n:5, name:"Causative MAKE", formula:"S + make + O + V1", en:"Ali makes someone sign the document.", tr:"Ali birini belgeyi imzalamaya zorlar.", purpose:"Baskı veya zorunlulukla yaptırma." },
+  { n:6, name:"Causative LET", formula:"S + let + O + V1", en:"Ali lets someone sign the document.", tr:"Ali birinin belgeyi imzalamasına izin verir.", purpose:"İzin verme veya engellememe." },
+  { n:7, name:"Present Perfect", formula:"S + has/have + V3", en:"Ali has signed the document.", tr:"Ali belgeyi imzalamış.", purpose:"Geçmişte tamamlanan, şimdiyle bağlantılı." },
+  { n:8, name:"Past Perfect", formula:"S + had + V3 + before...", en:"Ali had signed the document before the meeting.", tr:"Ali toplantıdan önce belgeyi imzalamıştı.", purpose:"İki geçmiş olaydan önce olanı belirtir." },
+  { n:9, name:"Modal — MUST", formula:"S + must + V1", en:"Ali must sign the document.", tr:"Ali belgeyi imzalamalı.", purpose:"Güçlü zorunluluk veya çıkarım." },
+  { n:10, name:"Conditionals Type 2", formula:"If + S + V2, S + would + V1", en:"If Ali signed the document, things would improve.", tr:"Ali belgeyi imzalasaydı işler düzelirdi.", purpose:"Şu anki gerçek dışı / hayali koşul." },
+  { n:11, name:"Conditionals Type 3", formula:"If + S + had + V3, S + would have + V3", en:"If Ali had signed the document, things would have improved.", tr:"Ali belgeyi imzalamış olsaydı işler düzelmiş olurdu.", purpose:"Geçmiş pişmanlık veya eleştiri." },
+  { n:12, name:"Reported Speech", formula:"S + said (that) + S + V2", en:"Ali said that he would sign the document.", tr:"Ali belgeyi imzalayacağını söyledi.", purpose:"Başkasının sözlerini aktarma." },
+  { n:13, name:"Relative Clause", formula:"Noun + who/which + V...", en:"Ali is the person who signs the document.", tr:"Ali belgeyi imzalayan kişidir.", purpose:"İsmi tanımlamak / nitelendirmek." },
+  { n:14, name:"Gerund", formula:"V-ing + is/requires...", en:"Signing the document takes time.", tr:"Belgeyi imzalamak zaman alır.", purpose:"Eylem isim olarak kullanıldığında." },
+  { n:15, name:"Cleft Sentence", formula:"It + is + [vurgu] + who/that + ...", en:"It is Ali who signs the document.", tr:"Belgeyi imzalayan Ali'dir.", purpose:"Belirli bir ögeyi güçlü vurgulamak." }
+];
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let curriculum = JSON.parse(JSON.stringify(FALLBACK_CURRICULUM));
+let currentStage = 0;
+let completed = new Array(15).fill(false);
+let hintUsed = false;
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+function init() {
+  buildStagePills();
+  buildModalTable();
+  loadStage(0);
+  document.getElementById('userInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkAnswer();
+  });
+}
+
+function buildStagePills() {
+  const wrap = document.getElementById('stagePills');
+  wrap.innerHTML = '';
+  curriculum.forEach((s, i) => {
+    const p = document.createElement('div');
+    p.className = 'stage-pill' + (completed[i] ? ' done' : '') + (i === currentStage ? ' active' : '');
+    p.textContent = i + 1;
+    p.setAttribute('data-tip', s.topic);
+    p.onclick = () => { currentStage = i; loadStage(i); };
+    wrap.appendChild(p);
+  });
+}
+
+function buildModalTable() {
+  const tbody = document.getElementById('archTableBody');
+  tbody.innerHTML = '';
+  MODAL_DATA.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.n}</td><td>${r.name}</td><td>${r.formula}</td><td>${r.en}</td><td>${r.tr}</td><td>${r.purpose}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function loadStage(idx) {
+  const s = curriculum[idx];
+  hintUsed = false;
+
+  // Left panel
+  document.getElementById('stageBadge').textContent = `● Aşama ${idx + 1} — ${s.topicTR || s.topic}`;
+  document.getElementById('topicTitle').textContent = s.topic;
+  document.getElementById('formulaText').textContent = s.formula;
+  document.getElementById('meaningText').textContent = s.meaning;
+  document.getElementById('contextText').textContent = s.context;
+
+  if (s.baseActionTR) {
+    document.getElementById('baseActionLabel').innerHTML = `Temel eylem: <strong>${s.baseActionTR}</strong>`;
+  } else {
+    document.getElementById('baseActionLabel').innerHTML = 'Temel eylem: <strong>"Write the report" / Raporu yazmak</strong>';
+  }
+
+  // Right panel
+  const inp = document.getElementById('userInput');
+  inp.value = '';
+  inp.className = '';
+  inp.disabled = false;
+  inp.focus();
+
+  document.getElementById('hintReveal').textContent = '';
+  document.getElementById('feedbackMsg').textContent = '';
+  document.getElementById('feedbackMsg').className = 'feedback-msg';
+  document.getElementById('answerReveal').classList.remove('visible');
+  document.getElementById('btnSpeak').classList.remove('visible');
+  document.getElementById('btnNext').classList.remove('visible');
+
+  // Vocab
+  renderVocab(s.vocab || []);
+
+  // Progress
+  const pct = ((idx + 1) / 15 * 100).toFixed(1);
+  document.getElementById('progBar').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = `Aşama ${idx + 1} / 15`;
+
+  buildStagePills();
+}
+
+function renderVocab(vocab) {
+  const grid = document.getElementById('vocabGrid');
+  grid.innerHTML = '';
+  vocab.forEach(v => {
+    const chip = document.createElement('div');
+    chip.className = 'vocab-chip';
+    chip.innerHTML = `<span class="en">${v.en}</span><span class="sep">→</span><span class="tr">${v.tr}</span>`;
+    grid.appendChild(chip);
+  });
+}
+
+// ─── NORMALIZE ───────────────────────────────────────────────────────────────
+function normalize(str) {
+  return str
+    .toLowerCase()
+    .replace(/[.,!?;:'"]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// ─── CHECK ANSWER ─────────────────────────────────────────────────────────────
+function checkAnswer() {
+  const inp = document.getElementById('userInput');
+  const s = curriculum[currentStage];
+  const correctSentence = s.target.join(' ');
+  const userVal = inp.value;
+
+  if (!userVal.trim()) return;
+
+  if (normalize(userVal) === normalize(correctSentence)) {
+    // CORRECT
+    inp.classList.add('correct');
+    inp.disabled = true;
+    completed[currentStage] = true;
+    buildStagePills();
+
+    document.getElementById('feedbackMsg').textContent = '✅ Harika! Doğru cevap.';
+    document.getElementById('feedbackMsg').className = 'feedback-msg ok';
+
+    const ar = document.getElementById('answerReveal');
+    ar.textContent = '✔ ' + correctSentence;
+    ar.classList.add('visible');
+
+    document.getElementById('btnSpeak').classList.add('visible');
+    if (currentStage < 14) document.getElementById('btnNext').classList.add('visible');
+    else {
+      document.getElementById('btnNext').textContent = '🏆 Tamamlandı!';
+      document.getElementById('btnNext').classList.add('visible');
+    }
+
+    speakSentence();
+  } else {
+    // WRONG
+    inp.classList.remove('wrong');
+    void inp.offsetWidth; // reflow to restart animation
+    inp.classList.add('wrong');
+    document.getElementById('feedbackMsg').textContent = '❌ Yanlış. Tekrar deneyin veya ipucu alın.';
+    document.getElementById('feedbackMsg').className = 'feedback-msg err';
+    setTimeout(() => { if (inp.classList.contains('wrong')) inp.classList.remove('wrong'); }, 500);
+  }
+}
+
+// ─── HINT ─────────────────────────────────────────────────────────────────────
+function showHint() {
+  const s = curriculum[currentStage];
+  const hintWords = s.target.length <= 4 ? s.target.slice(0, 1) : s.target.slice(0, 2);
+  document.getElementById('hintReveal').textContent = '💡 İpucu: ' + hintWords.join(' ') + ' ...';
+}
+
+// ─── SPEAK ───────────────────────────────────────────────────────────────────
+function speakSentence() {
+  const s = curriculum[currentStage];
+  const sentence = s.target.join(' ');
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(sentence);
+    utt.lang = 'en-US';
+    utt.rate = 0.85;
+    window.speechSynthesis.speak(utt);
+  }
+}
+
+// ─── NEXT STAGE ──────────────────────────────────────────────────────────────
+function nextStage() {
+  if (currentStage < 14) {
+    currentStage++;
+    loadStage(currentStage);
+  }
+}
+
+// ─── THEME ───────────────────────────────────────────────────────────────────
+function setTheme(t) {
+  document.body.setAttribute('data-theme', t);
+}
+
+// ─── MODAL ───────────────────────────────────────────────────────────────────
+function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+// ─── ERROR ───────────────────────────────────────────────────────────────────
+function showError(msg) {
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorToast').classList.add('open');
+  setTimeout(closeError, 6000);
+}
+function closeError() { document.getElementById('errorToast').classList.remove('open'); }
+
+// ─── AI SCENARIO ─────────────────────────────────────────────────────────────
+async function generateAIScenario() {
+  const apiKey = document.getElementById('geminiKey').value.trim();
+  if (!apiKey) {
+    showError('Lütfen Gemini API anahtarınızı üstteki alana girin. Google AI Studio\'dan ücretsiz alabilirsiniz.');
+    return;
+  }
+
+  document.getElementById('loadingOverlay').classList.add('open');
+
+  const prompt = `You are an English grammar curriculum designer. Generate a creative base action (2-3 words in English, like "Sign the contract", "Fix the server", "Launch the rocket") and conjugate it through all 15 grammar structures below. The topic must be professional/office/tech themed.
+
+Return ONLY a valid JSON object with this exact schema, no markdown, no backticks:
+{
+  "baseActionEN": "Fix the server",
+  "baseActionTR": "Sunucuyu düzeltmek",
+  "stages": [
+    {
+      "stage": 1,
+      "topic": "Active Voice",
+      "topicTR": "Etken Çatı",
+      "formula": "Subject + Verb (base) + Object",
+      "meaning": "Turkish meaning of the English sentence",
+      "context": "Turkish explanation of when/why this structure is used (2 sentences)",
+      "target": ["array", "of", "correct", "English", "words"],
+      "vocab": [{"en": "word", "tr": "turkish"}]
+    }
+  ]
+}
+
+The 15 stages must be: 1-Active Voice, 2-Passive Voice, 3-Causative HAVE, 4-Causative GET, 5-Causative MAKE, 6-Causative LET, 7-Present Perfect, 8-Past Perfect, 9-Modal Must, 10-Conditionals Type 2, 11-Conditionals Type 3, 12-Reported Speech, 13-Relative Clause, 14-Gerund, 15-Cleft Sentence.
+Use "Ali" as the subject. Each stage's target array must be the correct English sentence words split exactly (punctuation separate or omitted).
+Vocab: include only 1-2 words the learner might not know. Keep it concise.`;
+
+  try {
+    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.9, maxOutputTokens: 3000 }
+      })
+    });
+
+    if (!resp.ok) {
+      const errData = await resp.json().catch(() => ({}));
+      throw new Error(errData?.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    let rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+    // Clean up potential markdown
+    rawText = rawText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+
+    const parsed = JSON.parse(rawText);
+    if (!parsed.stages || parsed.stages.length !== 15) throw new Error('Yanıt şeması geçersiz. Tekrar deneyin.');
+
+    // Apply to curriculum
+    curriculum = parsed.stages.map((s, i) => ({
+      ...s,
+      baseActionTR: parsed.baseActionTR,
+      baseActionEN: parsed.baseActionEN
+    }));
+    completed = new Array(15).fill(false);
+    currentStage = 0;
+
+    // Update modal table with new data
+    updateModalTable(parsed);
+
+    document.getElementById('loadingOverlay').classList.remove('open');
+    loadStage(0);
+
+  } catch (err) {
+    document.getElementById('loadingOverlay').classList.remove('open');
+    showError('AI isteği başarısız: ' + err.message);
+  }
+}
+
+function updateModalTable(parsed) {
+  const tbody = document.getElementById('archTableBody');
+  tbody.innerHTML = '';
+  parsed.stages.forEach((s, i) => {
+    const tr = document.createElement('tr');
+    const sentence = (s.target || []).join(' ');
+    tr.innerHTML = `<td>${i+1}</td><td>${s.topic}</td><td>${s.formula}</td><td>${sentence}</td><td>${s.meaning}</td><td>${s.context}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─── START ────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

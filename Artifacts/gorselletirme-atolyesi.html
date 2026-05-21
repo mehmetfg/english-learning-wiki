@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Görselleştirme Konseptleri Atölyesi · Mehmet Fatih</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --surface: #1a2028;
+    --surface-2: #232b36;
+    --border: #2d3744;
+    --text: #e8ecf1;
+    --text-dim: #9aa5b4;
+    --accent: #7dd3fc;
+    --accent-2: #fbbf24;
+    --good: #86efac;
+    --bad: #fca5a5;
+    --node: #334155;
+    --node-stroke: #64748b;
+  }
+  [data-theme="light"] {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface-2: #efece5;
+    --border: #d6d2c7;
+    --text: #1a1a1a;
+    --text-dim: #5a5a5a;
+    --accent: #0369a1;
+    --accent-2: #b45309;
+    --good: #166534;
+    --bad: #991b1b;
+    --node: #e2e8f0;
+    --node-stroke: #94a3b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Verdana, Geneva, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    transition: background 0.3s, color 0.3s;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { font-size: 1.6em; margin: 0 0 6px; color: var(--accent); }
+  .subtitle { color: var(--text-dim); font-size: 0.92em; margin: 0; }
+  .theme-toggle {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85em;
+    white-space: nowrap;
+  }
+  .intro {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    padding: 16px 18px;
+    border-radius: 6px;
+    margin-bottom: 28px;
+    font-size: 0.93em;
+  }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .tab {
+    background: var(--surface);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.82em;
+    transition: all 0.2s;
+  }
+  .tab:hover { color: var(--text); border-color: var(--accent); }
+  .tab.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: bold;
+  }
+  .panel {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+  }
+  .panel.active { display: block; }
+  .panel h2 {
+    margin: 0 0 4px;
+    color: var(--accent-2);
+    font-size: 1.35em;
+  }
+  .panel .en { color: var(--text-dim); font-size: 0.85em; font-style: italic; }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 18px 0;
+  }
+  @media (max-width: 720px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+  .box {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--border);
+  }
+  .box.good { border-left-color: var(--good); }
+  .box.bad { border-left-color: var(--bad); }
+  .box.tools { border-left-color: var(--accent); }
+  .box.idea { border-left-color: var(--accent-2); }
+  .box h4 {
+    margin: 0 0 8px;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+  }
+  .box.good h4 { color: var(--good); }
+  .box.bad h4 { color: var(--bad); }
+  .box.tools h4 { color: var(--accent); }
+  .box.idea h4 { color: var(--accent-2); }
+  .box p, .box ul { margin: 0; font-size: 0.9em; }
+  .box ul { padding-left: 18px; }
+  .box li { margin-bottom: 4px; }
+  .example-wrapper {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 18px;
+    margin-top: 8px;
+    text-align: center;
+  }
+  .example-wrapper h4 {
+    margin: 0 0 12px;
+    color: var(--accent-2);
+    font-size: 0.9em;
+    text-align: left;
+  }
+  .example-wrapper svg { max-width: 100%; height: auto; }
+  .footer-note {
+    margin-top: 36px;
+    padding: 18px;
+    background: var(--surface);
+    border-radius: 8px;
+    font-size: 0.88em;
+    color: var(--text-dim);
+    border-top: 2px solid var(--accent-2);
+  }
+  /* SVG common */
+  .svg-bg { fill: var(--surface-2); }
+  .node-fill { fill: var(--node); }
+  .node-stroke { stroke: var(--node-stroke); stroke-width: 1.5; fill: none; }
+  .node-text { fill: var(--text); font-family: Verdana, sans-serif; font-size: 11px; }
+  .accent-fill { fill: var(--accent); }
+  .accent-text { fill: var(--accent); font-family: Verdana, sans-serif; }
+  .edge { stroke: var(--node-stroke); stroke-width: 1.5; fill: none; }
+  .edge-label { fill: var(--text-dim); font-family: Verdana, sans-serif; font-size: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>Görselleştirme Konseptleri Atölyesi</h1>
+      <p class="subtitle">10 düşünce aracı · Mehmet Fatih için, kendi temalarınla çizilmiş</p>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Tema</button>
+  </header>
+
+  <div class="intro">
+    <strong>Nasıl kullan:</strong> Her konsept bir <em>düşünme tarzıdır</em>, bir çizim değil.
+    Önce hangi soruyu sorduğunu belirle (Ne? Nasıl? Neden? Ne zaman? Hangi grupta?),
+    sonra o soruya en uygun konsepti seç. <strong>Edge case</strong> kısımları, aracın
+    seni yanlış yöne çekebileceği durumları gösterir — sürdürülebilirlik kriterinle örtüşür:
+    <em>yanlış araçla doğru iş yapılmaz</em>.
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="panels"></div>
+
+  <div class="footer-note">
+    <strong>Pratik bir uyarı:</strong> Görselleştirme bir <em>düşünme aracı</em>dır,
+    düşünmenin kendisi değil. Diyagram çizmek bazen "bir şey yaptım" hissi verir ama
+    asıl iş diyagramı çizdikten sonra başlar — orada gördüğünü <em>damıtmak</em>.
+    Senin DAMITMA dilinde söylersek: görselleştirme <em>yokla</em> ve <em>damıt</em>
+    aşamalarına hizmet eder; <em>mecz etme</em> ve <em>hattırata geçirme</em> hâlâ zihninde olur.
+  </div>
+</div>
+
+<script>
+const concepts = [
+  {
+    id: 'mindmap',
+    name: 'Mind Map',
+    en: 'Zihin Haritası',
+    purpose: 'Bir merkez fikri etrafında dallanan serbest çağrışım. Hızlı beyin fırtınası ve bir kavramın <em>yüzeyini</em> taramak için.',
+    when: ['Yeni bir konuya ilk girişte (yokla aşaması)', 'Bir kavramın altında neler var, görmek için', 'Sunum/yazı planı çıkarırken'],
+    avoid: ['Sıralı süreçleri göstermek için (akış diyagramı kullan)', 'İlişki türleri önemliyse (kavram haritası kullan)', 'Çok derinleştiğinde — radyal yapı 3-4 seviyeden sonra okunmaz hâle gelir'],
+    tools: 'MindMeister, Whimsical (mind map), XMind, Obsidian Canvas',
+    example: 'Aristoteles\'in 10 Kategorisi',
+    svg: `<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="300" cy="180" rx="60" ry="28" class="accent-fill"/>
+      <text x="300" y="184" text-anchor="middle" font-family="Verdana" font-size="13" font-weight="bold" fill="#0f1419">Cevher</text>
+      ${(() => {
+        const cats = ['Kemiyet','Keyfiyet','İzafet','Mekân','Zaman','Vaziyet','Mülk','Fiil','İnfial','Nerede'];
+        return cats.map((c, i) => {
+          const angle = (i / cats.length) * 2 * Math.PI - Math.PI/2;
+          const x = 300 + Math.cos(angle) * 150;
+          const y = 180 + Math.sin(angle) * 120;
+          return `<line x1="300" y1="180" x2="${x}" y2="${y}" class="edge"/>
+                  <ellipse cx="${x}" cy="${y}" rx="42" ry="16" class="node-fill" stroke-width="1.5"/>
+                  <text x="${x}" y="${y+4}" text-anchor="middle" class="node-text">${c}</text>`;
+        }).join('');
+      })()}
+    </svg>`
+  },
+  {
+    id: 'flowchart',
+    name: 'Akış Diyagramı',
+    en: 'Flowchart',
+    purpose: 'Sıralı adımlar, kararlar (if/else) ve döngüler. Bir <em>sürecin nasıl işlediğini</em> gösterir.',
+    when: ['Çok adımlı bir prosedürü tasarlarken', 'Karar noktaları varsa (evetse → şuraya, hayırsa → buraya)', 'Bir işi başkasına devretmek/öğretmek için'],
+    avoid: ['Süreç doğrusal değilse, paralel/çok başlıysa (sequence diagram veya BPMN)', 'Adımlar tartışmalıysa (akış kesinlik vaat eder, tartışmaya yer vermez)', 'Konsept bir <em>durum</em> meselesiyse (state machine kullan)'],
+    tools: 'draw.io, Whimsical (flowchart), Lucidchart, Excalidraw',
+    example: 'DAMITMA — 7 adımlı döngü',
+    svg: `<svg viewBox="0 0 700 240" xmlns="http://www.w3.org/2000/svg">
+      ${(() => {
+        const steps = ['Dinle','Yokla','Damıt','Mecz Et','Hattırat','Tekrar','Arşivle'];
+        const w = 80, h = 36, gap = 12;
+        const totalW = steps.length * w + (steps.length-1) * gap;
+        const startX = (700 - totalW) / 2;
+        let s = '';
+        steps.forEach((st, i) => {
+          const x = startX + i * (w + gap);
+          s += `<rect x="${x}" y="80" width="${w}" height="${h}" rx="6" class="node-fill" stroke="${i===0?'var(--accent)':'var(--node-stroke)'}" stroke-width="${i===0?2:1.5}" fill="${i===0?'var(--surface)':'var(--node)'}"/>`;
+          s += `<text x="${x+w/2}" y="${102}" text-anchor="middle" class="node-text" font-weight="bold">${st}</text>`;
+          if (i < steps.length - 1) {
+            s += `<line x1="${x+w}" y1="98" x2="${x+w+gap}" y2="98" class="edge" marker-end="url(#arr)"/>`;
+          }
+        });
+        // Loop arrow back
+        const lastX = startX + (steps.length-1) * (w + gap) + w;
+        const firstX = startX;
+        s += `<path d="M ${lastX-w/2} 116 Q ${lastX-w/2} 170, 350 170 Q ${firstX+w/2} 170, ${firstX+w/2} 116" class="edge" marker-end="url(#arr)" stroke-dasharray="4,3"/>`;
+        s += `<text x="350" y="190" text-anchor="middle" class="edge-label">döngü tekrar başlar</text>`;
+        return s;
+      })()}
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--node-stroke)"/>
+        </marker>
+      </defs>
+    </svg>`
+  },
+  {
+    id: 'concept',
+    name: 'Kavram Haritası',
+    en: 'Concept Map',
+    purpose: 'Düğümler arası <em>etiketli ilişkiler</em>. "X, Y\'yi nasıl etkiler/içerir/karşıtıdır" sorusuna cevap verir.',
+    when: ['İlişkilerin türü önemliyse (sebep, parça, kapsam, karşıtlık)', 'Felsefi/teorik bir alanı çalışırken (kavramlar arası bağlar bilginin kendisidir)', 'Bir konuyu gerçekten anlayıp anlamadığını test ederken'],
+    avoid: ['Hiyerarşi varsa ve ilişki sadece "alt-üst" ise (tree daha temiz)', 'Düğüm sayısı 15-20\'yi geçince (parçala)', 'Sadece beyin fırtınası yapıyorsan (mind map daha hızlı)'],
+    tools: 'CmapTools, Whimsical, Obsidian Graph, Excalidraw',
+    example: 'Beş Tümel (cins, tür, ayrım, hassa, ilinti)',
+    svg: `<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="300" cy="60" rx="55" ry="22" class="node-fill" stroke="var(--accent)" stroke-width="2" fill="var(--surface)"/>
+      <text x="300" y="64" text-anchor="middle" class="node-text" font-weight="bold">Cins</text>
+
+      <ellipse cx="150" cy="170" rx="55" ry="22" class="node-fill" stroke-width="1.5"/>
+      <text x="150" y="174" text-anchor="middle" class="node-text" font-weight="bold">Tür</text>
+
+      <ellipse cx="450" cy="170" rx="55" ry="22" class="node-fill" stroke-width="1.5"/>
+      <text x="450" y="174" text-anchor="middle" class="node-text" font-weight="bold">Ayrım</text>
+
+      <ellipse cx="200" cy="280" rx="55" ry="22" class="node-fill" stroke-width="1.5"/>
+      <text x="200" y="284" text-anchor="middle" class="node-text" font-weight="bold">Hassa</text>
+
+      <ellipse cx="400" cy="280" rx="55" ry="22" class="node-fill" stroke-width="1.5"/>
+      <text x="400" y="284" text-anchor="middle" class="node-text" font-weight="bold">İlinti</text>
+
+      <line x1="265" y1="75" x2="190" y2="150" class="edge"/>
+      <text x="210" y="115" class="edge-label">kapsar</text>
+
+      <line x1="335" y1="75" x2="410" y2="150" class="edge"/>
+      <text x="365" y="115" class="edge-label">ile bölünür</text>
+
+      <line x1="170" y1="190" x2="195" y2="258" class="edge"/>
+      <text x="155" y="230" class="edge-label">özgüdür</text>
+
+      <line x1="200" y1="192" x2="380" y2="270" class="edge" stroke-dasharray="3,3"/>
+      <text x="280" y="245" class="edge-label">ayrılır (zorunlu değil)</text>
+
+      <line x1="430" y1="190" x2="410" y2="258" class="edge" stroke-dasharray="3,3"/>
+      <text x="445" y="230" class="edge-label">değişebilir</text>
+    </svg>`
+  },
+  {
+    id: 'tree',
+    name: 'Hiyerarşi Ağacı',
+    en: 'Tree / Taxonomy',
+    purpose: 'Saf parent-child ilişkisi. <em>Cinsten türe iniş</em>. Sınıflama ve taksonomi.',
+    when: ['Kategorik iniş/çıkış varsa (genel → özel)', 'Bir bütünün parçalarını göstermek için (org şeması, dosya sistemi)', 'Aristotelyan tanımlama yaparken (cins + ayrım = tür)'],
+    avoid: ['Bir öğenin birden fazla "ebeveyni" varsa (DAG/network çiz)', 'İlişkiler çeşitliyse (concept map kullan)', 'Yatay ilişkiler önemliyse (kardeşler arası bağ tree\'de görünmez)'],
+    tools: 'draw.io, Whimsical, Markmap, MindNode',
+    example: 'Porphyry Ağacı — Cevherden insana iniş',
+    svg: `<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg">
+      ${(() => {
+        const tree = [
+          {y: 30, label: 'Cevher (Ousia)', diff: 'cins-i âlî'},
+          {y: 90, label: 'Cisim', diff: '+ cisimli'},
+          {y: 150, label: 'Canlı Cisim', diff: '+ canlı'},
+          {y: 210, label: 'Hayvan', diff: '+ duyumlu'},
+          {y: 270, label: 'İnsan', diff: '+ akıllı (nâtık)'}
+        ];
+        let s = '';
+        tree.forEach((t, i) => {
+          s += `<rect x="220" y="${t.y}" width="160" height="32" rx="6" class="node-fill" stroke="${i===tree.length-1?'var(--accent-2)':'var(--node-stroke)'}" stroke-width="${i===tree.length-1?2:1.5}" fill="${i===tree.length-1?'var(--surface)':'var(--node)'}"/>`;
+          s += `<text x="300" y="${t.y+20}" text-anchor="middle" class="node-text" font-weight="bold">${t.label}</text>`;
+          s += `<text x="395" y="${t.y+20}" class="edge-label" fill="var(--accent-2)">${t.diff}</text>`;
+          if (i < tree.length - 1) {
+            s += `<line x1="300" y1="${t.y+32}" x2="300" y2="${tree[i+1].y}" class="edge"/>`;
+          }
+        });
+        s += `<text x="300" y="335" text-anchor="middle" class="edge-label">Sokrates · Eflatun · (tikel insanlar)</text>`;
+        return s;
+      })()}
+    </svg>`
+  },
+  {
+    id: 'venn',
+    name: 'Venn Diyagramı',
+    en: 'Venn Diagram',
+    purpose: 'Kümelerin <em>kesişim ve farkları</em>. "Bunlar ortak ne taşır?" sorusu için.',
+    when: ['İki-üç kavramın ortak/farklı yönlerini karşılaştırırken', 'Bir öğretinin başka öğretilerle örtüşen kısmını bulmak için', 'Tanım analizi yaparken (X olmak için ne gerekli, ne yeterli?)'],
+    avoid: ['Üç kümeden fazlası — okunamaz', 'Kesişimler kavramsal değil sadece sözelse (anlamsız çakıştırma)', 'Kümelerin oranı önemliyse (Venn niceliksel değildir; Euler diyagramı bile genellikle yetmez)'],
+    tools: 'draw.io, Excalidraw, Canva, Whimsical',
+    example: 'Platon · Aristoteles · Tikel nesneler — varlık alanları',
+    svg: `<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="220" cy="160" r="100" fill="var(--accent)" fill-opacity="0.18" stroke="var(--accent)" stroke-width="2"/>
+      <circle cx="380" cy="160" r="100" fill="var(--accent-2)" fill-opacity="0.18" stroke="var(--accent-2)" stroke-width="2"/>
+      <circle cx="300" cy="240" r="80" fill="var(--good)" fill-opacity="0.18" stroke="var(--good)" stroke-width="2"/>
+
+      <text x="140" y="80" class="node-text" font-weight="bold" fill="var(--accent)">Platon: İdealar</text>
+      <text x="430" y="80" class="node-text" font-weight="bold" fill="var(--accent-2)">Aristoteles: Form</text>
+      <text x="240" y="310" class="node-text" font-weight="bold" fill="var(--good)">Tikel nesneler</text>
+
+      <text x="160" y="170" class="node-text" font-size="10">Aşkın</text>
+      <text x="160" y="185" class="node-text" font-size="10">ezelî form</text>
+
+      <text x="420" y="170" class="node-text" font-size="10">İçkin</text>
+      <text x="420" y="185" class="node-text" font-size="10">form (eidos)</text>
+
+      <text x="290" y="160" text-anchor="middle" class="node-text" font-size="10">Form ↔ tözsel</text>
+      <text x="290" y="174" text-anchor="middle" class="node-text" font-size="10">birlik</text>
+
+      <text x="220" y="245" text-anchor="middle" class="node-text" font-size="9">İdeaya</text>
+      <text x="220" y="257" text-anchor="middle" class="node-text" font-size="9">katılım</text>
+
+      <text x="380" y="245" text-anchor="middle" class="node-text" font-size="9">Form +</text>
+      <text x="380" y="257" text-anchor="middle" class="node-text" font-size="9">madde</text>
+    </svg>`
+  },
+  {
+    id: 'matrix',
+    name: '2×2 Matris',
+    en: '2x2 Matrix',
+    purpose: 'İki eksende sınıflandırma. Önceliklendirme ve karar verme için. Eisenhower\'ın gücü buradan gelir.',
+    when: ['Bir listeyi önceliklendirmen gerekiyorsa', 'İki eksen seçtiğinde içgörü doğacaksa (zor/önemli, hızlı/derin, pahalı/değerli)', 'Bir alanı 4 stratejiye ayırmak istiyorsan'],
+    avoid: ['Eksenlerin ikisi de gerçekten ayrı boyut değilse (zaten korelasyonlular)', 'Öğeler doğal olarak süreklilik gösteriyorsa (scatter plot kullan)', 'Üçten fazla boyut varsa — radar/parallel coordinates'],
+    tools: 'Whimsical, Miro, draw.io, kâğıt-kalem',
+    example: 'Felsefe okuma stratejisi — Önem × Zorluk',
+    svg: `<svg viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg">
+      <line x1="80" y1="40" x2="80" y2="320" stroke="var(--node-stroke)" stroke-width="2"/>
+      <line x1="80" y1="320" x2="460" y2="320" stroke="var(--node-stroke)" stroke-width="2"/>
+      <line x1="270" y1="40" x2="270" y2="320" stroke="var(--node-stroke)" stroke-width="1" stroke-dasharray="3,3"/>
+      <line x1="80" y1="180" x2="460" y2="180" stroke="var(--node-stroke)" stroke-width="1" stroke-dasharray="3,3"/>
+
+      <text x="270" y="20" text-anchor="middle" class="accent-text" font-weight="bold" font-size="12">ÖNEM (Y) × ZORLUK (X)</text>
+      <text x="50" y="100" text-anchor="middle" class="edge-label" transform="rotate(-90 50 100)">Yüksek önem</text>
+      <text x="50" y="260" text-anchor="middle" class="edge-label" transform="rotate(-90 50 260)">Düşük önem</text>
+      <text x="170" y="340" text-anchor="middle" class="edge-label">Kolay</text>
+      <text x="370" y="340" text-anchor="middle" class="edge-label">Zor</text>
+
+      <text x="170" y="80" text-anchor="middle" class="node-text" font-weight="bold" fill="var(--good)">HEMEN OKU</text>
+      <text x="170" y="100" text-anchor="middle" class="node-text" font-size="10">Kategoriler</text>
+      <text x="170" y="115" text-anchor="middle" class="node-text" font-size="10">Nikomakhos</text>
+
+      <text x="370" y="80" text-anchor="middle" class="node-text" font-weight="bold" fill="var(--accent-2)">PROJE YAP</text>
+      <text x="370" y="100" text-anchor="middle" class="node-text" font-size="10">Metafizik</text>
+      <text x="370" y="115" text-anchor="middle" class="node-text" font-size="10">Saf Aklın Eleştirisi</text>
+
+      <text x="170" y="240" text-anchor="middle" class="node-text" font-weight="bold" fill="var(--text-dim)">FIRSAT BUL</text>
+      <text x="170" y="260" text-anchor="middle" class="node-text" font-size="10">Popüler giriş</text>
+      <text x="170" y="275" text-anchor="middle" class="node-text" font-size="10">kitapları</text>
+
+      <text x="370" y="240" text-anchor="middle" class="node-text" font-weight="bold" fill="var(--bad)">BIRAK</text>
+      <text x="370" y="260" text-anchor="middle" class="node-text" font-size="10">Marjinal yorum</text>
+      <text x="370" y="275" text-anchor="middle" class="node-text" font-size="10">tartışmaları</text>
+    </svg>`
+  },
+  {
+    id: 'timeline',
+    name: 'Zaman Çizelgesi',
+    en: 'Timeline',
+    purpose: 'Olay/eserlerin <em>kronolojik sırası</em>. Tarihsel bağlam ve etki silsileleri.',
+    when: ['Bir geleneğin/disiplinin tarihsel akışını öğrenirken', 'Kendi öğrenme yol haritanı çizerken', 'Bir yazarın fikirlerinin nasıl evrildiğini görmek için'],
+    avoid: ['İlişkiler nedensellikse, sadece sıralamaysa (causal diagram daha doğru)', 'Olaylar zamandan bağımsız tartışılıyorsa (timeline yanıltıcı önem verir)', 'Ölçek bozuksa (1 yüzyıl 1 yıl gibi görünüyor)'],
+    tools: 'TimelineJS, Whimsical, Miro, Aeon Timeline',
+    example: 'Felsefe yol haritası — Pre-Sokratiklerden Kant\'a',
+    svg: `<svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg">
+      <line x1="40" y1="100" x2="660" y2="100" stroke="var(--accent)" stroke-width="3"/>
+      ${(() => {
+        const events = [
+          {x: 60, label: 'Pre-Sok.', date: '-600'},
+          {x: 140, label: 'Sokrates', date: '-470'},
+          {x: 210, label: 'Platon', date: '-420'},
+          {x: 280, label: 'Aristoteles', date: '-384'},
+          {x: 360, label: 'Stoa', date: '-300'},
+          {x: 470, label: 'Aquinas', date: '1225'},
+          {x: 560, label: 'Descartes', date: '1596'},
+          {x: 640, label: 'Kant', date: '1724'}
+        ];
+        let s = '';
+        events.forEach((e, i) => {
+          const above = i % 2 === 0;
+          s += `<circle cx="${e.x}" cy="100" r="6" fill="var(--accent-2)"/>`;
+          s += `<line x1="${e.x}" y1="100" x2="${e.x}" y2="${above?70:130}" stroke="var(--node-stroke)"/>`;
+          s += `<text x="${e.x}" y="${above?60:148}" text-anchor="middle" class="node-text" font-weight="bold">${e.label}</text>`;
+          s += `<text x="${e.x}" y="${above?45:162}" text-anchor="middle" class="edge-label">${e.date}</text>`;
+        });
+        return s;
+      })()}
+    </svg>`
+  },
+  {
+    id: 'causal',
+    name: 'Nedensel Döngü',
+    en: 'Causal Loop Diagram',
+    purpose: 'Sistemler düşüncesi. <em>Geri besleme döngüleri</em> (R = pekiştiren, B = dengeleyen). Senin "bisiklet ilkesi" tam olarak budur.',
+    when: ['Bir sistemde sebep-sonuçlar dairesel ise (X, Y\'yi artırır, Y de X\'i)', 'Compound benefit / kartopu etkisi modellerken', 'Bir alışkanlığın neden çalıştığını/çalışmadığını anlamak için'],
+    avoid: ['Tek yönlü neden-sonuç varsa (basit ok kullan)', 'Niceliksel modelleme isteniyorsa (system dynamics / stock-flow yap)', 'Aktörlerin niyetleri önemliyse (causal loop niyetsizdir)'],
+    tools: 'Kumu, Loopy, draw.io, Whimsical, Insight Maker',
+    example: 'Muktesebat ↔ Meleke — pekiştiren döngü',
+    svg: `<svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="150" cy="140" rx="80" ry="32" class="node-fill" stroke="var(--accent)" stroke-width="2" fill="var(--surface)"/>
+      <text x="150" y="138" text-anchor="middle" class="node-text" font-weight="bold">Muktesebat</text>
+      <text x="150" y="152" text-anchor="middle" class="edge-label">(birikim)</text>
+
+      <ellipse cx="450" cy="140" rx="80" ry="32" class="node-fill" stroke="var(--accent-2)" stroke-width="2" fill="var(--surface)"/>
+      <text x="450" y="138" text-anchor="middle" class="node-text" font-weight="bold">Meleke</text>
+      <text x="450" y="152" text-anchor="middle" class="edge-label">(kazanılmış yeti)</text>
+
+      <path d="M 230 120 Q 300 60 370 120" stroke="var(--good)" stroke-width="2.5" fill="none" marker-end="url(#arr2)"/>
+      <text x="300" y="65" text-anchor="middle" class="edge-label" fill="var(--good)" font-weight="bold">+ besler</text>
+
+      <path d="M 370 160 Q 300 220 230 160" stroke="var(--good)" stroke-width="2.5" fill="none" marker-end="url(#arr2)"/>
+      <text x="300" y="240" text-anchor="middle" class="edge-label" fill="var(--good)" font-weight="bold">+ yeni kazanımı kolaylaştırır</text>
+
+      <circle cx="300" cy="140" r="22" fill="none" stroke="var(--good)" stroke-width="2" stroke-dasharray="3,3"/>
+      <text x="300" y="146" text-anchor="middle" font-weight="bold" font-size="18" fill="var(--good)">R</text>
+
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--good)"/>
+        </marker>
+      </defs>
+    </svg>`
+  },
+  {
+    id: 'affinity',
+    name: 'Yakınlık Diyagramı',
+    en: 'Affinity Diagram',
+    purpose: 'Dağınık notları/fikirleri <em>aşağıdan yukarıya</em> kümeleme. Önce her şey post-it\'tir, sonra kümeler ve isimler doğar.',
+    when: ['Tonlarca ham notun var ve yapı henüz yokken (yokla → damıt geçişinde mükemmel)', 'Bir kitabı bitirdikten sonra temaları çıkarırken', 'Tasarım/araştırma bulgularını sentezlerken'],
+    avoid: ['Kategoriler önceden belliyse (zaten taksonomi var → tree)', 'Çok az nokta varsa (5\'ten az — listeyle yeter)', 'İlişkiler etiketli olmalıysa (concept map\'e geç)'],
+    tools: 'Miro, FigJam, Whimsical (sticky notes), gerçek post-it + duvar',
+    example: 'Tanpınar — Saatleri Ayarlama Enstitüsü temalarını yokla',
+    svg: `<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+      ${(() => {
+        const clusters = [
+          {x: 90, y: 60, color: 'var(--accent)', name: 'ZAMAN', notes: ['Saat metaforu','Geçmiş-şimdi','Senkronizasyon']},
+          {x: 320, y: 60, color: 'var(--accent-2)', name: 'KARAKTER', notes: ['Hayri İrdal','Halit Ayarcı','Seyit Lutfullah']},
+          {x: 90, y: 200, color: 'var(--good)', name: 'KURUM', notes: ['Bürokrasi','Saçma sapan','İsim oyunları']},
+          {x: 320, y: 200, color: 'var(--bad)', name: 'TOPLUM', notes: ['Doğu-Batı','Modernleşme','Taklit']}
+        ];
+        let s = '';
+        clusters.forEach(c => {
+          s += `<rect x="${c.x-10}" y="${c.y-25}" width="200" height="120" rx="10" fill="none" stroke="${c.color}" stroke-width="2" stroke-dasharray="4,4"/>`;
+          s += `<text x="${c.x+90}" y="${c.y-8}" text-anchor="middle" font-family="Verdana" font-size="11" font-weight="bold" fill="${c.color}">${c.name}</text>`;
+          c.notes.forEach((n, i) => {
+            const nx = c.x + (i % 2) * 90;
+            const ny = c.y + Math.floor(i/2) * 32 + 5;
+            s += `<rect x="${nx}" y="${ny}" width="80" height="26" rx="3" fill="${c.color}" fill-opacity="0.25" stroke="${c.color}" stroke-width="1"/>`;
+            s += `<text x="${nx+40}" y="${ny+17}" text-anchor="middle" font-family="Verdana" font-size="9" fill="var(--text)">${n}</text>`;
+          });
+        });
+        return s;
+      })()}
+    </svg>`
+  },
+  {
+    id: 'state',
+    name: 'Durum Makinesi',
+    en: 'State Machine / State Diagram',
+    purpose: 'Bir şey <em>hangi durumlarda olabilir</em> ve <em>hangi olayla bir durumdan diğerine geçer</em>. Geçiş tetikleyicileri görünür olur.',
+    when: ['Bir kavramın/öğrenmenin "durumları" varsa (yabancı → tanıdık → ustalık)', 'UI/yazılım ekranları arası geçişleri tasarlarken', 'Bir karakterin/ilişkinin evrelerini modellerken'],
+    avoid: ['Süreç doğrusalsa ve geri dönüş yoksa (flowchart yeter)', 'Durumlar tartışmalı/bulanıksa (state machine kesinlik vaat eder)', 'Çok fazla durum varsa (>10) — alt-makinelere böl'],
+    tools: 'draw.io, Mermaid (stateDiagram), Lucidchart, Whimsical',
+    example: 'Bilginin DAMITMA içindeki durumları',
+    svg: `<svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg">
+      ${(() => {
+        const states = [
+          {x: 70, y: 140, label: 'Yabancı'},
+          {x: 220, y: 140, label: 'Tanıdık'},
+          {x: 370, y: 140, label: 'Anlaşılır'},
+          {x: 520, y: 140, label: 'Damıtılmış'},
+          {x: 620, y: 60, label: 'Meleke'}
+        ];
+        const transitions = [
+          {from: 0, to: 1, label: 'çoklu maruziyet'},
+          {from: 1, to: 2, label: 'damıt + mecz et'},
+          {from: 2, to: 3, label: 'kendi sözcüklerinle yaz'},
+          {from: 3, to: 4, label: 'tekrar + uygula'}
+        ];
+        let s = '';
+        states.forEach((st, i) => {
+          const isLast = i === states.length - 1;
+          s += `<ellipse cx="${st.x}" cy="${st.y}" rx="55" ry="26" class="node-fill" stroke="${isLast?'var(--good)':'var(--node-stroke)'}" stroke-width="${isLast?2.5:1.5}" fill="${isLast?'var(--surface)':'var(--node)'}"/>`;
+          s += `<text x="${st.x}" y="${st.y+4}" text-anchor="middle" class="node-text" font-weight="bold" fill="${isLast?'var(--good)':'var(--text)'}">${st.label}</text>`;
+        });
+        transitions.forEach(t => {
+          const a = states[t.from], b = states[t.to];
+          s += `<line x1="${a.x+55}" y1="${a.y}" x2="${b.x-55}" y2="${b.y}" class="edge" marker-end="url(#arr3)"/>`;
+          s += `<text x="${(a.x+b.x)/2}" y="${a.y-12}" text-anchor="middle" class="edge-label">${t.label}</text>`;
+        });
+        // Self-loop on Yabancı (cold start problem)
+        s += `<path d="M 50 120 Q 20 90 40 110" stroke="var(--bad)" stroke-width="1.5" fill="none" marker-end="url(#arr3b)"/>`;
+        s += `<text x="20" y="80" class="edge-label" fill="var(--bad)">soğuk başlangıç çıkmazı</text>`;
+        return s;
+      })()}
+      <defs>
+        <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--node-stroke)"/>
+        </marker>
+        <marker id="arr3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--bad)"/>
+        </marker>
+      </defs>
+    </svg>`
+  }
+];
+
+const tabs = document.getElementById('tabs');
+const panels = document.getElementById('panels');
+
+concepts.forEach((c, i) => {
+  const tab = document.createElement('button');
+  tab.className = 'tab' + (i === 0 ? ' active' : '');
+  tab.textContent = `${i+1}. ${c.name}`;
+  tab.onclick = () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(`panel-${c.id}`).classList.add('active');
+  };
+  tabs.appendChild(tab);
+
+  const panel = document.createElement('div');
+  panel.className = 'panel' + (i === 0 ? ' active' : '');
+  panel.id = `panel-${c.id}`;
+  panel.innerHTML = `
+    <h2>${c.name} <span class="en">— ${c.en}</span></h2>
+    <p>${c.purpose}</p>
+    <div class="grid">
+      <div class="box good">
+        <h4>✓ Ne zaman kullan</h4>
+        <ul>${c.when.map(w => `<li>${w}</li>`).join('')}</ul>
+      </div>
+      <div class="box bad">
+        <h4>✗ Edge case · kullanma</h4>
+        <ul>${c.avoid.map(a => `<li>${a}</li>`).join('')}</ul>
+      </div>
+      <div class="box tools">
+        <h4>🛠 Araçlar</h4>
+        <p>${c.tools}</p>
+      </div>
+      <div class="box idea">
+        <h4>💡 Senin temanla örnek</h4>
+        <p>${c.example}</p>
+      </div>
+    </div>
+    <div class="example-wrapper">
+      <h4>Canlı örnek:</h4>
+      ${c.svg}
+    </div>
+  `;
+  panels.appendChild(panel);
+});
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', cur === 'light' ? 'dark' : 'light');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platon & Aristoteles — Felsefi Atlas</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #F0EDE8;
+  --bg-card:      #FAFAF8;
+  --bg-preview:   #E8E4DF;
+  --bg-tag:       #E2DDD7;
+  --text-1:       #1C1A16;
+  --text-2:       #5A574F;
+  --text-3:       #9A9590;
+  --text-label:   #7A7570;
+  --accent:       #C8614A;
+  --accent-pale:  #F2E8E4;
+  --green:        #5A7040;
+  --green-pale:   #EBF0E4;
+  --border:       #E0DCD5;
+  --border-2:     #C8C4BC;
+  --shadow-s:     0 1px 4px rgba(28,26,22,0.08);
+  --shadow-m:     0 6px 20px rgba(28,26,22,0.10);
+  --radius:       16px;
+  --radius-s:     8px;
+  --font-d:       'Playfair Display', Georgia, serif;
+  --font-b:       'Crimson Pro', Georgia, serif;
+  --font-m:       'JetBrains Mono', monospace;
+  --ease:         cubic-bezier(0.4,0,0.2,1);
+}
+
+[data-theme="dark"] {
+  --bg:           #181510;
+  --bg-card:      #231F17;
+  --bg-preview:   #2C2820;
+  --bg-tag:       #332F25;
+  --text-1:       #F0EDE8;
+  --text-2:       #C0BBB0;
+  --text-3:       #706A60;
+  --text-label:   #9A9488;
+  --accent:       #D4705A;
+  --accent-pale:  #2C1E18;
+  --green:        #7A9A55;
+  --green-pale:   #1E2818;
+  --border:       #332F25;
+  --border-2:     #504840;
+  --shadow-s:     0 1px 4px rgba(0,0,0,0.3);
+  --shadow-m:     0 6px 20px rgba(0,0,0,0.4);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text-1);
+  font-size: 18px;
+  line-height: 1.65;
+  transition: background .4s var(--ease), color .4s var(--ease);
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 52px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .4s var(--ease);
+}
+.nav-logo {
+  font-family: var(--font-m);
+  font-size: 12px; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-3);
+}
+.nav-logo b { color: var(--accent); font-weight: 500; }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.btn-back {
+  display: none; align-items: center; gap: 6px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-3); cursor: pointer; border: 1px solid var(--border);
+  background: none; padding: 6px 14px; border-radius: 20px;
+  transition: all .25s var(--ease);
+}
+.btn-back:hover { background: var(--bg-tag); color: var(--text-2); border-color: var(--border-2); }
+.btn-back.on { display: flex; }
+.btn-theme {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--bg-card);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: var(--text-2);
+  transition: all .25s var(--ease);
+}
+.btn-theme:hover { background: var(--bg-tag); border-color: var(--border-2); transform: rotate(20deg); }
+
+/* PAGE SYSTEM */
+.page { display: none; }
+.page.on { display: block; animation: fadeUp .4s var(--ease); }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* SHARED LAYOUT HELPERS */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 52px; }
+
+/* SECTION HEADERS */
+.s-label {
+  display: flex; align-items: center; gap: 18px;
+  margin-bottom: 20px;
+}
+.s-num {
+  font-family: var(--font-m); font-size: 12px; font-weight: 500;
+  color: var(--accent); letter-spacing: .12em;
+}
+.s-badge {
+  font-family: var(--font-m); font-size: 10px;
+  padding: 3px 11px; border-radius: 20px;
+  background: var(--bg-tag); color: var(--text-label);
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.s-title {
+  font-family: var(--font-d);
+  font-size: clamp(28px,3.2vw,40px);
+  font-weight: 400; letter-spacing: -.01em;
+}
+.s-desc {
+  font-size: 17px; color: var(--text-2); font-weight: 300; font-style: italic;
+  max-width: 660px; line-height: 1.65; padding-left: 48px;
+  margin-top: 10px;
+}
+
+/* HERO */
+.hero { padding: 80px 0 56px; }
+.hero-tag {
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--accent); letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.hero-title {
+  font-family: var(--font-d);
+  font-size: clamp(52px,7vw,88px);
+  font-weight: 700; line-height: 1.05; letter-spacing: -.02em;
+  margin-bottom: 24px;
+}
+.hero-title em { font-style: italic; color: var(--accent); }
+.hero-sub {
+  font-size: 20px; color: var(--text-2);
+  font-weight: 300; max-width: 580px; line-height: 1.6;
+}
+.hero-divider {
+  width: 56px; height: 2px;
+  background: var(--accent); opacity: .45;
+  margin: 36px 0;
+}
+.hero-meta {
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--text-3); letter-spacing: .1em; text-transform: uppercase;
+}
+
+/* CARD GRID */
+.card-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+  padding-bottom: 80px;
+}
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden; cursor: pointer;
+  box-shadow: var(--shadow-s);
+  transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease);
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-m);
+  border-color: var(--border-2);
+}
+.card-pre {
+  background: var(--bg-preview);
+  height: 195px; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.card-pre svg { width: 100%; height: 100%; }
+.card-body { padding: 26px 30px 22px; }
+.card-title {
+  font-family: var(--font-d);
+  font-size: 21px; font-weight: 600;
+  letter-spacing: -.01em; margin-bottom: 10px;
+}
+.card-desc {
+  font-size: 15.5px; color: var(--text-2);
+  line-height: 1.6; font-weight: 300; margin-bottom: 20px;
+}
+.card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 14px; border-top: 1px solid var(--border);
+  font-family: var(--font-m); font-size: 11px; color: var(--text-3);
+  letter-spacing: .04em;
+}
+.card-arrow { transition: transform .2s, color .2s; }
+.card:hover .card-arrow { transform: translateX(5px); color: var(--accent); }
+
+/* DETAIL HERO */
+.d-hero { padding: 56px 0 36px; }
+.d-badges { display: flex; gap: 8px; margin-bottom: 18px; }
+.badge {
+  font-family: var(--font-m); font-size: 10px;
+  padding: 4px 12px; border-radius: 20px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.bp { background: var(--accent-pale); color: var(--accent); }
+.ba { background: var(--green-pale); color: var(--green); }
+.d-title {
+  font-family: var(--font-d);
+  font-size: clamp(42px,5.5vw,68px);
+  font-weight: 700; line-height: 1.05; letter-spacing: -.025em;
+  margin-bottom: 18px;
+}
+.d-sub {
+  font-size: 19px; color: var(--text-2);
+  font-weight: 300; font-style: italic;
+  max-width: 580px; line-height: 1.6;
+}
+
+/* DIAGRAM BOX */
+.diagram-wrap { padding-bottom: 44px; }
+.diagram-box {
+  background: var(--bg-preview);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 44px 40px; overflow: hidden;
+}
+.diagram-box svg { width: 100%; display: block; max-height: 340px; }
+
+/* TWO COL */
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+  padding-bottom: 44px;
+}
+.ph-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.ph-head {
+  padding: 22px 26px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.ph-name {
+  font-family: var(--font-d);
+  font-size: 22px; font-weight: 600;
+  margin-bottom: 3px;
+}
+.ph-dates {
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--text-3); letter-spacing: .08em; text-transform: uppercase;
+}
+.ph-body { padding: 26px; }
+.concept { margin-bottom: 22px; padding-bottom: 22px; border-bottom: 1px solid var(--border); }
+.concept:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.c-term {
+  font-family: var(--font-d);
+  font-size: 14.5px; font-weight: 600; font-style: italic;
+  margin-bottom: 4px;
+}
+.c-gr {
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--text-3); letter-spacing: .07em; text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.c-txt { font-size: 15.5px; color: var(--text-2); line-height: 1.65; font-weight: 300; }
+.pa .c-term { color: var(--accent); }
+.aa .c-term { color: var(--green); }
+
+/* QUOTES */
+.quotes { padding-bottom: 44px; }
+.quote {
+  background: var(--bg-card);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+  padding: 22px 26px; margin-bottom: 14px;
+}
+.quote.g { border-left-color: var(--green); }
+.q-text {
+  font-family: var(--font-d);
+  font-size: 17px; font-style: italic; line-height: 1.6;
+  margin-bottom: 10px;
+}
+.q-src {
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--text-3); letter-spacing: .07em; text-transform: uppercase;
+}
+
+/* COMPARISON TABLE */
+.comp-table { padding-bottom: 72px; }
+.comp-head {
+  display: grid; grid-template-columns: 160px 1fr 1fr;
+  padding-bottom: 6px;
+}
+.ch-cell {
+  font-family: var(--font-d);
+  font-size: 17px; font-weight: 600;
+  padding: 14px 22px;
+}
+.ch-p { color: var(--accent); }
+.ch-a { color: var(--green); }
+.comp-row {
+  display: grid; grid-template-columns: 160px 1fr 1fr;
+  gap: 1px; background: var(--border);
+  margin-bottom: 1px;
+}
+.comp-row:first-of-type { border-radius: var(--radius-s) var(--radius-s) 0 0; overflow: hidden; }
+.comp-row:last-of-type  { border-radius: 0 0 var(--radius-s) var(--radius-s); overflow: hidden; }
+.c-cell { background: var(--bg-card); padding: 17px 22px; font-size: 15.5px; color: var(--text-2); line-height: 1.55; font-weight: 300; }
+.c-cell.lbl {
+  background: var(--bg-preview);
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--text-label); letter-spacing: .07em; text-transform: uppercase;
+  display: flex; align-items: center;
+}
+.c-cell.cp { border-left: 2px solid var(--accent); }
+.c-cell.ca { border-left: 2px solid var(--green); }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 0 48px;
+  font-family: var(--font-m); font-size: 11px;
+  color: var(--text-3); letter-spacing: .07em; text-transform: uppercase;
+}
+.f-next { cursor: pointer; color: var(--accent) !important; transition: opacity .2s; }
+.f-next:hover { opacity: .7; }
+
+@media(max-width:780px){
+  nav,.wrap { padding-left: 20px; padding-right: 20px; }
+  .card-grid,.two-col { grid-template-columns: 1fr; }
+  .comp-head { display: none; }
+  .comp-row { grid-template-columns: 110px 1fr; }
+  .c-cell.ca { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><b>P</b> &amp; <b>A</b> — Felsefi Atlas</div>
+  <div class="nav-right">
+    <button class="btn-back" id="backBtn" onclick="go('home')">← Ana Sayfa</button>
+    <button class="btn-theme" id="themeBtn" onclick="toggleTheme()">☽</button>
+  </div>
+</nav>
+
+<!-- ══════════════════ ANA SAYFA ══════════════════ -->
+<div class="page on" id="page-home">
+<div class="wrap">
+
+  <div class="hero">
+    <div class="hero-tag">01 · Felsefi Atlas · Varlık — Doğa — Metafizik</div>
+    <h1 class="hero-title">Platon<br>&amp; <em>Aristoteles</em></h1>
+    <p class="hero-sub">Batı düşüncesinin iki büyük mimarı; biri gökyüzünü, diğeri toprağı seçti. İkisi de gerçeği aradı. İkisi de onu bulduğunu sandı.</p>
+    <div class="hero-divider"></div>
+    <p class="hero-meta">Tüm temalara girmek için bir kart seçin — her tema kendi ekseninde derinleşir</p>
+  </div>
+
+  <div style="padding-bottom:32px;">
+    <div class="s-label">
+      <span class="s-num">02</span>
+      <h2 class="s-title">Temalar</h2>
+      <span class="s-badge">3 + 1 eksen</span>
+    </div>
+    <p class="s-desc">Her tema, iki filozofun aynı soruya verdiği farklı yanıtları karşılaştırmalı biçimde ele alır. Üç eksen, bir sentez.</p>
+  </div>
+
+  <div class="card-grid">
+
+    <!-- DOĞA -->
+    <div class="card" onclick="go('doga')">
+      <div class="card-pre">
+        <svg viewBox="0 0 480 195" xmlns="http://www.w3.org/2000/svg">
+          <text x="120" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".35" letter-spacing="2">PLATON</text>
+          <!-- upper world: geometric forms -->
+          <circle cx="80" cy="58" r="18" fill="none" stroke-width="1.5" opacity=".65" style="stroke:var(--accent)"/>
+          <circle cx="122" cy="46" r="22" fill="none" stroke-width="1.5" opacity=".45" style="stroke:var(--accent)"/>
+          <polygon points="158,60 176,32 194,60" fill="none" stroke-width="1.5" opacity=".55" style="stroke:var(--accent)"/>
+          <!-- divider dashed -->
+          <line x1="40" y1="95" x2="220" y2="95" stroke-width=".6" stroke-dasharray="5,4" opacity=".3" style="stroke:var(--accent)"/>
+          <!-- mimesis arrows -->
+          <line x1="92" y1="78" x2="76" y2="118" stroke-width="1" stroke-dasharray="3,3" opacity=".45" style="stroke:var(--accent)"/>
+          <line x1="138" y1="70" x2="126" y2="118" stroke-width="1" stroke-dasharray="3,3" opacity=".45" style="stroke:var(--accent)"/>
+          <!-- lower world: blobs -->
+          <ellipse cx="76" cy="135" rx="24" ry="13" opacity=".10" style="fill:var(--accent)"/>
+          <ellipse cx="122" cy="148" rx="32" ry="15" opacity=".07" style="fill:var(--accent)"/>
+          <ellipse cx="170" cy="136" rx="20" ry="11" opacity=".09" style="fill:var(--accent)"/>
+          <text x="120" y="172" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="currentColor" opacity=".28" letter-spacing="1">İKİ DÜNYA</text>
+
+          <line x1="240" y1="15" x2="240" y2="185" stroke="currentColor" stroke-width=".5" opacity=".18"/>
+
+          <text x="360" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".35" letter-spacing="2">ARİSTOTELES</text>
+          <!-- organic tree -->
+          <line x1="360" y1="168" x2="360" y2="110" stroke-width="2" opacity=".65" style="stroke:var(--green)"/>
+          <line x1="360" y1="132" x2="330" y2="100" stroke-width="1.5" opacity=".55" style="stroke:var(--green)"/>
+          <line x1="360" y1="126" x2="392" y2="96" stroke-width="1.5" opacity=".55" style="stroke:var(--green)"/>
+          <line x1="330" y1="100" x2="310" y2="74" stroke-width="1" opacity=".45" style="stroke:var(--green)"/>
+          <line x1="330" y1="100" x2="348" y2="70" stroke-width="1" opacity=".45" style="stroke:var(--green)"/>
+          <line x1="392" y1="96" x2="378" y2="68" stroke-width="1" opacity=".45" style="stroke:var(--green)"/>
+          <line x1="392" y1="96" x2="414" y2="72" stroke-width="1" opacity=".45" style="stroke:var(--green)"/>
+          <circle cx="310" cy="67" r="5" opacity=".45" style="fill:var(--green)"/>
+          <circle cx="348" cy="63" r="5" opacity=".40" style="fill:var(--green)"/>
+          <circle cx="378" cy="61" r="5" opacity=".45" style="fill:var(--green)"/>
+          <circle cx="414" cy="65" r="5" opacity=".40" style="fill:var(--green)"/>
+          <text x="360" y="184" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="currentColor" opacity=".28" letter-spacing="1">TEK DÜNYA</text>
+        </svg>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Doğa — Physis</h3>
+        <p class="card-desc">Platon doğayı bir gölge olarak görürken, Aristoteles onu içkin bir erek taşıyan canlı bir bütün olarak kavradı. İki farklı kozmoloji, iki farklı varlık tasarımı.</p>
+        <div class="card-foot">
+          <span>01 · doğa-physis</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VARLIK -->
+    <div class="card" onclick="go('varlik')">
+      <div class="card-pre">
+        <svg viewBox="0 0 480 195" xmlns="http://www.w3.org/2000/svg">
+          <text x="120" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".35" letter-spacing="2">PLATON</text>
+          <!-- pyramid layers -->
+          <polygon points="120,35 58,170 182,170" fill="none" stroke-width="1.5" opacity=".50" style="stroke:var(--accent)"/>
+          <polygon points="120,58 76,140 164,140" fill="none" stroke-width="1" opacity=".36" style="stroke:var(--accent)"/>
+          <polygon points="120,82 93,125 147,125" fill="none" stroke-width="1" opacity=".24" style="stroke:var(--accent)"/>
+          <circle cx="120" cy="35" r="5" opacity=".70" style="fill:var(--accent)"/>
+          <text x="120" y="180" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="currentColor" opacity=".28" letter-spacing="1">İYİ FORMU</text>
+          <line x1="240" y1="15" x2="240" y2="185" stroke="currentColor" stroke-width=".5" opacity=".18"/>
+          <text x="360" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".35" letter-spacing="2">ARİSTOTELES</text>
+          <!-- hub-spoke: ousia -->
+          <circle cx="360" cy="103" r="24" fill="none" stroke-width="2" opacity=".60" style="stroke:var(--green)"/>
+          <text x="360" y="107" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".85" style="fill:var(--green)">TÖZ</text>
+          <line x1="360" y1="78" x2="360" y2="50" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+          <line x1="381" y1="87" x2="408" y2="64" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+          <line x1="381" y1="120" x2="408" y2="147" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+          <line x1="360" y1="128" x2="360" y2="158" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+          <line x1="338" y1="120" x2="312" y2="147" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+          <line x1="338" y1="87" x2="312" y2="64" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+          <circle cx="360" cy="44" r="8" fill="none" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+          <circle cx="414" cy="58" r="8" fill="none" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+          <circle cx="414" cy="154" r="8" fill="none" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+          <circle cx="360" cy="165" r="8" fill="none" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+          <circle cx="306" cy="154" r="8" fill="none" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+          <circle cx="306" cy="58" r="8" fill="none" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+        </svg>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Varlık — On</h3>
+        <p class="card-desc">Platon için gerçek varlık yalnızca Formlara aittir; Aristoteles içinse tözler bu dünyanın somut gerçeklikleridir. Ontoloji tarihinin en derin kırılması.</p>
+        <div class="card-foot">
+          <span>02 · varlık-on</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- METAFİZİK -->
+    <div class="card" onclick="go('metafizik')">
+      <div class="card-pre">
+        <svg viewBox="0 0 480 195" xmlns="http://www.w3.org/2000/svg">
+          <text x="120" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".35" letter-spacing="2">PLATON</text>
+          <!-- sun-like radiating form -->
+          <circle cx="120" cy="55" r="14" opacity=".18" style="fill:var(--accent)"/>
+          <circle cx="120" cy="55" r="22" fill="none" stroke-width=".8" opacity=".28" style="stroke:var(--accent)"/>
+          <circle cx="120" cy="55" r="32" fill="none" stroke-width=".5" opacity=".18" style="stroke:var(--accent)"/>
+          <line x1="120" y1="76" x2="80" y2="112" stroke-width="1" opacity=".38" style="stroke:var(--accent)"/>
+          <line x1="120" y1="76" x2="120" y2="112" stroke-width="1" opacity=".38" style="stroke:var(--accent)"/>
+          <line x1="120" y1="76" x2="160" y2="112" stroke-width="1" opacity=".38" style="stroke:var(--accent)"/>
+          <line x1="80" y1="112" x2="60" y2="150" stroke-width=".8" opacity=".27" style="stroke:var(--accent)"/>
+          <line x1="80" y1="112" x2="96" y2="150" stroke-width=".8" opacity=".27" style="stroke:var(--accent)"/>
+          <line x1="160" y1="112" x2="144" y2="150" stroke-width=".8" opacity=".27" style="stroke:var(--accent)"/>
+          <line x1="160" y1="112" x2="178" y2="150" stroke-width=".8" opacity=".27" style="stroke:var(--accent)"/>
+          <text x="120" y="180" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="currentColor" opacity=".28" letter-spacing="1">DEMİURGOS</text>
+          <line x1="240" y1="15" x2="240" y2="185" stroke="currentColor" stroke-width=".5" opacity=".18"/>
+          <text x="360" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".35" letter-spacing="2">ARİSTOTELES</text>
+          <!-- prime mover chain -->
+          <circle cx="360" cy="52" r="16" opacity=".15" style="fill:var(--green)"/>
+          <circle cx="360" cy="52" r="16" fill="none" stroke-width="2" opacity=".65" style="stroke:var(--green)"/>
+          <text x="360" y="56" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" opacity=".80" style="fill:var(--green)">PM</text>
+          <line x1="360" y1="69" x2="360" y2="92" stroke-width="1.5" opacity=".48" style="stroke:var(--green)"/>
+          <rect x="340" y="94" width="40" height="22" rx="5" fill="none" stroke-width="1" opacity=".44" style="stroke:var(--green)"/>
+          <line x1="360" y1="117" x2="360" y2="138" stroke-width="1.5" opacity=".38" style="stroke:var(--green)"/>
+          <rect x="340" y="140" width="40" height="22" rx="5" fill="none" stroke-width="1" opacity=".34" style="stroke:var(--green)"/>
+          <line x1="360" y1="163" x2="360" y2="174" stroke-width="1.5" opacity=".28" style="stroke:var(--green)"/>
+          <text x="360" y="184" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="currentColor" opacity=".28" letter-spacing="1">İLK HAREKET ETTİRİCİ</text>
+        </svg>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Metafizik — Prote Philosophia</h3>
+        <p class="card-desc">Platon'un Demiurgosu Formları seyrederek evreni biçimlendirir; Aristoteles'in İlk Hareket Ettirici'si ise hiç hareket etmeden her şeyi harekete geçirir.</p>
+        <div class="card-foot">
+          <span>03 · metafizik-prote-philosophia</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KARŞILAŞTIRMA -->
+    <div class="card" onclick="go('karsilastirma')">
+      <div class="card-pre">
+        <svg viewBox="0 0 480 195" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="186" cy="97" r="72" opacity=".10" style="fill:var(--accent)"/>
+          <circle cx="294" cy="97" r="72" opacity=".10" style="fill:var(--green)"/>
+          <circle cx="186" cy="97" r="72" fill="none" stroke-width="1.2" opacity=".35" style="stroke:var(--accent)"/>
+          <circle cx="294" cy="97" r="72" fill="none" stroke-width="1.2" opacity=".35" style="stroke:var(--green)"/>
+          <text x="143" y="82" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".65" letter-spacing="1" style="fill:var(--accent)">PLATON</text>
+          <text x="143" y="100" text-anchor="middle" font-family="Crimson Pro,serif" font-size="12" fill="currentColor" opacity=".50" font-style="italic">Transandans</text>
+          <text x="143" y="118" text-anchor="middle" font-family="Crimson Pro,serif" font-size="12" fill="currentColor" opacity=".45" font-style="italic">Form</text>
+          <text x="337" y="82" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".65" letter-spacing="1" style="fill:var(--green)">ARİSTOTELES</text>
+          <text x="337" y="100" text-anchor="middle" font-family="Crimson Pro,serif" font-size="12" fill="currentColor" opacity=".50" font-style="italic">İmmanens</text>
+          <text x="337" y="118" text-anchor="middle" font-family="Crimson Pro,serif" font-size="12" fill="currentColor" opacity=".45" font-style="italic">Töz</text>
+          <text x="240" y="90" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="currentColor" opacity=".42" letter-spacing="1">ORTAK</text>
+          <text x="240" y="108" text-anchor="middle" font-family="Crimson Pro,serif" font-size="12" fill="currentColor" opacity=".50" font-style="italic">Nous · Logos</text>
+          <text x="240" y="126" text-anchor="middle" font-family="Crimson Pro,serif" font-size="11" fill="currentColor" opacity=".38" font-style="italic">Teleoloji</text>
+        </svg>
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">Karşılaştırma & Sentez</h3>
+        <p class="card-desc">İki büyük aklın örtüştüğü ve ayrıştığı noktaları katmanlı bir harita olarak sunan bütünleşik karşılaştırma ve sentez bölümü.</p>
+        <div class="card-foot">
+          <span>04 · karşılaştırma-sentez</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /card-grid -->
+
+  <footer>
+    <span>Platon (M.Ö. 427–347) · Aristoteles (M.Ö. 384–322)</span>
+    <span>Felsefi Atlas — 01</span>
+  </footer>
+</div>
+</div>
+
+<!-- ══════════════════ DOĞA PAGE ══════════════════ -->
+<div class="page" id="page-doga">
+<div class="wrap">
+  <div class="d-hero">
+    <div class="d-badges"><span class="badge bp">Platon</span><span class="badge ba">Aristoteles</span></div>
+    <h1 class="d-title">Doğa<br><span style="font-size:.58em; font-weight:400; font-style:italic; color:var(--text-2); letter-spacing:.02em;">Physis — φύσις</span></h1>
+    <p class="d-sub">Görünür dünyanın statüsü nedir? Hareketin kaynağı nerede aranmalıdır? Doğa, var olmak için bir öteki dünyaya mı muhtaçtır?</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-box">
+      <svg viewBox="0 0 900 310" xmlns="http://www.w3.org/2000/svg">
+        <!-- PLATON -->
+        <text x="220" y="28" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="600" opacity=".85" style="fill:var(--accent)">Platon — İki Dünya Doktrini</text>
+        <rect x="55" y="45" width="330" height="78" rx="10" fill="none" stroke-width="1" opacity=".35" style="stroke:var(--accent)"/>
+        <rect x="55" y="45" width="330" height="78" rx="10" opacity=".07" style="fill:var(--accent)"/>
+        <text x="220" y="73" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="2" opacity=".80" style="fill:var(--accent)">AKILLI DÜNYA — KOSMOS NOETOS</text>
+        <text x="220" y="95" text-anchor="middle" font-family="Crimson Pro,serif" font-size="14" fill="currentColor" opacity=".60" font-style="italic">Formlar · Matematiğin Nesneleri · Nous</text>
+        <text x="220" y="113" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".35" letter-spacing="1">Değişmez · Ebedî · Tam</text>
+        <!-- Mimesis arrow -->
+        <line x1="220" y1="125" x2="220" y2="170" stroke-width="1.2" stroke-dasharray="5,4" opacity=".45" style="stroke:var(--accent)"/>
+        <polygon points="215,168 225,168 220,178" opacity=".40" style="fill:var(--accent)"/>
+        <text x="235" y="153" font-family="JetBrains Mono,monospace" font-size="9" opacity=".55" letter-spacing="1" style="fill:var(--accent)">MİMESİS</text>
+        <!-- Lower world -->
+        <rect x="55" y="181" width="330" height="78" rx="10" fill="none" stroke-width="1" opacity=".22" style="stroke:var(--accent)"/>
+        <rect x="55" y="181" width="330" height="78" rx="10" opacity=".04" style="fill:var(--accent)"/>
+        <text x="220" y="209" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="2" fill="currentColor" opacity=".45">DUYUSAL DÜNYA — KOSMOS AISTHETOS</text>
+        <text x="220" y="231" text-anchor="middle" font-family="Crimson Pro,serif" font-size="14" fill="currentColor" opacity=".45" font-style="italic">Tikeller · Gölgeler · Oluş</text>
+        <text x="220" y="249" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".30" letter-spacing="1">Geçici · Eksik · Form'un Yansıması</text>
+        <!-- Divider -->
+        <line x1="450" y1="20" x2="450" y2="290" stroke="currentColor" stroke-width=".7" opacity=".15"/>
+        <!-- ARISTOTELES -->
+        <text x="680" y="28" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="600" opacity=".85" style="fill:var(--green)">Aristoteles — İçkin Doğa</text>
+        <!-- Dört neden diagram -->
+        <circle cx="680" cy="155" r="55" fill="none" stroke-width="1" opacity=".28" style="stroke:var(--green)"/>
+        <circle cx="680" cy="155" r="24" opacity=".12" style="fill:var(--green)"/>
+        <circle cx="680" cy="155" r="24" fill="none" stroke-width="1.5" opacity=".60" style="stroke:var(--green)"/>
+        <text x="680" y="150" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".85" style="fill:var(--green)">TELOS</text>
+        <text x="680" y="163" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">Erek</text>
+        <!-- four cause axes -->
+        <line x1="680" y1="100" x2="680" y2="68" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+        <text x="680" y="60" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".65" style="fill:var(--green)">FORMEL</text>
+        <line x1="736" y1="155" x2="768" y2="155" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+        <text x="796" y="159" text-anchor="start" font-family="JetBrains Mono,monospace" font-size="9" opacity=".65" style="fill:var(--green)">FAİL</text>
+        <line x1="680" y1="210" x2="680" y2="242" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+        <text x="680" y="254" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".65" style="fill:var(--green)">MADDİ</text>
+        <line x1="624" y1="155" x2="548" y2="155" stroke-width="1" opacity=".38" style="stroke:var(--green)"/>
+        <text x="540" y="159" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="9" opacity=".65" style="fill:var(--green)">EREKSEL</text>
+        <text x="680" y="285" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".40" font-style="italic">Dört Neden — Tessara Aitia</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="ph-card pa">
+      <div class="ph-head">
+        <div class="ph-name">Platon</div>
+        <div class="ph-dates">M.Ö. 427 — 347 · Atina</div>
+      </div>
+      <div class="ph-body">
+        <div class="concept">
+          <div class="c-term">Formlar Dünyası</div>
+          <div class="c-gr">EIDOS / İDEA — εἶδος / ἰδέα</div>
+          <p class="c-txt">Gerçek doğa, duyularla değil yalnızca akılla kavranabilen Formlar'ın ebedi dünyasıdır. Görünür evren, bu Formlar'ın eksik ve geçici bir yansımasından ibarettir. Form, maddenin dışında ve ondan önce gelir.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Mimesis — Taklit</div>
+          <div class="c-gr">MIMESIS — μίμησις</div>
+          <p class="c-txt">Duyusal nesneler, Formlar'ı taklit eder. Bir ağaç, yalnızca Ağaç Formu'na "katıldığı" (methexis) ölçüde ağaçtır. Madde edilgendir; düzen ancak Form'un müdahalesiyle kazanılır.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Demiurgos</div>
+          <div class="c-gr">DEMIOURGOS — δημιουργός</div>
+          <p class="c-txt">Timaios'ta yaratıcı zanaatkâr Demiurgos, kaotik maddeyi (Khora) ebedi Formlar'a bakarak biçimlendirir. Düzensizlik maddenin direncinden, iyilik ise Form'dan kaynaklanır.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ph-card aa">
+      <div class="ph-head">
+        <div class="ph-name">Aristoteles</div>
+        <div class="ph-dates">M.Ö. 384 — 322 · Stageira</div>
+      </div>
+      <div class="ph-body">
+        <div class="concept">
+          <div class="c-term">Physis — İçkin İlke</div>
+          <div class="c-gr">PHYSIS — φύσις</div>
+          <p class="c-txt">Doğa, kendi içinde hareket ve değişim ilkesi taşıyan varlıkların toplamıdır. Form, maddenin dışında bir yerde değil, bizzat varlığın içinde gizlidir. Başka bir dünyaya ihtiyaç yoktur.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Dört Neden</div>
+          <div class="c-gr">TESSARA AITIA — τέσσαρα αἴτια</div>
+          <p class="c-txt">Her doğal oluş dört nedene sahiptir: Maddi neden (neden yapıldığı), Formel neden (ne olduğu), Fail neden (onu yaratan), Ereksel neden (amacı). Bu dört neden, tam bir açıklamayı kurar.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Telos — Erek</div>
+          <div class="c-gr">TELOS — τέλος</div>
+          <p class="c-txt">Her doğal varlık bir erek doğrultusunda hareket eder. Meşe palamudu, meşeye dönüşmek için vardır. Bu teleolojik yapı, Aristoteles'in doğa felsefesinin omurgasıdır ve Platon'un dışsal amacının aksine içkindir.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quotes">
+    <div class="quote">
+      <p class="q-text">"Bu dünyada gördüklerimiz, asıl gerçekliklerin gölgeden başka bir şey değildir; ruh, bedenin zincirine girmeden önce onları bizzat seyretmiştir."</p>
+      <div class="q-src">Platon · Devlet VII · Mağara Alegorisi</div>
+    </div>
+    <div class="quote g">
+      <p class="q-text">"Doğa, boşuna hiçbir şey yapmaz; her şeyi, olabileceğinin en iyisi için yapar ve bu iyilik, şeyin kendi içindeki erekten başkası değildir."</p>
+      <div class="q-src">Aristoteles · De Caelo II · 291b13</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>01 · Doğa — Physis</span>
+    <span class="f-next" onclick="go('varlik')">Sonraki: Varlık →</span>
+  </footer>
+</div>
+</div>
+
+<!-- ══════════════════ VARLIK PAGE ══════════════════ -->
+<div class="page" id="page-varlik">
+<div class="wrap">
+  <div class="d-hero">
+    <div class="d-badges"><span class="badge bp">Platon</span><span class="badge ba">Aristoteles</span></div>
+    <h1 class="d-title">Varlık<br><span style="font-size:.58em; font-weight:400; font-style:italic; color:var(--text-2); letter-spacing:.02em;">On — ὄν</span></h1>
+    <p class="d-sub">Gerçek anlamda "var olan" nedir? Bireysel nesneler mi, soyut Formlar mı? Varlığın en temel kategorisi hangisidir?</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-box">
+      <svg viewBox="0 0 900 310" xmlns="http://www.w3.org/2000/svg">
+        <!-- PLATON: Ontological hierarchy -->
+        <text x="220" y="28" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="600" opacity=".85" style="fill:var(--accent)">Platon — Varlık Hiyerarşisi</text>
+        <rect x="140" y="42" width="160" height="34" rx="8" opacity=".22" style="fill:var(--accent)"/>
+        <rect x="140" y="42" width="160" height="34" rx="8" fill="none" stroke-width="1.5" opacity=".55" style="stroke:var(--accent)"/>
+        <text x="220" y="64" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1" opacity=".90" style="fill:var(--accent)">İYİ FORMU · AGATHON</text>
+        <line x1="220" y1="77" x2="220" y2="100" stroke-width="1" opacity=".38" style="stroke:var(--accent)"/>
+        <rect x="108" y="102" width="224" height="32" rx="8" opacity=".13" style="fill:var(--accent)"/>
+        <rect x="108" y="102" width="224" height="32" rx="8" fill="none" stroke-width="1" opacity=".42" style="stroke:var(--accent)"/>
+        <text x="220" y="123" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".65" letter-spacing="1">DİĞER FORMLAR · EIDE</text>
+        <line x1="220" y1="135" x2="220" y2="158" stroke-width="1" opacity=".30" style="stroke:var(--accent)"/>
+        <rect x="76" y="160" width="288" height="32" rx="8" opacity=".07" style="fill:var(--accent)"/>
+        <rect x="76" y="160" width="288" height="32" rx="8" fill="none" stroke-width="1" opacity=".28" style="stroke:var(--accent)"/>
+        <text x="220" y="181" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".50" letter-spacing="1">MATEMATİK NESNELERİ</text>
+        <line x1="220" y1="193" x2="220" y2="216" stroke-width="1" opacity=".22" style="stroke:var(--accent)"/>
+        <rect x="48" y="218" width="344" height="32" rx="8" opacity=".04" style="fill:var(--accent)"/>
+        <rect x="48" y="218" width="344" height="32" rx="8" fill="none" stroke-width="1" opacity=".18" style="stroke:var(--accent)"/>
+        <text x="220" y="239" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".38" letter-spacing="1">DUYUSAL TİKELLER · SANININ NESNELERİ</text>
+        <text x="220" y="280" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".38" font-style="italic">Bilgi = Anamnesis — Ruhun Önceki Müşahedesi</text>
+
+        <line x1="450" y1="20" x2="450" y2="295" stroke="currentColor" stroke-width=".7" opacity=".15"/>
+
+        <!-- ARISTOTELES: Categories -->
+        <text x="680" y="28" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="600" opacity=".85" style="fill:var(--green)">Aristoteles — Töz &amp; Kategoriler</text>
+        <circle cx="680" cy="148" r="46" opacity=".12" style="fill:var(--green)"/>
+        <circle cx="680" cy="148" r="46" fill="none" stroke-width="2" opacity=".60" style="stroke:var(--green)"/>
+        <text x="680" y="142" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" opacity=".90" style="fill:var(--green)">OUSIA</text>
+        <text x="680" y="158" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" opacity=".65" font-style="italic" style="fill:var(--green)">Töz</text>
+        <!-- Category spokes -->
+        <line x1="680" y1="100" x2="680" y2="65" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+        <text x="680" y="57" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">NİTELİK</text>
+        <line x1="713" y1="112" x2="746" y2="78" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+        <text x="758" y="75" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">NİCELİK</text>
+        <line x1="726" y1="148" x2="768" y2="148" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+        <text x="774" y="151" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">İLİŞKİ</text>
+        <line x1="713" y1="185" x2="746" y2="220" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+        <text x="750" y="228" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">YER</text>
+        <line x1="648" y1="185" x2="616" y2="220" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+        <text x="548" y="228" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">ZAMAN</text>
+        <line x1="634" y1="148" x2="592" y2="148" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+        <text x="520" y="151" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">EYLEM/EDİLGİ</text>
+        <line x1="648" y1="112" x2="616" y2="78" stroke-width="1" opacity=".40" style="stroke:var(--green)"/>
+        <text x="540" y="75" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">DURUM</text>
+        <text x="680" y="285" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".38" font-style="italic">On He On — Varlık Olarak Varlık</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="ph-card pa">
+      <div class="ph-head">
+        <div class="ph-name">Platon</div>
+        <div class="ph-dates">M.Ö. 427 — 347 · Atina</div>
+      </div>
+      <div class="ph-body">
+        <div class="concept">
+          <div class="c-term">Gerçek Varlık — Formlar</div>
+          <div class="c-gr">ON ONTOS ON — ὄντως ὄν</div>
+          <p class="c-txt">Platon için hakiki varlık, Formlar'ın payına düşer. Tikeller ise "tam varlık ile tam yokluk arasında" gider gelir; onlar hakkında yalnızca sanı (doxa) mümkündür, episteme değil.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">İyi'nin Formu</div>
+          <div class="c-gr">AGATHON — ἀγαθόν</div>
+          <p class="c-txt">Güneş'in görünür dünyada görmeyi mümkün kıldığı gibi, İyi'nin Formu da aklın dünyasında hem varlığı hem bilinebilirliği mümkün kılar. En yüksek varlık, en yüksek iyidir.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Katılım — Methexis</div>
+          <div class="c-gr">METHEXIS — μέθεξις</div>
+          <p class="c-txt">Tikeller, Formlar'a "katılarak" var olur. Güzel bir şey, Güzellik Formu'na katıldığı için güzeldir. Bu ilişki Platon ontolojisinin çözülmez gerilim noktasıdır.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ph-card aa">
+      <div class="ph-head">
+        <div class="ph-name">Aristoteles</div>
+        <div class="ph-dates">M.Ö. 384 — 322 · Stageira</div>
+      </div>
+      <div class="ph-body">
+        <div class="concept">
+          <div class="c-term">Töz — Ousia</div>
+          <div class="c-gr">OUSIA — οὐσία</div>
+          <p class="c-txt">Aristoteles, varlığın birincil anlamını töze verir. Bu dünyada var olan bireysel nesneler — bu at, bu insan — hem gerçektir hem de metafiziğin asıl konusudur. Soyutlama yalnızca zihinseldir.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Kuvve ve Fiil</div>
+          <div class="c-gr">DYNAMIS / ENERGEIA — δύναμις / ἐνέργεια</div>
+          <p class="c-txt">Tüm oluşu açıklayan temel gerilim: her şey kuvve'den fiile geçer. Çocuk, potansiyel olarak yetişkindir; tohum, potansiyel olarak ağaçtır. Varlık bu geçiş içinde kendini gerçekleştirir.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Hilomorfizm</div>
+          <div class="c-gr">HYLE + MORPHE — ὕλη + μορφή</div>
+          <p class="c-txt">Her somut varlık, madde (hyle) ve form'un (morphe) ayrılmaz birliğidir. Form, maddenin içindedir; Platon'un Formlar'ından farklı olarak ayrı bir yerde, başka bir dünyada yaşamaz.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quotes">
+    <div class="quote">
+      <p class="q-text">"Güneş görünür nesnelere yalnızca görülme gücünü değil, aynı zamanda oluşlarını ve büyümelerini de sağlar; oysa o, bizzat oluşun kendisi değildir. İyi de böyledir."</p>
+      <div class="q-src">Platon · Devlet VI · 509b — İyi'nin Formu</div>
+    </div>
+    <div class="quote g">
+      <p class="q-text">"Varlık pek çok anlamda söylenir; ancak hepsi tek bir doğaya göre söylenir: töz (ousia) birincil anlamdır, diğerleri ona göre belirlenir."</p>
+      <div class="q-src">Aristoteles · Metafizik IV · 1003a33</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>02 · Varlık — On</span>
+    <span class="f-next" onclick="go('metafizik')">Sonraki: Metafizik →</span>
+  </footer>
+</div>
+</div>
+
+<!-- ══════════════════ METAFİZİK PAGE ══════════════════ -->
+<div class="page" id="page-metafizik">
+<div class="wrap">
+  <div class="d-hero">
+    <div class="d-badges"><span class="badge bp">Platon</span><span class="badge ba">Aristoteles</span></div>
+    <h1 class="d-title">Metafizik<br><span style="font-size:.58em; font-weight:400; font-style:italic; color:var(--text-2); letter-spacing:.02em;">Prote Philosophia — πρώτη φιλοσοφία</span></h1>
+    <p class="d-sub">Evrenin nihai zemini nedir? Tanrısal Demiurgos mu, Hareket Ettirmeyen Hareket Ettirici mi? İki büyük miras, iki farklı "ilk felsefe."</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-box">
+      <svg viewBox="0 0 900 290" xmlns="http://www.w3.org/2000/svg">
+        <text x="220" y="28" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="600" opacity=".85" style="fill:var(--accent)">Platon — Demiurgos Kozmolojisi</text>
+        <!-- Formlar -->
+        <circle cx="330" cy="88" r="36" fill="none" stroke-width="1.2" opacity=".50" style="stroke:var(--accent)"/>
+        <circle cx="330" cy="88" r="36" opacity=".08" style="fill:var(--accent)"/>
+        <text x="330" y="83" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".80" style="fill:var(--accent)">FORMLAR</text>
+        <text x="330" y="96" text-anchor="middle" font-family="Crimson Pro,serif" font-size="11" fill="currentColor" opacity=".45" font-style="italic">Eide</text>
+        <!-- Khora -->
+        <ellipse cx="110" cy="88" rx="56" ry="36" fill="none" stroke-width="1" opacity=".28" style="stroke:var(--accent)"/>
+        <text x="110" y="83" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".48">KHORA</text>
+        <text x="110" y="96" text-anchor="middle" font-family="Crimson Pro,serif" font-size="11" fill="currentColor" opacity=".38" font-style="italic">Kaotik Madde</text>
+        <!-- Demiurgos -->
+        <rect x="150" y="158" width="140" height="46" rx="10" opacity=".10" style="fill:var(--accent)"/>
+        <rect x="150" y="158" width="140" height="46" rx="10" fill="none" stroke-width="1.5" opacity=".55" style="stroke:var(--accent)"/>
+        <text x="220" y="179" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" opacity=".85" letter-spacing="1" style="fill:var(--accent)">DEMİURGOS</text>
+        <text x="220" y="194" text-anchor="middle" font-family="Crimson Pro,serif" font-size="11" fill="currentColor" opacity=".48" font-style="italic">Yaratıcı Zanaatkâr</text>
+        <!-- Kosmos -->
+        <ellipse cx="220" cy="256" rx="88" ry="26" opacity=".06" style="fill:var(--accent)"/>
+        <ellipse cx="220" cy="256" rx="88" ry="26" fill="none" stroke-width="1" opacity=".22" style="stroke:var(--accent)"/>
+        <text x="220" y="261" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".40">KOSMOS — Düzenli Evren</text>
+        <!-- Arrows -->
+        <path d="M 300 116 Q 272 136 255 158" fill="none" stroke-width="1.2" stroke-dasharray="4,3" opacity=".45" style="stroke:var(--accent)" marker-end="url(#ar)"/>
+        <text x="276" y="130" font-family="JetBrains Mono,monospace" font-size="8" opacity=".50" style="fill:var(--accent)">seyreder</text>
+        <path d="M 148 110 Q 180 134 185 158" fill="none" stroke-width="1.2" stroke-dasharray="4,3" opacity=".38" style="stroke:var(--accent)" marker-end="url(#ar)"/>
+        <text x="145" y="138" font-family="JetBrains Mono,monospace" font-size="8" fill="currentColor" opacity=".38">biçimlendirir</text>
+        <line x1="220" y1="205" x2="220" y2="229" stroke-width="1.2" opacity=".35" style="stroke:var(--accent)" marker-end="url(#ar)"/>
+        <defs><marker id="ar" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5z" opacity=".55" style="fill:var(--accent)"/></marker></defs>
+
+        <line x1="450" y1="20" x2="450" y2="280" stroke="currentColor" stroke-width=".7" opacity=".15"/>
+
+        <!-- ARISTOTELES: Prime Mover -->
+        <text x="680" y="28" text-anchor="middle" font-family="Playfair Display,serif" font-size="15" font-weight="600" opacity=".85" style="fill:var(--green)">Aristoteles — İlk Hareket Ettirici</text>
+        <!-- PM -->
+        <circle cx="680" cy="72" r="38" opacity=".14" style="fill:var(--green)"/>
+        <circle cx="680" cy="72" r="38" fill="none" stroke-width="2" opacity=".65" style="stroke:var(--green)"/>
+        <text x="680" y="64" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".88" style="fill:var(--green)">PROTON KINOUN</text>
+        <text x="680" y="77" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" opacity=".60" style="fill:var(--green)">AKINETON</text>
+        <text x="680" y="92" text-anchor="middle" font-family="Crimson Pro,serif" font-size="10" fill="currentColor" opacity=".45" font-style="italic">Hareketsiz Hareket Ettirici</text>
+        <text x="680" y="117" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="currentColor" opacity=".35" letter-spacing="1">NOESIS NOESEOS</text>
+        <!-- chain -->
+        <line x1="680" y1="125" x2="680" y2="150" stroke-width="1.5" opacity=".48" style="stroke:var(--green)" marker-end="url(#ag)"/>
+        <rect x="622" y="152" width="116" height="30" rx="6" opacity=".08" style="fill:var(--green)"/>
+        <rect x="622" y="152" width="116" height="30" rx="6" fill="none" stroke-width="1" opacity=".42" style="stroke:var(--green)"/>
+        <text x="680" y="172" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".55" letter-spacing="1">GÖKSEL KÜRELER</text>
+        <line x1="680" y1="184" x2="680" y2="206" stroke-width="1.5" opacity=".38" style="stroke:var(--green)" marker-end="url(#ag)"/>
+        <rect x="622" y="208" width="116" height="30" rx="6" opacity=".06" style="fill:var(--green)"/>
+        <rect x="622" y="208" width="116" height="30" rx="6" fill="none" stroke-width="1" opacity=".32" style="stroke:var(--green)"/>
+        <text x="680" y="228" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".45" letter-spacing="1">DÖRT ELEMENT</text>
+        <line x1="680" y1="240" x2="680" y2="256" stroke-width="1.5" opacity=".28" style="stroke:var(--green)" marker-end="url(#ag)"/>
+        <text x="680" y="270" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".35" letter-spacing="1">DOĞAL VARLIKLAR</text>
+        <defs><marker id="ag" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5z" opacity=".58" style="fill:var(--green)"/></marker></defs>
+      </svg>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="ph-card pa">
+      <div class="ph-head">
+        <div class="ph-name">Platon</div>
+        <div class="ph-dates">M.Ö. 427 — 347 · Atina</div>
+      </div>
+      <div class="ph-body">
+        <div class="concept">
+          <div class="c-term">İyi'nin Formu</div>
+          <div class="c-gr">HE TOU AGATHOU IDEA</div>
+          <p class="c-txt">Tüm Formlar'ın ve dolayısıyla tüm varlık ile bilinebilirliğin kaynağı olan İyi'nin Formu, Platon metafiziğinin zirvesidir. O, hem varlığın hem de bilginin üstündedir; güneş metaforunda olduğu gibi.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Demiurgos & Timaios</div>
+          <div class="c-gr">TIMAIOS DİYALOGU</div>
+          <p class="c-txt">Timaios'ta Platon, evreni yaratıcı bir ilahi zanaatkâr olarak Demiurgos'un ebedi Formlar'a bakarak biçimlendirdiğini anlatır. Maddenin direnci kötülüğün ve eksikliğin kaynağıdır.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Transandans</div>
+          <div class="c-gr">KHŌRISMOS — χωρισμός</div>
+          <p class="c-txt">Platon'un Formları, dünyadan ayrı (khōrismos) ve ötesindedir. Felsefi yolculuk, mağaradan çıkış yolculuğudur; metafizik, bu dünyanın ötesine geçmeyi gerektirir.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ph-card aa">
+      <div class="ph-head">
+        <div class="ph-name">Aristoteles</div>
+        <div class="ph-dates">M.Ö. 384 — 322 · Stageira</div>
+      </div>
+      <div class="ph-body">
+        <div class="concept">
+          <div class="c-term">İlk Hareket Ettirici</div>
+          <div class="c-gr">PROTON KINOUN AKINETON</div>
+          <p class="c-txt">Aristoteles, hareket zincirini bir ilk noktada — kendisi hareket etmeksizin her şeyi harekete geçiren bir ilkede — sonlandırır. Bu İlk Hareket Ettirici, saf energeia'dır; artık kuvve'si yoktur.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">Düşüncenin Düşüncesi</div>
+          <div class="c-gr">NOESIS NOESEOS — νόησις νοήσεως</div>
+          <p class="c-txt">İlk Hareket Ettirici yalnızca kendisini düşünür; bu, saf düşüncenin kendi kendisinin düşüncesidir. Maddi dünyayla temas onu kirleteceğinden, o yalnızca en yüce konuyla, yani bizzat kendisiyle meşguldür.</p>
+        </div>
+        <div class="concept">
+          <div class="c-term">İmmanent Metafizik</div>
+          <div class="c-gr">ON HE ON — ὂν ᾗ ὄν</div>
+          <p class="c-txt">Aristoteles'in "ilk felsefesi," varlığı varlık olarak inceler. Gerçek ötede değil, burada, bu varlıkların özünde saklıdır. Metafizik, başka bir dünyaya yolculuk değil, bu dünyanın derinlemesine okunmasıdır.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quotes">
+    <div class="quote">
+      <p class="q-text">"İyi'nin Formu, bilgi nesnelerinde hem gerçekliği hem bilinebilirliği sağlayan şeydir; ancak o bizzat bilgi değil, bilginin ve gerçekliğin de ötesinde bir şeydir."</p>
+      <div class="q-src">Platon · Devlet VI · 508e–509b</div>
+    </div>
+    <div class="quote g">
+      <p class="q-text">"İlk Hareket Ettirici şu şekilde hareket ettirir: arzu ve düşüncenin nesnesi olarak hareket ettirir; kendisi hareket etmeksizin hareket ettirir."</p>
+      <div class="q-src">Aristoteles · Metafizik XII · 1072a25</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>03 · Metafizik — Prote Philosophia</span>
+    <span class="f-next" onclick="go('karsilastirma')">Sonraki: Karşılaştırma →</span>
+  </footer>
+</div>
+</div>
+
+<!-- ══════════════════ KARŞILAŞTIRMA PAGE ══════════════════ -->
+<div class="page" id="page-karsilastirma">
+<div class="wrap">
+  <div class="d-hero">
+    <div class="d-badges"><span class="badge bp">Platon</span><span class="badge ba">Aristoteles</span></div>
+    <h1 class="d-title">Karşılaştırma<br><span style="font-size:.58em; font-weight:400; font-style:italic; color:var(--text-2); letter-spacing:.02em;">Sentez &amp; Ayrışma</span></h1>
+    <p class="d-sub">Öğrenci hocasını aşmadı; yönünü değiştirdi. İki büyük akıl, gerçeği aynı ısrarla fakat farklı yollarla aradı.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-box">
+      <svg viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
+        <!-- Venn diagram -->
+        <circle cx="320" cy="140" r="115" opacity=".09" style="fill:var(--accent)"/>
+        <circle cx="320" cy="140" r="115" fill="none" stroke-width="1.5" opacity=".42" style="stroke:var(--accent)"/>
+        <circle cx="580" cy="140" r="115" opacity=".09" style="fill:var(--green)"/>
+        <circle cx="580" cy="140" r="115" fill="none" stroke-width="1.5" opacity=".42" style="stroke:var(--green)"/>
+
+        <text x="200" y="62" text-anchor="middle" font-family="Playfair Display,serif" font-size="20" font-weight="600" opacity=".85" style="fill:var(--accent)">Platon</text>
+        <text x="700" y="62" text-anchor="middle" font-family="Playfair Display,serif" font-size="20" font-weight="600" opacity=".85" style="fill:var(--green)">Aristoteles</text>
+
+        <!-- Platon unique -->
+        <text x="225" y="115" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".68" font-style="italic">Transandant Formlar</text>
+        <text x="225" y="135" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".68" font-style="italic">İki Dünya</text>
+        <text x="225" y="155" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".68" font-style="italic">Anamnesis</text>
+        <text x="225" y="175" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".68" font-style="italic">Demiurgos</text>
+
+        <!-- Shared -->
+        <text x="450" y="113" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="currentColor" opacity=".50" letter-spacing="2">ORTAK</text>
+        <text x="450" y="135" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".60" font-style="italic">Logos · Nous</text>
+        <text x="450" y="155" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".60" font-style="italic">Teleoloji</text>
+        <text x="450" y="175" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".60" font-style="italic">Erdem Etiği</text>
+
+        <!-- Aristoteles unique -->
+        <text x="675" y="115" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".68" font-style="italic">İmmanent Töz</text>
+        <text x="675" y="135" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".68" font-style="italic">Tek Dünya</text>
+        <text x="675" y="155" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".68" font-style="italic">Hilomorfizm</text>
+        <text x="675" y="175" text-anchor="middle" font-family="Crimson Pro,serif" font-size="13" fill="currentColor" opacity=".68" font-style="italic">Dört Neden</text>
+
+        <text x="220" y="252" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".60" letter-spacing="2" style="fill:var(--accent)">TRANSANDANS</text>
+        <text x="680" y="252" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" opacity=".60" letter-spacing="2" style="fill:var(--green)">İMMANENS</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Comparison Table -->
+  <div class="comp-table">
+    <div style="padding-bottom:24px;">
+      <div class="s-label">
+        <span class="s-num">04</span>
+        <h2 class="s-title">Karşılaştırmalı Tablo</h2>
+        <span class="s-badge">6 eksen</span>
+      </div>
+      <p class="s-desc">Felsefi ayrımların özlü haritası — her satır iki büyük geleneği tek bir kavramsal eksende karşı karşıya getirir.</p>
+    </div>
+
+    <div class="comp-head">
+      <div></div>
+      <div class="ch-cell ch-p">Platon</div>
+      <div class="ch-cell ch-a">Aristoteles</div>
+    </div>
+
+    <div class="comp-row">
+      <div class="c-cell lbl">DOĞA</div>
+      <div class="c-cell cp">Görünür dünya Formlar'ın gölgesidir; gerçek doğa, duyuların ötesindedir.</div>
+      <div class="c-cell ca">Doğa, içkin bir erek (telos) taşıyan varlıkların bütünüdür; Form maddenin içindedir.</div>
+    </div>
+    <div class="comp-row">
+      <div class="c-cell lbl">FORM</div>
+      <div class="c-cell cp">Formlar ayrı, bağımsız, ebedidir; duyusal dünyadan bağımsız (khōrismos) var olurlar.</div>
+      <div class="c-cell ca">Form, tikelin içindedir ve ondan ayrı var olamaz; soyutlama yalnızca zihinseldir.</div>
+    </div>
+    <div class="comp-row">
+      <div class="c-cell lbl">VARLIK</div>
+      <div class="c-cell cp">Gerçek varlık yalnızca Formlar'a aittir; tikeller yarı-varlıklar, sanının nesneleridir.</div>
+      <div class="c-cell ca">Töz (ousia) varlığın birincil anlamıdır; bu dünyadaki bireysel nesneler gerçektir.</div>
+    </div>
+    <div class="comp-row">
+      <div class="c-cell lbl">BİLGİ</div>
+      <div class="c-cell cp">Episteme, Formlar'ın bilgisidir; ruhun önceki varoluşunda edindiğinin yeniden-hatırlanmasıdır (anamnesis).</div>
+      <div class="c-cell ca">Bilgi, duyusal deneyimden başlar; tümevarım (epagoge) ve nedensel açıklama yoluyla ilkelere ulaşılır.</div>
+    </div>
+    <div class="comp-row">
+      <div class="c-cell lbl">İLAHİ</div>
+      <div class="c-cell cp">Demiurgos, Formlar'ı model alarak evreni inşa eden yaratıcı zanaatkârdır; İyi'nin Formu en yüksektir.</div>
+      <div class="c-cell ca">İlk Hareket Ettirici, hiç hareket etmeksizin hareket ettirir; saf düşüncedir, evrenin nihai ereğidir.</div>
+    </div>
+    <div class="comp-row">
+      <div class="c-cell lbl">METAFİZİK</div>
+      <div class="c-cell cp">Transandant: gerçeği bulmak için bu dünyanın ötesine geçmek gerekir.</div>
+      <div class="c-cell ca">İmmanent: gerçek bu dünyanın dokusundadır; varlık olarak varlığı inceler.</div>
+    </div>
+  </div>
+
+  <div class="quotes">
+    <div class="quote" style="border-left-color: var(--text-3); background: var(--bg-preview);">
+      <p class="q-text">"Platon benim dostumdur; ama hakikat daha büyük dostumdur."</p>
+      <div class="q-src">Aristoteles'e atfedilen · Amicus Plato, sed magis amica veritas</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>04 · Karşılaştırma &amp; Sentez</span>
+    <span class="f-next" onclick="go('home')">← Ana Sayfa</span>
+  </footer>
+</div>
+</div>
+
+<script>
+  const html = document.documentElement;
+  const themeBtn = document.getElementById('themeBtn');
+  let dark = false;
+
+  function toggleTheme() {
+    dark = !dark;
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    themeBtn.textContent = dark ? '☀' : '☽';
+  }
+
+  function go(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+    document.getElementById('page-' + page).classList.add('on');
+    const backBtn = document.getElementById('backBtn');
+    backBtn.classList.toggle('on', page !== 'home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,712 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+.nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+.nav button {
+  padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-secondary); color: var(--color-text-secondary);
+  font-size: 12px; cursor: pointer; transition: all .2s;
+}
+.nav button.active {
+  background: var(--color-background-primary); color: var(--color-text-primary);
+  border-color: var(--color-border-primary); font-weight: 500;
+}
+
+.screen { display: none; animation: fadeIn .25s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Overview */
+.vision-hero { text-align: center; padding: 24px 0 20px; }
+.vision-hero h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+.vision-hero p { font-size: 14px; color: var(--color-text-secondary); max-width: 480px; margin: 0 auto; line-height: 1.6; }
+
+.pillars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
+.pillar {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 16px; cursor: pointer; transition: all .2s;
+  border-left: 3px solid transparent;
+}
+.pillar:hover { border-color: var(--color-border-secondary); transform: translateY(-1px); }
+.pillar.ruh { border-left-color: #7F77DD; }
+.pillar.beden { border-left-color: #1D9E75; }
+.pillar.akil { border-left-color: #3B8BD4; }
+.pillar.dissal { border-left-color: #BA7517; }
+.pillar-icon { font-size: 20px; margin-bottom: 8px; }
+.pillar h3 { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.pillar p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.pillar .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--color-background-secondary); color: var(--color-text-secondary); }
+
+.quote-box {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md); padding: 14px 16px;
+  border-left: 3px solid #7F77DD; margin: 16px 0;
+  font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; font-style: italic;
+}
+
+/* Tabs within screens */
+.subtabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.subtab {
+  padding: 5px 12px; font-size: 12px; border-radius: 12px;
+  border: 0.5px solid var(--color-border-tertiary);
+  background: none; color: var(--color-text-secondary); cursor: pointer; transition: all .15s;
+}
+.subtab.active {
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary); border-color: var(--color-border-secondary);
+}
+.subscreen { display: none; }
+.subscreen.active { display: block; }
+
+/* Cards */
+.card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg); padding: 16px; margin-bottom: 10px;
+}
+.card h4 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+.card p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+
+.item-list { list-style: none; }
+.item-list li {
+  display: flex; align-items: flex-start; gap: 8px; padding: 8px 0;
+  border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 13px; color: var(--color-text-secondary);
+}
+.item-list li:last-child { border-bottom: none; }
+.item-list .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+/* Progress / Status */
+.status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+.status-card {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md); padding: 12px; text-align: center;
+}
+.status-card .val { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
+.status-card .lbl { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+
+/* Timeline / Roadmap */
+.timeline { position: relative; padding-left: 20px; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 1px; background: var(--color-border-secondary); }
+.tl-item { position: relative; margin-bottom: 16px; }
+.tl-dot { position: absolute; left: -17px; top: 4px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--color-background-primary); }
+.tl-item h5 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.tl-item p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; }
+.tl-badge { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 8px; margin-bottom: 4px; }
+
+/* Yazarlık specific */
+.writing-flow { display: flex; flex-direction: column; gap: 8px; }
+.step-card {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md); padding: 12px 14px;
+}
+.step-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; }
+.step-card h5 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.step-card p { font-size: 12px; color: var(--color-text-secondary); }
+
+/* Kriz protokol */
+.crisis-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.crisis-card { border-radius: var(--border-radius-md); padding: 12px; }
+.crisis-card h5 { font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+.crisis-card ul { list-style: none; font-size: 11px; line-height: 1.7; }
+.crisis-card ul li::before { content: '→ '; }
+
+/* Action plan */
+.action-row {
+  display: flex; align-items: center; gap: 10px; padding: 9px 12px;
+  background: var(--color-background-secondary); border-radius: var(--border-radius-md);
+  margin-bottom: 6px; cursor: pointer; transition: all .15s;
+}
+.action-row:hover { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); }
+.action-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--color-border-secondary); flex-shrink: 0; }
+.action-check.done { background: #1D9E75; border-color: #1D9E75; display: flex; align-items: center; justify-content: center; }
+.action-row span { font-size: 13px; color: var(--color-text-primary); flex: 1; }
+.action-row .area-tag { font-size: 11px; padding: 2px 7px; border-radius: 8px; }
+
+.section-title {
+  font-size: 11px; font-weight: 500; color: var(--color-text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.06em; margin: 16px 0 8px;
+}
+
+.btn-action {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; font-size: 13px; border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-secondary); color: var(--color-text-secondary);
+  cursor: pointer; transition: all .15s; margin-top: 4px;
+}
+.btn-action:hover { background: var(--color-background-primary); color: var(--color-text-primary); }
+.btn-primary { background: var(--color-text-primary); color: var(--color-background-primary); border-color: transparent; }
+.btn-primary:hover { opacity: .85; }
+</style>
+
+<div style="padding: 0 0 24px;">
+
+<div class="nav">
+  <button class="active" onclick="show('overview')">Vizyon</button>
+  <button onclick="show('ruh')">Ruh</button>
+  <button onclick="show('beden')">Beden</button>
+  <button onclick="show('akil')">Akıl</button>
+  <button onclick="show('dissal')">Dışsal</button>
+  <button onclick="show('projeler')">Projeler</button>
+  <button onclick="show('yazarlik')">Yazarlık</button>
+  <button onclick="show('sistem')">Sistem</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="s-overview" class="screen active">
+  <div class="vision-hero">
+    <h1>Eudaimonia — Mfatih Vizyon Sistemi</h1>
+    <p>Mutlu, erdemli ve bütünleşik bir yaşam. Bedenin, ruhun, aklın ve dış koşulların ortak işleyişi.</p>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar ruh" onclick="show('ruh')">
+      <div class="pillar-icon">🕊</div>
+      <h3>Ruh</h3>
+      <p>Din, kriz yönetimi, manevi denge</p>
+      <div class="tags">
+        <span class="tag">Namaz</span><span class="tag">Oruç</span><span class="tag">Kriz protokolü</span>
+      </div>
+    </div>
+    <div class="pillar beden" onclick="show('beden')">
+      <div class="pillar-icon">🏃</div>
+      <h3>Beden</h3>
+      <p>Hareket, beslenme, görünüm bakımı</p>
+      <div class="tags">
+        <span class="tag">Bisiklet</span><span class="tag">GYM</span><span class="tag">Beslenme</span>
+      </div>
+    </div>
+    <div class="pillar akil" onclick="show('akil')">
+      <div class="pillar-icon">📖</div>
+      <h3>Akıl</h3>
+      <p>Okuma, öğrenme, yazarlık, İngilizce</p>
+      <div class="tags">
+        <span class="tag">Yazarlık</span><span class="tag">Felsefe</span><span class="tag">Yazılım</span>
+      </div>
+    </div>
+    <div class="pillar dissal" onclick="show('dissal')">
+      <div class="pillar-icon">🏠</div>
+      <h3>Dışsal</h3>
+      <p>Finans, konut, araç, ortam</p>
+      <div class="tags">
+        <span class="tag">Finansal özgürlük</span><span class="tag">Villa</span><span class="tag">Mercedes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    "Düz yazı krema gibidir, soğuması beklendikten sonra tadına bakılır." — Whimsical notundan
+  </div>
+
+  <div class="section-title">Maddi Hedefler (Eudaimonia boardundan)</div>
+  <div class="card">
+    <ul class="item-list">
+      <li><span class="dot" style="background:#BA7517"></span><span>Finansal özgürlük — bol kazanç, doğru harcama</span></li>
+      <li><span class="dot" style="background:#3B8BD4"></span><span>Yeşil ve ferah villa — sessiz, loş, serin</span></li>
+      <li><span class="dot" style="background:#533AB7"></span><span>Mercedes S-Class — lüks ve güçlü araç</span></li>
+      <li><span class="dot" style="background:#1D9E75"></span><span>Güzel çalışma ofisi — tam teçhizatlı</span></li>
+      <li><span class="dot" style="background:#D85A30"></span><span>Sağlıklı, atletik ve fit bir vücut</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span>Sürekli kitap okumak ve kitap yazmak</span></li>
+    </ul>
+  </div>
+
+  <button class="btn-action btn-primary" onclick="sendPrompt('Eudaimonia vizyonuma ulaşmak için somut bir 12 aylık eylem planı oluşturur musun?')">
+    12 aylık eylem planı oluştur ↗
+  </button>
+</div>
+
+<!-- RUH -->
+<div id="s-ruh" class="screen">
+  <div class="section-title">Ruhsal Yapı</div>
+
+  <div class="card">
+    <h4>Dini Pratikler (Din boardundan)</h4>
+    <ul class="item-list">
+      <li><span class="dot" style="background:#7F77DD"></span><span><strong>Namaz:</strong> 5 vakit, Cuma, Teravih, Teheccüt, Evvabin</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span><strong>Oruç:</strong> Ramazan + Nafile oruç; Sahur zorunlu</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span><strong>Kuran & Evrad:</strong> Düzenli okuma ve zikir</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span><strong>Cemaat & Sohbet:</strong> Haftalık 2 sohbet, istişare</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span><strong>Mali ibadetler:</strong> Zekat, Fitre, Kurban</span></li>
+    </ul>
+  </div>
+
+  <div class="section-title">Kriz Protokolü (Ruh boardundan)</div>
+  <div class="crisis-grid">
+    <div class="crisis-card" style="background: var(--color-background-secondary);">
+      <h5 style="color:#1D9E75">Hafif Kriz</h5>
+      <ul style="color: var(--color-text-secondary);">
+        <li>Alternatifini hazırla</li>
+        <li>Telafisini araştır</li>
+        <li>Satın alım yap</li>
+        <li>Uyku düzenini bozma</li>
+      </ul>
+    </div>
+    <div class="crisis-card" style="background: var(--color-background-secondary);">
+      <h5 style="color:#BA7517">Orta Kriz</h5>
+      <ul style="color: var(--color-text-secondary);">
+        <li>Güvenli bölgeye geç</li>
+        <li>Durumu kısaca düşün</li>
+        <li>Başka meşgale bul</li>
+        <li>Bir şeyler iç</li>
+        <li>Ertesi gün telafi</li>
+      </ul>
+    </div>
+    <div class="crisis-card" style="background: var(--color-background-secondary);">
+      <h5 style="color:#D85A30">Ağır Kriz</h5>
+      <ul style="color: var(--color-text-secondary);">
+        <li>Derhal güvenli ortama</li>
+        <li>Uyku düzenini bozma</li>
+        <li>Hemen alternatife bak</li>
+        <li>Satın al</li>
+        <li>Unut ve devam et</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title">Ruhsal Not</div>
+  <div class="quote-box">
+    "Sessiz, karanlık ve serin yatak odası. Sessiz, karanlık ve serin çalışma odası. Düzgün çalışma masası. Sürekli bir meşgale. Bunlar ruhun temel şartları."
+  </div>
+
+  <button class="btn-action" onclick="sendPrompt('Ruhsal denge için sabah rutini nasıl olmalı? Namaz, beslenme ve çalışmayı birleştiren bir sabah planı öner.')">
+    Sabah rutini planla ↗
+  </button>
+</div>
+
+<!-- BEDEN -->
+<div id="s-beden" class="screen">
+  <div class="subtabs">
+    <button class="subtab active" onclick="showSub('beden','hareket')">Hareket</button>
+    <button class="subtab" onclick="showSub('beden','beslenme')">Beslenme</button>
+    <button class="subtab" onclick="showSub('beden','sorunlar')">Sorunlar</button>
+  </div>
+
+  <div id="beden-hareket" class="subscreen active">
+    <div class="section-title">Spor Planı</div>
+    <div class="writing-flow">
+      <div class="step-card">
+        <div class="step-num" style="background:#E1F5EE;color:#0F6E56">B</div>
+        <div><h5>Bisiklet — Haftada 6 gün</h5><p>Ana hareket aracı. Kış-yaz kesintisiz. Yağmurlukla dışarıya çık, eve girme.</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#E1F5EE;color:#0F6E56">Y</div>
+        <div><h5>Yürüyüş — Her gün</h5><p>Bisiklet rotasına dahil. Eski rota, merkez, AVM, arkadaş ziyareti — rota çeşitlendir.</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#E1F5EE;color:#0F6E56">G</div>
+        <div><h5>GYM — Haftada 3 gün</h5><p>Kuvvet antrenmanı. Fitness hedefli. İçerik üretimi yapılabilir.</p></div>
+      </div>
+    </div>
+    <div class="quote-box">
+      "Kesinlikle eve gitme — eve girdiğin anda yazın sıcaktan, kışın soğuktan kilitleniyorsun. Yağmurluk siparişi ver ve bisikletle çıkarak hazırlıklı ol."
+    </div>
+    <button class="btn-action" onclick="sendPrompt('Bisiklet, yürüyüş ve GYM aktivitelerini haftanın 7 gününe optimum dağıtan bir program yap.')">
+      Haftalık spor programı ↗
+    </button>
+  </div>
+
+  <div id="beden-beslenme" class="subscreen">
+    <div class="section-title">Günlük Beslenme Düzeni</div>
+    <div class="writing-flow">
+      <div class="step-card">
+        <div class="step-num" style="background:#FAEEDA;color:#854F0B">S</div>
+        <div><h5>Sabah kahvaltısı</h5><p>Antep peyniri, zeytin, lor, tahin-pekmez. Haftalık pazardan taze ürünler.</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#FAEEDA;color:#854F0B">Ö</div>
+        <div><h5>Öğle — Yumurta</h5><p>Hafif, pratik. Öğle büyük yemek yok.</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#FAEEDA;color:#854F0B">A</div>
+        <div><h5>Akşam — Çıkmadan önce yumurta</h5><p>Zorunlu. Boşluk hissi = açlık = rehavet. KENDİNİ BOŞ BIRAKMA.</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <h4>Alışveriş Düzeni</h4>
+      <p style="font-size:12px; color:var(--color-text-secondary); line-height:1.7">
+        <strong>Evden:</strong> Zeytin yağı<br>
+        <strong>Kürkçühan:</strong> Antep peyniri, pekmez+tahin, bitkisel çay, lor<br>
+        <strong>Cuma pazarı:</strong> Zeytin, limon, yeşil soğan, tere-roka, domates, köy yumurtası, salatalık, havuç
+      </p>
+    </div>
+  </div>
+
+  <div id="beden-sorunlar" class="subscreen">
+    <div class="section-title">Yaşam Kalitesi Sorunları (board'dan)</div>
+    <ul class="item-list">
+      <li><span class="dot" style="background:#E24B4A"></span><span>Obezite ve yağlanma — önce temel hareket düzeni</span></li>
+      <li><span class="dot" style="background:#E24B4A"></span><span>Bel, vücut, eklem ağrıları — postür ve egzersiz</span></li>
+      <li><span class="dot" style="background:#BA7517"></span><span>Duygusal açlık meselesi — boşluk bırakma kuralı</span></li>
+      <li><span class="dot" style="background:#BA7517"></span><span>Uykusuzluk — uyku düzenini asla bozma</span></li>
+      <li><span class="dot" style="background:#888780"></span><span>Alerjik rinit — mevsim geçişlerinde tedbir</span></li>
+      <li><span class="dot" style="background:#888780"></span><span>Yetersiz su tüketimi — günlük takip</span></li>
+      <li><span class="dot" style="background:#888780"></span><span>Durumsal stres ve kaygı — kriz protokolü uygula</span></li>
+    </ul>
+    <button class="btn-action" onclick="sendPrompt('Obezite ve yağlanmayı azaltmak için beslenme+hareket entegre 8 haftalık plan öner.')">
+      Entegre plan oluştur ↗
+    </button>
+  </div>
+</div>
+
+<!-- AKIL -->
+<div id="s-akil" class="screen">
+  <div class="subtabs">
+    <button class="subtab active" onclick="showSub('akil','ogrenme')">Öğrenme</button>
+    <button class="subtab" onclick="showSub('akil','ingilizce')">İngilizce</button>
+    <button class="subtab" onclick="showSub('akil','felsefe')">Felsefe</button>
+  </div>
+
+  <div id="akil-ogrenme" class="subscreen active">
+    <div class="section-title">Öğrenme Sistemi (Öğrenme Stratejisi boardundan)</div>
+    <div class="writing-flow">
+      <div class="step-card">
+        <div class="step-num" style="background:#E6F1FB;color:#185FA5">1</div>
+        <div><h5>Kaynak seç</h5><p>Kitap / Udemy / YouTube / Podcast</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#E6F1FB;color:#185FA5">2</div>
+        <div><h5>Düşünme fazı (3 kez tekrar)</h5><p>Yapay zeka → Obsidian → Whimsical → Excalidraw. Chat araçları + Local AI destekli.</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#E6F1FB;color:#185FA5">3</div>
+        <div><h5>NotebookLM entegrasyonu</h5><p>Kaynakları organize et, Google Notebook'a aktar.</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <h4>AI Destekli Öğrenme Alanları</h4>
+      <ul class="item-list">
+        <li><span class="dot" style="background:#3B8BD4"></span><span>İngilizce öğrenimi</span></li>
+        <li><span class="dot" style="background:#3B8BD4"></span><span>Yazarlık öğrenimi</span></li>
+        <li><span class="dot" style="background:#3B8BD4"></span><span>Yazılım geliştirme</span></li>
+        <li><span class="dot" style="background:#3B8BD4"></span><span>Felsefe öğrenimi</span></li>
+        <li><span class="dot" style="background:#3B8BD4"></span><span>Mantık öğrenimi</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="akil-ingilizce" class="subscreen">
+    <div class="section-title">İngilizce Öğrenim Sistemi (4 alan)</div>
+    <div class="writing-flow">
+      <div class="step-card">
+        <div class="step-num" style="background:#E6F1FB;color:#185FA5">K</div>
+        <div><h5>Kelime öğrenme</h5><p>Vocabulary → Chunk → Phrasal verb metoduyla kademeli öğrenme</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#E6F1FB;color:#185FA5">G</div>
+        <div><h5>Gramer</h5><p>Sistematik gramer çalışması — AI engine destekli</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#E6F1FB;color:#185FA5">L</div>
+        <div><h5>Listening / Konuşma</h5><p>Shadowing metodu + AI konuşma pratiği</p></div>
+      </div>
+    </div>
+    <button class="btn-action" onclick="sendPrompt('İngilizce öğrenmek için haftalık 7 günlük detaylı çalışma programı hazırla. Vocabulary, gramer, shadowing ve konuşma pratiklerini dengeli dağıt.')">
+      Haftalık İngilizce programı ↗
+    </button>
+  </div>
+
+  <div id="akil-felsefe" class="subscreen">
+    <div class="section-title">Entelektüel Üretim</div>
+    <div class="card">
+      <h4>Okuma → Düşünme → Yazma döngüsü</h4>
+      <ul class="item-list">
+        <li><span class="dot" style="background:#7F77DD"></span><span>Felsefe araştırmaları — sistematik okuma</span></li>
+        <li><span class="dot" style="background:#7F77DD"></span><span>Delalet türleri — İslami mantık</span></li>
+        <li><span class="dot" style="background:#7F77DD"></span><span>Okuma & dinleme — roman + şiir + klasik müzik</span></li>
+        <li><span class="dot" style="background:#7F77DD"></span><span>Obsidian'da notlar — bağlantılı düşünce</span></li>
+        <li><span class="dot" style="background:#7F77DD"></span><span>Sinema ve sanat — görsel dünya</span></li>
+      </ul>
+    </div>
+    <button class="btn-action" onclick="sendPrompt('Felsefe okuma listesi öner. İslam felsefesi, batı felsefesi ve mantık alanlarını kapsasın.')">
+      Felsefe okuma listesi ↗
+    </button>
+  </div>
+</div>
+
+<!-- DISSAL -->
+<div id="s-dissal" class="screen">
+  <div class="section-title">Finansal Bütünlük Sistemi (Finans boardundan)</div>
+  <div class="status-grid">
+    <div class="status-card">
+      <div class="val" style="color:#1D9E75">3</div>
+      <div class="lbl">Gelir alanı</div>
+    </div>
+    <div class="status-card">
+      <div class="val" style="color:#3B8BD4">4</div>
+      <div class="lbl">Yatırım aracı</div>
+    </div>
+    <div class="status-card">
+      <div class="val" style="color:#BA7517">5</div>
+      <div class="lbl">Hedef varlık</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Gelir Kaynakları</h4>
+    <ul class="item-list">
+      <li><span class="dot" style="background:#1D9E75"></span><span>Mevcut maaş (cari gelir)</span></li>
+      <li><span class="dot" style="background:#1D9E75"></span><span>Yazılım geliştirme gelirleri</span></li>
+      <li><span class="dot" style="background:#1D9E75"></span><span>Sermaye yatırım araçları (kripto dahil)</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h4>Hedef Varlıklar</h4>
+    <ul class="item-list">
+      <li><span class="dot" style="background:#BA7517"></span><span>Konut — sessiz, yeşil, ferah villa</span></li>
+      <li><span class="dot" style="background:#BA7517"></span><span>Taşıt — Mercedes S-Class (lüks ve güçlü)</span></li>
+      <li><span class="dot" style="background:#BA7517"></span><span>Ofis — tam teçhizatlı çalışma alanı</span></li>
+      <li><span class="dot" style="background:#BA7517"></span><span>Gereçler — tüm ihtiyaçlar karşılanmış</span></li>
+    </ul>
+  </div>
+
+  <div class="quote-box">
+    "Burada olacaksan bu defa, kendini dört başı mamur verebilecek misin onu düşün — en ufak zorlukta vazgeçeceksen girme." — Yatırım notu
+  </div>
+
+  <div class="card">
+    <h4>Kişisel Bütünlük (Finans boardundan)</h4>
+    <p style="font-size:12px; color:var(--color-text-secondary); line-height:1.7">
+      Akılsal: Okuma + Yazma + Yazılım geliştirme<br>
+      Fiziksel: Spor + Beslenme + Medikal<br>
+      Dışsal: Kozmetik + Görünüm + Günlük bakım<br>
+      Finansal: Gelir + Yatırım araçları
+    </p>
+  </div>
+
+  <button class="btn-action" onclick="sendPrompt('Yazılım geliştirme gelirimi artırmak için freelance ve ürün bazlı bir strateji öner.')">
+    Gelir stratejisi ↗
+  </button>
+</div>
+
+<!-- PROJELER -->
+<div id="s-projeler" class="screen">
+  <div class="subtabs">
+    <button class="subtab active" onclick="showSub('projeler','ai')">AI Projesi</button>
+    <button class="subtab" onclick="showSub('projeler','faiz')">Faiz Sistemi</button>
+    <button class="subtab" onclick="showSub('projeler','booking')">Booking</button>
+  </div>
+
+  <div id="projeler-ai" class="subscreen active">
+    <div class="section-title">Özel AI Modeli Geliştirme</div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#3B8BD4"></div>
+        <span class="tl-badge" style="background:#E6F1FB;color:#185FA5">Eğitim Süreci</span>
+        <h5>Veri & Model Hazırlık</h5>
+        <p>Veri toplama ve temizleme → Uygun algoritma seçimi → 73 milyar parametre + trilyon token eğitimi</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#3B8BD4"></div>
+        <span class="tl-badge" style="background:#E6F1FB;color:#185FA5">İcra</span>
+        <h5>Altyapı & Demo</h5>
+        <p>Demo için çip al → Çalışma kanıtla → Çipset temini → Sunucu kurulumu → Arayüz geliştirme</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#3B8BD4"></div>
+        <span class="tl-badge" style="background:#E6F1FB;color:#185FA5">Finans</span>
+        <h5>Yatırım ($30M+)</h5>
+        <p>Yatırımcı arayışı → Dış yatırımcı ilişkileri → Hukuki süreçler</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:#3B8BD4"></div>
+        <span class="tl-badge" style="background:#E6F1FB;color:#185FA5">Ticarileşme</span>
+        <h5>Ürün & Gelir</h5>
+        <p>NLP, görüntü tanıma, sağlık AI, pazarlama optimizasyonu, proje yönetimi araçları</p>
+      </div>
+    </div>
+    <button class="btn-action" onclick="sendPrompt('Kendi AI modelimi geliştirmek için demo aşamasından başlayarak 6 aylık somut yol haritası hazırla. Minimum kaynak ile başlangıç stratejisi nedir?')">
+      Demo stratejisi planla ↗
+    </button>
+  </div>
+
+  <div id="projeler-faiz" class="subscreen">
+    <div class="section-title">Kripto Faiz Sistemi — Web Uygulaması</div>
+    <div class="writing-flow">
+      <div class="step-card">
+        <div class="step-num" style="background:#E1F5EE;color:#0F6E56">1</div>
+        <div><h5>Kullanıcı kaydı</h5><p>Cüzdan adresi ile kayıt. Çekme adresinin zorunlu olduğuna dair uyarı.</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#E1F5EE;color:#0F6E56">2</div>
+        <div><h5>Yatırma talebi</h5><p>Cüzdan adresi + miktar + vade seçimi</p></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num" style="background:#E1F5EE;color:#0F6E56">3</div>
+        <div><h5>Dashboard</h5><p>İçerideki para, faiz miktarı, çekilebilir miktar, toplam kazanç, uzatma/çekme talebi</p></div>
+      </div>
+    </div>
+    <button class="btn-action" onclick="sendPrompt('Kripto faiz sistemi için React + Node.js teknoloji stackiyle MVP geliştirme planı yap. Hangi özelliklerden başlamalıyım?')">
+      MVP planı oluştur ↗
+    </button>
+  </div>
+
+  <div id="projeler-booking" class="subscreen">
+    <div class="section-title">Booking / Rezervasyon Projesi</div>
+    <div class="card">
+      <p>Yazılım Projeleri klasöründe Booking board'u mevcut. Detay henüz minimal — geliştirme aşamasında.</p>
+    </div>
+    <button class="btn-action" onclick="sendPrompt('Bir booking/rezervasyon uygulaması için en temel MVP özellikleri ve teknoloji seçimi öner.')">
+      Booking MVP planla ↗
+    </button>
+  </div>
+</div>
+
+<!-- YAZARLIK -->
+<div id="s-yazarlik" class="screen">
+  <div class="section-title">Yazarlık Yol Haritası</div>
+  <div class="writing-flow">
+    <div class="step-card">
+      <div class="step-num" style="background:#EEEDFE;color:#534AB7">1</div>
+      <div><h5>Okuma & Gözlem</h5><p>Roman, şiir, hikaye. Şiir oku ve kaydet. Klasik müzik eşliğinde okuma.</p></div>
+    </div>
+    <div class="step-card">
+      <div class="step-num" style="background:#EEEDFE;color:#534AB7">2</div>
+      <div><h5>Kısa romanlar (öncelik)</h5><p>İlk adım kısa formatlar. Deneme ve makale ile paralel gidilmeli.</p></div>
+    </div>
+    <div class="step-card">
+      <div class="step-num" style="background:#EEEDFE;color:#534AB7">3</div>
+      <div><h5>Dil ustalığı</h5><p>Konu seçimi → Açılış cümlesi → Karakter → Atmosfer → Çatışma → Diyalog → Düzenleme → Güçlü son</p></div>
+    </div>
+    <div class="step-card">
+      <div class="step-num" style="background:#EEEDFE;color:#534AB7">4</div>
+      <div><h5>Kitap</h5><p>Roman + İnceleme + Deneme kitabı. Uzun vadeli hedef.</p></div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    "Düz yazı krema gibidir, soğuması beklendikten sonra tadına bakılır."
+  </div>
+
+  <div class="card">
+    <h4>Yaratıcı Yazarlık İlkeleri (board'dan)</h4>
+    <ul class="item-list">
+      <li><span class="dot" style="background:#7F77DD"></span><span>İyi bir açılış cümlesiyle başla</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span>Karakterleri oluştur ve geliştir</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span>Atmosfer için detay ekle</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span>Çatışma unsurları kullan</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span>Diyalogları doğal ve inandırıcı yaz</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span>Düzenleme aşamasına dikkat et — sadeleştir</span></li>
+      <li><span class="dot" style="background:#7F77DD"></span><span>Okuyucuda derin iz bırakan güçlü son yaz</span></li>
+    </ul>
+  </div>
+
+  <button class="btn-action" onclick="sendPrompt('Yazarlık pratiğim için haftalık bir yazma programı öner. Her gün ne kadar yazmalıyım, hangi türlerde çalışmalıyım?')">
+    Yazma programı oluştur ↗
+  </button>
+</div>
+
+<!-- SİSTEM -->
+<div id="s-sistem" class="screen">
+  <div class="section-title">Kişisel Gelişim Sistemi — Öncelik Sırası</div>
+
+  <div class="card">
+    <h4>Şu an en takılı alan: Yazarlık / Entelektüel Üretim</h4>
+    <p>Bu alandaki bloğu kırmak için önerilen 4 eylem:</p>
+  </div>
+
+  <div id="actions">
+    <div class="action-row" onclick="toggleAction(this)">
+      <div class="action-check"></div>
+      <span>Her gün minimum 200 kelime yaz — konu önemli değil</span>
+      <span class="area-tag" style="background:#EEEDFE;color:#534AB7">Yazarlık</span>
+    </div>
+    <div class="action-row" onclick="toggleAction(this)">
+      <div class="action-check"></div>
+      <span>Haftada 1 kısa hikaye taslağı oluştur</span>
+      <span class="area-tag" style="background:#EEEDFE;color:#534AB7">Yazarlık</span>
+    </div>
+    <div class="action-row" onclick="toggleAction(this)">
+      <div class="action-check"></div>
+      <span>Obsidian'da okuma notlarını bağlantılı tut</span>
+      <span class="area-tag" style="background:#E6F1FB;color:#185FA5">Akıl</span>
+    </div>
+    <div class="action-row" onclick="toggleAction(this)">
+      <div class="action-check"></div>
+      <span>Günde 20 dakika İngilizce shadowing</span>
+      <span class="area-tag" style="background:#E6F1FB;color:#185FA5">Akıl</span>
+    </div>
+    <div class="action-row" onclick="toggleAction(this)">
+      <div class="action-check"></div>
+      <span>Sabah namazı sonrası 30 dk okuma bloğu</span>
+      <span class="area-tag" style="background:#EEEDFE;color:#534AB7">Ruh</span>
+    </div>
+    <div class="action-row" onclick="toggleAction(this)">
+      <div class="action-check"></div>
+      <span>Bisiklet çıkışından önce yumurta ye (boşluk bırakma)</span>
+      <span class="area-tag" style="background:#E1F5EE;color:#0F6E56">Beden</span>
+    </div>
+    <div class="action-row" onclick="toggleAction(this)">
+      <div class="action-check"></div>
+      <span>AI projesi için bir demo prototipi başlat</span>
+      <span class="area-tag" style="background:#FAEEDA;color:#854F0B">Projeler</span>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:20px">Vizyon Üzerine Geliştirme Önerileri</div>
+  <div class="card">
+    <ul class="item-list">
+      <li><span class="dot" style="background:#1D9E75"></span><span><strong>Yazarlık için net bir takvim eksik</strong> — "ne zaman kitap" sorusunu yanıtla</span></li>
+      <li><span class="dot" style="background:#1D9E75"></span><span><strong>AI projesi çok büyük ölçeklenmiş</strong> — demo ile başla, küçük tut</span></li>
+      <li><span class="dot" style="background:#1D9E75"></span><span><strong>Finansal birikim miktarı belirsiz</strong> — aylık tasarruf hedefi koy</span></li>
+      <li><span class="dot" style="background:#1D9E75"></span><span><strong>Ruh & Akıl bütünleşimi güçlü</strong> — bu synergy'yi koru</span></li>
+      <li><span class="dot" style="background:#1D9E75"></span><span><strong>Hareket alışkanlığı sağlam</strong> — devam et, kış için plan var</span></li>
+    </ul>
+  </div>
+
+  <button class="btn-action btn-primary" onclick="sendPrompt('Tüm bu alanları (ruh, beden, akıl, finans, yazarlık, AI projesi) dengeleyen kişisel bir haftalık sistem şeması oluştur. Sabahtan akşama saatlik bloklar halinde öner.')">
+    Master haftalık sistem kur ↗
+  </button>
+</div>
+
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.nav button');
+  const labels = ['overview','ruh','beden','akil','dissal','projeler','yazarlik','sistem'];
+  const idx = labels.indexOf(id);
+  if (idx >= 0) btns[idx].classList.add('active');
+}
+
+function showSub(parent, child) {
+  const container = document.getElementById('s-' + parent);
+  container.querySelectorAll('.subscreen').forEach(s => s.classList.remove('active'));
+  container.querySelectorAll('.subtab').forEach(b => b.classList.remove('active'));
+  document.getElementById(parent + '-' + child).classList.add('active');
+  const tabs = container.querySelectorAll('.subtab');
+  const children = {
+    beden: ['hareket','beslenme','sorunlar'],
+    akil: ['ogrenme','ingilizce','felsefe'],
+    projeler: ['ai','faiz','booking']
+  };
+  if (children[parent]) {
+    const idx = children[parent].indexOf(child);
+    if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+  }
+}
+
+function toggleAction(row) {
+  const check = row.querySelector('.action-check');
+  check.classList.toggle('done');
+  if (check.classList.contains('done')) {
+    check.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    row.querySelector('span').style.textDecoration = 'line-through';
+    row.querySelector('span').style.color = 'var(--color-text-tertiary)';
+  } else {
+    check.innerHTML = '';
+    row.querySelector('span').style.textDecoration = 'none';
+    row.querySelector('span').style.color = 'var(--color-text-primary)';
+  }
+}
+</script>

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature Picker Wizard — Micro-App Tasarım Aracı</title>
+<style>
+  :root {
+    --bg: #f8f7f4; --surface: #ffffff; --surface2: #f0ede8;
+    --border: #e2ddd7; --border-h: #c9c2b8;
+    --text: #1a1814; --text2: #5a5550; --text3: #9a9590;
+    --accent: #2d6be4; --accent-l: #eef3fd;
+    --green: #1a7f4e; --green-l: #eaf7f0;
+    --orange: #c45c0e; --orange-l: #fff3ea;
+    --purple: #6e3fd4; --purple-l: #f3eeff;
+    --rose: #b8284e; --rose-l: #fdeef2;
+    --amber: #9a6200; --amber-l: #fdf7e8;
+    --radius: 12px; --radius-sm: 8px;
+    --shadow-h: 0 2px 6px rgba(0,0,0,.08), 0 8px 24px rgba(0,0,0,.1);
+  }
+  [data-theme="dark"] {
+    --bg: #131210; --surface: #1e1c1a; --surface2: #262420;
+    --border: #302e2a; --border-h: #484440;
+    --text: #f0ede8; --text2: #a09890; --text3: #686460;
+    --accent: #5b8ef0; --accent-l: #1a2240;
+    --green: #3dc87a; --green-l: #0e2018;
+    --orange: #e88040; --orange-l: #281808;
+    --purple: #a070f0; --purple-l: #1e1030;
+    --rose: #e06080; --rose-l: #280e18;
+    --amber: #e0b040; --amber-l: #201808;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 100px; }
+
+  /* HEADER */
+  .header { position: sticky; top: 0; z-index: 100; background: var(--surface);
+    border-bottom: 1px solid var(--border); padding: 0 24px; }
+  .header-top { display: flex; align-items: center; gap: 16px; height: 60px; }
+  .logo { font-size: 15px; font-weight: 700; }
+  .logo span { color: var(--accent); }
+  .project-input { flex: 1; max-width: 320px; padding: 7px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface2); color: var(--text); font-size: 13px; outline: none; font-family: inherit; }
+  .project-input:focus { border-color: var(--accent); }
+  .search-wrap { flex: 1; max-width: 280px; position: relative; }
+  .search { width: 100%; padding: 7px 12px 7px 32px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); background: var(--surface2); color: var(--text);
+    font-size: 13px; outline: none; font-family: inherit; }
+  .search:focus { border-color: var(--accent); }
+  .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); font-size: 13px; pointer-events: none; }
+  .header-actions { display: flex; gap: 8px; margin-left: auto; }
+  .icon-btn { width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--surface2); color: var(--text2);
+    cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .icon-btn:hover { background: var(--border); color: var(--text); }
+
+  /* FILTER */
+  .filter-bar { display: flex; gap: 4px; padding: 10px 0; overflow-x: auto; scrollbar-width: none; }
+  .filter-bar::-webkit-scrollbar { display: none; }
+  .filter-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--text2); font-size: 12px; cursor: pointer;
+    white-space: nowrap; font-family: inherit; }
+  .filter-btn:hover { border-color: var(--border-h); color: var(--text); }
+  .filter-btn.active { border-color: var(--accent); background: var(--accent-l);
+    color: var(--accent); font-weight: 600; }
+  .count-badge { display: inline-flex; align-items: center; justify-content: center;
+    min-width: 16px; height: 16px; border-radius: 8px; background: var(--surface2);
+    color: var(--text3); font-size: 10px; font-weight: 600; padding: 0 4px; margin-left: 4px; }
+  .filter-btn.active .count-badge { background: var(--accent); color: white; }
+
+  /* INTRO */
+  .intro { max-width: 1200px; margin: 24px auto 0; padding: 16px 24px;
+    background: var(--accent-l); border: 1px solid var(--accent);
+    border-radius: var(--radius); color: var(--text); font-size: 13px; line-height: 1.6; }
+  .intro b { color: var(--accent); }
+  .intro .steps { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+  .step { display: flex; gap: 8px; align-items: flex-start; }
+  .step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--accent);
+    color: white; font-size: 11px; font-weight: 700; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* MAIN */
+  .main { max-width: 1200px; margin: 24px auto; padding: 0 24px; }
+  .section { margin-bottom: 32px; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    cursor: pointer; user-select: none; }
+  .section-icon { font-size: 20px; }
+  .section-title { font-size: 16px; font-weight: 700; }
+  .section-meta { font-size: 11px; color: var(--text3); }
+  .section-count { font-size: 11px; color: var(--text3); background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 10px; padding: 1px 8px; }
+  .section-header .chevron { font-size: 11px; color: var(--text3);
+    transition: transform .2s; margin-left: auto; }
+  .section.collapsed .chevron { transform: rotate(-90deg); }
+  .section.collapsed .feat-grid { display: none; }
+
+  /* FEATURE CARDS */
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  .feat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 14px; transition: all .15s; display: flex; flex-direction: column; gap: 10px; }
+  .feat:hover { border-color: var(--border-h); box-shadow: var(--shadow-h); }
+  .feat.selected { border-color: var(--accent); background: linear-gradient(to bottom, var(--accent-l) 0%, var(--surface) 60%); }
+  .feat.hidden { display: none; }
+
+  .feat-head { display: flex; gap: 10px; align-items: flex-start; }
+  .feat-check { flex-shrink: 0; margin-top: 2px; }
+  .feat-check input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent); }
+  .feat-titles { flex: 1; min-width: 0; }
+  .feat-title { font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .feat-en { font-size: 10px; color: var(--text3); font-family: 'SF Mono', Monaco, monospace; margin-top: 2px; }
+  .feat-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* VARIANTS */
+  .feat-variants { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .variant { padding: 3px 10px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface2); font-size: 11px; cursor: pointer; color: var(--text2);
+    font-family: inherit; transition: all .15s; }
+  .variant:hover { border-color: var(--border-h); }
+  .variant.active { background: var(--accent); border-color: var(--accent); color: white; font-weight: 500; }
+  .feat:not(.selected) .feat-variants { opacity: .4; pointer-events: none; }
+
+  /* EDGE CASES */
+  .feat-edges { display: flex; flex-direction: column; gap: 5px; padding: 8px;
+    background: var(--amber-l); border: 1px solid var(--amber);
+    border-radius: var(--radius-sm); font-size: 11px; }
+  .feat-edges-title { font-weight: 600; color: var(--amber); display: flex; gap: 4px; align-items: center; }
+  .edge-row { display: flex; gap: 6px; align-items: flex-start; }
+  .edge-row input[type="checkbox"] { margin-top: 1px; accent-color: var(--amber); }
+  .edge-label { color: var(--text2); line-height: 1.4; }
+  .edge-label b { color: var(--text); }
+
+  /* NOTE INPUT */
+  .feat-note { display: none; margin-top: 4px; }
+  .feat.selected .feat-note { display: block; }
+  .feat-note textarea { width: 100%; min-height: 50px; padding: 8px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface2); color: var(--text); font-size: 12px;
+    font-family: inherit; resize: vertical; outline: none; }
+  .feat-note textarea:focus { border-color: var(--accent); }
+  .feat-note label { font-size: 10px; color: var(--text3); display: block; margin-bottom: 3px;
+    text-transform: uppercase; letter-spacing: .5px; }
+
+  /* LINK */
+  .feat-link { font-size: 11px; }
+  .feat-link a { color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
+  .feat-link a:hover { text-decoration: underline; }
+
+  /* STICKY EXPORT BAR */
+  .export-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+    background: var(--surface); border-top: 1px solid var(--border);
+    padding: 14px 24px; box-shadow: 0 -4px 16px rgba(0,0,0,.06); }
+  .export-inner { max-width: 1200px; margin: 0 auto; display: flex;
+    gap: 16px; align-items: center; flex-wrap: wrap; }
+  .export-stats { display: flex; gap: 20px; font-size: 12px; }
+  .stat-item { display: flex; flex-direction: column; }
+  .stat-num { font-size: 18px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; }
+  .export-actions { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  .btn { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text2); font-size: 12px; font-weight: 500;
+    font-family: inherit; cursor: pointer; transition: all .15s; display: inline-flex;
+    align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--border-h); color: var(--text); background: var(--surface); }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .btn-primary:hover { background: var(--text); border-color: var(--text); color: var(--surface); }
+  .btn-success { background: var(--green); border-color: var(--green); color: white; }
+
+  /* PREVIEW MODAL */
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5);
+    z-index: 300; padding: 24px; overflow-y: auto; }
+  .modal-bg.open { display: flex; align-items: flex-start; justify-content: center; }
+  .modal { background: var(--surface); border-radius: var(--radius); max-width: 800px;
+    width: 100%; padding: 24px; max-height: 90vh; overflow-y: auto; }
+  .modal-head { display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; }
+  .modal-title { font-size: 16px; font-weight: 700; }
+  .modal-close { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--surface2); cursor: pointer; font-size: 14px; }
+  .modal-pre { background: var(--surface2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px; font-size: 11px;
+    font-family: 'SF Mono', Monaco, monospace; overflow-x: auto; white-space: pre;
+    color: var(--text); line-height: 1.5; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 90px; right: 24px; z-index: 400;
+    background: var(--green); color: white; padding: 10px 16px;
+    border-radius: var(--radius-sm); font-size: 13px; opacity: 0;
+    transition: opacity .3s, transform .3s; transform: translateY(10px); }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 640px) {
+    .header-top { flex-wrap: wrap; height: auto; padding: 10px 0; }
+    .project-input, .search-wrap { max-width: none; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">Feature Picker <span>· Wizard</span></div>
+    <input class="project-input" type="text" id="projectName" placeholder="Proje adı (ör: Daily Conditional Trainer)" />
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search" type="text" id="searchInput" placeholder="Özellik ara…" oninput="filterFeats()">
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleTheme()" title="Tema">🌓</button>
+      <button class="icon-btn" onclick="selectAll(false)" title="Tümünü temizle">🗑️</button>
+    </div>
+  </div>
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" data-cat="all" onclick="setCat('all')">Tümü <span class="count-badge" id="cnt-all">0</span></button>
+    <button class="filter-btn" data-cat="selected" onclick="setCat('selected')">⭐ Seçilenler <span class="count-badge" id="cnt-selected">0</span></button>
+  </div>
+</div>
+
+<div class="intro">
+  <b>🧙 Bu sihirbaz nasıl çalışır?</b> Aşağıdaki özelliklerden istediklerini seç → varyantını belirle → not ekle → JSON indir → Claude'a ver → istediğin micro-app gelsin.
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div><b>Seç:</b> Mikro-uygulamanı oluşturacak özellikleri işaretle.</div></div>
+    <div class="step"><div class="step-num">2</div><div><b>Detaylandır:</b> Varyantları (örn. dark mode tipi) ve edge case'leri belirt.</div></div>
+    <div class="step"><div class="step-num">3</div><div><b>Not ekle:</b> Her özellik için serbest açıklama yaz.</div></div>
+    <div class="step"><div class="step-num">4</div><div><b>İndir:</b> Sağ alttan JSON'u indir, Claude'a gönder.</div></div>
+  </div>
+</div>
+
+<div class="main" id="featMain"></div>
+
+<!-- Sticky Export Bar -->
+<div class="export-bar">
+  <div class="export-inner">
+    <div class="export-stats">
+      <div class="stat-item"><div class="stat-num" id="selCount">0</div><div class="stat-label">Seçilen</div></div>
+      <div class="stat-item"><div class="stat-num" id="totalCount">0</div><div class="stat-label">Toplam</div></div>
+      <div class="stat-item"><div class="stat-num" id="catCount">0</div><div class="stat-label">Kategori</div></div>
+    </div>
+    <div class="export-actions">
+      <button class="btn" onclick="showPreview()">👁️ Önizle</button>
+      <button class="btn" onclick="copyJSON()">📋 Kopyala</button>
+      <button class="btn btn-primary" onclick="downloadJSON()">⬇️ JSON İndir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">JSON Önizleme</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <pre class="modal-pre" id="modalPre"></pre>
+  </div>
+</div>
+
+<div class="toast" id="toast">Kopyalandı!</div>
+
+<script>
+/* ========== FEATURE CATALOG ========== */
+const CATEGORIES = [
+  { id: 'theme',    icon: '🎨', label: 'Tema & Renk',          en: 'Theme & Color' },
+  { id: 'typo',     icon: '🔤', label: 'Tipografi',            en: 'Typography' },
+  { id: 'layout',   icon: '📐', label: 'Layout & Yapı',        en: 'Layout & Structure' },
+  { id: 'nav',      icon: '🧭', label: 'Navigasyon',           en: 'Navigation' },
+  { id: 'content',  icon: '🃏', label: 'İçerik Birimleri',     en: 'Content Units' },
+  { id: 'inter',    icon: '🎯', label: 'Etkileşim',            en: 'Interactions' },
+  { id: 'learn',    icon: '🎓', label: 'Öğrenme Mekanikleri',  en: 'Learning Mechanics' },
+  { id: 'mode',     icon: '🌐', label: 'Okuma & Dil Modları',  en: 'Reading & Language Modes' },
+  { id: 'prod',     icon: '📝', label: 'Üretim & Yazma',       en: 'Production & Writing' },
+  { id: 'game',     icon: '🎮', label: 'Gamifikasyon',         en: 'Gamification' },
+  { id: 'data',     icon: '💾', label: 'Veri & Persistance',   en: 'Data & Persistence' },
+  { id: 'ai',       icon: '🤖', label: 'AI Entegrasyon',       en: 'AI Integration' },
+  { id: 'edge',     icon: '⚠️', label: 'Edge Cases & A11y',    en: 'Edge Cases & A11y' },
+];
+
+const FEATURES = [
+  // ============ THEME ============
+  { id: 'color_palette', cat: 'theme', label: 'Renk Paleti', en: 'color_palette',
+    desc: 'Uygulamanın genel renk şeması. Sıcak kâğıt tonları okuma için, soğuk maviler odaklanma için, monokrom minimal görünüm için.',
+    variants: ['warm_paper','cool_blue','monochrome','pastel','high_contrast','custom'],
+    source: 'lingualab-2.html',
+  },
+  { id: 'dark_mode', cat: 'theme', label: 'Dark Mode', en: 'dark_mode',
+    desc: 'Karanlık tema desteği. Auto = sistem tercihini takip eder, manual = kullanıcı toggle\'lar, none = sadece light.',
+    variants: ['auto','manual_toggle','none'],
+    source: '_dashboard.html',
+  },
+  { id: 'accent_color', cat: 'theme', label: 'Vurgu Rengi', en: 'accent_color',
+    desc: 'Butonlar, link\'ler ve aktif öğeler için ana vurgu rengi.',
+    variants: ['blue','green','orange','purple','rose','teal','amber'],
+  },
+  { id: 'background_style', cat: 'theme', label: 'Arkaplan Stili', en: 'background_style',
+    desc: 'Yüzey hissi. Glass = blur efekt, paper_texture = hafif doku, gradient = pürüzsüz geçiş.',
+    variants: ['solid','gradient','glass','paper_texture','grid_pattern'],
+  },
+
+  // ============ TYPOGRAPHY ============
+  { id: 'font_family', cat: 'typo', label: 'Font Ailesi', en: 'font_family',
+    desc: 'Ana metin fontu. Serif edebi okumalar için, sans modern arayüzler için, mono kod ve veri için.',
+    variants: ['serif','sans_serif','mono','mixed_serif_sans'],
+  },
+  { id: 'font_size', cat: 'typo', label: 'Yazı Boyutu Ölçeği', en: 'font_size_scale',
+    desc: 'Genel yazı boyutu skalası. Compact yoğun bilgi için, comfortable okuma için, large erişilebilirlik için.',
+    variants: ['compact','comfortable','large'],
+  },
+  { id: 'line_height', cat: 'typo', label: 'Satır Aralığı', en: 'line_height',
+    desc: 'Uzun metinlerde okuma rahatlığı için kritik. Loose = nefes alan metin.',
+    variants: ['tight','normal','loose'],
+  },
+  { id: 'reading_width', cat: 'typo', label: 'Okuma Genişliği', en: 'reading_width',
+    desc: 'Satır başına karakter sayısı. 60-75 karakter ideal okuma alanıdır.',
+    variants: ['narrow_60ch','medium_75ch','wide_90ch','fluid'],
+  },
+
+  // ============ LAYOUT ============
+  { id: 'layout_type', cat: 'layout', label: 'Layout Tipi', en: 'layout_type',
+    desc: 'Ana içerik düzeni. Card_grid esnek, sidebar kalıcı menü için, tabs kategoriler için, accordion uzun içerik için.',
+    variants: ['card_grid','single_column','sidebar_left','sidebar_right','tabs','accordion','kanban_board','split_pane'],
+    source: '_dashboard.html',
+  },
+  { id: 'max_width', cat: 'layout', label: 'Max Genişlik', en: 'max_width',
+    desc: 'İçerik kabuğunun maksimum genişliği.',
+    variants: ['narrow_800','medium_1100','wide_1400','fluid'],
+  },
+  { id: 'sticky_header', cat: 'layout', label: 'Sticky Header', en: 'sticky_header',
+    desc: 'Scroll edildiğinde üstte sabit kalan header. Filtre ve arama her zaman erişilebilir.',
+  },
+  { id: 'sticky_footer', cat: 'layout', label: 'Sticky Footer / Action Bar', en: 'sticky_footer',
+    desc: 'Alt sabit eylem çubuğu. Save/export/devam butonları için.',
+    source: '_feature-wizard.html',
+  },
+  { id: 'collapsible_sections', cat: 'layout', label: 'Çökertilebilir Bölümler', en: 'collapsible_sections',
+    desc: 'Bölümler tıklayınca açılır/kapanır. Uzun içerikte odak için.',
+    source: '_dashboard.html',
+  },
+  { id: 'multi_column', cat: 'layout', label: 'Çoklu Kolon', en: 'multi_column',
+    desc: 'Geniş ekranlarda 2 veya 3 sütunlu görünüm.',
+    variants: ['2_col','3_col','responsive_auto'],
+  },
+
+  // ============ NAVIGATION ============
+  { id: 'filter_chips', cat: 'nav', label: 'Filtre Çipleri', en: 'filter_chips',
+    desc: 'Üst veya yan tarafta tıklanabilir filtre etiketleri. Kategori bazlı içerik filtreleme.',
+    source: '_dashboard.html',
+  },
+  { id: 'search_bar', cat: 'nav', label: 'Arama Çubuğu', en: 'search_bar',
+    desc: 'İçerik arama. Live = anlık filtreleme, autocomplete = öneri, fuzzy = yakın eşleşme.',
+    variants: ['live_filter','autocomplete','fuzzy_search','tag_search'],
+    edges: [
+      { id: 'empty_search', label: 'Sonuç yoksa', detail: 'Boş durum mesajı göster' },
+      { id: 'search_persist', label: 'Aramayı hatırla', detail: 'localStorage\'da arama geçmişi' },
+    ],
+  },
+  { id: 'breadcrumbs', cat: 'nav', label: 'Breadcrumbs', en: 'breadcrumbs',
+    desc: 'Hiyerarşik yol gösterimi. Derin sayfalarda kullanıcı nerede olduğunu bilsin.',
+  },
+  { id: 'toc', cat: 'nav', label: 'İçindekiler Tablosu (TOC)', en: 'table_of_contents',
+    desc: 'Uzun sayfalarda yan tarafta scroll ile senkronize başlık listesi.',
+    variants: ['fixed_sidebar','floating','top_dropdown'],
+  },
+  { id: 'back_to_top', cat: 'nav', label: 'Yukarı Çık Butonu', en: 'back_to_top',
+    desc: 'Uzun scrollerda alt köşede beliren "yukarı dön" butonu.',
+  },
+  { id: 'step_wizard', cat: 'nav', label: 'Adım Adım Wizard', en: 'step_wizard',
+    desc: 'Çok aşamalı süreçler için ilerleme göstergesi (1 → 2 → 3 → done).',
+    edges: [
+      { id: 'wizard_back', label: 'Geri dönülebilir mi?', detail: 'Önceki adıma dönmeye izin ver' },
+      { id: 'wizard_skip', label: 'Adım atlanabilir mi?', detail: 'Opsiyonel adımları geç' },
+    ],
+  },
+  { id: 'tabs_nav', cat: 'nav', label: 'Tab Navigation', en: 'tabs_nav',
+    desc: 'Yatay sekmelerle içerik geçişi. Read/Grammar/Vocab/Quiz/Reflect gibi.',
+    source: 'text-first-daily.html',
+  },
+
+  // ============ CONTENT UNITS ============
+  { id: 'card_simple', cat: 'content', label: 'Basit Kart', en: 'card_simple',
+    desc: 'Başlık + açıklama + opsiyonel buton. En çok kullanılan içerik birimi.',
+    source: '_dashboard.html',
+  },
+  { id: 'card_flippable', cat: 'content', label: 'Flashcard (Flip)', en: 'card_flippable',
+    desc: 'Tıklayınca dönen kart. Ön: soru/kelime, Arka: cevap/anlam.',
+    source: 'vocab-srs.html',
+    edges: [
+      { id: 'flip_animation', label: 'Flip animasyonu', detail: '3D vs fade vs instant' },
+    ],
+  },
+  { id: 'list_styles', cat: 'content', label: 'Liste Stilleri', en: 'list_styles',
+    desc: 'Madde, numara, tablo, açıklamalı liste arasında seçim.',
+    variants: ['bullet','numbered','dl','checklist','timeline'],
+  },
+  { id: 'table', cat: 'content', label: 'Tablo', en: 'table',
+    desc: 'Karşılaştırma veya yapılandırılmış veri için. Sortable, sticky header opsiyonu.',
+    edges: [
+      { id: 'table_sortable', label: 'Sıralanabilir', detail: 'Sütun başlığına tıklayınca sırala' },
+      { id: 'table_responsive', label: 'Mobil yapı', detail: 'Mobilde card\'a dönüşsün mü?' },
+    ],
+  },
+  { id: 'callout', cat: 'content', label: 'Callout / Admonition', en: 'callout',
+    desc: 'Renkli vurgu kutusu: info, warning, success, danger, note tipleri.',
+    variants: ['info','warning','success','danger','tip','quote'],
+  },
+  { id: 'code_block', cat: 'content', label: 'Kod Bloğu', en: 'code_block',
+    desc: 'Monospace kod alanı. Syntax highlight + copy butonu opsiyonel.',
+    edges: [
+      { id: 'code_copy', label: 'Kopyala butonu', detail: 'Sağ üst köşeye yapıştır' },
+      { id: 'code_lang', label: 'Dil etiketi', detail: 'Üstte dil adı göster' },
+    ],
+  },
+  { id: 'timeline', cat: 'content', label: 'Timeline / Zaman Çizgisi', en: 'timeline',
+    desc: 'Sıralı olayları görsel olarak gösterir. Yatay veya dikey.',
+    variants: ['vertical','horizontal'],
+  },
+  { id: 'progress_bar', cat: 'content', label: 'Progress Bar', en: 'progress_bar',
+    desc: 'İlerleme yüzdesi göstergesi. Yatay çubuk veya dairesel.',
+    variants: ['linear','circular','segmented_steps'],
+  },
+  { id: 'diagram', cat: 'content', label: 'Diyagram / Mind Map', en: 'diagram',
+    desc: 'Görsel ilişki haritası. Node\'lar arası bağlantı.',
+    source: 'english-grammar-diagram.html',
+  },
+
+  // ============ INTERACTIONS ============
+  { id: 'click_reveal', cat: 'inter', label: 'Click-to-Reveal', en: 'click_to_reveal',
+    desc: 'Tıklayınca açılan detay. Modal, inline expand veya popover olarak.',
+    variants: ['modal','inline_expand','popover','tooltip'],
+    source: 'grammar-first-daily.html',
+  },
+  { id: 'hover_tooltip', cat: 'inter', label: 'Hover Tooltip', en: 'hover_tooltip',
+    desc: 'Üzerine gelince bilgi balonu. Mobile için tap fallback gerekli.',
+    edges: [
+      { id: 'tooltip_mobile', label: 'Mobil davranış', detail: 'Tap = göster, dış tap = gizle' },
+    ],
+  },
+  { id: 'tap_translate', cat: 'inter', label: 'Tap-to-Translate', en: 'tap_to_translate',
+    desc: 'Kelime/cümleye tıklayınca anlam çıksın. Inline veya modal.',
+    variants: ['inline_replace','popover','modal','sidebar_panel'],
+    source: 'compressed-galaxy-001-loss-aversion.html',
+  },
+  { id: 'highlight_save', cat: 'inter', label: 'Highlight + Kaydet', en: 'highlight_save',
+    desc: 'Metin seç → "Word bank\'a kaydet" butonu görünsün.',
+    source: 'text-first-daily.html',
+  },
+  { id: 'annotation', cat: 'inter', label: 'Annotation (Vurgu + Not)', en: 'annotation',
+    desc: 'Seçili metne renkli highlight + kullanıcı notu eklenebilir.',
+    edges: [
+      { id: 'annot_persist', label: 'Notlar saklansın mı?', detail: 'localStorage / IndexedDB' },
+      { id: 'annot_color', label: 'Renk seçimi', detail: 'Çoklu renkle kategorize etme' },
+    ],
+  },
+  { id: 'tts', cat: 'inter', label: 'TTS (Text-to-Speech)', en: 'tts',
+    desc: 'Metni sesli okutma. Browser native API ile, ücretsiz.',
+    variants: ['button_per_sentence','play_all','word_by_word_sync'],
+    source: 'text-first-daily.html',
+    edges: [
+      { id: 'tts_speed', label: 'Hız kontrolü', detail: '0.5x - 2x arası slider' },
+      { id: 'tts_voice', label: 'Ses seçimi', detail: 'US/UK aksan tercihi' },
+    ],
+  },
+  { id: 'drag_drop', cat: 'inter', label: 'Drag & Drop', en: 'drag_drop',
+    desc: 'Sürükle bırak. Eşleştirme alıştırmaları, sıralama için.',
+  },
+  { id: 'keyboard_shortcuts', cat: 'inter', label: 'Klavye Kısayolları', en: 'keyboard_shortcuts',
+    desc: 'J/K = sonraki/önceki, Space = devam, R = tekrar gibi.',
+  },
+  { id: 'undo_redo', cat: 'inter', label: 'Undo / Redo', en: 'undo_redo',
+    desc: 'Geri al / ileri al. Üretim alıştırmalarında kritik.',
+  },
+
+  // ============ LEARNING ============
+  { id: 'srs', cat: 'learn', label: 'Spaced Repetition (SRS)', en: 'srs',
+    desc: 'Aralıklı tekrar algoritması. SM-2 basit ve kanıtlanmış, FSRS daha modern.',
+    variants: ['sm2','fsrs','leitner_box','none'],
+    source: 'vocab-srs.html',
+    edges: [
+      { id: 'srs_leech', label: 'Leech tespiti', detail: '8+ "again" alan kart işaretlensin' },
+      { id: 'srs_status', label: 'Status track', detail: 'new → learning → young → mature' },
+    ],
+  },
+  { id: 'quiz_mcq', cat: 'learn', label: 'Quiz — Çoktan Seçmeli', en: 'quiz_mcq',
+    desc: 'Klasik MCQ. 4 şık, tek doğru. Anlık feedback.',
+    edges: [
+      { id: 'mcq_shuffle', label: 'Şıkları karıştır', detail: 'Her seferinde farklı sıra' },
+      { id: 'mcq_distractors', label: 'Çeldirici kalitesi', detail: 'AI ile akıllı yanlış şıklar' },
+    ],
+  },
+  { id: 'quiz_fill_blank', cat: 'learn', label: 'Quiz — Boşluk Doldurma', en: 'quiz_fill_blank',
+    desc: 'Cloze test. Cümlede boşluk var, kullanıcı yazar.',
+    edges: [
+      { id: 'fb_typos', label: 'Yazım hataları', detail: 'Esnek mi, sıkı mı?' },
+      { id: 'fb_hints', label: 'İpucu sistemi', detail: 'İlk harf, kelime uzunluğu' },
+    ],
+  },
+  { id: 'quiz_drag', cat: 'learn', label: 'Quiz — Eşleştirme', en: 'quiz_drag',
+    desc: 'Drag & drop ile eşleştirme. Kelime ↔ tanım, EN ↔ TR.',
+  },
+  { id: 'quiz_type', cat: 'learn', label: 'Quiz — Yazılı Cevap', en: 'quiz_type',
+    desc: 'Açık uçlu yazılı cevap. Diff veya AI evaluation gerekli.',
+  },
+  { id: 'progress_tracking', cat: 'learn', label: 'İlerleme Takibi', en: 'progress_tracking',
+    desc: 'Kullanıcının ne yaptığını kaydet. Görsel grafikle göster.',
+    variants: ['simple_count','xp_levels','heatmap','dashboard'],
+  },
+  { id: 'cefr_levels', cat: 'learn', label: 'CEFR Seviye Sistemi', en: 'cefr_levels',
+    desc: 'A1, A2, B1, B2, C1, C2 seviye etiketleri. Filtreleme + adaptive zorluk.',
+    edges: [
+      { id: 'cefr_adapt', label: 'Adaptive zorluk', detail: 'Doğru → bir üst, yanlış → bir alt seviye' },
+    ],
+  },
+  { id: 'word_bank', cat: 'learn', label: 'Word Bank / Chunk Kutusu', en: 'word_bank',
+    desc: 'Kaydedilen kelime/phrasal/chunk\'lar tek yerde. SRS için kaynak.',
+    source: 'vocab-srs.html',
+  },
+  { id: 'mistake_log', cat: 'learn', label: 'Hata Defteri', en: 'mistake_log',
+    desc: 'Yapılan tüm hatalar kategorize edilir. Tekrar pattern\'ler "boss battle"a dönüşür.',
+    source: 'wiki/practice',
+  },
+  { id: 'streak', cat: 'learn', label: 'Streak (Seri)', en: 'streak',
+    desc: 'Ardışık günler. Duolingo tarzı. Motivasyon için.',
+    edges: [
+      { id: 'streak_freeze', label: 'Streak freeze', detail: '1 gün kayıp affedilir' },
+    ],
+  },
+  { id: 'difficulty_slider', cat: 'learn', label: 'Zorluk Slider\'ı', en: 'difficulty_slider',
+    desc: 'Kullanıcı manuel olarak zorluk seviyesi seçer (1-5).',
+  },
+
+  // ============ MODES ============
+  { id: 'bilingual_side', cat: 'mode', label: 'İki Dilli — Yan Yana', en: 'bilingual_side_by_side',
+    desc: 'TR ve EN sütunlar yan yana. Hızlı karşılaştırma için.',
+    source: 'les-miserables-b1.html',
+  },
+  { id: 'bilingual_toggle', cat: 'mode', label: 'İki Dilli — Toggle', en: 'bilingual_toggle',
+    desc: 'Buton ile EN/TR arasında geçiş. Tek dil odakta.',
+  },
+  { id: 'bilingual_inline', cat: 'mode', label: 'İki Dilli — Satıriçi', en: 'bilingual_inline_translation',
+    desc: 'EN cümle, altında küçük TR. Veya tıklayınca TR çıkıyor.',
+  },
+  { id: 'grammar_highlight', cat: 'mode', label: 'Renk Kodlu Gramer Vurgu', en: 'grammar_highlight_overlay',
+    desc: 'Metinde tense\'ler/yapılar farklı renklerle vurgulanır. Legend bulunur.',
+    source: 'text-first-daily.html',
+  },
+  { id: 'focus_mode', cat: 'mode', label: 'Focus / Distraction-Free Mode', en: 'focus_mode',
+    desc: 'Tek tıkla menüler, sidebar gizlenir. Sadece okuma.',
+  },
+  { id: 'reading_speed', cat: 'mode', label: 'Okuma Hız Kontrolü', en: 'reading_speed_control',
+    desc: 'TTS hız veya kelime-by-kelime vurgu hızı.',
+  },
+  { id: 'pomodoro', cat: 'mode', label: 'Pomodoro / Zamanlayıcı', en: 'pomodoro_timer',
+    desc: 'Yerleşik 25 dk / 5 dk timer. Practice cell\'ler için.',
+  },
+
+  // ============ PRODUCTION ============
+  { id: 'production_cell', cat: 'prod', label: 'Production Cell (Box A + B)', en: 'production_cell',
+    desc: 'TR referans → Box A (diff view) → Box B (memory recall) → check. L1 Daily protokolü.',
+    source: 'daily-writing-loop.html',
+  },
+  { id: 'diff_view', cat: 'prod', label: 'Diff View (Kullanıcı vs Referans)', en: 'diff_view',
+    desc: 'Yazılan metin ile hedef metnin yan yana karşılaştırması. Yeşil ekle, kırmızı çıkar.',
+  },
+  { id: 'shadow_writing', cat: 'prod', label: 'Shadow Writing (Stil Taklit)', en: 'shadow_writing',
+    desc: 'Verilen yazarın stilinde paragraf üret. L2 protokolü.',
+    source: 'writing-atelier-001-bloomsday.html',
+  },
+  { id: 'conversational_loop', cat: 'prod', label: 'Conversational Loop', en: 'conversational_loop',
+    desc: 'Senaryo bazlı diyalog. Kullanıcı yazar, AI yanıt verir. L3 protokolü.',
+  },
+  { id: 'error_drill', cat: 'prod', label: 'Error Drill (Boss Battle)', en: 'error_drill',
+    desc: 'Sık yapılan hatalar üzerine odaklı alıştırma turu. L4 protokolü.',
+  },
+  { id: 'chunk_builder', cat: 'prod', label: 'Chunk Builder', en: 'chunk_builder',
+    desc: 'Hazır ifadeleri sürükleyerek cümle kurma. Akademik yazma için.',
+    source: 'remixed-0a7e2ae1.html',
+  },
+  { id: 'constraint_prompt', cat: 'prod', label: 'Constraint Prompt (Kısıtlı Üretim)', en: 'constraint_prompt',
+    desc: '"Şu 5 phrasal verb\'ü kullan" gibi zorlamalı yazma görevi. Hatasızlık değil, kullanım hedefi.',
+  },
+
+  // ============ GAMIFICATION ============
+  { id: 'xp_system', cat: 'game', label: 'XP / Puan Sistemi', en: 'xp_system',
+    desc: 'Her doğru cevap puan kazandırır. Level\'lar açılır.',
+    source: 'grammar-tracker.html',
+  },
+  { id: 'badges', cat: 'game', label: 'Rozetler / Achievements', en: 'badges',
+    desc: 'Belirli hedefleri tamamlayınca rozet kazan. Görsel ödül.',
+  },
+  { id: 'daily_goal', cat: 'game', label: 'Günlük Hedef', en: 'daily_goal',
+    desc: 'Bugün X dakika / Y kart / Z alıştırma hedefi. Tamamlandığında kutlama.',
+  },
+  { id: 'leaderboard', cat: 'game', label: 'Liderlik Tablosu (Yerel)', en: 'leaderboard_local',
+    desc: 'Kendi geçmiş skorlarınla yarış. Çoklu kullanıcı yok, sadece self-competition.',
+  },
+  { id: 'rewards', cat: 'game', label: 'Ödül Animasyonları', en: 'rewards_animations',
+    desc: 'Konfeti, level-up sesi, başarı bildirimi. Dopamin tetikleyici.',
+    edges: [
+      { id: 'reward_subtle', label: 'Sessiz mod', detail: 'Animasyonlar kapatılabilsin' },
+    ],
+  },
+
+  // ============ DATA ============
+  { id: 'localstorage', cat: 'data', label: 'localStorage Kaydet', en: 'localstorage',
+    desc: 'Tarayıcıda küçük veri saklama. 5-10 MB limit.',
+  },
+  { id: 'indexeddb', cat: 'data', label: 'IndexedDB', en: 'indexeddb',
+    desc: 'Tarayıcıda büyük veri (50MB+). SRS state, word bank için.',
+    source: 'implementation-notes.html',
+  },
+  { id: 'json_export', cat: 'data', label: 'JSON Export', en: 'json_export',
+    desc: 'Tüm veriyi indirilebilir JSON olarak çıkarma. Yedek + Obsidian köprü.',
+    source: '_feature-wizard.html',
+  },
+  { id: 'json_import', cat: 'data', label: 'JSON Import', en: 'json_import',
+    desc: 'Daha önce export edilmiş JSON\'ı geri yükleme.',
+  },
+  { id: 'obsidian_links', cat: 'data', label: 'Obsidian Wiki Linkleri', en: 'obsidian_wiki_links',
+    desc: '`obsidian://open?vault=...` URL\'leriyle vault\'a köprü.',
+    source: '_dashboard.html',
+  },
+  { id: 'inbox_bridge', cat: 'data', label: 'Inbox Köprüsü (00_INBOX/*.json)', en: 'inbox_bridge',
+    desc: 'Üretilen veri 00_INBOX klasörüne .json olarak düşer, Claude Code işler.',
+    source: 'implementation-notes.html',
+  },
+  { id: 'auto_save', cat: 'data', label: 'Otomatik Kaydetme', en: 'auto_save',
+    desc: 'Her değişiklik anında kaydedilir. Manuel "Save" butonuna gerek yok.',
+    edges: [
+      { id: 'autosave_debounce', label: 'Debounce', detail: 'Çok sık yazma → batch kaydet' },
+    ],
+  },
+
+  // ============ AI ============
+  { id: 'claude_chat', cat: 'ai', label: 'Claude Chat Entegrasyonu', en: 'claude_chat',
+    desc: 'In-app chat ile Claude\'a soru sorabilme. Prompt template\'leri hazır.',
+  },
+  { id: 'ai_feedback', cat: 'ai', label: 'AI Yazma Geri Bildirimi', en: 'ai_feedback',
+    desc: 'Yazılan metin AI\'a gider, hatalar + öneriler döner.',
+  },
+  { id: 'ai_examples', cat: 'ai', label: 'AI Örnek Üretimi', en: 'ai_examples',
+    desc: 'Boş örnek alanı: AI buton → 3 yeni örnek cümle üretir.',
+  },
+  { id: 'prompt_templates', cat: 'ai', label: 'Prompt Şablonları', en: 'prompt_templates',
+    desc: 'Hazır prompt\'lar: "Bu kelimeyi 3 farklı bağlamda kullan", "Bu gramerla 5 cümle yaz".',
+    source: 'claude-language-guide.html',
+  },
+
+  // ============ EDGE CASES ============
+  { id: 'mobile_responsive', cat: 'edge', label: 'Mobil Responsive', en: 'mobile_responsive',
+    desc: 'Telefon, tablet, masaüstü için optimize. Breakpoint stratejisi.',
+    variants: ['mobile_first','tablet_plus','desktop_only'],
+  },
+  { id: 'offline_mode', cat: 'edge', label: 'Offline Çalışma', en: 'offline_mode',
+    desc: 'İnternet yokken de çalışsın. Service Worker + cache.',
+  },
+  { id: 'print_friendly', cat: 'edge', label: 'Print-Friendly', en: 'print_friendly',
+    desc: 'Yazdırma için optimize CSS. Sidebar + navigasyon gizlenir.',
+  },
+  { id: 'a11y_keyboard', cat: 'edge', label: 'A11y — Klavye Navigasyonu', en: 'a11y_keyboard',
+    desc: 'Tab ile her şeye erişim. Focus ring görünür.',
+  },
+  { id: 'a11y_screen_reader', cat: 'edge', label: 'A11y — Ekran Okuyucu', en: 'a11y_screen_reader',
+    desc: 'ARIA label\'lar, semantic HTML. Görme engelliler için.',
+  },
+  { id: 'empty_state', cat: 'edge', label: 'Empty State Tasarımı', en: 'empty_state',
+    desc: 'Veri yokken ne göstereceğiz. İllüstrasyon + yardımcı mesaj.',
+    variants: ['minimal_text','illustrated','onboarding_cta'],
+  },
+  { id: 'loading_state', cat: 'edge', label: 'Loading State', en: 'loading_state',
+    desc: 'Veri beklenirken ne gösterilir. Skeleton ekranlar genelde tercih edilir.',
+    variants: ['skeleton','spinner','progress_bar','none'],
+  },
+  { id: 'error_state', cat: 'edge', label: 'Error State / Hata Mesajı', en: 'error_state',
+    desc: 'Bir şey ters gittiğinde kullanıcı dostu mesaj.',
+  },
+  { id: 'long_content_overflow', cat: 'edge', label: 'Uzun İçerik Taşması', en: 'long_content_overflow',
+    desc: 'Çok uzun metin/liste durumu. Truncate + "show more" mı? Scroll mu?',
+    variants: ['truncate_with_more','infinite_scroll','pagination'],
+  },
+  { id: 'multi_instance', cat: 'edge', label: 'Çoklu Instance', en: 'multi_instance',
+    desc: 'Aynı sayfada birden fazla widget. State çakışmasın.',
+  },
+  { id: 'rtl_support', cat: 'edge', label: 'RTL Desteği', en: 'rtl_support',
+    desc: 'Arapça/İbranice için sağdan sola yazım. Genelde gerekmez.',
+  },
+  { id: 'browser_compat', cat: 'edge', label: 'Tarayıcı Uyumluluğu', en: 'browser_compat',
+    desc: 'Hangi tarayıcılar destekleniyor. Modern only mi, IE11 var mı?',
+    variants: ['modern_only','last_2_versions','wide_legacy'],
+  },
+];
+
+/* ========== RENDER ========== */
+const main = document.getElementById('featMain');
+const state = { selected: {}, variants: {}, notes: {}, edges: {} };
+let currentCat = 'all';
+
+function render() {
+  main.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const feats = FEATURES.filter(f => f.cat === cat.id);
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    sec.id = 'sec-' + cat.id;
+    sec.innerHTML = `
+      <div class="section-header" onclick="toggleSec('${cat.id}')">
+        <span class="section-icon">${cat.icon}</span>
+        <span class="section-title">${cat.label}</span>
+        <span class="section-meta">${cat.en}</span>
+        <span class="section-count">${feats.length} özellik</span>
+        <span class="chevron">▾</span>
+      </div>
+      <div class="feat-grid" id="grid-${cat.id}"></div>
+    `;
+    main.appendChild(sec);
+    const grid = sec.querySelector('.feat-grid');
+    feats.forEach(f => grid.appendChild(renderFeat(f)));
+  });
+  updateFilterBar();
+  updateStats();
+}
+
+function renderFeat(f) {
+  const div = document.createElement('div');
+  div.className = 'feat';
+  div.dataset.cat = f.cat;
+  div.dataset.fid = f.id;
+  div.dataset.search = (f.label + ' ' + f.en + ' ' + f.desc + ' ' + (f.variants||[]).join(' ')).toLowerCase();
+
+  const variants = f.variants ? `
+    <div class="feat-variants">
+      ${f.variants.map(v => `<button class="variant" data-v="${v}" onclick="setVariant('${f.id}','${v}',event)">${v}</button>`).join('')}
+    </div>
+  ` : '';
+
+  const edges = f.edges ? `
+    <div class="feat-edges">
+      <div class="feat-edges-title">⚠️ Edge Case'ler</div>
+      ${f.edges.map(e => `
+        <label class="edge-row">
+          <input type="checkbox" data-edge="${e.id}" onchange="setEdge('${f.id}','${e.id}',this.checked)">
+          <span class="edge-label"><b>${e.label}:</b> ${e.detail}</span>
+        </label>
+      `).join('')}
+    </div>
+  ` : '';
+
+  const link = f.source ? `<div class="feat-link"><a href="${f.source}" target="_blank">🔗 Kaynak: ${f.source}</a></div>` : '';
+
+  div.innerHTML = `
+    <div class="feat-head">
+      <div class="feat-check"><input type="checkbox" onchange="toggleFeat('${f.id}',this.checked)"></div>
+      <div class="feat-titles">
+        <div class="feat-title">${f.label}</div>
+        <div class="feat-en">${f.en}</div>
+      </div>
+    </div>
+    <div class="feat-desc">${f.desc}</div>
+    ${variants}
+    ${edges}
+    ${link}
+    <div class="feat-note">
+      <label>Not / Açıklama</label>
+      <textarea placeholder="Bu özellikle ilgili özel istek veya açıklama..." onchange="setNote('${f.id}',this.value)"></textarea>
+    </div>
+  `;
+  return div;
+}
+
+function toggleFeat(fid, on) {
+  if (on) state.selected[fid] = true;
+  else { delete state.selected[fid]; delete state.variants[fid]; delete state.notes[fid]; delete state.edges[fid]; }
+  document.querySelector(`.feat[data-fid="${fid}"]`).classList.toggle('selected', on);
+  updateStats();
+  if (currentCat === 'selected') filterFeats();
+}
+
+function setVariant(fid, v, ev) {
+  if (!state.selected[fid]) { toggleFeat(fid, true); document.querySelector(`.feat[data-fid="${fid}"] input[type="checkbox"]`).checked = true; }
+  state.variants[fid] = v;
+  const card = document.querySelector(`.feat[data-fid="${fid}"]`);
+  card.querySelectorAll('.variant').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+  ev?.stopPropagation();
+}
+
+function setNote(fid, val) {
+  if (val.trim()) state.notes[fid] = val.trim();
+  else delete state.notes[fid];
+}
+
+function setEdge(fid, eid, on) {
+  if (!state.edges[fid]) state.edges[fid] = {};
+  if (on) state.edges[fid][eid] = true;
+  else { delete state.edges[fid][eid]; if (!Object.keys(state.edges[fid]).length) delete state.edges[fid]; }
+  if (on && !state.selected[fid]) {
+    toggleFeat(fid, true);
+    document.querySelector(`.feat[data-fid="${fid}"] input[type="checkbox"]`).checked = true;
+  }
+}
+
+function toggleSec(id) {
+  document.getElementById('sec-' + id).classList.toggle('collapsed');
+}
+
+function setCat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  filterFeats();
+}
+
+function filterFeats() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  document.querySelectorAll('.feat').forEach(card => {
+    const fid = card.dataset.fid;
+    const catOk = currentCat === 'all' || (currentCat === 'selected' && state.selected[fid]) || card.dataset.cat === currentCat;
+    const qOk = !q || card.dataset.search.includes(q);
+    card.classList.toggle('hidden', !(catOk && qOk));
+  });
+  document.querySelectorAll('.section').forEach(sec => {
+    const hasVis = [...sec.querySelectorAll('.feat')].some(c => !c.classList.contains('hidden'));
+    sec.style.display = hasVis ? '' : 'none';
+  });
+}
+
+function updateFilterBar() {
+  const bar = document.getElementById('filterBar');
+  CATEGORIES.forEach(c => {
+    const count = FEATURES.filter(f => f.cat === c.id).length;
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.dataset.cat = c.id;
+    btn.onclick = () => setCat(c.id);
+    btn.innerHTML = `${c.icon} ${c.label} <span class="count-badge">${count}</span>`;
+    bar.appendChild(btn);
+  });
+  document.getElementById('cnt-all').textContent = FEATURES.length;
+}
+
+function updateStats() {
+  const sel = Object.keys(state.selected).length;
+  document.getElementById('selCount').textContent = sel;
+  document.getElementById('totalCount').textContent = FEATURES.length;
+  const cats = new Set(Object.keys(state.selected).map(id => FEATURES.find(f => f.id === id)?.cat).filter(Boolean));
+  document.getElementById('catCount').textContent = cats.size;
+  document.getElementById('cnt-selected').textContent = sel;
+}
+
+function selectAll(on) {
+  if (!on && Object.keys(state.selected).length) {
+    if (!confirm('Tüm seçimleri temizle?')) return;
+  }
+  document.querySelectorAll('.feat').forEach(card => {
+    const fid = card.dataset.fid;
+    const cb = card.querySelector('input[type="checkbox"]');
+    cb.checked = on;
+    toggleFeat(fid, on);
+  });
+}
+
+function toggleTheme() {
+  const d = document.documentElement;
+  d.dataset.theme = d.dataset.theme === 'dark' ? '' : 'dark';
+  localStorage.setItem('fw-theme', d.dataset.theme);
+}
+
+/* ========== EXPORT ========== */
+function buildJSON() {
+  const out = {
+    schema_version: '1.0',
+    generated_at: new Date().toISOString(),
+    project_name: document.getElementById('projectName').value.trim() || 'untitled-micro-app',
+    summary: {
+      total_features: FEATURES.length,
+      selected_count: Object.keys(state.selected).length,
+      categories_covered: [...new Set(Object.keys(state.selected).map(id => FEATURES.find(f => f.id === id)?.cat))].filter(Boolean),
+    },
+    features: {},
+  };
+  CATEGORIES.forEach(cat => {
+    const selectedInCat = FEATURES.filter(f => f.cat === cat.id && state.selected[f.id]);
+    if (!selectedInCat.length) return;
+    out.features[cat.id] = {
+      label_tr: cat.label, label_en: cat.en,
+      items: selectedInCat.map(f => {
+        const item = { id: f.id, label_en: f.en, label_tr: f.label };
+        if (state.variants[f.id]) item.variant = state.variants[f.id];
+        if (state.edges[f.id]) item.edge_cases = Object.keys(state.edges[f.id]);
+        if (state.notes[f.id]) item.user_note = state.notes[f.id];
+        if (f.source) item.source_artifact = f.source;
+        return item;
+      }),
+    };
+  });
+  return out;
+}
+
+function downloadJSON() {
+  const data = buildJSON();
+  const name = (data.project_name || 'micro-app').replace(/[^a-z0-9-_]/gi, '-');
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${name}-spec.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  showToast('JSON indirildi: ' + name + '-spec.json');
+}
+
+function copyJSON() {
+  const txt = JSON.stringify(buildJSON(), null, 2);
+  navigator.clipboard.writeText(txt).then(() => showToast('Pano\'ya kopyalandı!'));
+}
+
+function showPreview() {
+  document.getElementById('modalPre').textContent = JSON.stringify(buildJSON(), null, 2);
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* ========== INIT ========== */
+const savedTheme = localStorage.getItem('fw-theme');
+if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+render();
+</script>
+</body>
+</html>

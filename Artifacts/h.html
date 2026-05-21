@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İngilizce Kelime Kartları</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            color: var(--text-color);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Arama Kutusu */
+        .search-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Grid Yapısı */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Kart Stilleri - 3D Flip */
+        .card-container {
+            background-color: transparent;
+            width: 100%;
+            height: 350px; /* Kart boyu, alt buton için biraz uzattık */
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-container.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            background-color: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* İçeriği yay */
+            overflow: hidden;
+        }
+
+        .card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #fff;
+            border: 2px solid #f0f0f0;
+        }
+
+        /* Renkli Arka Planlar (JS ile eklenecek sınıflar için) */
+        .bg-orange { background-color: #ffedd5; color: #c2410c; }
+        .bg-blue { background-color: #dbeafe; color: #2563eb; }
+        .bg-slate { background-color: #f1f5f9; color: #475569; }
+        .bg-purple { background-color: #f3e8ff; color: #9333ea; }
+        .bg-green { background-color: #dcfce7; color: #16a34a; }
+        .bg-red { background-color: #fee2e2; color: #dc2626; }
+        .bg-emerald { background-color: #d1fae5; color: #059669; }
+        .bg-yellow { background-color: #fef9c3; color: #ca8a04; }
+        .bg-indigo { background-color: #e0e7ff; color: #4f46e5; }
+        .bg-amber { background-color: #fef3c7; color: #d97706; }
+        
+        .icon-container {
+            margin-bottom: 1rem;
+            transform: scale(1);
+            transition: transform 0.3s;
+        }
+        
+        .card-container:hover .icon-container {
+            transform: scale(1.1);
+        }
+
+        h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        h4 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+        p.def { font-size: 1.1rem; color: #4b5563; line-height: 1.5; }
+        p.hint { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; margin-top: 1rem; }
+
+        /* Alt Buton */
+        .card-footer {
+            padding: 1rem;
+            background-color: rgba(0,0,0,0.03);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            transition: background 0.2s;
+            z-index: 10; /* Tıklanabilir olsun */
+        }
+
+        .card-footer:hover {
+            background-color: rgba(0,0,0,0.08);
+        }
+
+        /* SVG İkonlar */
+        svg { width: 48px; height: 48px; }
+
+        /* Modal (Popup) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .example-list {
+            list-style: none;
+        }
+
+        .example-list li {
+            padding: 0.75rem;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--primary-color);
+            font-style: italic;
+            color: #374151;
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-top: 2rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Kelime Kartları</h1>
+        <p>Kartların üzerine tıklayarak çevirin. Örnek cümleleri görmek için alt kısımdaki butona tıklayın.</p>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Kelime veya anlam ara...">
+        </div>
+    </div>
+
+    <div class="grid" id="cardGrid">
+        <!-- Kartlar buraya JavaScript ile eklenecek -->
+    </div>
+
+    <!-- Modal Yapısı -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Example Sentences</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <ul class="example-list" id="modalList">
+                <!-- Cümleler buraya gelecek -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Veri Seti
+        const vocabularyData = [
+            { id: 1, word: "Reduce", definition: "Azaltmak, düşürmek", theme: "bg-orange", sentences: ["You should reduce your sugar intake.", "The store decided to reduce prices.", "We need to reduce waste to save the planet."] },
+            { id: 2, word: "Require", definition: "Gerektirmek, ihtiyaç duymak", theme: "bg-blue", sentences: ["Plants require sunlight and water.", "This job requires a lot of patience.", "Wearing a seatbelt is required by law."] },
+            { id: 3, word: "Establish", definition: "Kurmak, tesis etmek", theme: "bg-slate", sentences: ["They plan to establish a new company.", "The team established a good reputation.", "Scientists tried to establish the facts."] },
+            { id: 4, word: "Consider", definition: "Düşünmek, hesaba katmak", theme: "bg-purple", sentences: ["Please consider my proposal.", "He is considered an expert in his field.", "We must consider all options."] },
+            { id: 5, word: "Serve", definition: "Hizmet etmek, servis yapmak", theme: "bg-green", sentences: ["This restaurant serves excellent food.", "He served in the army for ten years.", "The sofa serves as a bed at night."] },
+            { id: 6, word: "Remain", definition: "Kalmak, sürdürmek", theme: "bg-red", sentences: ["Please remain seated.", "Much of the history remains unknown.", "Only a few minutes remain."] },
+            { id: 7, word: "Pass", definition: "Geçmek, pas vermek", theme: "bg-emerald", sentences: ["Time passes quickly when you have fun.", "Can you pass me the salt?", "He studied hard to pass the exam."] },
+            { id: 8, word: "Appear", definition: "Görünmek, ortaya çıkmak", theme: "bg-yellow", sentences: ["She appeared to be tired.", "A ship appeared on the horizon.", "Symptoms usually appear within a week."] },
+            { id: 9, word: "Raise", definition: "Artırmak, yükseltmek", theme: "bg-indigo", sentences: ["Please raise your hand if you know the answer.", "The charity aims to raise money.", "They raise cattle on the farm."] },
+            { id: 10, word: "Carry", definition: "Taşımak, götürmek", theme: "bg-amber", sentences: ["He helped me carry my bags.", "Sound carries well over water.", "Police officers carry radios."] },
+            { id: 11, word: "Cover", definition: "Kaplamak, örtmek", theme: "bg-emerald", sentences: ["Snow covered the mountains.", "The insurance covers fire damage.", "Cover the pot with a lid."] },
+            { id: 12, word: "Receive", definition: "Almak, teslim almak", theme: "bg-blue", sentences: ["Did you receive my email?", "The hotel received many guests.", "She received a warm welcome."] },
+            { id: 13, word: "Foreign", definition: "Yabancı", theme: "bg-indigo", sentences: ["Speaking a foreign language is useful.", "They invest in foreign markets.", "Foreign affairs are complex."] },
+            { id: 14, word: "Actually", definition: "Aslında, gerçekten", theme: "bg-green", sentences: ["It looks small, but actually it's big.", "I don't actually know his name.", "Did you actually see him?"] },
+            { id: 15, word: "Significant", definition: "Önemli, belirgin", theme: "bg-red", sentences: ["There was a significant change in weather.", "She played a significant role.", "This discovery is historically significant."] },
+            { id: 16, word: "Common", definition: "Yaygın, ortak", theme: "bg-purple", sentences: ["Colds are common in winter.", "We have a common goal.", "Use your common sense."] },
+            { id: 17, word: "Poor", definition: "Fakir, kötü, zavallı", theme: "bg-slate", sentences: ["The soil here is poor.", "He was in poor health.", "Rich or poor, everyone is equal."] },
+            { id: 18, word: "Near", definition: "Yakın", theme: "bg-purple", sentences: ["Is there a bank near here?", "The project is near completion.", "Don't go near the edge."] },
+            { id: 19, word: "Society", definition: "Toplum", theme: "bg-slate", sentences: ["Technology affects modern society.", "She is a member of high society.", "We live in a multicultural society."] },
+            { id: 20, word: "During", definition: "Sırasında", theme: "bg-orange", sentences: ["Please turn off phones during the movie.", "He fell asleep during the lesson.", "It rained during the night."] },
+            { id: 21, word: "Above", definition: "Yukarıda, üzerinde", theme: "bg-blue", sentences: ["The plane flew above the clouds.", "See the diagram above.", "His grades are above average."] },
+            { id: 22, word: "Upon", definition: "Üzerine", theme: "bg-slate", sentences: ["Upon arrival, please check in.", "He placed the book upon the table.", "Once upon a time..."] },
+            { id: 23, word: "Land", definition: "Arazi, toprak", theme: "bg-green", sentences: ["The plane will land soon.", "They bought a plot of land.", "The boat reached land safely."] },
+            { id: 24, word: "Ground", definition: "Yer, zemin", theme: "bg-amber", sentences: ["He sat on the ground.", "The ground shook during the earthquake.", "We have a lot of ground to cover."] },
+            { id: 25, word: "Whose", definition: "Kimin", theme: "bg-red", sentences: ["Whose bag is this?", "The man whose car was stolen is here.", "I wonder whose side he is on."] },
+        ];
+
+        // İkon SVG Yolları (Basitleştirilmiş)
+        const iconPath = "M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"; // Generic Layer Icon
+
+        const grid = document.getElementById('cardGrid');
+        const searchInput = document.getElementById('searchInput');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalList = document.getElementById('modalList');
+
+        // Kart Oluşturma Fonksiyonu
+        function renderCards(filterText = "") {
+            grid.innerHTML = "";
+            
+            const filtered = vocabularyData.filter(item => 
+                item.word.toLowerCase().includes(filterText.toLowerCase()) || 
+                item.definition.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="no-results">Aradığınız kelime bulunamadı.</div>';
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card-container';
+                
+                // Tema sınıfını belirle
+                const themeClass = item.theme;
+
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <!-- Ön Yüz -->
+                        <div class="card-front ${themeClass}">
+                            <div class="card-content">
+                                <div class="icon-container">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="${iconPath}" />
+                                    </svg>
+                                </div>
+                                <h3>${item.word}</h3>
+                                <p class="hint">Çevirmek için tıkla</p>
+                            </div>
+                            <div class="card-footer show-examples-btn" data-id="${item.id}">
+                                📝 Örnek Cümleler
+                            </div>
+                        </div>
+
+                        <!-- Arka Yüz -->
+                        <div class="card-back">
+                            <div class="card-content">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:32px; height:32px; margin-bottom:1rem;">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <h4>${item.word}</h4>
+                                <p class="def">${item.definition}</p>
+                            </div>
+                            <div class="card-footer show-examples-btn" data-id="${item.id}">
+                                📝 Örnek Cümleler
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Kart Çevirme Olayı
+                card.addEventListener('click', (e) => {
+                    // Eğer tıklanan yer footer (örnek butonu) değilse çevir
+                    if (!e.target.closest('.card-footer')) {
+                        card.classList.toggle('flipped');
+                    }
+                });
+
+                // Örnek Cümle Butonu Olayı
+                const exampleBtns = card.querySelectorAll('.show-examples-btn');
+                exampleBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Kartın dönmesini engelle
+                        openModal(item);
+                    });
+                });
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Modal Açma
+        function openModal(item) {
+            modalTitle.textContent = `"${item.word}" Örnekleri`;
+            modalList.innerHTML = item.sentences.map(sent => `<li>${sent}</li>`).join('');
+            modalOverlay.classList.add('active');
+        }
+
+        // Modal Kapama
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+
+        // Dışarı tıklayınca modalı kapat
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // Arama İşlevi
+        searchInput.addEventListener('input', (e) => {
+            renderCards(e.target.value);
+        });
+
+        // Başlangıçta kartları yükle
+        renderCards();
+
+    </script>
+</body>
+</html>

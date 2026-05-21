@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collocation Heatmap</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a2028; --text: #e6edf3; --muted: #8b949e;
+    --accent: #58a6ff; --border: #30363d;
+    --c-none: #1a2028; --c-weak: #4d4225; --c-mid: #8a6914; --c-strong: #d29922;
+    --c-text-on-cell: #1f2328;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --panel: #f6f8fa; --text: #1f2328; --muted: #656d76;
+    --accent: #0969da; --border: #d0d7de;
+    --c-none: #f6f8fa; --c-weak: #fff8c5; --c-mid: #fae17d; --c-strong: #d4a72c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding: 16px; min-height: 100vh;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
+  }
+  h1 { font-size: 18px; font-weight: 600; }
+  .toolbar { display: flex; gap: 8px; }
+  .icon-btn {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .icon-btn:hover, .icon-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 10px 16px; background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 14px; border-bottom: 2px solid transparent;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .filters {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 16px;
+    flex-wrap: wrap; font-size: 13px;
+  }
+  .filters select, .filters input {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 10px; border-radius: 6px; font-size: 13px;
+  }
+  .legend { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+
+  /* HEATMAP */
+  .heatmap-wrap { overflow-x: auto; }
+  .heatmap {
+    display: inline-grid; gap: 2px; padding: 4px;
+    background: var(--panel); border-radius: 8px; border: 1px solid var(--border);
+  }
+  .h-cell {
+    width: 70px; height: 36px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; cursor: pointer; border-radius: 3px;
+    transition: transform 0.1s; user-select: none;
+  }
+  .h-cell.header {
+    background: transparent; color: var(--muted); font-weight: 600;
+    cursor: default; font-size: 12px;
+  }
+  .h-cell.row-header { justify-content: flex-end; padding-right: 8px; }
+  .h-cell.col-header { writing-mode: horizontal-tb; transform: rotate(-25deg); transform-origin: center; }
+  .h-cell.none { background: var(--c-none); color: var(--muted); }
+  .h-cell.weak { background: var(--c-weak); color: var(--c-text-on-cell); }
+  .h-cell.mid { background: var(--c-mid); color: var(--c-text-on-cell); }
+  .h-cell.strong { background: var(--c-strong); color: var(--c-text-on-cell); font-weight: 700; }
+  .h-cell:not(.header):hover { transform: scale(1.15); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  .h-cell.selected { outline: 2px solid var(--accent); }
+
+  .detail {
+    margin-top: 16px; padding: 16px; background: var(--panel);
+    border-left: 3px solid var(--accent); border-radius: 6px;
+    display: none;
+  }
+  .detail.show { display: block; }
+  .detail-coll { font-size: 18px; font-weight: 600; color: var(--accent); }
+  .detail-meta { font-size: 12px; color: var(--muted); margin: 4px 0 12px; }
+  .detail-ex { margin: 8px 0; padding-left: 12px; border-left: 2px solid var(--border); }
+  .detail-ex .en { font-size: 14px; }
+  .detail-ex .tr { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* DRILL */
+  .drill-card {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 24px; border-radius: 12px; max-width: 640px; margin: 20px auto;
+  }
+  .drill-sentence { font-size: 18px; margin: 12px 0 20px; }
+  .drill-blank {
+    display: inline-block; min-width: 100px; border-bottom: 2px solid var(--accent);
+    color: var(--accent); text-align: center; font-weight: 600;
+  }
+  .drill-input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 10px; border-radius: 6px; font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .drill-input.correct { border-color: var(--c-strong); }
+  .drill-input.wrong { border-color: #f85149; }
+  .btn {
+    background: var(--accent); color: var(--bg); border: none;
+    padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-weight: 600;
+  }
+  .drill-feedback { margin-top: 12px; font-size: 13px; color: var(--muted); display: none; }
+  .drill-feedback.show { display: block; }
+
+  .stats-bar {
+    display: flex; gap: 16px; padding: 10px; background: var(--panel);
+    border-radius: 6px; margin-bottom: 12px; font-size: 13px;
+  }
+  .stats-bar span strong { color: var(--accent); }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 720px) {
+    .h-cell { width: 56px; height: 32px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🔥 Collocation Heatmap</h1>
+    <div class="toolbar">
+      <button class="icon-btn" id="themeBtn" title="Tema (T)">🌓</button>
+      <button class="icon-btn" id="resetBtn" title="Sıfırla (Shift+R)">↺</button>
+      <button class="icon-btn" id="exportBtn" title="JSON indir (E)">📥</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="heatmap">🔥 Heatmap</button>
+    <button class="tab" data-tab="drill">✍️ Drill</button>
+  </div>
+
+  <!-- HEATMAP TAB -->
+  <div id="tab-heatmap">
+    <div class="filters">
+      <label>Matris:
+        <select id="matrixSel">
+          <option value="vn">Verb + Noun</option>
+          <option value="an">Adjective + Noun</option>
+          <option value="adv">Adverb + Adjective</option>
+        </select>
+      </label>
+      <label>CEFR:
+        <select id="cefrSel">
+          <option value="">Tümü</option>
+          <option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option>
+        </select>
+      </label>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--c-none)"></span>yok</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--c-weak)"></span>zayıf</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--c-mid)"></span>orta</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--c-strong)"></span>güçlü</span>
+      </div>
+    </div>
+
+    <div class="heatmap-wrap">
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <!-- DRILL TAB -->
+  <div id="tab-drill" class="hidden">
+    <div class="stats-bar">
+      <span>Doğru: <strong id="dCorrect">0</strong></span>
+      <span>Hata: <strong id="dWrong">0</strong></span>
+      <span>Streak: <strong id="dStreak">0</strong></span>
+    </div>
+    <div class="drill-card">
+      <p style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;" id="dMatrix">Verb + Noun · B1</p>
+      <p class="drill-sentence" id="dSentence">—</p>
+      <input type="text" class="drill-input" id="dInput" placeholder="Eksik kelimeyi yaz…" autocomplete="off">
+      <button class="btn" id="dCheck">Kontrol Et (Enter)</button>
+      <button class="btn" id="dNext" style="background:transparent;color:var(--accent);border:1px solid var(--accent);">Sonraki (→)</button>
+      <div class="drill-feedback" id="dFeedback"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ===================== DATA =====================
+// Strength: 0=none, 1=weak, 2=mid, 3=strong
+const MATRICES = {
+  vn: {
+    label: "Verb + Noun",
+    rows: ["make", "do", "take", "have", "give", "pay"],
+    cols: ["decision", "homework", "shower", "fun", "attention", "favor"],
+    data: [
+      [3, 0, 0, 1, 0, 0],   // make: decision (strong), fun (weak)
+      [0, 3, 0, 0, 0, 3],   // do: homework, favor
+      [0, 0, 3, 0, 0, 0],   // take: shower; (take a decision = BrE weak, ignored)
+      [0, 0, 3, 3, 0, 0],   // have: shower, fun
+      [0, 0, 0, 0, 0, 0],   // give: (no strong)
+      [2, 0, 0, 0, 3, 0],   // pay: attention (strong), pay a decision (none)
+    ],
+    examples: {
+      "make+decision": { cefr: "B1", ex: [
+        { en: "She made a quick decision about the offer.", tr: "Teklif hakkında hızlı bir karar verdi." },
+        { en: "Don't make any decisions when you're angry.", tr: "Sinirliyken karar verme." }
+      ]},
+      "do+homework": { cefr: "A2", ex: [
+        { en: "Have you done your homework yet?", tr: "Henüz ödevini yaptın mı?" }
+      ]},
+      "do+favor": { cefr: "A2", ex: [
+        { en: "Can you do me a favor?", tr: "Bana bir iyilik yapar mısın?" }
+      ]},
+      "take+shower": { cefr: "A2", ex: [
+        { en: "I take a shower every morning.", tr: "Her sabah duş alırım." }
+      ]},
+      "have+shower": { cefr: "A2", ex: [
+        { en: "I'm going to have a quick shower before dinner.", tr: "Yemekten önce hızlı bir duş alacağım." }
+      ]},
+      "have+fun": { cefr: "A2", ex: [
+        { en: "We had a lot of fun at the party.", tr: "Partide çok eğlendik." }
+      ]},
+      "pay+attention": { cefr: "B1", ex: [
+        { en: "You need to pay more attention in class.", tr: "Derste daha çok dikkat etmen gerekiyor." }
+      ]},
+      "make+fun": { cefr: "B1", ex: [
+        { en: "Don't make fun of him.", tr: "Onunla alay etme." }
+      ]},
+      "pay+decision": { cefr: "B1", ex: [
+        { en: "(rare/BrE 'take a decision' is more common; 'pay a decision' is not used)", tr: "—" }
+      ]},
+    }
+  },
+  an: {
+    label: "Adjective + Noun",
+    rows: ["heavy", "strong", "deep", "fast", "high", "broad"],
+    cols: ["rain", "coffee", "sleep", "food", "price", "smile"],
+    data: [
+      [3, 2, 0, 0, 0, 0],   // heavy: rain, coffee(mid)
+      [1, 3, 0, 0, 0, 0],   // strong: coffee
+      [0, 0, 3, 0, 0, 0],   // deep: sleep
+      [0, 0, 0, 3, 0, 0],   // fast: food
+      [0, 0, 0, 0, 3, 0],   // high: price
+      [0, 0, 0, 0, 0, 3],   // broad: smile
+    ],
+    examples: {
+      "heavy+rain": { cefr: "A2", ex: [
+        { en: "There's heavy rain forecast for tomorrow.", tr: "Yarın için şiddetli yağmur bekleniyor." }
+      ]},
+      "strong+coffee": { cefr: "A2", ex: [
+        { en: "I need a strong coffee this morning.", tr: "Bu sabah sert bir kahveye ihtiyacım var." }
+      ]},
+      "deep+sleep": { cefr: "B1", ex: [
+        { en: "She was in a deep sleep when I called.", tr: "Aradığımda derin uykudaydı." }
+      ]},
+      "fast+food": { cefr: "A2", ex: [
+        { en: "Try not to eat too much fast food.", tr: "Çok fazla fast food yememeye çalış." }
+      ]},
+      "high+price": { cefr: "B1", ex: [
+        { en: "The high price kept customers away.", tr: "Yüksek fiyat müşterileri uzak tuttu." }
+      ]},
+      "broad+smile": { cefr: "B2", ex: [
+        { en: "He greeted us with a broad smile.", tr: "Bizi geniş bir gülümsemeyle karşıladı." }
+      ]},
+      "heavy+coffee": { cefr: "B1", ex: [
+        { en: "(possible: 'heavy coffee drinker' — drinker only)", tr: "Sadece 'heavy coffee drinker' olarak kullanılır" }
+      ]},
+    }
+  },
+  adv: {
+    label: "Adverb + Adjective",
+    rows: ["highly", "deeply", "bitterly", "perfectly", "utterly", "fully"],
+    cols: ["likely", "sorry", "disappointed", "clear", "ridiculous", "aware"],
+    data: [
+      [3, 0, 0, 0, 0, 0],   // highly: likely
+      [0, 3, 0, 0, 0, 0],   // deeply: sorry
+      [0, 0, 3, 0, 0, 0],   // bitterly: disappointed
+      [0, 0, 0, 3, 0, 0],   // perfectly: clear
+      [0, 0, 0, 0, 3, 0],   // utterly: ridiculous
+      [0, 0, 0, 0, 0, 3],   // fully: aware
+    ],
+    examples: {
+      "highly+likely": { cefr: "B2", ex: [
+        { en: "It's highly likely that prices will rise.", tr: "Fiyatların artması son derece olası." }
+      ]},
+      "deeply+sorry": { cefr: "B2", ex: [
+        { en: "I am deeply sorry for your loss.", tr: "Kaybınız için çok üzgünüm." }
+      ]},
+      "bitterly+disappointed": { cefr: "B2", ex: [
+        { en: "She was bitterly disappointed by the result.", tr: "Sonuçtan büyük hayal kırıklığına uğradı." }
+      ]},
+      "perfectly+clear": { cefr: "B1", ex: [
+        { en: "Let me make this perfectly clear.", tr: "Bunu net bir şekilde belirteyim." }
+      ]},
+      "utterly+ridiculous": { cefr: "B2", ex: [
+        { en: "That excuse is utterly ridiculous.", tr: "Bu bahane tamamen saçma." }
+      ]},
+      "fully+aware": { cefr: "B2", ex: [
+        { en: "I'm fully aware of the risks involved.", tr: "Riskleri tamamen bilincindeyim." }
+      ]},
+    }
+  }
+};
+
+// Drill items (sentence with one collocation word blanked)
+const DRILL = [
+  { m: "vn", sent: "She had to ___ a quick decision under pressure.", answer: "make", cefr: "B1" },
+  { m: "vn", sent: "I always ___ a shower before bed.", answer: "take", cefr: "A2" },
+  { m: "vn", sent: "Could you ___ me a favor?", answer: "do", cefr: "A2" },
+  { m: "vn", sent: "You need to ___ more attention in meetings.", answer: "pay", cefr: "B1" },
+  { m: "an", sent: "We had ___ rain all night.", answer: "heavy", cefr: "A2" },
+  { m: "an", sent: "I can't drink ___ coffee this late.", answer: "strong", cefr: "A2" },
+  { m: "an", sent: "He fell into a ___ sleep within minutes.", answer: "deep", cefr: "B1" },
+  { m: "adv", sent: "It's ___ likely that we'll be late.", answer: "highly", cefr: "B2" },
+  { m: "adv", sent: "She was ___ disappointed when she heard.", answer: "bitterly", cefr: "B2" },
+  { m: "adv", sent: "I'm ___ aware of the consequences.", answer: "fully", cefr: "B2" },
+];
+
+// ===================== STATE =====================
+const KEY = 'collocation-heatmap-v1';
+let state = load();
+function load() {
+  try {
+    return Object.assign({
+      tab: 'heatmap', matrix: 'vn', cefrFilter: '',
+      theme: 'dark',
+      drillIdx: 0, dCorrect: 0, dWrong: 0, dStreak: 0,
+      cellViews: {}, // "matrix:row:col" → views
+      reviews: [],
+    }, JSON.parse(localStorage.getItem(KEY) || '{}'));
+  } catch { return reset(); }
+}
+function reset() {
+  return { tab: 'heatmap', matrix: 'vn', cefrFilter: '',
+    theme: state?.theme || 'dark',
+    drillIdx: 0, dCorrect: 0, dWrong: 0, dStreak: 0,
+    cellViews: {}, reviews: [] };
+}
+function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+// ===================== HEATMAP RENDER =====================
+const STRENGTH_CLASS = ['none', 'weak', 'mid', 'strong'];
+const STRENGTH_LABEL = ['—', '·', '··', '●'];
+
+function renderHeatmap() {
+  const m = MATRICES[state.matrix];
+  const grid = document.getElementById('heatmap');
+  grid.style.gridTemplateColumns = `120px repeat(${m.cols.length}, 70px)`;
+  let html = '<div class="h-cell header"></div>';
+  m.cols.forEach(c => html += `<div class="h-cell header col-header">${c}</div>`);
+  m.data.forEach((row, ri) => {
+    html += `<div class="h-cell header row-header">${m.rows[ri]}</div>`;
+    row.forEach((s, ci) => {
+      const cls = STRENGTH_CLASS[s];
+      html += `<div class="h-cell ${cls}" data-r="${ri}" data-c="${ci}">${STRENGTH_LABEL[s]}</div>`;
+    });
+  });
+  grid.innerHTML = html;
+  grid.querySelectorAll('.h-cell[data-r]').forEach(c => {
+    c.onclick = () => showDetail(parseInt(c.dataset.r), parseInt(c.dataset.c));
+  });
+  document.getElementById('detail').classList.remove('show');
+}
+
+function showDetail(r, c) {
+  document.querySelectorAll('.h-cell.selected').forEach(e => e.classList.remove('selected'));
+  document.querySelector(`.h-cell[data-r="${r}"][data-c="${c}"]`).classList.add('selected');
+  const m = MATRICES[state.matrix];
+  const strength = m.data[r][c];
+  const key = `${m.rows[r]}+${m.cols[c]}`;
+  const info = m.examples[key];
+  const viewKey = `${state.matrix}:${r}:${c}`;
+  state.cellViews[viewKey] = (state.cellViews[viewKey] || 0) + 1;
+  save();
+
+  const detail = document.getElementById('detail');
+  let html = `<div class="detail-coll">${m.rows[r]} + ${m.cols[c]}</div>
+    <div class="detail-meta">Strength: <strong>${STRENGTH_CLASS[strength]}</strong>
+    ${info ? `· CEFR: <strong>${info.cefr}</strong>` : ''}
+    · Görüntüleme: ${state.cellViews[viewKey]}</div>`;
+  if (info && info.ex) {
+    info.ex.forEach(e => {
+      html += `<div class="detail-ex"><div class="en">${e.en}</div><div class="tr">${e.tr}</div></div>`;
+    });
+  } else if (strength === 0) {
+    html += `<p style="color:var(--muted);font-size:13px;">Bu kombinasyon doğal değil — ana dil konuşan kulağa yanlış gelir.</p>`;
+  } else {
+    html += `<p style="color:var(--muted);font-size:13px;">Henüz örnek eklenmedi.</p>`;
+  }
+  detail.innerHTML = html;
+  detail.classList.add('show');
+}
+
+// ===================== DRILL =====================
+function renderDrill() {
+  if (state.drillIdx >= DRILL.length) state.drillIdx = 0;
+  const item = DRILL[state.drillIdx];
+  document.getElementById('dMatrix').textContent = `${MATRICES[item.m].label} · ${item.cefr}`;
+  document.getElementById('dSentence').innerHTML = item.sent.replace('___', '<span class="drill-blank">___</span>');
+  const inp = document.getElementById('dInput');
+  inp.value = ''; inp.className = 'drill-input'; inp.focus();
+  document.getElementById('dFeedback').classList.remove('show');
+  updateDrillStats();
+}
+function updateDrillStats() {
+  document.getElementById('dCorrect').textContent = state.dCorrect;
+  document.getElementById('dWrong').textContent = state.dWrong;
+  document.getElementById('dStreak').textContent = state.dStreak;
+}
+function checkDrill() {
+  const item = DRILL[state.drillIdx];
+  const inp = document.getElementById('dInput');
+  const ans = inp.value.trim().toLowerCase();
+  const fb = document.getElementById('dFeedback');
+  if (!ans) return;
+  const correct = ans === item.answer.toLowerCase();
+  if (correct) {
+    state.dCorrect++; state.dStreak++;
+    inp.classList.add('correct');
+    fb.innerHTML = `<strong style="color:var(--c-strong)">✓ Doğru.</strong> "${item.answer}" + "${item.sent.match(/___\s*(\S+)/)?.[1] || ''}"`;
+  } else {
+    state.dWrong++; state.dStreak = 0;
+    inp.classList.add('wrong');
+    fb.innerHTML = `<strong style="color:#f85149">✗</strong> Doğru: <em>${item.answer}</em>`;
+  }
+  state.reviews.push({ sentence: item.sent, answer: item.answer, user: ans, correct, ts: new Date().toISOString() });
+  save();
+  fb.classList.add('show');
+  updateDrillStats();
+}
+function nextDrill() { state.drillIdx++; save(); renderDrill(); }
+
+// ===================== TAB =====================
+function setTab(t) {
+  state.tab = t; save();
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  document.getElementById('tab-heatmap').classList.toggle('hidden', t !== 'heatmap');
+  document.getElementById('tab-drill').classList.toggle('hidden', t !== 'drill');
+  if (t === 'drill') renderDrill();
+}
+
+// ===================== EXPORT =====================
+function exportJSON() {
+  const payload = [{
+    schema_version: "1.0",
+    type: "collocation_session",
+    session_id: new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19) + '-collocation',
+    timestamp: new Date().toISOString(),
+    payload: {
+      cell_views: state.cellViews,
+      drill_reviews: state.reviews,
+      counts: { correct: state.dCorrect, wrong: state.dWrong },
+    }
+  }];
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '') + '-collocation.json';
+  a.click();
+}
+
+// ===================== EVENTS =====================
+document.getElementById('matrixSel').onchange = e => { state.matrix = e.target.value; save(); renderHeatmap(); };
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+document.getElementById('themeBtn').onclick = () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = state.theme === 'light' ? 'light' : '';
+  save();
+};
+document.getElementById('resetBtn').onclick = () => {
+  if (!confirm('Tüm ilerlemeyi sıfırla?')) return;
+  state = reset(); save(); init();
+};
+document.getElementById('exportBtn').onclick = exportJSON;
+document.getElementById('dCheck').onclick = checkDrill;
+document.getElementById('dNext').onclick = nextDrill;
+document.getElementById('dInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkDrill();
+});
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.key === '1') setTab('heatmap');
+  else if (e.key === '2') setTab('drill');
+  else if (e.key === 't' || e.key === 'T') document.getElementById('themeBtn').click();
+  else if (e.key === 'e' || e.key === 'E') exportJSON();
+  else if (e.key === 'R' && e.shiftKey) document.getElementById('resetBtn').click();
+  else if (e.key === 'ArrowRight' && state.tab === 'drill') nextDrill();
+});
+
+function init() {
+  document.documentElement.dataset.theme = state.theme === 'light' ? 'light' : '';
+  document.getElementById('matrixSel').value = state.matrix;
+  setTab(state.tab);
+  renderHeatmap();
+}
+init();
+</script>
+</body>
+</html>

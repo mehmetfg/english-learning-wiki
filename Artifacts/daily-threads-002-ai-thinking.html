@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Threads #002 — What an AI Actually Does When It "Thinks"</title>
+<style>
+:root{--bg:#0a1020;--surface:#121a30;--card:#1a2540;--card2:#1e2d4a;--border:#2d3f5e;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;--accent:#3b82f6;--accent2:#60a5fa;--success:#22c55e;--error:#ef4444;--warn:#f59e0b;--gold:#fbbf24;--g1:#4fc3f7;--g2:#ce93d8;--g3:#ffb74d;--g4:#80cbc4;--g5:#a5d6a7;--g6:#ef9a9a}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Verdana,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.7}
+.sticky-top{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border)}
+.header-bar{background:linear-gradient(135deg,#0f1f3d,#1a2f5a);padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.badge{background:var(--accent);color:#fff;font-size:10px;font-weight:bold;padding:3px 8px;border-radius:12px;letter-spacing:.5px}
+.badge.series{background:#8b5cf6}
+.header-bar h1{font-size:14px;font-weight:bold;color:#fff;flex:1;min-width:160px}
+.header-bar .meta{font-size:11px;color:var(--text2)}
+.source-bar{background:var(--surface);padding:6px 16px;font-size:11px;color:var(--text2);display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border)}
+.source-bar a{color:var(--accent2);text-decoration:none}
+.source-bar a:hover{text-decoration:underline}
+.nav-arrows{margin-left:auto;display:flex;gap:6px}
+.nav-arrows a{padding:3px 9px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text2);font-size:11px;text-decoration:none}
+.nav-arrows a:hover{color:var(--accent2);border-color:var(--accent)}
+.nav-arrows a.disabled{opacity:.35;pointer-events:none}
+.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto}
+.tab-btn{padding:11px 16px;background:none;border:none;color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;min-width:44px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.content{max-width:860px;margin:0 auto;padding:20px 16px 80px}
+.tab-panel{display:none;animation:fadeIn .25s ease}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.shake{animation:shake .35s ease}
+.passage{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px;line-height:2;font-size:15px}
+.passage h2{font-size:20px;color:var(--accent2);margin-bottom:6px}
+.passage h3{font-size:16px;color:var(--accent2);margin:22px 0 8px;padding-top:14px;border-top:1px solid var(--border)}
+.passage .subtitle{font-size:12px;color:var(--text2);margin-bottom:18px}
+.passage p{margin-bottom:14px}
+[data-g]{border-radius:3px;padding:1px 4px;cursor:pointer;position:relative;font-weight:500}
+[data-g="1"]{background:rgba(79,195,247,.18);color:var(--g1);border-bottom:1px solid var(--g1)}
+[data-g="2"]{background:rgba(206,147,216,.18);color:var(--g2);border-bottom:1px solid var(--g2)}
+[data-g="3"]{background:rgba(255,183,77,.18);color:var(--g3);border-bottom:1px solid var(--g3)}
+[data-g="4"]{background:rgba(128,203,196,.18);color:var(--g4);border-bottom:1px solid var(--g4)}
+[data-g="5"]{background:rgba(165,214,167,.18);color:var(--g5);border-bottom:1px solid var(--g5)}
+[data-g="6"]{background:rgba(239,154,154,.18);color:var(--g6);border-bottom:1px solid var(--g6)}
+.g-tooltip{display:none;position:fixed;background:#1a2d4a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;max-width:290px;font-size:12px;line-height:1.5;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.6)}
+.tt-name{font-weight:bold;margin-bottom:3px;color:var(--accent2)}
+.tt-tr{color:var(--text2);margin-bottom:3px}
+.tt-formula{color:#94a3b8;font-style:italic;font-size:11px;font-family:'Courier New',monospace}
+.reading-meta{display:flex;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;color:var(--text2);flex-wrap:wrap}
+.grammar-legend{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;font-size:11px}
+.gl-item{display:flex;align-items:center;gap:5px;color:var(--text2);cursor:pointer;padding:3px 6px;border-radius:6px}
+.gl-item:hover{background:var(--card);color:var(--text)}
+.gl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tts-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 12px}
+.tts-btn{padding:7px 13px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:12px;border-radius:18px;cursor:pointer;min-height:36px;display:inline-flex;align-items:center;gap:5px}
+.tts-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent2)}
+.tts-btn:disabled{opacity:.4;cursor:not-allowed}
+.tts-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.tts-rate{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);margin-left:auto}
+.tts-rate input{accent-color:var(--accent);width:90px}
+.section-title{font-size:16px;font-weight:bold;color:var(--text);margin-bottom:6px}
+.section-sub{font-size:12px;color:var(--text2);margin-bottom:14px}
+.vocab-dash{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap;font-size:12px}
+.vd-item{display:flex;flex-direction:column;gap:2px;min-width:60px}
+.vd-num{font-size:18px;font-weight:bold;color:var(--accent2)}
+.vd-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.vd-num.gold{color:var(--gold)}
+.vocab-controls{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.vocab-btn{padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:18px;color:var(--text2);font-family:inherit;font-size:12px;cursor:pointer;min-height:36px}
+.vocab-btn:hover,.vocab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.flip-card{height:150px;cursor:pointer;perspective:1000px;position:relative}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center;border:1px solid var(--border)}
+.flip-front{background:var(--card)}
+.flip-front .fw{font-size:15px;font-weight:bold;color:var(--accent2)}
+.flip-front .fp{font-size:10px;color:var(--text2);margin-top:3px}
+.flip-front .fspk{margin-top:8px;background:var(--surface);border:1px solid var(--border);color:var(--text2);font-size:10px;padding:4px 9px;border-radius:10px;cursor:pointer;min-height:30px}
+.flip-front .fspk:hover{color:var(--accent2);border-color:var(--accent)}
+.flip-back{background:var(--card2);transform:rotateY(180deg)}
+.flip-back .ft{font-size:13px;color:var(--text);margin-bottom:4px}
+.flip-back .fe{font-size:11px;color:var(--text2);font-style:italic;line-height:1.4}
+.quiz-area{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+.q-stem{font-size:14px;color:var(--text);margin-bottom:12px}
+.q-num{color:var(--accent2);font-weight:bold;margin-right:6px}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt-btn{padding:11px 14px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;text-align:left;transition:all .15s;min-height:44px}
+.opt-btn:hover{border-color:var(--accent)}
+.opt-btn.correct{background:rgba(34,197,94,.18);border-color:var(--success);color:var(--success)}
+.opt-btn.wrong{background:rgba(239,68,68,.18);border-color:var(--error);color:var(--error)}
+.opt-btn:disabled{cursor:not-allowed}
+.quiz-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:12px;color:var(--text2)}
+.gram-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.gram-card.expanded{border-color:var(--accent)}
+.gram-title{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:15px;color:var(--accent2);font-weight:bold}
+.gram-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.gram-arrow{margin-left:auto;color:var(--text3);transition:transform .2s}
+.gram-card.expanded .gram-arrow{transform:rotate(90deg)}
+.gram-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.gram-card.expanded .gram-body{display:block}
+.gram-formula{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 11px;font-family:'Courier New',monospace;font-size:12px;color:var(--accent2);margin-bottom:10px;line-height:1.5}
+.gram-explain{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.6}
+.gram-ex-list{margin-bottom:14px}
+.gram-ex{padding:7px 11px;background:var(--card);border-left:3px solid var(--accent);border-radius:5px;margin-bottom:5px;font-size:12px}
+.gram-ex .en{color:var(--text);margin-bottom:2px}
+.gram-ex .tr{color:var(--text2);font-style:italic;font-size:11px}
+.mini-q{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.mq-text{font-size:12px;margin-bottom:8px;color:var(--text)}
+.mq-opts{display:flex;flex-direction:column;gap:5px}
+.mini-opt{padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;cursor:pointer;text-align:left;min-height:36px}
+.mini-opt:hover{border-color:var(--accent)}
+.mini-opt.correct{background:rgba(34,197,94,.18);border-color:var(--success);color:var(--success)}
+.mini-opt.wrong{background:rgba(239,68,68,.18);border-color:var(--error);color:var(--error)}
+.tf-grid{display:flex;flex-direction:column;gap:10px}
+.tf-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tf-stem{font-size:13px;color:var(--text);margin-bottom:10px}
+.tf-btns{display:flex;gap:8px}
+.tf-btn{flex:1;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;cursor:pointer;min-height:40px}
+.tf-btn:hover{border-color:var(--accent)}
+.tf-btn.correct{background:rgba(34,197,94,.18);border-color:var(--success);color:var(--success)}
+.tf-btn.wrong{background:rgba(239,68,68,.18);border-color:var(--error);color:var(--error)}
+.tf-explain{display:none;margin-top:8px;padding:8px 11px;background:var(--surface);border-radius:6px;font-size:11px;color:var(--text2);font-style:italic;border-left:3px solid var(--accent)}
+.tf-explain.show{display:block}
+.match-area{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match-col{display:flex;flex-direction:column;gap:8px}
+.match-item{padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;cursor:pointer;text-align:center;transition:all .15s;min-height:42px;display:flex;align-items:center;justify-content:center}
+.match-item:hover:not(.matched){border-color:var(--accent)}
+.match-item.selected{border-color:var(--accent);background:var(--card2)}
+.match-item.matched{background:rgba(34,197,94,.18);border-color:var(--success);color:var(--success);cursor:default}
+.match-item.wrong-flash{animation:shake .35s ease;border-color:var(--error)}
+.explore-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.explore-card h3{font-size:15px;color:var(--accent2);margin-bottom:10px}
+.explore-card p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.explore-card ul{margin-left:20px;font-size:13px;color:var(--text2);line-height:1.8}
+.explore-card textarea{width:100%;min-height:120px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;padding:10px;resize:vertical}
+.btn-check{padding:9px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;min-height:40px}
+.btn-check:hover{background:var(--accent2)}
+.btn-show{padding:9px 16px;background:var(--card);color:var(--text2);border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;cursor:pointer;margin-left:8px;min-height:40px}
+.btn-show:hover{color:var(--text)}
+.quiz-score-bar{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:14px;font-size:12px;flex-wrap:wrap}
+.score-num{font-size:18px;font-weight:bold;color:var(--accent2)}
+.score-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+@media(max-width:600px){.header-bar h1{font-size:13px}.passage{padding:18px 14px}.passage h2{font-size:18px}.cards-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}.match-area{grid-template-columns:1fr;gap:6px}.match-col{gap:6px}.tab-btn{padding:10px 12px;font-size:11px}.content{padding:14px 12px 60px}}
+</style>
+</head>
+<body>
+<div class="sticky-top">
+  <div class="header-bar">
+    <span class="badge series">DAILY THREADS</span>
+    <span class="badge">#002</span>
+    <h1>What an AI Actually Does When It "Thinks"</h1>
+    <span class="meta">A2-B1 · ~930 words · Artificial Intelligence</span>
+  </div>
+  <div class="source-bar">
+    📄 Source: <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fseries%2Fdaily-threads%2F002-ai-thinking">002-ai-thinking.md</a>
+    <span class="nav-arrows">
+      <a href="daily-threads-001-iphone-photography.html">← Prev</a>
+      <a href="obsidian://open?vault=English%20Learning&file=wiki%2Fseries%2Fdaily-threads%2Findex">Index</a>
+      <a href="daily-threads-003-aristotle-categories.html">Next →</a>
+    </span>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('reading',this)">📖 Reading</button>
+    <button class="tab-btn" onclick="showTab('vocabulary',this)">📚 Vocabulary</button>
+    <button class="tab-btn" onclick="showTab('grammar',this)">🔧 Grammar</button>
+    <button class="tab-btn" onclick="showTab('quiz',this)">✏️ Quiz</button>
+    <button class="tab-btn" onclick="showTab('explore',this)">🌍 Explore</button>
+  </div>
+</div>
+
+<div class="content">
+
+<div id="t-reading" class="tab-panel active">
+  <div class="grammar-legend">
+    <span style="font-size:11px;color:var(--text2);font-weight:bold;align-self:center">Grammar colours:</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g1)"></span>Present Simple</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g2)"></span>Present Continuous</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g3)"></span>Passive Voice</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g4)"></span>Modal Verbs (possibility)</span>
+    <span class="gl-item"><span class="gl-dot" style="background:var(--g5)"></span>Comparatives</span>
+  </div>
+  <div class="tts-bar">
+    <button class="tts-btn" id="tts-play" onclick="ttsPlay()">▶ Play</button>
+    <button class="tts-btn" id="tts-pause" onclick="ttsPause()" disabled>⏸ Pause</button>
+    <button class="tts-btn" id="tts-stop" onclick="ttsStop()" disabled>⏹ Stop</button>
+    <div class="tts-rate"><span>Speed: <span id="rate-val">0.9×</span></span><input type="range" id="tts-rate" min="0.6" max="1.4" step="0.05" value="0.9" oninput="updateRate()"></div>
+  </div>
+  <div class="passage" id="passage">
+    <h2>What an AI Actually Does When It "Thinks"</h2>
+    <div class="subtitle">Daily Threads #002 · Artificial Intelligence · A2-B1</div>
+    <p>You type a question into ChatGPT, or you ask Siri to set a timer, or you let your email app finish your sentences for you. Within a second, you get an answer. It feels like the machine has thought about your words and decided what to say.</p>
+    <p>But has it?</p>
+    <p>The word "think" is a tricky one when we use it for machines. It is a word we usually use for humans. So before we say a computer is thinking, let us slow down and figure out what is actually going on inside.</p>
+    <h3>The Idea</h3>
+    <p>Modern AI does not "know" things the way you do. It does not understand sadness, or hunger, or what blue feels like. <span data-g="1">What it does is much simpler</span> — and much stranger.</p>
+    <p><span data-g="3">An AI is trained on a huge amount of text</span>. Billions of sentences from books, websites, articles, conversations. Every word the AI has ever seen is part of its memory. But the AI does not remember sentences. <span data-g="1">It remembers patterns</span>. It learns which words usually come after which other words. Not the meaning — the pattern.</p>
+    <p>When you ask it a question, the AI does not search for an answer in a library. It builds an answer, one word at a time. It looks at your question and at every word it has already written, and it asks itself, <em>"What is the most likely word to come next?"</em> Then it writes that word. Then it does the same thing again. And again. Hundreds of times in a second.</p>
+    <p>That is "thinking" for an AI. Very fast guessing about the next word, based on what came before.</p>
+    <h3>Deeper</h3>
+    <p>This sounds simple, but it produces something surprising. The patterns are so deep, and the training data is so large, that the AI's answers often feel intelligent. They make sense. They follow grammar. They stay on topic. Sometimes they even say something clever you did not expect.</p>
+    <p>But this is where things get interesting. Because <span data-g="2">the AI is only guessing the next word</span>, it does not know if it is right. It does not know if the fact it just wrote is true. It is just trying to sound like the kind of text it has seen before.</p>
+    <p>This is why AI sometimes makes things up — names that do not exist, books that were never written, quotes that nobody said. <span data-g="3">Scientists call this "hallucination."</span> The AI is not lying on purpose. It is doing what it always does: predicting the next likely word. <span data-g="4">Sometimes the most likely-sounding word may not be the true word</span>.</p>
+    <p>If you have ever used AI and noticed it sounded confident but was wrong, this is why. Confidence is part of the pattern. Truth is not.</p>
+    <h3>The Twist</h3>
+    <p>Here is the part that should make you pause. The way an AI builds an answer — word by word, based on patterns — is not as far from how you talk <span data-g="5">as you might think</span>.</p>
+    <p>Try this. Start a sentence: <em>"I went to the store and bought some..."</em> What word came to your mind? Probably "milk," or "bread," or "vegetables." Not "elephants." Not "regret." Why? Because you, too, have heard millions of sentences. You also know which words usually go together. Some of your speaking is pure pattern.</p>
+    <p>The big difference is that you also live in the world. You know what milk is. You have held it, you have tasted it, you have spilled it. The AI has only ever seen the <strong>word</strong> "milk." It has read about milk. But it has never had breakfast.</p>
+    <p>This is the gap between sounding right and being right. Between producing language and understanding language. And for now, that gap <span data-g="5">is still bigger than it looks</span> from the outside.</p>
+    <h3>Landing</h3>
+    <p>So when you talk to an AI, here is what is actually happening. A very fast machine is reading your words, looking at billions of patterns it has learned, and choosing the next likely word. It does this so fast and so well that the answer feels like thought. But thought, real thought, includes meaning, and the AI does not have that yet.</p>
+    <p>Does this make AI less useful? Not at all. A tool that <span data-g="4">can guess the next word</span> with this much skill is incredibly powerful. <span data-g="4">It can write code, summarise emails, translate languages, explain ideas</span>. You can lean on it for many things.</p>
+    <p>But it helps to know what it is doing. When you understand the tool, you use it better. You stop expecting a friend, and you start expecting a very fast pattern-matcher. You learn when to trust it, and when to double-check.</p>
+    <p>The future will probably bring AIs that do more than match patterns. Some scientists <span data-g="2">are working on it right now</span>. But for today, the answer to <em>"What does AI do when it thinks?"</em> is honest and useful: it predicts. It does it very fast, very well, and most of the time, very impressively.</p>
+    <p>But it predicts. It does not yet know.</p>
+    <div class="reading-meta">
+      <span>📊 ~930 words</span>
+      <span>⏱ 6-8 min read</span>
+      <span>🎯 Level: A2-B1</span>
+      <span>🔧 5 grammar structures</span>
+    </div>
+  </div>
+  <div class="g-tooltip" id="g-tt"></div>
+</div>
+
+<div id="t-vocabulary" class="tab-panel">
+  <div class="section-title">📚 Vocabulary — 16 Words</div>
+  <div class="section-sub">Flip the card. Listen to the word. Then test yourself with the quiz.</div>
+  <div class="vocab-dash">
+    <div class="vd-item"><span class="vd-num" id="vd-total">16</span><span class="vd-label">Total</span></div>
+    <div class="vd-item"><span class="vd-num gold" id="vd-learned">0</span><span class="vd-label">Flipped</span></div>
+    <div class="vd-item"><span class="vd-num" id="vd-quiz">0</span><span class="vd-label">Quiz Score</span></div>
+  </div>
+  <div class="vocab-controls">
+    <button class="vocab-btn active" onclick="setVMode('flash',this)">🃏 Flashcards</button>
+    <button class="vocab-btn" onclick="setVMode('quiz',this)">❓ Quiz</button>
+  </div>
+  <div id="vocab-content"></div>
+</div>
+
+<div id="t-grammar" class="tab-panel">
+  <div class="section-title">🔧 Grammar — 5 Structures from the Text</div>
+  <div class="section-sub">Each colour in the reading matches one structure. Tap a card to open. Try the mini-test.</div>
+  <div id="grammar-content"></div>
+</div>
+
+<div id="t-quiz" class="tab-panel">
+  <div class="section-title">✏️ Quiz</div>
+  <div class="section-sub">Three rounds: comprehension MCQ, true/false, and word matching.</div>
+  <div class="quiz-score-bar">
+    <div><span class="score-num" id="qs-mcq">0/8</span> <span class="score-label">MCQ</span></div>
+    <div><span class="score-num" id="qs-tf">0/6</span> <span class="score-label">True/False</span></div>
+    <div><span class="score-num" id="qs-match">0/6</span> <span class="score-label">Match</span></div>
+  </div>
+  <div class="vocab-controls">
+    <button class="vocab-btn active" onclick="setQMode('mcq',this)">📝 MCQ (8)</button>
+    <button class="vocab-btn" onclick="setQMode('tf',this)">✓✗ True/False (6)</button>
+    <button class="vocab-btn" onclick="setQMode('match',this)">🔗 Match (6)</button>
+  </div>
+  <div id="quiz-content"></div>
+</div>
+
+<div id="t-explore" class="tab-panel">
+  <div class="section-title">🌍 Explore</div>
+  <div class="section-sub">Culture, translation, and a writing prompt to make the words yours.</div>
+  <div class="explore-card">
+    <h3>🤖 Culture Note — "Think" or "Process"?</h3>
+    <p>In old science fiction (Asimov, Clarke), robots "think." In modern AI papers, scientists prefer "process," "predict," or "infer." This is not just style — the words tell you what people believe is happening inside the machine.</p>
+    <ul>
+      <li><strong>think</strong> — implies meaning, awareness</li>
+      <li><strong>process</strong> — implies handling data, no meaning</li>
+      <li><strong>predict</strong> — implies guessing the next thing</li>
+      <li><strong>infer</strong> — implies drawing a conclusion from given data</li>
+    </ul>
+    <p>When you read AI news, look at the verb. It tells you what the writer thinks the machine is really doing.</p>
+  </div>
+  <div class="explore-card">
+    <h3>🔄 Translation Notes</h3>
+    <ul>
+      <li><strong>figure out</strong> → çözmek, anlamak (informal)</li>
+      <li><strong>come up with</strong> → bulup çıkarmak, üretmek (idea, answer, plan)</li>
+      <li><strong>deal with</strong> → ile başa çıkmak / ilgilenmek</li>
+      <li><strong>make things up</strong> → uydurmak (lies, stories)</li>
+      <li><strong>on purpose</strong> → bilerek, kasten</li>
+      <li><strong>lean on</strong> → güvenmek, dayanmak (a tool, a person)</li>
+    </ul>
+  </div>
+  <div class="explore-card">
+    <h3>✍️ Writing Prompt</h3>
+    <p style="margin-bottom:12px"><strong>"One time I used AI — and one time I didn't trust it."</strong> Write 5-8 sentences. Tell about a time AI helped you (writing, translating, summarising). Then tell about a time it was wrong, or you double-checked it.</p>
+    <p style="margin-bottom:12px;font-size:12px;color:var(--text3)">Try to use at least 3 of these words/chunks: <em>predict · pattern · figure out · come up with · double-check · lean on</em>.</p>
+    <textarea id="write-area" placeholder="Start writing here..."></textarea>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-check" onclick="saveWrite()">💾 Save</button>
+      <button class="btn-show" onclick="loadWrite()">📂 Load</button>
+      <button class="btn-show" onclick="clearWrite()">🗑️ Clear</button>
+    </div>
+    <div id="write-status" style="margin-top:8px;font-size:11px;color:var(--text2)"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SKEY='dt-002-';
+
+const GRAMMAR_INFO={
+  1:{name:'Present Simple',tr:'Geniş Zaman — alışkanlık, genel doğru',formula:'subj + V1/Vs',hint:'It remembers patterns.'},
+  2:{name:'Present Continuous',tr:'Şimdiki Zaman — şu an / bu sıralar',formula:'am/is/are + V-ing',hint:'is only guessing'},
+  3:{name:'Passive Voice (Present)',tr:'Edilgen Çatı — eylem nesne üzerinde',formula:'be (am/is/are) + V3',hint:'An AI is trained on...'},
+  4:{name:'Modal Verbs — possibility',tr:'Modal Yardımcılar — olasılık (can, may, might)',formula:'modal + V1',hint:'can guess, may not be true'},
+  5:{name:'Comparatives',tr:'Karşılaştırma — -er than / as...as / more than',formula:'-er + than / as...as',hint:'is bigger than it looks'}
+};
+
+const VOCAB=[
+ {w:'pattern',p:'/ˈpæt.ən/',tr:'örüntü; tekrarlanan biçim',ex:'The AI learns patterns from millions of sentences.'},
+ {w:'predict',p:'/prɪˈdɪkt/',tr:'tahmin etmek; öngörmek',ex:'The model predicts the next word.'},
+ {w:'train',p:'/treɪn/',tr:'eğitmek (AI bağlamında)',ex:'They trained the AI on billions of pages.'},
+ {w:'likely',p:'/ˈlaɪ.kli/',tr:'olası; muhtemel',ex:'What is the most likely answer?'},
+ {w:'guess',p:'/ɡes/',tr:'tahmin (etmek)',ex:'The machine is making a fast guess.'},
+ {w:'confident',p:'/ˈkɒn.fɪ.dənt/',tr:'kendinden emin',ex:'The AI sounds confident, but it might be wrong.'},
+ {w:'confidence',p:'/ˈkɒn.fɪ.dəns/',tr:'kendine güven',ex:'Confidence is not the same as truth.'},
+ {w:'hallucinate',p:'/həˈluː.sɪ.neɪt/',tr:'olmayan şey görmek/söylemek',ex:'AI sometimes hallucinates facts.'},
+ {w:'meaning',p:'/ˈmiː.nɪŋ/',tr:'anlam',ex:'Words have meaning for humans.'},
+ {w:'clever',p:'/ˈklev.ər/',tr:'akıllı; zekice',ex:'Sometimes the AI gives a clever answer.'},
+ {w:'summarise',p:'/ˈsʌm.ər.aɪz/',tr:'özetlemek (BrE)',ex:'AI can summarise long emails.'},
+ {w:'translate',p:'/trænzˈleɪt/',tr:'çevirmek (dil)',ex:'It can translate French into Turkish.'},
+ {w:'tool',p:'/tuːl/',tr:'araç; alet',ex:'AI is a tool, not a friend.'},
+ {w:'skill',p:'/skɪl/',tr:'beceri',ex:'Predicting words is its main skill.'},
+ {w:'gap',p:'/ɡæp/',tr:'boşluk; aralık',ex:'There is a gap between sounding right and being right.'},
+ {w:'double-check',p:'/ˌdʌb.əlˈtʃek/',tr:'iki kez kontrol etmek',ex:'Always double-check important facts.'}
+];
+
+const GRAMMAR=[
+ {id:1,title:'Present Simple — Habitual / General Truth',dot:'var(--g1)',formula:'subj + V1 (he/she/it + Vs)',explain:'Her zaman, genel olarak, alışkanlık. AI ne YAPIYOR — eylemin sürekliliği değil, doğası anlatılır.',ex:[
+   {en:'It remembers patterns.',tr:'Örüntüleri hatırlar.'},
+   {en:'AI does not know what blue feels like.',tr:'AI mavinin nasıl hissettirdiğini bilmez.'},
+   {en:'She writes good emails.',tr:'İyi e-posta yazar.'},
+   {en:'They do not understand the problem.',tr:'Sorunu anlamıyorlar.'}
+ ],mini:[
+   {q:'Choose: "The AI _____ patterns."',opts:['learn','learns','learning'],ans:1},
+   {q:'Which is correct?',opts:['She don\'t know.','She doesn\'t knows.','She doesn\'t know.'],ans:2}
+ ]},
+ {id:2,title:'Present Continuous — Right Now / These Days',dot:'var(--g2)',formula:'am/is/are + V-ing',explain:'Şu an olan veya bu sıralar olan bir şey. Genel alışkanlıktan farkı: zamansal odak şimdi.',ex:[
+   {en:'The AI is only guessing the next word.',tr:'AI sadece bir sonraki kelimeyi tahmin ediyor.'},
+   {en:'Some scientists are working on it right now.',tr:'Bazı bilim insanları şu an üzerinde çalışıyor.'},
+   {en:'I am learning English with this app.',tr:'Bu uygulamayla İngilizce öğreniyorum.'},
+   {en:'They are not listening.',tr:'Dinlemiyorlar.'}
+ ],mini:[
+   {q:'"Look! He _____ the camera."',opts:['use','uses','is using'],ans:2},
+   {q:'"These days I _____ more carefully."',opts:['read','am reading','have read'],ans:1}
+ ]},
+ {id:3,title:'Passive Voice (Present) — Focus on Object',dot:'var(--g3)',formula:'be (am/is/are) + V3',explain:'Eylemi yapan değil, eylemden etkilenen önemli olduğunda kullanılır. "Kim yaptı" önemsiz ya da belli.',ex:[
+   {en:'An AI is trained on a huge amount of text.',tr:'Bir AI çok büyük miktarda metinle eğitilir.'},
+   {en:'This is called "hallucination."',tr:'Buna "halüsinasyon" denir.'},
+   {en:'The book is written in simple English.',tr:'Kitap basit İngilizce ile yazılmıştır.'},
+   {en:'Many languages are spoken in this city.',tr:'Bu şehirde birçok dil konuşulur.'}
+ ],mini:[
+   {q:'"Coffee _____ in Brazil."',opts:['grows','is grown','is growing'],ans:1},
+   {q:'"The email _____ by the AI."',opts:['writes','is written','was wrote'],ans:1}
+ ]},
+ {id:4,title:'Modal Verbs — Possibility (can, may, might)',dot:'var(--g4)',formula:'modal + V1 (base form)',explain:'Bir şeyin olması mümkün ama kesin değil. "can" yetenek/olasılık, "may/might" daha düşük kesinlik.',ex:[
+   {en:'A tool that can guess the next word is powerful.',tr:'Bir sonraki kelimeyi tahmin edebilen bir araç güçlüdür.'},
+   {en:'It can write code, translate, summarise.',tr:'Kod yazabilir, çevirebilir, özetleyebilir.'},
+   {en:'The most likely word may not be the true word.',tr:'En olası kelime doğru kelime olmayabilir.'},
+   {en:'You might be surprised by the answer.',tr:'Cevap seni şaşırtabilir.'}
+ ],mini:[
+   {q:'"The AI _____ make mistakes."',opts:['can','cans','is can'],ans:0},
+   {q:'"It _____ rain later." (low confidence)',opts:['will','must','might'],ans:2}
+ ]},
+ {id:5,title:'Comparatives — Comparing Two Things',dot:'var(--g5)',formula:'-er + than / more + adj + than / as...as',explain:'İki şeyi karşılaştır. Kısa kelime → -er + than. Uzun kelime → more + sıfat + than. "Aynı kadar" → as ... as.',ex:[
+   {en:'The gap is bigger than it looks.',tr:'Boşluk göründüğünden daha büyük.'},
+   {en:'AI is not as far from us as you might think.',tr:'AI sandığın kadar uzak değil.'},
+   {en:'This book is more interesting than the last one.',tr:'Bu kitap öncekinden daha ilginç.'},
+   {en:'My phone is older than yours.',tr:'Telefonum seninkinden eski.'}
+ ],mini:[
+   {q:'"Today is _____ yesterday."',opts:['hotter than','more hot than','as hot than'],ans:0},
+   {q:'"Her work is _____ his."',opts:['as good than','as good as','more good than'],ans:1}
+ ]}
+];
+
+const MCQ=[
+ {q:'According to the article, what is an AI really doing when it "thinks"?',opts:['Searching a library','Predicting the next likely word, one at a time','Asking humans for help','Looking at pictures'],ans:1},
+ {q:'What does the AI learn from its training data?',opts:['The meaning of every word','Sentences word-for-word','Patterns of which words come after which','The names of authors'],ans:2},
+ {q:'What does the writer mean by "hallucination" in AI?',opts:['AI seeing real images','AI getting tired','AI confidently saying things that are not true','AI sleeping'],ans:2},
+ {q:'Why is the AI sometimes wrong even when it sounds sure?',opts:['Because it is lying on purpose','Because confidence is part of the pattern, not the truth','Because the internet is broken','Because users ask bad questions'],ans:1},
+ {q:'How does the writer compare AI prediction to human speaking?',opts:['Completely different','Identical','Similar in pattern, but humans also live in the world','Slower in humans'],ans:2},
+ {q:'What is "the gap" the article talks about?',opts:['The space between two computers','The difference between producing language and understanding it','A missing chapter in the book','A small space on the screen'],ans:1},
+ {q:'What does the writer suggest you do when using AI?',opts:['Trust it completely','Stop using it','Understand what it is, then trust it for some things and check others','Use it only at night'],ans:2},
+ {q:'According to the text, what does the AI not have yet?',opts:['Speed','Many examples','Real meaning / real understanding','Languages'],ans:2}
+];
+
+const TF=[
+ {q:'The AI builds its answer one word at a time, predicting what comes next.',ans:true,exp:'Doğru. Yazar bunu kalbi olarak anlatıyor.'},
+ {q:'The AI knows when a fact it writes is true or false.',ans:false,exp:'Hayır — AI sadece bir sonraki kelimeyi tahmin eder, doğruluğunu kontrol etmez.'},
+ {q:'AI sometimes invents books and quotes that do not exist.',ans:true,exp:'Doğru. Buna "hallucination" deniyor.'},
+ {q:'When you talk, none of your speaking follows patterns.',ans:false,exp:'Yazar tam tersini söylüyor: insan konuşmasının bir kısmı da pür örüntüdür.'},
+ {q:'The writer thinks AI is useless because it does not really think.',ans:false,exp:'Tam tersine — AI çok güçlü ve faydalı bir araç olarak tanıtılıyor.'},
+ {q:'The article says you should always double-check important facts from AI.',ans:true,exp:'Doğru. Yazar "when to trust it, when to double-check" diyor.'}
+];
+
+const MATCH=[
+ {en:'predict',tr:'tahmin etmek'},
+ {en:'pattern',tr:'örüntü'},
+ {en:'guess',tr:'tahmin'},
+ {en:'gap',tr:'boşluk'},
+ {en:'confident',tr:'kendinden emin'},
+ {en:'tool',tr:'araç'}
+];
+
+function showTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('t-'+id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='vocabulary')renderVocab();
+  if(id==='grammar')renderGrammar();
+  if(id==='quiz')renderQuiz();
+}
+
+const tt=document.getElementById('g-tt');
+let flipped=new Set();
+document.querySelectorAll('[data-g]').forEach(el=>{
+  el.addEventListener('click',e=>{
+    const g=el.dataset.g;
+    const info=GRAMMAR_INFO[g];
+    tt.innerHTML=`<div class="tt-name">${info.name}</div><div class="tt-tr">${info.tr}</div><div class="tt-formula">${info.formula}</div>`;
+    tt.style.display='block';
+    const r=el.getBoundingClientRect();
+    let top=r.bottom+8,left=r.left;
+    if(left+290>window.innerWidth)left=window.innerWidth-300;
+    if(top+150>window.innerHeight)top=r.top-160;
+    tt.style.left=left+'px';tt.style.top=top+'px';
+    e.stopPropagation();
+  });
+});
+document.addEventListener('click',e=>{if(!e.target.dataset.g)tt.style.display='none';});
+
+let utter=null,ttsRate=0.9;
+function getText(){return document.getElementById('passage').innerText;}
+function ttsPlay(){
+  if(speechSynthesis.paused){speechSynthesis.resume();setTTSState('play');return;}
+  speechSynthesis.cancel();
+  utter=new SpeechSynthesisUtterance(getText());
+  utter.lang='en-US';utter.rate=ttsRate;utter.pitch=1;
+  utter.onend=()=>setTTSState('stop');
+  speechSynthesis.speak(utter);
+  setTTSState('play');
+}
+function ttsPause(){speechSynthesis.pause();setTTSState('pause');}
+function ttsStop(){speechSynthesis.cancel();setTTSState('stop');}
+function setTTSState(s){
+  document.getElementById('tts-play').disabled=(s==='play');
+  document.getElementById('tts-pause').disabled=(s!=='play');
+  document.getElementById('tts-stop').disabled=(s==='stop');
+}
+function updateRate(){
+  ttsRate=parseFloat(document.getElementById('tts-rate').value);
+  document.getElementById('rate-val').textContent=ttsRate.toFixed(2).replace(/\.?0+$/,'')+'×';
+  if(utter&&speechSynthesis.speaking){const wp=speechSynthesis.paused;ttsStop();ttsPlay();if(wp)ttsPause();}
+}
+
+let vMode='flash',quizIdx=0,quizScore=0,quizOrder=[];
+function setVMode(m,btn){
+  vMode=m;
+  document.querySelectorAll('#t-vocabulary .vocab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderVocab();
+}
+function speakWord(w){
+  const u=new SpeechSynthesisUtterance(w);u.lang='en-US';u.rate=0.85;speechSynthesis.speak(u);
+}
+function renderVocab(){
+  const c=document.getElementById('vocab-content');
+  if(vMode==='flash'){
+    c.innerHTML='<div class="cards-grid">'+VOCAB.map((v,i)=>`
+      <div class="flip-card" id="fc-${i}" onclick="flipCard(${i})">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <div class="fw">${v.w}</div>
+            <div class="fp">${v.p}</div>
+            <button class="fspk" onclick="event.stopPropagation();speakWord('${v.w.replace(/'/g,"\\'")}')">🔊 listen</button>
+          </div>
+          <div class="flip-back">
+            <div class="ft">${v.tr}</div>
+            <div class="fe">${v.ex}</div>
+          </div>
+        </div>
+      </div>`).join('')+'</div>';
+  } else {
+    quizIdx=0;quizScore=0;
+    quizOrder=VOCAB.map((_,i)=>i).sort(()=>Math.random()-0.5).slice(0,12);
+    renderVQuiz();
+  }
+}
+function flipCard(i){
+  const el=document.getElementById('fc-'+i);
+  el.classList.toggle('flipped');
+  if(el.classList.contains('flipped'))flipped.add(i);
+  document.getElementById('vd-learned').textContent=flipped.size;
+}
+function renderVQuiz(){
+  const c=document.getElementById('vocab-content');
+  if(quizIdx>=quizOrder.length){
+    c.innerHTML=`<div class="quiz-area" style="text-align:center"><div style="font-size:38px">🎉</div><div style="font-size:18px;color:var(--accent2);margin-top:10px">Quiz Complete!</div><div style="color:var(--text2);margin-top:6px">Score: ${quizScore} / ${quizOrder.length}</div><button class="btn-check" style="margin-top:14px" onclick="quizIdx=0;quizScore=0;quizOrder=VOCAB.map((_,i)=>i).sort(()=>Math.random()-0.5).slice(0,12);renderVQuiz()">Try Again</button></div>`;
+    document.getElementById('vd-quiz').textContent=quizScore;
+    localStorage.setItem(SKEY+'vq-score',quizScore);
+    return;
+  }
+  const i=quizOrder[quizIdx];
+  const v=VOCAB[i];
+  const wrongs=VOCAB.filter((_,j)=>j!==i).sort(()=>Math.random()-0.5).slice(0,3);
+  const opts=[v,...wrongs].sort(()=>Math.random()-0.5);
+  c.innerHTML=`<div class="quiz-area">
+    <div class="quiz-progress"><span>Question ${quizIdx+1} / ${quizOrder.length}</span><span>Score: ${quizScore}</span></div>
+    <div class="q-stem"><span class="q-num">${quizIdx+1}.</span>What does <strong>${v.w}</strong> mean?</div>
+    <div class="options">${opts.map(o=>`<button class="opt-btn" onclick="pickVQ(this,'${o.w.replace(/'/g,"\\'")}','${v.w.replace(/'/g,"\\'")}')">${o.tr}</button>`).join('')}</div>
+  </div>`;
+}
+function pickVQ(btn,picked,correct){
+  document.querySelectorAll('#vocab-content .opt-btn').forEach(b=>b.disabled=true);
+  if(picked===correct){btn.classList.add('correct');quizScore++;}
+  else{
+    btn.classList.add('wrong');
+    document.querySelectorAll('#vocab-content .opt-btn').forEach(b=>{
+      const v=VOCAB.find(x=>x.tr===b.textContent);
+      if(v&&v.w===correct)b.classList.add('correct');
+    });
+  }
+  setTimeout(()=>{quizIdx++;renderVQuiz();},900);
+}
+
+function renderGrammar(){
+  const c=document.getElementById('grammar-content');
+  c.innerHTML=GRAMMAR.map(g=>`
+    <div class="gram-card" id="gc-${g.id}">
+      <div class="gram-title" onclick="document.getElementById('gc-${g.id}').classList.toggle('expanded')">
+        <span class="gram-dot" style="background:${g.dot}"></span>
+        <span>${g.title}</span>
+        <span class="gram-arrow">▶</span>
+      </div>
+      <div class="gram-body">
+        <div class="gram-formula">📐 ${g.formula}</div>
+        <div class="gram-explain">${g.explain}</div>
+        <div class="gram-ex-list">${g.ex.map(e=>`<div class="gram-ex"><div class="en">• ${e.en}</div><div class="tr">${e.tr}</div></div>`).join('')}</div>
+        <div style="font-size:12px;color:var(--accent2);margin-bottom:8px;font-weight:bold">Quick Check:</div>
+        ${g.mini.map((m,mi)=>`<div class="mini-q"><div class="mq-text">${mi+1}. ${m.q}</div><div class="mq-opts">${m.opts.map((o,oi)=>`<button class="mini-opt" onclick="chkMini(this,${oi},${m.ans})">${o}</button>`).join('')}</div></div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+function chkMini(btn,picked,correct){
+  const sib=btn.parentElement.querySelectorAll('.mini-opt');
+  sib.forEach(b=>b.disabled=true);
+  if(picked===correct)btn.classList.add('correct');
+  else{btn.classList.add('wrong');sib[correct].classList.add('correct');}
+}
+
+let qMode='mcq';
+let mcqScore=0,tfScore=0,matchScore=0;
+let mcqAnswered=new Set(),tfAnswered=new Set();
+let matchSel=null,matchedPairs=new Set();
+function setQMode(m,btn){
+  qMode=m;
+  document.querySelectorAll('#t-quiz .vocab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderQuiz();
+}
+function renderQuiz(){
+  const c=document.getElementById('quiz-content');
+  if(qMode==='mcq')renderMCQ(c);
+  else if(qMode==='tf')renderTF(c);
+  else renderMatch(c);
+}
+function renderMCQ(c){
+  c.innerHTML='<div class="quiz-area">'+MCQ.map((q,i)=>`
+    <div style="margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border)">
+      <div class="q-stem"><span class="q-num">${i+1}.</span>${q.q}</div>
+      <div class="options" id="mcq-${i}">${q.opts.map((o,oi)=>`<button class="opt-btn" onclick="pickMCQ(${i},${oi},${q.ans},this)">${o}</button>`).join('')}</div>
+    </div>`).join('')+`<div style="text-align:right;font-size:13px;color:var(--text2)">Score: <strong id="mcq-running">${mcqScore}</strong> / ${MCQ.length}</div></div>`;
+}
+function pickMCQ(qi,oi,correct,btn){
+  if(mcqAnswered.has(qi))return;
+  mcqAnswered.add(qi);
+  const opts=document.querySelectorAll(`#mcq-${qi} .opt-btn`);
+  opts.forEach(b=>b.disabled=true);
+  if(oi===correct){btn.classList.add('correct');mcqScore++;}
+  else{btn.classList.add('wrong');opts[correct].classList.add('correct');}
+  document.getElementById('mcq-running').textContent=mcqScore;
+  document.getElementById('qs-mcq').textContent=mcqScore+'/'+MCQ.length;
+  localStorage.setItem(SKEY+'mcq',mcqScore);
+}
+function renderTF(c){
+  c.innerHTML='<div class="quiz-area"><div class="tf-grid">'+TF.map((t,i)=>`
+    <div class="tf-item">
+      <div class="tf-stem"><span class="q-num">${i+1}.</span>${t.q}</div>
+      <div class="tf-btns" id="tf-${i}">
+        <button class="tf-btn" onclick="pickTF(${i},true,${t.ans},this)">✓ True</button>
+        <button class="tf-btn" onclick="pickTF(${i},false,${t.ans},this)">✗ False</button>
+      </div>
+      <div class="tf-explain" id="tfx-${i}">${t.exp}</div>
+    </div>`).join('')+`</div><div style="text-align:right;margin-top:12px;font-size:13px;color:var(--text2)">Score: <strong id="tf-running">${tfScore}</strong> / ${TF.length}</div></div>`;
+}
+function pickTF(qi,picked,correct,btn){
+  if(tfAnswered.has(qi))return;
+  tfAnswered.add(qi);
+  document.querySelectorAll(`#tf-${qi} .tf-btn`).forEach(b=>b.disabled=true);
+  if(picked===correct){btn.classList.add('correct');tfScore++;}
+  else{
+    btn.classList.add('wrong');
+    document.querySelectorAll(`#tf-${qi} .tf-btn`).forEach(b=>{
+      if((correct&&b.textContent.includes('True'))||(!correct&&b.textContent.includes('False')))b.classList.add('correct');
+    });
+  }
+  document.getElementById('tfx-'+qi).classList.add('show');
+  document.getElementById('tf-running').textContent=tfScore;
+  document.getElementById('qs-tf').textContent=tfScore+'/'+TF.length;
+  localStorage.setItem(SKEY+'tf',tfScore);
+}
+function renderMatch(c){
+  const left=MATCH.map((m,i)=>({...m,i,col:'l'}));
+  const right=MATCH.map((m,i)=>({...m,i,col:'r'})).sort(()=>Math.random()-0.5);
+  c.innerHTML=`<div class="quiz-area">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:14px">Tap an English word, then tap its Turkish meaning.</div>
+    <div class="match-area">
+      <div class="match-col" id="match-left">${left.map(m=>`<div class="match-item" data-i="${m.i}" data-col="l" onclick="pickMatch(this)">${m.en}</div>`).join('')}</div>
+      <div class="match-col" id="match-right">${right.map(m=>`<div class="match-item" data-i="${m.i}" data-col="r" onclick="pickMatch(this)">${m.tr}</div>`).join('')}</div>
+    </div>
+    <div style="text-align:right;margin-top:14px;font-size:13px;color:var(--text2)">Matched: <strong id="match-running">${matchedPairs.size}</strong> / ${MATCH.length}</div>
+  </div>`;
+}
+function pickMatch(el){
+  if(el.classList.contains('matched'))return;
+  if(!matchSel){matchSel=el;el.classList.add('selected');return;}
+  if(matchSel===el){el.classList.remove('selected');matchSel=null;return;}
+  if(matchSel.dataset.col===el.dataset.col){matchSel.classList.remove('selected');matchSel=el;el.classList.add('selected');return;}
+  if(matchSel.dataset.i===el.dataset.i){
+    matchSel.classList.remove('selected');
+    matchSel.classList.add('matched');el.classList.add('matched');
+    matchedPairs.add(el.dataset.i);
+    matchScore=matchedPairs.size;
+    document.getElementById('match-running').textContent=matchScore;
+    document.getElementById('qs-match').textContent=matchScore+'/'+MATCH.length;
+    localStorage.setItem(SKEY+'match',matchScore);
+    matchSel=null;
+  } else {
+    el.classList.add('wrong-flash');
+    const sel=matchSel;sel.classList.add('wrong-flash');
+    setTimeout(()=>{el.classList.remove('wrong-flash','selected');sel.classList.remove('wrong-flash','selected');},400);
+    matchSel=null;
+  }
+}
+
+function saveWrite(){
+  const t=document.getElementById('write-area').value;
+  localStorage.setItem(SKEY+'write',t);
+  document.getElementById('write-status').textContent='✓ Saved at '+new Date().toLocaleTimeString();
+}
+function loadWrite(){
+  const t=localStorage.getItem(SKEY+'write')||'';
+  document.getElementById('write-area').value=t;
+  document.getElementById('write-status').textContent='📂 Loaded.';
+}
+function clearWrite(){
+  document.getElementById('write-area').value='';
+  localStorage.removeItem(SKEY+'write');
+  document.getElementById('write-status').textContent='🗑️ Cleared.';
+}
+
+window.addEventListener('load',()=>{
+  const w=localStorage.getItem(SKEY+'write');if(w)document.getElementById('write-area').value=w;
+  const m=localStorage.getItem(SKEY+'mcq');if(m){mcqScore=+m;document.getElementById('qs-mcq').textContent=m+'/'+MCQ.length;}
+  const t=localStorage.getItem(SKEY+'tf');if(t){tfScore=+t;document.getElementById('qs-tf').textContent=t+'/'+TF.length;}
+  const ma=localStorage.getItem(SKEY+'match');if(ma){matchScore=+ma;document.getElementById('qs-match').textContent=ma+'/'+MATCH.length;}
+  const vq=localStorage.getItem(SKEY+'vq-score');if(vq)document.getElementById('vd-quiz').textContent=vq;
+});
+</script>
+</body>
+</html>

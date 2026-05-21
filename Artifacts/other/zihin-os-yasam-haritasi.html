@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZihinOS — Yaşam Haritası</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+  --bg:#0D0F14; --surface:#141720; --s2:#1C2130;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.14);
+  --text:#EDE8DC; --text2:rgba(237,232,220,0.55); --text3:rgba(237,232,220,0.3);
+  --gold:#C9952A; --gold-d:rgba(201,149,42,0.14);
+  --logos:#8B7CF6; --pathos:#22C9A0; --soma:#FF6B4A; --ethos:#4BAAFF; --ergon:#F0B429;
+  --logos-b:rgba(139,124,246,0.1); --pathos-b:rgba(34,201,160,0.1);
+  --soma-b:rgba(255,107,74,0.1); --ethos-b:rgba(75,170,255,0.1); --ergon-b:rgba(240,180,41,0.1);
+  --fd:'Cormorant Garamond',Georgia,serif; --fb:'DM Sans',system-ui,sans-serif;
+  --rad:12px; --radl:20px; --tr:0.3s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"] {
+  --bg:#F0EBE0; --surface:#FAF7F2; --s2:#FFFFFF;
+  --border:rgba(0,0,0,0.07); --border2:rgba(0,0,0,0.14);
+  --text:#1A1812; --text2:rgba(26,24,18,0.55); --text3:rgba(26,24,18,0.3);
+  --gold:#9A6F10; --gold-d:rgba(154,111,16,0.1);
+  --logos:#6B5DD3; --pathos:#0F9E7A; --soma:#D44830; --ethos:#2882CC; --ergon:#C89020;
+  --logos-b:rgba(107,93,211,0.08); --pathos-b:rgba(15,158,122,0.08);
+  --soma-b:rgba(212,72,48,0.08); --ethos-b:rgba(40,130,204,0.08); --ergon-b:rgba(200,144,32,0.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:15px;line-height:1.7;overflow-x:hidden;transition:background var(--tr),color var(--tr)}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 40%,rgba(139,124,246,.05) 0,transparent 55%),radial-gradient(ellipse at 85% 15%,rgba(34,201,160,.04) 0,transparent 45%),radial-gradient(ellipse at 60% 85%,rgba(201,149,42,.04) 0,transparent 40%);pointer-events:none;z-index:0}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:15px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,15,20,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);transition:background var(--tr)}
+[data-theme="light"] nav{background:rgba(240,235,224,.88)}
+.nav-logo{font-family:var(--fd);font-size:17px;font-weight:600;letter-spacing:.03em;color:var(--text)}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:12px;font-weight:400;letter-spacing:.07em;text-transform:uppercase;transition:color var(--tr)}
+.nav-links a:hover{color:var(--text)}
+.theme-btn{width:44px;height:24px;background:var(--s2);border:1px solid var(--border2);border-radius:12px;cursor:pointer;position:relative;transition:all var(--tr)}
+.theme-btn::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--gold);border-radius:50%;transition:transform var(--tr)}
+[data-theme="light"] .theme-btn::after{transform:translateX(20px)}
+
+section{position:relative;z-index:1}
+.container{max-width:1100px;margin:0 auto;padding:0 40px}
+
+/* HERO */
+#hero{min-height:100vh;display:flex;align-items:center;padding-top:80px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.12}
+.o1{width:380px;height:380px;background:var(--logos);top:10%;right:8%;animation:fl 9s ease-in-out infinite}
+.o2{width:240px;height:240px;background:var(--pathos);top:55%;right:28%;animation:fl 11s ease-in-out infinite 2s}
+.o3{width:280px;height:280px;background:var(--ergon);top:25%;right:3%;animation:fl 13s ease-in-out infinite 4s}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-28px)}}
+.hero-content{max-width:680px}
+.hero-eye{font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:24px;opacity:0;transform:translateY(30px)}
+.hero-h1{font-family:var(--fd);font-size:clamp(52px,7.5vw,100px);font-weight:300;line-height:1.04;letter-spacing:-.025em;margin-bottom:32px;opacity:0;transform:translateY(40px)}
+.hero-h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:17px;color:var(--text2);line-height:1.85;max-width:500px;margin-bottom:48px;opacity:0;transform:translateY(30px)}
+.hero-q{border-left:2px solid var(--gold);padding-left:20px;font-family:var(--fd);font-style:italic;font-size:16px;color:var(--text2);opacity:0;transform:translateY(20px)}
+.hero-q cite{display:block;margin-top:8px;font-size:11px;font-style:normal;letter-spacing:.09em;color:var(--gold);text-transform:uppercase}
+
+/* SEC HEADER */
+.sec-hd{margin-bottom:60px}
+.sec-n{font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.sec-h{font-family:var(--fd);font-size:clamp(36px,4.5vw,64px);font-weight:300;line-height:1.12;letter-spacing:-.015em}
+.sec-h em{font-style:italic;color:var(--gold)}
+.sec-d{margin-top:18px;font-size:15px;color:var(--text2);max-width:580px;line-height:1.85}
+.sp{padding:120px 0}
+
+/* ESKİ SİSTEM */
+#eski{background:var(--surface);padding:120px 0}
+.triad{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:56px}
+.tc{background:var(--s2);border:1px solid var(--border);border-radius:var(--radl);padding:32px 26px;transition:transform var(--tr),border-color var(--tr)}
+.tc:hover{transform:translateY(-5px);border-color:var(--border2)}
+.tc-sub{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.tc-h{font-family:var(--fd);font-size:30px;font-weight:400;margin-bottom:16px}
+.tc-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:4px 10px;background:var(--gold-d);border:1px solid rgba(201,149,42,.18);border-radius:20px;color:var(--text2)}
+.tag.cx{background:rgba(255,107,74,.07);border-color:rgba(255,107,74,.2);color:var(--soma);font-size:11px}
+.pb-ttl{font-family:var(--fd);font-size:20px;font-weight:400;color:var(--text2);margin-bottom:20px}
+.pb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pb{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--soma);border-radius:var(--rad);padding:20px}
+.pb h4{font-size:13px;font-weight:500;margin-bottom:7px}
+.pb p{font-size:12px;color:var(--text2);line-height:1.65}
+
+/* LOGOS-VITA */
+.pw{display:flex;gap:56px;align-items:flex-start;margin-bottom:72px}
+.pcw{flex-shrink:0;width:400px}
+.leg-item{display:flex;align-items:flex-start;gap:16px;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity var(--tr)}
+.leg-item:last-child{border:none}
+.leg-item:hover{opacity:.75}
+.leg-dot{width:9px;height:9px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.leg-h{font-family:var(--fd);font-size:22px;font-weight:400;line-height:1.2;margin-bottom:4px}
+.leg-gk{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:7px}
+.leg-p{font-size:13px;color:var(--text2);line-height:1.6}
+.dc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.dc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radl);padding:26px 20px;position:relative;overflow:hidden;cursor:pointer;transition:all var(--tr)}
+.dc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;transition:height var(--tr)}
+.dc:hover::before{height:5px}
+.dc:hover{transform:translateY(-6px);border-color:var(--border2)}
+.dc[data-d="logos"]{--dc:var(--logos);--dcb:var(--logos-b)}.dc[data-d="logos"]::before{background:var(--logos)}
+.dc[data-d="pathos"]{--dc:var(--pathos);--dcb:var(--pathos-b)}.dc[data-d="pathos"]::before{background:var(--pathos)}
+.dc[data-d="soma"]{--dc:var(--soma);--dcb:var(--soma-b)}.dc[data-d="soma"]::before{background:var(--soma)}
+.dc[data-d="ethos"]{--dc:var(--ethos);--dcb:var(--ethos-b)}.dc[data-d="ethos"]::before{background:var(--ethos)}
+.dc[data-d="ergon"]{--dc:var(--ergon);--dcb:var(--ergon-b)}.dc[data-d="ergon"]::before{background:var(--ergon)}
+.dl{width:38px;height:38px;border-radius:9px;background:var(--dc);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:20px;font-weight:600;color:#fff;margin-bottom:14px;opacity:.9}
+.dn{font-family:var(--fd);font-size:26px;font-weight:400;margin-bottom:3px;color:var(--dc)}
+.dt{font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin-bottom:12px}
+.dd{font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:14px}
+.dex{display:flex;flex-direction:column;gap:4px}
+.dex span{font-size:11px;color:var(--text3);padding-left:12px;position:relative}
+.dex span::before{content:'';position:absolute;left:2px;top:6px;width:4px;height:4px;border-radius:50%;background:var(--dc);opacity:.6}
+
+/* MAPPER */
+#mapper{background:var(--surface);padding:120px 0}
+.mw{display:grid;grid-template-columns:260px 1fr;gap:36px}
+.al{list-style:none}
+.ai{padding:11px 15px;border-radius:var(--rad);cursor:pointer;transition:all var(--tr);color:var(--text2);font-size:14px;border:1px solid transparent}
+.ai:hover,.ai.active{background:var(--s2);border-color:var(--border);color:var(--text)}
+.ai.active{border-color:var(--gold)}
+.mr{background:var(--s2);border:1px solid var(--border);border-radius:var(--radl);padding:40px;min-height:320px;display:flex;flex-direction:column;justify-content:center}
+.ma-name{font-family:var(--fd);font-size:38px;font-weight:300;margin-bottom:8px}
+.ma-desc{font-size:14px;color:var(--text2);margin-bottom:28px;line-height:1.8}
+.m-dims{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.mdb{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:24px;border:1px solid;font-size:13px;font-weight:500}
+.mdb.sec{opacity:.55;font-size:12px;padding:6px 12px}
+.mdb[data-d="logos"]{border-color:var(--logos);color:var(--logos);background:var(--logos-b)}
+.mdb[data-d="pathos"]{border-color:var(--pathos);color:var(--pathos);background:var(--pathos-b)}
+.mdb[data-d="soma"]{border-color:var(--soma);color:var(--soma);background:var(--soma-b)}
+.mdb[data-d="ethos"]{border-color:var(--ethos);color:var(--ethos);background:var(--ethos-b)}
+.mdb[data-d="ergon"]{border-color:var(--ergon);color:var(--ergon);background:var(--ergon-b)}
+.m-note{font-size:13px;color:var(--text2);font-style:italic;border-left:2px solid var(--gold);padding-left:16px;line-height:1.7}
+.m-dim-label{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+
+/* PRENSİPLER */
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radl);padding:34px 28px;transition:all var(--tr)}
+.pc:hover{border-color:var(--border2);transform:translateY(-4px)}
+.pc-ico{font-size:26px;margin-bottom:18px}
+.pc-sub{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.pc-h{font-family:var(--fd);font-size:24px;font-weight:400;margin-bottom:12px}
+.pc-p{font-size:13px;color:var(--text2);line-height:1.8}
+.steps{margin-top:18px;display:flex;flex-direction:column;gap:7px}
+.step{display:flex;align-items:center;gap:11px;font-size:12px;color:var(--text2)}
+.sn{width:20px;height:20px;border-radius:50%;background:var(--gold-d);border:1px solid rgba(201,149,42,.25);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:var(--gold);flex-shrink:0}
+
+/* WHİMSİCAL */
+#tespitler{background:var(--surface);padding:120px 0}
+.fg{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.fc{background:var(--s2);border:1px solid var(--border);border-radius:var(--radl);padding:28px}
+.fc.cr{border-left:3px solid var(--soma)}
+.fc.im{border-left:3px solid var(--ergon)}
+.fc.ins{border-left:3px solid var(--pathos)}
+.fn{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:11px}
+.fh{font-family:var(--fd);font-size:22px;font-weight:400;margin-bottom:11px}
+.ft{font-size:13px;color:var(--text2);line-height:1.72}
+
+/* YAZILIM */
+.sl{display:flex;flex-direction:column;gap:14px}
+.slr{display:grid;grid-template-columns:48px 1fr auto;gap:22px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:22px 26px;transition:all var(--tr)}
+.slr:hover{border-color:var(--border2);transform:translateX(8px)}
+.slr:nth-child(1) .sn2{background:var(--logos-b);color:var(--logos)}
+.slr:nth-child(2) .sn2{background:var(--pathos-b);color:var(--pathos)}
+.slr:nth-child(3) .sn2{background:var(--soma-b);color:var(--soma)}
+.slr:nth-child(4) .sn2{background:var(--ethos-b);color:var(--ethos)}
+.slr:nth-child(5) .sn2{background:var(--ergon-b);color:var(--ergon)}
+.sn2{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;font-family:var(--fd);flex-shrink:0}
+.s-ttl{font-size:15px;font-weight:500;margin-bottom:4px}
+.s-d{font-size:13px;color:var(--text2)}
+.s-tech{font-size:11px;color:var(--text3);text-align:right;line-height:1.9}
+
+/* COMPARE */
+#kiyasla{padding:120px 0}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.cmp-c{background:var(--surface);border:1px solid var(--border);border-radius:var(--radl);padding:32px}
+.cmp-h{font-family:var(--fd);font-size:22px;font-weight:400;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.chip{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:500}
+.chip-r{background:rgba(255,107,74,.12);color:var(--soma)}
+.chip-g{background:rgba(34,201,160,.12);color:var(--pathos)}
+.cmp-row{font-size:13px;color:var(--text2);padding:10px 0;border-bottom:1px solid var(--border);line-height:1.6;display:flex;align-items:flex-start;gap:10px}
+.cmp-row:last-child{border:none}
+.cmp-row::before{content:'→';color:var(--text3);flex-shrink:0}
+.cmp-c.good .cmp-row::before{content:'✓';color:var(--pathos)}
+
+/* FOOTER */
+footer{padding:80px 0 60px;border-top:1px solid var(--border)}
+.fq{font-family:var(--fd);font-size:clamp(22px,3vw,44px);font-weight:300;font-style:italic;color:var(--text2);max-width:780px;line-height:1.4;margin-bottom:20px}
+.fa{font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+
+.fade-up{opacity:0;transform:translateY(32px)}
+
+@media(max-width:900px){
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .container{padding:0 20px}
+  .triad,.dc-grid,.pg,.fg,.cmp{grid-template-columns:1fr}
+  .pb-grid{grid-template-columns:1fr}
+  .pw{flex-direction:column}
+  .pcw{width:100%}
+  .mw{grid-template-columns:1fr}
+  .slr{grid-template-columns:48px 1fr}
+  .s-tech{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Zihin<span>OS</span></div>
+  <ul class="nav-links">
+    <li><a href="#eski">Mevcut</a></li>
+    <li><a href="#logos-vita">LOGOS-VITA</a></li>
+    <li><a href="#mapper">Haritala</a></li>
+    <li><a href="#deneyim">Prensipler</a></li>
+    <li><a href="#tespitler">Whimsical</a></li>
+    <li><a href="#yazilim">Yazılım</a></li>
+  </ul>
+  <button class="theme-btn" id="themeBtn" title="Tema değiştir"></button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  </div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eye">Kişisel Yaşam Felsefesi · LOGOS-VITA · 2026</div>
+      <h1 class="hero-h1">Yaşamı<br><em>beş boyutta</em><br>haritalamak</h1>
+      <p class="hero-sub">Akıl, ruh ve bedenin ötesinde — üretim ve ilişki boyutlarını da kapsayan, her eylemin hesabının verilebileceği, sürdürülebilir bir yaşam sistemi.</p>
+      <blockquote class="hero-q">
+        "İnsan bir kez ne olmak istediğine karar verirse, geri kalan her şey pratiktir."
+        <cite>— Aristoteles · Nikomakhos'a Etik</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ESKİ SİSTEM -->
+<section id="eski">
+  <div class="container">
+    <div class="sec-hd fade-up">
+      <div class="sec-n">01 — Mevcut Durum</div>
+      <h2 class="sec-h">Üçlü sistem:<br><em>Akıl · Ruh · Beden</em></h2>
+      <p class="sec-d">Sezgisel olarak doğru ve felsefi temelli — ama Whimsical analizi sonrası ortaya çıkan tablo, operasyonel bazı kırık noktaları gösteriyor.</p>
+    </div>
+    <div class="triad">
+      <div class="tc fade-up">
+        <div class="tc-sub">Birinci boyut</div>
+        <div class="tc-h" style="color:var(--logos)">Akıl</div>
+        <div class="tc-tags">
+          <span class="tag">Aristoteles çalışmak</span><span class="tag">Kod yazmak</span>
+          <span class="tag">DAMITMA sistemi</span><span class="tag">İngilizce öğrenmek</span>
+          <span class="tag cx">Sinema & Sanat →?</span><span class="tag cx">Yaratıcı yazarlık →?</span>
+        </div>
+      </div>
+      <div class="tc fade-up">
+        <div class="tc-sub">İkinci boyut</div>
+        <div class="tc-h" style="color:var(--pathos)">Ruh</div>
+        <div class="tc-tags">
+          <span class="tag">Kriz protokolü</span><span class="tag">Güvenli bölge</span>
+          <span class="tag cx">Tanpınar okumak →?</span><span class="tag cx">Müzik →?</span>
+          <span class="tag cx">Arkadaşlık →?</span>
+        </div>
+      </div>
+      <div class="tc fade-up">
+        <div class="tc-sub">Üçüncü boyut</div>
+        <div class="tc-h" style="color:var(--soma)">Beden</div>
+        <div class="tc-tags">
+          <span class="tag">Bisiklet (6×/hafta)</span><span class="tag">Spor salonu (3×)</span>
+          <span class="tag">Beslenme</span><span class="tag">Uyku</span>
+          <span class="tag cx">Yoga / meditasyon →?</span>
+        </div>
+      </div>
+    </div>
+    <div class="pb-ttl">Tespit edilen kırık noktalar</div>
+    <div class="pb-grid">
+      <div class="pb fade-up"><h4>Sınır belirsizliği</h4><p>Yaratıcı yazarlık akıl mı, ruh mu? Her tasnif kararı enerji tüketiyor. Sistem yorucu hale geliyor.</p></div>
+      <div class="pb fade-up"><h4>İlişki boyutu eksik</h4><p>Aristoteles'in <em>philia</em>'sı yok. Arkadaşlık, öğretme, paylaşma — hiçbirinin Whimsical'da yeri yok.</p></div>
+      <div class="pb fade-up"><h4>Üretim izlenemiyor</h4><p>Girdi takip ediliyor (okuma), çıktı takip edilmiyor (roman sayfası, uygulama). Ergon boyutu eksik.</p></div>
+      <div class="pb fade-up"><h4>4 paralel taksonomi</h4><p>Klasör yapısı, Eudoimonia mindmap, Yaşam flowchart ve ZihinOS kategorileri — birbirinden habersiz 4 dil.</p></div>
+      <div class="pb fade-up"><h4>Ruh board'u sadece kriz</h4><p>Ruh board'u değerli bir kriz protokolü — ama ruhu besleyen aktiviteler kataloğu yok. Savunma var, saldırı yok.</p></div>
+      <div class="pb fade-up"><h4>Ölçüm mekanizması yok</h4><p>Hangi boyuta bu hafta kaç dakika? Radar grafik yok, trend yok, uyarı eşiği yok.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS-VITA -->
+<section id="logos-vita" class="sp">
+  <div class="container">
+    <div class="sec-hd fade-up">
+      <div class="sec-n">02 — Yeni Sistem</div>
+      <h2 class="sec-h">LOGOS-VITA:<br><em>Beş yaşam vektörü</em></h2>
+      <p class="sec-d">Aristoteles'in <em>eudaimonia</em> anlayışından ilham alan model. Her boyut bir "kova" değil, bir <em>yön</em>. Aktiviteler birden fazla boyuta dokunabilir.</p>
+    </div>
+    <div class="pw">
+      <div class="pcw"><canvas id="pc" width="400" height="390"></canvas></div>
+      <div style="flex:1">
+        <div class="leg-item fade-up" onclick="hd('logos')">
+          <div class="leg-dot" style="background:var(--logos)"></div>
+          <div><div class="leg-h" style="color:var(--logos)">Logos</div><div class="leg-gk">Akıl · Düşünce · Theoria</div><p class="leg-p">Aristoteles okumak, DAMITMA sistemi, İngilizce öğrenmek, kod yazmak, felsefe. Muktesebat'ın meleke'ye dönüştüğü yolculuk.</p></div>
+        </div>
+        <div class="leg-item fade-up" onclick="hd('pathos')">
+          <div class="leg-dot" style="background:var(--pathos)"></div>
+          <div><div class="leg-h" style="color:var(--pathos)">Pathos</div><div class="leg-gk">Ruh · Duygu · Thymos</div><p class="leg-p">Tanpınar okumak, klasik müzik, estetik deneyim, yaratıcı yazarlık. Bisiklet + TTS bileşik fayda modeli: Soma + Pathos aynı anda.</p></div>
+        </div>
+        <div class="leg-item fade-up" onclick="hd('soma')">
+          <div class="leg-dot" style="background:var(--soma)"></div>
+          <div><div class="leg-h" style="color:var(--soma)">Soma</div><div class="leg-gk">Beden · Fizyoloji · Kinesis</div><p class="leg-p">Bisiklet (haftada 6), spor salonu (3×), beslenme, uyku. Sürdürülebilirlik ilkesi: basit ve tutarlı &gt; görkemli ve terk edilmiş.</p></div>
+        </div>
+        <div class="leg-item fade-up" onclick="hd('ethos')">
+          <div class="leg-dot" style="background:var(--ethos)"></div>
+          <div><div class="leg-h" style="color:var(--ethos)">Ethos <span style="font-size:14px;color:var(--text3)">— yeni</span></div><div class="leg-gk">İlişki · Bağ · Philia</div><p class="leg-p">Aristoteles'in <em>philia</em>'sı. Arkadaşlık, öğretme, paylaşma, topluluk. Şu anki sisteminde tamamen eksik olan boyut.</p></div>
+        </div>
+        <div class="leg-item fade-up" onclick="hd('ergon')">
+          <div class="leg-dot" style="background:var(--ergon)"></div>
+          <div><div class="leg-h" style="color:var(--ergon)">Ergon <span style="font-size:14px;color:var(--text3)">— yeni</span></div><div class="leg-gk">Üretim · Eser · Poiesis</div><p class="leg-p">Roman sayfaları, ZihinOS, İngilizce uygulamaları, bu sistemin kendisi. "Ne okudun?" değil: "Ne yarattın?"</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="dc-grid">
+      <div class="dc fade-up" data-d="logos"><div class="dl">L</div><div class="dn">Logos</div><div class="dt">Akıl · Düşünce</div><div class="dd">Analitik zeka, öğrenme, dil, mantık.</div><div class="dex"><span>Aristoteles · Metafizik</span><span>DAMITMA sistemi</span><span>İngilizce grameri</span><span>ZihinOS inşası</span></div></div>
+      <div class="dc fade-up" data-d="pathos"><div class="dl">P</div><div class="dn">Pathos</div><div class="dt">Ruh · Duygu</div><div class="dd">Estetik, anlam, yaratıcılık.</div><div class="dex"><span>Tanpınar · Saatler</span><span>Klasik müzik</span><span>Yaratıcı yazarlık</span><span>Sinema & sanat</span></div></div>
+      <div class="dc fade-up" data-d="soma"><div class="dl">S</div><div class="dn">Soma</div><div class="dt">Beden · Fizyoloji</div><div class="dd">Fiziksel kapasite, enerji, sağlık.</div><div class="dex"><span>Bisiklet (6×/hafta)</span><span>Spor salonu (3×)</span><span>Beslenme planı</span><span>Uyku kalitesi</span></div></div>
+      <div class="dc fade-up" data-d="ethos"><div class="dl">E</div><div class="dn">Ethos</div><div class="dt">İlişki · Bağ</div><div class="dd">Sosyal bağ, öğretme, katkı.</div><div class="dex"><span>Arkadaşlık</span><span>Öğretme · paylaşma</span><span>Topluma katkı</span><span>Empati pratiği</span></div></div>
+      <div class="dc fade-up" data-d="ergon"><div class="dl">Ü</div><div class="dn">Ergon</div><div class="dt">Üretim · Eser</div><div class="dd">Somut çıktı, değer, eser.</div><div class="dex"><span>Roman yazmak</span><span>ZihinOS projesi</span><span>Uygulama geliştirme</span><span>Bu sistemin kendisi</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACTIVITY MAPPER -->
+<section id="mapper">
+  <div class="container">
+    <div class="sec-hd fade-up">
+      <div class="sec-n">03 — Aktivite Haritası</div>
+      <h2 class="sec-h">Her eylemin<br><em>boyutsal izi</em></h2>
+      <p class="sec-d">Bir aktivite birden fazla boyuta dokunabilir. Birincil ve ikincil etkileri görmek sistemi gerçekçi kılar — ve tasnif stresini ortadan kaldırır.</p>
+    </div>
+    <div class="mw">
+      <ul class="al" id="aList"></ul>
+      <div class="mr" id="mRes"><div style="color:var(--text3);font-size:14px;text-align:center">← Soldan bir aktivite seç</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRENSİPLER -->
+<section id="deneyim" class="sp">
+  <div class="container">
+    <div class="sec-hd fade-up">
+      <div class="sec-n">04 — Kişisel Prensipler</div>
+      <h2 class="sec-h">Yaşanmışlıktan<br><em>damıtılan ilkeler</em></h2>
+      <p class="sec-d">Teori değil, deneyimden süzülen prensipler. Sistemin felsefi arka planı.</p>
+    </div>
+    <div class="pg">
+      <div class="pc fade-up">
+        <div class="pc-ico">◎</div>
+        <div class="pc-sub">Bisiklet Prensibi</div>
+        <div class="pc-h">Bileşik fayda</div>
+        <div class="pc-p">Bisiklete binerken TTS ile Tanpınar veya Aristoteles dinlemek: tek eylem, çift kazanım. Soma + Pathos/Logos aynı anda. Sürdürülebilir alışkanlık tasarımının temel ilkesi.</div>
+      </div>
+      <div class="pc fade-up">
+        <div class="pc-ico">◈</div>
+        <div class="pc-sub">DAMITMA Sistemi</div>
+        <div class="pc-h">7 adımlı döngü</div>
+        <div class="pc-p">Muktesebat'ı meleke'ye dönüştüren süreç. Yabancılık duygusunu gideren ön-ısınma evresiyle başlar.</div>
+        <div class="steps">
+          <div class="step"><div class="sn">D</div>Dinle — çoklu modda maruz kal</div>
+          <div class="step"><div class="sn">Y</div>Yokla — soğuk başlangıcı ısıt</div>
+          <div class="step"><div class="sn">D</div>Damıt — özü çıkar</div>
+          <div class="step"><div class="sn">M</div>Mecz Et — kendi düşüncenle kaynaştır</div>
+          <div class="step"><div class="sn">H</div>Hattırata Geçir — Obsidian'a yaz</div>
+          <div class="step"><div class="sn">T</div>Tekrar — aralıklı pekiştir</div>
+          <div class="step"><div class="sn">A</div>Arşivle — ZihinOS'a aktar</div>
+        </div>
+      </div>
+      <div class="pc fade-up">
+        <div class="pc-ico">⊕</div>
+        <div class="pc-sub">Sürdürülebilirlik İlkesi</div>
+        <div class="pc-h">Basit > mükemmel</div>
+        <div class="pc-p">Görkemli ve terk edilmiş sistemler yerine basit ve tutarlı olanlar. Bir yıl boyunca küçük yapmak, bir ay büyük yapmaktan değerlidir. Sistemin her katmanını bu ilkeyle tasarla.</div>
+      </div>
+      <div class="pc fade-up">
+        <div class="pc-ico">§</div>
+        <div class="pc-sub">Aristoteles · Mimesis</div>
+        <div class="pc-h">5 aşamalı yol</div>
+        <div class="pc-p">Gözle → Taklit Et → Özgün Yap → Pekiştir → Uygula. Felsefeden yazarlığa, yazılımdan dile kadar her alanda geçerli ustalık süreci. <em>Hexis</em>'in — ikinci doğanın — inşa yöntemi.</div>
+      </div>
+      <div class="pc fade-up">
+        <div class="pc-ico">∿</div>
+        <div class="pc-sub">Tanpınar · Referans Noktası</div>
+        <div class="pc-h">Estetik pusula</div>
+        <div class="pc-p">Saatleri Ayarlama Enstitüsü — bisiklet + TTS ile dinlenen ve DAMITMA sisteminin canlı test vakası. Zaman, kimlik ve dönüşüm: yazarlık pusulanın çekirdeği. Türkçe'nin estetik sınırlarını tanıyan rehber.</div>
+      </div>
+      <div class="pc fade-up">
+        <div class="pc-ico">⊞</div>
+        <div class="pc-sub">ZihinOS Vizyonu</div>
+        <div class="pc-h">Kolektif hafıza</div>
+        <div class="pc-p">İç konuşma → Obsidian → Claude → İnteraktif uygulama → Dashboard. Next.js + Supabase + Vercel + PWA. Tüm zihinsel üretimin tek çatı altında toplanması: bu konuşmanın kendisi de bir Ergon çıktısıdır.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHİMSİCAL TESPİTLERİ -->
+<section id="tespitler">
+  <div class="container">
+    <div class="sec-hd fade-up">
+      <div class="sec-n">05 — Whimsical Analizi</div>
+      <h2 class="sec-h">Gerçek veriden<br><em>tespitler</em></h2>
+      <p class="sec-d">Workspace'indeki tüm board'lar ve klasörler incelendi. Somut bulgular:</p>
+    </div>
+    <div class="fg">
+      <div class="fc cr fade-up"><div class="fn">Kritik · 01</div><div class="fh">4 paralel taksonomi çalışıyor</div><div class="ft">Klasör yapısı, Eudoimonia mindmap, Yaşam flowchart ve ZihinOS kategorileri — hepsi aynı amaca hizmet etmesi gerekirken birbirinden habersiz. Sinema Akıl klasöründe, Sanat Görsel altında, Yaratıcı yazarlık ZihinOS'ta. Aynı şeyin 4 temsili var, köprü yok.</div></div>
+      <div class="fc cr fade-up"><div class="fn">Kritik · 02</div><div class="fh">Ruh board'u sadece kriz protokolü</div><div class="ft">Hafif Krizler → Orta Krizler → Ağır Krizler flowchart'ı. Bu kriz <em>yönetimi</em> — değerli, ama ruhu <em>besleyen</em> aktivitelerin (Tanpınar, müzik, estetik deneyim) kataloğu yok. Savunma var, saldırı yok.</div></div>
+      <div class="fc im fade-up"><div class="fn">Önemli · 03</div><div class="fh">Ethos boyutu hiçbir yerde yok</div><div class="ft">Tüm workspace tarandı: arkadaşlık, ilişki, paylaşma, öğretme — tek bir board veya node yok. Aristoteles'in zorunlu saydığı sosyal boyut, sistemin dışında kalmış. Bu aynı zamanda en kişisel soruyu doğuruyor: neden?</div></div>
+      <div class="fc im fade-up"><div class="fn">Önemli · 04</div><div class="fh">Eudoimonia board'u ayrı dil konuşuyor</div><div class="ft">Eudoimonia board: Mind / Body / Spirit / External Factors — İngilizce. Klasör yapısı: Akıl / Ruh / Beden — Türkçe. Aynı sistemi temsil ediyor ama hiçbir bağlantı yok. Maddi hedefler (villa, araç) hangi boyuta hizmet ediyor — bağlantı kurulmamış.</div></div>
+      <div class="fc ins fade-up"><div class="fn">İçgörü · 05</div><div class="fh">Dışsal Unsurlar iki şeyi karıştırıyor</div><div class="ft">Finans ve İhtiyaçlar (sen kontrol ediyorsun) ile Mevsim ve Ortam Değişikliği (sana olan şeyler) aynı klasörde. Aristoteles: <em>hegoumenon</em> (seçtiğin) vs <em>akolouthon</em> (peşinden gelen). Biri araç, diğeri zemin — ayrım görünmez.</div></div>
+      <div class="fc ins fade-up"><div class="fn">İçgörü · 06</div><div class="fh">ZihinOS teknik altyapı eksiksiz</div><div class="ft">10 adımlı workflow tanımlı, Next.js + Supabase + Vercel + Claude API planlanmış. Eksik olan: yaşam sistemiyle köprü. LOGOS-VITA boyutları ZihinOS kategorileri haline gelirse iki sistem bütünleşir.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- KARŞILAŞTIRMA -->
+<section id="kiyasla" class="sp">
+  <div class="container">
+    <div class="sec-hd fade-up">
+      <div class="sec-n">06 — Karşılaştırma</div>
+      <h2 class="sec-h">Eski vs<br><em>Yeni</em></h2>
+    </div>
+    <div class="cmp">
+      <div class="cmp-c fade-up">
+        <div class="cmp-h">Mevcut sistem <span class="chip chip-r">3 boyut</span></div>
+        <div class="cmp-row">Sabit üç kategori, sınırlar belirsiz</div>
+        <div class="cmp-row">Eylemler zorla bir kovaya sıkıştırılıyor</div>
+        <div class="cmp-row">Sosyal / ilişki boyutu yok</div>
+        <div class="cmp-row">Üretim çıktısı ölçülmüyor</div>
+        <div class="cmp-row">4 paralel dil, aralarında köprü yok</div>
+        <div class="cmp-row">Ölçüm mekanizması tanımlı değil</div>
+        <div class="cmp-row">Amaç hiyerarşisi görünmez</div>
+      </div>
+      <div class="cmp-c good fade-up">
+        <div class="cmp-h">LOGOS-VITA <span class="chip chip-g">5 boyut</span></div>
+        <div class="cmp-row">5 vektör + birincil/ikincil etiket sistemi</div>
+        <div class="cmp-row">Çok boyutlu eylem: "yoga: Soma + Pathos"</div>
+        <div class="cmp-row">Ethos (ilişki) boyutu dahil</div>
+        <div class="cmp-row">Ergon: üretilen eser takip ediliyor</div>
+        <div class="cmp-row">ZihinOS kategorileriyle doğrudan eşleşme</div>
+        <div class="cmp-row">Süre + enerji + etki notu = ölçülebilir</div>
+        <div class="cmp-row">Aktivite → Yetkinlik → Büyük amaç bağlantısı</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- YAZILIM -->
+<section id="yazilim" style="background:var(--surface);padding:120px 0">
+  <div class="container">
+    <div class="sec-hd fade-up">
+      <div class="sec-n">07 — Yazılım Mimarisi</div>
+      <h2 class="sec-h">Sistemi<br><em>kodlamak</em></h2>
+      <p class="sec-d">Felsefi çerçevenin yazılıma dönüşme yolu. Sürdürülebilirlik ilkesi burada da geçerli: önce basit, sonra zenginleştir.</p>
+    </div>
+    <div class="sl">
+      <div class="slr fade-up"><div class="sn2">1</div><div><div class="s-ttl">Günlük Giriş Katmanı</div><div class="s-d">Aktivite + birincil boyut + süre + enerji notu. Maks. 30 saniye. Ne kadar basit, o kadar çok kullanılır.</div></div><div class="s-tech">Single-file HTML<br>Offline-first<br>LocalStorage</div></div>
+      <div class="slr fade-up"><div class="sn2">2</div><div><div class="s-ttl">Denge Görüntüsü</div><div class="s-d">5 boyutun haftalık radar grafiği. "Bu hafta Ethos sıfır" görüntüsü bin kelimeden güçlü. Uyarı eşiği ile ihmal tespiti.</div></div><div class="s-tech">Chart.js radar<br>Haftalık reset<br>Kümülatif görünüm</div></div>
+      <div class="slr fade-up"><div class="sn2">3</div><div><div class="s-ttl">Amaç Ağacı</div><div class="s-d">Aktivite → Alt yetkinlik → Büyük amaç. "Metafizik okumak yazarlık yoluna hizmet ediyor" bağlantısı görünür olur.</div></div><div class="s-tech">Collapsible tree<br>Supabase store<br>Obsidian köprüsü</div></div>
+      <div class="slr fade-up"><div class="sn2">4</div><div><div class="s-ttl">Yansıma Motoru</div><div class="s-d">Haftalık otomatik soru: "Bu hafta Ethos'u ihmal ettin." Claude API: "Bu haftaki verilerime bakarak beni analiz et."</div></div><div class="s-tech">Claude API<br>Yönlendirilmiş sorular<br>Haftalık digest</div></div>
+      <div class="slr fade-up"><div class="sn2">5</div><div><div class="s-ttl">Yaşam Haritası · Cheat Sheet</div><div class="s-d">Yolunu kaybettiğinde açacağın ekran. Kim olmak istiyorsun? Şu an neredesin? ZihinOS içinde bir modül — bu uygulamanın canlı hali.</div></div><div class="s-tech">Next.js PWA<br>Vercel deploy<br>Supabase Auth</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="fq">"İnsan yaptıklarıyla değil, neyi sürdürdüğüyle tanımlanır."</div>
+    <div class="fa">— Aristoteles · Nikomakhos'a Etik · Dostluk Üzerine</div>
+    <div style="margin-top:48px;font-size:12px;color:var(--text3)">ZihinOS · Yaşam Haritası — M. Fatih Göçgün · 2026</div>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// Theme
+document.getElementById('themeBtn').onclick = () => {
+  const t = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = t;
+  drawPentagon();
+};
+
+// Hero
+gsap.set(['.hero-eye','.hero-h1','.hero-sub','.hero-q'], {y:40,opacity:0});
+gsap.timeline()
+  .to('.hero-eye',  {opacity:1,y:0,duration:.8,ease:'power3.out',delay:.3})
+  .to('.hero-h1',   {opacity:1,y:0,duration:.9,ease:'power3.out'},'-=.4')
+  .to('.hero-sub',  {opacity:1,y:0,duration:.8,ease:'power3.out'},'-=.5')
+  .to('.hero-q',    {opacity:1,y:0,duration:.8,ease:'power3.out'},'-=.4');
+
+// Scroll
+gsap.utils.toArray('.fade-up').forEach(el => {
+  gsap.fromTo(el,{opacity:0,y:36},{opacity:1,y:0,duration:.72,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 84%',toggleActions:'play none none none'}});
+});
+
+// Pentagon
+const canvas = document.getElementById('pc');
+const ctx = canvas.getContext('2d');
+let activeDim = null, prog = 0;
+
+const dims = [
+  {name:'Logos',  clr:'#8B7CF6', val:.85},
+  {name:'Pathos', clr:'#22C9A0', val:.75},
+  {name:'Soma',   clr:'#FF6B4A', val:.90},
+  {name:'Ethos',  clr:'#4BAAFF', val:.18},
+  {name:'Ergon',  clr:'#F0B429', val:.65},
+];
+
+function gc(){
+  const dk = document.documentElement.dataset.theme !== 'light';
+  return {
+    grid: dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.08)',
+    text: dk?'rgba(237,232,220,.65)':'rgba(26,24,18,.65)',
+  };
+}
+
+function drawPentagon(p=1){
+  const W=canvas.width,H=canvas.height,n=5;
+  ctx.clearRect(0,0,W,H);
+  const cx=W/2, cy=H/2+8, R=Math.min(W,H)*.38;
+  const C=gc();
+
+  // grid
+  for(let r=.2;r<=1;r+=.2){
+    ctx.beginPath();
+    for(let i=0;i<n;i++){
+      const a=(2*Math.PI*i/n)-Math.PI/2;
+      const x=cx+Math.cos(a)*R*r, y=cy+Math.sin(a)*R*r;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle=C.grid; ctx.lineWidth=.8; ctx.stroke();
+  }
+  for(let i=0;i<n;i++){
+    const a=(2*Math.PI*i/n)-Math.PI/2;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+Math.cos(a)*R, cy+Math.sin(a)*R);
+    ctx.strokeStyle=C.grid; ctx.lineWidth=.5; ctx.stroke();
+  }
+
+  // fill
+  ctx.beginPath();
+  for(let i=0;i<n;i++){
+    const a=(2*Math.PI*i/n)-Math.PI/2;
+    const r=R*dims[i].val*p;
+    i===0?ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r):ctx.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);
+  }
+  ctx.closePath();
+  ctx.fillStyle='rgba(139,124,246,.13)'; ctx.fill();
+  ctx.strokeStyle='#8B7CF6'; ctx.lineWidth=1.5; ctx.stroke();
+
+  // dots + labels
+  for(let i=0;i<n;i++){
+    const a=(2*Math.PI*i/n)-Math.PI/2;
+    const r=R*dims[i].val*p;
+    const x=cx+Math.cos(a)*r, y=cy+Math.sin(a)*r;
+    const lx=cx+Math.cos(a)*(R+32), ly=cy+Math.sin(a)*(R+32);
+    const isAct=activeDim===i;
+
+    ctx.beginPath(); ctx.arc(x,y,isAct?7:5,0,2*Math.PI);
+    ctx.fillStyle=dims[i].clr; ctx.fill();
+
+    ctx.font=(isAct?'600':'400')+' 12px "DM Sans", sans-serif';
+    ctx.fillStyle=isAct?dims[i].clr:C.text;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(dims[i].name,lx,ly);
+  }
+}
+
+function animPentagon(){
+  prog=0;
+  (function step(){
+    prog+=.028; drawPentagon(Math.min(prog,1));
+    if(prog<1) requestAnimationFrame(step);
+  })();
+}
+
+ScrollTrigger.create({trigger:'#logos-vita',start:'top 62%',onEnter:animPentagon});
+drawPentagon(0);
+
+window.hd = function(name){
+  const idx=dims.findIndex(d=>d.name.toLowerCase()===name);
+  activeDim=activeDim===idx?null:idx;
+  drawPentagon();
+};
+
+// Activity Mapper
+const acts=[
+  {n:'Aristoteles okumak',d:'Metafizik, Organon, Kategoriler — muktesebatın meleke\'ye dönüştüğü yolculuk. DAMITMA sisteminin en yoğun uygulandığı alan.',pri:['logos'],sec:['pathos'],note:'Okudukların Obsidian\'a geçerse Ergon boyutuna da girer. Hattırata Geçir adımını atlama.'},
+  {n:'Bisiklet + TTS dinleme',d:'Günlük 6 kez tekrarlanan bileşik fayda eylemi. Beden harekette, zihin içerikle meşgul. Bisiklet prensibinin en saf hali.',pri:['soma'],sec:['pathos','logos'],note:'Tek eylemle 3 boyuta dokunmanın somut örneği. Sürdürülebilirliğin sırrı: yararlı ve keyifli aynı anda.'},
+  {n:'Tanpınar okumak',d:'Saatleri Ayarlama Enstitüsü — DAMITMA\'nın canlı test vakası. Zaman, kimlik, dönüşüm: yazarlık estetiğinin referans noktası.',pri:['pathos'],sec:['logos','ergon'],note:'Logos\'a da yatırım yapar: Türkçe\'nin estetik sınırlarını genişletir. Yazarlık ham maddesi.'},
+  {n:'Yaratıcı yazarlık',d:'Roman taslakları, hikayeler, denemeler. Hem düşünsel üretim hem duygusal ifade — eski sistemde tek kategoriye sığmayan eylem.',pri:['ergon','pathos'],sec:['logos'],note:'İşte "hangi kovaya?" sorunun cevabı: birincil Ergon + Pathos, ikincil Logos. Zorla seçmene gerek yok.'},
+  {n:'Kod yazmak',d:'ZihinOS, İngilizce öğrenme uygulamaları, DailyLingo — her biri hem öğrenme hem üretim.',pri:['logos','ergon'],sec:[],note:'Yazılım geliştirme, Logos ve Ergon\'un en doğal kesişimi. İkisini birden birincil işaretle.'},
+  {n:'Spor salonu',d:'Haftada 3 gün fiziksel antrenman. Net, tek boyutlu, sınırları belirgin bir aktivite.',pri:['soma'],sec:[],note:'Bazen bir eylem sadece bir boyuta ait — bu da iyidir. Her şeyin çok boyutlu olması gerekmez.'},
+  {n:'Klasik müzik dinlemek',d:'Estetik deneyim, konsantrasyon desteği. Bilinçli dinleme mi, yoksa arka plan mı?',pri:['pathos'],sec:['soma'],note:'Bilinçli dinleme → Pathos birincil. Çalışırken → Soma ikincil olarak eklenir (konsantrasyon etkisi).'},
+  {n:'İngilizce çalışmak',d:'MFGocgun Akademi, DailyLingo, SM-2 spaced repetition. Dil yetkinliği yazarlık hedefine hizmet ediyor.',pri:['logos'],sec:['ergon'],note:'Ergon ikincil: ürettiğin her İngilizce uygulama bir eserdir. Tüketici değil üretici pozisyonundasın.'},
+  {n:'Obsidian\'a not yazmak',d:'DAMITMA\'nın Hattırata Geçir adımı. Düşüncelerin kalıcı hale geldiği ve ZihinOS\'a akan an.',pri:['logos','ergon'],sec:['pathos'],note:'Not yazmak hem öğrenmeyi pekiştirir hem bir eser üretir. Pathos da girer: yansıtma öz-tanıma pratiğidir.'},
+  {n:'Bu sistemin tasarlanması',d:'LOGOS-VITA\'nın kurulması, Whimsical\'ın analizi, bu uygulamanın yapılması — hepsi bir Ergon çıktısı.',pri:['ergon','logos'],sec:['pathos'],note:'Bu konuşmanın kendisi de sistemin bir parçasıdır. İç konuşma → Claude → Uygulama: ZihinOS workflow\'u.'},
+];
+
+const dc2={logos:'var(--logos)',pathos:'var(--pathos)',soma:'var(--soma)',ethos:'var(--ethos)',ergon:'var(--ergon)'};
+const dn2={logos:'Logos · Akıl',pathos:'Pathos · Ruh',soma:'Soma · Beden',ethos:'Ethos · İlişki',ergon:'Ergon · Üretim'};
+
+const aList=document.getElementById('aList');
+const mRes=document.getElementById('mRes');
+
+acts.forEach((act,i)=>{
+  const li=document.createElement('li');
+  li.className='ai'; li.textContent=act.n;
+  li.onclick=()=>{
+    document.querySelectorAll('.ai').forEach(e=>e.classList.remove('active'));
+    li.classList.add('active');
+    const pb=act.pri.map(d=>`<div class="mdb" data-d="${d}"><span style="width:8px;height:8px;border-radius:50%;background:${dc2[d]};display:inline-block"></span>${dn2[d]}</div>`).join('');
+    const sb=act.sec.map(d=>`<div class="mdb sec" data-d="${d}"><span style="width:6px;height:6px;border-radius:50%;background:${dc2[d]};display:inline-block"></span>${dn2[d]}</div>`).join('');
+    mRes.innerHTML=`<div class="ma-name">${act.n}</div><div class="ma-desc">${act.d}</div><div class="m-dim-label">Birincil boyutlar</div><div class="m-dims">${pb}</div>${sb?`<div class="m-dim-label" style="margin-top:8px">İkincil etkiler</div><div class="m-dims">${sb}</div>`:''}<div class="m-note">${act.note}</div>`;
+    gsap.fromTo(mRes,{opacity:.3,y:12},{opacity:1,y:0,duration:.3,ease:'power2.out'});
+  };
+  aList.appendChild(li);
+});
+</script>
+</body>
+</html>

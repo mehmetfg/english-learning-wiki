@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Writing Loop — İngilizce Yazma Atölyesi</title>
+<style>
+/* ============== THEME VARIABLES ============== */
+:root,
+[data-theme="navy"] {
+  --bg: #0b1220;
+  --bg-elev: #131c2f;
+  --bg-soft: #1a2540;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-muted: #64748b;
+  --accent: #3b82f6;
+  --accent-soft: rgba(59, 130, 246, 0.18);
+  --border: #1e293b;
+  --border-strong: #334155;
+  --ok: #22c55e;
+  --ok-soft: rgba(34, 197, 94, 0.22);
+  --warn: #f59e0b;
+  --warn-soft: rgba(245, 158, 11, 0.20);
+  --bad: #ef4444;
+  --bad-soft: rgba(239, 68, 68, 0.30);
+  --placeholder: rgba(226, 232, 240, 0.32);
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --card-radius: 14px;
+  --pill-radius: 999px;
+}
+[data-theme="forest"] {
+  --bg: #0f1f17;
+  --bg-elev: #16291f;
+  --bg-soft: #1c3527;
+  --text: #d1fae5;
+  --text-dim: #86efac;
+  --text-muted: #6ee7b7;
+  --accent: #10b981;
+  --accent-soft: rgba(16, 185, 129, 0.20);
+  --border: #1f3a2b;
+  --border-strong: #2f5a42;
+  --placeholder: rgba(209, 250, 229, 0.32);
+}
+[data-theme="sunset"] {
+  --bg: #1f1611;
+  --bg-elev: #2a1f17;
+  --bg-soft: #36281d;
+  --text: #fed7aa;
+  --text-dim: #fbbf24;
+  --text-muted: #d97706;
+  --accent: #f59e0b;
+  --accent-soft: rgba(245, 158, 11, 0.22);
+  --border: #3b2917;
+  --border-strong: #6b4220;
+  --placeholder: rgba(254, 215, 170, 0.36);
+}
+[data-theme="paper"] {
+  --bg: #faf6ee;
+  --bg-elev: #fffdf6;
+  --bg-soft: #f0eada;
+  --text: #1f2937;
+  --text-dim: #4b5563;
+  --text-muted: #6b7280;
+  --accent: #b45309;
+  --accent-soft: rgba(180, 83, 9, 0.14);
+  --border: #d6c9a8;
+  --border-strong: #a89668;
+  --ok: #047857;
+  --ok-soft: rgba(4, 120, 87, 0.16);
+  --warn: #b45309;
+  --warn-soft: rgba(180, 83, 9, 0.18);
+  --bad: #b91c1c;
+  --bad-soft: rgba(185, 28, 28, 0.20);
+  --placeholder: rgba(31, 41, 55, 0.28);
+  --shadow: 0 6px 18px rgba(120, 80, 20, 0.10);
+}
+[data-theme="midnight"] {
+  --bg: #000000;
+  --bg-elev: #0d0d0d;
+  --bg-soft: #1a1a1a;
+  --text: #ffffff;
+  --text-dim: #d4d4d4;
+  --text-muted: #a3a3a3;
+  --accent: #fbbf24;
+  --accent-soft: rgba(251, 191, 36, 0.20);
+  --border: #262626;
+  --border-strong: #525252;
+  --ok: #4ade80;
+  --warn: #fbbf24;
+  --bad: #f87171;
+  --bad-soft: rgba(248, 113, 113, 0.35);
+  --placeholder: rgba(255, 255, 255, 0.30);
+}
+
+/* ============== BASE ============== */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+}
+button { font-family: inherit; cursor: pointer; }
+input, textarea { font-family: inherit; }
+a { color: var(--accent); }
+
+/* ============== LAYOUT ============== */
+.shell { max-width: 1100px; margin: 0 auto; padding: 0 16px 80px; }
+
+/* HEADER */
+header.app-header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  margin-bottom: 16px;
+}
+.header-row {
+  max-width: 1100px; margin: 0 auto; padding: 0 16px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.brand { font-weight: 700; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+.brand .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 12px var(--accent);
+}
+.header-spacer { flex: 1; }
+.header-btn {
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border); padding: 6px 12px;
+  border-radius: var(--pill-radius); font-size: 13px;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s;
+}
+.header-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.header-btn.active { background: var(--accent-soft); border-color: var(--accent); }
+.streak-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border); padding: 6px 12px;
+  border-radius: var(--pill-radius); font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.streak-pill.done { background: var(--ok-soft); border-color: var(--ok); }
+.theme-select {
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--pill-radius);
+  padding: 6px 10px; font-size: 13px;
+}
+
+/* SECTIONS */
+section.card {
+  background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: var(--card-radius); padding: 18px; margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.section-title {
+  display: flex; align-items: center; gap: 8px;
+  margin: 0 0 10px; font-size: 14px; font-weight: 600;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em;
+}
+.section-title .badge {
+  background: var(--accent-soft); color: var(--accent);
+  padding: 2px 8px; border-radius: var(--pill-radius);
+  font-size: 11px; text-transform: none; letter-spacing: 0;
+}
+
+/* SETUP PANEL */
+#setupPanel { display: none; }
+#setupPanel.open { display: block; }
+.setup-tabs { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.setup-tab {
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border); padding: 6px 12px;
+  border-radius: var(--pill-radius); font-size: 13px;
+}
+.setup-tab.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.theme-grid {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+.theme-card {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px; cursor: pointer;
+  transition: all 0.15s;
+}
+.theme-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.theme-card.active { border-color: var(--accent); background: var(--accent-soft); }
+.theme-card.done::after {
+  content: "✓ Tamamlandı"; position: absolute;
+  font-size: 10px; color: var(--ok); margin-left: 8px;
+}
+.theme-card-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.theme-card-meta { font-size: 11px; color: var(--text-muted); }
+.theme-card.done-mark { position: relative; }
+.theme-card.done-mark .done-tag {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--ok-soft); color: var(--ok);
+  font-size: 10px; padding: 2px 6px; border-radius: 4px;
+}
+.custom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.custom-row textarea {
+  width: 100%; min-height: 160px; padding: 10px;
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  font: 13px/1.55 'JetBrains Mono', ui-monospace, "SF Mono", Consolas, monospace;
+  resize: vertical;
+}
+.custom-pv {
+  width: 100%; padding: 10px; margin-top: 10px;
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  font: 13px/1.55 ui-monospace, monospace;
+}
+.custom-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+/* PRIMARY BUTTON */
+.btn {
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border-strong);
+  padding: 8px 14px; border-radius: 8px; font-size: 13px;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s;
+}
+.btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+[data-theme="paper"] .btn.primary { color: #fff; }
+.btn.primary:hover { filter: brightness(1.1); }
+.btn.danger { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
+.btn.ghost { background: transparent; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* TURKISH REFERENCE */
+#trReference { display: none; }
+#trReference.open { display: block; }
+.tr-meta {
+  display: flex; gap: 10px; align-items: center;
+  margin-bottom: 8px; font-size: 12px; color: var(--text-muted);
+  flex-wrap: wrap;
+}
+.tr-meta .level-pill {
+  background: var(--accent-soft); color: var(--accent);
+  padding: 2px 8px; border-radius: var(--pill-radius);
+  font-size: 11px; font-weight: 600;
+}
+.tr-paragraph {
+  font-size: 16px; line-height: 1.85;
+  color: var(--text-dim);
+}
+.tr-sentence {
+  display: inline; transition: all 0.2s;
+  cursor: pointer;
+  padding: 1px 2px; border-radius: 3px;
+}
+.tr-sentence.active {
+  color: var(--text);
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+.tr-sentence.done { color: var(--text-muted); opacity: 0.7; }
+
+/* BOX A — Guided Writing */
+#guidedSection { display: none; }
+#guidedSection.open { display: block; }
+.editor-wrap {
+  position: relative;
+  margin-bottom: 10px;
+}
+.mirror, .editor {
+  font: 16px/1.7 ui-monospace, "JetBrains Mono", "SF Mono", Consolas, monospace;
+  padding: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 180px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  letter-spacing: 0;
+  tab-size: 4;
+}
+.mirror {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  color: transparent;
+  background: transparent;
+  z-index: 1;
+  overflow: hidden;
+}
+.editor {
+  position: relative;
+  background: var(--bg-soft);
+  color: var(--text);
+  resize: vertical;
+  outline: none;
+  z-index: 0;
+  caret-color: var(--accent);
+}
+.editor:focus { border-color: var(--accent); }
+.mirror .ok { background: transparent; }
+.mirror .bad { background: var(--bad-soft); color: var(--bad); border-radius: 2px; }
+.mirror .placeholder { color: var(--placeholder); }
+.mirror .placeholder-active { color: var(--placeholder); font-style: italic; }
+.editor-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.editor-actions .spacer { flex: 1; }
+.editor-status {
+  font-size: 12px; color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.editor-status.has-error { color: var(--bad); }
+
+/* BOX B — Blind Writing */
+#blindSection { display: none; }
+#blindSection.open { display: block; }
+.tr-preview {
+  background: var(--bg-soft);
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.tr-preview .preview-text {
+  flex: 1; font-size: 15px; line-height: 1.55;
+  color: var(--text);
+}
+.tr-preview .nav-btn {
+  background: var(--bg); color: var(--text-dim);
+  border: 1px solid var(--border); width: 28px; height: 28px;
+  border-radius: 50%; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.tr-preview .nav-btn:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent); }
+.tr-preview .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.tr-preview .preview-counter { font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.tr-preview .auto-reset {
+  background: transparent; border: none; color: var(--accent);
+  font-size: 11px; cursor: pointer; text-decoration: underline;
+  padding: 0;
+}
+.tr-preview.manual { border-style: solid; border-color: var(--warn); }
+
+.blind-editor {
+  width: 100%; min-height: 180px;
+  font: 16px/1.7 ui-monospace, "JetBrains Mono", "SF Mono", monospace;
+  padding: 16px;
+  background: var(--bg-soft); color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  resize: vertical; outline: none;
+}
+.blind-editor:focus { border-color: var(--accent); }
+
+/* RESULT PANEL */
+#resultSection { display: none; }
+#resultSection.open { display: block; }
+.result-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px; margin-bottom: 14px;
+}
+.summary-stat {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px; text-align: center;
+}
+.summary-stat .num {
+  font-size: 24px; font-weight: 700; color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.summary-stat .label {
+  font-size: 11px; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-top: 4px;
+}
+.sentence-result {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-left: 4px solid var(--border-strong);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+}
+.sentence-result.good { border-left-color: var(--ok); }
+.sentence-result.partial { border-left-color: var(--warn); }
+.sentence-result.bad { border-left-color: var(--bad); }
+.sentence-result .sr-line { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; margin-bottom: 4px; }
+.sentence-result .sr-icon { font-size: 16px; line-height: 1; }
+.sentence-result .sr-score {
+  font-size: 11px; color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.sentence-result .sr-target {
+  font-size: 13px; color: var(--text-dim); font-family: ui-monospace, monospace;
+}
+.sentence-result .sr-user {
+  font-size: 13px; color: var(--text); font-family: ui-monospace, monospace;
+  margin-top: 4px;
+}
+.sentence-result .sr-diff { font-size: 12px; margin-top: 4px; }
+.sentence-result .sr-diff .miss { color: var(--bad); }
+.sentence-result .sr-diff .extra { color: var(--warn); }
+.sentence-result .sr-diff .ok { color: var(--ok); }
+.sentence-result .sr-diff .label-tag {
+  display: inline-block; padding: 1px 6px; border-radius: 4px;
+  font-size: 10px; text-transform: uppercase; margin-right: 4px;
+  background: var(--bg); border: 1px solid var(--border);
+}
+.result-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+
+/* PHRASAL VERB WORKSHOP */
+.pv-section { display: grid; gap: 14px; }
+.pv-targets { display: flex; flex-wrap: wrap; gap: 8px; }
+.pv-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg-soft); color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 5px 10px; border-radius: var(--pill-radius);
+  font-size: 13px;
+}
+.pv-chip.box-a { border-color: var(--warn); color: var(--text); }
+.pv-chip.box-b { border-color: var(--accent); color: var(--text); }
+.pv-chip.both { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.pv-chip .mark { font-size: 11px; }
+.pv-drill {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px;
+}
+.pv-drill-title {
+  display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.pv-drill-title .pv-name {
+  font-weight: 700; font-size: 18px; color: var(--accent);
+}
+.pv-drill-title .pv-meaning { color: var(--text-dim); font-size: 13px; }
+.pv-drill-title .pv-example { color: var(--text-muted); font-size: 12px; font-style: italic; }
+.pv-drill-input {
+  width: 100%; padding: 10px;
+  background: var(--bg); color: var(--text);
+  border: 1px solid var(--border-strong); border-radius: 8px;
+  font: 14px/1.55 ui-monospace, monospace;
+  margin-bottom: 8px; resize: vertical; min-height: 60px;
+}
+.pv-drill-input:focus { outline: none; border-color: var(--accent); }
+.pv-drill-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.pv-drill-result {
+  margin-top: 8px; font-size: 13px;
+  padding: 8px 10px; border-radius: 6px;
+}
+.pv-drill-result.ok { background: var(--ok-soft); color: var(--ok); }
+.pv-drill-result.bad { background: var(--bad-soft); color: var(--bad); }
+.pv-drill-result:empty { display: none; }
+.pv-history {
+  font-size: 12px; color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* TOAST */
+#toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: var(--bg-elev); color: var(--text);
+  border: 1px solid var(--accent); border-radius: 10px;
+  padding: 12px 18px; font-size: 14px;
+  box-shadow: var(--shadow); z-index: 200;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  max-width: 90%;
+}
+#toast.show { opacity: 1; }
+#toast.warn { border-color: var(--warn); }
+#toast.bad { border-color: var(--bad); }
+#toast.ok { border-color: var(--ok); }
+
+/* MODAL */
+#modal {
+  position: fixed; inset: 0; z-index: 150;
+  background: rgba(0,0,0,0.55); display: none;
+  align-items: center; justify-content: center;
+}
+#modal.open { display: flex; }
+.modal-content {
+  background: var(--bg-elev); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+  max-width: 420px; width: 90%;
+  box-shadow: var(--shadow);
+}
+.modal-content h3 { margin: 0 0 10px; }
+.modal-content p { color: var(--text-dim); margin: 0 0 16px; font-size: 14px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* SETUP BUTTON CALLOUT */
+.welcome {
+  text-align: center; padding: 40px 20px;
+  color: var(--text-dim); font-size: 15px;
+}
+.welcome h2 { color: var(--text); margin: 0 0 8px; }
+
+/* COLLAPSIBLE */
+.collapse-head {
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+}
+.collapse-head .arrow { transition: transform 0.2s; }
+.collapse-head.closed .arrow { transform: rotate(-90deg); }
+.collapse-body { transition: max-height 0.2s ease; overflow: hidden; }
+.collapse-body.closed { max-height: 0 !important; }
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .custom-row { grid-template-columns: 1fr; }
+  .header-row { gap: 8px; }
+  .header-btn { padding: 5px 10px; font-size: 12px; }
+  .mirror, .editor, .blind-editor { font-size: 15px; padding: 12px; }
+  .theme-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 450px) {
+  .theme-grid { grid-template-columns: 1fr; }
+  .header-btn .label { display: none; }
+}
+
+/* PRINT */
+@media print {
+  body { background: #fff; color: #000; }
+  header.app-header, #setupPanel, #resultActionsBlock,
+  .editor-actions, #pvWorkshop, #toast, #modal { display: none !important; }
+  section.card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+  .mirror { display: none !important; }
+  .editor, .blind-editor { background: #fff; color: #000; border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body data-theme="navy">
+
+<header class="app-header">
+  <div class="header-row">
+    <div class="brand"><span class="dot"></span> Daily Writing Loop</div>
+    <div class="header-spacer"></div>
+    <select class="theme-select" id="themeSelect" title="Görsel tema">
+      <option value="navy">Navy</option>
+      <option value="forest">Forest</option>
+      <option value="sunset">Sunset</option>
+      <option value="paper">Paper</option>
+      <option value="midnight">Midnight</option>
+    </select>
+    <span class="streak-pill" id="streakPill" title="Streak"><span>🔥</span><span id="streakNum">0</span></span>
+    <span class="streak-pill" id="todayPill" title="Bugün tamamlama">⏳ Bugün</span>
+    <button class="header-btn" id="setupBtn" title="Setup paneli"><span>⚙</span><span class="label">Setup</span></button>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- SETUP PANEL -->
+  <section class="card" id="setupPanel">
+    <h3 class="section-title">Kurulum <span class="badge" id="setupModeTag">Tema seç</span></h3>
+    <div class="setup-tabs">
+      <button class="setup-tab active" data-setup-tab="themes">🎲 Hazır Temalar</button>
+      <button class="setup-tab" data-setup-tab="custom">✏️ Custom Mod</button>
+      <button class="setup-tab" data-setup-tab="reset">⚠️ Sıfırla</button>
+    </div>
+    <div id="setupBodyThemes">
+      <div class="theme-grid" id="themeGrid"></div>
+    </div>
+    <div id="setupBodyCustom" style="display: none;">
+      <p style="color: var(--text-muted); font-size: 13px; margin: 0 0 10px;">
+        Her satır bir cümle. TR ve EN cümle sayıları eşit olmalı. Hedef phrasal verb'leri virgülle (opsiyonel).
+      </p>
+      <div class="custom-row">
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted);">🇹🇷 Türkçe (her satır bir cümle)</label>
+          <textarea id="customTR" placeholder="Bugün okula geç kaldım.&#10;Otobüsü kaçırdım.&#10;Yağmurda yürümek zorunda kaldım."></textarea>
+        </div>
+        <div>
+          <label style="font-size: 12px; color: var(--text-muted);">🇬🇧 English (her satır bir cümle)</label>
+          <textarea id="customEN" placeholder="I was late to school today.&#10;I missed the bus.&#10;I had to walk in the rain."></textarea>
+        </div>
+      </div>
+      <label style="font-size: 12px; color: var(--text-muted); display: block; margin-top: 10px;">🎯 Hedef Phrasal Verbs (virgülle, opsiyonel)</label>
+      <input type="text" id="customPV" class="custom-pv" placeholder="run late, miss out, hold up, walk through" />
+      <div class="custom-actions">
+        <button class="btn primary" id="customValidateBtn">✓ Doğrula ve Yükle</button>
+        <button class="btn ghost" id="customClearBtn">Temizle</button>
+      </div>
+    </div>
+    <div id="setupBodyReset" style="display: none;">
+      <p style="color: var(--text-muted); font-size: 13px;">
+        Bu işlem mevcut çalışmanı, streak'i, PV geçmişini silecek. Görsel tema korunur.
+      </p>
+      <div class="custom-actions">
+        <button class="btn danger" id="resetAllBtn">🗑 Hepsini Sıfırla</button>
+        <button class="btn ghost" id="resetDraftBtn">Sadece bugünkü Box A/B'yi temizle</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- WELCOME (only if no active content) -->
+  <section class="card" id="welcomeCard">
+    <div class="welcome">
+      <h2>Hoş geldin 👋</h2>
+      <p>Üstte ⚙ Setup'a tıkla, bir tema seç ya da kendi metnini yapıştır.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px;">
+        <b>Akış:</b> Üstte TR referansını oku → Box A'da hedefi taklit ederek yaz (kırmızılar düzelt) → Box B'de ezberden yaz → Check.
+      </p>
+    </div>
+  </section>
+
+  <!-- TURKISH REFERENCE -->
+  <section class="card" id="trReference">
+    <div class="collapse-head" id="trHead">
+      <h3 class="section-title" style="margin: 0;">🇹🇷 Türkçe Referans <span class="badge" id="trBadge">—</span></h3>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="collapse-body" id="trBody">
+      <div class="tr-meta">
+        <span class="level-pill" id="trLevel">B1</span>
+        <span id="trTag">—</span>
+        <span style="flex: 1;"></span>
+        <span style="font-size: 11px; color: var(--text-muted);">Aktif cümle <b>vurgulu</b></span>
+      </div>
+      <div class="tr-paragraph" id="trParagraph"></div>
+    </div>
+  </section>
+
+  <!-- BOX A — GUIDED WRITING -->
+  <section class="card" id="guidedSection">
+    <h3 class="section-title">✍️ Box A — Rehberli Yazma <span class="badge">Real-time diff</span></h3>
+    <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px;">
+      Hedef metni karaktere göre taklit et. Yanlış harf <span style="background: var(--bad-soft); color: var(--bad); padding: 0 4px; border-radius: 2px;">kırmızı</span> olur — düzeltmeden devam etmek tüm metni kırmızı yapar.
+    </p>
+    <div class="editor-wrap">
+      <div class="mirror" id="mirrorA"></div>
+      <textarea class="editor" id="boxA" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Burada yaz... (hedef cümleleri takip et)"></textarea>
+    </div>
+    <div class="editor-actions">
+      <button class="btn" id="showPlaceholderBtn" title="Bulunduğun cümleyi placeholder olarak göster (Ctrl+/)">▸ Show sentence with placeholder</button>
+      <button class="btn ghost" id="clearABtn" title="Box A'yı temizle">⌫ Temizle</button>
+      <div class="spacer"></div>
+      <div class="editor-status" id="statusA">0 / 0 karakter</div>
+    </div>
+  </section>
+
+  <!-- BOX B — BLIND WRITING -->
+  <section class="card" id="blindSection">
+    <h3 class="section-title">🧠 Box B — Hafızadan Yazma <span class="badge">Hibrit TR önizleme</span></h3>
+    <div class="tr-preview" id="trPreview">
+      <button class="nav-btn" id="prevBtn" title="Önceki cümle (←)">‹</button>
+      <div class="preview-text" id="previewText">—</div>
+      <span class="preview-counter" id="previewCounter">1/1</span>
+      <button class="nav-btn" id="nextBtn" title="Sonraki cümle (→)">›</button>
+      <button class="auto-reset" id="autoResetBtn" style="display: none;">Otomatiğe dön</button>
+    </div>
+    <textarea class="blind-editor" id="boxB" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Şimdi ezberden, kendi cümlelerinle yaz..."></textarea>
+    <div class="editor-actions" style="margin-top: 10px;">
+      <button class="btn primary" id="checkBtn" title="Kontrol et (Ctrl+Enter)">🔍 Check</button>
+      <button class="btn ghost" id="hintBtn" title="Aktif cümlenin EN'sini göster (-1 hint sayacı)">💡 Aktif cümleyi göster</button>
+      <button class="btn ghost" id="clearBBtn">⌫ Temizle</button>
+      <div class="spacer"></div>
+      <div class="editor-status" id="statusB">0 cümle yazıldı</div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="card" id="resultSection">
+    <h3 class="section-title">📊 Check Raporu</h3>
+    <div class="result-summary" id="resultSummary"></div>
+    <div id="resultDetails"></div>
+    <div class="result-actions" id="resultActionsBlock">
+      <button class="btn primary" id="saveCompleteBtn">💾 Bugünü Tamamla & Kaydet</button>
+      <button class="btn ghost" id="dismissResultBtn">Kapat</button>
+    </div>
+  </section>
+
+  <!-- PHRASAL VERB WORKSHOP -->
+  <section class="card" id="pvWorkshop" style="display: none;">
+    <div class="collapse-head" id="pvHead">
+      <h3 class="section-title" style="margin: 0;">🔤 Phrasal Verb Workshop</h3>
+      <span class="arrow">▼</span>
+    </div>
+    <div class="collapse-body" id="pvBody">
+      <div class="pv-section">
+        <div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">Bu temanın hedef PV'leri (Box A ve Box B'de kullanım takibi):</div>
+          <div class="pv-targets" id="pvTargets"></div>
+        </div>
+        <div class="pv-drill">
+          <div class="pv-drill-title">
+            <span style="color: var(--text-muted); font-size: 12px;">🎯 Bugünün ekstra PV'si:</span>
+            <span class="pv-name" id="pvDrillName">—</span>
+            <span class="pv-meaning" id="pvDrillMeaning"></span>
+          </div>
+          <div class="pv-drill-title">
+            <span class="pv-example" id="pvDrillExample"></span>
+          </div>
+          <textarea class="pv-drill-input" id="pvDrillInput" placeholder="Bu phrasal verb'ü kullanan bir cümle yaz (min 6 kelime)..."></textarea>
+          <div class="pv-drill-actions">
+            <button class="btn primary" id="pvCheckBtn">✓ Kullanımı kontrol et</button>
+            <button class="btn ghost" id="pvSkipBtn">⤴ Atla / yeni PV</button>
+          </div>
+          <div class="pv-drill-result" id="pvDrillResult"></div>
+          <div class="pv-history" id="pvHistory"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast"></div>
+<div id="modal">
+  <div class="modal-content">
+    <h3 id="modalTitle">Onay</h3>
+    <p id="modalBody">—</p>
+    <div class="modal-actions">
+      <button class="btn ghost" id="modalCancel">İptal</button>
+      <button class="btn primary" id="modalConfirm">Onayla</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ============== CONSTANTS ============== */
+const STORAGE_KEY = 'daily_writing_loop_v1';
+const TODAY = (() => { const d = new Date(); return d.toISOString().slice(0, 10); })();
+
+/* ============== THEME DATASET ============== */
+const THEMES = {
+  picnic: {
+    title: "🧺 Pikniğe Çıkış",
+    tag: "outdoors · arkadaşlar · past simple",
+    level: "A2-B1",
+    tr: [
+      "Geçen pazar arkadaşlarımla pikniğe gittik.",
+      "Hava çok güzeldi ve gökyüzü açıktı.",
+      "Sepetimizi büyük bir ağacın altına serdik.",
+      "Sandviçleri yedik ve müzik dinledik.",
+      "Akşam olduğunda eve döndük."
+    ],
+    en: [
+      "Last Sunday, I went on a picnic with my friends.",
+      "The weather was lovely and the sky was clear.",
+      "We laid out our basket under a big tree.",
+      "We ate sandwiches and listened to music.",
+      "When evening came, we went home."
+    ],
+    phrasals: ["set out", "lay out", "head back", "wind down", "look forward to"]
+  },
+  morning: {
+    title: "🌅 Sabah Rutini",
+    tag: "günlük · present simple",
+    level: "A1-A2",
+    tr: [
+      "Her sabah saat yedide kalkarım.",
+      "Yüzümü yıkarım ve dişlerimi fırçalarım.",
+      "Kahvaltı için yumurta ve ekmek hazırlarım.",
+      "Sonra evden çıkar ve işe yürürüm."
+    ],
+    en: [
+      "Every morning, I wake up at seven.",
+      "I wash my face and brush my teeth.",
+      "I make eggs and bread for breakfast.",
+      "Then I leave home and walk to work."
+    ],
+    phrasals: ["wake up", "get up", "set off", "head out", "show up"]
+  },
+  cinema: {
+    title: "🎬 Sinemaya Gittiğim Akşam",
+    tag: "eğlence · past simple",
+    level: "A2",
+    tr: [
+      "Dün gece arkadaşlarımla sinemaya gittik.",
+      "Salon kalabalıktı ama yerlerimizi bulduk.",
+      "Film harikaydı ve çok eğlendik.",
+      "Çıkışta dondurma yedik ve eve döndük."
+    ],
+    en: [
+      "Last night, my friends and I went to the cinema.",
+      "The hall was crowded, but we found our seats.",
+      "The film was amazing and we had a lot of fun.",
+      "After it, we ate ice cream and went home."
+    ],
+    phrasals: ["check out", "go out", "hang out", "head back", "turn out"]
+  },
+  "first-day": {
+    title: "💼 İlk İş Günü",
+    tag: "iş · past simple + duygu",
+    level: "B1",
+    tr: [
+      "İlk iş günümde çok gergindim.",
+      "Sabah erken kalktım ve özenle giyindim.",
+      "Ofise vardığımda yöneticim beni karşıladı.",
+      "Tüm gün yeni şeyler öğrendim ve birçok meslektaşımla tanıştım."
+    ],
+    en: [
+      "On my first day at work, I felt very nervous.",
+      "I got up early and dressed carefully.",
+      "When I arrived at the office, my manager greeted me.",
+      "I learned new things all day and met many colleagues."
+    ],
+    phrasals: ["dress up", "show up", "settle in", "fit in", "pick up"]
+  },
+  childhood: {
+    title: "👶 Çocukluk Anısı",
+    tag: "anı · used to / would",
+    level: "B1",
+    tr: [
+      "Çocukken her yaz büyükannemin köyüne giderdik.",
+      "Sabahları dereye yüzmeye giderdik.",
+      "Akşamları ateşin etrafında masallar dinlerdik.",
+      "O günleri çok özlüyorum."
+    ],
+    en: [
+      "When I was a child, we used to visit my grandmother's village every summer.",
+      "In the mornings, we would go swimming in the river.",
+      "In the evenings, we would listen to tales around the fire.",
+      "I miss those days a lot."
+    ],
+    phrasals: ["grow up", "look back", "drift off", "stay up", "head off"]
+  },
+  shopping: {
+    title: "🛒 Süpermarket Alışverişi",
+    tag: "günlük · quantifiers",
+    level: "A2",
+    tr: [
+      "Cumartesi günleri süpermarkete alışverişe giderim.",
+      "Genellikle biraz süt, birkaç yumurta ve bir miktar ekmek alırım.",
+      "Bazen taze meyve ve sebze de seçerim.",
+      "Kasada uzun bir sıra olur."
+    ],
+    en: [
+      "On Saturdays, I go shopping at the supermarket.",
+      "I usually buy some milk, a few eggs, and a little bread.",
+      "Sometimes I also pick out fresh fruits and vegetables.",
+      "There is a long queue at the checkout."
+    ],
+    phrasals: ["pick up", "pick out", "run out", "stock up", "check out"]
+  },
+  "mom-call": {
+    title: "📞 Anneyle Telefon",
+    tag: "iletişim · reported speech",
+    level: "B1",
+    tr: [
+      "Dün annem beni aradı ve nasıl olduğumu sordu.",
+      "İyi olduğumu ve yakında onu ziyaret edeceğimi söyledim.",
+      "Bana yeni bir tarif öğrendiğini söyledi.",
+      "Akşam yemekte buluşmaya karar verdik."
+    ],
+    en: [
+      "Yesterday, my mom called me and asked how I was.",
+      "I told her I was fine and that I would visit her soon.",
+      "She said she had learned a new recipe.",
+      "We decided to meet for dinner."
+    ],
+    phrasals: ["call up", "catch up", "hang up", "drop by", "find out"]
+  },
+  "rainy-day": {
+    title: "🌧 Yağmurlu Bir Gün",
+    tag: "ev · present continuous",
+    level: "A2",
+    tr: [
+      "Şu anda pencereden dışarıya bakıyorum ve yağmurun yağışını izliyorum.",
+      "Annem mutfakta çorba pişiriyor.",
+      "Kardeşim oturma odasında müzik dinliyor.",
+      "Ben bu sırada kitap okuyorum ve sıcak çay içiyorum."
+    ],
+    en: [
+      "Right now, I am looking out the window and watching the rain fall.",
+      "My mom is cooking soup in the kitchen.",
+      "My brother is listening to music in the living room.",
+      "Meanwhile, I am reading a book and drinking hot tea."
+    ],
+    phrasals: ["look out", "curl up", "warm up", "hang out", "settle down"]
+  },
+  "new-recipe": {
+    title: "🍳 Yeni Tarif Denedim",
+    tag: "yemek · sıra ifadeleri",
+    level: "B1",
+    tr: [
+      "Geçen akşam yeni bir tarif denedim.",
+      "Önce malzemeleri masaya dizdim.",
+      "Sonra soğanı doğradım ve tavada kavurdum.",
+      "Sonunda tabaklara koydum ve aileme servis ettim.",
+      "Herkes çok beğendi."
+    ],
+    en: [
+      "Last night, I tried a new recipe.",
+      "First, I laid out the ingredients on the table.",
+      "Then, I chopped the onion and fried it in the pan.",
+      "Finally, I put it on plates and served it to my family.",
+      "Everyone liked it a lot."
+    ],
+    phrasals: ["lay out", "chop up", "fry up", "serve up", "wash up"]
+  },
+  "weekend-plans": {
+    title: "🎯 Hafta Sonu Planları",
+    tag: "planlama · going to / will",
+    level: "A2",
+    tr: [
+      "Bu hafta sonu çok meşgul olacağım.",
+      "Cumartesi sabahı spor salonuna gideceğim.",
+      "Öğleden sonra arkadaşlarımla buluşacağım.",
+      "Pazar günü evde dinleneceğim ve film izleyeceğim."
+    ],
+    en: [
+      "I am going to be very busy this weekend.",
+      "On Saturday morning, I will go to the gym.",
+      "In the afternoon, I am going to meet my friends.",
+      "On Sunday, I will rest at home and watch a film."
+    ],
+    phrasals: ["work out", "meet up", "chill out", "stay in", "kick back"]
+  },
+  gym: {
+    title: "💪 Spora Başladım",
+    tag: "sağlık · present perfect",
+    level: "B1",
+    tr: [
+      "İki aydır düzenli olarak spor salonuna gidiyorum.",
+      "Daha güçlü hissetmeye başladım ve daha iyi uyuyorum.",
+      "Birkaç yeni arkadaş edindim.",
+      "Henüz hedeflerime ulaşmadım ama ilerleme kaydediyorum."
+    ],
+    en: [
+      "I have been going to the gym regularly for two months.",
+      "I have started to feel stronger and I sleep better.",
+      "I have made a few new friends.",
+      "I haven't reached my goals yet, but I am making progress."
+    ],
+    phrasals: ["take up", "stick with", "build up", "keep up", "pay off"]
+  },
+  "lost-keys": {
+    title: "🔑 Anahtarları Kaybettim",
+    tag: "olay · past perfect",
+    level: "B1",
+    tr: [
+      "Dün eve geldiğimde anahtarlarımı kaybettiğimi fark ettim.",
+      "Onları nereye koyduğumu hatırlamadım.",
+      "Bütün ceplerimi karıştırdım ama bulamadım.",
+      "Sonra hatırladım ki onları ofiste bırakmıştım."
+    ],
+    en: [
+      "When I got home yesterday, I realized that I had lost my keys.",
+      "I didn't remember where I had put them.",
+      "I searched through all my pockets, but I couldn't find them.",
+      "Then I remembered that I had left them at the office."
+    ],
+    phrasals: ["look for", "search through", "figure out", "end up", "track down"]
+  },
+  "favorite-book": {
+    title: "📚 Sevdiğim Kitap",
+    tag: "kültür · relative clauses",
+    level: "B1",
+    tr: [
+      "En sevdiğim kitap, geçen yıl bir arkadaşımın bana hediye ettiği bir romandır.",
+      "Yazar, kitaplarıyla beni her zaman büyüleyen bir kişidir.",
+      "Hikaye, kayıp bir köpeği arayan küçük bir kız hakkındadır.",
+      "Kitabın bana öğrettiği şey, sabrın gücüdür."
+    ],
+    en: [
+      "My favorite book is a novel that a friend gave me last year.",
+      "The author is someone who always fascinates me with her books.",
+      "The story is about a little girl who is searching for a lost dog.",
+      "What the book taught me is the power of patience."
+    ],
+    phrasals: ["come across", "get into", "look up", "stand out", "pick up"]
+  },
+  "bad-day": {
+    title: "😩 Kötü Bir Gün",
+    tag: "olay · past continuous",
+    level: "B1",
+    tr: [
+      "Dün gerçekten kötü bir gün geçirdim.",
+      "Sabah duş alırken sıcak su bitti.",
+      "Otobüse koşarken yere düştüm.",
+      "Toplantıya katılırken bilgisayarım çöktü.",
+      "Eve döndüğümde çok yorgundum."
+    ],
+    en: [
+      "I had a really bad day yesterday.",
+      "While I was taking a shower in the morning, the hot water ran out.",
+      "While I was running for the bus, I fell on the ground.",
+      "While I was joining the meeting, my laptop crashed.",
+      "When I got home, I was very tired."
+    ],
+    phrasals: ["run out", "break down", "fall over", "wear out", "rush off"]
+  },
+  "dream-trip": {
+    title: "✈️ Hayalimdeki Gezi",
+    tag: "hayal · conditionals",
+    level: "B1",
+    tr: [
+      "Eğer yeterince param olsaydı, dünyayı gezerdim.",
+      "İlk olarak Japonya'ya giderdim çünkü kültürünü çok seviyorum.",
+      "Eğer ucuz bilet bulursam, gelecek yaz oraya uçacağım.",
+      "Şimdi para biriktirmeye başlamalıyım."
+    ],
+    en: [
+      "If I had enough money, I would travel around the world.",
+      "First, I would go to Japan because I love its culture.",
+      "If I find a cheap ticket, I will fly there next summer.",
+      "I should start saving money now."
+    ],
+    phrasals: ["save up", "set off", "look around", "settle down", "come back"]
+  },
+  "new-language": {
+    title: "🌍 Yeni Bir Dil",
+    tag: "öğrenme · present perfect continuous",
+    level: "B1",
+    tr: [
+      "Altı aydır İngilizce çalışıyorum.",
+      "Her gün yeni kelimeler ezberliyorum ve filmler izliyorum.",
+      "Bazı zorluklarla karşılaşıyorum ama vazgeçmiyorum.",
+      "Akıcı konuşmak için elimden geleni yapıyorum."
+    ],
+    en: [
+      "I have been studying English for six months.",
+      "Every day, I memorize new words and watch films.",
+      "I run into some difficulties, but I am not giving up.",
+      "I am doing my best to speak fluently."
+    ],
+    phrasals: ["take up", "give up", "run into", "pick up", "carry on"]
+  }
+};
+
+/* ============== PV POOL (Independent Drill) ============== */
+const PV_POOL = [
+  { pv: "look forward to", meaning: "iple çekmek, beklemek", example: "I'm looking forward to the trip next week." },
+  { pv: "set out", meaning: "yola çıkmak, başlamak", example: "We set out at dawn to climb the mountain." },
+  { pv: "pick up", meaning: "almak, alıp götürmek", example: "Can you pick up some milk on your way home?" },
+  { pv: "get along with", meaning: "iyi geçinmek", example: "I get along with my new colleagues very well." },
+  { pv: "give up", meaning: "vazgeçmek", example: "I won't give up on my dreams." },
+  { pv: "take off", meaning: "kalkmak (uçak), çıkarmak", example: "The plane took off ten minutes late." },
+  { pv: "run into", meaning: "karşılaşmak, denk gelmek", example: "I ran into an old friend at the cafe." },
+  { pv: "figure out", meaning: "çözmek, anlamak", example: "I can't figure out how this works." },
+  { pv: "carry on", meaning: "devam etmek", example: "Please carry on with your work." },
+  { pv: "show up", meaning: "ortaya çıkmak, gelmek", example: "She didn't show up for the meeting." },
+  { pv: "find out", meaning: "öğrenmek, bulmak", example: "I want to find out what happened." },
+  { pv: "look up", meaning: "(sözlükte) bakmak", example: "Look up the word in the dictionary." },
+  { pv: "hang out", meaning: "takılmak", example: "We hang out at the park every weekend." },
+  { pv: "wake up", meaning: "uyanmak", example: "I wake up at six every morning." },
+  { pv: "break down", meaning: "bozulmak, çökmek", example: "My car broke down on the highway." },
+  { pv: "work out", meaning: "spor yapmak, hallolmak", example: "I work out three times a week." },
+  { pv: "turn out", meaning: "ortaya çıkmak (sonuçta)", example: "It turned out to be a great day." },
+  { pv: "go through", meaning: "yaşamak, geçirmek", example: "She is going through a tough time." },
+  { pv: "put off", meaning: "ertelemek", example: "Don't put off your homework." },
+  { pv: "look after", meaning: "bakmak, ilgilenmek", example: "Can you look after the kids tonight?" },
+  { pv: "come up with", meaning: "(fikir) bulmak", example: "She came up with a brilliant idea." },
+  { pv: "get over", meaning: "atlatmak", example: "It took me a month to get over the flu." },
+  { pv: "wind down", meaning: "rahatlamak, yavaşlamak", example: "I wind down by reading at night." },
+  { pv: "head back", meaning: "geri dönmek", example: "It's getting dark, let's head back." },
+  { pv: "stick with", meaning: "yapışıp kalmak, devam etmek", example: "Stick with the plan, it will work." },
+  { pv: "save up", meaning: "para biriktirmek", example: "I'm saving up for a new bike." },
+  { pv: "drop by", meaning: "uğramak", example: "Feel free to drop by anytime." },
+  { pv: "take up", meaning: "(hobi) edinmek, başlamak", example: "She took up painting last year." },
+  { pv: "pay off", meaning: "(emek) karşılığı vermek", example: "Hard work always pays off." },
+  { pv: "lay out", meaning: "dizmek, sermek", example: "Lay out the documents on the desk." }
+];
+
+/* ============== STATE ============== */
+let state = loadState();
+
+function defaultState() {
+  return {
+    visualTheme: "navy",
+    activeTheme: null,
+    customContent: null,
+    boxA: "",
+    boxB: "",
+    showPlaceholderCount: 0,
+    placeholderUntil: -1,
+    manualTRIndex: null,
+    streak: 0,
+    lastCompletedDate: null,
+    todayCompleted: false,
+    totalCompletions: 0,
+    themesCompleted: [],
+    completedDates: {},
+    pvMastered: {},
+    pvDrillToday: null,
+    pvDrillCompletedToday: false,
+    pvDrillDate: null,
+    pvWorkshopOpen: true,
+    trBodyOpen: true
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  } catch (e) {
+    console.warn('localStorage parse failed, resetting:', e);
+    return defaultState();
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.warn('localStorage save failed:', e);
+  }
+}
+
+/* ============== ELEMENTS ============== */
+const $ = (id) => document.getElementById(id);
+const els = {};
+['themeSelect','setupBtn','setupPanel','setupModeTag','themeGrid','welcomeCard',
+ 'customTR','customEN','customPV','customValidateBtn','customClearBtn',
+ 'resetAllBtn','resetDraftBtn',
+ 'trReference','trHead','trBody','trLevel','trTag','trBadge','trParagraph',
+ 'guidedSection','mirrorA','boxA','showPlaceholderBtn','clearABtn','statusA',
+ 'blindSection','trPreview','previewText','previewCounter','prevBtn','nextBtn','autoResetBtn',
+ 'boxB','checkBtn','hintBtn','clearBBtn','statusB',
+ 'resultSection','resultSummary','resultDetails','saveCompleteBtn','dismissResultBtn',
+ 'pvWorkshop','pvHead','pvBody','pvTargets','pvDrillName','pvDrillMeaning','pvDrillExample',
+ 'pvDrillInput','pvCheckBtn','pvSkipBtn','pvDrillResult','pvHistory',
+ 'streakPill','streakNum','todayPill',
+ 'toast','modal','modalTitle','modalBody','modalCancel','modalConfirm'
+].forEach(id => { els[id] = $(id); });
+
+/* ============== UTILITIES ============== */
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function normalizeChar(c) {
+  if (c === '’' || c === 'ʼ') return "'";
+  if (c === '“' || c === '”') return '"';
+  if (c === '–' || c === '—') return '-';
+  return c;
+}
+
+function normalizeText(s) {
+  return Array.from(s).map(normalizeChar).join('');
+}
+
+function tokenize(s) {
+  return s.toLowerCase()
+    .replace(/[’ʼ]/g, "'")
+    .replace(/[^\w'\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .filter(Boolean);
+}
+
+function getActiveContent() {
+  if (state.activeTheme === '__custom__' && state.customContent) {
+    return state.customContent;
+  }
+  if (state.activeTheme && THEMES[state.activeTheme]) {
+    return THEMES[state.activeTheme];
+  }
+  return null;
+}
+
+function getTargetText() {
+  const c = getActiveContent();
+  if (!c) return '';
+  return c.en.join(' ');
+}
+
+function getEnSentences() {
+  const c = getActiveContent();
+  return c ? c.en : [];
+}
+
+function getTrSentences() {
+  const c = getActiveContent();
+  return c ? c.tr : [];
+}
+
+function getPhrasals() {
+  const c = getActiveContent();
+  return c && c.phrasals ? c.phrasals : [];
+}
+
+/* ============== TOAST ============== */
+let toastTimer = null;
+function toast(msg, kind = '', dur = 2400) {
+  els.toast.textContent = msg;
+  els.toast.className = 'show ' + kind;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { els.toast.className = kind; }, dur);
+}
+
+/* ============== MODAL ============== */
+let modalResolver = null;
+function modal({ title, body, confirmText = 'Onayla', cancelText = 'İptal', danger = false }) {
+  els.modalTitle.textContent = title;
+  els.modalBody.textContent = body;
+  els.modalConfirm.textContent = confirmText;
+  els.modalCancel.textContent = cancelText;
+  els.modalConfirm.className = 'btn ' + (danger ? 'danger' : 'primary');
+  els.modal.classList.add('open');
+  return new Promise(resolve => { modalResolver = resolve; });
+}
+els.modalConfirm.addEventListener('click', () => {
+  els.modal.classList.remove('open');
+  if (modalResolver) { modalResolver(true); modalResolver = null; }
+});
+els.modalCancel.addEventListener('click', () => {
+  els.modal.classList.remove('open');
+  if (modalResolver) { modalResolver(false); modalResolver = null; }
+});
+
+/* ============== THEME (visual) ============== */
+function applyVisualTheme(t) {
+  document.body.dataset.theme = t;
+  state.visualTheme = t;
+  els.themeSelect.value = t;
+  saveState();
+}
+
+/* ============== SETUP PANEL ============== */
+let resetClickedOnce = false; resetClickedOnce; // reserved
+
+function renderThemeGrid() {
+  const html = Object.entries(THEMES).map(([slug, t]) => {
+    const done = state.themesCompleted.includes(slug);
+    const active = state.activeTheme === slug;
+    return `
+      <div class="theme-card done-mark ${active ? 'active' : ''}" data-slug="${slug}">
+        ${done ? '<div class="done-tag">✓</div>' : ''}
+        <div class="theme-card-title">${t.title}</div>
+        <div class="theme-card-meta">${escapeHtml(t.tag)} · ${t.level}</div>
+      </div>
+    `;
+  }).join('');
+  els.themeGrid.innerHTML = html;
+  els.themeGrid.querySelectorAll('.theme-card').forEach(card => {
+    card.addEventListener('click', () => selectTheme(card.dataset.slug));
+  });
+}
+
+async function selectTheme(slug) {
+  if (state.activeTheme && state.activeTheme !== slug && (state.boxA.trim() || state.boxB.trim())) {
+    const ok = await modal({
+      title: 'Mevcut çalışma kaybolacak',
+      body: 'Box A ve Box B\'deki mevcut yazıların silinecek. Devam etmek istiyor musun?',
+      confirmText: 'Evet, değiştir',
+      danger: true
+    });
+    if (!ok) return;
+  }
+  state.activeTheme = slug;
+  state.customContent = null;
+  state.boxA = '';
+  state.boxB = '';
+  state.placeholderUntil = -1;
+  state.manualTRIndex = null;
+  state.todayCompleted = false;
+  saveState();
+  closeSetupPanel();
+  renderAll();
+  toast('Tema yüklendi: ' + THEMES[slug].title, 'ok');
+}
+
+function openSetupPanel() {
+  els.setupPanel.classList.add('open');
+  els.welcomeCard.style.display = 'none';
+}
+function closeSetupPanel() {
+  els.setupPanel.classList.remove('open');
+  if (!state.activeTheme) els.welcomeCard.style.display = 'block';
+}
+els.setupBtn.addEventListener('click', () => {
+  if (els.setupPanel.classList.contains('open')) {
+    closeSetupPanel();
+  } else {
+    openSetupPanel();
+  }
+});
+
+document.querySelectorAll('.setup-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.setup-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const which = tab.dataset.setupTab;
+    $('setupBodyThemes').style.display = which === 'themes' ? '' : 'none';
+    $('setupBodyCustom').style.display = which === 'custom' ? '' : 'none';
+    $('setupBodyReset').style.display = which === 'reset' ? '' : 'none';
+    const tag = { themes: 'Tema seç', custom: 'Custom mod', reset: 'Sıfırla' }[which];
+    els.setupModeTag.textContent = tag;
+  });
+});
+
+/* ============== CUSTOM MODE ============== */
+els.customValidateBtn.addEventListener('click', async () => {
+  const trLines = els.customTR.value.split('\n').map(l => l.trim()).filter(l => l);
+  const enLines = els.customEN.value.split('\n').map(l => l.trim()).filter(l => l);
+  if (trLines.length === 0 || enLines.length === 0) {
+    toast('TR ve EN alanlarını doldur', 'bad'); return;
+  }
+  if (trLines.length !== enLines.length) {
+    toast(`Satır sayıları farklı: TR ${trLines.length}, EN ${enLines.length}`, 'bad'); return;
+  }
+  if (trLines.length > 30) {
+    toast('Max 30 cümle. İlk 30 alındı.', 'warn');
+    trLines.length = 30; enLines.length = 30;
+  }
+  const phrasals = els.customPV.value
+    .split(',').map(s => s.trim().toLowerCase()).filter(s => s);
+  if (state.activeTheme && state.activeTheme !== '__custom__' && (state.boxA.trim() || state.boxB.trim())) {
+    const ok = await modal({
+      title: 'Mevcut çalışma kaybolacak',
+      body: 'Custom mod\'a geçince Box A ve B sıfırlanır. Devam?',
+      confirmText: 'Devam',
+      danger: true
+    });
+    if (!ok) return;
+  }
+  state.customContent = {
+    title: '✏️ Custom',
+    tag: 'kullanıcı içeriği',
+    level: '—',
+    tr: trLines, en: enLines, phrasals
+  };
+  state.activeTheme = '__custom__';
+  state.boxA = '';
+  state.boxB = '';
+  state.placeholderUntil = -1;
+  state.manualTRIndex = null;
+  state.todayCompleted = false;
+  saveState();
+  closeSetupPanel();
+  renderAll();
+  toast(`Custom yüklendi: ${trLines.length} cümle`, 'ok');
+});
+
+els.customClearBtn.addEventListener('click', () => {
+  els.customTR.value = '';
+  els.customEN.value = '';
+  els.customPV.value = '';
+});
+
+/* ============== RESET ============== */
+els.resetAllBtn.addEventListener('click', async () => {
+  const ok = await modal({
+    title: 'Hepsini sıfırla?',
+    body: 'Streak, tamamlamalar, PV geçmişi, mevcut çalışma — hepsi silinecek. Görsel tema korunur. Geri alınamaz.',
+    confirmText: 'Sıfırla',
+    danger: true
+  });
+  if (!ok) return;
+  const theme = state.visualTheme;
+  state = defaultState();
+  state.visualTheme = theme;
+  saveState();
+  renderAll();
+  toast('Tüm veriler sıfırlandı.', 'ok');
+});
+els.resetDraftBtn.addEventListener('click', () => {
+  state.boxA = ''; state.boxB = ''; state.placeholderUntil = -1; state.manualTRIndex = null;
+  saveState();
+  els.boxA.value = ''; els.boxB.value = '';
+  renderAll();
+  toast('Bugünkü Box A/B temizlendi.', 'ok');
+});
+
+/* ============== BOX A — MIRROR DIFF ============== */
+function renderMirrorA() {
+  const target = normalizeText(getTargetText());
+  const userRaw = els.boxA.value;
+  const user = normalizeText(userRaw);
+  let html = '';
+  let firstBad = -1;
+  const minLen = Math.min(user.length, target.length);
+
+  for (let i = 0; i < minLen; i++) {
+    if (user[i] === target[i]) {
+      html += `<span class="ok">${escapeHtml(userRaw[i])}</span>`;
+    } else {
+      if (firstBad === -1) firstBad = i;
+      html += `<span class="bad">${escapeHtml(userRaw[i])}</span>`;
+    }
+  }
+  if (user.length > target.length) {
+    if (firstBad === -1) firstBad = target.length;
+    for (let i = target.length; i < user.length; i++) {
+      html += `<span class="bad">${escapeHtml(userRaw[i])}</span>`;
+    }
+  }
+
+  // Placeholder rendering
+  if (state.placeholderUntil > 0 && firstBad === -1 && user.length < state.placeholderUntil) {
+    const targetRaw = getTargetText();
+    const fragment = targetRaw.slice(user.length, state.placeholderUntil);
+    html += `<span class="placeholder">${escapeHtml(fragment)}</span>`;
+  } else if (user.length >= (state.placeholderUntil || 0)) {
+    // Placeholder consumed
+    if (state.placeholderUntil > 0) {
+      state.placeholderUntil = -1;
+      saveState();
+      updateShowPlaceholderBtn();
+    }
+  }
+
+  els.mirrorA.innerHTML = html;
+
+  // Status & UI
+  const targetRaw = getTargetText();
+  const statusEl = els.statusA;
+  statusEl.classList.toggle('has-error', firstBad !== -1);
+  if (firstBad !== -1) {
+    statusEl.textContent = `${user.length}/${targetRaw.length} · ⚠ ilk hata: ${firstBad}`;
+  } else {
+    statusEl.textContent = `${user.length}/${targetRaw.length} karakter` + (user.length >= targetRaw.length ? ' ✓ tamamlandı' : '');
+  }
+  // Highlight active TR sentence
+  updateTrActiveSentence();
+}
+
+function findNextSentenceEnd(fromIndex) {
+  const target = getTargetText();
+  if (fromIndex >= target.length) return target.length;
+  for (let i = fromIndex; i < target.length; i++) {
+    if (/[.!?]/.test(target[i])) {
+      // Include trailing punctuation only
+      return i + 1;
+    }
+  }
+  return target.length;
+}
+
+function hasErrorsInA() {
+  const target = normalizeText(getTargetText());
+  const user = normalizeText(els.boxA.value);
+  const minLen = Math.min(user.length, target.length);
+  for (let i = 0; i < minLen; i++) {
+    if (user[i] !== target[i]) return true;
+  }
+  return user.length > target.length;
+}
+
+function activatePlaceholder() {
+  if (!getActiveContent()) { toast('Önce bir tema seç', 'warn'); return; }
+  if (hasErrorsInA()) { toast('Önce kırmızı işaretli hataları düzelt', 'bad'); return; }
+  const start = els.boxA.value.length;
+  const end = findNextSentenceEnd(start);
+  if (end <= start) {
+    toast('Bu cümleyi tamamladın. Sonraki cümleye geç.', 'warn');
+    return;
+  }
+  state.placeholderUntil = end;
+  state.showPlaceholderCount = (state.showPlaceholderCount || 0) + 1;
+  saveState();
+  renderMirrorA();
+  updateShowPlaceholderBtn();
+}
+
+function updateShowPlaceholderBtn() {
+  const c = state.showPlaceholderCount || 0;
+  els.showPlaceholderBtn.innerHTML = '▸ Show sentence with placeholder' + (c > 0 ? ` <span style="opacity:0.5;font-size:11px;">(${c})</span>` : '');
+}
+
+els.showPlaceholderBtn.addEventListener('click', activatePlaceholder);
+
+els.clearABtn.addEventListener('click', async () => {
+  if (!els.boxA.value) return;
+  const ok = await modal({ title: 'Box A temizlensin mi?', body: 'Bu kutudaki tüm yazı silinecek.', confirmText: 'Temizle', danger: true });
+  if (!ok) return;
+  els.boxA.value = '';
+  state.boxA = '';
+  state.placeholderUntil = -1;
+  saveState();
+  renderMirrorA();
+});
+
+// Box A textarea events
+els.boxA.addEventListener('input', () => {
+  state.boxA = els.boxA.value;
+  saveState();
+  renderMirrorA();
+});
+els.boxA.addEventListener('scroll', () => {
+  els.mirrorA.scrollTop = els.boxA.scrollTop;
+  els.mirrorA.scrollLeft = els.boxA.scrollLeft;
+});
+
+/* ============== TR REFERENCE + ACTIVE SENTENCE ============== */
+function getActiveSentenceIndexFromBoxA() {
+  const target = getTargetText();
+  const user = normalizeText(els.boxA.value);
+  if (!target || !user) return 0;
+  // Count sentence boundaries up to user.length
+  const consumed = target.slice(0, user.length);
+  const count = (consumed.match(/[.!?]/g) || []).length;
+  // The active sentence is `count` index (next to write); if consumed ends with `.`, jump to next
+  return Math.min(count, getEnSentences().length - 1);
+}
+
+function renderTrReference() {
+  const c = getActiveContent();
+  if (!c) { els.trReference.classList.remove('open'); return; }
+  els.trReference.classList.add('open');
+  els.trBadge.textContent = c.title || '';
+  els.trLevel.textContent = c.level || '—';
+  els.trTag.textContent = c.tag || '—';
+  // Build sentences
+  const sentences = c.tr || [];
+  const html = sentences.map((s, i) => `<span class="tr-sentence" data-idx="${i}">${escapeHtml(s)}</span>`).join(' ');
+  els.trParagraph.innerHTML = html;
+  els.trParagraph.querySelectorAll('.tr-sentence').forEach(span => {
+    span.addEventListener('click', () => {
+      // Jump TR preview to this sentence (manual override)
+      state.manualTRIndex = parseInt(span.dataset.idx, 10);
+      saveState();
+      updateBoxBPreview();
+      els.boxB.focus();
+    });
+  });
+  updateTrActiveSentence();
+}
+
+function updateTrActiveSentence() {
+  const idx = getActiveSentenceIndexFromBoxA();
+  els.trParagraph.querySelectorAll('.tr-sentence').forEach(span => {
+    const i = parseInt(span.dataset.idx, 10);
+    span.classList.toggle('active', i === idx);
+    span.classList.toggle('done', i < idx);
+  });
+}
+
+// TR collapse
+els.trHead.addEventListener('click', () => {
+  const closed = els.trHead.classList.toggle('closed');
+  els.trBody.classList.toggle('closed', closed);
+  state.trBodyOpen = !closed;
+  saveState();
+});
+
+/* ============== BOX B PREVIEW (Hybrid TR) ============== */
+function updateBoxBPreview() {
+  const en = getEnSentences();
+  const tr = getTrSentences();
+  if (!en.length) { els.previewText.textContent = '—'; els.previewCounter.textContent = '0/0'; return; }
+  let idx;
+  if (state.manualTRIndex !== null) {
+    idx = Math.max(0, Math.min(state.manualTRIndex, en.length - 1));
+    els.trPreview.classList.add('manual');
+    els.autoResetBtn.style.display = '';
+  } else {
+    const completed = (els.boxB.value.match(/[.!?]+/g) || []).length;
+    idx = Math.min(completed, en.length - 1);
+    els.trPreview.classList.remove('manual');
+    els.autoResetBtn.style.display = 'none';
+  }
+  els.previewText.textContent = tr[idx] || '—';
+  els.previewCounter.textContent = `${idx + 1}/${en.length}`;
+  els.prevBtn.disabled = idx <= 0;
+  els.nextBtn.disabled = idx >= en.length - 1;
+  // Status
+  const userCount = (els.boxB.value.match(/[.!?]+/g) || []).length;
+  els.statusB.textContent = `${userCount}/${en.length} cümle yazıldı`;
+}
+
+els.prevBtn.addEventListener('click', () => {
+  const en = getEnSentences();
+  if (!en.length) return;
+  let cur = state.manualTRIndex !== null ? state.manualTRIndex : (els.boxB.value.match(/[.!?]+/g) || []).length;
+  cur = Math.max(0, cur - 1);
+  state.manualTRIndex = cur;
+  saveState();
+  updateBoxBPreview();
+});
+els.nextBtn.addEventListener('click', () => {
+  const en = getEnSentences();
+  if (!en.length) return;
+  let cur = state.manualTRIndex !== null ? state.manualTRIndex : (els.boxB.value.match(/[.!?]+/g) || []).length;
+  cur = Math.min(en.length - 1, cur + 1);
+  state.manualTRIndex = cur;
+  saveState();
+  updateBoxBPreview();
+});
+els.autoResetBtn.addEventListener('click', () => {
+  state.manualTRIndex = null;
+  saveState();
+  updateBoxBPreview();
+});
+
+els.boxB.addEventListener('input', () => {
+  state.boxB = els.boxB.value;
+  saveState();
+  updateBoxBPreview();
+});
+
+els.clearBBtn.addEventListener('click', async () => {
+  if (!els.boxB.value) return;
+  const ok = await modal({ title: 'Box B temizlensin mi?', body: 'Bu kutudaki tüm yazı silinecek.', confirmText: 'Temizle', danger: true });
+  if (!ok) return;
+  els.boxB.value = ''; state.boxB = ''; state.manualTRIndex = null;
+  saveState();
+  updateBoxBPreview();
+});
+
+els.hintBtn.addEventListener('click', () => {
+  const en = getEnSentences();
+  if (!en.length) return;
+  const completed = (els.boxB.value.match(/[.!?]+/g) || []).length;
+  const idx = state.manualTRIndex !== null ? state.manualTRIndex : Math.min(completed, en.length - 1);
+  toast('💡 ' + en[idx], '', 4500);
+});
+
+/* ============== CHECK — WORD-LEVEL DIFF ============== */
+function lcsTokens(a, b) {
+  const n = a.length, m = b.length;
+  const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      if (a[i - 1] === b[j - 1]) dp[i][j] = dp[i - 1][j - 1] + 1;
+      else dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[n][m];
+}
+
+function diffSentence(userS, targetS) {
+  const u = tokenize(userS);
+  const t = tokenize(targetS);
+  const matched = lcsTokens(u, t);
+  const total = t.length;
+  const score = total > 0 ? Math.round((matched / total) * 100) : 0;
+  // Missing/extra by frequency
+  const ct = {}, cu = {};
+  for (const w of t) ct[w] = (ct[w] || 0) + 1;
+  for (const w of u) cu[w] = (cu[w] || 0) + 1;
+  const missing = [], extra = [];
+  for (const w in ct) {
+    const diff = ct[w] - (cu[w] || 0);
+    for (let k = 0; k < diff; k++) missing.push(w);
+  }
+  for (const w in cu) {
+    const diff = (cu[w] || 0) - (ct[w] || 0);
+    for (let k = 0; k < diff; k++) extra.push(w);
+  }
+  return { score, matched, total, missing, extra, userTokens: u, targetTokens: t };
+}
+
+function performCheck() {
+  const en = getEnSentences();
+  if (!en.length) { toast('Önce bir tema seç', 'warn'); return; }
+  if (!els.boxB.value.trim()) { toast('Box B boş — önce yaz', 'warn'); return; }
+
+  // Split user input into sentences (by [.!?])
+  const userParts = els.boxB.value.split(/[.!?]+/).map(s => s.trim()).filter(s => s);
+  const total = en.length;
+  let totalScore = 0;
+  let goodCount = 0;
+  let detailsHtml = '';
+
+  for (let i = 0; i < total; i++) {
+    const targetS = en[i];
+    const userS = userParts[i] || '';
+    if (!userS) {
+      detailsHtml += `<div class="sentence-result bad">
+        <div class="sr-line"><span class="sr-icon">✗</span><b>Cümle ${i + 1}</b><span class="sr-score">eksik</span></div>
+        <div class="sr-target">Hedef: ${escapeHtml(targetS)}</div>
+      </div>`;
+      continue;
+    }
+    const d = diffSentence(userS, targetS);
+    totalScore += d.score;
+    const cls = d.score >= 85 ? 'good' : d.score >= 60 ? 'partial' : 'bad';
+    const icon = d.score >= 85 ? '✓' : d.score >= 60 ? '⚠' : '✗';
+    if (d.score >= 70) goodCount++;
+    detailsHtml += `
+      <div class="sentence-result ${cls}">
+        <div class="sr-line"><span class="sr-icon">${icon}</span><b>Cümle ${i + 1}</b><span class="sr-score">${d.score}% · ${d.matched}/${d.total} kelime</span></div>
+        <div class="sr-target">Hedef: ${escapeHtml(targetS)}</div>
+        <div class="sr-user">Senin: ${escapeHtml(userS) || '<i>—</i>'}</div>
+        <div class="sr-diff">
+          ${d.missing.length ? `<span class="label-tag miss">eksik</span><span class="miss">${d.missing.map(escapeHtml).join(', ')}</span> ` : ''}
+          ${d.extra.length ? `<span class="label-tag extra">fazla</span><span class="extra">${d.extra.map(escapeHtml).join(', ')}</span>` : ''}
+          ${!d.missing.length && !d.extra.length ? '<span class="ok">✓ tüm kelimeler eşleşti</span>' : ''}
+        </div>
+      </div>`;
+  }
+  // Extra user sentences
+  for (let i = total; i < userParts.length; i++) {
+    detailsHtml += `<div class="sentence-result partial">
+      <div class="sr-line"><span class="sr-icon">⚠</span><b>Fazla cümle ${i + 1}</b><span class="sr-score">hedefte yok</span></div>
+      <div class="sr-user">${escapeHtml(userParts[i])}</div>
+    </div>`;
+  }
+
+  const avgScore = total > 0 ? Math.round(totalScore / total) : 0;
+
+  // PV usage in Box A & Box B
+  const pvList = getPhrasals();
+  let pvUsedBoth = 0, pvUsedAny = 0;
+  pvList.forEach(pv => {
+    const inA = pvRegex(pv).test(els.boxA.value);
+    const inB = pvRegex(pv).test(els.boxB.value);
+    if (inA && inB) pvUsedBoth++;
+    if (inA || inB) pvUsedAny++;
+  });
+
+  const userSentenceCount = userParts.length;
+  const sentenceDelta = userSentenceCount - total;
+
+  els.resultSummary.innerHTML = `
+    <div class="summary-stat"><div class="num">${avgScore}%</div><div class="label">Genel skor</div></div>
+    <div class="summary-stat"><div class="num">${goodCount}/${total}</div><div class="label">≥%70 cümle</div></div>
+    <div class="summary-stat"><div class="num">${pvUsedAny}/${pvList.length}</div><div class="label">PV kullanıldı</div></div>
+    <div class="summary-stat"><div class="num">${sentenceDelta >= 0 ? '+' : ''}${sentenceDelta}</div><div class="label">Cümle Δ</div></div>
+  `;
+  els.resultDetails.innerHTML = detailsHtml;
+  els.resultSection.classList.add('open');
+  els.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Store ephemeral score for save button
+  els.saveCompleteBtn.dataset.score = avgScore;
+
+  // Update PV mastery
+  pvList.forEach(pv => {
+    const inA = pvRegex(pv).test(els.boxA.value);
+    const inB = pvRegex(pv).test(els.boxB.value);
+    if (inA || inB) {
+      if (!state.pvMastered[pv]) state.pvMastered[pv] = { count: 0, lastUsed: null };
+      state.pvMastered[pv].count++;
+      state.pvMastered[pv].lastUsed = TODAY;
+    }
+  });
+  saveState();
+  renderPvWorkshop();
+}
+
+els.checkBtn.addEventListener('click', performCheck);
+
+/* ============== PHRASAL VERB ============== */
+function pvRegex(pv) {
+  // pv like "pick up" or "look forward to"
+  const parts = pv.toLowerCase().split(/\s+/);
+  if (parts.length === 1) {
+    return new RegExp(`\\b${parts[0]}(?:e?s|ed|ing)?\\b`, 'i');
+  }
+  if (parts.length === 2) {
+    // Two-word: separable, allow up to 4 tokens in between
+    const [v, p] = parts;
+    return new RegExp(`\\b${v}(?:e?s|ed|ing)?\\b(?:\\s+\\S+){0,4}?\\s+\\b${p}\\b`, 'i');
+  }
+  // Three+ words: looser
+  return new RegExp(`\\b${parts.map(p => p.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')).join('\\b(?:\\s+\\S+){0,3}?\\s+\\b')}\\b`, 'i');
+}
+
+function renderPvWorkshop() {
+  const c = getActiveContent();
+  els.pvWorkshop.style.display = c ? '' : 'none';
+  if (!c) return;
+  const phrasals = c.phrasals || [];
+  const html = phrasals.map(pv => {
+    const inA = pvRegex(pv).test(els.boxA.value);
+    const inB = pvRegex(pv).test(els.boxB.value);
+    let cls = '', mark = '';
+    if (inA && inB) { cls = 'both'; mark = '✓✓'; }
+    else if (inB) { cls = 'box-b'; mark = '✓ B'; }
+    else if (inA) { cls = 'box-a'; mark = '✓ A'; }
+    else mark = '—';
+    return `<span class="pv-chip ${cls}"><b>${escapeHtml(pv)}</b><span class="mark">${mark}</span></span>`;
+  }).join('');
+  els.pvTargets.innerHTML = html;
+
+  // Independent drill — rotate daily
+  if (state.pvDrillDate !== TODAY) {
+    // pick a new PV from pool
+    const seed = hashDate(TODAY);
+    state.pvDrillToday = PV_POOL[seed % PV_POOL.length].pv;
+    state.pvDrillCompletedToday = false;
+    state.pvDrillDate = TODAY;
+    saveState();
+  }
+  const drill = PV_POOL.find(p => p.pv === state.pvDrillToday) || PV_POOL[0];
+  els.pvDrillName.textContent = drill.pv;
+  els.pvDrillMeaning.textContent = '— ' + drill.meaning;
+  els.pvDrillExample.textContent = '"' + drill.example + '"';
+  // History
+  const mastered = Object.entries(state.pvMastered).sort((a, b) => b[1].count - a[1].count).slice(0, 8);
+  if (mastered.length === 0) {
+    els.pvHistory.textContent = 'Henüz PV kullanım geçmişi yok.';
+  } else {
+    els.pvHistory.innerHTML = '<b>Son kullanım frekansı:</b> ' + mastered.map(([pv, m]) => `${escapeHtml(pv)} (${m.count})`).join(' · ');
+  }
+  // Drill complete styling
+  if (state.pvDrillCompletedToday) {
+    els.pvDrillResult.className = 'pv-drill-result ok';
+    els.pvDrillResult.textContent = '✓ Bugünün PV drill\'i tamamlandı.';
+  } else {
+    els.pvDrillResult.className = 'pv-drill-result';
+    els.pvDrillResult.textContent = '';
+  }
+}
+
+function hashDate(d) {
+  let h = 0; for (let i = 0; i < d.length; i++) h = (h * 31 + d.charCodeAt(i)) >>> 0;
+  return h;
+}
+
+els.pvCheckBtn.addEventListener('click', () => {
+  const input = els.pvDrillInput.value.trim();
+  const drill = PV_POOL.find(p => p.pv === state.pvDrillToday) || PV_POOL[0];
+  if (!input) { toast('Boş — bir cümle yaz', 'warn'); return; }
+  const words = input.split(/\s+/).filter(Boolean);
+  if (words.length < 6) {
+    els.pvDrillResult.className = 'pv-drill-result bad';
+    els.pvDrillResult.textContent = `✗ Cümle çok kısa (${words.length} kelime). Min 6 kelime gerekli.`;
+    return;
+  }
+  if (!pvRegex(drill.pv).test(input)) {
+    els.pvDrillResult.className = 'pv-drill-result bad';
+    els.pvDrillResult.textContent = `✗ "${drill.pv}" bu cümlede tespit edilmedi. Tekrar dene.`;
+    return;
+  }
+  els.pvDrillResult.className = 'pv-drill-result ok';
+  els.pvDrillResult.textContent = `✓ Harika! "${drill.pv}" doğru kullanıldı.`;
+  state.pvDrillCompletedToday = true;
+  if (!state.pvMastered[drill.pv]) state.pvMastered[drill.pv] = { count: 0, lastUsed: null };
+  state.pvMastered[drill.pv].count++;
+  state.pvMastered[drill.pv].lastUsed = TODAY;
+  saveState();
+  renderPvWorkshop();
+});
+
+els.pvSkipBtn.addEventListener('click', () => {
+  // Random new PV (not today's)
+  const others = PV_POOL.filter(p => p.pv !== state.pvDrillToday);
+  state.pvDrillToday = others[Math.floor(Math.random() * others.length)].pv;
+  state.pvDrillCompletedToday = false;
+  els.pvDrillInput.value = '';
+  saveState();
+  renderPvWorkshop();
+  toast('Yeni PV yüklendi.', 'ok');
+});
+
+els.pvHead.addEventListener('click', () => {
+  const closed = els.pvHead.classList.toggle('closed');
+  els.pvBody.classList.toggle('closed', closed);
+  state.pvWorkshopOpen = !closed;
+  saveState();
+});
+
+/* ============== STREAK & DAILY ============== */
+function updateStreakUI() {
+  els.streakNum.textContent = state.streak || 0;
+  if (state.todayCompleted) {
+    els.todayPill.textContent = '✓ Bugün tamam';
+    els.todayPill.classList.add('done');
+  } else {
+    els.todayPill.textContent = '⏳ Bugün';
+    els.todayPill.classList.remove('done');
+  }
+}
+
+function dayDiff(d1, d2) {
+  if (!d1 || !d2) return Infinity;
+  const a = new Date(d1 + 'T00:00:00'), b = new Date(d2 + 'T00:00:00');
+  return Math.round((b - a) / (24 * 3600 * 1000));
+}
+
+function rolloverCheck() {
+  // Adjust streak when new day starts
+  if (!state.lastCompletedDate) return;
+  const diff = dayDiff(state.lastCompletedDate, TODAY);
+  if (diff === 0) {
+    state.todayCompleted = true;
+  } else if (diff === 1) {
+    state.todayCompleted = false;
+    // streak intact, will increment on today's completion
+  } else if (diff >= 2) {
+    state.todayCompleted = false;
+    if (state.streak > 0) {
+      toast('Streak kırıldı (' + state.streak + ' gün). Bugün baştan başla.', 'warn', 4000);
+    }
+    state.streak = 0;
+  }
+  saveState();
+}
+
+els.saveCompleteBtn.addEventListener('click', () => {
+  const score = parseInt(els.saveCompleteBtn.dataset.score || '0', 10);
+  if (score < 70) {
+    const proceed = confirm(`Skor %${score} (<%70). Yine de kaydet ve günü tamamla?`);
+    if (!proceed) return;
+  }
+  // Streak update
+  if (!state.todayCompleted) {
+    if (state.lastCompletedDate && dayDiff(state.lastCompletedDate, TODAY) === 1) {
+      state.streak = (state.streak || 0) + 1;
+    } else if (!state.lastCompletedDate) {
+      state.streak = 1;
+    } else if (dayDiff(state.lastCompletedDate, TODAY) === 0) {
+      // already today — no change
+    } else {
+      state.streak = 1;
+    }
+  }
+  state.lastCompletedDate = TODAY;
+  state.todayCompleted = true;
+  state.totalCompletions = (state.totalCompletions || 0) + 1;
+  state.completedDates[TODAY] = { score, theme: state.activeTheme };
+  if (state.activeTheme && state.activeTheme !== '__custom__' && !state.themesCompleted.includes(state.activeTheme)) {
+    state.themesCompleted.push(state.activeTheme);
+  }
+  saveState();
+  updateStreakUI();
+  toast('Bugün tamamlandı! Streak: ' + state.streak + ' 🔥', 'ok', 3500);
+  // Sunday portfolio reminder
+  const dow = new Date(TODAY + 'T00:00:00').getDay(); // 0 = Sunday
+  if (dow === 0) {
+    setTimeout(() => toast('🎨 Pazar — bu haftanın en iyi paragrafını portfolio\'ya cilala.', 'warn', 5000), 2500);
+  }
+  if (state.themesCompleted.length === Object.keys(THEMES).length) {
+    setTimeout(() => toast('🏆 Tüm 16 tema tamam! Custom mod ile devam et.', 'ok', 5000), 4000);
+  }
+});
+
+els.dismissResultBtn.addEventListener('click', () => {
+  els.resultSection.classList.remove('open');
+});
+
+/* ============== KEYBOARD ============== */
+document.addEventListener('keydown', (e) => {
+  // Ctrl+Enter on Box B → check
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && document.activeElement === els.boxB) {
+    e.preventDefault(); performCheck(); return;
+  }
+  // Ctrl+/ on Box A → placeholder
+  if ((e.ctrlKey || e.metaKey) && e.key === '/' && document.activeElement === els.boxA) {
+    e.preventDefault(); activatePlaceholder(); return;
+  }
+  // Escape closes modal/setup
+  if (e.key === 'Escape') {
+    if (els.modal.classList.contains('open')) {
+      els.modal.classList.remove('open');
+      if (modalResolver) { modalResolver(false); modalResolver = null; }
+    } else if (els.setupPanel.classList.contains('open')) {
+      closeSetupPanel();
+    }
+    return;
+  }
+  // Arrow keys for TR preview when focused on Box B or preview area
+  if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && document.activeElement === els.boxB && e.altKey) {
+    // Alt+Arrow to avoid conflicting with cursor nav
+    e.preventDefault();
+    if (e.key === 'ArrowLeft') els.prevBtn.click();
+    else els.nextBtn.click();
+    return;
+  }
+});
+
+/* ============== THEME SELECT ============== */
+els.themeSelect.addEventListener('change', (e) => applyVisualTheme(e.target.value));
+
+/* ============== RENDER ALL ============== */
+function renderAll() {
+  applyVisualTheme(state.visualTheme || 'navy');
+  renderThemeGrid();
+  const hasContent = !!getActiveContent();
+  els.welcomeCard.style.display = hasContent ? 'none' : '';
+  // Restore drafts
+  if (els.boxA.value !== state.boxA) els.boxA.value = state.boxA || '';
+  if (els.boxB.value !== state.boxB) els.boxB.value = state.boxB || '';
+  if (hasContent) {
+    els.guidedSection.classList.add('open');
+    els.blindSection.classList.add('open');
+    renderTrReference();
+    renderMirrorA();
+    updateBoxBPreview();
+    renderPvWorkshop();
+  } else {
+    els.guidedSection.classList.remove('open');
+    els.blindSection.classList.remove('open');
+    els.pvWorkshop.style.display = 'none';
+    els.trReference.classList.remove('open');
+  }
+  updateStreakUI();
+  updateShowPlaceholderBtn();
+}
+
+/* ============== INIT ============== */
+function init() {
+  rolloverCheck();
+  renderAll();
+  // Open setup on first run
+  if (!getActiveContent()) {
+    setTimeout(() => openSetupPanel(), 200);
+  }
+}
+init();
+
+// Beforeunload — ensure last save
+window.addEventListener('beforeunload', () => { saveState(); });
+</script>
+</body>
+</html>

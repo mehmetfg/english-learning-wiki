@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Tenses & Aspects</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root[data-theme="dark"] {
+    --bg: #0f1117;
+    --bg2: #161b27;
+    --bg3: #1e2535;
+    --border: #2a3347;
+    --text: #e8eaf0;
+    --text2: #8b95b0;
+    --text3: #5a6380;
+    --accent1: #6c8fff;
+    --accent2: #ff7eb3;
+    --accent3: #4dd9ac;
+    --accent4: #ffa94d;
+    --accent5: #c084fc;
+    --accent6: #f87171;
+    --tag-bg: #1e2535;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --card-hover: #1e2535;
+  }
+  :root[data-theme="light"] {
+    --bg: #f0f2f8;
+    --bg2: #ffffff;
+    --bg3: #e8ecf5;
+    --border: #d0d8ea;
+    --text: #1a2035;
+    --text2: #4a5580;
+    --text3: #8a95b5;
+    --accent1: #3d6cf5;
+    --accent2: #e8457a;
+    --accent3: #1ab884;
+    --accent4: #e07b1a;
+    --accent5: #8b44e8;
+    --accent6: #dc2626;
+    --tag-bg: #eaedfa;
+    --shadow: 0 4px 24px rgba(0,0,0,0.08);
+    --card-hover: #f5f7ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* THEME TOGGLE */
+  .theme-bar {
+    display: flex;
+    justify-content: flex-end;
+    max-width: 860px;
+    margin: 0 auto 28px;
+  }
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text2);
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .theme-toggle:hover { border-color: var(--accent1); color: var(--text); }
+  .toggle-track {
+    width: 36px; height: 20px;
+    background: var(--bg3);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    position: relative;
+    transition: background 0.3s;
+  }
+  [data-theme="light"] .toggle-track { background: var(--accent1); }
+  .toggle-thumb {
+    width: 14px; height: 14px;
+    background: var(--text3);
+    border-radius: 50%;
+    position: absolute;
+    top: 2px; left: 2px;
+    transition: all 0.3s;
+  }
+  [data-theme="light"] .toggle-thumb { left: 18px; background: #fff; }
+
+  /* HEADER */
+  .header {
+    max-width: 860px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+  .header-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent1);
+    background: rgba(108,143,255,0.1);
+    border: 1px solid rgba(108,143,255,0.25);
+    border-radius: 6px;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: clamp(26px, 5vw, 42px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    font-size: 15px;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* INTRO BOX */
+  .intro-box {
+    max-width: 860px;
+    margin: 0 auto 36px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent1);
+    border-radius: 12px;
+    padding: 18px 22px;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+  .intro-box strong { color: var(--accent1); }
+
+  /* TENSE CARDS */
+  .cards-grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 26px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--card-accent);
+    opacity: 0.85;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+    border-color: var(--card-accent-border);
+  }
+
+  .card-c1 { --card-accent: var(--accent1); --card-accent-border: rgba(108,143,255,0.4); }
+  .card-c2 { --card-accent: var(--accent3); --card-accent-border: rgba(77,217,172,0.4); }
+  .card-c3 { --card-accent: var(--accent4); --card-accent-border: rgba(255,169,77,0.4); }
+  .card-c4 { --card-accent: var(--accent2); --card-accent-border: rgba(255,126,179,0.4); }
+  .card-c5 { --card-accent: var(--accent5); --card-accent-border: rgba(192,132,252,0.4); }
+  .card-c6 { --card-accent: var(--accent6); --card-accent-border: rgba(248,113,113,0.4); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--card-accent);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--card-accent-border);
+    border-radius: 6px;
+    padding: 3px 9px;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .card-title-group { flex: 1; }
+  .card-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    line-height: 1.3;
+  }
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--text3);
+    font-weight: 400;
+  }
+
+  /* Formula */
+  .formula {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    flex-wrap: wrap;
+  }
+  .formula span {
+    color: var(--text2);
+  }
+  .formula .f-subject { color: var(--accent1); font-weight: 500; }
+  .formula .f-verb { color: var(--accent3); font-weight: 500; }
+  .formula .f-aux { color: var(--accent4); font-weight: 500; }
+  .formula .f-sep { color: var(--text3); }
+
+  /* Use cases */
+  .use-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .use-item {}
+  .use-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--card-accent);
+    margin-bottom: 4px;
+  }
+  .use-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 6px; }
+  .example-block {
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    border-left: 2px solid var(--card-accent);
+  }
+  .example-en {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+    font-style: italic;
+  }
+  .example-tr {
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  /* Warning */
+  .warning-box {
+    margin-top: 16px;
+    background: rgba(255,169,77,0.07);
+    border: 1px solid rgba(255,169,77,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .warning-box .warn-icon { color: var(--accent4); margin-right: 5px; }
+
+  /* COMPARISON TABLE */
+  .section-title {
+    max-width: 860px;
+    margin: 44px auto 16px;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .table-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--bg3); }
+  th {
+    padding: 12px 18px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  td {
+    padding: 13px 18px;
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    color: var(--text2);
+    line-height: 1.5;
+  }
+  tbody tr:hover { background: var(--card-hover); }
+  .td-name { font-weight: 600; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+
+  /* WILL vs GOING TO */
+  .compare-grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .compare-card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .compare-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    line-height: 1.5;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .badge-wrong {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(248,113,113,0.15);
+    color: var(--accent6);
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+  .badge-right {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(77,217,172,0.15);
+    color: var(--accent3);
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+
+  /* QUESTION BOX */
+  .question-box {
+    max-width: 860px;
+    margin: 44px auto 0;
+    background: linear-gradient(135deg, rgba(108,143,255,0.08), rgba(77,217,172,0.05));
+    border: 1px solid rgba(108,143,255,0.25);
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+  }
+  .q-icon { font-size: 28px; margin-bottom: 12px; }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+  .q-sentence {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    background: var(--bg3);
+    border-radius: 8px;
+    padding: 12px 20px;
+    display: inline-block;
+    margin-bottom: 14px;
+    color: var(--accent1);
+  }
+  .q-blank {
+    display: inline-block;
+    border-bottom: 2px solid var(--accent2);
+    min-width: 80px;
+    color: var(--accent2);
+  }
+  .q-hint { font-size: 12px; color: var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- THEME TOGGLE -->
+<div class="theme-bar">
+  <div class="theme-toggle" onclick="toggleTheme()">
+    <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    <span id="theme-label">Light Mode</span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">English Grammar</div>
+  <h1>Future Tenses & Aspects</h1>
+  <p class="subtitle">Gelecek Zaman Yapıları — 6 farklı yapı, 6 farklı anlam</p>
+</div>
+
+<!-- INTRO -->
+<div class="intro-box">
+  ⚡ İngilizce'de gelecek zamanı ifade etmek için <strong>tek bir yapı yok!</strong> Her yapı farklı bir <strong>niyet (intention)</strong>, <strong>planlama (planning)</strong> veya <strong>kesinlik (certainty)</strong> derecesi taşır. Bu, Türkçe'den en büyük farklardan biridir.
+</div>
+
+<!-- CARDS -->
+<div class="cards-grid">
+
+  <!-- WILL -->
+  <div class="card card-c1">
+    <div class="card-header">
+      <div class="card-num">01</div>
+      <div class="card-title-group">
+        <div class="card-title">WILL</div>
+        <div class="card-subtitle">Saf Gelecek / Spontaneous Decision — Anlık Karar / Saf Gelecek</div>
+      </div>
+    </div>
+    <div class="formula">
+      <span class="f-subject">Subject</span>
+      <span class="f-sep">+</span>
+      <span class="f-aux">will</span>
+      <span class="f-sep">+</span>
+      <span class="f-verb">V1</span>
+    </div>
+    <ul class="use-list">
+      <li class="use-item">
+        <div class="use-label">Spontaneous Decisions — Anlık Kararlar</div>
+        <div class="use-desc">Konuşma anında, o anda verilen kararlar için kullanılır.</div>
+        <div class="example-block">
+          <div class="example-en">"The phone is ringing." → "I'll answer it."</div>
+          <div class="example-tr">Telefon çalıyor → Ben açarım. (O anda karar verdi)</div>
+        </div>
+      </li>
+      <li class="use-item">
+        <div class="use-label">Predictions — Kanıtsız Tahminler</div>
+        <div class="use-desc">Gözleme değil, kişisel görüşe dayalı tahminler.</div>
+        <div class="example-block">
+          <div class="example-en">"I think it will rain tomorrow."</div>
+          <div class="example-tr">Yarın yağmur yağacağını düşünüyorum.</div>
+        </div>
+      </li>
+      <li class="use-item">
+        <div class="use-label">Promises & Offers — Söz Verme ve Teklif</div>
+        <div class="example-block">
+          <div class="example-en">"I will help you, I promise."</div>
+          <div class="example-tr">Sana yardım edeceğim, söz veriyorum.</div>
+        </div>
+      </li>
+    </ul>
+    <div class="warning-box"><span class="warn-icon">⚠️</span> <strong>Will</strong>, önceden planlanmış şeyler için <strong>kullanılmaz!</strong> Eğer konuşmadan önce karar aldıysan → be going to kullan.</div>
+  </div>
+
+  <!-- BE GOING TO -->
+  <div class="card card-c2">
+    <div class="card-header">
+      <div class="card-num">02</div>
+      <div class="card-title-group">
+        <div class="card-title">BE GOING TO</div>
+        <div class="card-subtitle">Pre-made Plans & Evidence — Önceden Planlanmış / Kanıta Dayalı</div>
+      </div>
+    </div>
+    <div class="formula">
+      <span class="f-subject">Subject</span>
+      <span class="f-sep">+</span>
+      <span class="f-aux">am/is/are</span>
+      <span class="f-sep">+</span>
+      <span class="f-verb">going to</span>
+      <span class="f-sep">+</span>
+      <span class="f-verb">V1</span>
+    </div>
+    <ul class="use-list">
+      <li class="use-item">
+        <div class="use-label">Pre-made Plans — Önceden Yapılmış Planlar</div>
+        <div class="use-desc">Konuşmadan önce zaten kararlaştırılmış planlar.</div>
+        <div class="example-block">
+          <div class="example-en">"I'm going to visit my grandmother this weekend."</div>
+          <div class="example-tr">Bu hafta sonu büyükannemı ziyaret etmeyi planlıyorum. (Önceden planladı)</div>
+        </div>
+      </li>
+      <li class="use-item">
+        <div class="use-label">Evidence-Based Predictions — Kanıta Dayalı Tahminler</div>
+        <div class="use-desc">Gözlemle, somut bir kanıta dayanarak yapılan tahminler.</div>
+        <div class="example-block">
+          <div class="example-en">"Look at those clouds! It's going to rain."</div>
+          <div class="example-tr">Şu bulutlara bak! Yağmur yağacak. (Bulutları görüyoruz — kanıt var!)</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- PRESENT CONTINUOUS -->
+  <div class="card card-c3">
+    <div class="card-header">
+      <div class="card-num">03</div>
+      <div class="card-title-group">
+        <div class="card-title">PRESENT CONTINUOUS <span style="font-size:13px;font-weight:400;color:var(--text3)">as Future</span></div>
+        <div class="card-subtitle">Fixed Arrangements — Kesinleşmiş Randevu / Düzenlemeler</div>
+      </div>
+    </div>
+    <div class="formula">
+      <span class="f-subject">Subject</span>
+      <span class="f-sep">+</span>
+      <span class="f-aux">am/is/are</span>
+      <span class="f-sep">+</span>
+      <span class="f-verb">V-ing</span>
+    </div>
+    <ul class="use-list">
+      <li class="use-item">
+        <div class="use-label">Fixed Arrangements — Kesinleşmiş Düzenlemeler</div>
+        <div class="use-desc">Takvime yazılmış, karşılıklı onaylanmış randevu ve planlar.</div>
+        <div class="example-block">
+          <div class="example-en">"I'm meeting Dr. Smith at 3 PM tomorrow."</div>
+          <div class="example-tr">Yarın saat 3'te Dr. Smith ile görüşüyorum. (Randevu alındı, takvime yazıldı!)</div>
+        </div>
+      </li>
+    </ul>
+    <div class="warning-box"><span class="warn-icon">💡</span> Be going to'dan farkı: Bu yapı <strong>karşılıklı onaylanmış</strong> durumlar içindir. Sadece senin planın değil, iki tarafın da bildiği bir düzenleme.</div>
+  </div>
+
+  <!-- FUTURE CONTINUOUS -->
+  <div class="card card-c4">
+    <div class="card-header">
+      <div class="card-num">04</div>
+      <div class="card-title-group">
+        <div class="card-title">FUTURE CONTINUOUS</div>
+        <div class="card-subtitle">Action in Progress — Gelecekte Süren Eylem</div>
+      </div>
+    </div>
+    <div class="formula">
+      <span class="f-subject">Subject</span>
+      <span class="f-sep">+</span>
+      <span class="f-aux">will be</span>
+      <span class="f-sep">+</span>
+      <span class="f-verb">V-ing</span>
+    </div>
+    <ul class="use-list">
+      <li class="use-item">
+        <div class="use-label">In Progress at a Future Moment — Gelecekte O Anda Sürecek</div>
+        <div class="use-desc">Gelecekte belirli bir anda devam ediyor olacak eylemler.</div>
+        <div class="example-block">
+          <div class="example-en">"At 8 PM tonight, I will be studying."</div>
+          <div class="example-tr">Bu gece saat 8'de ders çalışıyor olacağım.</div>
+        </div>
+        <div class="example-block" style="margin-top:8px">
+          <div class="example-en">"This time tomorrow, she will be flying to Paris."</div>
+          <div class="example-tr">Yarın bu saatlerde o, Paris'e uçuyor olacak.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- FUTURE PERFECT -->
+  <div class="card card-c5">
+    <div class="card-header">
+      <div class="card-num">05</div>
+      <div class="card-title-group">
+        <div class="card-title">FUTURE PERFECT</div>
+        <div class="card-subtitle">Completed Before a Future Point — Gelecekte Tamamlanmış</div>
+      </div>
+    </div>
+    <div class="formula">
+      <span class="f-subject">Subject</span>
+      <span class="f-sep">+</span>
+      <span class="f-aux">will have</span>
+      <span class="f-sep">+</span>
+      <span class="f-verb">V3</span>
+    </div>
+    <ul class="use-list">
+      <li class="use-item">
+        <div class="use-label">Completed Before a Deadline — Bir Zamana Kadar Bitmiş</div>
+        <div class="use-desc">Gelecekte belirli bir zamana kadar tamamlanmış olacak eylemler. Anahtar kelime: <strong style="color:var(--accent5)">by</strong></div>
+        <div class="example-block">
+          <div class="example-en">"By 2030, scientists will have discovered a cure."</div>
+          <div class="example-tr">2030'a kadar bilim insanları bir tedavi keşfetmiş olacak.</div>
+        </div>
+        <div class="example-block" style="margin-top:8px">
+          <div class="example-en">"By the time you arrive, I will have finished cooking."</div>
+          <div class="example-tr">Sen geldiğinde, yemek pişirmeyi bitirmiş olacağım.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- FUTURE PERFECT CONTINUOUS -->
+  <div class="card card-c6">
+    <div class="card-header">
+      <div class="card-num">06</div>
+      <div class="card-title-group">
+        <div class="card-title">FUTURE PERFECT CONTINUOUS</div>
+        <div class="card-subtitle">Duration Until a Future Point — Süre Vurgusu</div>
+      </div>
+    </div>
+    <div class="formula">
+      <span class="f-subject">Subject</span>
+      <span class="f-sep">+</span>
+      <span class="f-aux">will have been</span>
+      <span class="f-sep">+</span>
+      <span class="f-verb">V-ing</span>
+    </div>
+    <ul class="use-list">
+      <li class="use-item">
+        <div class="use-label">Duration Emphasis — Sürenin Vurgulanması</div>
+        <div class="use-desc">Gelecekte bir noktaya kadar <strong>ne kadar süredir</strong> devam ettiğini vurgular. Anahtar kelime: <strong style="color:var(--accent6)">for + süre</strong></div>
+        <div class="example-block">
+          <div class="example-en">"By next year, I will have been learning English for 5 years."</div>
+          <div class="example-tr">Gelecek yıla kadar 5 yıldır İngilizce öğreniyor olacağım.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- COMPARISON TABLE -->
+<div class="section-title">Karşılaştırma Tablosu</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Yapı</th>
+        <th>Türkçe Karşılık</th>
+        <th>Kullanım</th>
+        <th>Anahtar Kelime</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="dot" style="background:var(--accent1)"></span><span class="td-name">will</span></td>
+        <td>Anlık karar / Tahmin</td>
+        <td>Spontaneous, promise, prediction</td>
+        <td><span style="color:var(--accent1);font-family:monospace">think, probably, maybe</span></td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--accent3)"></span><span class="td-name">be going to</span></td>
+        <td>Plan / Kanıta dayalı</td>
+        <td>Önceden karar verilmiş</td>
+        <td><span style="color:var(--accent3);font-family:monospace">already decided</span></td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--accent4)"></span><span class="td-name">Pres. Continuous</span></td>
+        <td>Kesin randevu</td>
+        <td>İki tarafın bildiği düzenleme</td>
+        <td><span style="color:var(--accent4);font-family:monospace">tomorrow, at 3 PM</span></td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--accent2)"></span><span class="td-name">Future Continuous</span></td>
+        <td>O anda sürecek</td>
+        <td>Gelecekte devam eden eylem</td>
+        <td><span style="color:var(--accent2);font-family:monospace">at this time tomorrow</span></td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--accent5)"></span><span class="td-name">Future Perfect</span></td>
+        <td>O zamana kadar bitmiş</td>
+        <td>Bir tarihe kadar tamamlanmış</td>
+        <td><span style="color:var(--accent5);font-family:monospace">by + zaman</span></td>
+      </tr>
+      <tr>
+        <td><span class="dot" style="background:var(--accent6)"></span><span class="td-name">F. Perf. Continuous</span></td>
+        <td>O zamana kadar sürdürülmüş</td>
+        <td>Sürenin vurgulanması</td>
+        <td><span style="color:var(--accent6);font-family:monospace">for + süre</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- WILL vs GOING TO -->
+<div class="section-title">En Sık Yapılan Hata: WILL vs BE GOING TO</div>
+
+<div class="compare-grid">
+  <div class="compare-card">
+    <h3 style="color:var(--accent6)">❌ Yanlış Kullanım</h3>
+    <div class="compare-row">
+      <span class="badge-wrong">Yanlış</span>
+      <span><em>"I will visit my friend tomorrow."</em> — (Eğer önceden planladıysan!)</span>
+    </div>
+    <div class="compare-row">
+      <span class="badge-wrong">Yanlış</span>
+      <span><em>"It is going to be great, I think."</em> — (Kanıt yok, sadece düşünce)</span>
+    </div>
+    <div class="compare-row">
+      <span class="badge-wrong">Yanlış</span>
+      <span><em>"I will meet her at 3 PM."</em> — (Randevu alındıysa!)</span>
+    </div>
+  </div>
+  <div class="compare-card">
+    <h3 style="color:var(--accent3)">✅ Doğru Kullanım</h3>
+    <div class="compare-row">
+      <span class="badge-right">Doğru</span>
+      <span><em>"I'm going to visit my friend tomorrow."</em></span>
+    </div>
+    <div class="compare-row">
+      <span class="badge-right">Doğru</span>
+      <span><em>"It will be great, I think."</em></span>
+    </div>
+    <div class="compare-row">
+      <span class="badge-right">Doğru</span>
+      <span><em>"I'm meeting her at 3 PM."</em></span>
+    </div>
+  </div>
+</div>
+
+<!-- QUESTION BOX -->
+<div class="question-box">
+  <div class="q-icon">🧠</div>
+  <div class="q-text">Şimdi sana sorum var! Hangi yapıyı kullanırsın?</div>
+  <div class="q-sentence">
+    "Dikkat et! O bardak <span class="q-blank">_______</span> düşmek üzere!"
+  </div>
+  <p class="q-hint">Will mi? Be going to mu? Neden? Cevabını yaz, birlikte inceleyelim 💪</p>
+</div>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const label = document.getElementById('theme-label');
+    if (html.getAttribute('data-theme') === 'dark') {
+      html.setAttribute('data-theme', 'light');
+      label.textContent = 'Dark Mode';
+    } else {
+      html.setAttribute('data-theme', 'dark');
+      label.textContent = 'Light Mode';
+    }
+  }
+</script>
+</body>
+</html>

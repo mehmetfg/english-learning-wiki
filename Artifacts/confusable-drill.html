@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confusable Drill — Minimal Pair</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a2028; --text: #e6edf3; --muted: #8b949e;
+    --accent: #58a6ff; --correct: #3fb950; --wrong: #f85149; --warn: #d29922;
+    --border: #30363d; --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --panel: #f6f8fa; --text: #1f2328; --muted: #656d76;
+    --accent: #0969da; --correct: #1a7f37; --wrong: #cf222e; --warn: #9a6700;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    min-height: 100vh; padding: 16px;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px;
+  }
+  h1 { font-size: 18px; font-weight: 600; }
+  .toolbar { display: flex; gap: 8px; }
+  .icon-btn {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .icon-btn:hover { border-color: var(--accent); }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    background: var(--panel); padding: 12px; border-radius: 8px;
+    border: 1px solid var(--border); margin-bottom: 16px;
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 600; color: var(--accent); }
+  .stat-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .timer-bar {
+    height: 4px; background: var(--border); border-radius: 2px;
+    overflow: hidden; margin-bottom: 16px;
+  }
+  .timer-fill { height: 100%; background: var(--accent); transition: width 0.1s linear; }
+  .timer-fill.danger { background: var(--wrong); }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; box-shadow: var(--shadow);
+  }
+  .pair-tag {
+    display: inline-block; font-size: 11px; color: var(--muted);
+    border: 1px solid var(--border); padding: 2px 8px; border-radius: 4px;
+    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .cefr {
+    display: inline-block; font-size: 10px; padding: 2px 6px;
+    background: var(--accent); color: var(--bg); border-radius: 3px;
+    margin-left: 6px; font-weight: 600;
+  }
+  .sentence { font-size: 20px; margin: 12px 0 24px; }
+  .blank {
+    display: inline-block; min-width: 80px; border-bottom: 2px solid var(--accent);
+    margin: 0 4px; text-align: center; color: var(--accent); font-weight: 600;
+  }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .opt {
+    background: var(--bg); border: 2px solid var(--border); color: var(--text);
+    padding: 16px; border-radius: 8px; cursor: pointer; font-size: 16px;
+    font-weight: 500; transition: all 0.15s;
+  }
+  .opt:hover { border-color: var(--accent); }
+  .opt.correct { border-color: var(--correct); background: rgba(63,185,80,0.1); }
+  .opt.wrong { border-color: var(--wrong); background: rgba(248,81,73,0.1); }
+  .opt:disabled { cursor: not-allowed; }
+
+  .feedback {
+    margin-top: 16px; padding: 12px; border-radius: 6px;
+    border-left: 3px solid var(--accent); background: var(--bg);
+    display: none; font-size: 14px;
+  }
+  .feedback.show { display: block; }
+  .feedback strong { color: var(--correct); }
+  .feedback.err strong { color: var(--wrong); }
+
+  .nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 20px;
+  }
+  .btn {
+    background: var(--accent); color: var(--bg); border: none;
+    padding: 10px 20px; border-radius: 6px; cursor: pointer;
+    font-size: 14px; font-weight: 600;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .progress { font-size: 13px; color: var(--muted); }
+
+  .summary {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 20px; border-radius: 12px; margin-top: 20px;
+  }
+  .summary h2 { font-size: 16px; margin-bottom: 12px; }
+  .err-list { font-size: 13px; }
+  .err-list li {
+    list-style: none; padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .err-list .pair-name { color: var(--warn); font-weight: 600; }
+  .err-list .count { color: var(--muted); }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 480px) {
+    .options { grid-template-columns: 1fr; }
+    .sentence { font-size: 17px; }
+  }
+  @media print {
+    .toolbar, .nav, .options { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>⚖️ Confusable Drill</h1>
+    <div class="toolbar">
+      <button class="icon-btn" id="themeBtn" title="Tema (T)">🌓</button>
+      <button class="icon-btn" id="resetBtn" title="Sıfırla (Shift+R)">↺</button>
+      <button class="icon-btn" id="exportBtn" title="JSON indir (E)">📥</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="sCorrect">0</div><div class="stat-lbl">Doğru</div></div>
+    <div class="stat"><div class="stat-val" id="sWrong">0</div><div class="stat-lbl">Hata</div></div>
+    <div class="stat"><div class="stat-val" id="sStreak">0</div><div class="stat-lbl">Streak</div></div>
+    <div class="stat"><div class="stat-val" id="sRate">—</div><div class="stat-lbl">% Oran</div></div>
+  </div>
+
+  <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+
+  <div id="drillCard" class="card">
+    <span class="pair-tag" id="pairTag">—</span>
+    <span class="cefr" id="cefrTag">B1</span>
+    <p class="sentence" id="sentence">Yükleniyor...</p>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav">
+      <span class="progress" id="progress">0 / 20</span>
+      <button class="btn" id="nextBtn" disabled>Sonraki (Enter)</button>
+    </div>
+  </div>
+
+  <div id="summaryCard" class="summary hidden">
+    <h2>📊 Oturum Özeti</h2>
+    <p style="font-size:14px;margin-bottom:12px;">
+      <strong id="sumCorrect">0</strong> doğru · <strong id="sumWrong">0</strong> hata ·
+      <span id="sumDelta">Δ 0</span> (önceki oturuma göre)
+    </p>
+    <h3 style="font-size:13px;color:var(--muted);margin-bottom:8px;">Hata frekansı (errors/confusables'a düşer):</h3>
+    <ul class="err-list" id="errList"></ul>
+    <button class="btn" id="restartBtn" style="margin-top:16px;">Yeniden Başla</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ===================== DATA: 20 Confusable Pairs =====================
+const PAIRS = [
+  { pair: "say / tell", cefr: "A2",
+    sentence: "She ___ me that she was leaving early.", options: ["said", "told"], correct: 1,
+    rule: "TELL + person object. SAY + (to person)." },
+  { pair: "much / many", cefr: "A2",
+    sentence: "There aren't ___ apples left in the basket.", options: ["much", "many"], correct: 1,
+    rule: "MANY + countable plural. MUCH + uncountable." },
+  { pair: "since / for", cefr: "A2",
+    sentence: "I've lived here ___ five years.", options: ["since", "for"], correct: 1,
+    rule: "FOR + duration. SINCE + start point." },
+  { pair: "in / on (time)", cefr: "A1",
+    sentence: "The meeting is ___ Monday at 9.", options: ["in", "on"], correct: 1,
+    rule: "ON + days/dates. IN + months/years/centuries." },
+  { pair: "fewer / less", cefr: "B1",
+    sentence: "There are ___ cars on the road today.", options: ["fewer", "less"], correct: 0,
+    rule: "FEWER + countable. LESS + uncountable." },
+  { pair: "make / do", cefr: "A2",
+    sentence: "Can you ___ me a favor?", options: ["make", "do"], correct: 1,
+    rule: "DO a favor / homework / job. MAKE a decision / mistake / meal." },
+  { pair: "lend / borrow", cefr: "B1",
+    sentence: "Can I ___ your pen for a minute?", options: ["lend", "borrow"], correct: 1,
+    rule: "BORROW = al. LEND = ver." },
+  { pair: "bring / take", cefr: "A2",
+    sentence: "Don't forget to ___ your umbrella when you go out.", options: ["bring", "take"], correct: 1,
+    rule: "BRING = buraya getir. TAKE = oradan götür." },
+  { pair: "remember / remind", cefr: "B1",
+    sentence: "Please ___ me to call mom tonight.", options: ["remember", "remind"], correct: 1,
+    rule: "REMEMBER = hatırla (self). REMIND sb = birine hatırlat." },
+  { pair: "other / another", cefr: "B1",
+    sentence: "Would you like ___ cup of tea?", options: ["other", "another"], correct: 1,
+    rule: "ANOTHER + tekil sayılabilir. OTHER + çoğul ya da uncountable." },
+  { pair: "used to / be used to", cefr: "B1",
+    sentence: "I'm ___ working late; it doesn't bother me anymore.", options: ["used to", "to using"], correct: 1,
+    rule: "BE USED TO + V-ing = alışkın. USED TO + V = eskiden." },
+  { pair: "affect / effect", cefr: "B2",
+    sentence: "The storm will ___ flights tomorrow.", options: ["affect", "effect"], correct: 0,
+    rule: "AFFECT = fiil (etkilemek). EFFECT = isim (etki)." },
+  { pair: "win / beat", cefr: "B1",
+    sentence: "We ___ the other team 3-1 last night.", options: ["won", "beat"], correct: 1,
+    rule: "WIN + game/prize. BEAT + opponent." },
+  { pair: "during / while", cefr: "B1",
+    sentence: "I fell asleep ___ the movie.", options: ["during", "while"], correct: 0,
+    rule: "DURING + isim. WHILE + cümle (S+V)." },
+  { pair: "still / yet", cefr: "B1",
+    sentence: "Hasn't she arrived ___?", options: ["still", "yet"], correct: 1,
+    rule: "YET + soru/negative (henüz). STILL + olumlu süreklilik." },
+  { pair: "look / see / watch", cefr: "A2",
+    sentence: "I ___ TV every evening after dinner.", options: ["see", "watch"], correct: 1,
+    rule: "WATCH + dikkatle izlemek. SEE = gözüne ilişmek. LOOK AT = bakmak." },
+  { pair: "rise / raise", cefr: "B2",
+    sentence: "The sun ___ in the east.", options: ["rises", "raises"], correct: 0,
+    rule: "RISE = intransitive (nesnesiz). RAISE = transitive (nesneli)." },
+  { pair: "lay / lie", cefr: "B2",
+    sentence: "I need to ___ down for a few minutes.", options: ["lay", "lie"], correct: 1,
+    rule: "LIE-LAY-LAIN (uzanmak, nesnesiz). LAY-LAID-LAID (koymak, nesneli)." },
+  { pair: "few / a few", cefr: "B1",
+    sentence: "We have ___ minutes left — let's hurry!", options: ["few", "a few"], correct: 0,
+    rule: "FEW = neredeyse hiç (negatif tını). A FEW = birkaç (pozitif)." },
+  { pair: "speak / talk", cefr: "A2",
+    sentence: "Can I ___ to you for a moment?", options: ["speak", "talk"], correct: 0,
+    rule: "SPEAK TO = formal/talep. TALK TO = informal/sohbet." },
+];
+
+// ===================== STATE =====================
+const STORAGE_KEY = 'confusable-drill-v1';
+const TIMER_SEC = 8;
+let state = loadState();
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    return Object.assign({
+      idx: 0, order: shuffleIdx(),
+      correct: 0, wrong: 0, streak: 0,
+      errorFreq: {}, // pair → count
+      lastSessionScore: null,
+      theme: 'dark',
+      reviews: [], // {pair, correct, ms, ts}
+    }, s);
+  } catch { return resetState(); }
+}
+function resetState() {
+  return {
+    idx: 0, order: shuffleIdx(),
+    correct: 0, wrong: 0, streak: 0,
+    errorFreq: {}, lastSessionScore: null,
+    theme: state?.theme || 'dark', reviews: [],
+  };
+}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function shuffleIdx() {
+  const arr = PAIRS.map((_, i) => i);
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ===================== TIMER =====================
+let timerStart = null;
+let timerInterval = null;
+function startTimer() {
+  timerStart = Date.now();
+  const fill = document.getElementById('timerFill');
+  fill.classList.remove('danger');
+  fill.style.width = '100%';
+  timerInterval = setInterval(() => {
+    const elapsed = (Date.now() - timerStart) / 1000;
+    const remaining = Math.max(0, TIMER_SEC - elapsed);
+    const pct = (remaining / TIMER_SEC) * 100;
+    fill.style.width = pct + '%';
+    if (pct < 25) fill.classList.add('danger');
+    if (remaining <= 0) {
+      stopTimer();
+      handleAnswer(-1); // timeout = wrong
+    }
+  }, 100);
+}
+function stopTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+}
+
+// ===================== RENDER =====================
+function render() {
+  if (state.idx >= state.order.length) return renderSummary();
+  document.getElementById('drillCard').classList.remove('hidden');
+  document.getElementById('summaryCard').classList.add('hidden');
+
+  const pair = PAIRS[state.order[state.idx]];
+  document.getElementById('pairTag').textContent = pair.pair;
+  document.getElementById('cefrTag').textContent = pair.cefr;
+  document.getElementById('sentence').innerHTML = pair.sentence.replace('___', '<span class="blank">___</span>');
+  document.getElementById('progress').textContent = `${state.idx + 1} / ${state.order.length}`;
+
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  pair.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.dataset.idx = i;
+    btn.onclick = () => handleAnswer(i);
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.remove('show', 'err');
+  document.getElementById('nextBtn').disabled = true;
+  updateStats();
+  startTimer();
+}
+function updateStats() {
+  document.getElementById('sCorrect').textContent = state.correct;
+  document.getElementById('sWrong').textContent = state.wrong;
+  document.getElementById('sStreak').textContent = state.streak;
+  const total = state.correct + state.wrong;
+  document.getElementById('sRate').textContent = total ? Math.round(state.correct / total * 100) + '%' : '—';
+}
+
+function handleAnswer(chosenIdx) {
+  stopTimer();
+  const pair = PAIRS[state.order[state.idx]];
+  const ms = timerStart ? Date.now() - timerStart : TIMER_SEC * 1000;
+  const isCorrect = chosenIdx === pair.correct;
+
+  document.querySelectorAll('.opt').forEach((b, i) => {
+    b.disabled = true;
+    if (i === pair.correct) b.classList.add('correct');
+    if (i === chosenIdx && !isCorrect) b.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('feedback');
+  if (isCorrect) {
+    state.correct++; state.streak++;
+    fb.innerHTML = `<strong>✓ Doğru.</strong> ${pair.rule}`;
+    fb.classList.add('show');
+  } else {
+    state.wrong++; state.streak = 0;
+    state.errorFreq[pair.pair] = (state.errorFreq[pair.pair] || 0) + 1;
+    fb.innerHTML = `<strong>✗ Yanlış.</strong> Doğru: <em>${pair.options[pair.correct]}</em>. ${pair.rule}`;
+    fb.classList.add('show', 'err');
+  }
+  state.reviews.push({ pair: pair.pair, correct: isCorrect, ms, ts: new Date().toISOString() });
+  saveState();
+  updateStats();
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  state.idx++;
+  saveState();
+  render();
+}
+
+function renderSummary() {
+  document.getElementById('drillCard').classList.add('hidden');
+  const sum = document.getElementById('summaryCard');
+  sum.classList.remove('hidden');
+  document.getElementById('sumCorrect').textContent = state.correct;
+  document.getElementById('sumWrong').textContent = state.wrong;
+  const currentScore = state.correct / (state.correct + state.wrong || 1);
+  const delta = state.lastSessionScore !== null
+    ? `Δ ${((currentScore - state.lastSessionScore) * 100).toFixed(0)}%`
+    : 'Δ — (ilk oturum)';
+  document.getElementById('sumDelta').textContent = delta;
+
+  const errList = document.getElementById('errList');
+  const sorted = Object.entries(state.errorFreq).sort((a, b) => b[1] - a[1]);
+  errList.innerHTML = sorted.length
+    ? sorted.map(([p, c]) => `<li><span class="pair-name">${p}</span> <span class="count">× ${c}</span></li>`).join('')
+    : '<li style="color:var(--correct)">Hata yok — temiz oturum.</li>';
+
+  state.lastSessionScore = currentScore;
+  saveState();
+}
+
+// ===================== EXPORT (JSON Bridge) =====================
+function exportJSON() {
+  const payload = [{
+    schema_version: "1.0",
+    type: "confusable_drill_session",
+    session_id: new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19) + '-confusable-drill',
+    timestamp: new Date().toISOString(),
+    payload: {
+      reviews: state.reviews,
+      counts: { correct: state.correct, wrong: state.wrong },
+      error_freq: state.errorFreq,
+      pairs_seen: state.reviews.map(r => r.pair),
+    }
+  }];
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const fname = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '') + '-confusable.json';
+  a.href = url; a.download = fname; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ===================== INIT + EVENTS =====================
+function applyTheme() { document.documentElement.dataset.theme = state.theme === 'light' ? 'light' : ''; }
+document.getElementById('themeBtn').onclick = () => {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(); saveState();
+};
+document.getElementById('resetBtn').onclick = () => {
+  if (!confirm('Tüm oturumu sıfırla?')) return;
+  state = resetState(); saveState(); render();
+};
+document.getElementById('exportBtn').onclick = exportJSON;
+document.getElementById('nextBtn').onclick = nextQuestion;
+document.getElementById('restartBtn').onclick = () => {
+  state = resetState(); saveState(); render();
+};
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === '1' || e.key === '2') {
+    const idx = parseInt(e.key) - 1;
+    const btns = document.querySelectorAll('.opt:not(:disabled)');
+    if (btns[idx]) btns[idx].click();
+  } else if (e.key === 'Enter') {
+    const next = document.getElementById('nextBtn');
+    if (!next.disabled) next.click();
+  } else if (e.key === 't' || e.key === 'T') {
+    document.getElementById('themeBtn').click();
+  } else if (e.key === 'R' && e.shiftKey) {
+    document.getElementById('resetBtn').click();
+  } else if (e.key === 'e' || e.key === 'E') {
+    exportJSON();
+  }
+});
+
+applyTheme();
+render();
+</script>
+</body>
+</html>

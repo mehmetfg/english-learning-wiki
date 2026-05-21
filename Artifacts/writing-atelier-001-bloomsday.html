@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Writing Atelier 001 — Ulysses & Bloomsday</title>
+<style>
+/* ═════════ THEME / VARIABLES ═════════ */
+:root{
+  --bg:#070b18; --surface:#0d1527; --card:#1a2540; --card-soft:#152038;
+  --text:#e8efff; --muted:#94a3b8; --border:#2a3a5a;
+  --accent:#3b82f6; --accent2:#60a5fa;
+  --ok:#22c55e; --err:#ef4444; --warn:#fbbf24;
+  /* Grammar colors */
+  --g1:#60a5fa; /* Past Simple - blue */
+  --g2:#34d399; /* Past Continuous - green */
+  --g3:#a78bfa; /* Past Perfect - purple */
+  --g4:#fbbf24; /* Used to/Would - orange */
+  --g5:#f472b6; /* Time Adverbials - pink */
+  --fs:15px;
+}
+body.theme-forest{ --bg:#0a1410; --surface:#0e1a14; --card:#16291f; --card-soft:#13241b; --accent:#10b981; --accent2:#34d399; --border:#1e3a2a; }
+body.theme-sunset{ --bg:#1a0a14; --surface:#260f1a; --card:#3a1828; --card-soft:#2f1322; --accent:#f59e0b; --accent2:#fbbf24; --border:#4a2034; }
+
+body.fs-s{ --fs:13px; } body.fs-m{ --fs:15px; } body.fs-l{ --fs:17px; } body.fs-xl{ --fs:19px; }
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Verdana,Geneva,sans-serif;font-size:var(--fs);line-height:1.6}
+body{min-height:100vh}
+
+/* ═════════ HEADER ═════════ */
+.sticky-top{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,var(--bg) 0%,var(--bg) 70%,transparent 100%);border-bottom:1px solid var(--border)}
+.header-bar{display:flex;align-items:center;gap:12px;padding:10px 16px;flex-wrap:wrap}
+.badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.5px}
+.title{font-weight:700;font-size:1.05em}
+.meta{color:var(--muted);font-size:0.85em}
+.spacer{flex:1}
+.xp-wrap{display:flex;align-items:center;gap:8px;background:var(--card);padding:6px 12px;border-radius:999px;border:1px solid var(--border);font-size:0.85em}
+.xp-bar{width:80px;height:6px;background:var(--card-soft);border-radius:4px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .4s}
+.lvl{font-weight:700;color:var(--accent2)}
+.toolbar{display:flex;gap:6px}
+.tbtn{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer;font-size:0.85em;font-family:inherit}
+.tbtn:hover{background:var(--card-soft);border-color:var(--accent)}
+.streak-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(251,191,36,.15);color:var(--warn);padding:4px 10px;border-radius:999px;font-size:0.85em;font-weight:700;border:1px solid rgba(251,191,36,.3)}
+
+.level-bar{display:flex;gap:8px;padding:6px 16px;align-items:center;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--border)}
+.cefr-pill{background:var(--accent);color:#fff;padding:2px 10px;border-radius:999px;font-size:0.75em;font-weight:700}
+.legend{display:flex;gap:8px;flex-wrap:wrap}
+.lg-chip{font-size:0.78em;padding:2px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+.lg-chip:hover{border-color:currentColor}
+
+/* ═════════ TABS ═════════ */
+.tabs{display:flex;gap:2px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto}
+.tab{background:transparent;color:var(--muted);border:none;padding:10px 14px;cursor:pointer;font-family:inherit;font-size:0.92em;border-bottom:2px solid transparent;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.tab-kbd{opacity:0.5;font-size:0.75em;margin-left:4px}
+
+/* ═════════ CONTENT ═════════ */
+.content{max-width:920px;margin:0 auto;padding:18px 16px 80px}
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin:12px 0}
+.card-soft{background:var(--card-soft)}
+h2{margin:8px 0 12px;font-size:1.3em;color:var(--accent2)}
+h3{margin:14px 0 8px;font-size:1.1em;color:var(--text)}
+h4{margin:10px 0 6px;font-size:0.98em;color:var(--accent2)}
+p{margin:8px 0}
+
+/* Story-specific */
+.story-passage{font-size:1.05em;line-height:1.85}
+.story-passage [data-g]{padding:1px 3px;border-radius:3px;cursor:pointer;border-bottom:2px dotted transparent;transition:background .2s}
+.story-passage [data-g="1"]{background:rgba(96,165,250,.12);border-bottom-color:var(--g1)}
+.story-passage [data-g="2"]{background:rgba(52,211,153,.12);border-bottom-color:var(--g2)}
+.story-passage [data-g="3"]{background:rgba(167,139,250,.15);border-bottom-color:var(--g3)}
+.story-passage [data-g="4"]{background:rgba(251,191,36,.15);border-bottom-color:var(--g4)}
+.story-passage [data-g="5"]{background:rgba(244,114,182,.12);border-bottom-color:var(--g5)}
+.story-passage [data-g]:hover{filter:brightness(1.4)}
+.story-passage .vocab{border-bottom:1px dashed var(--accent);cursor:help}
+.story-passage p{margin:14px 0}
+
+.tr-block{display:none;background:var(--card-soft);border-left:3px solid var(--accent);padding:12px 14px;margin:10px 0;border-radius:6px;color:var(--muted);font-size:0.95em}
+.tr-block.show{display:block}
+.tr-block p{margin:8px 0}
+
+.tts-controls{display:flex;gap:8px;align-items:center;background:var(--card-soft);padding:8px 12px;border-radius:8px;margin:12px 0;flex-wrap:wrap}
+.tts-controls button{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-family:inherit;font-size:0.9em}
+.tts-controls button:hover{background:var(--accent2)}
+.tts-controls input[type=range]{accent-color:var(--accent)}
+.tts-controls label{font-size:0.85em;color:var(--muted)}
+
+.culture-box{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(244,114,182,.1));border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:14px 16px;margin:18px 0}
+.culture-box h4{color:var(--warn);margin-top:0}
+
+/* Tooltip */
+#gTip,#vTip{position:fixed;display:none;background:var(--card);border:1px solid var(--accent);border-radius:8px;padding:10px 12px;max-width:300px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:0.88em}
+#gTip.show,#vTip.show{display:block}
+#gTip .tt-name{font-weight:700;margin-bottom:4px}
+#gTip .tt-tr{color:var(--muted);font-style:italic;margin:4px 0}
+#gTip .tt-formula{font-family:Consolas,monospace;background:var(--bg);padding:4px 6px;border-radius:4px;font-size:0.85em;display:inline-block}
+#vTip .vt-en{font-weight:700;color:var(--accent2)}
+#vTip .vt-tr{color:var(--muted);margin:4px 0}
+#vTip .vt-ex{font-style:italic;font-size:0.85em}
+
+/* Grammar accordion */
+.acc{margin:8px 0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.acc-head{background:var(--card);padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.acc-head:hover{background:var(--card-soft)}
+.acc-head .acc-num{display:inline-block;width:24px;height:24px;border-radius:50%;text-align:center;line-height:24px;font-weight:700;font-size:0.85em;color:#000;margin-right:8px}
+.acc.g1 .acc-num{background:var(--g1)} .acc.g2 .acc-num{background:var(--g2)}
+.acc.g3 .acc-num{background:var(--g3)} .acc.g4 .acc-num{background:var(--g4)}
+.acc.g5 .acc-num{background:var(--g5)}
+.acc-body{display:none;padding:12px 16px;background:var(--card-soft);border-top:1px solid var(--border)}
+.acc.open .acc-body{display:block}
+.acc-body .formula{font-family:Consolas,monospace;background:var(--bg);padding:6px 10px;border-radius:6px;margin:8px 0;display:inline-block;font-size:0.9em}
+.examples li{margin:4px 0}
+.edge-case{background:rgba(239,68,68,.08);border-left:3px solid var(--err);padding:8px 12px;margin:8px 0;border-radius:6px;font-size:0.9em}
+.mini-test{background:var(--bg);border-radius:8px;padding:10px;margin-top:10px}
+.mini-test input{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-family:inherit;width:200px}
+.mini-test input.correct{border-color:var(--ok);background:rgba(34,197,94,.15)}
+.mini-test input.wrong{border-color:var(--err);background:rgba(239,68,68,.15)}
+.mini-test .check-btn{margin-left:8px}
+
+/* Practice modes */
+.mode-tabs{display:flex;gap:4px;margin:12px 0;border-bottom:1px solid var(--border);padding-bottom:0}
+.mode-tab{background:transparent;border:none;color:var(--muted);padding:8px 14px;cursor:pointer;font-family:inherit;font-size:0.92em;border-bottom:2px solid transparent}
+.mode-tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.mode-tab:hover{color:var(--text)}
+.mode-panel{display:none}
+.mode-panel.active{display:block}
+
+/* Sentence builder */
+.sb-target{font-style:italic;color:var(--muted);background:var(--card-soft);padding:8px 12px;border-radius:6px;margin:8px 0}
+.sb-words{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;min-height:50px}
+.sb-word{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 12px;cursor:pointer;user-select:none;transition:all .15s}
+.sb-word:hover{border-color:var(--accent);transform:translateY(-1px)}
+.sb-word.used{opacity:0.3;pointer-events:none}
+.sb-builder{min-height:50px;background:var(--bg);border:2px dashed var(--border);border-radius:6px;padding:10px;margin:8px 0;display:flex;flex-wrap:wrap;gap:6px}
+.sb-built{background:var(--accent);color:#fff;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:0.95em}
+.sb-built:hover{background:var(--err)}
+.sb-controls{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.btn-primary{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;font-family:inherit;font-weight:600}
+.btn-primary:hover{background:var(--accent2)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:8px 14px;cursor:pointer;font-family:inherit}
+.btn-ghost:hover{color:var(--text);border-color:var(--accent)}
+.btn-hint{background:rgba(251,191,36,.15);color:var(--warn);border:1px solid rgba(251,191,36,.3);border-radius:6px;padding:6px 12px;cursor:pointer;font-family:inherit;font-size:0.88em}
+.btn-hint:hover{background:rgba(251,191,36,.25)}
+@keyframes shakeX{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.shake{animation:shakeX .35s}
+.feedback{padding:8px 12px;border-radius:6px;margin:8px 0;font-size:0.92em;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:var(--ok)}
+.feedback.bad{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:var(--err)}
+.feedback.hint{background:rgba(251,191,36,.10);border:1px solid rgba(251,191,36,.3);color:var(--text)}
+.feedback.hint [data-g]{padding:1px 3px;border-radius:3px}
+
+/* Rewrite */
+.rw-base{background:var(--card-soft);padding:10px 12px;border-radius:6px;margin:8px 0;font-size:1em}
+.rw-targets{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.rw-tgt{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px 12px;cursor:pointer;font-family:inherit;font-size:0.88em}
+.rw-tgt.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.rw-tgt:hover{border-color:var(--accent)}
+.rw-hint-formula{color:var(--muted);font-style:italic;font-size:0.88em;margin:6px 0}
+
+/* Textarea / Story Continuation with Ghost Text */
+.text-wrap{position:relative;margin:10px 0}
+.text-mirror{position:absolute;top:0;left:0;width:100%;padding:10px 12px;font-family:inherit;font-size:1em;line-height:1.6;color:transparent;white-space:pre-wrap;word-wrap:break-word;pointer-events:none;overflow:hidden;border:1px solid transparent;box-sizing:border-box}
+.text-mirror .ghost{color:var(--muted);opacity:0.55;font-style:italic}
+.text-input{position:relative;width:100%;padding:10px 12px;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:1em;line-height:1.6;resize:vertical;min-height:120px;box-sizing:border-box}
+.text-input:focus{outline:none;border-color:var(--accent)}
+.text-wrap-bg{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--card-soft);border-radius:6px;border:1px solid var(--border);pointer-events:none;z-index:-1}
+.ghost-hint{font-size:0.78em;color:var(--muted);margin-top:4px;font-style:italic}
+
+/* Streak / XP / Counters in practice header */
+.practice-stats{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;font-size:0.85em}
+.pst{background:var(--card-soft);padding:4px 10px;border-radius:6px;color:var(--muted)}
+.pst b{color:var(--text)}
+
+/* Exercises */
+.ex-item{background:var(--card-soft);border-radius:8px;padding:12px;margin:8px 0}
+.ex-item input{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-family:inherit}
+.ex-item input.correct{border-color:var(--ok);background:rgba(34,197,94,.12)}
+.ex-item input.wrong{border-color:var(--err);background:rgba(239,68,68,.12)}
+.ex-section{border:1px solid var(--border);border-radius:10px;padding:14px;margin:14px 0;background:var(--card)}
+.ex-section h3{margin-top:0}
+
+/* Explore */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:10px 0}
+.mini-card{background:var(--card-soft);border:1px solid var(--border);border-radius:8px;padding:12px}
+.mini-card h4{margin:0 0 6px;color:var(--accent2)}
+.tr-table{width:100%;border-collapse:collapse;margin:10px 0}
+.tr-table td{padding:6px 8px;border-bottom:1px solid var(--border);font-size:0.92em}
+.tr-table tr td:first-child{font-weight:600;color:var(--accent2);width:40%}
+
+/* Toast / Achievement Popup / Confetti */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(40px);background:var(--card);border:1px solid var(--accent);color:var(--text);padding:10px 18px;border-radius:8px;opacity:0;transition:all .3s;z-index:300;font-size:0.92em;max-width:90%}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#achPop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.5);background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;padding:18px 28px;border-radius:14px;text-align:center;opacity:0;transition:all .4s;z-index:400;pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+#achPop.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#achPop .ach-n{font-size:1.3em;font-weight:700;margin-bottom:4px}
+#achPop .ach-d{font-size:0.92em;opacity:0.9}
+#achPop .ach-x{font-size:1.1em;font-weight:700;margin-top:6px;color:#fef08a}
+
+#confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:250}
+
+#scrollTop{position:fixed;bottom:24px;right:24px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:1.2em;display:none;z-index:90}
+#scrollTop.show{display:block}
+
+/* Print */
+@media print{
+  .sticky-top, .tabs, .level-bar, .tts-controls, #toast, #achPop, #confetti, #scrollTop, .toolbar, .btn-primary, .btn-hint, .btn-ghost { display:none !important }
+  body{background:#fff;color:#000}
+  .panel{display:block !important}
+  .card,.card-soft{background:#fff;border:1px solid #ccc;color:#000}
+  .acc-body{display:block !important}
+  .tr-block{display:block !important;color:#444}
+}
+
+/* Mobile */
+@media (max-width:540px){
+  .header-bar{padding:8px}
+  .xp-wrap{order:99;width:100%;justify-content:center}
+  .meta{display:none}
+  .content{padding:14px 10px 80px}
+  .card{padding:12px}
+  h2{font-size:1.15em}
+  .tab{padding:8px 10px;font-size:0.85em}
+  .tab-kbd{display:none}
+}
+</style>
+</head>
+<body class="theme-navy fs-m">
+
+<!-- ═════════ HEADER ═════════ -->
+<div class="sticky-top">
+  <div class="header-bar">
+    <span class="badge">WRITING ATELIER 001</span>
+    <span class="title">Ulysses &amp; Bloomsday</span>
+    <span class="meta">B1 · 5 Narrative Past Tenses · Active Writing</span>
+    <span class="spacer"></span>
+    <span class="streak-pill" id="streakPill">🔥 0</span>
+    <div class="xp-wrap">
+      <span class="lvl" id="lvlT">Apprentice</span>
+      <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+      <span id="xpT">0 XP</span>
+    </div>
+    <div class="toolbar">
+      <button class="tbtn" id="thmBtn" onclick="cycleTheme()" title="Theme">🎨</button>
+      <button class="tbtn" id="fsBtn" onclick="cycleFs()" title="Font">A</button>
+      <button class="tbtn" id="sndBtn" onclick="toggleSound()" title="Sound">🔊</button>
+      <button class="tbtn" id="rstBtn" onclick="askReset()" title="Reset (Shift+R)">↺</button>
+    </div>
+  </div>
+  <div class="level-bar">
+    <span class="cefr-pill">B1</span>
+    <div class="legend">
+      <span class="lg-chip" style="color:var(--g1)" onclick="jumpAcc(1)">① Past Simple</span>
+      <span class="lg-chip" style="color:var(--g2)" onclick="jumpAcc(2)">② Past Continuous</span>
+      <span class="lg-chip" style="color:var(--g3)" onclick="jumpAcc(3)">③ Past Perfect</span>
+      <span class="lg-chip" style="color:var(--g4)" onclick="jumpAcc(4)">④ Used to / Would</span>
+      <span class="lg-chip" style="color:var(--g5)" onclick="jumpAcc(5)">⑤ Time Adverbials</span>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="story" onclick="switchTab('story')">📖 Story<span class="tab-kbd">1</span></button>
+    <button class="tab" data-tab="grammar" onclick="switchTab('grammar')">🔧 Grammar<span class="tab-kbd">2</span></button>
+    <button class="tab" data-tab="practice" onclick="switchTab('practice')">✍️ Practice<span class="tab-kbd">3</span></button>
+    <button class="tab" data-tab="exercises" onclick="switchTab('exercises')">🎯 Exercises<span class="tab-kbd">4</span></button>
+    <button class="tab" data-tab="explore" onclick="switchTab('explore')">🌍 Explore<span class="tab-kbd">5</span></button>
+  </div>
+</div>
+
+<!-- ═════════ CONTENT ═════════ -->
+<div class="content">
+
+<!-- ─── STORY ─── -->
+<div class="panel active" id="p-story">
+  <div class="card">
+    <h2>📖 Bloomsday — A Single Day in Dublin</h2>
+    <p class="meta">A B1 adaptation of Leopold Bloom's day from James Joyce's <em>Ulysses</em>. Coloured words use the 5 narrative past tenses. Hover over <span class="vocab">underlined</span> words for glossary. Click a coloured word for its grammar.</p>
+
+    <div class="tts-controls">
+      <button id="ttsBtn" onclick="ttsToggle()">▶ Listen</button>
+      <button onclick="ttsStop()">■ Stop</button>
+      <label>Rate <input type="range" id="ttsRate" min="0.6" max="1.4" step="0.1" value="1" oninput="setRate(this.value)"></label>
+      <span id="ttsRateVal">1.0×</span>
+      <span class="spacer"></span>
+      <button class="btn-ghost" onclick="toggleTR()" id="trBtn" style="font-size:0.85em;padding:4px 10px">🇹🇷 Türkçe</button>
+    </div>
+
+    <div class="story-passage" id="storyText">
+      <p>It was a warm summer morning in Dublin. <span data-g="1">Leopold Bloom woke up</span> at eight o'clock. The sun <span data-g="2">was rising</span> over the <span class="vocab" data-v="rooftop">rooftops</span>, and the <span class="vocab" data-v="milkman">milkman</span> <span data-g="2">was leaving</span> bottles at the doors. Bloom <span data-g="1">walked quietly</span> to the <span class="vocab" data-v="kitchen">kitchen</span> because his wife Molly <span data-g="2">was still sleeping</span>.</p>
+
+      <p><span data-g="3">He had received</span> a <span class="vocab" data-v="strange">strange</span> letter the day before. A woman named Martha <span data-g="3">had written</span> to him, and he <span data-g="3">had hidden</span> the letter inside his hat. He <span data-g="4">used to write</span> to her <span class="vocab" data-v="in-secret">in secret</span>. <span data-g="4">They would exchange</span> letters every week, but he <span data-g="3">had never met</span> her <span class="vocab" data-v="in-person">in person</span>.</p>
+
+      <p>Bloom <span data-g="1">made breakfast</span> for Molly. <span data-g="5">While</span> he <span data-g="2">was cooking</span> the <span class="vocab" data-v="kidney">kidney</span> in the pan, the cat <span data-g="2">was watching</span> him. <span data-g="5">As</span> the <span class="vocab" data-v="bell">bell</span> of the church <span data-g="1">rang</span>, he <span data-g="1">remembered</span> that he <span data-g="3">had to attend</span> a <span class="vocab" data-v="funeral">funeral</span> that afternoon. His old friend Paddy Dignam <span data-g="3">had died</span> <span class="vocab" data-v="suddenly">suddenly</span>.</p>
+
+      <p><span data-g="5">After breakfast</span>, he <span data-g="1">walked</span> to the post office. <span data-g="5">Before</span> he <span data-g="1">arrived</span>, he <span class="vocab" data-v="pass">passed</span> a bookshop and <span data-g="1">bought</span> a <span class="vocab" data-v="cheap">cheap</span> novel for Molly. <span data-g="5">When</span> he <span data-g="1">reached</span> the post office, he <span data-g="1">collected</span> Martha's <span class="vocab" data-v="reply">reply</span>.</p>
+
+      <p><span data-g="5">While</span> Bloom <span data-g="2">was reading</span> Martha's letter on a <span class="vocab" data-v="bench">bench</span>, a young student named Stephen Dedalus <span data-g="2">was teaching</span> history in a small school nearby. <span data-g="5">Their paths</span> <span data-g="4">would cross</span> later that day.</p>
+
+      <p><span data-g="5">By evening</span>, Bloom <span data-g="3">had walked</span> many miles across the city. He <span data-g="3">had attended</span> the funeral, <span data-g="3">had visited</span> the newspaper office, and <span data-g="3">had eaten</span> at a pub. He <span data-g="2">was finally returning</span> home. The day <span data-g="2">was almost over</span>, but inside his head, the day <span data-g="2">was just beginning</span>.</p>
+    </div>
+
+    <div class="tr-block" id="trBlock">
+      <p><b>🇹🇷 Türkçe:</b> Dublin'de sıcak bir yaz sabahıydı. Leopold Bloom saat sekizde uyandı. Güneş çatıların üzerinden yükseliyordu ve sütçü kapılara şişeleri bırakıyordu. Bloom mutfağa sessizce yürüdü çünkü karısı Molly hâlâ uyuyordu.</p>
+      <p>Bir gün önce garip bir mektup almıştı. Martha adında bir kadın ona yazmıştı ve o mektubu şapkasının içine saklamıştı. Eskiden ona gizlice yazardı. Her hafta mektup alıp verirlerdi ama onunla şahsen hiç tanışmamıştı.</p>
+      <p>Bloom Molly için kahvaltı hazırladı. Tavada böbreği pişirirken kedi onu izliyordu. Kilisenin çanı çalarken, o öğleden sonra bir cenazeye katılması gerektiğini hatırladı. Eski arkadaşı Paddy Dignam aniden ölmüştü.</p>
+      <p>Kahvaltıdan sonra postaneye yürüdü. Oraya varmadan önce, bir kitapçının önünden geçti ve Molly için ucuz bir roman aldı. Postaneye ulaştığında, Martha'nın cevabını aldı.</p>
+      <p>Bloom bir bankta Martha'nın mektubunu okurken, Stephen Dedalus adında genç bir öğrenci yakındaki küçük bir okulda tarih öğretiyordu. Yolları o günün ilerleyen saatlerinde kesişecekti.</p>
+      <p>Akşama kadar Bloom şehir boyunca millerce yürümüştü. Cenazeye katılmış, gazete bürosunu ziyaret etmiş ve bir meyhanede yemek yemişti. Sonunda eve dönüyordu. Gün neredeyse bitmişti ama kafasının içinde, gün daha yeni başlıyordu.</p>
+    </div>
+
+    <div class="culture-box">
+      <h4>📚 Why Bloomsday?</h4>
+      <p><b>16 June.</b> This is the day Leopold Bloom walks through Dublin in James Joyce's <em>Ulysses</em> (1922). Every year on June 16, fans around the world read passages from the novel, dress as the characters, and walk Bloom's path. The book is famous for showing that <b>even an ordinary day can become a great epic</b>. Joyce wrote each chapter in a different style — newspaper headlines, drama dialogue, even a question-and-answer format. The novel echoes Homer's <em>Odyssey</em>: Bloom is the modern Odysseus, looking for his way home through the streets of Dublin.</p>
+      <p class="meta">📺 TED-Ed: <em>Why should you read "Ulysses" by James Joyce?</em> — Sam Slote · <code>youtube.com/watch?v=X7FobPxu27M</code></p>
+    </div>
+  </div>
+</div>
+
+<!-- ─── GRAMMAR ─── -->
+<div class="panel" id="p-grammar">
+  <h2>🔧 The 5 Narrative Past Tenses</h2>
+  <p class="meta">These 5 structures together let you tell a complete story about a single day — going forward, sideways into background, and back into earlier memories.</p>
+  <div id="accList"></div>
+  <div class="card card-soft">
+    <h4>📊 Your Mini-Test Score</h4>
+    <p>Correct: <b id="gmCorrect">0</b> / <span id="gmTotal">10</span></p>
+  </div>
+</div>
+
+<!-- ─── PRACTICE ─── -->
+<div class="panel" id="p-practice">
+  <h2>✍️ Active Writing Practice</h2>
+  <p class="meta">Three modes. Build sentences from scrambled words, rewrite Past Simple in different tenses, or continue Bloom's story with smart ghost-text help.</p>
+
+  <div class="practice-stats">
+    <span class="pst">Streak: <b id="psStreak">0</b></span>
+    <span class="pst">Best: <b id="psBest">0</b></span>
+    <span class="pst">XP: <b id="psXp">0</b></span>
+    <span class="pst">Ghost shown: <b id="psGhostShown">0</b></span>
+    <span class="pst">Ghost accepted: <b id="psGhostAcc">0</b></span>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="builder" onclick="switchMode('builder')">🧱 Sentence Builder</button>
+    <button class="mode-tab" data-mode="rewrite" onclick="switchMode('rewrite')">🔄 Rewrite Challenge</button>
+    <button class="mode-tab" data-mode="continue" onclick="switchMode('continue')">📝 Story Continuation</button>
+  </div>
+
+  <!-- BUILDER -->
+  <div class="mode-panel active" id="m-builder">
+    <div id="sbList"></div>
+  </div>
+
+  <!-- REWRITE -->
+  <div class="mode-panel" id="m-rewrite">
+    <div id="rwList"></div>
+  </div>
+
+  <!-- CONTINUE -->
+  <div class="mode-panel" id="m-continue">
+    <div id="ccList"></div>
+  </div>
+</div>
+
+<!-- ─── EXERCISES ─── -->
+<div class="panel" id="p-exercises">
+  <h2>🎯 Exercises</h2>
+  <p class="meta">Fill in the blanks, find the errors, and translate. Each gives XP.</p>
+
+  <div class="ex-section">
+    <h3>① Fill in the Blank (10)</h3>
+    <div id="fibList"></div>
+    <button class="btn-primary" onclick="checkFIB()">Check Answers</button>
+    <span class="meta" id="fibScore"></span>
+  </div>
+
+  <div class="ex-section">
+    <h3>② Find the Error (8)</h3>
+    <div id="errList"></div>
+    <button class="btn-primary" onclick="checkERR()">Check Errors</button>
+    <span class="meta" id="errScore"></span>
+  </div>
+
+  <div class="ex-section">
+    <h3>③ Translate TR → EN (8)</h3>
+    <div id="trList"></div>
+    <button class="btn-primary" onclick="checkTR()">Check Translations</button>
+    <span class="meta" id="trScore"></span>
+  </div>
+</div>
+
+<!-- ─── EXPLORE ─── -->
+<div class="panel" id="p-explore">
+  <h2>🌍 Explore</h2>
+
+  <h3>✍️ Writing Craft</h3>
+  <div class="card-grid">
+    <div class="mini-card"><h4>Time-jumping</h4><p>Mix Past Simple with Past Perfect to let your reader slip into earlier moments. "He sat down. He had not slept all night."</p></div>
+    <div class="mini-card"><h4>Habitual past (Used to/Would)</h4><p>Reveals character history. <em>"Used to"</em> works for states and actions; <em>"would"</em> only for repeated actions, never states.</p></div>
+    <div class="mini-card"><h4>Background detail (Past Continuous)</h4><p>Adds atmosphere. While X happened, Y was happening. Use this to make your scene feel alive.</p></div>
+    <div class="mini-card"><h4>Time adverbials = glue</h4><p>When, while, as, before, after, by the time. They are the connectors that make a sequence feel intentional.</p></div>
+  </div>
+
+  <h3>🧠 Joyce &amp; Modernism</h3>
+  <div class="card-grid">
+    <div class="mini-card"><h4>Odyssey Parallel</h4><p>Each chapter of <em>Ulysses</em> echoes one episode of Homer's <em>Odyssey</em>. Bloom = Odysseus, Stephen = Telemachus, Molly = Penelope. A modern epic hidden in an ordinary Tuesday.</p></div>
+    <div class="mini-card"><h4>Stream of Consciousness</h4><p>Joyce wrote the characters' thoughts the way thoughts actually happen — fragmented, jumping, half-finished. This was new in 1922.</p></div>
+    <div class="mini-card"><h4>Modernism</h4><p>The movement said: the inner world of an ordinary person is as important as the outer world of kings and wars. Bloomsday is the proof.</p></div>
+  </div>
+
+  <h3>🌐 Translation Notes</h3>
+  <table class="tr-table">
+    <tr><td>used to + V</td><td>eskiden yapardı (geçmiş alışkanlık, artık yok)</td></tr>
+    <tr><td>would (habitual)</td><td>yapardı (tekrarlı eylem; durum fiilleriyle olmaz)</td></tr>
+    <tr><td>had + V3</td><td>(daha önce) yapmıştı — flashback</td></tr>
+    <tr><td>while V-ing</td><td>... yaparken (eş zamanlı)</td></tr>
+    <tr><td>by + time</td><td>... e kadar (sınır olarak)</td></tr>
+    <tr><td>in secret / in person</td><td>gizlice / bizzat (sabit ifade)</td></tr>
+  </table>
+
+  <h3>✏️ Open Writing Task</h3>
+  <div class="card">
+    <p><b>Your Bloomsday.</b> Recall an ordinary day from your own life. Write 5-8 sentences using <b>all 5 narrative past tenses</b>. Use time adverbials to connect events. Mention one earlier event (Past Perfect) and one habit (used to / would).</p>
+    <div class="text-wrap">
+      <div class="text-wrap-bg"></div>
+      <textarea class="text-input" id="openTask" placeholder="Begin: 'It was a [day of the week] morning. I woke up at...'  Auto-save on."></textarea>
+    </div>
+    <p class="meta" id="openTaskMeta">Auto-saved.</p>
+  </div>
+</div>
+
+</div>
+
+<!-- ═════════ FLOATING UI ═════════ -->
+<div id="gTip">
+  <div class="tt-name" id="ttN"></div>
+  <div class="tt-tr" id="ttT"></div>
+  <div class="tt-formula" id="ttF"></div>
+</div>
+<div id="vTip">
+  <div class="vt-en" id="vtE"></div>
+  <div class="vt-tr" id="vtT"></div>
+  <div class="vt-ex" id="vtX"></div>
+</div>
+<canvas id="confetti"></canvas>
+<div id="toast"></div>
+<div id="achPop">
+  <div class="ach-n" id="achN"></div>
+  <div class="ach-d" id="achD"></div>
+  <div class="ach-x" id="achX"></div>
+</div>
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Top">↑</button>
+
+<script>
+// ═════════ DATA ═════════
+const GD = [
+  {id:1, name:'Past Simple', tr:'Geçmiş zaman — biten eylemler', formula:'S + V2', color:'var(--g1)'},
+  {id:2, name:'Past Continuous', tr:'Geçmiş süregelen — was/were V-ing', formula:'S + was/were + V-ing', color:'var(--g2)'},
+  {id:3, name:'Past Perfect', tr:'Daha önceki olay — flashback', formula:'S + had + V3', color:'var(--g3)'},
+  {id:4, name:'Used to / Would', tr:'Geçmiş alışkanlık', formula:'used to + V / would + V', color:'var(--g4)'},
+  {id:5, name:'Time Adverbials', tr:'Bağlayıcı zaman ifadeleri', formula:'when / while / as / before / after / by', color:'var(--g5)'}
+];
+
+const VOCAB = {
+  'rooftop':{tr:'çatı, dam',ex:'The pigeons sat on the rooftop.'},
+  'milkman':{tr:'sütçü',ex:'The milkman left bottles every morning.'},
+  'kitchen':{tr:'mutfak',ex:'He walked into the kitchen.'},
+  'strange':{tr:'garip, tuhaf',ex:'A strange letter arrived yesterday.'},
+  'in-secret':{tr:'gizlice',ex:'They wrote to each other in secret.'},
+  'in-person':{tr:'bizzat, yüz yüze',ex:'He had never met her in person.'},
+  'kidney':{tr:'böbrek (yemeklik)',ex:'He cooked a kidney for breakfast.'},
+  'bell':{tr:'çan, zil',ex:'The church bell rang at nine.'},
+  'funeral':{tr:'cenaze',ex:"His friend's funeral was that afternoon."},
+  'suddenly':{tr:'aniden',ex:'Paddy had died suddenly.'},
+  'pass':{tr:'geçmek (yerin önünden)',ex:'He passed the bookshop on his way.'},
+  'cheap':{tr:'ucuz',ex:'He bought a cheap novel.'},
+  'reply':{tr:'cevap',ex:"He collected Martha's reply."},
+  'bench':{tr:'bank, sıra',ex:'He read the letter on a bench.'}
+};
+
+const GRAMMAR_CARDS = [
+  { id:1, title:'Past Simple', formula:'S + V2 (regular: -ed / irregular: woke, ate, went)',
+    use:'Use for completed actions in a sequence — the spine of your story.',
+    examples:[
+      'Bloom <b>woke up</b> at eight.',
+      'He <b>walked</b> quietly to the kitchen.',
+      'The church bell <b>rang</b>.',
+      'He <b>bought</b> a cheap novel.'
+    ],
+    edge:'In time clauses ("when he arrived"), Past Simple is correct — not Past Perfect, unless you really need the "before X" meaning.',
+    quiz:[
+      {q:'Bloom ___ (wake) up at eight.', a:'woke'},
+      {q:'He ___ (buy) a novel for Molly.', a:'bought'}
+    ]
+  },
+  { id:2, title:'Past Continuous', formula:'S + was/were + V-ing',
+    use:'Background actions; something in progress at a past moment; interrupted action.',
+    examples:[
+      'The sun <b>was rising</b> over the rooftops.',
+      'The milkman <b>was leaving</b> bottles at the doors.',
+      'Molly <b>was still sleeping</b>.',
+      'While he <b>was cooking</b>, the cat <b>was watching</b>.'
+    ],
+    edge:'State verbs (know, want, believe) usually do NOT take continuous: ❌ "He was knowing" → ✓ "He knew".',
+    quiz:[
+      {q:'The sun ___ (rise) over the rooftops.', a:'was rising'},
+      {q:'The cat ___ (watch) him cook.', a:'was watching'}
+    ]
+  },
+  { id:3, title:'Past Perfect', formula:'S + had + V3 (past participle)',
+    use:'An action that happened BEFORE another past action. Flashback or earlier cause.',
+    examples:[
+      'He <b>had received</b> a strange letter the day before.',
+      'Martha <b>had written</b> to him.',
+      'He <b>had hidden</b> the letter inside his hat.',
+      'Paddy Dignam <b>had died</b> suddenly.'
+    ],
+    edge:'Do NOT use Past Perfect for every past event! Only when the "earlier than another past" relationship matters.',
+    quiz:[
+      {q:'He ___ (hide) the letter in his hat.', a:'had hidden'},
+      {q:'Paddy ___ (die) suddenly the week before.', a:'had died'}
+    ]
+  },
+  { id:4, title:'Used to / Would', formula:'used to + V (base) / would + V (base)',
+    use:'Habits or repeated actions in the past that are no longer happening.',
+    examples:[
+      'He <b>used to write</b> to her in secret.',
+      'They <b>would exchange</b> letters every week.',
+      'She <b>used to live</b> in Trieste.',
+      'On Sundays, they <b>would walk</b> by the river.'
+    ],
+    edge:'"Would" does NOT work with state verbs: ❌ "She would be tall" → ✓ "She used to be tall". Only "used to" works for states.',
+    quiz:[
+      {q:'He ___ (write) to Martha in secret. (habit)', a:'used to write'},
+      {q:'On Sundays, they ___ (walk) by the river. (habit)', a:'would walk'}
+    ]
+  },
+  { id:5, title:'Time Adverbials', formula:'when / while / as / before / after / by the time',
+    use:'Connect events in time. "When" = at the moment, "while/as" = during, "before/after" = sequence, "by" = boundary.',
+    examples:[
+      '<b>While</b> he <b>was cooking</b>, the cat watched.',
+      '<b>As</b> the bell rang, he remembered the funeral.',
+      '<b>After</b> breakfast, he walked to the post office.',
+      '<b>By evening</b>, he had walked many miles.'
+    ],
+    edge:'"By the time" usually pairs with Past Perfect: "By the time he arrived, the meeting had finished."',
+    quiz:[
+      {q:'Fill: ___ he was cooking, the cat watched. (during)', a:'While'},
+      {q:'Fill: ___ evening, he had walked many miles.', a:'By'}
+    ]
+  }
+];
+
+// Sentence builder: word arrays + valid orderings
+const SBS = [
+  { id:'sb1', target:'Past Simple — narrative line', words:['Bloom','at','o\'clock','eight','woke','up'],
+    valid:[ ['Bloom','woke','up','at','eight','o\'clock'] ] },
+  { id:'sb2', target:'Past Continuous — background', words:['rooftops','rising','was','sun','the','the','over'],
+    valid:[ ['the','sun','was','rising','over','the','rooftops'] ] },
+  { id:'sb3', target:'Past Perfect — flashback', words:['received','He','before','had','strange','letter','the','day','a'],
+    valid:[ ['He','had','received','a','strange','letter','the','day','before'] ] },
+  { id:'sb4', target:'Used to — past habit', words:['He','her','to','write','in','to','used','secret'],
+    valid:[ ['He','used','to','write','to','her','in','secret'] ] },
+  { id:'sb5', target:'Would — past habit', words:['letters','exchange','every','week','They','would'],
+    valid:[ ['They','would','exchange','letters','every','week'] ] },
+  { id:'sb6', target:'While + Past Continuous + Past Simple', words:['cat','him','was','watching','was','While','the','cooking','he'],
+    valid:[ ['While','he','was','cooking','the','cat','was','watching','him'] ] },
+  { id:'sb7', target:'As + Past Simple', words:['rang','he','funeral','remembered','As','the','bell','the'],
+    valid:[ ['As','the','bell','rang','he','remembered','the','funeral'] ] },
+  { id:'sb8', target:'After + Past Simple', words:['walked','the','office','breakfast','he','After','to','post'],
+    valid:[ ['After','breakfast','he','walked','to','the','post','office'] ] },
+  { id:'sb9', target:'By + time + Past Perfect', words:['miles','By','walked','had','evening','many','he'],
+    valid:[ ['By','evening','he','had','walked','many','miles'] ] },
+  { id:'sb10', target:'Past Continuous (two actions in parallel)', words:['returning','He','home','finally','was'],
+    valid:[ ['He','was','finally','returning','home'] ] }
+];
+
+// Rewrite challenge: base PS sentence, target structures and validators
+const RWS = [
+  { id:'rw1', base:'Bloom walked to the post office.',
+    targets:[
+      { name:'Past Continuous', formula:'was/were V-ing', hint:'Bloom was walking to the post office.',
+        check: t => /\bwas\s+walking\b/i.test(t) && /post\s+office/i.test(t) },
+      { name:'Past Perfect', formula:'had + V3', hint:'Bloom had walked to the post office.',
+        check: t => /\bhad\s+walked\b/i.test(t) && /post\s+office/i.test(t) },
+      { name:'Used to', formula:'used to + V', hint:'Bloom used to walk to the post office.',
+        check: t => /\bused\s+to\s+walk\b/i.test(t) && /post\s+office/i.test(t) }
+    ] },
+  { id:'rw2', base:'The sun rose over the rooftops.',
+    targets:[
+      { name:'Past Continuous', formula:'was/were V-ing', hint:'The sun was rising over the rooftops.',
+        check: t => /\bwas\s+rising\b/i.test(t) && /rooftops?/i.test(t) },
+      { name:'Past Perfect', formula:'had + V3', hint:'The sun had risen over the rooftops.',
+        check: t => /\bhad\s+risen\b/i.test(t) && /rooftops?/i.test(t) }
+    ] },
+  { id:'rw3', base:'He wrote to Martha every week.',
+    targets:[
+      { name:'Used to', formula:'used to + V', hint:'He used to write to Martha every week.',
+        check: t => /\bused\s+to\s+write\b/i.test(t) && /martha/i.test(t) },
+      { name:'Would', formula:'would + V', hint:'He would write to Martha every week.',
+        check: t => /\bwould\s+write\b/i.test(t) && /martha/i.test(t) }
+    ] },
+  { id:'rw4', base:'Paddy Dignam died.',
+    targets:[
+      { name:'Past Perfect', formula:'had + V3', hint:'Paddy Dignam had died.',
+        check: t => /\bhad\s+died\b/i.test(t) && /paddy/i.test(t) },
+      { name:'Past Perfect + "suddenly"', formula:'had + V3 + adverb', hint:'Paddy Dignam had died suddenly.',
+        check: t => /\bhad\s+died\s+suddenly\b/i.test(t) && /paddy/i.test(t) }
+    ] },
+  { id:'rw5', base:'They exchanged letters.',
+    targets:[
+      { name:'Used to', formula:'used to + V', hint:'They used to exchange letters.',
+        check: t => /\bused\s+to\s+exchange\b/i.test(t) && /letters?/i.test(t) },
+      { name:'Would', formula:'would + V', hint:'They would exchange letters.',
+        check: t => /\bwould\s+exchange\b/i.test(t) && /letters?/i.test(t) },
+      { name:'Past Continuous', formula:'was/were V-ing', hint:'They were exchanging letters.',
+        check: t => /\bwere\s+exchanging\b/i.test(t) && /letters?/i.test(t) }
+    ] },
+  { id:'rw6', base:'He cooked the kidney in the pan.',
+    targets:[
+      { name:'Past Continuous', formula:'was/were V-ing', hint:'He was cooking the kidney in the pan.',
+        check: t => /\bwas\s+cooking\b/i.test(t) && /kidney/i.test(t) && /pan/i.test(t) },
+      { name:'While + Past Continuous', formula:'While S was V-ing', hint:'While he was cooking the kidney in the pan, ...',
+        check: t => /^\s*while\b/i.test(t) && /\bwas\s+cooking\b/i.test(t) && /kidney/i.test(t) }
+    ] }
+];
+
+// Story Continuation: prompts with pre-authored ghost predictions
+// suggestions: array of {prefix: max-6 last words lowercased, ghost: 'continuation text'}
+const CCS = [
+  { id:'cc1', prompt:'Continue Bloom\'s morning. After he made breakfast, what did he do?',
+    hint:'After he had eaten his breakfast, he walked to the bathroom and looked at himself in the small mirror.',
+    starter:'',
+    suggestions: [
+      { prefix:'', ghost:'After he had eaten his breakfast,' },
+      { prefix:'after he had eaten his breakfast', ghost:' he walked to the bathroom' },
+      { prefix:'he walked to the bathroom', ghost:' and looked at himself in the small mirror' },
+      { prefix:'looked at himself in the small mirror', ghost:'. He saw a tired face' },
+      { prefix:'saw a tired face', ghost:' and remembered the funeral that afternoon' }
+    ] },
+  { id:'cc2', prompt:'At the funeral, what did Bloom feel and remember?',
+    hint:'While the priest was speaking, Bloom remembered the day his son had died. He had been only eleven days old.',
+    starter:'',
+    suggestions: [
+      { prefix:'', ghost:'While the priest was speaking,' },
+      { prefix:'while the priest was speaking', ghost:' Bloom remembered the day' },
+      { prefix:'bloom remembered the day', ghost:' his son had died' },
+      { prefix:'his son had died', ghost:'. He had been only eleven days old' },
+      { prefix:'eleven days old', ghost:'. They used to call him Rudy' }
+    ] },
+  { id:'cc3', prompt:'Bloom meets Stephen Dedalus late at night. Describe their meeting.',
+    hint:'It was already past midnight when Bloom found Stephen sitting alone in a small cafe. Stephen had been drinking for hours, and his eyes were tired.',
+    starter:'',
+    suggestions: [
+      { prefix:'', ghost:'It was already past midnight when' },
+      { prefix:'already past midnight when', ghost:' Bloom found Stephen' },
+      { prefix:'bloom found stephen', ghost:' sitting alone in a small cafe' },
+      { prefix:'sitting alone in a small cafe', ghost:'. Stephen had been drinking for hours' },
+      { prefix:'stephen had been drinking for hours', ghost:', and his eyes were tired' }
+    ] },
+  { id:'cc4', prompt:'Bloom returns home. What does he find? What does he do?',
+    hint:'By the time he reached his house, the lights were off. Molly was already asleep. He used to come home earlier in the old days, but tonight he just sat quietly in the kitchen.',
+    starter:'',
+    suggestions: [
+      { prefix:'', ghost:'By the time he reached his house,' },
+      { prefix:'by the time he reached his house', ghost:' the lights were off' },
+      { prefix:'the lights were off', ghost:'. Molly was already asleep' },
+      { prefix:'molly was already asleep', ghost:'. He used to come home earlier' },
+      { prefix:'used to come home earlier', ghost:' in the old days, but tonight he just sat quietly in the kitchen' }
+    ] }
+];
+
+// FIB exercises (10)
+const FIB = [
+  {p:'Bloom ____ (wake) up at eight.',a:'woke'},
+  {p:'The sun ____ (rise) over the rooftops.',a:'was rising'},
+  {p:'He ____ (receive) a strange letter the day before.',a:'had received'},
+  {p:'He ____ (write) to Martha in secret.',a:'used to write'},
+  {p:'____ he was cooking, the cat watched him.',a:'While'},
+  {p:'____ the bell rang, he remembered the funeral.',a:'As'},
+  {p:'____ breakfast, he walked to the post office.',a:'After'},
+  {p:'____ evening, he had walked many miles.',a:'By'},
+  {p:'They ____ (exchange) letters every week.',a:'would exchange'},
+  {p:'Paddy Dignam ____ (die) suddenly.',a:'had died'}
+];
+
+// Error find (8) — each has a wrong sentence and the correction
+const ERR = [
+  {s:'Bloom was wake up at eight.', corr:'Bloom woke up at eight.', exp:'Past Simple — not "was wake up".'},
+  {s:'The sun rose over the rooftops while was leaving the milkman bottles.', corr:'... while the milkman was leaving bottles.', exp:'Past Continuous: subject before "was".'},
+  {s:'He had hide the letter inside his hat.', corr:'He had hidden the letter.', exp:'Past Perfect: had + V3, hidden.'},
+  {s:'He use to write to her in secret.', corr:'He used to write to her in secret.', exp:'"Used to" — past form, with "d".'},
+  {s:'She would be tall.', corr:'She used to be tall.', exp:'"Would" does not work with state verbs (be).'},
+  {s:'When he was arriving, the meeting had finished.', corr:'By the time he arrived, the meeting had finished.', exp:'"By the time" + Past Simple pairs naturally with Past Perfect.'},
+  {s:'He used to writing letters.', corr:'He used to write letters.', exp:'"Used to" + base verb (write), not V-ing.'},
+  {s:'While the bell rang, he was remembering the funeral.', corr:'As the bell rang, he remembered the funeral.', exp:'Two short past actions linked by "as", not "while".'}
+];
+
+// TR→EN (8)
+const TE = [
+  {tr:'Bloom saat sekizde uyandı.', hint:'Past Simple', ans:'Bloom woke up at eight o\'clock.'},
+  {tr:'Güneş çatıların üzerinden yükseliyordu.', hint:'Past Continuous', ans:'The sun was rising over the rooftops.'},
+  {tr:'Bir gün önce garip bir mektup almıştı.', hint:'Past Perfect', ans:'He had received a strange letter the day before.'},
+  {tr:'Ona gizlice yazardı.', hint:'used to', ans:'He used to write to her in secret.'},
+  {tr:'Her hafta mektup alıp verirlerdi.', hint:'would', ans:'They would exchange letters every week.'},
+  {tr:'O pişirirken kedi onu izliyordu.', hint:'While + Past Continuous', ans:'While he was cooking, the cat was watching him.'},
+  {tr:'Kahvaltıdan sonra postaneye yürüdü.', hint:'After + Past Simple', ans:'After breakfast, he walked to the post office.'},
+  {tr:'Akşama kadar şehir boyunca millerce yürümüştü.', hint:'By + time + Past Perfect', ans:'By evening, he had walked many miles across the city.'}
+];
+
+// ═════════ STATE ═════════
+const SK = 'writing_atelier_001_v1';
+const LVLS = [
+  {min:0, t:'Apprentice'},
+  {min:120, t:'Storyteller'},
+  {min:300, t:'Chronicler'},
+  {min:600, t:'Bloomsday Wanderer'},
+  {min:1000, t:'Joycean Master'}
+];
+const ACH = {
+  first_sentence:{n:'First Sentence',d:'Built your first correct sentence',x:20},
+  combo_3:{n:'On a Roll',d:'3 correct in a row',x:25},
+  combo_5:{n:'Streak Master',d:'5 correct in a row',x:50},
+  combo_10:{n:'Bloomsday Master',d:'10 correct in a row',x:100},
+  ghost_taster:{n:'Ghost Taster',d:'Accepted your first ghost text',x:15},
+  hint_free:{n:'No Hints Needed',d:'Completed a rewrite without hints',x:30},
+  all_builders:{n:'Master Builder',d:'Built all 10 sentences',x:75},
+  all_rewrites:{n:'Master Rewriter',d:'All rewrite challenges done',x:75}
+};
+let prog = {
+  xp:0, level:0, streak:0, bestStreak:0,
+  completed:{builder:[],rewrite:[],fib:false,err:false,tr:false},
+  hintsUsed:{}, ghostStats:{shown:0, accepted:0, rejected:0},
+  draft:'', openDraft:'',
+  theme:'navy', sound:true, fs:1, ttsRate:1.0,
+  achievements:[]
+};
+try{ const s=localStorage.getItem(SK); if(s) prog={...prog, ...JSON.parse(s)} }catch(e){}
+function save(){ try{ localStorage.setItem(SK, JSON.stringify(prog)) }catch(e){} }
+
+// ═════════ UTIL ═════════
+function toast(msg, dur){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'), dur||1800); }
+
+function addXp(n){
+  const old=prog.level;
+  prog.xp=Math.max(0, prog.xp+n);
+  let nl=0; for(let i=LVLS.length-1;i>=0;i--){ if(prog.xp>=LVLS[i].min){nl=i;break;} }
+  if(nl>old){ prog.level=nl; levelUp(); }
+  save(); updateXp();
+}
+function updateXp(){
+  document.getElementById('xpT').textContent=prog.xp+' XP';
+  document.getElementById('lvlT').textContent=LVLS[prog.level].t;
+  const cur=LVLS[prog.level].min;
+  const next=LVLS[prog.level+1]?LVLS[prog.level+1].min:cur+200;
+  const pct=Math.min(100, ((prog.xp-cur)/(next-cur))*100);
+  document.getElementById('xpFill').style.width=pct+'%';
+  document.getElementById('streakPill').textContent='🔥 '+prog.streak;
+  document.getElementById('psStreak').textContent=prog.streak;
+  document.getElementById('psBest').textContent=prog.bestStreak;
+  document.getElementById('psXp').textContent=prog.xp;
+  document.getElementById('psGhostShown').textContent=prog.ghostStats.shown;
+  document.getElementById('psGhostAcc').textContent=prog.ghostStats.accepted;
+}
+function levelUp(){ beep('levelUp'); confetti(120); showAch('Level Up!', 'You are now a '+LVLS[prog.level].t, 50); }
+function showAch(n,d,x){
+  const p=document.getElementById('achPop');
+  document.getElementById('achN').textContent=n;
+  document.getElementById('achD').textContent=d;
+  document.getElementById('achX').textContent='+'+x+' XP';
+  p.classList.add('show');
+  setTimeout(()=>p.classList.remove('show'), 3000);
+}
+function unlockAch(key){
+  if(prog.achievements.includes(key)) return;
+  prog.achievements.push(key);
+  const a=ACH[key];
+  showAch('🏆 '+a.n, a.d, a.x);
+  beep('levelUp'); confetti(80); addXp(a.x); save();
+}
+
+function bumpStreak(correct){
+  if(correct){
+    prog.streak++;
+    if(prog.streak>prog.bestStreak) prog.bestStreak=prog.streak;
+    if(prog.streak===3){ confetti(90,['#fbbf24','#fde047']); toast('🔥 3 streak!'); unlockAch('combo_3'); }
+    if(prog.streak===5){ confetti(120,['#fbbf24','#fde047','#fff']); toast('🔥🔥 5 streak!'); unlockAch('combo_5'); }
+    if(prog.streak===10){ confetti(200); unlockAch('combo_10'); }
+  } else {
+    if(prog.streak>0) toast('Streak reset.');
+    prog.streak=0;
+  }
+  save(); updateXp();
+}
+
+// ═════════ SOUND ═════════
+let audioCtx=null;
+function beep(type){
+  if(!prog.sound) return;
+  try{
+    if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    const map={correct:[880,.08,'sine'], wrong:[220,.18,'sawtooth'], combo:[1320,.05,'sine']};
+    if(type==='levelUp'){ [523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,.12,'sine'), i*90)); return; }
+    const [f,d,t]=map[type]||[440,.1,'sine']; tone(f,d,t);
+  }catch(e){}
+}
+function tone(freq,dur,wave){
+  const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+  o.type=wave; o.frequency.value=freq;
+  g.gain.setValueAtTime(.15, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime+dur);
+  o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+dur);
+}
+function toggleSound(){ prog.sound=!prog.sound; document.getElementById('sndBtn').textContent=prog.sound?'🔊':'🔇'; save(); toast(prog.sound?'Sound on':'Sound off'); }
+document.getElementById('sndBtn').textContent=prog.sound?'🔊':'🔇';
+
+// ═════════ CONFETTI ═════════
+let lastConfetti=0;
+const confCv=document.getElementById('confetti');
+function confetti(n, palette){
+  const now=Date.now();
+  if(now-lastConfetti<800) return; // throttle (per edge case #3, but allow within 800ms not 2000 for combos)
+  lastConfetti=now;
+  const ctx=confCv.getContext('2d');
+  confCv.width=window.innerWidth; confCv.height=window.innerHeight;
+  const cols=palette||['#3b82f6','#fbbf24','#22c55e','#ef4444','#a855f7','#60a5fa','#f472b6'];
+  const ps=[];
+  for(let i=0;i<n;i++) ps.push({x:Math.random()*confCv.width, y:-20, vx:(Math.random()-.5)*6, vy:Math.random()*3+2, r:Math.random()*5+3, c:cols[Math.floor(Math.random()*cols.length)], rot:Math.random()*360, vr:(Math.random()-.5)*10});
+  function frame(){
+    ctx.clearRect(0,0,confCv.width,confCv.height);
+    let alive=0;
+    ps.forEach(p=>{
+      p.vy+=.15; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      if(p.y<confCv.height+30){ alive++; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.c; ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r); ctx.restore(); }
+    });
+    if(alive) requestAnimationFrame(frame); else ctx.clearRect(0,0,confCv.width,confCv.height);
+  }
+  frame();
+}
+
+// ═════════ THEME / FONT ═════════
+const fsSteps=['fs-s','fs-m','fs-l','fs-xl'], fsLabels=['A−','A','A+','A++'];
+function cycleFs(){ const c=fsSteps.findIndex(x=>document.body.classList.contains(x)); const n=(c+1)%4; fsSteps.forEach(x=>document.body.classList.remove(x)); document.body.classList.add(fsSteps[n]); document.getElementById('fsBtn').textContent=fsLabels[n]; prog.fs=n; save(); }
+fsSteps.forEach(c=>document.body.classList.remove(c));
+document.body.classList.add(fsSteps[prog.fs]); document.getElementById('fsBtn').textContent=fsLabels[prog.fs];
+
+const themes=['navy','forest','sunset'];
+function applyTheme(t){ themes.forEach(x=>document.body.classList.remove('theme-'+x)); document.body.classList.add('theme-'+t); prog.theme=t; save(); }
+function cycleTheme(){ const i=themes.indexOf(prog.theme||'navy'); applyTheme(themes[(i+1)%3]); toast('Theme: '+prog.theme); }
+applyTheme(prog.theme||'navy');
+
+// ═════════ TABS ═════════
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id==='p-'+name));
+  ttsStop(); // stop TTS when switching tabs (edge case #8)
+}
+function switchMode(name){
+  document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active', t.dataset.mode===name));
+  document.querySelectorAll('.mode-panel').forEach(p=>p.classList.toggle('active', p.id==='m-'+name));
+}
+
+// ═════════ TOOLTIPS ═════════
+const gMap={}; GD.forEach(g=>gMap[g.id]=g);
+document.querySelectorAll('[data-g]').forEach(el=>{
+  el.addEventListener('click', function(e){
+    e.stopPropagation();
+    const g=gMap[+this.dataset.g]; if(!g) return;
+    const tip=document.getElementById('gTip');
+    document.getElementById('ttN').textContent=g.id+'. '+g.name;
+    document.getElementById('ttN').style.color=g.color;
+    document.getElementById('ttT').textContent=g.tr;
+    document.getElementById('ttF').textContent=g.formula;
+    showFloatingTip(tip, this);
+  });
+});
+document.querySelectorAll('[data-v]').forEach(el=>{
+  el.addEventListener('mouseenter', function(){
+    const v=VOCAB[this.dataset.v]; if(!v) return;
+    const tip=document.getElementById('vTip');
+    document.getElementById('vtE').textContent=this.textContent;
+    document.getElementById('vtT').textContent=v.tr;
+    document.getElementById('vtX').textContent=v.ex;
+    showFloatingTip(tip, this);
+  });
+  el.addEventListener('mouseleave', ()=>document.getElementById('vTip').classList.remove('show'));
+});
+function showFloatingTip(tip, anchor){
+  tip.classList.add('show');
+  const r=anchor.getBoundingClientRect();
+  let top=r.bottom+8, left=r.left;
+  if(left+320>window.innerWidth) left=window.innerWidth-330;
+  if(top+200>window.innerHeight) top=r.top-tip.offsetHeight-8;
+  if(left<8) left=8;
+  tip.style.top=top+'px'; tip.style.left=left+'px';
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('[data-g]') && !e.target.closest('#gTip')) document.getElementById('gTip').classList.remove('show');
+});
+
+// ═════════ TR TOGGLE ═════════
+function toggleTR(){
+  const b=document.getElementById('trBlock');
+  b.classList.toggle('show');
+  document.getElementById('trBtn').textContent = b.classList.contains('show')?'🇹🇷 Hide':'🇹🇷 Türkçe';
+}
+
+// ═════════ TTS ═════════
+let utter=null, ttsPlaying=false;
+function getPassageText(){ return document.getElementById('storyText').innerText; }
+function ttsToggle(){
+  if(!('speechSynthesis' in window)){ toast('TTS not supported'); return; }
+  if(ttsPlaying){ speechSynthesis.cancel(); ttsPlaying=false; document.getElementById('ttsBtn').textContent='▶ Listen'; return; }
+  utter=new SpeechSynthesisUtterance(getPassageText());
+  utter.lang='en-US'; utter.rate=prog.ttsRate||1.0;
+  utter.onend=()=>{ ttsPlaying=false; document.getElementById('ttsBtn').textContent='▶ Listen'; };
+  speechSynthesis.speak(utter); ttsPlaying=true;
+  document.getElementById('ttsBtn').textContent='⏸ Pause';
+}
+function ttsStop(){ if('speechSynthesis' in window){ speechSynthesis.cancel(); ttsPlaying=false; const b=document.getElementById('ttsBtn'); if(b) b.textContent='▶ Listen'; } }
+function setRate(v){ prog.ttsRate=+v; document.getElementById('ttsRateVal').textContent=(+v).toFixed(1)+'×'; save(); }
+document.getElementById('ttsRate').value=prog.ttsRate||1.0;
+document.getElementById('ttsRateVal').textContent=(prog.ttsRate||1.0).toFixed(1)+'×';
+window.addEventListener('beforeunload', ttsStop);
+
+// ═════════ GRAMMAR ACCORDION ═════════
+function jumpAcc(id){
+  switchTab('grammar');
+  setTimeout(()=>{
+    const a=document.getElementById('acc-'+id);
+    if(a){ a.classList.add('open'); a.scrollIntoView({behavior:'smooth', block:'start'}); }
+  }, 50);
+}
+function renderGrammar(){
+  const list=document.getElementById('accList'); let html='';
+  GRAMMAR_CARDS.forEach(g=>{
+    let exHtml=g.examples.map(e=>'<li>'+e+'</li>').join('');
+    let quizHtml=g.quiz.map((q,i)=>`<div style="margin:6px 0"><span>${q.q.replace('___','<input type="text" id="gq_'+g.id+'_'+i+'" data-ans="'+q.a+'">')}</span></div>`).join('');
+    html += `<div class="acc g${g.id}" id="acc-${g.id}">
+      <div class="acc-head" onclick="this.parentElement.classList.toggle('open')">
+        <span><span class="acc-num">${g.id}</span><b>${g.title}</b></span>
+        <span style="color:var(--muted)">▼</span>
+      </div>
+      <div class="acc-body">
+        <p>${g.use}</p>
+        <span class="formula">${g.formula}</span>
+        <h4>Examples</h4>
+        <ul class="examples">${exHtml}</ul>
+        <div class="edge-case"><b>⚠️ Edge case:</b> ${g.edge}</div>
+        <div class="mini-test">
+          <h4>Mini test</h4>
+          ${quizHtml}
+          <button class="btn-hint check-btn" onclick="checkMini(${g.id})">Check</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  list.innerHTML=html;
+}
+function checkMini(id){
+  const g=GRAMMAR_CARDS.find(x=>x.id===id); if(!g) return;
+  let ok=0;
+  g.quiz.forEach((q,i)=>{
+    const inp=document.getElementById('gq_'+id+'_'+i); if(!inp) return;
+    const v=inp.value.trim().toLowerCase();
+    if(v===q.a.toLowerCase()){ inp.classList.remove('wrong'); inp.classList.add('correct'); ok++; }
+    else{ inp.classList.remove('correct'); inp.classList.add('wrong'); }
+  });
+  if(ok===g.quiz.length){ confetti(40); addXp(15); toast('+15 XP — '+g.title+' mini-test ✓'); bumpStreak(true); }
+  else { beep('wrong'); toast(ok+'/'+g.quiz.length+' correct.'); }
+  updateMiniScore();
+}
+function updateMiniScore(){
+  let ok=0, total=0;
+  GRAMMAR_CARDS.forEach(g=>{
+    g.quiz.forEach((q,i)=>{
+      total++;
+      const inp=document.getElementById('gq_'+g.id+'_'+i);
+      if(inp && inp.classList.contains('correct')) ok++;
+    });
+  });
+  document.getElementById('gmCorrect').textContent=ok;
+  document.getElementById('gmTotal').textContent=total;
+}
+
+// ═════════ SENTENCE BUILDER ═════════
+const sbState={}; // id -> {built:[], wordIdx:{}}
+function renderBuilder(){
+  const list=document.getElementById('sbList'); let html='';
+  SBS.forEach(s=>{
+    sbState[s.id]={ built:[], wordIdx:{} };
+    html += `<div class="card" id="sb-card-${s.id}">
+      <div class="sb-target"><b>Target:</b> ${s.target}</div>
+      <div class="sb-builder" id="sb-built-${s.id}"></div>
+      <div class="sb-words" id="sb-words-${s.id}"></div>
+      <div class="sb-controls">
+        <button class="btn-primary" onclick="checkSB('${s.id}')">Check</button>
+        <button class="btn-ghost" onclick="resetSB('${s.id}')">↺ Reset</button>
+        <button class="btn-hint" onclick="hintSB('${s.id}')">💡 Hint (-5 XP)</button>
+      </div>
+      <div class="feedback" id="sb-fb-${s.id}"></div>
+    </div>`;
+  });
+  list.innerHTML=html;
+  SBS.forEach(s=>renderSBWords(s.id));
+}
+function renderSBWords(id){
+  const s=SBS.find(x=>x.id===id);
+  const wContainer=document.getElementById('sb-words-'+id);
+  wContainer.innerHTML='';
+  // shuffle once per render
+  const shuffled = s.words.map((w,i)=>({w,i})).sort(()=>Math.random()-0.5);
+  shuffled.forEach(({w,i})=>{
+    const used = sbState[id].built.some(b=>b.idx===i);
+    const btn=document.createElement('span');
+    btn.className='sb-word'+(used?' used':'');
+    btn.textContent=w;
+    btn.onclick=()=>{ sbState[id].built.push({w,idx:i}); btn.classList.add('used'); renderSBBuilt(id); };
+    wContainer.appendChild(btn);
+  });
+  renderSBBuilt(id);
+}
+function renderSBBuilt(id){
+  const built=sbState[id].built;
+  const c=document.getElementById('sb-built-'+id);
+  c.innerHTML='';
+  built.forEach((b,i)=>{
+    const el=document.createElement('span');
+    el.className='sb-built'; el.textContent=b.w;
+    el.onclick=()=>{ sbState[id].built.splice(i,1); renderSBWords(id); };
+    c.appendChild(el);
+  });
+  if(!built.length){ c.innerHTML='<span style="color:var(--muted);font-size:0.85em">Click words below to build the sentence...</span>'; }
+}
+function checkSB(id){
+  const s=SBS.find(x=>x.id===id);
+  const built=sbState[id].built.map(b=>b.w);
+  const ok=s.valid.some(v=>v.length===built.length && v.every((w,i)=>w===built[i]));
+  const fb=document.getElementById('sb-fb-'+id);
+  fb.classList.add('show');
+  if(ok){
+    fb.className='feedback ok show'; fb.textContent='✓ Perfect! '+s.valid[0].join(' ');
+    confetti(30); beep('correct');
+    if(!prog.completed.builder.includes(id)){
+      prog.completed.builder.push(id);
+      const noHint=!prog.hintsUsed['sb_'+id];
+      addXp(noHint?15:10);
+      if(prog.completed.builder.length===1) unlockAch('first_sentence');
+      if(prog.completed.builder.length===SBS.length) unlockAch('all_builders');
+    }
+    bumpStreak(true);
+  } else {
+    fb.className='feedback bad show'; fb.textContent='✗ Not quite — check word order.';
+    document.getElementById('sb-card-'+id).classList.add('shake');
+    setTimeout(()=>document.getElementById('sb-card-'+id).classList.remove('shake'), 400);
+    beep('wrong'); bumpStreak(false);
+  }
+}
+function resetSB(id){ sbState[id].built=[]; document.getElementById('sb-fb-'+id).classList.remove('show'); renderSBWords(id); }
+function hintSB(id){
+  const s=SBS.find(x=>x.id===id);
+  const fb=document.getElementById('sb-fb-'+id);
+  fb.className='feedback hint show';
+  fb.innerHTML='💡 <b>Model:</b> '+s.valid[0].join(' ');
+  if(!prog.hintsUsed['sb_'+id]){ prog.hintsUsed['sb_'+id]=true; addXp(-5); save(); }
+}
+
+// ═════════ REWRITE ═════════
+const rwState={}; // id -> {target: idx, value:''}
+function renderRewrite(){
+  const list=document.getElementById('rwList'); let html='';
+  RWS.forEach(r=>{
+    rwState[r.id]={target:0};
+    const tgtBtns=r.targets.map((t,i)=>`<button class="rw-tgt${i===0?' active':''}" onclick="setRWTarget('${r.id}',${i})" data-rw="${r.id}" data-idx="${i}">${t.name}</button>`).join('');
+    html += `<div class="card" id="rw-card-${r.id}">
+      <div class="rw-base"><b>Original (Past Simple):</b> ${r.base}</div>
+      <p style="margin:6px 0 4px;color:var(--muted);font-size:0.88em">Rewrite using:</p>
+      <div class="rw-targets">${tgtBtns}</div>
+      <div class="rw-hint-formula" id="rw-formula-${r.id}">Formula: <b>${r.targets[0].formula}</b></div>
+      <div class="text-wrap">
+        <div class="text-wrap-bg"></div>
+        <textarea class="text-input" id="rw-in-${r.id}" placeholder="Type your rewritten sentence..." style="min-height:60px"></textarea>
+      </div>
+      <div class="sb-controls">
+        <button class="btn-primary" onclick="checkRW('${r.id}')">Check</button>
+        <button class="btn-hint" onclick="hintRW('${r.id}')">💡 Hint (-5 XP)</button>
+        <button class="btn-ghost" onclick="resetRW('${r.id}')">↺ Clear</button>
+      </div>
+      <div class="feedback" id="rw-fb-${r.id}"></div>
+    </div>`;
+  });
+  list.innerHTML=html;
+}
+function setRWTarget(id, idx){
+  rwState[id].target=idx;
+  const r=RWS.find(x=>x.id===id);
+  document.querySelectorAll('[data-rw="'+id+'"]').forEach(b=>b.classList.toggle('active', +b.dataset.idx===idx));
+  document.getElementById('rw-formula-'+id).innerHTML='Formula: <b>'+r.targets[idx].formula+'</b>';
+  document.getElementById('rw-fb-'+id).classList.remove('show');
+}
+function checkRW(id){
+  const r=RWS.find(x=>x.id===id);
+  const t=r.targets[rwState[id].target];
+  const v=document.getElementById('rw-in-'+id).value.trim();
+  const fb=document.getElementById('rw-fb-'+id);
+  fb.classList.add('show');
+  if(t.check(v)){
+    fb.className='feedback ok show'; fb.textContent='✓ Well done! Your sentence uses '+t.name+' correctly.';
+    confetti(60); beep('correct');
+    const key=id+'_'+rwState[id].target;
+    if(!prog.completed.rewrite.includes(key)){
+      prog.completed.rewrite.push(key);
+      const noHint=!prog.hintsUsed['rw_'+key];
+      addXp(noHint?20:10);
+      if(noHint) unlockAch('hint_free');
+      const totalTargets = RWS.reduce((s,x)=>s+x.targets.length, 0);
+      if(prog.completed.rewrite.length>=totalTargets) unlockAch('all_rewrites');
+    }
+    bumpStreak(true);
+  } else {
+    fb.className='feedback bad show'; fb.textContent='✗ Not quite — make sure your sentence uses '+t.name+' ('+t.formula+').';
+    document.getElementById('rw-card-'+id).classList.add('shake');
+    setTimeout(()=>document.getElementById('rw-card-'+id).classList.remove('shake'), 400);
+    beep('wrong'); bumpStreak(false);
+  }
+}
+function hintRW(id){
+  const r=RWS.find(x=>x.id===id);
+  const t=r.targets[rwState[id].target];
+  const fb=document.getElementById('rw-fb-'+id);
+  fb.className='feedback hint show';
+  fb.innerHTML='💡 <b>Model:</b> '+t.hint;
+  const key=id+'_'+rwState[id].target;
+  if(!prog.hintsUsed['rw_'+key]){ prog.hintsUsed['rw_'+key]=true; addXp(-5); save(); }
+}
+function resetRW(id){ document.getElementById('rw-in-'+id).value=''; document.getElementById('rw-fb-'+id).classList.remove('show'); }
+
+// ═════════ STORY CONTINUATION + GHOST TEXT ═════════
+const ccState={}; // id -> { ghostText:'', ghostTimer:null, lastBackspace:0, escCooldown:0 }
+function renderContinue(){
+  const list=document.getElementById('ccList'); let html='';
+  CCS.forEach(c=>{
+    ccState[c.id]={ ghostText:'', ghostTimer:null, lastBackspace:0, escCooldown:0 };
+    const draft=(prog.draft && prog.draft[c.id])||c.starter||'';
+    html += `<div class="card" id="cc-card-${c.id}">
+      <p><b>Prompt:</b> ${c.prompt}</p>
+      <p style="color:var(--muted);font-size:0.85em">After you pause 1.5s, you may see a <em>ghost suggestion</em> below the line. Press <kbd>Tab</kbd> to accept, <kbd>Esc</kbd> to dismiss.</p>
+      <div class="text-wrap">
+        <div class="text-wrap-bg"></div>
+        <div class="text-mirror" id="cc-mirror-${c.id}"></div>
+        <textarea class="text-input" id="cc-in-${c.id}" data-cc="${c.id}">${draft.replace(/[<>]/g,'')}</textarea>
+      </div>
+      <div class="ghost-hint" id="cc-gh-${c.id}">Ghost text: <span style="color:var(--muted)">(none yet — pause typing to see a suggestion)</span></div>
+      <div class="sb-controls">
+        <button class="btn-hint" onclick="hintCC('${c.id}')">💡 Hint — show full model</button>
+        <button class="btn-ghost" onclick="resetCC('${c.id}')">↺ Clear</button>
+      </div>
+      <div class="feedback" id="cc-fb-${c.id}"></div>
+    </div>`;
+  });
+  list.innerHTML=html;
+  // attach listeners
+  CCS.forEach(c=>{
+    const ta=document.getElementById('cc-in-'+c.id);
+    ta.addEventListener('input', e=>onCCInput(c.id, e));
+    ta.addEventListener('keydown', e=>onCCKey(c.id, e));
+    ta.addEventListener('blur', ()=>saveCCDraft(c.id));
+    // initial mirror sync
+    updateCCMirror(c.id);
+  });
+}
+function saveCCDraft(id){
+  const ta=document.getElementById('cc-in-'+id);
+  if(!prog.draft || typeof prog.draft!=='object') prog.draft={};
+  prog.draft[id]=ta.value; save();
+}
+function onCCInput(id, e){
+  saveCCDraft(id);
+  const st=ccState[id];
+  if(st.ghostTimer) clearTimeout(st.ghostTimer);
+  // hide ghost while typing
+  st.ghostText='';
+  updateCCMirror(id);
+  updateGhostHint(id, '');
+  // check esc cooldown
+  if(Date.now() < st.escCooldown) return;
+  // check backspace cooldown
+  if(Date.now() - st.lastBackspace < 3000) return;
+  st.ghostTimer=setTimeout(()=>tryShowGhost(id), 1500);
+}
+function onCCKey(id, e){
+  const st=ccState[id];
+  if(e.key==='Backspace' || e.key==='Delete'){ st.lastBackspace=Date.now(); st.ghostText=''; updateCCMirror(id); updateGhostHint(id,''); return; }
+  if(e.key==='Tab' && st.ghostText){
+    e.preventDefault();
+    const ta=document.getElementById('cc-in-'+id);
+    ta.value = ta.value + st.ghostText;
+    prog.ghostStats.accepted++;
+    st.ghostText='';
+    updateCCMirror(id); updateGhostHint(id, '');
+    saveCCDraft(id); updateXp();
+    addXp(-2); // small ghost-accept penalty
+    if(!prog.achievements.includes('ghost_taster')) unlockAch('ghost_taster');
+    return;
+  }
+  if(e.key==='Escape' && st.ghostText){
+    e.preventDefault();
+    prog.ghostStats.rejected++;
+    st.ghostText=''; st.escCooldown=Date.now()+3000;
+    updateCCMirror(id); updateGhostHint(id, '');
+    save(); updateXp();
+    return;
+  }
+}
+function tryShowGhost(id){
+  const c=CCS.find(x=>x.id===id);
+  const ta=document.getElementById('cc-in-'+id);
+  if(!ta) return;
+  // edge case: cursor must be at end + no selection
+  if(ta.selectionStart!==ta.value.length || ta.selectionStart!==ta.selectionEnd) return;
+  // find best matching suggestion by longest-prefix
+  const cur=ta.value.toLowerCase().trim();
+  let best=null, bestLen=-1;
+  c.suggestions.forEach(s=>{
+    const p=s.prefix.toLowerCase().trim();
+    if(p===''){ if(cur===''){ if(bestLen<0){ best=s; bestLen=0; } } }
+    else if(cur.endsWith(p)){
+      if(p.length>bestLen){ best=s; bestLen=p.length; }
+    }
+  });
+  if(!best) return;
+  ccState[id].ghostText=best.ghost;
+  prog.ghostStats.shown++; save(); updateXp();
+  updateCCMirror(id);
+  updateGhostHint(id, best.ghost);
+}
+function updateCCMirror(id){
+  const ta=document.getElementById('cc-in-'+id);
+  const m=document.getElementById('cc-mirror-'+id);
+  const ghost=ccState[id].ghostText;
+  // Match mirror dimensions to textarea
+  m.style.width=ta.offsetWidth+'px';
+  m.style.height=ta.offsetHeight+'px';
+  // Render user text invisible + ghost
+  const text=ta.value;
+  m.innerHTML=escapeHTML(text)+(ghost?'<span class="ghost">'+escapeHTML(ghost)+'</span>':'');
+}
+function updateGhostHint(id, ghost){
+  const el=document.getElementById('cc-gh-'+id);
+  if(!ghost){ el.innerHTML='Ghost text: <span style="color:var(--muted)">(pause typing for a suggestion)</span>'; return; }
+  el.innerHTML='Ghost text (<kbd>Tab</kbd>=accept, <kbd>Esc</kbd>=dismiss): <span style="color:var(--accent2);font-style:italic">'+escapeHTML(ghost)+'</span>';
+}
+function escapeHTML(s){ return (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function hintCC(id){
+  const c=CCS.find(x=>x.id===id);
+  const fb=document.getElementById('cc-fb-'+id);
+  fb.className='feedback hint show';
+  fb.innerHTML='💡 <b>Model continuation:</b> '+escapeHTML(c.hint);
+  if(!prog.hintsUsed['cc_'+id]){ prog.hintsUsed['cc_'+id]=true; addXp(-5); save(); }
+}
+function resetCC(id){
+  document.getElementById('cc-in-'+id).value='';
+  if(prog.draft && prog.draft[id]){ prog.draft[id]=''; save(); }
+  ccState[id].ghostText=''; updateCCMirror(id); updateGhostHint(id,'');
+  document.getElementById('cc-fb-'+id).classList.remove('show');
+}
+
+// ═════════ EXERCISES ═════════
+function renderFIB(){
+  const list=document.getElementById('fibList'); let html='';
+  FIB.forEach((f,i)=>{
+    html += `<div class="ex-item"><span>${i+1}. ${f.p.replace('____','<input type="text" id="fib_'+i+'" data-ans="'+f.a+'">')}</span></div>`;
+  });
+  list.innerHTML=html;
+}
+function checkFIB(){
+  let ok=0;
+  FIB.forEach((f,i)=>{
+    const inp=document.getElementById('fib_'+i); const v=inp.value.trim().toLowerCase();
+    if(v===f.a.toLowerCase()){ inp.classList.remove('wrong'); inp.classList.add('correct'); ok++; }
+    else { inp.classList.remove('correct'); inp.classList.add('wrong'); }
+  });
+  document.getElementById('fibScore').textContent=' '+ok+'/'+FIB.length;
+  if(ok===FIB.length){ confetti(80); addXp(30); toast('+30 XP — Perfect!'); bumpStreak(true); }
+  else { addXp(ok*3); toast(ok+'/'+FIB.length+' correct (+'+(ok*3)+' XP)'); bumpStreak(ok>=FIB.length*0.7); }
+  prog.completed.fib=true; save();
+}
+function renderERR(){
+  const list=document.getElementById('errList'); let html='';
+  ERR.forEach((e,i)=>{
+    html += `<div class="ex-item">
+      <p style="margin:4px 0"><b>${i+1}.</b> <em style="color:var(--muted)">"${e.s}"</em></p>
+      <p style="margin:4px 0"><span>Correction: </span><input type="text" id="err_'+i+'" placeholder="..." style="width:80%" data-ans="${e.corr}"></p>
+      <p style="margin:4px 0;display:none" id="err_exp_${i}" class="meta">💡 ${e.exp}</p>
+    </div>`.replace("id='err_'+i+'", "id=\"err_"+i+"\"").replace('id=\'err_\'+i+\'','id="err_'+i+'"');
+    // Simple template - rebuild without complex escape
+  });
+  // Cleaner rebuild:
+  html='';
+  ERR.forEach((e,i)=>{
+    html += '<div class="ex-item">';
+    html += '<p style="margin:4px 0"><b>'+(i+1)+'.</b> <em style="color:var(--muted)">"'+e.s+'"</em></p>';
+    html += '<p style="margin:4px 0">Correction: <input type="text" id="err_'+i+'" placeholder="rewrite the wrong part..." style="width:80%"></p>';
+    html += '<p style="margin:4px 0;display:none" id="err_exp_'+i+'" class="meta">💡 '+e.exp+'</p>';
+    html += '</div>';
+  });
+  list.innerHTML=html;
+}
+function checkERR(){
+  let ok=0;
+  ERR.forEach((e,i)=>{
+    const inp=document.getElementById('err_'+i); const v=inp.value.trim().toLowerCase();
+    const corrLow=e.corr.toLowerCase();
+    // accept if user's answer contains the key correction phrase
+    const matches = corrLow.includes(v) && v.length>4;
+    if(matches){ inp.classList.remove('wrong'); inp.classList.add('correct'); ok++; document.getElementById('err_exp_'+i).style.display='none'; }
+    else { inp.classList.remove('correct'); inp.classList.add('wrong'); document.getElementById('err_exp_'+i).style.display='block'; }
+  });
+  document.getElementById('errScore').textContent=' '+ok+'/'+ERR.length;
+  if(ok===ERR.length){ confetti(80); addXp(25); toast('+25 XP — Perfect!'); bumpStreak(true); }
+  else { addXp(ok*3); toast(ok+'/'+ERR.length+' correct (+'+(ok*3)+' XP)'); bumpStreak(ok>=ERR.length*0.7); }
+  prog.completed.err=true; save();
+}
+function renderTR(){
+  const list=document.getElementById('trList'); let html='';
+  TE.forEach((t,i)=>{
+    html += '<div class="ex-item">';
+    html += '<p style="margin:4px 0"><b>'+(i+1)+'.</b> '+t.tr+' <span class="meta">('+t.hint+')</span></p>';
+    html += '<p style="margin:4px 0"><input type="text" id="tr_'+i+'" placeholder="Translate to English..." style="width:90%"></p>';
+    html += '<p style="margin:4px 0;display:none" id="tr_ans_'+i+'" class="meta">💡 Model: '+t.ans+'</p>';
+    html += '</div>';
+  });
+  list.innerHTML=html;
+}
+function checkTR(){
+  let ok=0;
+  TE.forEach((t,i)=>{
+    const inp=document.getElementById('tr_'+i);
+    const v=inp.value.trim().toLowerCase().replace(/[.,!?;:]/g,'');
+    const ans=t.ans.toLowerCase().replace(/[.,!?;:]/g,'');
+    // tolerate small word differences — require >70% token overlap + key tense keyword
+    const va=v.split(/\s+/), aa=ans.split(/\s+/);
+    let overlap=0; va.forEach(w=>{ if(aa.includes(w)) overlap++; });
+    const ratio=overlap/aa.length;
+    const correct = ratio>=0.65 && v.length>5;
+    if(correct){ inp.classList.remove('wrong'); inp.classList.add('correct'); ok++; document.getElementById('tr_ans_'+i).style.display='none'; }
+    else { inp.classList.remove('correct'); inp.classList.add('wrong'); document.getElementById('tr_ans_'+i).style.display='block'; }
+  });
+  document.getElementById('trScore').textContent=' '+ok+'/'+TE.length;
+  if(ok===TE.length){ confetti(80); addXp(35); toast('+35 XP — Perfect!'); bumpStreak(true); }
+  else { addXp(ok*4); toast(ok+'/'+TE.length+' close (+'+(ok*4)+' XP)'); bumpStreak(ok>=TE.length*0.6); }
+  prog.completed.tr=true; save();
+}
+
+// ═════════ OPEN WRITING TASK (Explore) ═════════
+const openTa=document.getElementById('openTask');
+openTa.value=prog.openDraft||'';
+let openSaveTimer=null;
+openTa.addEventListener('input', ()=>{
+  if(openSaveTimer) clearTimeout(openSaveTimer);
+  openSaveTimer=setTimeout(()=>{
+    prog.openDraft=openTa.value; save();
+    document.getElementById('openTaskMeta').textContent='Auto-saved · '+openTa.value.split(/\s+/).filter(Boolean).length+' words';
+  }, 600);
+});
+openTa.addEventListener('blur', ()=>{ prog.openDraft=openTa.value; save(); });
+
+// ═════════ RESET ═════════
+let resetArmed=false, resetTimer=null;
+function askReset(){
+  if(resetArmed){ resetArmed=false; clearTimeout(resetTimer); doReset(); return; }
+  resetArmed=true; toast('Press ↺ (or Shift+R) again to confirm reset.', 2500);
+  resetTimer=setTimeout(()=>{ resetArmed=false; }, 2500);
+}
+function doReset(){
+  localStorage.removeItem(SK);
+  prog={ xp:0, level:0, streak:0, bestStreak:0, completed:{builder:[],rewrite:[],fib:false,err:false,tr:false}, hintsUsed:{}, ghostStats:{shown:0,accepted:0,rejected:0}, draft:{}, openDraft:'', theme:'navy', sound:true, fs:1, ttsRate:1.0, achievements:[] };
+  save(); applyTheme('navy'); updateXp();
+  renderBuilder(); renderRewrite(); renderContinue(); renderGrammar(); renderFIB(); renderERR(); renderTR();
+  openTa.value=''; toast('Reset complete.');
+}
+
+// ═════════ KEYBOARD SHORTCUTS ═════════
+document.addEventListener('keydown', e=>{
+  if(e.target.matches('input, textarea')) return;
+  if(e.shiftKey && (e.key==='R'||e.key==='r')){ e.preventDefault(); askReset(); return; }
+  if(['1','2','3','4','5'].includes(e.key)){
+    const map={'1':'story','2':'grammar','3':'practice','4':'exercises','5':'explore'};
+    switchTab(map[e.key]);
+  }
+});
+
+// ═════════ SCROLL TO TOP ═════════
+window.addEventListener('scroll', ()=>{
+  document.getElementById('scrollTop').classList.toggle('show', window.scrollY>400);
+});
+
+// ═════════ MIRROR RESIZE OBSERVER ═════════
+// On window resize, refresh active ghost mirrors
+window.addEventListener('resize', ()=>{
+  CCS.forEach(c=>{ if(ccState[c.id]) updateCCMirror(c.id); });
+});
+
+// ═════════ INIT ═════════
+renderGrammar();
+renderBuilder();
+renderRewrite();
+renderContinue();
+renderFIB();
+renderERR();
+renderTR();
+updateXp();
+updateMiniScore();
+</script>
+</body>
+</html>

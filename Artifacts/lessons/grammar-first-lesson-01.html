@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 01 · Mert's Day Out in London — Grammar-First</title>
+<link rel="stylesheet" href="../_engine/engine.css">
+<style>
+/* ====== Lesson 01 styles (cogito-derived + extensions) ====== */
+:root {
+  --g1:#4fc3f7; --g2:#ce93d8; --g3:#ffb74d; --g4:#80cbc4;
+  --g5:#a5d6a7; --g6:#ef9a9a; --g7:#fff176; --g8:#f48fb1;
+  --gold:#fbbf24; --error:#ef4444; --success:#22c55e; --warn:#f59e0b;
+}
+.sticky-top {position:sticky; top:0; z-index:100; background:var(--bg); border-bottom:1px solid var(--border);}
+.header-bar {background:linear-gradient(135deg, #0f1f3d, #1a2f5a); padding:10px 22px; display:flex; align-items:center; gap:11px; flex-wrap:wrap;}
+body.theme-light .header-bar {background:linear-gradient(135deg, #e2e8f0, #cbd5e1); color:#0f172a;}
+body.theme-forest .header-bar {background:linear-gradient(135deg, #0d2018, #163d2c);}
+body.theme-sunset .header-bar {background:linear-gradient(135deg, #2a0f1c, #4d1a30);}
+.badge {background:var(--accent3); color:#0a0a0a; font-size:10px; font-weight:bold; padding:3px 9px; border-radius:12px; letter-spacing:.5px;}
+.header-bar h1 {font-size:14px; font-weight:bold; color:#fff; flex:1; min-width:160px;}
+body.theme-light .header-bar h1 {color:#0f172a;}
+.header-bar .meta {font-size:11px; color:var(--text2);}
+.xp-mini {display:flex; align-items:center; gap:6px; background:rgba(0,0,0,.25); padding:3px 10px; border-radius:14px; font-size:11px; border:1px solid var(--border);}
+.xp-mini .lvl {color:var(--gold); font-weight:bold;}
+.xp-mini .xp  {color:var(--accent2);}
+.xp-bar {width:60px; height:5px; background:var(--border); border-radius:3px; overflow:hidden; position:relative;}
+.xp-bar-fill {height:100%; background:linear-gradient(90deg, var(--accent), var(--gold)); transition:width .4s;}
+.toolbar {display:flex; gap:5px; align-items:center;}
+.tool-btn {background:rgba(255,255,255,.07); border:1px solid var(--border); color:var(--text2); width:32px; height:30px; border-radius:6px; font-size:11px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all .15s;}
+.tool-btn:hover {background:var(--accent); border-color:var(--accent); color:#fff;}
+.tool-btn.primary-tool {background:var(--gold); color:#0a0a0a; border-color:var(--gold); padding:0 12px; width:auto;}
+.tool-btn.primary-tool:hover {background:var(--accent); color:#fff;}
+.level-bar {background:var(--bg2); padding:7px 22px; display:flex; align-items:center; gap:14px; font-size:11px; flex-wrap:wrap;}
+.lesson-pill {background:rgba(251,191,36,.13); color:var(--gold); padding:2px 11px; border-radius:10px; font-weight:bold; font-size:11px; white-space:nowrap;}
+.grammar-legend {display:flex; gap:9px; flex-wrap:wrap; flex:1;}
+.gl-item {display:flex; align-items:center; gap:5px; font-size:10px; color:var(--text2); cursor:pointer; transition: color .15s;}
+.gl-item:hover {color:var(--text);}
+.gl-dot {width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+
+.tabs {display:flex; background:var(--bg2); border-bottom:1px solid var(--border); overflow-x:auto; position:sticky; top:50px; z-index:90;}
+.tab-btn {padding:11px 22px; background:none; border:none; color:var(--text2); font-family:Verdana,sans-serif; font-size:12px; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; transition:all .15s; position:relative;}
+.tab-btn:hover {color:var(--text);}
+.tab-btn.active {color:var(--accent2); border-bottom-color:var(--accent);}
+.tab-btn .kbd {position:absolute; top:2px; right:5px; font-size:8px; color:var(--text3); opacity:.6;}
+.read-progress {position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg, var(--accent), var(--gold)); width:0; z-index:101; transition:width .15s;}
+.content {max-width:920px; margin:0 auto; padding:24px 22px 90px;}
+.tab-panel {display:none; animation: fadeIn .25s ease;}
+.tab-panel.active {display:block;}
+@keyframes fadeIn {from {opacity:0; transform:translateY(4px);} to {opacity:1;}}
+@keyframes shake {0%,100% {transform:translateX(0);} 25% {transform:translateX(-5px);} 75% {transform:translateX(5px);}}
+@keyframes pop   {0% {transform:scale(1);} 50% {transform:scale(1.12);} 100% {transform:scale(1);}}
+.shake {animation: shake .35s ease;}
+.pop {animation: pop .3s ease;}
+
+/* === STORY === */
+.story-intro {background:var(--card); border:1px solid var(--border); border-radius:10px; padding:13px 17px; margin-bottom:16px; font-size:13px; color:var(--text2); line-height:1.7;}
+.story-intro b {color:var(--text);}
+.tts-bar {display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:11px 15px;}
+.tts-btn {padding:6px 14px; background:var(--bg2); border:1px solid var(--border); color:var(--text); font-size:12px; border-radius:18px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all .15s;}
+.tts-btn:hover:not(:disabled) {border-color:var(--accent); color:var(--accent2);}
+.tts-btn:disabled {opacity:.4; cursor:not-allowed;}
+.tts-btn.active {background:var(--accent); border-color:var(--accent); color:#fff;}
+.tts-btn.gold {color:var(--gold); border-color:var(--gold);}
+.tts-btn.gold.active {background:var(--gold); color:#0a0a0a;}
+.tts-rate {display:flex; align-items:center; gap:6px; font-size:11px; color:var(--text2); margin-left:auto;}
+.tts-rate input {accent-color:var(--accent); width:90px;}
+.tts-status {font-size:11px; color:var(--text2); padding-left:6px;}
+
+.passage {background:var(--card); border:1px solid var(--border); border-radius:12px; padding:28px 32px; line-height:2.05; font-size:15px;}
+.passage h2 {font-size:21px; color:var(--accent2); margin-bottom:6px;}
+.passage .subtitle {font-size:12px; color:var(--text2); margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);}
+.passage p {margin-bottom:18px; padding:5px 7px; margin-left:-7px; border-radius:6px; transition: background .15s; position:relative;}
+.passage p.speaking {background:rgba(56,189,248,.10); box-shadow: 0 0 0 1px var(--accent);}
+.passage .sn-play {opacity:.45; transition: opacity .15s; cursor:pointer; color:var(--accent2); font-size:11px; margin-right:7px;}
+.passage p:hover .sn-play {opacity:1;}
+
+.passage [data-g] {border-radius:4px; padding:1px 5px; cursor:help; position:relative; font-weight:500; transition: filter .15s;}
+.passage [data-g]:hover {filter: brightness(1.2);}
+.passage [data-g="1"] {background:rgba(79,195,247,.20); color:var(--g1); border-bottom:1px solid var(--g1);}
+.passage [data-g="2"] {background:rgba(206,147,216,.20); color:var(--g2); border-bottom:1px solid var(--g2);}
+.passage [data-g="3"] {background:rgba(255,183,77,.20); color:var(--g3); border-bottom:1px solid var(--g3);}
+.passage [data-g="4"] {background:rgba(128,203,196,.20); color:var(--g4); border-bottom:1px solid var(--g4);}
+.passage [data-g="5"] {background:rgba(165,214,167,.20); color:var(--g5); border-bottom:1px solid var(--g5);}
+.passage [data-g="6"] {background:rgba(239,154,154,.20); color:var(--g6); border-bottom:1px solid var(--g6);}
+.passage [data-g="7"] {background:rgba(255,241,118,.20); color:var(--g7); border-bottom:1px solid var(--g7);}
+.passage [data-g="8"] {background:rgba(244,143,177,.20); color:var(--g8); border-bottom:1px solid var(--g8);}
+
+.passage .w {cursor:pointer; transition: background .12s;}
+.passage .w:hover {background:rgba(251,191,36,.18); border-radius:3px;}
+
+.g-tooltip {display:none; position:fixed; background:#1a2d4a; border:1px solid var(--accent); border-radius:8px; padding:10px 14px; max-width:320px; font-size:12px; line-height:1.55; z-index:999; box-shadow:0 4px 18px rgba(0,0,0,.6);}
+.g-tooltip.show {display:block;}
+.tt-name {font-weight:bold; margin-bottom:3px; color:var(--accent2);}
+.tt-tr {color:var(--text2); margin-bottom:3px;}
+.tt-formula {color:var(--success); font-style:italic; font-size:11px; font-family:'Courier New',monospace; margin-top:4px; padding-top:4px; border-top:1px solid var(--border);}
+.tt-jump {color:var(--gold); font-size:10px; margin-top:5px;}
+
+/* word popup (click) */
+.w-pop {display:none; position:fixed; background:#1a2d4a; border:1px solid var(--gold); border-radius:10px; padding:9px; z-index:1000; box-shadow:0 4px 18px rgba(0,0,0,.6); font-size:11px;}
+.w-pop.show {display:flex; gap:6px; align-items:center;}
+.w-pop .wp-word {color:var(--gold); font-weight:bold; padding:0 7px; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.w-pop button {background:var(--bg2); border:1px solid var(--border); color:var(--text); font-size:11px; padding:5px 10px; border-radius:6px; cursor:pointer; transition: all .15s;}
+.w-pop button:hover {background:var(--accent); border-color:var(--accent); color:#fff;}
+.w-pop button.saved {background:var(--success); border-color:var(--success); color:#fff;}
+
+.reading-meta {display:flex; gap:16px; margin-top:16px; padding-top:16px; border-top:1px solid var(--border); font-size:11px; color:var(--text2); flex-wrap:wrap;}
+
+/* === GRAMMAR ACCORDION === */
+.grammar-intro {background:var(--card); border:1px solid var(--border); border-radius:10px; padding:13px 17px; margin-bottom:16px; font-size:13px; color:var(--text2); line-height:1.7;}
+.accordion {display:flex; flex-direction:column; gap:10px;}
+.acc-item {background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+.acc-header {display:flex; align-items:center; gap:12px; padding:13px 18px; cursor:pointer; user-select:none; transition: background .15s;}
+.acc-header:hover {background:var(--card2);}
+.acc-num {width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; flex-shrink:0; color:#0a0a0a;}
+.acc-title {flex:1; font-size:14px; font-weight:bold;}
+.acc-cefr {font-size:10px; color:var(--accent2); padding:2px 8px; background:rgba(129,140,248,.13); border-radius:9px;}
+.acc-tr {font-size:11px; color:var(--text2); text-align:right; max-width:280px;}
+.acc-arrow {color:var(--text2); transition: transform .25s; font-size:12px; margin-left:8px;}
+.acc-item.open .acc-arrow {transform: rotate(180deg);}
+.acc-body {display:none; padding:0 18px 18px;}
+.acc-item.open .acc-body {display:block;}
+.formula-box {background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px 14px; font-family:'Courier New',monospace; font-size:12px; color:var(--success); margin-bottom:12px;}
+.acc-section {margin-bottom:12px;}
+.acc-section h4 {font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:7px;}
+.example-list {list-style:none; display:flex; flex-direction:column; gap:7px;}
+.example-list li {background:var(--card2); border-left:3px solid var(--accent); padding:9px 12px; border-radius:0 6px 6px 0;}
+.ex-en {color:var(--text); font-size:13px;}
+.ex-en .tts-mini {display:inline-block; cursor:pointer; color:var(--text3); font-size:11px; margin-right:5px;}
+.ex-en .tts-mini:hover {color:var(--accent2);}
+.ex-tr {color:var(--text2); font-size:11px; margin-top:3px;}
+.edge-cases {display:flex; flex-direction:column; gap:6px;}
+.edge-case {background:var(--bg2); border-left:3px solid var(--warn); padding:8px 12px; border-radius:0 6px 6px 0; font-size:12px; color:var(--text2); line-height:1.5;}
+.mini-test {background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-top:12px;}
+.mini-test h4 {font-size:11px; color:var(--accent3); text-transform:uppercase; margin-bottom:10px; letter-spacing:.5px;}
+.mini-q {margin-bottom:13px;}
+.mini-q:last-child {margin-bottom:0;}
+.mq-text {margin-bottom:7px; color:var(--text); font-size:13px; line-height:1.7;}
+.mq-text .blank {display:inline-block; min-width:80px; border-bottom:1px dashed var(--text3); padding:0 8px; color:var(--accent3); text-align:center;}
+.mq-opts {display:flex; gap:6px; flex-wrap:wrap;}
+.mini-opt {padding:5px 13px; background:var(--card); border:1px solid var(--border); border-radius:14px; font-size:12px; cursor:pointer; color:var(--text2); transition:all .15s;}
+.mini-opt:hover:not(:disabled) {border-color:var(--accent); color:var(--text);}
+.mini-opt.correct {background:rgba(34,197,94,.13); border-color:var(--success); color:var(--success);}
+.mini-opt.wrong {background:rgba(239,68,68,.13); border-color:var(--error); color:var(--error);}
+.mq-fb {font-size:11px; margin-top:6px; color:var(--text2); display:none;}
+.mq-fb.show {display:block;}
+.cta-row {display:flex; gap:9px; margin-top:18px; flex-wrap:wrap;}
+.cta-btn {padding:11px 20px; background:var(--accent); color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:bold; cursor:pointer; transition:all .15s; display:inline-flex; align-items:center; gap:7px;}
+.cta-btn:hover {background:var(--accent2); transform: translateY(-1px);}
+.cta-btn.gold {background:var(--gold); color:#0a0a0a;}
+.cta-btn.gold:hover {background:#fcd34d;}
+
+/* === VOCAB === */
+.vocab-dash {background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px 18px; display:flex; gap:22px; margin-bottom:16px; flex-wrap:wrap; font-size:12px;}
+.vd-item {display:flex; flex-direction:column; gap:2px; min-width:55px;}
+.vd-num {font-size:19px; font-weight:bold; color:var(--accent2);}
+.vd-num.gold {color:var(--gold);}
+.vd-label {font-size:10px; color:var(--text2); text-transform:uppercase; letter-spacing:.5px;}
+.vocab-controls {display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap;}
+.vocab-btn {padding:7px 14px; background:var(--card); border:1px solid var(--border); border-radius:18px; color:var(--text2); font-size:11px; cursor:pointer; transition:all .15s;}
+.vocab-btn:hover, .vocab-btn.active {background:var(--accent); border-color:var(--accent); color:#fff;}
+
+/* Cards (flash) */
+.cards-grid {display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:12px;}
+.flip-card {height:170px; cursor:pointer; perspective:1200px; position:relative;}
+.flip-inner {width:100%; height:100%; position:relative; transform-style:preserve-3d; transition: transform .55s;}
+.flip-card.flipped .flip-inner {transform: rotateY(180deg);}
+.flip-front, .flip-back {position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:14px; text-align:center; border:1px solid var(--border);}
+.flip-front {background:var(--card);}
+.flip-front .fw {font-size:15px; font-weight:bold; color:var(--accent2);}
+.flip-front .fp {font-size:10px; color:var(--text2); margin-top:4px;}
+.flip-front .fspk {margin-top:10px; background:var(--bg2); border:1px solid var(--border); color:var(--text2); font-size:10px; padding:4px 10px; border-radius:11px; cursor:pointer;}
+.flip-front .fspk:hover {color:var(--accent2); border-color:var(--accent);}
+.flip-back {background:var(--card2); transform: rotateY(180deg);}
+.flip-back .ft {font-size:12px; color:var(--text); margin-bottom:6px;}
+.flip-back .fe {font-size:11px; color:var(--text2); font-style:italic; line-height:1.4;}
+.flip-back .fbnk {position:absolute; bottom:8px; left:8px; right:8px;}
+.flip-back .el-bank-btn {width:100%;}
+.bm {position:absolute; top:6px; right:8px; font-size:14px; cursor:pointer; color:var(--text3); z-index:2; transition: transform .15s;}
+.bm.on {color:var(--gold);}
+.bm:hover {transform: scale(1.2);}
+.mast {position:absolute; top:8px; left:8px; width:9px; height:9px; border-radius:50%; background:#475569; z-index:2;}
+.mast.learning {background:var(--warn);}
+.mast.familiar {background:var(--accent);}
+.mast.mastered {background:var(--success);}
+
+/* Quiz / Speed */
+.quiz-top {display:flex; justify-content:space-between; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:11px 16px; margin-bottom:14px; font-size:13px; flex-wrap:wrap; gap:10px;}
+.qt-lives {font-size:18px; letter-spacing:3px;}
+.qt-combo {display:flex; align-items:center; gap:5px; color:var(--warn); font-weight:bold; font-size:14px;}
+.qt-combo.fire {color:var(--error); animation: pop .4s ease;}
+.qt-score {color:var(--accent2); font-weight:bold; font-size:14px;}
+.quiz-q {background:var(--card); border:1px solid var(--border); border-radius:10px; padding:18px;}
+.q-num {font-size:11px; color:var(--text2); margin-bottom:5px;}
+.q-num b {color:var(--accent3);}
+.q-sent {font-size:14px; margin-bottom:6px; line-height:1.7;}
+.q-sent em {color:var(--warn); font-style:normal; font-weight:bold;}
+.q-ex {font-size:11px; color:var(--text2); font-style:italic; margin-bottom:12px;}
+.options {display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+.opt-btn {padding:9px 12px; background:var(--bg2); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:12px; cursor:pointer; text-align:left; transition:all .15s;}
+.opt-btn:hover:not(:disabled) {border-color:var(--accent);}
+.opt-btn.correct {background:rgba(34,197,94,.13); border-color:var(--success); color:var(--success);}
+.opt-btn.wrong {background:rgba(239,68,68,.13); border-color:var(--error); color:var(--error);}
+
+/* Match */
+.match-area {display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.match-col {display:flex; flex-direction:column; gap:8px;}
+.match-item {padding:10px 13px; background:var(--card); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; transition:all .2s; min-height:44px; display:flex; align-items:center;}
+.match-item:hover:not(.matched) {border-color:var(--accent);}
+.match-item.selected {border-color:var(--accent); background:var(--card2);}
+.match-item.matched {border-color:var(--success); background:rgba(34,197,94,.10); color:var(--success); cursor:default;}
+.match-item.wrong-anim {border-color:var(--error); background:rgba(239,68,68,.10);}
+
+/* Write */
+.write-card {background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px; margin-bottom:14px;}
+.write-word {font-size:18px; font-weight:bold; color:var(--accent2); margin-bottom:3px;}
+.write-tr {font-size:12px; color:var(--text2); margin-bottom:10px;}
+.write-inp {width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:10px; color:var(--text); font-family:Verdana,sans-serif; font-size:13px; resize:vertical; min-height:60px;}
+.write-inp:focus {outline:none; border-color:var(--accent);}
+.street-note {background:rgba(34,197,94,.06); border:1px solid rgba(34,197,94,.25); border-radius:8px; padding:10px 13px; margin-top:10px; font-size:12px;}
+.sn-label {color:var(--success); font-weight:bold; margin-bottom:3px; font-size:11px;}
+.sn-text {color:var(--text2); line-height:1.6;}
+.btn-check {margin-top:14px; padding:10px 24px; background:var(--accent); border:none; border-radius:8px; color:#fff; font-size:13px; cursor:pointer; transition: background .2s;}
+.btn-check:hover {background:var(--accent2);}
+.btn-show {margin-top:10px; padding:8px 18px; background:var(--card); border:1px solid var(--border); border-radius:8px; color:var(--text2); font-size:12px; cursor:pointer; margin-left:8px;}
+.btn-show:hover {border-color:var(--accent); color:var(--text);}
+
+/* Speed */
+.sr-wrap {background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; text-align:center;}
+.sr-stats {display:flex; justify-content:center; gap:24px; font-size:13px; color:var(--text2); margin-bottom:16px; flex-wrap:wrap;}
+.sr-stats b {color:var(--gold); font-size:16px;}
+.sr-timer {font-size:38px; font-weight:bold; color:var(--accent2); margin:6px 0;}
+.sr-timer.warn {color:var(--warn);}
+.sr-timer.danger {color:var(--error); animation:pop 1s infinite;}
+.sr-q {background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:14px; text-align:left;}
+.sr-q .sr-word {font-size:20px; font-weight:bold; color:var(--accent2); margin-bottom:8px;}
+.sr-start {padding:13px 32px; background:var(--accent); border:none; border-radius:24px; color:#fff; font-size:14px; font-weight:bold; cursor:pointer;}
+.sr-start:hover {background:var(--accent2);}
+
+/* Hangman */
+.hm-wrap {background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px;}
+.hm-top {display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; font-size:13px;}
+.hm-art {font-family:'Courier New',monospace; font-size:14px; color:var(--accent2); white-space:pre; background:var(--bg2); padding:12px 16px; border-radius:8px; text-align:center; line-height:1.3; margin-bottom:14px;}
+.hm-clue {background:var(--bg2); padding:10px 14px; border-radius:8px; margin-bottom:12px; font-size:13px; color:var(--text);}
+.hm-clue b {color:var(--accent2);}
+.hm-word {font-size:28px; font-family:'Courier New',monospace; text-align:center; letter-spacing:8px; margin:14px 0; color:var(--accent2); font-weight:bold;}
+.hm-letters {display:grid; grid-template-columns:repeat(13, 1fr); gap:4px; margin-top:14px;}
+.hm-letter {padding:8px 0; background:var(--bg2); border:1px solid var(--border); border-radius:5px; color:var(--text); font-family:'Courier New',monospace; font-size:12px; font-weight:bold; cursor:pointer; text-align:center;}
+.hm-letter:hover:not(:disabled) {background:var(--accent); color:#fff;}
+.hm-letter:disabled {opacity:.3; cursor:not-allowed;}
+.hm-letter.ok {background:rgba(34,197,94,.13); border-color:var(--success); color:var(--success);}
+.hm-letter.no {background:rgba(239,68,68,.13); border-color:var(--error); color:var(--error);}
+.hm-msg {padding:14px; border-radius:8px; text-align:center; font-size:15px; margin-top:14px; display:none;}
+.hm-msg.show {display:block;}
+.hm-msg.win {background:rgba(34,197,94,.10); color:var(--success); border:1px solid var(--success);}
+.hm-msg.lose {background:rgba(239,68,68,.10); color:var(--error); border:1px solid var(--error);}
+
+/* Builder */
+.wb-wrap {background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px;}
+.wb-clue {background:var(--bg2); padding:11px 14px; border-radius:8px; margin-bottom:14px; font-size:13px;}
+.wb-clue b {color:var(--accent2);}
+.wb-slot {min-height:54px; background:var(--bg2); border:2px dashed var(--border); border-radius:8px; padding:8px; display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; align-items:center; justify-content:center;}
+.wb-slot:empty::before {content:'aşağıdan harflere tıkla ↓'; color:var(--text3); font-size:12px;}
+.wb-tile {display:inline-flex; width:36px; height:36px; background:var(--card2); border:1px solid var(--accent); border-radius:6px; align-items:center; justify-content:center; font-family:'Courier New',monospace; font-size:16px; font-weight:bold; color:var(--accent2); cursor:pointer; user-select:none; transition: all .15s;}
+.wb-tile:hover {background:var(--accent); color:#fff;}
+.wb-tile.used {opacity:.25; cursor:not-allowed;}
+.wb-pool {display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:14px;}
+.wb-actions {display:flex; gap:8px; justify-content:center; flex-wrap:wrap;}
+
+/* Custom add */
+.custom-add {background:var(--card); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-top:18px;}
+.custom-add h4 {font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:9px;}
+.custom-row {display:flex; gap:6px; flex-wrap:wrap;}
+.custom-row input, .custom-row select {flex:1; min-width:120px; padding:8px 11px; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:6px; font-size:13px;}
+.custom-row input:focus, .custom-row select:focus {outline:none; border-color:var(--accent);}
+
+/* === QUIZZES TAB === */
+.quiz-tabs {display:flex; gap:7px; margin-bottom:14px; flex-wrap:wrap;}
+.quiz-tab {padding:8px 16px; background:var(--card); border:1px solid var(--border); border-radius:18px; color:var(--text2); font-size:12px; cursor:pointer;}
+.quiz-tab:hover {color:var(--text);}
+.quiz-tab.active {background:var(--accent); border-color:var(--accent); color:#fff;}
+.quiz-section {display:none;}
+.quiz-section.active {display:block;}
+.topic-pick {display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:8px; margin-bottom:14px;}
+.topic-pick .tp-card {padding:11px 13px; background:var(--card); border:1px solid var(--border); border-radius:8px; cursor:pointer; transition: all .15s;}
+.topic-pick .tp-card:hover {border-color:var(--accent); transform:translateY(-1px);}
+.topic-pick .tp-card .tp-title {font-size:13px; font-weight:bold; color:var(--text);}
+.topic-pick .tp-card .tp-cefr {font-size:10px; color:var(--accent2); margin-top:2px;}
+.topic-pick .tp-card .tp-score {font-size:10px; color:var(--gold); margin-top:4px;}
+.qend {background:var(--card); border:1px solid var(--accent); border-radius:12px; padding:24px; text-align:center; margin-top:18px;}
+.qend .qe-score {font-size:36px; color:var(--gold); font-weight:bold; margin:8px 0;}
+.qend .qe-msg {font-size:13px; color:var(--text2); line-height:1.7;}
+
+/* Reflect */
+.reflect-prompt {background:var(--card); border-left:4px solid var(--gold); border-radius:0 10px 10px 0; padding:16px 20px; margin-bottom:18px;}
+.reflect-prompt h4 {font-size:12px; color:var(--gold); margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px;}
+.reflect-prompt p {font-size:13px; color:var(--text); line-height:1.75; margin-bottom:8px;}
+.reflect-prompt ul {padding-left:20px; font-size:12px; color:var(--text2);}
+.reflect-prompt ul li {margin-bottom:4px;}
+.reflect-prompt textarea {width:100%; min-height:140px; padding:11px 14px; background:var(--bg2); color:var(--text); border:1px solid var(--border); border-radius:8px; font-size:14px; line-height:1.75; resize:vertical; margin-top:12px;}
+.reflect-prompt textarea:focus {outline:none; border-color:var(--accent);}
+.reflect-actions {display:flex; gap:8px; margin-top:10px; align-items:center; flex-wrap:wrap;}
+.reflect-status {font-size:11px; color:var(--text2);}
+
+.toast {position:fixed; bottom:24px; left:50%; transform: translateX(-50%) translateY(80px); background:var(--card2); border:1px solid var(--accent); color:var(--text); padding:10px 18px; border-radius:24px; font-size:13px; z-index:200; opacity:0; transition: all .3s;}
+.toast.show {transform: translateX(-50%) translateY(0); opacity:1;}
+
+@media (max-width:600px) {
+  .options {grid-template-columns:1fr;}
+  .grammar-legend {display:none;}
+  .tab-btn .kbd {display:none;}
+  .tab-btn {padding:11px 14px; font-size:11px;}
+  .passage {padding:20px 16px;}
+  .tts-rate {margin-left:0; width:100%;}
+  .acc-tr {display:none;}
+  .match-area {grid-template-columns:1fr;}
+  .hm-letters {grid-template-columns:repeat(9, 1fr);}
+}
+</style>
+</head>
+<body>
+
+<div class="read-progress" id="rp"></div>
+
+<div class="sticky-top">
+  <header class="header-bar">
+    <span class="badge">GRAMMAR-FIRST</span>
+    <h1>Lesson 01 · Mert's Day Out in London</h1>
+    <span class="meta">8 yapı · ~485 kelime · günlük yaşam</span>
+    <div class="xp-mini">
+      <span class="lvl" id="lvlT">Apprentice</span>
+      <span class="xp" id="xpT">0 XP</span>
+      <span class="xp-bar"><span class="xp-bar-fill" id="xpFill"></span></span>
+    </div>
+    <div class="toolbar">
+      <button class="tool-btn" id="themeBtn" onclick="cycleTheme()" title="Tema">🌓</button>
+      <button class="tool-btn" id="fsBtn" onclick="cycleFs()" title="Font boyutu">A</button>
+      <button class="tool-btn" id="sndBtn" onclick="toggleSound()" title="Ses efektleri">🔊</button>
+      <button class="tool-btn primary-tool" onclick="exportSession()" title="JSON'u 00_INBOX'a indir">📥 Export</button>
+    </div>
+  </header>
+
+  <div class="level-bar">
+    <span class="lesson-pill">📚 Lesson 01 / 10 · Daily Life</span>
+    <div class="grammar-legend" id="legend"></div>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="story" onclick="showTab('story', this)">📖 Story<span class="kbd">1</span></button>
+    <button class="tab-btn" data-tab="grammar" onclick="showTab('grammar', this)">📐 Grammar<span class="kbd">2</span></button>
+    <button class="tab-btn" data-tab="vocab" onclick="showTab('vocab', this)">📚 Vocabulary<span class="kbd">3</span></button>
+    <button class="tab-btn" data-tab="quiz" onclick="showTab('quiz', this)">🎯 Quizzes<span class="kbd">4</span></button>
+    <button class="tab-btn" data-tab="reflect" onclick="showTab('reflect', this)">✍️ Reflect<span class="kbd">5</span></button>
+  </nav>
+</div>
+
+<main class="content">
+
+  <!-- ===================== STORY TAB ===================== -->
+  <section class="tab-panel active" id="tab-story">
+    <div class="story-intro">
+      <b>📖 Mert's Day Out in London — A Saturday in Spring</b><br>
+      Mert annesini Heathrow'da karşılıyor. Sabah Tube'den havalimanına, sonra Borough Market'te öğle yemeği, alışveriş, post office, eczane — sıradan bir günün içine 8 gramer yapısı doğal şekilde örülmüş. <b>Vurgulu kısımlara hover</b> → gramer; <b>tıkla</b> → Grammar tab'ında o konuya atla. <b>Herhangi bir kelimeye tıkla</b> → 🔊 dinle / 💾 bank'a kaydet.
+    </div>
+
+    <div class="tts-bar">
+      <button class="tts-btn" id="ttsPlay" onclick="ttsPlayAll()">▶ Tüm Metin</button>
+      <button class="tts-btn" id="ttsPause" onclick="ttsPause()" disabled>⏸</button>
+      <button class="tts-btn" id="ttsStop" onclick="ttsStop()" disabled>⏹</button>
+      <span class="tts-status" id="ttsStat">Hazır</span>
+      <label class="tts-rate">Hız <input type="range" id="ttsRate" min="0.6" max="1.4" step="0.05" value="0.9"><span id="ttsRateV">0.90×</span></label>
+    </div>
+
+    <article class="passage" id="passage">
+      <h2>Mert's Day Out in London</h2>
+      <div class="subtitle">A Saturday in late April · ~485 words · 8 grammar structures · daily-life vocabulary</div>
+
+      <p data-sent="1"><span class="sn-play" onclick="ttsPlaySentence(1)">🔊</span>It <span data-g="7">was</span> a bright Saturday morning <span data-g="5">in</span> late April, and Mert had been waiting for this day all month. His mother <span data-g="7">was arriving</span> <span data-g="5">at Heathrow</span> <span data-g="5">at noon</span>, and there <span data-g="7">were</span> a hundred small things to do before then. He <span data-g="3">picked up</span> <span data-g="4">his</span> Oyster card, checked the weather, and left <span data-g="4">the</span> flat <span data-g="5">at eight</span>.</p>
+
+      <p data-sent="2"><span class="sn-play" onclick="ttsPlaySentence(2)">🔊</span><span data-g="4">The</span> Tube <span data-g="7">was</span> <span data-g="8">quieter than usual</span>. Mert stood <span data-g="5">on the platform</span> <span data-g="5">at Walthamstow Central</span>. "<span data-g="1">Does this train go to Paddington?</span>" he asked a stranger. "Yes, but you <span data-g="2">have to change</span> <span data-g="5">at Oxford Circus</span>," the man replied. Mert thanked him and <span data-g="3">stepped onto</span> <span data-g="4">the</span> carriage.</p>
+
+      <p data-sent="3"><span class="sn-play" onclick="ttsPlaySentence(3)">🔊</span><span data-g="5">At the airport</span>, he bought a cheap coffee. "<span data-g="1">Can I get a flat white, please?</span>" he asked <span data-g="4">the</span> barista. "<span data-g="6">Have you tried our oat milk version?</span> It's <span data-g="8">much smoother than the regular one</span>." Mert <span data-g="6">had never tried</span> oat milk before, but he decided to be brave. He paid <span data-g="5">with</span> his card, tapped, and waited.</p>
+
+      <p data-sent="4"><span class="sn-play" onclick="ttsPlaySentence(4)">🔊</span>His mother <span data-g="3">came through</span> the gate twenty minutes late. She looked tired but happy. "<span data-g="1">How was the flight?</span>" Mert asked. "<span data-g="4">The</span> food was terrible, but <span data-g="4">the</span> film was lovely," she said, laughing. They took <span data-g="4">the</span> Heathrow Express <span data-g="5">back to central London</span>. The journey was <span data-g="8">shorter than Mert had remembered</span> — only fifteen minutes.</p>
+
+      <p data-sent="5"><span class="sn-play" onclick="ttsPlaySentence(5)">🔊</span>They had lunch <span data-g="5">at a small market in Borough</span>. Mert <span data-g="3">picked up</span> a sample <span data-g="5">of cheese</span>. "<span data-g="2">Would you like to try this one?</span>" <span data-g="4">the</span> stallholder offered. "It's <span data-g="8">the strongest we have</span>." His mother made <span data-g="4">a</span> face — too strong for her. They chose <span data-g="8">a milder one</span> and sat <span data-g="5">on the wooden steps by the river</span>.</p>
+
+      <p data-sent="6"><span class="sn-play" onclick="ttsPlaySentence(6)">🔊</span><span data-g="5">In the afternoon</span>, they <span data-g="3">went into</span> a clothing shop. "<span data-g="1">Where is the changing room?</span>" his mother asked. "Just over there, madam," the assistant said, <span data-g="3">pointing</span>. She <span data-g="3">tried on</span> a blue cardigan. "<span data-g="1">Does it fit?</span>" Mert asked. "<span data-g="8">A little too tight</span>," she said. The assistant brought <span data-g="8">a bigger size</span>, which fit perfectly.</p>
+
+      <p data-sent="7"><span class="sn-play" onclick="ttsPlaySentence(7)">🔊</span>Later, Mert <span data-g="2">had to</span> <span data-g="3">stop by</span> <span data-g="4">the</span> post office. <span data-g="6">He had been promising</span> to send a parcel to his cousin for weeks. He <span data-g="3">filled out</span> <span data-g="4">the</span> customs form, paid <span data-g="4">the</span> fee, and <span data-g="3">walked out</span> feeling lighter. A quick visit to <span data-g="4">the</span> pharmacy followed — his mother <span data-g="2">needed</span> a prescription <span data-g="6">filled</span>.</p>
+
+      <p data-sent="8"><span class="sn-play" onclick="ttsPlaySentence(8)">🔊</span>That evening, they sat <span data-g="5">on the bus home</span>. "<span data-g="6">I have never walked so much in my life</span>," his mother whispered. "<span data-g="2">You'll sleep well tonight</span>," Mert smiled. Outside, <span data-g="4">the</span> sky was turning pink. London was <span data-g="5">at its best</span> — busy, kind, and strangely familiar to her now.</p>
+
+      <div class="reading-meta">
+        <span>📖 ~485 kelime</span>
+        <span>🎨 8 yapı vurgulu</span>
+        <span>⏱ Okuma: ~3-4 dk</span>
+        <span>💡 Herhangi bir kelimeye tıkla → popup: 🔊 dinle / 💾 bank'a kaydet</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===================== GRAMMAR TAB ===================== -->
+  <section class="tab-panel" id="tab-grammar">
+    <div class="grammar-intro">
+      <b>🇹🇷 Türkçe köprü:</b> 8 yapı karışık — Question Formation, Modal Verbs, Phrasal Verbs, Articles, Prepositions of Place, Present Perfect, Past Simple, Comparison. Sıra önemsiz, hepsi günlük hayatta sürekli karşına çıkıyor. Her kartı aç, mini test'i geç. Sonra <b>Story</b>'de aynı yapıların metnin içinde nasıl yaşadığını gör.
+    </div>
+    <div class="accordion" id="accordion"></div>
+    <div class="cta-row">
+      <button class="cta-btn" onclick="showTab('quiz', document.querySelector('[data-tab=quiz]'))">🎯 Quizzes →</button>
+      <button class="cta-btn gold" onclick="document.querySelectorAll('.acc-item').forEach(a=>a.classList.add('open'))">📂 Hepsini Aç</button>
+    </div>
+  </section>
+
+  <!-- ===================== VOCAB TAB ===================== -->
+  <section class="tab-panel" id="tab-vocab">
+    <div class="vocab-dash">
+      <div class="vd-item"><div class="vd-num" id="vdTotal">0</div><div class="vd-label">Kelime</div></div>
+      <div class="vd-item"><div class="vd-num gold" id="vdSaved">0</div><div class="vd-label">Bank'a</div></div>
+      <div class="vd-item"><div class="vd-num" id="vdMast">0</div><div class="vd-label">Mastered</div></div>
+      <div class="vd-item"><div class="vd-num" id="vdBest">0</div><div class="vd-label">En İyi Speed</div></div>
+      <div class="vd-item"><div class="vd-num" id="vdStreak">0</div><div class="vd-label">En Uzun Combo</div></div>
+    </div>
+
+    <div class="vocab-controls">
+      <button class="vocab-btn active" onclick="setVMode('cards', this)">📇 Cards</button>
+      <button class="vocab-btn" onclick="setVMode('quiz', this)">❓ Quiz</button>
+      <button class="vocab-btn" onclick="setVMode('match', this)">🔗 Match</button>
+      <button class="vocab-btn" onclick="setVMode('write', this)">✍️ Write</button>
+      <button class="vocab-btn" onclick="setVMode('speed', this)">⚡ Speed</button>
+      <button class="vocab-btn" onclick="setVMode('hangman', this)">🎯 Hangman</button>
+      <button class="vocab-btn" onclick="setVMode('builder', this)">🧩 Builder</button>
+    </div>
+
+    <div id="v-cards"></div>
+    <div id="v-quiz" style="display:none;"></div>
+    <div id="v-match" style="display:none;"></div>
+    <div id="v-write" style="display:none;"></div>
+    <div id="v-speed" style="display:none;"></div>
+    <div id="v-hangman" style="display:none;"></div>
+    <div id="v-builder" style="display:none;"></div>
+
+    <div class="custom-add">
+      <h4>➕ Kendi kelime/phrasal/chunk ekle (manuel bank)</h4>
+      <div class="custom-row">
+        <input id="cstTerm" placeholder="örn: tap in / fare / queue up">
+        <select id="cstType">
+          <option value="word">word</option>
+          <option value="phrasal_verb">phrasal verb</option>
+          <option value="chunk" selected>chunk</option>
+        </select>
+        <input id="cstTr" placeholder="TR anlam (ops.)">
+        <button class="cta-btn" onclick="addCustomVocab()">Bank'a Ekle</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== QUIZ TAB ===================== -->
+  <section class="tab-panel" id="tab-quiz">
+
+    <div class="quiz-tabs">
+      <button class="quiz-tab active" data-qtab="topic" onclick="showQTab('topic', this)">📐 Per-Topic</button>
+      <button class="quiz-tab" data-qtab="general" onclick="showQTab('general', this)">🎲 General Mix</button>
+      <button class="quiz-tab" data-qtab="story" onclick="showQTab('story', this)">📖 Story Comprehension</button>
+    </div>
+
+    <!-- Per-topic -->
+    <div class="quiz-section active" id="qs-topic">
+      <p style="font-size:12px; color:var(--text2); margin-bottom:10px;">Bir konu seç → o konuya özel 5 soruluk quiz.</p>
+      <div class="topic-pick" id="topicPick"></div>
+      <div id="topicQuizMount"></div>
+    </div>
+
+    <!-- General mix -->
+    <div class="quiz-section" id="qs-general">
+      <p style="font-size:12px; color:var(--text2); margin-bottom:10px;">8 konunun karma 16 soruluk testi. 3 can, combo bonusu, skor kaydı.</p>
+      <div id="generalQuizMount"><button class="cta-btn" onclick="startGeneralQuiz()">▶ General Quiz Başlat</button></div>
+    </div>
+
+    <!-- Story comprehension -->
+    <div class="quiz-section" id="qs-story">
+      <p style="font-size:12px; color:var(--text2); margin-bottom:10px;">Metni okuduğunu test eden 10 soru. Gramer değil, anlama.</p>
+      <div id="storyQuizMount"><button class="cta-btn" onclick="startStoryQuiz()">▶ Story Quiz Başlat</button></div>
+    </div>
+
+  </section>
+
+  <!-- ===================== REFLECT TAB ===================== -->
+  <section class="tab-panel" id="tab-reflect">
+    <div class="reflect-prompt">
+      <h4>✍️ Bugünün yazma görevi</h4>
+      <p><b>Görev:</b> Mert'in günü gibi, sen de bir gününü kısa anlat. 5-7 cümle. Aşağıdaki <b>5</b> yapıdan en az birer kez kullan:</p>
+      <ul>
+        <li><b>Past Simple</b> — ne yaptın</li>
+        <li><b>Phrasal Verb</b> — pick up / try on / fill out / stop by / walk out gibi</li>
+        <li><b>Prepositions of Place</b> — at / on / in / to / from</li>
+        <li><b>Articles</b> — a / an / the / ∅</li>
+        <li><b>Comparison</b> — quieter than / smaller than / the best</li>
+      </ul>
+      <p><b>Konu önerisi:</b> Geçen hafta sonu yaptığın bir alışveriş, gezme, veya günlük bir iş (eczane, pazar, kafe).</p>
+      <textarea id="reflectText" placeholder="I went to ... · I picked up ... · The shop was quieter than ..."></textarea>
+      <div class="reflect-actions">
+        <button class="cta-btn" onclick="saveReflect()">💾 Kaydet</button>
+        <span class="reflect-status" id="reflectStatus"></span>
+      </div>
+    </div>
+
+    <div class="grammar-intro" style="margin-top:18px;">
+      <b>📌 Şimdi:</b> Üstteki <b>📥 Export</b>'a bas — bütün quiz sonuçların, kayıtlı kelimelerin, yazın JSON olarak inecek. Dosyayı <code>00_INBOX/</code> klasörüne sürükle. Claude Code zorlandığın konuları <code>weak-topics.md</code>'ye not düşecek ve bir sonraki derste o konulara daha fazla ağırlık verecek.
+      <br><br>
+      <b>🔄 Yarın:</b> Aynı 8 yapıyı bambaşka bir metinle <b>Text-First</b> versiyonunda çalışacaksın. Aynı yapılar, farklı bağlam = içselleştirme.
+    </div>
+  </section>
+
+</main>
+
+<div class="g-tooltip" id="tt"></div>
+<div class="w-pop" id="wpop"></div>
+<div class="toast" id="toast"></div>
+
+<script src="../_engine/topics.js"></script>
+<script src="../_engine/profile.js"></script>
+<script src="../_engine/engine.js"></script>
+<script>
+/* ====================================================================
+   LESSON META
+   ==================================================================== */
+const LESSON = {
+  id: 'grammar-first-lesson-01',
+  num: 1,
+  title: "Mert's Day Out in London",
+  theme: 'daily-life',
+  series: 'mert-london',
+  episode: 2
+};
+const SESSION_START = Date.now();
+const sessionBank = [];
+
+/* ====================================================================
+   GRAMMAR TOPICS (8) — daily-life mix, sıralama önemsiz
+   ==================================================================== */
+const TOPIC_DATA = {
+  'question-formation': {
+    g:1, color:'var(--g1)', name:'Question Formation', cefr:'A1',
+    tr_short:'Soru kalıpları — yardımcı fiil + özne + fiil.',
+    tr_long:'Yes/no, wh-, modal soruları. Günlük yaşamın temel iletişim aleti: sipariş, yön sorma, fiyat sorma, kibar istek.',
+    formula:'Aux + S + V? · Wh + aux + S + V? · Modal + S + V?',
+    examples:[
+      {en:"Does this train go to Paddington?", tr:"Bu tren Paddington'a gidiyor mu?"},
+      {en:"Where is the changing room?", tr:"Soyunma odası nerede?"},
+      {en:"How was the flight?", tr:"Uçuş nasıldı?"}
+    ],
+    edge_cases:[
+      "Do/does/did + V(base): 'Does he goes?' ✗ → 'Does he go?' ✓",
+      "Be fiilinin sorusu yardımcısız: 'Is it open?' ✓ / 'Does it be open?' ✗",
+      "Subject soruları wh-: 'Who came?' ✓ (no aux); object: 'Who did you see?'"
+    ]
+  },
+  'modal-verbs': {
+    g:2, color:'var(--g2)', name:'Modal Verbs', cefr:'A2',
+    tr_short:'can/could/should/would/may/might/must/have to.',
+    tr_long:'İzin, yetenek, olasılık, zorunluluk, kibarlık. Günlük yaşamda her sipariş, her rica burada saklı.',
+    formula:'S + modal + V(base) · negative: modal + not · question: modal + S + V?',
+    examples:[
+      {en:"Can I get a flat white, please?", tr:"Bir flat white alabilir miyim?"},
+      {en:"You have to change at Oxford Circus.", tr:"Oxford Circus'ta değişmeniz lazım."},
+      {en:"Would you like to try this one?", tr:"Bunu denemek ister misiniz?"}
+    ],
+    edge_cases:[
+      "Modal + to-V hatası: 'must to do' ✗ → 'must do' ✓",
+      "Have to ≠ modal (do-support gerekir): 'Do you have to go?' ✓",
+      "Could / Would isteklerde 'Can/Will'den daha kibar: 'Could you help me?'"
+    ]
+  },
+  'phrasal-verbs': {
+    g:3, color:'var(--g3)', name:'Phrasal Verbs', cefr:'A2',
+    tr_short:'Eylem + edat/zarf — günlük dilin omurgası.',
+    tr_long:'pick up, try on, fill out, stop by, walk out, look for, get on, get off. Native konuşmacının ilk seçimi.',
+    formula:'V + particle (separable: turn off the light / turn the light off · inseparable: look after sb)',
+    examples:[
+      {en:"He picked up his Oyster card.", tr:"Oyster kartını eline aldı."},
+      {en:"She tried on a blue cardigan.", tr:"Mavi bir hırka denedi."},
+      {en:"He filled out the customs form.", tr:"Gümrük formunu doldurdu."}
+    ],
+    edge_cases:[
+      "Separable + zamir → ortaya: 'Pick it up' ✓ / 'Pick up it' ✗",
+      "Inseparable: 'look after them' ✓ / 'look them after' ✗",
+      "Aynı fiil + farklı particle = farklı anlam: pick up (al) / pick on (sataşmak) / pick out (seçmek)"
+    ]
+  },
+  'articles': {
+    g:4, color:'var(--g4)', name:'Articles (a/an/the/∅)', cefr:'A1',
+    tr_short:'a/an (tek-tanımsız) · the (bilinen) · ∅ (soyut/genel).',
+    tr_long:'İlk bahsedilende a/an, ikincide the. Generic kavramda zero article. Bazı kuruluş adlarında zero (go to school, by bus).',
+    formula:'a + ünsüz · an + ünlü · the + bilinen · ∅ + soyut/genel çoğul',
+    examples:[
+      {en:"He bought a cheap coffee.", tr:"Ucuz bir kahve aldı."},
+      {en:"The Tube was quieter than usual.", tr:"Metro her zamankinden sessizdi (bilinen)."},
+      {en:"She needed ∅ help.", tr:"Yardıma ihtiyacı vardı (soyut)."}
+    ],
+    edge_cases:[
+      "a/an ses kuralı: a university (yu) / an hour (sessiz h)",
+      "Bazı ifadeler artikel almaz: go to school/work/bed/home",
+      "İkinci geçişte 'the': 'I saw a writer. The writer was patient.'"
+    ]
+  },
+  'prepositions-place': {
+    g:5, color:'var(--g5)', name:'Prepositions of Place & Movement', cefr:'A1',
+    tr_short:'at/in/on (statik) · to/into/onto (hareket) · by/from.',
+    tr_long:'at + nokta (at noon, at the airport) · in + alan (in London, in the morning) · on + yüzey/ulaşım (on the bus, on Monday) · to + hedef (to school).',
+    formula:'at/in/on + place/time · to/into/onto + movement · by + transport',
+    examples:[
+      {en:"At the airport, he bought a coffee.", tr:"Havalimanında bir kahve aldı."},
+      {en:"They sat on the bus home.", tr:"Eve dönüş otobüsünde oturdular."},
+      {en:"He stepped onto the carriage.", tr:"Vagona bindi (hareket)."}
+    ],
+    edge_cases:[
+      "go home ✓ / go to home ✗ (home zarf)",
+      "in vs on transport: in a car ✓ / on a bus, on a train ✓",
+      "at + saat: at 8 ✓ / on Monday ✓ / in May ✓"
+    ]
+  },
+  'present-perfect': {
+    g:6, color:'var(--g6)', name:'Present Perfect', cefr:'A2',
+    tr_short:'have/has + V3 — deneyim, sonuç, bitmemiş süre.',
+    tr_long:'Geçmişte oldu, sonucu şimdi etkili. Have you ever...? Ne zaman olduğu önemli değil; etkisi/deneyimi vurgu.',
+    formula:'S + have/has + V3 · negative: have/has + not + V3 · Q: Have/has + S + V3?',
+    examples:[
+      {en:"Have you tried our oat milk version?", tr:"Yulaf sütlü versiyonumuzu denediniz mi?"},
+      {en:"I have never walked so much in my life.", tr:"Hayatımda hiç bu kadar yürümedim."},
+      {en:"He had been promising to send a parcel.", tr:"Bir koliyi göndermeyi söz vermişti (past perfect cont.)."}
+    ],
+    edge_cases:[
+      "since (başlangıç) vs for (süre): since 2010 / for 5 years",
+      "just/already/yet ile present perfect kullan, past simple değil: 'I have just arrived' ✓",
+      "Belirli geçmiş ifadesi varsa (yesterday, in 2020) → past simple, present perfect değil"
+    ]
+  },
+  'past-simple': {
+    g:7, color:'var(--g7)', name:'Past Simple', cefr:'A1',
+    tr_short:'V2 — biten eylemler, anlatı zinciri.',
+    tr_long:'Hikâye, biyografi, günlük anlatımın iskeleti. Belirli geçmiş zaman ile (yesterday, last week, in 2020) güçlü uyum.',
+    formula:'S + V2 · S + did + not + V · Did + S + V?',
+    examples:[
+      {en:"It was a bright Saturday morning.", tr:"Aydınlık bir cumartesi sabahıydı."},
+      {en:"Mert picked up his Oyster card.", tr:"Mert Oyster kartını aldı."},
+      {en:"They had lunch at a small market.", tr:"Küçük bir pazarda öğle yediler."}
+    ],
+    edge_cases:[
+      "Düzensiz fiiller: write→wrote, take→took, come→came",
+      "Did + V(base): 'Did he went?' ✗ → 'Did he go?' ✓",
+      "Used to: geçmiş alışkanlık — 'used to live' / 'didn't use to'"
+    ]
+  },
+  'comparison': {
+    g:8, color:'var(--g8)', name:'Comparison', cefr:'A2',
+    tr_short:'-er/more (comparative) · the -est/most (superlative) · as…as.',
+    tr_long:'Tek heceli + -er/-est, çok heceli more/most, düzensizler good→better→best, bad→worse→worst.',
+    formula:'adj-er + than · the + adj-est · more/most + adj · as adj as',
+    examples:[
+      {en:"The Tube was quieter than usual.", tr:"Metro her zamankinden sessizdi."},
+      {en:"It's much smoother than the regular one.", tr:"Normal olandan çok daha yumuşak."},
+      {en:"It's the strongest we have.", tr:"Elimizdeki en güçlü olanı."}
+    ],
+    edge_cases:[
+      "more better ✗ / most biggest ✗ — çift kıyas yapma",
+      "Düzensizler: good-better-best / bad-worse-worst / far-further-furthest",
+      "as ... as eşitlik: 'as quiet as a mouse'"
+    ]
+  }
+};
+const TOPIC_ORDER = ['question-formation','modal-verbs','phrasal-verbs','articles','prepositions-place','present-perfect','past-simple','comparison'];
+
+/* === Mini test pool (per-topic, 5 soruluk) === */
+const MINI = {
+  'question-formation':[
+    {q:"_____ this train go to Paddington?", opts:['Is','Does','Do'], a:1, fb:"3. tekil özne 'train' → Does."},
+    {q:"_____ is the changing room?", opts:['What','Where','When'], a:1, fb:"Yer sorusu → Where."},
+    {q:"_____ I get a flat white, please?", opts:['Do','Can','Am'], a:1, fb:"Kibar istek → Can / Could / May."},
+    {q:"How _____ the flight?", opts:['was','were','did'], a:0, fb:"Tek 'the flight' → was (be past)."},
+    {q:"_____ you tried oat milk before?", opts:['Did','Have','Are'], a:1, fb:"Deneyim sorusu → Present Perfect (Have you ever...)."}
+  ],
+  'modal-verbs':[
+    {q:"You _____ change at Oxford Circus.", opts:['have to','must to','should to'], a:0, fb:"'must to' / 'should to' ✗ — modal sonrası to YOK; 'have to' ise tam bir yapı."},
+    {q:"_____ you like to try this one?", opts:['Do','Would','Are'], a:1, fb:"Kibar teklif → Would you like to..."},
+    {q:"He _____ stop by the post office.", opts:['must to','had to','should to'], a:1, fb:"Past zorunluluk → had to."},
+    {q:"_____ I help you?", opts:['Must','May','Should'], a:1, fb:"Kibar teklif → May I / Can I."},
+    {q:"She _____ speak French — she lived in Paris.", opts:['can','must','should'], a:0, fb:"Yetenek → can."}
+  ],
+  'phrasal-verbs':[
+    {q:"He _____ his Oyster card before leaving.", opts:['picked up','put up','looked up'], a:0, fb:"Bir şeyi eline almak → pick up."},
+    {q:"She _____ a blue cardigan.", opts:['tried on','tried out','tried for'], a:0, fb:"Giysi denemek → try on."},
+    {q:"You need to _____ this form.", opts:['fill in','fill out','fill up'], a:1, fb:"Form doldurma — fill out (US) / fill in (UK). 'Fill up' = depo doldur."},
+    {q:"I had to _____ the post office on the way.", opts:['stop by','stop at','stop on'], a:0, fb:"Kısa süreli uğramak → stop by."},
+    {q:"He _____ the carriage at Oxford Circus.", opts:['stepped onto','stepped in','stepped at'], a:0, fb:"Bir araca binmek → step onto / get on."}
+  ],
+  'articles':[
+    {q:"He bought ___ cheap coffee.", opts:['a','the','∅'], a:0, fb:"İlk bahsedilen tek tanımsız → a."},
+    {q:"___ Tube was quieter than usual.", opts:['A','The','∅'], a:1, fb:"Spesifik, bilinen Londra metrosu → The."},
+    {q:"He bought ___ apple and ___ orange.", opts:['an / an','a / an','an / a'], a:2, fb:"apple (ünlü) → an / orange (ünlü) → an. Doğru: an / an. Ama 'orange' ile başlayan ses farklı: 'or-' ünlü, an. Yine an/an. Doğru cevap: index 0."},
+    {q:"She goes to ___ school every day.", opts:['a','the','∅'], a:2, fb:"Genel anlamda go to school → zero article."},
+    {q:"___ sky was turning pink.", opts:['A','The','∅'], a:1, fb:"Tek, bilinen → The sky."}
+  ],
+  'prepositions-place':[
+    {q:"He stood _____ the platform.", opts:['at','on','in'], a:1, fb:"Platform yüzey → on the platform."},
+    {q:"She arrived _____ noon _____ Heathrow.", opts:['in / at','at / at','on / in'], a:1, fb:"at noon (saat) / at Heathrow (nokta)."},
+    {q:"They went _____ a small market _____ Borough.", opts:['at / in','to / at','to / in'], a:2, fb:"hareket → to / alan → in."},
+    {q:"He stepped _____ the carriage.", opts:['onto','on','into'], a:0, fb:"Hareket + yüzey → onto."},
+    {q:"They sat _____ the bus home.", opts:['in','on','at'], a:1, fb:"on the bus/train/plane (taşıt yüzeyi); 'in a car' / 'in a taxi'."}
+  ],
+  'present-perfect':[
+    {q:"_____ you ever tried oat milk?", opts:['Did','Have','Are'], a:1, fb:"Deneyim → Present Perfect: Have you ever..."},
+    {q:"I _____ never walked so much in my life.", opts:['did','have','am'], a:1, fb:"have never + V3."},
+    {q:"He has lived in London _____ 2022.", opts:['for','since','from'], a:1, fb:"since + başlangıç noktası (yıl)."},
+    {q:"She has lived in London _____ three years.", opts:['for','since','from'], a:0, fb:"for + süre."},
+    {q:"They have just _____ at the airport.", opts:['arrive','arrived','arriving'], a:1, fb:"have + V3 → arrived."}
+  ],
+  'past-simple':[
+    {q:"Mert _____ his Oyster card.", opts:['picks up','picked up','has picked up'], a:1, fb:"Belirli geçmiş → past simple."},
+    {q:"They _____ lunch at Borough Market.", opts:['have','had','has'], a:1, fb:"V2: have → had."},
+    {q:"She _____ a blue cardigan.", opts:['tried on','tries on','has tried on'], a:0, fb:"Past simple anlatı."},
+    {q:"Did he _____ a coffee?", opts:['bought','buy','buying'], a:1, fb:"Did + V(base) → buy."},
+    {q:"He _____ the form and left.", opts:['filled out','fills out','filling out'], a:0, fb:"Past simple anlatı zinciri."}
+  ],
+  'comparison':[
+    {q:"The Tube was _____ usual.", opts:['quiet than','quieter than','more quiet than'], a:1, fb:"tek heceli sıfat → -er than."},
+    {q:"This coffee is _____ that one.", opts:['smooth than','smoother than','more smoother than'], a:1, fb:"smooth (1 hece) → smoother."},
+    {q:"It's _____ cheese we have.", opts:['the strongest','strongest','more strong'], a:0, fb:"Superlative → the + -est."},
+    {q:"My bag is _____ than yours.", opts:['big','bigger','more big'], a:1, fb:"big → bigger (consonant doubling)."},
+    {q:"This is _____ option of all.", opts:['the best','the better','best'], a:0, fb:"good → better → the best (irregular)."}
+  ]
+};
+
+/* === Story comprehension quiz === */
+const STORY_Q = [
+  {q:"Mert annesini nerede karşıladı?", opts:['Walthamstow','Heathrow','Oxford Circus','Paddington'], a:1, fb:"Annesi Heathrow'a iniyordu."},
+  {q:"Saat kaçta evden çıktı?", opts:['7','8','9','10'], a:1, fb:"'He left the flat at eight.'"},
+  {q:"Hangi durakta tren değiştirmesi gerekti?", opts:['Walthamstow','Oxford Circus','Borough','Paddington'], a:1, fb:"Yabancı, 'change at Oxford Circus' dedi."},
+  {q:"Havalimanında ne içti?", opts:['Latte','Espresso','Flat white (oat)','Çay'], a:2, fb:"Oat milk versiyonunu denedi."},
+  {q:"Annesi uçuşu nasıl bulmuş?", opts:['Mükemmel','Yorucu','Yemek kötü, film güzel','Çok kısa'], a:2, fb:"'The food was terrible, but the film was lovely.'"},
+  {q:"Borough Market'te ne yediler?", opts:['Sushi','Peynir + ekmek tipi','Pizza','Burger'], a:1, fb:"Peynir örnekleri denediler."},
+  {q:"Annesi ilk denediği hırkayı neden almadı?", opts:['Pahalı','Çok dar','Rengi sevmedi','Çocukları için aldı'], a:1, fb:"'A little too tight.'"},
+  {q:"Mert post office'te ne yaptı?", opts:['Yeni hesap açtı','Para çekti','Bir koli gönderdi','Kart satın aldı'], a:2, fb:"Kuzenine bir koli göndermesi gerekiyordu."},
+  {q:"Eczaneye neden uğradılar?", opts:['Mert hastaydı','Annesinin reçetesi vardı','Aspirin almaya','Kozmetik için'], a:1, fb:"His mother needed a prescription filled."},
+  {q:"Akşam annesi ne dedi?", opts:['Çok yorgun','Çok mutlu','Hayatımda hiç bu kadar yürümedim','Geri dönmek istiyorum'], a:2, fb:"'I have never walked so much in my life.'"}
+];
+
+/* === Vocabulary (15 items, daily-life from story) === */
+const VOCAB = [
+  {w:"to pick up",      pos:"phrasal verb", tr:"almak, eline almak", ex:"He picked up his Oyster card.", street:"En çok kullanılan PV'lerden — telefonu açmak, yerden almak, biriyle anlaşmak için de kullanılır.", topic:'phrasal-verbs'},
+  {w:"to try on",       pos:"phrasal verb", tr:"denemek (giysi/ayakkabı)", ex:"She tried on a blue cardigan.", street:"Sadece giysi/ayakkabı için. 'Try out' = bir şeyi test et, fonksiyon.", topic:'phrasal-verbs'},
+  {w:"to fill out",     pos:"phrasal verb", tr:"doldurmak (form)", ex:"He filled out the customs form.", street:"US = fill out, UK = fill in. Anlam aynı.", topic:'phrasal-verbs'},
+  {w:"to stop by",      pos:"phrasal verb", tr:"kısa süreliğine uğramak", ex:"I'll stop by the post office.", street:"'Drop by' ile aynı anlam. Plansız kısa ziyaret.", topic:'phrasal-verbs'},
+  {w:"to step onto",    pos:"phrasal verb", tr:"binmek (vagona/sahneye)", ex:"He stepped onto the carriage.", street:"'Get on' daha yaygın günlük dilde; 'step onto' biraz daha dramatik/literary.", topic:'phrasal-verbs'},
+  {w:"queue",           pos:"noun",         tr:"kuyruk, sıra", ex:"There was a long queue at the till.", street:"İngiltere'de sıra demek; ABD'de 'line'. 'Queue up' = sıraya gir.", topic:'prepositions-place'},
+  {w:"platform",        pos:"noun",         tr:"peron", ex:"He stood on the platform.", street:"Tren/metro istasyonunda. Numaralı: 'Platform 5'.", topic:'prepositions-place'},
+  {w:"carriage",        pos:"noun",         tr:"vagon", ex:"He stepped onto the carriage.", street:"UK İngilizcesi; ABD'de 'car' (subway car).", topic:'articles'},
+  {w:"prescription",    pos:"noun",         tr:"reçete", ex:"My mother needed a prescription filled.", street:"'To fill a prescription' = reçeteyi eczanede aldırmak.", topic:'past-simple'},
+  {w:"customs form",    pos:"chunk",        tr:"gümrük formu", ex:"He filled out the customs form.", street:"Yurt dışı koli gönderirken doldurulur — içerik, değer, ağırlık.", topic:'phrasal-verbs'},
+  {w:"flat white",      pos:"chunk",        tr:"sütlü espresso (kahve türü)", ex:"Can I get a flat white, please?", street:"Avustralya/UK çıkışlı; double espresso + steamed milk, latte'den daha yoğun.", topic:'question-formation'},
+  {w:"stallholder",     pos:"noun",         tr:"tezgâhtar (pazar)", ex:"The stallholder offered a sample.", street:"Sokak pazarında satış yapan kişi; 'shop assistant' = mağazada çalışan.", topic:'articles'},
+  {w:"to tap (a card)", pos:"verb",         tr:"kartı okutmak", ex:"He tapped his Oyster card on the reader.", street:"İngiltere ulaşımında temassız ödeme; 'contactless' kart için de kullanılır.", topic:'past-simple'},
+  {w:"changing room",   pos:"chunk",        tr:"soyunma odası", ex:"Where is the changing room?", street:"Mağazada deneme kabini; 'fitting room' da denir, aynı anlam.", topic:'question-formation'},
+  {w:"too tight",       pos:"chunk",        tr:"çok dar", ex:"It's a little too tight.", street:"Giysi denerken: 'too tight' / 'too loose' / 'fits perfectly'.", topic:'comparison'}
+];
+
+/* === Match pairs (first 10 of VOCAB) === */
+const MATCH_PAIRS = VOCAB.slice(0, 10);
+
+/* ====================================================================
+   STORAGE / PROGRESS
+   ==================================================================== */
+let prog = ELV1.lsGet('lesson01_progress', {
+  xp:0, level:0, theme:'dark', fs:1, sound:true,
+  miniResults:{}, vocabBookmarks:[], vocabSaved:[], mastery:{},
+  perTopicScores:{}, generalQuiz:null, storyQuiz:null,
+  bestSpeed:0, bestCombo:0, reflectText:'', ttsListened:false,
+  wordTaps:{} // {word: count} — hangi kelimelere kaç defa tıkladı (zorluk göstergesi)
+});
+function save() { ELV1.lsSet('lesson01_progress', prog); }
+const LVLS = [
+  {min:0, t:'Apprentice'}, {min:40, t:'Day Tripper'}, {min:100, t:'Commuter'},
+  {min:200, t:'Local'}, {min:360, t:'Londoner'}, {min:600, t:'Native'}
+];
+function addXp(n) {
+  const old = prog.level;
+  prog.xp += n;
+  let nv = 0;
+  for (let i = LVLS.length-1; i >= 0; i--) if (prog.xp >= LVLS[i].min) {nv = i; break;}
+  if (nv > old) {prog.level = nv; toast('🎉 Level Up: ' + LVLS[nv].t); beep('levelup');}
+  save(); updateXp();
+}
+function updateXp() {
+  document.getElementById('xpT').textContent = prog.xp + ' XP';
+  document.getElementById('lvlT').textContent = LVLS[prog.level].t;
+  const cur = LVLS[prog.level].min;
+  const next = LVLS[prog.level+1] ? LVLS[prog.level+1].min : cur+1;
+  document.getElementById('xpFill').style.width = Math.min(100, ((prog.xp-cur)/(next-cur))*100) + '%';
+  document.getElementById('vdMast').textContent = Object.values(prog.mastery).filter(v=>v==='mastered').length;
+  document.getElementById('vdBest').textContent = prog.bestSpeed;
+  document.getElementById('vdStreak').textContent = prog.bestCombo;
+  document.getElementById('vdSaved').textContent = prog.vocabSaved.length;
+}
+function updateMastery(word, correct) {
+  const order = ['new','learning','familiar','mastered'];
+  const cur = prog.mastery[word] || 'new';
+  let idx = order.indexOf(cur);
+  if (correct && idx < 3) idx++;
+  prog.mastery[word] = order[idx];
+  save();
+}
+
+/* === TABS, THEME, FONT, SOUND === */
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  ttsStop();
+  hideWPop();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+const themes = ['dark','light','forest','sunset'];
+function applyTheme(t) {document.body.classList.remove('theme-light','theme-forest','theme-sunset'); if (t!=='dark') document.body.classList.add('theme-'+t); prog.theme=t; save();}
+function cycleTheme() {const i = themes.indexOf(prog.theme||'dark'); applyTheme(themes[(i+1)%themes.length]); toast('Tema: '+prog.theme);}
+const fsSteps = ['fs-s','fs-m','fs-l','fs-xl'];
+const fsLabels = ['A·s','A','A·l','A·XL'];
+function cycleFs() {fsSteps.forEach(c=>document.body.classList.remove(c)); prog.fs=(prog.fs+1)%4; document.body.classList.add(fsSteps[prog.fs]); document.getElementById('fsBtn').textContent=fsLabels[prog.fs]; save();}
+let audioCtx;
+function toggleSound() {prog.sound=!prog.sound; document.getElementById('sndBtn').textContent=prog.sound?'🔊':'🔇'; save(); toast(prog.sound?'Ses açık':'Ses kapalı');}
+function beep(type) {
+  if (!prog.sound) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const map = {correct:[880,.08,'sine'], wrong:[220,.18,'sawtooth'], combo:[1320,.05,'sine'], levelup:[523,.12,'sine']};
+    if (type === 'levelup') {[523,659,784].forEach((f,i) => setTimeout(()=>tone(f,.12,'sine'), i*90)); return;}
+    const [f,d,t] = map[type] || [440,.1,'sine'];
+    tone(f, d, t);
+  } catch(e) {}
+}
+function tone(freq, dur, wave) {
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = wave; o.frequency.value = freq;
+  g.gain.setValueAtTime(.12, audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + dur);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); o.stop(audioCtx.currentTime + dur);
+}
+function toast(msg) {const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._timer); t._timer = setTimeout(()=>t.classList.remove('show'), 2000);}
+
+/* === LEGEND (üst bar) === */
+function renderLegend() {
+  const el = document.getElementById('legend');
+  el.innerHTML = TOPIC_ORDER.map((slug, i) => {
+    const d = TOPIC_DATA[slug];
+    return `<span class="gl-item" onclick="jumpToTopic('${slug}')">
+      <span class="gl-dot" style="background:${d.color};"></span> ${i+1} · ${ELV1.escapeHTML(d.name)}
+    </span>`;
+  }).join('');
+}
+
+/* ====================================================================
+   GRAMMAR ACCORDION
+   ==================================================================== */
+function renderAccordion() {
+  const acc = document.getElementById('accordion');
+  acc.innerHTML = TOPIC_ORDER.map((slug, i) => {
+    const d = TOPIC_DATA[slug];
+    const minis = MINI[slug];
+    return `<div class="acc-item" id="acc-${slug}">
+      <div class="acc-header" onclick="toggleAcc('${slug}')">
+        <div class="acc-num" style="background:${d.color};">${i+1}</div>
+        <div class="acc-title">${ELV1.escapeHTML(d.name)}</div>
+        <span class="acc-cefr">${d.cefr}</span>
+        <div class="acc-tr">${ELV1.escapeHTML(d.tr_short)}</div>
+        <div class="acc-arrow">▾</div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-section"><h4>🇹🇷 Türkçe köprü</h4><p style="font-size:13px;color:var(--text);line-height:1.75;">${ELV1.escapeHTML(d.tr_long)}</p></div>
+        <div class="acc-section"><h4>📐 Formül</h4><div class="formula-box">${ELV1.escapeHTML(d.formula)}</div></div>
+        <div class="acc-section"><h4>💬 Örnekler (🔊 dinle)</h4>
+          <ul class="example-list">${d.examples.map(ex=>`<li>
+            <div class="ex-en"><span class="tts-mini" onclick="ttsSpeak('${ex.en.replace(/'/g,"\\'")}', event)">🔊</span> ${ELV1.escapeHTML(ex.en)}</div>
+            <div class="ex-tr">${ELV1.escapeHTML(ex.tr)}</div>
+          </li>`).join('')}</ul>
+        </div>
+        <div class="acc-section"><h4>⚠️ Dikkat noktaları</h4>
+          <div class="edge-cases">${d.edge_cases.map(e=>`<div class="edge-case">${ELV1.escapeHTML(e)}</div>`).join('')}</div>
+        </div>
+        <div class="mini-test">
+          <h4>🎯 Mini Test (${minis.length} soru)</h4>
+          ${minis.map((q,idx)=>renderMiniQ(slug, idx, q)).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderMiniQ(slug, idx, q) {
+  const saved = prog.miniResults[slug + '_' + idx];
+  return `<div class="mini-q" id="mq-${slug}-${idx}">
+    <div class="mq-text">${ELV1.escapeHTML(q.q).replace(/_____/g, '<span class="blank">_____</span>')}</div>
+    <div class="mq-opts">${q.opts.map((o,i)=>`<button class="mini-opt" ${saved?'disabled':''} onclick="answerMiniQ('${slug}',${idx},${i})">${ELV1.escapeHTML(o)}</button>`).join('')}</div>
+    <div class="mq-fb" id="fb-${slug}-${idx}"></div>
+  </div>`;
+}
+function toggleAcc(slug) {document.getElementById('acc-'+slug).classList.toggle('open');}
+function jumpToTopic(slug) {
+  showTab('grammar', document.querySelector('[data-tab=grammar]'));
+  setTimeout(()=>{
+    const el = document.getElementById('acc-'+slug);
+    if (el) {el.classList.add('open'); el.scrollIntoView({behavior:'smooth', block:'center'});}
+  }, 80);
+}
+function answerMiniQ(slug, idx, choice) {
+  const q = MINI[slug][idx];
+  const mqEl = document.getElementById('mq-'+slug+'-'+idx);
+  const opts = mqEl.querySelectorAll('.mini-opt');
+  if (opts[0].disabled) return;
+  opts.forEach(o => o.disabled = true);
+  const ok = choice === q.a;
+  opts[choice].classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) opts[q.a].classList.add('correct');
+  const fb = document.getElementById('fb-'+slug+'-'+idx);
+  fb.textContent = q.fb; fb.classList.add('show');
+  prog.miniResults[slug+'_'+idx] = {choice, ok, t: Date.now()};
+  if (ok) {addXp(3); beep('correct');} else {beep('wrong');}
+  save();
+}
+
+/* ====================================================================
+   STORY — TTS (all / sentence) + word click popup + hover tooltip
+   ==================================================================== */
+let ttsUtt=null, ttsPaused=false;
+document.getElementById('ttsRate').addEventListener('input', function(){
+  document.getElementById('ttsRateV').textContent = parseFloat(this.value).toFixed(2)+'×';
+});
+function getEnVoice() {
+  const voices = speechSynthesis.getVoices();
+  return voices.find(v => v.lang.startsWith('en-') && !v.name.toLowerCase().includes('google'))
+      || voices.find(v => v.lang.startsWith('en-')) || null;
+}
+function ttsSpeak(text, ev) {
+  if (ev) ev.stopPropagation();
+  if (!('speechSynthesis' in window)) return toast('TTS desteklenmiyor.');
+  speechSynthesis.cancel();
+  ttsUtt = new SpeechSynthesisUtterance(text);
+  ttsUtt.lang = 'en-US';
+  ttsUtt.rate = parseFloat(document.getElementById('ttsRate').value);
+  const v = getEnVoice(); if (v) ttsUtt.voice = v;
+  speechSynthesis.speak(ttsUtt);
+}
+function ttsPlayAll() {
+  if (!('speechSynthesis' in window)) return toast('TTS desteklenmiyor.');
+  if (ttsPaused) {speechSynthesis.resume(); ttsPaused = false; updateTtsUI('playing'); return;}
+  speechSynthesis.cancel();
+  const text = Array.from(document.querySelectorAll('#passage p, #passage h2'))
+    .map(e => e.textContent.replace(/🔊/g,'').trim()).join('. ');
+  ttsUtt = new SpeechSynthesisUtterance(text);
+  ttsUtt.lang = 'en-US';
+  ttsUtt.rate = parseFloat(document.getElementById('ttsRate').value);
+  const v = getEnVoice(); if (v) ttsUtt.voice = v;
+  ttsUtt.onend = () => {updateTtsUI('done'); if (!prog.ttsListened) {prog.ttsListened = true; addXp(8); toast('🎧 İlk dinleme +8 XP');}};
+  ttsUtt.onerror = () => updateTtsUI('done');
+  speechSynthesis.speak(ttsUtt);
+  updateTtsUI('playing');
+}
+function ttsPause() {if (speechSynthesis.speaking && !speechSynthesis.paused) {speechSynthesis.pause(); ttsPaused=true; updateTtsUI('paused');}}
+function ttsStop() {if ('speechSynthesis' in window) speechSynthesis.cancel(); ttsPaused=false; updateTtsUI('done'); document.querySelectorAll('#passage p.speaking').forEach(e=>e.classList.remove('speaking'));}
+function updateTtsUI(state) {
+  const play = document.getElementById('ttsPlay'), pause = document.getElementById('ttsPause'), stop = document.getElementById('ttsStop'), stat = document.getElementById('ttsStat');
+  if (state==='playing') {play.classList.add('active'); play.textContent='⏵ Çalıyor'; pause.disabled=false; stop.disabled=false; stat.textContent='Çalıyor…';}
+  else if (state==='paused') {play.classList.remove('active'); play.textContent='▶ Devam'; stat.textContent='Duraklatıldı';}
+  else {play.classList.remove('active'); play.textContent='▶ Tüm Metin'; pause.disabled=true; stop.disabled=true; stat.textContent='Hazır';}
+}
+function ttsPlaySentence(n) {
+  const p = document.querySelector('[data-sent="'+n+'"]');
+  if (!p) return;
+  document.querySelectorAll('#passage p.speaking').forEach(e=>e.classList.remove('speaking'));
+  p.classList.add('speaking');
+  const text = p.textContent.replace(/🔊/g,'').trim();
+  speechSynthesis.cancel();
+  ttsUtt = new SpeechSynthesisUtterance(text);
+  ttsUtt.lang = 'en-US';
+  ttsUtt.rate = parseFloat(document.getElementById('ttsRate').value);
+  const v = getEnVoice(); if (v) ttsUtt.voice = v;
+  ttsUtt.onend = () => p.classList.remove('speaking');
+  ttsUtt.onerror = () => p.classList.remove('speaking');
+  speechSynthesis.speak(ttsUtt);
+}
+
+/* Wrap every word in the passage with <span class="w"> for click handlers */
+function wrapWords() {
+  const passage = document.getElementById('passage');
+  const walker = document.createTreeWalker(passage, NodeFilter.SHOW_TEXT, {
+    acceptNode: n => {
+      if (!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      let p = n.parentElement;
+      while (p && p !== passage) {
+        if (p.classList && (p.classList.contains('sn-play') || p.classList.contains('subtitle') || p.tagName === 'H2' || p.classList.contains('reading-meta') || p.classList.contains('w'))) return NodeFilter.FILTER_REJECT;
+        p = p.parentElement;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node => {
+    const text = node.nodeValue;
+    const frag = document.createDocumentFragment();
+    const parts = text.split(/(\s+|[.,;:!?"()—–-])/);
+    parts.forEach(part => {
+      if (/^[A-Za-z]+'?[A-Za-z]*$/.test(part)) {
+        const sp = document.createElement('span');
+        sp.className = 'w';
+        sp.textContent = part;
+        sp.addEventListener('click', e => {
+          e.stopPropagation();
+          showWPop(part, e.clientX, e.clientY);
+        });
+        frag.appendChild(sp);
+      } else {
+        frag.appendChild(document.createTextNode(part));
+      }
+    });
+    node.parentNode.replaceChild(frag, node);
+  });
+}
+
+/* === Word click popup: 🔊 + 💾 === */
+function showWPop(word, x, y) {
+  prog.wordTaps[word] = (prog.wordTaps[word] || 0) + 1;
+  save();
+  const pop = document.getElementById('wpop');
+  const cleanW = word.toLowerCase();
+  const inBank = prog.vocabSaved.includes(cleanW) || prog.vocabSaved.find(s => s === word);
+  pop.innerHTML = `
+    <span class="wp-word">${ELV1.escapeHTML(word)}</span>
+    <button onclick="ttsSpeak('${word.replace(/'/g,"\\'")}', event)" title="Seslendir">🔊 Dinle</button>
+    <button class="${inBank?'saved':''}" onclick="saveWordFromPopup('${word.replace(/'/g,"\\'")}', this)" title="Bank'a kaydet">💾 ${inBank?'Kayıtlı':'Bank'}</button>
+    <button onclick="hideWPop()" title="Kapat">✕</button>
+  `;
+  pop.style.left = Math.min(window.innerWidth - 260, x) + 'px';
+  pop.style.top = (y - 50) + 'px';
+  pop.classList.add('show');
+}
+function hideWPop() {document.getElementById('wpop').classList.remove('show');}
+document.addEventListener('click', e => {if (!e.target.closest('.w') && !e.target.closest('.w-pop')) hideWPop();});
+function saveWordFromPopup(word, btn) {
+  const cleanW = word.toLowerCase().replace(/[.,;:!?"]/g, '').trim();
+  if (prog.vocabSaved.includes(cleanW)) {toast('Zaten kayıtlı.'); return;}
+  prog.vocabSaved.push(cleanW);
+  const data = {item: cleanW, type:'word', definition_tr:'', example:'(from story)', source:{engine:'grammar-first-lesson-01', from:'story-click'}};
+  ELV1.saveToWordBank(data);
+  sessionBank.push(data);
+  save(); updateXp();
+  btn.classList.add('saved');
+  btn.textContent = '💾 Kayıtlı';
+  toast(`"${cleanW}" word bank'a eklendi.`);
+  addXp(2);
+}
+
+/* === Hover tooltip + click-to-jump for [data-g] === */
+function wireGrammarHighlights() {
+  const tt = document.getElementById('tt');
+  document.querySelectorAll('#passage [data-g]').forEach(el => {
+    const g = parseInt(el.getAttribute('data-g'), 10);
+    const slug = TOPIC_ORDER[g - 1];
+    if (!slug) return;
+    const d = TOPIC_DATA[slug];
+    el.addEventListener('mouseenter', () => {
+      tt.innerHTML = `<div class="tt-name">${ELV1.escapeHTML(d.name)} <span style="font-size:9px;color:var(--accent2);">${d.cefr}</span></div>
+        <div class="tt-tr">${ELV1.escapeHTML(d.tr_short)}</div>
+        <div class="tt-formula">${ELV1.escapeHTML(d.formula)}</div>
+        <div class="tt-jump">↪ tıkla — Grammar tab'ında ${ELV1.escapeHTML(d.name)} kartına atla</div>`;
+      tt.classList.add('show');
+      const r = el.getBoundingClientRect();
+      tt.style.left = Math.min(window.innerWidth - 340, r.left) + 'px';
+      tt.style.top = (r.bottom + 6) + 'px';
+    });
+    el.addEventListener('mouseleave', () => tt.classList.remove('show'));
+    el.addEventListener('click', e => {e.stopPropagation(); jumpToTopic(slug);});
+  });
+}
+
+/* ====================================================================
+   VOCAB — 7 modes
+   ==================================================================== */
+let vMode = 'cards';
+function setVMode(m, btn) {
+  document.querySelectorAll('.vocab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  ['cards','quiz','match','write','speed','hangman','builder'].forEach(x => document.getElementById('v-'+x).style.display = 'none');
+  document.getElementById('v-'+m).style.display = 'block';
+  vMode = m;
+  if (m === 'cards') buildCards();
+  else if (m === 'quiz') startVQuiz();
+  else if (m === 'match') startMatch();
+  else if (m === 'write') {writeIdx = 0; renderWrite();}
+  else if (m === 'speed') renderSpeedStart();
+  else if (m === 'hangman') renderHangmanStart();
+  else if (m === 'builder') renderBuilderStart();
+}
+
+/* Cards */
+function buildCards() {
+  document.getElementById('v-cards').innerHTML = '<div class="cards-grid">' + VOCAB.map(v => {
+    const bm = prog.vocabBookmarks.includes(v.w);
+    const isSaved = prog.vocabSaved.includes(v.w);
+    const ms = prog.mastery[v.w] || 'new';
+    return `<div class="flip-card" onclick="if(!event.target.closest('.bm,.fspk,.el-bank-btn'))this.classList.toggle('flipped')">
+      <span class="mast ${ms!=='new'?ms:''}" title="Mastery: ${ms}"></span>
+      <span class="bm ${bm?'on':''}" onclick="event.stopPropagation();bookmarkV('${v.w.replace(/'/g,"\\'")}',this)">${bm?'⭐':'☆'}</span>
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="fw">${ELV1.escapeHTML(v.w)}</div>
+          <div class="fp">${ELV1.escapeHTML(v.pos)} · ${ELV1.escapeHTML(TOPIC_DATA[v.topic].name)}</div>
+          <button class="fspk" onclick="event.stopPropagation();ttsSpeak('${v.w.replace(/'/g,"\\'")}', event)">🔊 dinle</button>
+        </div>
+        <div class="flip-back">
+          <div class="ft">🇹🇷 ${ELV1.escapeHTML(v.tr)}</div>
+          <div class="fe">"${ELV1.escapeHTML(v.ex)}"</div>
+          <div class="fbnk"><button class="el-bank-btn ${isSaved?'saved':''}" onclick="event.stopPropagation();saveVocab('${v.w.replace(/'/g,"\\'")}', this)">${isSaved?'💾 Kayıtlı':'💾 Save to Bank'}</button></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+  document.getElementById('vdTotal').textContent = VOCAB.length;
+}
+function bookmarkV(word, btn) {
+  const i = prog.vocabBookmarks.indexOf(word);
+  if (i >= 0) {prog.vocabBookmarks.splice(i,1); btn.classList.remove('on'); btn.textContent='☆';}
+  else {prog.vocabBookmarks.push(word); btn.classList.add('on'); btn.textContent='⭐';}
+  save();
+}
+function saveVocab(word, btn) {
+  if (prog.vocabSaved.includes(word)) return;
+  const v = VOCAB.find(x => x.w === word);
+  prog.vocabSaved.push(word);
+  const data = {item:v.w, type:v.pos.includes('phrasal')?'phrasal_verb':(v.pos==='chunk'?'chunk':'word'), definition_tr:v.tr, example:v.ex, source:{engine:'grammar-first-lesson-01', topic:v.topic}};
+  ELV1.saveToWordBank(data);
+  sessionBank.push(data);
+  save(); updateXp();
+  if (btn) {btn.classList.add('saved'); btn.textContent = '💾 Kayıtlı';}
+  toast(`"${word}" bank'a eklendi.`);
+  addXp(2);
+}
+function addCustomVocab() {
+  const term = document.getElementById('cstTerm').value.trim();
+  if (!term) return;
+  const type = document.getElementById('cstType').value;
+  const tr = document.getElementById('cstTr').value.trim();
+  const data = {item:term, type, definition_tr:tr, example:'', source:{engine:'grammar-first-lesson-01', manual:true}};
+  ELV1.saveToWordBank(data);
+  sessionBank.push(data);
+  toast(`"${term}" eklendi.`);
+  document.getElementById('cstTerm').value = '';
+  document.getElementById('cstTr').value = '';
+  addXp(2);
+}
+
+/* Vocab Quiz */
+let vqScore=0, vqIdx=0, vqShuf=[], vqLives=3, vqCombo=0, vqMax=0;
+function startVQuiz() {
+  vqScore=0; vqIdx=0; vqLives=3; vqCombo=0; vqMax=0;
+  vqShuf = [...VOCAB].sort(()=>Math.random()-.5).slice(0, 10);
+  renderVQuiz();
+}
+function renderVQuiz() {
+  const el = document.getElementById('v-quiz');
+  if (vqLives <= 0) {
+    el.innerHTML = `<div class="qend"><div style="font-size:42px;">💔</div><div class="qe-score">${vqScore}</div><div class="qe-msg">Hak bitti. Best combo: ${vqMax}</div><button class="cta-btn" onclick="startVQuiz()">↻ Tekrar</button></div>`;
+    return;
+  }
+  if (vqIdx >= vqShuf.length) {
+    el.innerHTML = `<div class="qend"><div style="font-size:42px;">🎉</div><div class="qe-score">${vqScore}/${vqShuf.length}</div><div class="qe-msg">Best combo: ${vqMax} · Hak: ${vqLives}/3</div><button class="cta-btn" onclick="startVQuiz()">↻ Tekrar</button></div>`;
+    if (vqMax > prog.bestCombo) {prog.bestCombo = vqMax; save();}
+    return;
+  }
+  const v = vqShuf[vqIdx];
+  const opts = [v, ...VOCAB.filter(x => x.w !== v.w).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  el.innerHTML = `<div class="quiz-top">
+    <div class="qt-lives">${'❤️'.repeat(vqLives)}${'🖤'.repeat(3-vqLives)}</div>
+    <div class="qt-combo ${vqCombo>=3?'fire':''}">🔥 ${vqCombo}</div>
+    <div class="qt-score">🎯 ${vqScore}/${vqShuf.length}</div>
+  </div>
+  <div class="quiz-q">
+    <div class="q-num">Soru ${vqIdx+1} / ${vqShuf.length}</div>
+    <div class="q-sent">Anlamı: <em>${ELV1.escapeHTML(v.w)}</em>?</div>
+    <div class="q-ex">"${ELV1.escapeHTML(v.ex)}"</div>
+    <div class="options">${opts.map(o=>`<button class="opt-btn" data-w="${ELV1.escapeHTML(o.w)}" onclick="pickVQ(this,'${v.w.replace(/'/g,"\\'")}')">${ELV1.escapeHTML(o.tr)}</button>`).join('')}</div>
+  </div>`;
+}
+function pickVQ(btn, correct) {
+  const opts = btn.closest('.options').querySelectorAll('.opt-btn');
+  opts.forEach(b => {b.disabled = true; if (b.dataset.w === correct) b.classList.add('correct');});
+  if (btn.dataset.w === correct) {
+    vqScore++; vqCombo++; vqMax = Math.max(vqMax, vqCombo);
+    beep('correct'); addXp(5 + Math.floor(vqCombo*2));
+    updateMastery(correct, true);
+    if (vqCombo >= 3) beep('combo');
+  } else {
+    vqCombo = 0; vqLives--;
+    btn.classList.add('wrong','shake');
+    beep('wrong');
+  }
+  setTimeout(()=>{vqIdx++; renderVQuiz();}, 900);
+}
+
+/* Match */
+let mSel=null, mCount=0;
+function startMatch() {
+  mSel=null; mCount=0;
+  const pairs = [...MATCH_PAIRS].sort(()=>Math.random()-.5);
+  const rights = [...pairs].sort(()=>Math.random()-.5);
+  document.getElementById('v-match').innerHTML = `
+    <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">Sol kelimeyi tıkla, sonra anlamını sağdan seç.</p>
+    <div class="match-area">
+      <div class="match-col">${pairs.map((p,i)=>`<div class="match-item" data-side="L" data-idx="${i}" onclick="mClick(this)">${ELV1.escapeHTML(p.w)}</div>`).join('')}</div>
+      <div class="match-col">${rights.map(p=>{const i = pairs.findIndex(x=>x.w===p.w); return `<div class="match-item" data-side="R" data-idx="${i}" onclick="mClick(this)">${ELV1.escapeHTML(p.tr)}</div>`;}).join('')}</div>
+    </div>
+    <div style="margin-top:12px;font-size:13px;color:var(--text2);">Matched: <span id="mCnt">0</span> / ${MATCH_PAIRS.length}</div>`;
+}
+function mClick(el) {
+  if (el.classList.contains('matched')) return;
+  if (!mSel) {
+    if (el.dataset.side === 'L') {mSel = el; el.classList.add('selected');}
+  } else {
+    if (el.dataset.side === 'R') {
+      if (el.dataset.idx === mSel.dataset.idx) {
+        [mSel, el].forEach(e => {e.classList.remove('selected'); e.classList.add('matched');});
+        mCount++; document.getElementById('mCnt').textContent = mCount;
+        beep('correct'); addXp(3);
+        const w = MATCH_PAIRS[parseInt(el.dataset.idx)].w;
+        updateMastery(w, true);
+        mSel = null;
+        if (mCount === MATCH_PAIRS.length) toast('🎉 Hepsi eşleşti!');
+      } else {
+        [mSel, el].forEach(e => {e.classList.remove('selected'); e.classList.add('wrong-anim','shake');});
+        beep('wrong');
+        const tmp = mSel; mSel = null;
+        setTimeout(()=>[tmp, el].forEach(e => {e.classList.remove('wrong-anim'); e.classList.remove('shake');}), 700);
+      }
+    } else {
+      mSel.classList.remove('selected'); mSel = el; el.classList.add('selected');
+    }
+  }
+}
+
+/* Write */
+let writeIdx = 0;
+function renderWrite() {
+  const el = document.getElementById('v-write');
+  if (writeIdx >= 8) {
+    el.innerHTML = `<div class="qend"><div style="font-size:36px;">✨</div><div class="qe-score">8 kelime!</div><div class="qe-msg">+5 XP per word kaydedildi.</div><button class="cta-btn" onclick="writeIdx=0;renderWrite()">↻ Yeniden</button></div>`;
+    return;
+  }
+  const v = VOCAB[writeIdx];
+  el.innerHTML = `<div style="font-size:11px;color:var(--text2);margin-bottom:8px;">${writeIdx+1} / 8 · +5 XP per kelime</div>
+    <div class="write-card">
+      <div class="write-word">${ELV1.escapeHTML(v.w)}</div>
+      <div class="write-tr">🇹🇷 ${ELV1.escapeHTML(v.tr)} · <em style="color:var(--text2);">${v.pos}</em></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;">Aşağıya <b>${ELV1.escapeHTML(v.w)}</b> kullanan bir cümle yaz:</div>
+      <textarea class="write-inp" rows="3" placeholder="Cümleni yaz..." id="wInp"></textarea>
+      <div class="street-note"><div class="sn-label">💡 Street Note</div><div class="sn-text">${ELV1.escapeHTML(v.street)}</div></div>
+    </div>
+    <button class="btn-check" onclick="writeIdx++;addXp(5);renderWrite()">Sonraki → (+5 XP)</button>
+    <button class="btn-show" onclick="document.getElementById('wInp').value='${v.ex.replace(/'/g,"\\'")}'">Örneği göster</button>`;
+}
+
+/* Speed */
+let srTime=60, srScore=0, srIdx=0, srShuf=[], srTimer=null;
+function renderSpeedStart() {
+  document.getElementById('v-speed').innerHTML = `<div class="sr-wrap">
+    <div style="font-size:48px;">⚡</div>
+    <div style="font-size:20px;font-weight:bold;color:var(--accent2);margin:8px 0;">Speed Round</div>
+    <p style="color:var(--text2);font-size:13px;margin-bottom:18px;line-height:1.6;">60 saniyede mümkün olduğu kadar çok doğru cevap.<br>Her doğru: +5 XP · Best: <b style="color:var(--gold);">${prog.bestSpeed}</b></p>
+    <button class="sr-start" onclick="startSpeed()">▶ Başla</button>
+  </div>`;
+}
+function startSpeed() {srTime=60; srScore=0; srIdx=0; srShuf=[...VOCAB].sort(()=>Math.random()-.5); if (srTimer) clearInterval(srTimer); srTimer = setInterval(()=>{srTime--; updateSpeedUI(); if (srTime<=0) endSpeed();}, 1000); renderSpeedQ();}
+function renderSpeedQ() {
+  if (srTime <= 0) return;
+  const v = srShuf[srIdx % srShuf.length];
+  const opts = [v, ...VOCAB.filter(x => x.w !== v.w).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  const tCls = srTime <= 10 ? 'danger' : (srTime <= 20 ? 'warn' : '');
+  document.getElementById('v-speed').innerHTML = `<div class="sr-wrap">
+    <div class="sr-stats"><div>⏱️ <b class="sr-timer ${tCls}" style="display:inline;">${srTime}</b>s</div><div>Score: <b>${srScore}</b></div><div>Best: ${prog.bestSpeed}</div></div>
+    <div class="sr-q"><div class="sr-word">${ELV1.escapeHTML(v.w)}</div>
+      <div class="options">${opts.map(o=>`<button class="opt-btn" data-w="${ELV1.escapeHTML(o.w)}" onclick="srPick(this,'${v.w.replace(/'/g,"\\'")}')">${ELV1.escapeHTML(o.tr)}</button>`).join('')}</div>
+    </div>
+  </div>`;
+}
+function srPick(btn, correct) {
+  if (btn.dataset.w === correct) {srScore++; beep('correct'); addXp(5); updateMastery(correct, true);}
+  else {beep('wrong'); btn.classList.add('shake');}
+  srIdx++;
+  setTimeout(renderSpeedQ, 150);
+}
+function updateSpeedUI() {const t = document.querySelector('.sr-timer'); if (t) {t.textContent = srTime; t.className = 'sr-timer ' + (srTime<=10?'danger':(srTime<=20?'warn':''));}}
+function endSpeed() {
+  clearInterval(srTimer); srTimer = null;
+  const better = srScore > prog.bestSpeed;
+  if (better) {prog.bestSpeed = srScore; save(); updateXp();}
+  document.getElementById('v-speed').innerHTML = `<div class="sr-wrap">
+    <div style="font-size:48px;">⚡</div>
+    <div style="font-size:22px;font-weight:bold;color:var(--accent2);margin:8px 0;">Süre Bitti!</div>
+    <div style="font-size:36px;color:var(--gold);font-weight:bold;">${srScore}</div>
+    <div style="color:var(--text2);font-size:13px;margin-bottom:18px;">${better?'🎉 YENİ REKOR!':'Best: '+prog.bestSpeed}</div>
+    <button class="sr-start" onclick="startSpeed()">↻ Tekrar</button>
+  </div>`;
+}
+
+/* Hangman */
+let hmWord='', hmTr='', hmGuessed=[], hmWrong=0, hmDone=false;
+const GALLOWS=['  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========','  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========','  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========','  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========','  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========','  +---+\n  |   |\n  O   |\n /|\\  |\n /    |\n      |\n=========','  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n========='];
+function renderHangmanStart() {document.getElementById('v-hangman').innerHTML = `<div class="hm-wrap" style="text-align:center;"><div style="font-size:48px;">🎯</div><div style="font-size:20px;font-weight:bold;color:var(--accent2);margin:8px 0;">Hangman</div><p style="color:var(--text2);font-size:13px;line-height:1.6;margin-bottom:18px;">TR ipucundan İngilizce kelimeyi bul. 6 yanlış hakkın var. Kazanırsan +20 XP.</p><button class="sr-start" onclick="startHangman()">▶ Yeni Oyun</button></div>`;}
+function startHangman() {const c = VOCAB.filter(v => v.w.length>=4 && v.w.length<=14 && !/[\s-]/.test(v.w)); const v = c[Math.floor(Math.random()*c.length)]; hmWord = v.w.toLowerCase(); hmTr = v.tr; hmGuessed=[]; hmWrong=0; hmDone=false; renderHangman();}
+function renderHangman() {
+  const masked = hmWord.split('').map(c => hmGuessed.includes(c) || c==="'" ? c : '_').join(' ');
+  const won = !masked.includes('_');
+  const lost = hmWrong >= 6;
+  let msg = '';
+  if (won) {msg = `<div class="hm-msg show win">🎉 Kazandın! +20 XP · Kelime: <b>${hmWord}</b></div>`; hmDone = true;}
+  else if (lost) {msg = `<div class="hm-msg show lose">💀 Oyun bitti · Kelime: <b>${hmWord}</b></div>`; hmDone = true;}
+  document.getElementById('v-hangman').innerHTML = `<div class="hm-wrap">
+    <div class="hm-top"><span>Yanlış: <b style="color:var(--error);">${hmWrong}/6</b></span><span>Uzunluk: ${hmWord.length}</span></div>
+    <div class="hm-art">${GALLOWS[hmWrong]}</div>
+    <div class="hm-clue">💡 TR: <b>${ELV1.escapeHTML(hmTr)}</b></div>
+    <div class="hm-word">${masked}</div>
+    <div class="hm-letters">${'abcdefghijklmnopqrstuvwxyz'.split('').map(c => {const used = hmGuessed.includes(c); const inWord = hmWord.includes(c); const cls = used ? (inWord?'ok':'no') : ''; return `<button class="hm-letter ${cls}" ${used||hmDone?'disabled':''} onclick="hmGuess('${c}')">${c.toUpperCase()}</button>`;}).join('')}</div>
+    ${msg}${hmDone?`<div style="text-align:center;margin-top:14px;"><button class="sr-start" onclick="startHangman()">↻ Yeni</button></div>`:''}
+  </div>`;
+  if (won) {addXp(20); beep('levelup'); updateMastery(hmWord, true);}
+  else if (lost) beep('wrong');
+}
+function hmGuess(c) {if (hmDone || hmGuessed.includes(c)) return; hmGuessed.push(c); if (hmWord.includes(c)) beep('correct'); else {hmWrong++; beep('wrong');} renderHangman();}
+
+/* Builder */
+let wbWord='', wbTr='', wbPool=[], wbSlot=[], wbErrors=0, wbDone=false;
+function renderBuilderStart() {document.getElementById('v-builder').innerHTML = `<div class="wb-wrap" style="text-align:center;"><div style="font-size:48px;">🧩</div><div style="font-size:20px;font-weight:bold;color:var(--accent2);margin:8px 0;">Word Builder</div><p style="color:var(--text2);font-size:13px;line-height:1.6;margin-bottom:18px;">Karışık harflerden kelimeyi kur.<br>Hatasız bitir → +25 XP bonus.</p><button class="sr-start" onclick="startBuilder()">▶ Yeni Kelime</button></div>`;}
+function startBuilder() {const c = VOCAB.filter(v => v.w.length>=4 && v.w.length<=10 && !/[\s-]/.test(v.w)); const v = c[Math.floor(Math.random()*c.length)]; wbWord = v.w.toLowerCase(); wbTr = v.tr; wbErrors=0; wbDone=false; wbSlot=[]; wbPool = wbWord.split('').sort(()=>Math.random()-.5).map((c,i)=>({c, used:false, id:i})); renderBuilder();}
+function renderBuilder() {
+  const slot = wbSlot.map((s,i) => `<span class="wb-tile" onclick="wbRemove(${i})">${s.c.toUpperCase()}</span>`).join('');
+  const pool = wbPool.map((p,i) => `<span class="wb-tile ${p.used?'used':''}" onclick="wbAdd(${i})">${p.c.toUpperCase()}</span>`).join('');
+  document.getElementById('v-builder').innerHTML = `<div class="wb-wrap">
+    <div class="wb-clue">💡 TR: <b>${ELV1.escapeHTML(wbTr)}</b> · Harf: <b>${wbWord.length}</b> · Yanlış: <b style="color:var(--error);">${wbErrors}</b></div>
+    <div class="wb-slot">${slot}</div>
+    <div class="wb-pool">${pool}</div>
+    <div class="wb-actions">
+      <button class="btn-show" onclick="wbReset()">↻ Reset</button>
+      <button class="btn-check" onclick="wbCheck()">Kontrol</button>
+      <button class="sr-start" style="padding:8px 18px;font-size:12px;font-weight:normal;" onclick="startBuilder()">Atla</button>
+    </div>
+  </div>`;
+}
+function wbAdd(i) {if (wbPool[i].used || wbDone) return; wbPool[i].used = true; wbSlot.push(wbPool[i]); renderBuilder();}
+function wbRemove(i) {if (wbDone) return; const t = wbSlot[i]; wbPool[t.id].used = false; wbSlot.splice(i,1); renderBuilder();}
+function wbReset() {if (wbDone) return; wbPool.forEach(p => p.used=false); wbSlot=[]; renderBuilder();}
+function wbCheck() {
+  const built = wbSlot.map(s => s.c).join('');
+  if (built === wbWord) {
+    wbDone = true;
+    const bonus = wbErrors === 0 ? 25 : 10;
+    addXp(15 + bonus); beep('levelup'); updateMastery(wbWord, true);
+    document.getElementById('v-builder').innerHTML = `<div class="wb-wrap" style="text-align:center;">
+      <div style="font-size:48px;">🎉</div>
+      <div style="font-size:22px;font-weight:bold;color:var(--success);margin:8px 0;">Doğru!</div>
+      <div style="font-size:28px;font-family:'Courier New',monospace;color:var(--accent2);margin:14px 0;letter-spacing:6px;">${wbWord.toUpperCase()}</div>
+      <div style="color:var(--text2);font-size:13px;margin-bottom:18px;">+${15+bonus} XP · ${wbErrors===0?'Mükemmel!':wbErrors+' hata'}</div>
+      <button class="sr-start" onclick="startBuilder()">↻ Yeni</button>
+    </div>`;
+  } else {
+    wbErrors++; beep('wrong');
+    document.querySelector('.wb-slot').classList.add('shake');
+    setTimeout(() => {document.querySelector('.wb-slot').classList.remove('shake'); wbReset();}, 500);
+  }
+}
+
+/* ====================================================================
+   QUIZZES TAB
+   ==================================================================== */
+function showQTab(name, btn) {
+  document.querySelectorAll('.quiz-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.quiz-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('qs-'+name).classList.add('active');
+}
+function renderTopicPick() {
+  const el = document.getElementById('topicPick');
+  el.innerHTML = TOPIC_ORDER.map(slug => {
+    const d = TOPIC_DATA[slug];
+    const sc = prog.perTopicScores[slug];
+    return `<div class="tp-card" onclick="startTopicQuiz('${slug}')">
+      <div class="tp-title">${ELV1.escapeHTML(d.name)}</div>
+      <div class="tp-cefr">${d.cefr} · ${d.tr_short.substring(0,32)}…</div>
+      ${sc?`<div class="tp-score">⭐ Son skor: ${sc.correct}/${sc.total}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function startTopicQuiz(slug) {
+  const d = TOPIC_DATA[slug];
+  const pool = [...MINI[slug]];
+  let i = 0, correct = 0, errors = [];
+  const mount = document.getElementById('topicQuizMount');
+  function step() {
+    if (i >= pool.length) {
+      prog.perTopicScores[slug] = {correct, total:pool.length, errors, ts:Date.now()};
+      save();
+      mount.innerHTML = `<div class="qend"><div style="font-size:32px;">${correct===pool.length?'🌟':correct>=3?'🎉':'📚'}</div><div class="qe-score">${correct} / ${pool.length}</div><div class="qe-msg">${ELV1.escapeHTML(d.name)} skorun kaydedildi. ${correct<3?'Bu konu zayıf-kuyruğuna girecek.':'İyi durumda.'}</div><button class="cta-btn" onclick="renderTopicPick();document.getElementById('topicQuizMount').innerHTML=''">← Konu seç</button></div>`;
+      renderTopicPick();
+      return;
+    }
+    const q = pool[i];
+    mount.innerHTML = `<div class="quiz-q">
+      <div class="q-num"><b>Soru ${i+1}/${pool.length}</b> · ${ELV1.escapeHTML(d.name)}</div>
+      <div class="q-sent">${ELV1.escapeHTML(q.q).replace(/_____/g, '<em>_____</em>')}</div>
+      <div class="options">${q.opts.map((o,j)=>`<button class="opt-btn" onclick="answerTopicQ(${j})">${ELV1.escapeHTML(o)}</button>`).join('')}</div>
+      <div id="tq-fb" style="font-size:12px;color:var(--text2);margin-top:10px;display:none;"></div>
+    </div>`;
+    window._curTQ = {q, slug, onPick: (choice) => {
+      const opts = document.querySelectorAll('#topicQuizMount .opt-btn');
+      opts.forEach(o => o.disabled = true);
+      const ok = choice === q.a;
+      opts[choice].classList.add(ok ? 'correct' : 'wrong');
+      if (!ok) opts[q.a].classList.add('correct');
+      const fb = document.getElementById('tq-fb');
+      fb.textContent = q.fb; fb.style.display = 'block';
+      if (ok) {correct++; beep('correct'); addXp(3);} else {errors.push({q:q.q, sel:q.opts[choice], exp:q.opts[q.a]}); beep('wrong');}
+      setTimeout(()=>{i++; step();}, 1300);
+    }};
+  }
+  step();
+}
+function answerTopicQ(c) {if (window._curTQ) window._curTQ.onPick(c);}
+
+/* General Mix Quiz */
+let gQ=null;
+function startGeneralQuiz() {
+  const pool = [];
+  TOPIC_ORDER.forEach(slug => {MINI[slug].slice(0,2).forEach(q => pool.push({...q, slug, topicName: TOPIC_DATA[slug].name}));});
+  gQ = {pool: pool.sort(()=>Math.random()-.5), idx:0, score:0, combo:0, max:0, lives:3, errors:[], perTopic:{}};
+  document.getElementById('generalQuizMount').innerHTML = '<div id="gqInner"></div>';
+  renderGQStep();
+}
+function renderGQStep() {
+  const el = document.getElementById('gqInner');
+  if (gQ.lives <= 0) return finishGQ('lose');
+  if (gQ.idx >= gQ.pool.length) return finishGQ('done');
+  const q = gQ.pool[gQ.idx];
+  el.innerHTML = `<div class="quiz-top">
+    <div class="qt-lives">${'❤️'.repeat(gQ.lives)}${'🖤'.repeat(3-gQ.lives)}</div>
+    <div class="qt-combo ${gQ.combo>=3?'fire':''}">🔥 ${gQ.combo}</div>
+    <div class="qt-score">🎯 ${gQ.score}</div>
+  </div>
+  <div class="quiz-q">
+    <div class="q-num"><b>Soru ${gQ.idx+1}/${gQ.pool.length}</b> · ${ELV1.escapeHTML(q.topicName)}</div>
+    <div class="q-sent">${ELV1.escapeHTML(q.q).replace(/_____/g,'<em>_____</em>')}</div>
+    <div class="options">${q.opts.map((o,i)=>`<button class="opt-btn" onclick="answerGQ(${i})">${ELV1.escapeHTML(o)}</button>`).join('')}</div>
+    <div id="gq-fb" style="font-size:12px;color:var(--text2);margin-top:10px;display:none;"></div>
+  </div>`;
+}
+function answerGQ(c) {
+  const q = gQ.pool[gQ.idx];
+  const opts = document.querySelectorAll('#gqInner .opt-btn');
+  opts.forEach(o => o.disabled = true);
+  const ok = c === q.a;
+  opts[c].classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) opts[q.a].classList.add('correct');
+  document.getElementById('gq-fb').textContent = q.fb;
+  document.getElementById('gq-fb').style.display = 'block';
+  if (!gQ.perTopic[q.slug]) gQ.perTopic[q.slug] = {correct:0, total:0};
+  gQ.perTopic[q.slug].total++;
+  if (ok) {gQ.score += 10 + gQ.combo*2; gQ.combo++; gQ.max = Math.max(gQ.max, gQ.combo); gQ.perTopic[q.slug].correct++; beep('correct'); addXp(2);}
+  else {gQ.combo=0; gQ.lives--; gQ.errors.push({slug:q.slug, q:q.q, sel:q.opts[c], exp:q.opts[q.a]}); beep('wrong');}
+  setTimeout(()=>{gQ.idx++; renderGQStep();}, 1200);
+}
+function finishGQ(state) {
+  prog.generalQuiz = {score:gQ.score, lives:gQ.lives, maxCombo:gQ.max, errors:gQ.errors.length, perTopic:gQ.perTopic, ts:Date.now()};
+  save();
+  if (gQ.max > prog.bestCombo) {prog.bestCombo = gQ.max; save();}
+  const tot = Object.values(gQ.perTopic).reduce((s,t)=>s+t.total,0);
+  const cor = Object.values(gQ.perTopic).reduce((s,t)=>s+t.correct,0);
+  const pct = tot ? Math.round(cor/tot*100) : 0;
+  document.getElementById('generalQuizMount').innerHTML = `<div class="qend">
+    <div style="font-size:38px;">${state==='lose'?'💔':pct>=85?'🌟':pct>=65?'🎉':'📚'}</div>
+    <div class="qe-score">${cor} / ${tot}</div>
+    <div class="qe-msg">Skor: ${gQ.score} · En uzun combo: ${gQ.max} · ${pct}%</div>
+    <button class="cta-btn" onclick="startGeneralQuiz()">↻ Tekrar</button>
+    <button class="cta-btn gold" onclick="showQTab('story', document.querySelector('[data-qtab=story]'))">📖 Story Quiz →</button>
+  </div>`;
+}
+
+/* Story Comprehension Quiz */
+let sQ = null;
+function startStoryQuiz() {
+  sQ = {idx:0, correct:0, errors:[]};
+  document.getElementById('storyQuizMount').innerHTML = '<div id="sqInner"></div>';
+  renderSQStep();
+}
+function renderSQStep() {
+  const el = document.getElementById('sqInner');
+  if (sQ.idx >= STORY_Q.length) {
+    prog.storyQuiz = {correct:sQ.correct, total:STORY_Q.length, errors:sQ.errors, ts:Date.now()};
+    save();
+    const pct = Math.round(sQ.correct/STORY_Q.length*100);
+    document.getElementById('storyQuizMount').innerHTML = `<div class="qend">
+      <div style="font-size:38px;">${pct>=80?'🌟':'📖'}</div>
+      <div class="qe-score">${sQ.correct} / ${STORY_Q.length}</div>
+      <div class="qe-msg">${pct}% · Metni anlama skoru kaydedildi.</div>
+      <button class="cta-btn" onclick="startStoryQuiz()">↻ Tekrar</button>
+    </div>`;
+    if (pct >= 80) addXp(15); else if (pct >= 60) addXp(8);
+    return;
+  }
+  const q = STORY_Q[sQ.idx];
+  el.innerHTML = `<div class="quiz-q">
+    <div class="q-num"><b>Soru ${sQ.idx+1}/${STORY_Q.length}</b> · Story</div>
+    <div class="q-sent">${ELV1.escapeHTML(q.q)}</div>
+    <div class="options">${q.opts.map((o,i)=>`<button class="opt-btn" onclick="answerSQ(${i})">${ELV1.escapeHTML(o)}</button>`).join('')}</div>
+    <div id="sq-fb" style="font-size:12px;color:var(--text2);margin-top:10px;display:none;"></div>
+  </div>`;
+}
+function answerSQ(c) {
+  const q = STORY_Q[sQ.idx];
+  const opts = document.querySelectorAll('#sqInner .opt-btn');
+  opts.forEach(o => o.disabled = true);
+  const ok = c === q.a;
+  opts[c].classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) opts[q.a].classList.add('correct');
+  document.getElementById('sq-fb').textContent = q.fb;
+  document.getElementById('sq-fb').style.display = 'block';
+  if (ok) {sQ.correct++; addXp(3); beep('correct');} else {sQ.errors.push({q:q.q, sel:q.opts[c], exp:q.opts[q.a]}); beep('wrong');}
+  setTimeout(()=>{sQ.idx++; renderSQStep();}, 1300);
+}
+
+/* ====================================================================
+   REFLECT
+   ==================================================================== */
+document.getElementById('reflectText').value = prog.reflectText || '';
+function saveReflect() {
+  prog.reflectText = document.getElementById('reflectText').value;
+  save();
+  const wc = (prog.reflectText.trim().split(/\s+/).filter(Boolean)).length;
+  document.getElementById('reflectStatus').textContent = '✓ ' + wc + ' kelime kaydedildi';
+  if (wc >= 30) addXp(10);
+  toast('Yazın kaydedildi.');
+}
+
+/* ====================================================================
+   EXPORT — full session JSON
+   ==================================================================== */
+function exportSession() {
+  const duration = Math.round((Date.now() - SESSION_START) / 1000);
+  // per-topic results: from mini-test (accordion) and topic quiz
+  const perTopicResults = {};
+  TOPIC_ORDER.forEach(slug => {
+    perTopicResults[slug] = {correct:0, total:0, errors:[], subpatterns_touched:[], completed:false};
+    // mini-test
+    MINI[slug].forEach((q, idx) => {
+      const r = prog.miniResults[slug+'_'+idx];
+      if (r) {perTopicResults[slug].total++; if (r.ok) perTopicResults[slug].correct++; else perTopicResults[slug].errors.push({source:'mini', q:q.q, sel:q.opts[r.choice], exp:q.opts[q.a]});}
+    });
+    // topic quiz
+    const tq = prog.perTopicScores[slug];
+    if (tq) {perTopicResults[slug].total += tq.total; perTopicResults[slug].correct += tq.correct; tq.errors.forEach(e => perTopicResults[slug].errors.push({source:'topic-quiz', ...e}));}
+    // general quiz per-topic
+    if (prog.generalQuiz && prog.generalQuiz.perTopic[slug]) {
+      perTopicResults[slug].total += prog.generalQuiz.perTopic[slug].total;
+      perTopicResults[slug].correct += prog.generalQuiz.perTopic[slug].correct;
+    }
+    perTopicResults[slug].completed = perTopicResults[slug].total >= MINI[slug].length;
+    // engine.js'in topic_progress'ine de kaydet
+    if (perTopicResults[slug].total > 0) {
+      ELV1.recordTopicResult(slug, perTopicResults[slug].correct, perTopicResults[slug].total, perTopicResults[slug].errors);
+    }
+  });
+
+  const dailyTopics = TOPIC_ORDER.map(slug => {
+    const d = TOPIC_DATA[slug];
+    const engineT = ELV1.T.topics.find(t => t.slug === slug);
+    return {slug, name:d.name, cefr:d.cefr, category: engineT ? engineT.category : 'unknown'};
+  });
+
+  // identify weak topics (correct ratio < 0.6 OR all-zero attempts marked as untouched)
+  const weakSlugs = [];
+  TOPIC_ORDER.forEach(slug => {
+    const r = perTopicResults[slug];
+    if (r.total === 0) {weakSlugs.push({slug, reason:'untouched'});}
+    else if (r.correct / r.total < 0.6) {weakSlugs.push({slug, reason:'low-score', ratio: r.correct/r.total});}
+  });
+
+  // word taps (kullanıcının metinde kaç defa kelimeye tıkladığı — zorlandığı kelimeler)
+  const wordTapsList = Object.entries(prog.wordTaps).map(([w,c]) => ({word:w, taps:c})).sort((a,b) => b.taps - a.taps).slice(0,30);
+
+  const sessionId = ELV1.nowTag() + '-grammar-first-lesson-01';
+  const payload = {
+    schema_version:'1.0',
+    type:'session_grammar_first',
+    timestamp: new Date().toISOString(),
+    engine:'grammar-first',
+    session_id: sessionId,
+    duration_sec: duration,
+    lesson_id: LESSON.id,
+    lesson_num: LESSON.num,
+    lesson_title: LESSON.title,
+    series: LESSON.series,
+    episode: LESSON.episode,
+    theme: LESSON.theme,
+    xp_earned: prog.xp,
+    level: LVLS[prog.level].t,
+    payload: dailyTopics.map(t => ({...t, ...perTopicResults[t.slug], score_pct: perTopicResults[t.slug].total ? Math.round(perTopicResults[t.slug].correct/perTopicResults[t.slug].total*100) : null})),
+    weak_topics_detected: weakSlugs,
+    quizzes: {
+      mini_test: prog.miniResults,
+      per_topic: prog.perTopicScores,
+      general: prog.generalQuiz,
+      story: prog.storyQuiz
+    },
+    vocab: {
+      total: VOCAB.length,
+      saved: prog.vocabSaved,
+      bookmarked: prog.vocabBookmarks,
+      mastery: prog.mastery,
+      best_speed: prog.bestSpeed,
+      best_combo: prog.bestCombo,
+      word_taps_top: wordTapsList
+    },
+    tts_listened: prog.ttsListened,
+    reflect_text: prog.reflectText || ''
+  };
+
+  const dump = [payload];
+  if (sessionBank.length) dump.push(ELV1.buildBankAddPayload(sessionBank, 'grammar-first', sessionId));
+  ELV1.downloadJSON(dump, ELV1.nowTag() + '-grammar-first-lesson-01.json');
+  toast('JSON indirildi. 00_INBOX/ klasörüne sürükle.');
+}
+
+/* ====================================================================
+   READ PROGRESS + KEYBOARD
+   ==================================================================== */
+window.addEventListener('scroll', () => {
+  const h = document.documentElement.scrollHeight - window.innerHeight;
+  const p = (window.scrollY / h) * 100;
+  document.getElementById('rp').style.width = Math.min(100, p) + '%';
+});
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  const map = {'1':'story','2':'grammar','3':'vocab','4':'quiz','5':'reflect'};
+  if (map[e.key]) {
+    const btn = document.querySelector('[data-tab="' + map[e.key] + '"]');
+    if (btn) showTab(map[e.key], btn);
+  }
+  if (e.key === ' ' && document.getElementById('tab-story').classList.contains('active')) {
+    e.preventDefault();
+    if (speechSynthesis.speaking && !ttsPaused) ttsPause();
+    else if (ttsPaused) ttsPlayAll();
+    else ttsPlayAll();
+  }
+});
+
+/* ====================================================================
+   INIT
+   ==================================================================== */
+applyTheme(prog.theme || 'dark');
+document.body.classList.add(fsSteps[prog.fs || 1]);
+document.getElementById('fsBtn').textContent = fsLabels[prog.fs || 1];
+document.getElementById('sndBtn').textContent = prog.sound ? '🔊' : '🔇';
+
+renderLegend();
+renderAccordion();
+// restore mini-test answers
+Object.keys(prog.miniResults).forEach(key => {
+  const [slug, idxStr] = key.split('_');
+  const idx = parseInt(idxStr, 10);
+  const r = prog.miniResults[key];
+  const mqEl = document.getElementById('mq-'+slug+'-'+idx);
+  if (!mqEl || !MINI[slug]) return;
+  const opts = mqEl.querySelectorAll('.mini-opt');
+  opts.forEach(o => o.disabled = true);
+  const q = MINI[slug][idx];
+  opts[r.choice].classList.add(r.ok?'correct':'wrong');
+  if (!r.ok) opts[q.a].classList.add('correct');
+  const fb = document.getElementById('fb-'+slug+'-'+idx);
+  if (fb) {fb.textContent = q.fb; fb.classList.add('show');}
+});
+wrapWords();
+wireGrammarHighlights();
+buildCards();
+renderTopicPick();
+updateXp();
+
+if ('speechSynthesis' in window) {
+  speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+
+// İlk accordion otomatik açık
+setTimeout(()=>{const first = document.getElementById('acc-'+TOPIC_ORDER[0]); if (first) first.classList.add('open');}, 100);
+</script>
+</body>
+</html>

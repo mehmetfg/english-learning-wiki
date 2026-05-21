@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yazma Asistanı · Writing Assistant</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" onerror="window.anime=function(o){try{if(o&&o.complete)setTimeout(o.complete,o.duration||300)}catch(e){}}"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:        #08080f;
+  --s1:        #0f0f1a;
+  --s2:        #16162a;
+  --s3:        #1e1e34;
+  --s4:        #26263e;
+  --border:    #2a2a48;
+  --border2:   #3a3a5c;
+  --accent:    #7c6fff;
+  --accent-lo: rgba(124,111,255,.12);
+  --accent-md: rgba(124,111,255,.25);
+  --teal:      #00d4aa;
+  --teal-lo:   rgba(0,212,170,.12);
+  --pink:      #ff6b9d;
+  --pink-lo:   rgba(255,107,157,.12);
+  --amber:     #ffa502;
+  --amber-lo:  rgba(255,165,2,.12);
+  --text:      #ddddf0;
+  --dim:       #7777a0;
+  --dim2:      #4a4a70;
+  --ok:        #00d4aa;
+  --err:       #ff4757;
+  --r:         10px;
+  --r2:        14px;
+  --font:      Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ──────────── SCROLLBAR ──────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--s1); }
+::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ──────────── HEADER ──────────── */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 80;
+  gap: 16px;
+}
+.brand {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  background: linear-gradient(120deg, var(--accent), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+}
+.hdr-stats {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
+  color: var(--dim);
+  white-space: nowrap;
+}
+.pill b { color: var(--accent); font-weight: 700; }
+.hdr-nav {
+  display: flex;
+  gap: 6px;
+}
+.nav-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--dim);
+  padding: 6px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .18s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: var(--s3); color: var(--text); border-color: var(--border2); }
+.nav-btn.on { background: var(--accent-lo); color: var(--accent); border-color: var(--accent); }
+
+/* ──────────── SCREENS ──────────── */
+.screen { display: none; height: calc(100vh - 56px); overflow: hidden; }
+.screen.on { display: flex; }
+
+/* ══════════ INPUT SCREEN ══════════ */
+#scr-input {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+.input-wrap {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.input-hero { text-align: center; margin-bottom: 8px; }
+.input-hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+.input-hero p { color: var(--dim); font-size: 13px; line-height: 1.7; }
+
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 20px;
+}
+.card-lbl {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 12px;
+}
+
+/* Level selector */
+.lvl-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.lvl-btn {
+  flex: 1;
+  min-width: 60px;
+  background: var(--s2);
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  color: var(--dim);
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .18s;
+  text-align: center;
+}
+.lvl-btn:hover { border-color: var(--border2); color: var(--text); }
+.lvl-btn.on { border-color: var(--accent); color: var(--accent); background: var(--accent-lo); }
+.lvl-desc { font-size: 11px; color: var(--dim); margin-top: 8px; text-align: center; }
+
+/* Journal textarea */
+.j-area {
+  width: 100%;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.75;
+  padding: 14px 16px;
+  resize: vertical;
+  min-height: 200px;
+  outline: none;
+  transition: border-color .18s;
+}
+.j-area:focus { border-color: var(--accent); }
+.j-area::placeholder { color: var(--dim2); }
+
+.start-btn {
+  background: linear-gradient(130deg, var(--accent), #9b52e8);
+  border: none;
+  border-radius: var(--r);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 16px;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: 0.5px;
+}
+.start-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(124,111,255,.35);
+}
+.start-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* ══════════ WRITING SCREEN ══════════ */
+#scr-write {
+  flex-direction: row;
+  align-items: stretch;
+}
+.write-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 18px;
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 56px);
+}
+
+/* Progress */
+.prog-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.prog-track {
+  flex: 1;
+  height: 5px;
+  background: var(--s3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  border-radius: 3px;
+  transition: width .5s ease;
+}
+.prog-lbl { font-size: 11px; color: var(--dim); }
+.icon-btn {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--dim);
+  font-size: 14px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all .18s;
+}
+.icon-btn:hover { background: var(--s3); color: var(--text); border-color: var(--border2); }
+
+/* Restructured preview */
+.re-preview {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--r);
+  padding: 14px 16px;
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.7;
+  display: none;
+}
+.re-preview strong {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+
+/* Turkish sentence display */
+.tr-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--r2);
+  padding: 22px 24px;
+  position: relative;
+}
+.tr-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.tr-tag {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tr-tag::before { content: '🇹🇷'; font-size: 14px; }
+.tr-num {
+  font-size: 11px;
+  color: var(--dim);
+  background: var(--s3);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.tr-text {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+/* Input areas */
+.input-section { display: flex; flex-direction: column; gap: 10px; }
+.sec-lbl {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ig { display: flex; gap: 8px; align-items: flex-start; }
+.t-input {
+  flex: 1;
+  background: var(--s1);
+  border: 2px solid var(--border);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.65;
+  padding: 13px 15px;
+  outline: none;
+  transition: border-color .18s, background .18s;
+  resize: none;
+  min-height: 58px;
+}
+.t-input:focus { border-color: var(--accent); background: var(--s2); }
+.t-input.ok { border-color: var(--ok); background: rgba(0,212,170,.04); }
+.t-input.ng { border-color: var(--err); background: rgba(255,71,87,.04); }
+.t-input:disabled { opacity: .6; }
+
+.btn-col { display: flex; flex-direction: column; gap: 6px; }
+.sm-btn {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--dim);
+  font-family: var(--font);
+  font-size: 11px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.sm-btn:hover { background: var(--s3); color: var(--text); border-color: var(--border2); }
+.sm-btn.pri { background: var(--accent); border-color: var(--accent); color: #fff; }
+.sm-btn.pri:hover { background: #9b86ff; }
+.sm-btn.teal { background: var(--teal-lo); border-color: var(--teal); color: var(--teal); }
+.sm-btn[disabled], .sm-btn.off { opacity: .35; pointer-events: none; }
+
+/* Hint strip */
+.hint-strip {
+  display: none;
+  background: var(--s2);
+  border: 1px dashed var(--border2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--dim);
+  font-style: italic;
+  letter-spacing: 0.3px;
+}
+.hint-strip.on { display: block; }
+
+/* Feedback */
+.fback {
+  display: none;
+  background: var(--s2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--err);
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text);
+}
+.fback.on { display: block; }
+.fback.ok { border-left-color: var(--ok); }
+
+/* Recall section */
+.recall { display: none; flex-direction: column; gap: 10px; }
+.recall.on { display: flex; }
+
+/* Completion */
+.done-screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 18px;
+  text-align: center;
+}
+.done-screen.on { display: flex; }
+.done-icon { font-size: 60px; }
+.done-title { font-size: 22px; font-weight: 700; }
+.done-sub { font-size: 13px; color: var(--dim); }
+.done-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+
+/* ──────────── SIDE PANEL ──────────── */
+.side-panel {
+  width: 280px;
+  background: var(--s1);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  transition: width .3s ease, opacity .25s ease;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.side-panel.shut { width: 0; opacity: 0; }
+.sp-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.sp-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--text); }
+.sp-close {
+  background: none;
+  border: none;
+  color: var(--dim);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.sp-close:hover { color: var(--text); background: var(--s3); }
+.wb-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.wb-empty { color: var(--dim); font-size: 11px; text-align: center; padding: 24px 0; line-height: 1.8; }
+.wc {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+}
+.wc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+.wc-w { font-size: 13px; font-weight: 700; color: var(--accent); }
+.wc-t { font-size: 9px; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.wc-t.phrasal { background: var(--accent-lo); color: var(--accent); }
+.wc-t.chunk   { background: var(--teal-lo);   color: var(--teal); }
+.wc-t.grammar { background: var(--pink-lo);   color: var(--pink); }
+.wc-t.vocab   { background: var(--amber-lo);  color: var(--amber); }
+.wc-tr { font-size: 11px; color: var(--dim); }
+.wc-note { font-size: 10px; color: var(--dim2); margin-top: 2px; font-style: italic; }
+.sp-foot {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.sp-foot-btn {
+  flex: 1;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--dim);
+  font-family: var(--font);
+  font-size: 10px;
+  padding: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: all .15s;
+}
+.sp-foot-btn:hover { background: var(--s3); color: var(--text); }
+
+/* ══════════ ANALYSIS SCREEN ══════════ */
+#scr-analysis {
+  flex-direction: column;
+  padding: 28px;
+  gap: 20px;
+  overflow-y: auto;
+  align-items: flex-start;
+}
+.an-head { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+.an-title { font-size: 20px; font-weight: 700; }
+.an-sub { font-size: 12px; color: var(--dim); margin-top: 5px; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 4px; }
+.li { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--dim); }
+.ld { width: 10px; height: 10px; border-radius: 2px; }
+.an-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 24px;
+}
+.an-sent {
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+}
+.an-sent:last-child { padding-bottom: 0; margin-bottom: 0; border-bottom: none; }
+.an-tr { font-size: 11px; color: var(--dim); margin-bottom: 8px; }
+.an-en { font-size: 15px; line-height: 2.4; }
+
+.hl { border-radius: 4px; padding: 2px 5px; cursor: help; position: relative; font-weight: 600; }
+.hl.phrasal { background: var(--accent-md); color: #bbb8ff; }
+.hl.chunk   { background: var(--teal-lo);   color: var(--teal); }
+.hl.grammar { background: var(--pink-lo);   color: var(--pink); }
+.hl.vocab   { background: var(--amber-lo);  color: var(--amber); }
+
+.hl:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 130%; left: 50%;
+  transform: translateX(-50%);
+  background: var(--s4);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 20;
+  color: var(--text);
+  font-weight: 400;
+  font-style: normal;
+  box-shadow: 0 4px 16px rgba(0,0,0,.4);
+}
+
+/* ══════════ GAME SCREEN ══════════ */
+#scr-game {
+  flex-direction: column;
+  padding: 28px;
+  align-items: center;
+  gap: 20px;
+  overflow-y: auto;
+}
+.game-h { text-align: center; }
+.game-h h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.game-h p { font-size: 12px; color: var(--dim); }
+.game-tabs { display: flex; gap: 8px; }
+.gtab {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--dim);
+  font-family: var(--font);
+  font-size: 12px;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.gtab:hover { background: var(--s3); color: var(--text); }
+.gtab.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+.game-pane { width: 100%; max-width: 820px; }
+.game-pane.hide { display: none; }
+
+/* Flip cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 12px;
+}
+.fc {
+  height: 110px;
+  perspective: 900px;
+  cursor: pointer;
+}
+.fc-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .45s cubic-bezier(.4,0,.2,1);
+}
+.fc.fl .fc-inner { transform: rotateY(180deg); }
+.fc-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  border: 1px solid var(--border);
+  gap: 4px;
+}
+.fc-front { background: var(--s2); }
+.fc-front-word { font-size: 15px; font-weight: 700; color: var(--accent); }
+.fc-front-q { font-size: 10px; color: var(--dim); }
+.fc-back {
+  background: linear-gradient(135deg, rgba(124,111,255,.15), rgba(0,212,170,.08));
+  transform: rotateY(180deg);
+}
+.fc-back-type { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--dim); }
+.fc-back-tr { font-size: 14px; font-weight: 700; color: var(--teal); }
+.fc-back-note { font-size: 10px; color: var(--dim); }
+
+.game-empty { color: var(--dim); font-size: 13px; text-align: center; padding: 40px 0; }
+
+/* Match game */
+.match-area { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.match-score { text-align: center; font-size: 13px; color: var(--dim); margin-bottom: 14px; }
+.mc {
+  background: var(--s2);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 18px;
+  min-width: 110px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all .18s;
+  font-family: var(--font);
+  color: var(--text);
+}
+.mc:hover { border-color: var(--border2); background: var(--s3); }
+.mc.sel { border-color: var(--accent); color: var(--accent); background: var(--accent-lo); }
+.mc.hit { border-color: var(--ok); color: var(--ok); background: var(--teal-lo); cursor: default; }
+.mc.miss { border-color: var(--err); }
+.match-footer { text-align: center; margin-top: 18px; }
+
+/* ──────────── LOADING ──────────── */
+.loading {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(8,8,15,.8);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(6px);
+}
+.loading.on { display: flex; }
+.spinner {
+  width: 44px; height: 44px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.load-txt { font-size: 13px; color: var(--dim); }
+
+/* ──────────── FLOAT / TOAST ──────────── */
+.float-e {
+  position: fixed;
+  font-size: 22px;
+  pointer-events: none;
+  z-index: 999;
+  animation: floatUp .75s ease forwards;
+}
+@keyframes floatUp {
+  from { opacity:1; transform: translateY(0) scale(1); }
+  to   { opacity:0; transform: translateY(-50px) scale(1.3); }
+}
+.xp-toast {
+  position: fixed;
+  top: 68px; right: 20px;
+  background: linear-gradient(130deg, var(--accent), var(--teal));
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  z-index: 300;
+  pointer-events: none;
+  display: none;
+}
+
+/* ──────────── ANIMATIONS ──────────── */
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%      { transform: translateX(-7px); }
+  40%      { transform: translateX(7px); }
+  60%      { transform: translateX(-5px); }
+  80%      { transform: translateX(5px); }
+}
+.shake { animation: shake .38s ease; }
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header class="hdr">
+  <div class="brand">Yazma Asistanı</div>
+  <div class="hdr-stats">
+    <div class="pill">⭐ <b id="s-xp">0</b> XP</div>
+    <div class="pill">🔥 <b id="s-combo">0</b>x Kombo</div>
+    <div class="pill">📚 <b id="s-words">0</b> kelime</div>
+  </div>
+  <nav class="hdr-nav">
+    <button class="nav-btn on"  onclick="go('input')"    id="nb-input">✍️ Giriş</button>
+    <button class="nav-btn"     onclick="go('write')"    id="nb-write">📝 Yazma</button>
+    <button class="nav-btn"     onclick="go('analysis')" id="nb-analysis">🔍 Analiz</button>
+    <button class="nav-btn"     onclick="go('game')"     id="nb-game">🎮 Oyun</button>
+  </nav>
+</header>
+
+<!-- Loading -->
+<div class="loading" id="ld"><div class="spinner"></div><div class="load-txt" id="ld-txt">İşleniyor…</div></div>
+<!-- XP Toast -->
+<div class="xp-toast" id="xp-toast"></div>
+
+<!-- ══════════════ INPUT SCREEN ══════════════ -->
+<div class="screen on" id="scr-input">
+  <div class="input-wrap">
+    <div class="input-hero">
+      <h1>✍️ Günlüğünü Yaz</h1>
+      <p>Bugün ne yaşadın? Türkçe, dağınık, noktalama önemsiz — döküver.<br>
+      Sistem İngilizceye çevirecek, sen cümle cümle tekrar yazacaksın.</p>
+    </div>
+
+    <div class="card">
+      <span class="card-lbl">Gemini API Anahtarı · API Key</span>
+      <input type="password" class="t-input" id="api-key-input"
+        placeholder="AIza... Google AI Studio API anahtarınızı girin"
+        style="width:100%;min-height:auto;padding:10px 14px;font-size:13px;margin-bottom:4px"
+        oninput="saveApiKey(this.value)">
+      <div style="font-size:10px;color:var(--dim2)">Anahtarınız sadece tarayıcınızda saklanır. <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent)">AI Studio'dan al</a></div>
+    </div>
+
+    <div class="card">
+      <span class="card-lbl">Seviye Seç · Select Level</span>
+      <div class="lvl-row">
+        <button class="lvl-btn" onclick="pickLvl('A1',this)">A1</button>
+        <button class="lvl-btn on" onclick="pickLvl('A2',this)">A2</button>
+        <button class="lvl-btn" onclick="pickLvl('B1',this)">B1</button>
+        <button class="lvl-btn" onclick="pickLvl('B2',this)">B2</button>
+      </div>
+      <div class="lvl-desc" id="lvl-desc">A2 · Temel — basit geçmiş zaman, günlük kelimeler</div>
+    </div>
+
+    <div class="card">
+      <span class="card-lbl">Türkçe Günlük · Your Journal</span>
+      <textarea class="j-area" id="j-input"
+        placeholder="Sabah uyandım, kahve yaptım... ne hissettiysen, ne yaşadıysan yaz. Düzgün cümle kurmak zorunda değilsin."></textarea>
+    </div>
+
+    <button class="start-btn" id="start-btn" onclick="processText()">
+      🚀 İşle ve Başla · Process &amp; Start
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════ WRITING SCREEN ══════════════ -->
+<div class="screen" id="scr-write">
+
+  <!-- Main -->
+  <div class="write-main" id="write-main">
+
+    <!-- Progress row -->
+    <div class="prog-row">
+      <div class="prog-track"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      <div class="prog-lbl" id="prog-lbl">0 / 0</div>
+      <button class="icon-btn" onclick="togglePanel()" title="Kelime Bankası">📚</button>
+      <button class="icon-btn" onclick="togglePreview()" title="Yapılandırılmış Metin" id="prev-toggle">📋</button>
+    </div>
+
+    <!-- Restructured preview -->
+    <div class="re-preview" id="re-prev">
+      <strong>📋 Yeniden Yapılandırılmış Metin</strong>
+      <div id="re-text"></div>
+    </div>
+
+    <!-- Turkish card -->
+    <div class="tr-card" id="tr-card">
+      <div class="tr-card-top">
+        <span class="tr-tag">Türkçe · İngilizceye Çevir</span>
+        <span class="tr-num" id="tr-num">1 / 1</span>
+      </div>
+      <div class="tr-text" id="tr-text">—</div>
+    </div>
+
+    <!-- Step 1: Translate -->
+    <div class="input-section" id="st1">
+      <div class="sec-lbl">🇬🇧 Adım 1 · İngilizceye Çevir <span style="color:var(--dim2);font-size:9px;margin-left:6px">Ctrl+Enter = Kontrol</span></div>
+      <div class="ig">
+        <textarea class="t-input" id="inp1" rows="2"
+          placeholder="İngilizce çevirisini buraya yaz…"
+          onkeydown="kd(event,1)"></textarea>
+        <div class="btn-col">
+          <button class="sm-btn" id="hint-btn" onclick="showHint()">💡 İpucu</button>
+          <button class="sm-btn pri" onclick="check(1)">✓ Kontrol</button>
+          <button class="sm-btn teal hidden" id="hide-btn" onclick="doHide()">👁 Gizle</button>
+        </div>
+      </div>
+      <div class="hint-strip" id="hint-strip">💡 <span id="hint-val"></span></div>
+      <div class="fback" id="fb1"></div>
+    </div>
+
+    <!-- Step 2: Recall -->
+    <div class="recall" id="st2">
+      <div class="sec-lbl">🧠 Adım 2 · Hafızadan Yaz</div>
+      <div class="ig">
+        <textarea class="t-input" id="inp2" rows="2"
+          placeholder="Çeviriyi gizledik — hafızandan yaz…"
+          onkeydown="kd(event,2)"></textarea>
+        <div class="btn-col">
+          <button class="sm-btn pri" onclick="check(2)">✓ Kontrol</button>
+        </div>
+      </div>
+      <div class="fback" id="fb2"></div>
+    </div>
+
+    <!-- Done screen -->
+    <div class="done-screen" id="done-screen">
+      <div class="done-icon">🎉</div>
+      <div class="done-title">Session Tamamlandı!</div>
+      <div class="done-sub" id="done-sub">Harika iş!</div>
+      <div class="done-actions">
+        <button class="sm-btn pri" onclick="go('analysis')" style="padding:10px 20px">🔍 Analizi Gör</button>
+        <button class="sm-btn teal" onclick="go('game')" style="padding:10px 20px">🎮 Oyun Oyna</button>
+        <button class="sm-btn" onclick="go('input')" style="padding:10px 20px">✍️ Yeni Session</button>
+      </div>
+    </div>
+
+  </div><!-- /write-main -->
+
+  <!-- Side Panel -->
+  <div class="side-panel shut" id="sp">
+    <div class="sp-head">
+      <div class="sp-title">📚 Kelime Bankası</div>
+      <button class="sp-close" onclick="togglePanel()">✕</button>
+    </div>
+    <div class="wb-list" id="wb-list">
+      <div class="wb-empty">Henüz kelime yok.<br>Çeviri yapınca burada birikecek.</div>
+    </div>
+    <div class="sp-foot">
+      <button class="sp-foot-btn" onclick="go('game')">🎮 Oyun</button>
+      <button class="sp-foot-btn" onclick="clearBank()">🗑 Temizle</button>
+    </div>
+  </div>
+
+</div><!-- /scr-write -->
+
+<!-- ══════════════ ANALYSIS SCREEN ══════════════ -->
+<div class="screen" id="scr-analysis">
+  <div style="width:100%;max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:20px;">
+  <div class="an-head">
+    <div>
+      <div class="an-title">🔍 Gramer Analizi</div>
+      <div class="an-sub">Çevirilerindeki yapılar, öbekler ve kelime grupları işaretlendi</div>
+    </div>
+    <button class="sm-btn" onclick="go('input')" style="padding:8px 16px">← Yeni Session</button>
+  </div>
+  <div class="legend">
+    <div class="li"><div class="ld" style="background:rgba(124,111,255,.5)"></div>Phrasal Verb</div>
+    <div class="li"><div class="ld" style="background:rgba(0,212,170,.4)"></div>Chunk / Öbek</div>
+    <div class="li"><div class="ld" style="background:rgba(255,107,157,.4)"></div>Gramer Yapısı</div>
+    <div class="li"><div class="ld" style="background:rgba(255,165,2,.35)"></div>Önemli Kelime</div>
+  </div>
+  <div class="an-card" id="an-content">
+    <div style="color:var(--dim);font-size:13px">Henüz analiz yok. Önce bir session tamamla.</div>
+  </div>
+  </div>
+</div>
+
+<!-- ══════════════ GAME SCREEN ══════════════ -->
+<div class="screen" id="scr-game">
+  <div class="game-h">
+    <h2>🎮 Hafıza Oyunları</h2>
+    <p>Biriken kelimeleri pekiştir</p>
+  </div>
+  <div class="game-tabs">
+    <button class="gtab on" onclick="switchGame('flip',this)">🃏 Kart Çevir</button>
+    <button class="gtab"    onclick="switchGame('match',this)">🔗 Eşleştir</button>
+  </div>
+
+  <!-- Flip cards -->
+  <div class="game-pane" id="gp-flip">
+    <div class="cards-grid" id="cards-grid"></div>
+    <div class="game-empty hidden" id="cards-empty">Kelime bankası boş. Önce bir session tamamla!</div>
+  </div>
+
+  <!-- Match game -->
+  <div class="game-pane hide" id="gp-match">
+    <div class="match-score" id="match-score"></div>
+    <div class="match-area" id="match-area"></div>
+    <div class="match-footer">
+      <button class="sm-btn pri" onclick="initMatch()" style="margin:0 auto">🔄 Yeniden Başlat</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════ SCRIPT ══════════════ -->
+<script>
+/* ──────────── SAFE STORAGE ──────────── */
+const LS = {
+  get(k,fb='')  { try { return localStorage.getItem(k) ?? fb; } catch { return fb; } },
+  set(k,v)      { try { localStorage.setItem(k,v); } catch {} },
+  rm(k)         { try { localStorage.removeItem(k); } catch {} },
+  json(k,fb=[]) { try { return JSON.parse(localStorage.getItem(k)||JSON.stringify(fb)); } catch { return fb; } },
+};
+
+/* ──────────── STATE ──────────── */
+const S = {
+  level: 'A2',
+  sentences: [],
+  idx: 0,
+  step: 1,
+  hintIdx: 0,
+  xp: +(LS.get('wa_xp','0')) || 0,
+  combo: 0,
+  panelOpen: false,
+  previewOpen: false,
+  restructured: '',
+  apiKey: LS.get('wa_api_key',''),
+};
+
+function saveApiKey(v) {
+  S.apiKey = v.trim();
+  LS.set('wa_api_key', S.apiKey);
+}
+
+const GEMINI_MODEL = 'gemini-2.5-flash';
+
+function geminiUrl() {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${S.apiKey}`;
+}
+
+async function geminiCall(userPrompt, systemPrompt, maxTokens) {
+  const body = {
+    contents: [{ parts: [{ text: userPrompt }] }],
+    generationConfig: { maxOutputTokens: maxTokens || 2000 }
+  };
+  if (systemPrompt) {
+    body.systemInstruction = { parts: [{ text: systemPrompt }] };
+  }
+  const resp = await fetch(geminiUrl(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  const d = await resp.json();
+  if (d.error) throw new Error(d.error.message || JSON.stringify(d.error));
+  if (!d.candidates?.[0]?.content?.parts?.[0]?.text) throw new Error('Gemini yanıtı boş: ' + JSON.stringify(d).slice(0,300));
+  return d.candidates[0].content.parts[0].text;
+}
+
+const LVL_DESC = {
+  A1: 'A1 · Başlangıç — çok basit cümleler, temel kelimeler',
+  A2: 'A2 · Temel — basit geçmiş zaman, günlük kelimeler',
+  B1: 'B1 · Orta — serbest anlatım, bağlaçlar, geçmiş/şimdiki',
+  B2: 'B2 · İleri orta — karmaşık yapılar, bağımlı cümleler',
+};
+
+/* ──────────── SAFE JSON PARSE ──────────── */
+function safeParseJSON(str) {
+  if (!str) return null;
+  // 1) direct parse
+  try { return JSON.parse(str); } catch {}
+  // 2) strip ANY code fence (greedy — captures the full JSON inside)
+  const fenced = str.match(/```(?:json)?\s*([\s\S]+)\s*```/);
+  if (fenced) { try { return JSON.parse(fenced[1].trim()); } catch {} }
+  // 3) first { … last }
+  const s = str.indexOf('{'), e = str.lastIndexOf('}');
+  if (s !== -1 && e > s) { try { return JSON.parse(str.slice(s, e + 1)); } catch {} }
+  return null;
+}
+
+/* ──────────── WORD BANK ──────────── */
+function getBank()   { return LS.json('wa_bank', []); }
+function saveBank(b) { LS.set('wa_bank', JSON.stringify(b)); }
+function addToBank(words) {
+  const b = getBank();
+  words.forEach(w => { if (!b.find(x => x.word === w.word)) b.unshift(w); });
+  saveBank(b);
+  updateStats();
+  if (S.panelOpen) renderBank();
+}
+function clearBank() {
+  if (!confirm('Kelime bankası temizlensin mi?')) return;
+  LS.rm('wa_bank');
+  renderBank();
+  updateStats();
+}
+
+/* ──────────── STATS ──────────── */
+function updateStats() {
+  document.getElementById('s-xp').textContent    = S.xp;
+  document.getElementById('s-combo').textContent = S.combo;
+  document.getElementById('s-words').textContent = getBank().length;
+  LS.set('wa_xp', S.xp);
+}
+function addXP(n) {
+  S.xp += n;
+  updateStats();
+  const t = document.getElementById('xp-toast');
+  t.textContent = `+${n} XP ✨`;
+  t.style.display = 'block';
+  anime({ targets: t, opacity: [0,1,1,0], translateY: [4,-8,-8,-16],
+    duration: 1600, easing: 'easeOutExpo',
+    complete: () => { t.style.display = 'none'; } });
+}
+
+/* ──────────── SCREEN NAV ──────────── */
+function go(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('scr-'+name).classList.add('on');
+  const nb = document.getElementById('nb-'+name);
+  if (nb) nb.classList.add('on');
+  if (name === 'analysis') renderAnalysis();
+  if (name === 'game')     renderFlipCards();
+}
+
+/* ──────────── LEVEL PICK ──────────── */
+function pickLvl(l, btn) {
+  S.level = l;
+  document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('lvl-desc').textContent = LVL_DESC[l];
+}
+
+/* ──────────── PANEL / PREVIEW ──────────── */
+function togglePanel() {
+  S.panelOpen = !S.panelOpen;
+  document.getElementById('sp').classList.toggle('shut', !S.panelOpen);
+  if (S.panelOpen) renderBank();
+}
+function togglePreview() {
+  S.previewOpen = !S.previewOpen;
+  const el = document.getElementById('re-prev');
+  el.style.display = S.previewOpen ? 'block' : 'none';
+}
+function renderBank() {
+  const b = getBank();
+  const el = document.getElementById('wb-list');
+  if (!b.length) { el.innerHTML = '<div class="wb-empty">Henüz kelime yok.<br>Çeviri yapınca burada birikecek.</div>'; return; }
+  el.innerHTML = b.map(w => `
+    <div class="wc">
+      <div class="wc-top">
+        <span class="wc-w">${esc(w.word)}</span>
+        <span class="wc-t ${esc(w.type||'vocab')}">${esc(w.type||'vocab')}</span>
+      </div>
+      <div class="wc-tr">${esc(w.turkish||'')}</div>
+      ${w.note ? `<div class="wc-note">${esc(w.note)}</div>` : ''}
+    </div>`).join('');
+}
+
+/* ──────────── PROCESS TEXT (API) ──────────── */
+async function processText() {
+  const raw = document.getElementById('j-input').value.trim();
+  if (!raw) { alert('Lütfen bir şeyler yaz.'); return; }
+  if (!S.apiKey) { alert('Lütfen önce API anahtarınızı girin.'); document.getElementById('api-key-input').focus(); return; }
+  load('Metin analiz ediliyor…');
+  document.getElementById('start-btn').disabled = true;
+
+  const prompt = `Sen bir İngilizce yazma asistanısın. Kullanıcının Türkçe günlük metnini al, ${S.level} seviyesine uygun İngilizceye çevir ve her cümleyi analiz et.
+
+KULLANICI METNİ (Türkçe):
+${raw}
+
+Aşağıdaki JSON formatında SADECE JSON döndür. Hiçbir açıklama, başlık veya markdown bloğu ekleme.
+
+{
+  "restructured_turkish": "Kullanıcının metninin akıcı Türkçe hali (temizlenmiş).",
+  "sentences": [
+    {
+      "id": 1,
+      "turkish": "Türkçe cümle",
+      "english": "${S.level} seviyesinde doğal İngilizce çeviri",
+      "hints": ["ilk öbek", "ikinci öbek", "üçüncü öbek"],
+      "grammar_structures": [
+        {"text": "İngilizce kelime veya öbek", "type": "phrasal", "note": "Türkçe açıklama"}
+      ],
+      "new_words": [
+        {"word": "İngilizce kelime", "type": "vocab", "turkish": "Türkçesi", "note": "ek bilgi"}
+      ]
+    }
+  ]
+}
+
+type değerleri sadece şunlar olabilir: phrasal, chunk, grammar, vocab
+Maksimum 8 cümle. Hints her cümleyi 2-4 anlamlı parçaya böler.`;
+
+  try {
+    const raw_text = await geminiCall(prompt, null, 3000);
+    console.log('[process] raw:', raw_text.slice(0, 300));
+    const parsed = safeParseJSON(raw_text);
+    if (!parsed || !parsed.sentences?.length) throw new Error('Geçerli JSON alınamadı. Ham yanıt: ' + raw_text.slice(0,200));
+
+    S.sentences    = parsed.sentences;
+    S.restructured = parsed.restructured_turkish || raw;
+    S.idx  = 0;
+    S.step = 1;
+
+    document.getElementById('re-text').textContent = S.restructured;
+    document.getElementById('re-prev').style.display = 'none';
+    S.previewOpen = false;
+
+    unload();
+    go('write');
+    loadSentence(0);
+
+  } catch(e) {
+    unload();
+    document.getElementById('start-btn').disabled = false;
+    console.error(e);
+    alert('Hata: ' + e.message);
+  }
+}
+
+/* ──────────── LOAD SENTENCE ──────────── */
+function loadSentence(i) {
+  if (i >= S.sentences.length) { endSession(); return; }
+
+  const s = S.sentences[i];
+  S.idx     = i;
+  S.step    = 1;
+  S.hintIdx = 0;
+
+  // UI reset
+  $('tr-text').textContent = s.turkish;
+  $('tr-num').textContent  = `${i+1} / ${S.sentences.length}`;
+  $('prog').style.width    = `${(i/S.sentences.length)*100}%`;
+  $('prog-lbl').textContent = `${i} / ${S.sentences.length}`;
+
+  ['inp1','inp2'].forEach(id => { const el = $(id); el.value=''; el.className='t-input'; el.disabled=false; });
+  $('inp1').placeholder = 'İngilizce çevirisini buraya yaz…';
+
+  ['fb1','fb2'].forEach(id => { $(id).className='fback'; $(id).innerHTML=''; });
+  $('hint-strip').className = 'hint-strip';
+  $('hint-val').textContent = '';
+
+  $('st2').className   = 'recall';
+  $('hide-btn').classList.add('hidden');
+  $('done-screen').className = 'done-screen';
+  $('tr-card').style.display = '';
+  $('st1').style.display     = '';
+
+  // Add words to bank
+  if (s.new_words?.length) addToBank(s.new_words);
+
+  // Animate in
+  anime({ targets: '#tr-card', opacity:[0,1], translateY:[-12,0], duration:380, easing:'easeOutExpo' });
+  anime({ targets: '#st1', opacity:[0,1], translateY:[8,0], delay:80, duration:340, easing:'easeOutExpo' });
+  setTimeout(() => $('inp1').focus(), 200);
+}
+
+/* ──────────── HINT ──────────── */
+function showHint() {
+  const s = S.sentences[S.idx];
+  if (!s?.hints?.length) return;
+
+  if (S.hintIdx === 0) {
+    // First click: show first chunk
+    const first = s.hints[0];
+    $('hint-val').textContent = first + (s.hints.length > 1 ? ' …' : '');
+    $('hint-strip').classList.add('on');
+    $('inp1').placeholder = first + ' …';
+    S.hintIdx = 1;
+  } else if (S.hintIdx < s.hints.length) {
+    // Subsequent clicks: reveal more chunks
+    const parts = s.hints.slice(0, S.hintIdx + 1).join(' ');
+    const more = S.hintIdx < s.hints.length - 1;
+    $('hint-val').textContent = parts + (more ? ' …' : '');
+    $('inp1').placeholder = parts + (more ? ' …' : '');
+    S.hintIdx++;
+  } else {
+    // All chunks revealed → show full English translation
+    $('hint-val').textContent = s.english;
+    $('inp1').placeholder = s.english;
+  }
+  anime({ targets: '#hint-btn', scale:[1,.9,1], duration:200 });
+}
+
+/* ──────────── CHECK ──────────── */
+async function check(step) {
+  const el  = $(`inp${step}`);
+  const fb  = $(`fb${step}`);
+  const val = el.value.trim();
+  if (!val) { el.focus(); return; }
+
+  // Reset previous result classes
+  el.classList.remove('ok', 'ng');
+  fb.className = 'fback';
+  fb.innerHTML = '';
+
+  const s = S.sentences[S.idx];
+  load('Kontrol ediliyor…');
+
+  try {
+    const systemPrompt = 'Sen bir İngilizce öğretmenisin. Kullanıcının çevirisini değerlendirip SADECE aşağıdaki formatta geçerli JSON döndürürsün. Başka hiçbir şey yazmazsın.';
+    const userPrompt = [
+      'Türkçe cümle: ' + s.turkish,
+      'Referans İngilizce: ' + s.english,
+      'Kullanıcının yazdığı: ' + val,
+      'Seviye: ' + S.level,
+      '',
+      'Eğer anlam doğruysa ve seviyeye uygunsa kabul et. Küçük yazım hatalarını görmezden gel.',
+      '',
+      'Yanıt formatı (başka hiçbir şey yazma):',
+      '{"ok":true,"feedback":"Harika!","corrected":""}',
+      'veya',
+      '{"ok":false,"feedback":"Hata açıklaması.","corrected":"doğru versiyon"}'
+    ].join('\n');
+
+    const raw = await geminiCall(userPrompt, systemPrompt, 300);
+    console.log('[check] text:', raw);
+
+    const res = safeParseJSON(raw);
+    if (!res) throw new Error('JSON parse edilemedi: ' + raw);
+
+    unload();
+    applyResult(step, el, fb, !!res.ok, res.feedback || (res.ok ? 'Doğru!' : 'Tekrar dene.'), res.corrected || '', s.english);
+
+  } catch(e) {
+    console.error('[check] error:', e);
+    unload();
+    // Fallback: simple string comparison
+    const norm = x => x.toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();
+    const ok = norm(val) === norm(s.english);
+    applyResult(step, el, fb, ok,
+      ok ? 'Doğru!' : `Referans: ${s.english}`,
+      ok ? '' : s.english,
+      s.english
+    );
+  }
+}
+
+/* ──────────── APPLY RESULT ──────────── */
+function applyResult(step, el, fb, ok, msg, corrected, ref) {
+  if (ok) {
+    el.classList.add('ok'); el.disabled = true;
+    S.combo++;
+    addXP(step === 1 ? 10 : 7);
+    fb.innerHTML = `✅ ${esc(msg)}`;
+    fb.className = 'fback on ok';
+    successAnim(el);
+
+    if (step === 1) {
+      $('hide-btn').classList.remove('hidden');
+    } else {
+      $('prog').style.width = `${((S.idx+1)/S.sentences.length)*100}%`;
+      $('prog-lbl').textContent = `${S.idx+1} / ${S.sentences.length}`;
+      setTimeout(() => loadSentence(S.idx + 1), 1100);
+    }
+  } else {
+    el.classList.add('ng');
+    S.combo = 0; updateStats();
+    fb.innerHTML = `❌ ${esc(msg)}${corrected ? ` <span style="color:var(--teal)">→ ${esc(corrected)}</span>` : ''}`;
+    fb.className = 'fback on';
+    errorAnim(el);
+  }
+}
+
+/* ──────────── HIDE & RECALL ──────────── */
+function doHide() {
+  const i1 = $('inp1');
+  i1.value = ''; i1.disabled = true; i1.placeholder = '(gizlendi)';
+  $('hide-btn').classList.add('hidden');
+  $('hint-strip').classList.remove('on');
+  $('st2').classList.add('on');
+  anime({ targets: '#st2', opacity:[0,1], translateY:[8,0], duration:350, easing:'easeOutExpo' });
+  setTimeout(() => $('inp2').focus(), 200);
+}
+
+/* ──────────── END SESSION ──────────── */
+function endSession() {
+  $('tr-card').style.display = 'none';
+  $('st1').style.display     = 'none';
+  $('st2').className         = 'recall';
+  $('done-screen').classList.add('on');
+  $('prog').style.width      = '100%';
+  $('prog-lbl').textContent  = `${S.sentences.length} / ${S.sentences.length}`;
+  $('done-sub').textContent  = `Toplam XP: ${S.xp} · Kelime Bankası: ${getBank().length} kelime`;
+  for (let i=0;i<10;i++) setTimeout(() => spawn(['🎉','⭐','✨','🏆','💫'][Math.floor(Math.random()*5)]), i*120);
+  renderAnalysis();
+}
+
+/* ──────────── ANALYSIS ──────────── */
+function renderAnalysis() {
+  const el = $('an-content');
+  if (!S.sentences.length) return;
+  el.innerHTML = S.sentences.map((s,i) => {
+    let en = esc(s.english);
+    (s.grammar_structures||[]).forEach(g => {
+      const safe = esc(g.text).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      en = en.replace(new RegExp(safe,'g'),
+        `<span class="hl ${esc(g.type||'vocab')}" data-tip="${esc(g.note||'')}">${esc(g.text)}</span>`);
+    });
+    return `<div class="an-sent">
+      <div class="an-tr">${i+1}. ${esc(s.turkish)}</div>
+      <div class="an-en">${en}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ──────────── GAME: FLIP CARDS ──────────── */
+function renderFlipCards() {
+  const bank = getBank();
+  const grid = $('cards-grid');
+  const empty = $('cards-empty');
+  if (!bank.length) { grid.innerHTML=''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  grid.innerHTML = bank.slice(0,24).map((w,i) => `
+    <div class="fc" onclick="flip(this)">
+      <div class="fc-inner">
+        <div class="fc-face fc-front">
+          <div class="fc-front-word">${esc(w.word)}</div>
+          <div class="fc-front-q">Türkçesi?</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-back-type">${esc(w.type||'vocab')}</div>
+          <div class="fc-back-tr">${esc(w.turkish||'—')}</div>
+          ${w.note?`<div class="fc-back-note">${esc(w.note)}</div>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+function flip(el) {
+  el.classList.toggle('fl');
+  anime({ targets: el, scale:[1,1.04,1], duration:260, easing:'easeOutExpo' });
+}
+
+function switchGame(type, btn) {
+  document.querySelectorAll('.gtab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  $('gp-flip').classList.toggle('hide', type!=='flip');
+  $('gp-match').classList.toggle('hide', type!=='match');
+  if (type==='flip') renderFlipCards();
+  if (type==='match') initMatch();
+}
+
+/* ──────────── GAME: MATCH ──────────── */
+let matchSel = null, matchHit = [], matchAttempts = 0;
+
+function initMatch() {
+  const bank = getBank().slice(0,7);
+  matchSel = null; matchHit = []; matchAttempts = 0;
+  $('match-score').textContent = bank.length < 2 ? 'Yeterli kelime yok.' : `${bank.length} çift · Eşleştir!`;
+  if (bank.length < 2) { $('match-area').innerHTML=''; return; }
+
+  const pairs = bank.flatMap(w => [
+    { id: w.word+'_en', text: w.word,         pair: w.word },
+    { id: w.word+'_tr', text: w.turkish||w.word, pair: w.word }
+  ]);
+  // Shuffle
+  for (let i=pairs.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1)); [pairs[i],pairs[j]]=[pairs[j],pairs[i]];
+  }
+  $('match-area').innerHTML = pairs.map(p=>
+    `<button class="mc" id="mc_${p.id}" onclick="selMatch('${p.pair}','${p.id}',this)">${esc(p.text)}</button>`
+  ).join('');
+}
+
+function selMatch(pair, id, btn) {
+  if (matchHit.includes(pair)) return;
+  if (!matchSel) {
+    matchSel = { pair, id, btn };
+    btn.classList.add('sel');
+  } else {
+    matchAttempts++;
+    if (matchSel.pair === pair && matchSel.id !== id) {
+      matchHit.push(pair);
+      [btn, matchSel.btn].forEach(b => { b.classList.remove('sel'); b.classList.add('hit'); b.onclick=null; });
+      addXP(5); spawn('✅');
+      matchSel = null;
+      if (matchHit.length === getBank().slice(0,7).length) {
+        setTimeout(() => { $('match-score').textContent = `🎉 Tamamlandı! ${matchAttempts} denemede.`; }, 300);
+      }
+    } else {
+      btn.classList.add('miss');
+      matchSel.btn.classList.remove('sel');
+      spawn('❌');
+      const prev = matchSel; matchSel = null;
+      setTimeout(() => { btn.classList.remove('miss'); }, 600);
+    }
+  }
+}
+
+/* ──────────── KEYBOARD ──────────── */
+function kd(e, step) {
+  if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); check(step); }
+}
+
+/* ──────────── ANIMATIONS ──────────── */
+function successAnim(el) {
+  anime({ targets: el, scale:[1,1.025,1], duration:420, easing:'easeOutElastic(1,.4)' });
+  spawn('✅');
+}
+function errorAnim(el) {
+  el.classList.add('shake');
+  setTimeout(()=>el.classList.remove('shake'), 400);
+  spawn('❌');
+}
+function spawn(em) {
+  const d = document.createElement('div');
+  d.className = 'float-e';
+  d.textContent = em;
+  d.style.left = (25 + Math.random()*50)+'%';
+  d.style.top  = (25 + Math.random()*35)+'%';
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(), 800);
+}
+
+/* ──────────── LOADING ──────────── */
+function load(txt)   { $('ld-txt').textContent=txt||'İşleniyor…'; $('ld').classList.add('on'); }
+function unload()    { $('ld').classList.remove('on'); }
+
+/* ──────────── UTILS ──────────── */
+const $ = id => document.getElementById(id);
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+/* ──────────── INIT ──────────── */
+updateStats();
+// Load saved API key
+if (S.apiKey) {
+  const akInput = document.getElementById('api-key-input');
+  if (akInput) akInput.value = S.apiKey;
+}
+</script>
+</body>
+</html>

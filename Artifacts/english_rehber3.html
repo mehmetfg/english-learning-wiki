@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>İngilizce Rehber – Bölüm 3</title>
+<style>
+:root{
+  --bg:#0c1118;--bg2:#121a24;--bg3:#182030;--card:#151e2c;--card2:#1c2738;
+  --a1:#22d3ee;--a2:#a78bfa;--a3:#fb923c;--a4:#4ade80;--a5:#f472b6;
+  --red:#f87171;--text:#dce4f0;--text2:#7a8ba8;--border:#1e2d42;
+  --font:'Verdana',Geneva,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;height:54px;
+  background:rgba(12,17,24,.97);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 18px;gap:2px;overflow-x:auto;
+}
+nav::-webkit-scrollbar{height:0;}
+.nav-logo{font-size:13px;font-weight:bold;color:var(--a1);margin-right:20px;white-space:nowrap;letter-spacing:1px;}
+.nb{background:none;border:none;color:var(--text2);font-family:var(--font);font-size:11px;padding:6px 11px;cursor:pointer;border-radius:6px;transition:all .2s;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+.nb:hover,.nb.on{background:var(--a1);color:#0c1118;}
+
+/* ── PAGES ── */
+.page{display:none;padding-top:66px;min-height:100vh;}
+.page.on{display:block;animation:fu .3s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:42px 22px 26px;background:linear-gradient(135deg,#0c1118 0%,#131f30 50%,#0c1118 100%);border-bottom:1px solid var(--border);}
+.hero h1{font-size:23px;color:var(--a1);letter-spacing:2px;margin-bottom:7px;}
+.hero p{color:var(--text2);font-size:12px;max-width:540px;margin:0 auto;line-height:1.8;}
+.hero-tag{display:inline-block;margin-top:10px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.28);color:var(--a1);border-radius:20px;padding:3px 14px;font-size:11px;}
+
+/* ── GRID ── */
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px;padding:20px;max-width:1200px;margin:0 auto;}
+.tcard{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:18px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;
+}
+.tcard::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a1),var(--a2));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.tcard:hover::before{transform:scaleX(1);}
+.tcard:hover{border-color:var(--a1);transform:translateY(-3px);box-shadow:0 8px 26px rgba(34,211,238,.1);}
+.ti{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ticon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.tnum{font-size:10px;color:var(--a1);font-weight:bold;letter-spacing:1px;text-transform:uppercase;}
+.ttitle{font-size:14px;font-weight:bold;color:var(--text);}
+.ten{font-size:11px;color:var(--a3);margin-bottom:6px;}
+.tdesc{font-size:12px;color:var(--text2);line-height:1.65;}
+.tarr{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--a1);opacity:0;transition:opacity .2s;}
+.tcard:hover .tarr{opacity:1;}
+
+/* ── MODAL ── */
+.mov{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.8);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:14px;}
+.mov.on{display:flex;animation:fu .22s ease;}
+.mod{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:700px;max-height:88vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+.mhdr{position:sticky;top:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:17px 22px;display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0;z-index:1;}
+.mhdr h2{font-size:16px;color:var(--a1);}
+.mcls{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px 8px;border-radius:6px;}
+.mcls:hover{background:var(--border);color:var(--text);}
+.mbody{padding:22px;}
+.mtag{display:inline-block;background:rgba(34,211,238,.1);color:var(--a1);border:1px solid rgba(34,211,238,.22);border-radius:20px;padding:3px 14px;font-size:11px;margin-bottom:15px;}
+.msec{margin-bottom:17px;}
+.msec h3{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--a3);margin-bottom:9px;}
+.msec p{font-size:13px;color:var(--text);line-height:1.8;}
+.ex{background:var(--card2);border-left:3px solid var(--a2);border-radius:0 8px 8px 0;padding:10px 14px;margin:6px 0;}
+.ex .en{color:var(--a1);font-size:13px;margin-bottom:3px;font-style:italic;}
+.ex .tr{color:var(--text2);font-size:12px;}
+.rpill{display:inline-block;background:rgba(251,146,60,.1);color:var(--a3);border:1px solid rgba(251,146,60,.22);border-radius:4px;padding:2px 9px;font-size:11px;margin:2px;}
+.mqbtn{width:100%;margin-top:18px;padding:12px;background:linear-gradient(90deg,var(--a1),var(--a2));color:#0c1118;border:none;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:bold;cursor:pointer;transition:all .2s;}
+.mqbtn:hover{opacity:.85;transform:translateY(-1px);}
+
+/* ── QUIZ SHARED ── */
+.qwrap{max-width:680px;margin:0 auto;padding:20px;}
+.qwrap>h2{font-size:19px;color:var(--a1);margin-bottom:5px;}
+.qwrap>p{color:var(--text2);font-size:12px;margin-bottom:17px;}
+.qtgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:10px;margin-bottom:22px;}
+.qti{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:all .2s;}
+.qti:hover,.qti.sel{border-color:var(--a1);background:rgba(34,211,238,.06);}
+.qti .qt{font-size:12px;font-weight:bold;color:var(--text);}
+.qti .qe{font-size:11px;color:var(--a3);margin-top:3px;}
+.sbtn{padding:11px 28px;background:var(--a1);color:#0c1118;border:none;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:bold;cursor:pointer;transition:all .2s;margin-bottom:26px;}
+.sbtn:hover{background:var(--a2);color:#fff;}
+
+/* ── QUIZ RUNNER ── */
+.qrun{display:none;}
+.qrun.on{display:block;}
+.qhdr2{display:flex;align-items:center;gap:13px;margin-bottom:18px;}
+.qprog{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.qprogb{height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:3px;transition:width .4s ease;}
+.qctr{font-size:11px;color:var(--text2);white-space:nowrap;}
+.qsc{font-size:11px;color:var(--a3);white-space:nowrap;}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:12px;}
+.qtype{font-size:10px;color:var(--a2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.qtext{font-size:14px;color:var(--text);line-height:1.75;margin-bottom:17px;}
+.opts{display:grid;gap:9px;}
+.ob{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:var(--font);font-size:13px;cursor:pointer;text-align:left;transition:all .18s;}
+.ob:hover:not(:disabled){border-color:var(--a1);background:rgba(34,211,238,.08);}
+.ob.ok{background:rgba(74,222,128,.12);border-color:var(--a4);color:var(--a4);}
+.ob.no{background:rgba(248,113,113,.12);border-color:var(--red);color:var(--red);}
+.tfrow{display:flex;gap:10px;}
+.tfb{flex:1;padding:13px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--text);font-family:var(--font);font-size:14px;font-weight:bold;cursor:pointer;transition:all .2s;}
+.tfb:hover:not(:disabled){border-color:var(--a1);}
+.tfb.ok{background:rgba(74,222,128,.12);border-color:var(--a4);color:var(--a4);}
+.tfb.no{background:rgba(248,113,113,.12);border-color:var(--red);color:var(--red);}
+.finp{width:100%;padding:11px 14px;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font);font-size:14px;margin-bottom:8px;outline:none;transition:border-color .2s;}
+.finp:focus{border-color:var(--a1);}
+.finp.ok{border-color:var(--a4);background:rgba(74,222,128,.06);}
+.finp.no{border-color:var(--red);background:rgba(248,113,113,.06);}
+.chkbtn{padding:9px 22px;background:var(--a1);color:#0c1118;border:none;border-radius:8px;font-family:var(--font);font-size:12px;font-weight:bold;cursor:pointer;transition:all .2s;}
+.chkbtn:hover{background:var(--a2);color:#fff;}
+.fb{margin-top:11px;padding:9px 13px;border-radius:8px;font-size:12px;line-height:1.65;display:none;}
+.fb.on{display:block;animation:fu .2s ease;}
+.fb.g{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);color:var(--a4);}
+.fb.b{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:var(--red);}
+.nxtbtn{display:none;margin-top:10px;padding:9px 22px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:12px;cursor:pointer;transition:all .2s;}
+.nxtbtn.on{display:inline-block;}
+.nxtbtn:hover{border-color:var(--a1);color:var(--a1);}
+.qres{display:none;text-align:center;padding:44px 22px;background:var(--card);border:1px solid var(--border);border-radius:16px;}
+.qres.on{display:block;animation:fu .4s ease;}
+.rsc{font-size:52px;font-weight:bold;color:var(--a1);margin-bottom:7px;animation:pulse .6s ease;}
+.rmsg{font-size:15px;color:var(--text);margin-bottom:20px;}
+.rsub{font-size:12px;color:var(--text2);margin-bottom:26px;}
+.rbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.rbtn{padding:10px 22px;border-radius:10px;font-family:var(--font);font-size:13px;font-weight:bold;cursor:pointer;transition:all .2s;}
+.rbtn.p{background:var(--a1);color:#0c1118;border:none;}
+.rbtn.s{background:none;color:var(--text2);border:1px solid var(--border);}
+.rbtn:hover{transform:translateY(-2px);}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* ── STORY ── */
+.swrap{max-width:800px;margin:0 auto;padding:20px;}
+.shdr{text-align:center;margin-bottom:26px;}
+.shdr h2{font-size:21px;color:var(--a1);margin-bottom:7px;}
+.shdr p{font-size:12px;color:var(--text2);}
+.sleg{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px;background:var(--card);border-radius:10px;border:1px solid var(--border);}
+.sli{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2);}
+.sld{width:10px;height:10px;border-radius:2px;}
+.sbody{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:30px;font-size:14px;line-height:2.3;color:var(--text);}
+.gm{cursor:pointer;border-radius:3px;padding:1px 3px;border-bottom:2px solid transparent;transition:filter .2s;}
+.gm:hover{filter:brightness(1.28);}
+.c0{background:rgba(34,211,238,.17);border-color:var(--a1);}
+.c1{background:rgba(167,139,250,.17);border-color:var(--a2);}
+.c2{background:rgba(251,146,60,.17);border-color:var(--a3);}
+.c3{background:rgba(74,222,128,.17);border-color:var(--a4);}
+.c4{background:rgba(244,114,182,.17);border-color:var(--a5);}
+.vm{border-bottom:1px dashed var(--text2);cursor:pointer;color:var(--text2);}
+.vm:hover{color:var(--text);}
+.gtt,.vtt{
+  display:none;position:fixed;z-index:300;
+  background:var(--bg3);border:1px solid var(--a1);border-radius:10px;
+  padding:11px 15px;max-width:275px;font-size:12px;pointer-events:none;
+  box-shadow:0 8px 32px rgba(0,0,0,.6);
+}
+.gtt .gt{color:var(--a1);font-weight:bold;margin-bottom:4px;}
+.gtt .gd{color:var(--text2);line-height:1.6;}
+.vtt .vw{color:var(--a3);font-weight:bold;margin-bottom:3px;}
+.vtt .vr{color:var(--text);}
+.sqsec{margin-top:28px;}
+.sqsec h3{font-size:16px;color:var(--a1);margin-bottom:16px;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🇬🇧 ENG·3</div>
+  <button class="nb on" onclick="go('home')">Ana Sayfa</button>
+  <button class="nb" onclick="go('quiz')">Konu Quizleri</button>
+  <button class="nb" onclick="go('karma')">Karma Quiz</button>
+  <button class="nb" onclick="go('story')">Hikaye</button>
+</nav>
+
+<!-- HOME -->
+<div class="page on" id="page-home">
+  <div class="hero">
+    <h1>📘 İngilizce Rehber – Bölüm 3</h1>
+    <p>Bölüm 1 ve 2'de olmayan 12 yeni konu · Modaller · Soru ekleri · Makaleler · Karşılaştırma ve çok daha fazlası</p>
+    <span class="hero-tag">Bölüm 3 · Tamamen yeni yapılar</span>
+  </div>
+  <div class="hgrid" id="tgrid"></div>
+</div>
+
+<!-- QUIZ -->
+<div class="page" id="page-quiz">
+  <div class="qwrap">
+    <h2>📝 Konu Bazlı Quizler</h2>
+    <p>Bir konu seçip 5 soruluk quiz başlatın.</p>
+    <div class="qtgrid" id="qtlist"></div>
+    <button class="sbtn" onclick="startTQ()">Seçili Konuyu Sına →</button>
+    <div class="qrun" id="tqr"></div>
+  </div>
+</div>
+
+<!-- KARMA -->
+<div class="page" id="page-karma">
+  <div class="qwrap">
+    <h2>🎯 Karma Quiz</h2>
+    <p>Tüm 12 konudan 20 karma soru · çoktan seçmeli · doğru/yanlış · boşluk doldurma · çeviri</p>
+    <button class="sbtn" onclick="startKQ()">Karma Quiz Başlat →</button>
+    <div class="qrun" id="kqr"></div>
+  </div>
+</div>
+
+<!-- STORY -->
+<div class="page" id="page-story">
+  <div class="swrap">
+    <div class="shdr">
+      <h2>📖 Mert'in Londra'da Üçüncü Yılı</h2>
+      <p>~500 kelime · İşaretli dilbilgisi · Hover kelime çevirisi · 10 soruluk quiz</p>
+    </div>
+    <div class="sleg">
+      <div class="sli"><div class="sld" style="background:rgba(34,211,238,.6)"></div>Modals / Question Tags</div>
+      <div class="sli"><div class="sld" style="background:rgba(167,139,250,.6)"></div>Articles / Comparatives</div>
+      <div class="sli"><div class="sld" style="background:rgba(251,146,60,.6)"></div>Phrasal Verbs / So-Such</div>
+      <div class="sli"><div class="sld" style="background:rgba(74,222,128,.6)"></div>Causatives / Pres. Perf. Cont.</div>
+      <div class="sli"><div class="sld" style="background:rgba(244,114,182,.6)"></div>Prepositions / Linking Words</div>
+      <div class="sli"><div class="sld" style="background:rgba(200,200,200,.2)"></div><span style="border-bottom:1px dashed var(--text2)">dashed</span> = kelime çevirisi</div>
+    </div>
+    <div class="sbody" id="sbody"></div>
+    <div class="sqsec">
+      <h3>📝 Hikaye Quizi (10 Soru)</h3>
+      <div class="qrun on" id="sqr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="mov" id="mov" onclick="closeMO(event)">
+  <div class="mod" id="mod">
+    <div class="mhdr"><h2 id="mtitle"></h2><button class="mcls" onclick="closeM()">✕</button></div>
+    <div class="mbody" id="mbody"></div>
+  </div>
+</div>
+
+<div class="gtt" id="gtt"><div class="gt" id="gtt-t"></div><div class="gd" id="gtt-d"></div></div>
+<div class="vtt" id="vtt"><div class="vw" id="vtt-w"></div><div class="vr" id="vtt-r"></div></div>
+
+<script>
+// ═══════════════════ TOPIC DATA ═══════════════════
+const T = [
+  {
+    id:0,icon:'🔍',bg:'#0d2e3a',
+    tr:'Modal Çıkarım',en:'must / can\'t / might (deduction)',
+    desc:'Mevcut kanıtlara dayanarak çıkarım yaparken kullanılan modal yapılar.',
+    detail:'<b>Must</b> güçlü olumlu çıkarım, <b>can\'t</b> güçlü olumsuz çıkarım, <b>might/could/may</b> ise olasılık ifade eder. Bunlar tahmin değil, kanıta dayalı mantıksal çıkarımlardır.',
+    form:['must + fiil = kesinlikle öyledir (olumlu çıkarım)','can\'t + fiil = kesinlikle öyle değildir','might/may/could + fiil = belki öyledir'],
+    examples:[
+      {en:'She must be tired — she\'s worked all day.',tr:'Yorgun olmalı — bütün gün çalıştı.'},
+      {en:'He can\'t be serious — that\'s impossible.',tr:'Ciddi olamaz — bu imkânsız.'},
+      {en:'They might be at the café.',tr:'Kafede olabilirler.'},
+      {en:'That must be the new teacher.',tr:'O yeni öğretmen olmalı.'}
+    ],
+    notes:'Geçmiş çıkarım: must have + V3, can\'t have + V3, might have + V3. "She must have left early" = Erken gitmiş olmalı.'
+  },
+  {
+    id:1,icon:'❓',bg:'#1a1e3a',
+    tr:'Soru Ekleri',en:'Question Tags',
+    desc:'Cümle sonuna eklenen kısa onay/doğrulama sorularıdır.',
+    detail:'Soru ekleri (question tags) cümlenin sonuna eklenir. Cümle olumlu ise tag olumsuz, cümle olumsuz ise tag olumludur. Yardımcı fiil cümleden alınır.',
+    form:['(+) cümle + (-) tag: You\'re coming, aren\'t you?','(-) cümle + (+) tag: She isn\'t late, is she?','Have/has → haven\'t/hasn\'t · will → won\'t · can → can\'t'],
+    examples:[
+      {en:'It\'s a lovely day, isn\'t it?',tr:'Güzel bir gün, değil mi?'},
+      {en:'You haven\'t met him, have you?',tr:'Onunla tanışmadın, değil mi?'},
+      {en:'She can swim, can\'t she?',tr:'Yüzebiliyor, değil mi?'},
+      {en:'They won\'t be late, will they?',tr:'Geç kalmayacaklar, değil mi?'}
+    ],
+    notes:'İstisna: I am → aren\'t I? (am I? değil). Let\'s → shall we? Imperatives → will you? / won\'t you?'
+  },
+  {
+    id:2,icon:'📰',bg:'#1e2a0e',
+    tr:'Artikel Kullanımı',en:'a / an / the / zero article',
+    desc:'İngilizce\'de isimler önüne hangi artiklın geleceğini belirleyen kurallar.',
+    detail:'Artikeller İngilizce\'de çok önemlidir. <b>A/an</b> belirsiz tekil isimler için, <b>the</b> spesifik veya önceden bilinen isimler için, sıfır artikel ise genel/sayılamaz/çoğul isimler için kullanılır.',
+    form:['a + sessiz harfle başlayan kelime','an + sesli harfle başlayan kelime','the = belirli; dinleyici/okuyucu hangisi olduğunu bilir','zero (Ø) = genel gerçekler, özel isimler, çoğul genel isimler'],
+    examples:[
+      {en:'I saw a dog. The dog was very big.',tr:'Bir köpek gördüm. Köpek çok büyüktü.'},
+      {en:'She is an engineer.',tr:'O bir mühendis.'},
+      {en:'The sun rises in the east.',tr:'Güneş doğudan doğar.'},
+      {en:'Ø Dogs are loyal animals.',tr:'Köpekler sadık hayvanlardır. (genel)'}
+    ],
+    notes:'The kullanılmaz: ülkeler (Turkey), diller (English), yemekler (breakfast), spor adları. The kullanılır: okyanuslar (the Pacific), gazeteler (the Times), eşsiz şeyler (the moon).'
+  },
+  {
+    id:3,icon:'📊',bg:'#2a1e0e',
+    tr:'Karşılaştırma ve Üstünlük',en:'Comparatives & Superlatives',
+    desc:'İki şeyi kıyaslamak veya bir şeyin en üstün olduğunu belirtmek için kullanılır.',
+    detail:'<b>Comparative</b> iki şeyi karşılaştırır, <b>superlative</b> bir şeyin grubun en üstünü olduğunu belirtir. Kısa sıfatlara eklenti, uzun sıfatlara more/most eklenir.',
+    form:['Kısa sıfat + -er / -est (1-2 hece)','more / most + uzun sıfat (2+ hece)','İstisna: good→better→best, bad→worse→worst, far→further→furthest'],
+    examples:[
+      {en:'London is bigger than Manchester.',tr:'Londra Manchester\'dan büyüktür.'},
+      {en:'She is more intelligent than her brother.',tr:'O erkek kardeşinden daha zeki.'},
+      {en:'This is the best coffee I\'ve ever had.',tr:'Bu hayatımda içtiğim en iyi kahve.'},
+      {en:'The weather is getting worse and worse.',tr:'Hava giderek daha kötüye gidiyor.'}
+    ],
+    notes:'Double comparatives: getting better and better = giderek iyileşiyor. The + comparative, the + comparative: The harder you work, the better results you get.'
+  },
+  {
+    id:4,icon:'🧩',bg:'#1e0e2a',
+    tr:'Phrasal Verbs',en:'Phrasal Verbs (temel)',
+    desc:'Fiil + edat/zarf birleşimiyle oluşan ve genellikle farklı anlam taşıyan yapılar.',
+    detail:'Phrasal verbs İngilizce\'de son derece yaygındır. Bileşenlerin ayrı ayrı anlamlarının toplamından farklı bir anlam taşıyabilirler.',
+    form:['Ayrılabilir: turn off the light / turn the light off','Ayrılamaz: look after the children (NOT look the children after)','Nesnesiz: break down, give up, show up'],
+    examples:[
+      {en:'Can you look after my cat while I\'m away?',tr:'Ben yokken kedime bakabilir misin?'},
+      {en:'The meeting was called off due to rain.',tr:'Toplantı yağmur yüzünden iptal edildi.'},
+      {en:'She gave up smoking last year.',tr:'Geçen yıl sigara içmeyi bıraktı.'},
+      {en:'He couldn\'t work out the answer.',tr:'Cevabı çözemedı/bulamadı.'}
+    ],
+    notes:'Yaygın phrasal verbs: break down (arızalanmak), bring up (büyütmek/gündeme getirmek), carry out (gerçekleştirmek), find out (öğrenmek), get on with (geçinmek).'
+  },
+  {
+    id:5,icon:'⏰',bg:'#0e1e2a',
+    tr:'Zaman Edatları',en:'Prepositions of Time (at / on / in)',
+    desc:'Zaman ifade ederken hangi edatın kullanılacağını belirleyen temel kurallar.',
+    detail:'Zaman edatları üç ana gruptur: <b>at</b> belirli saatler ve bazı deyimler için, <b>on</b> günler ve tarihler için, <b>in</b> aylar, yıllar ve uzun süreler için kullanılır.',
+    form:['at + saat, gece, Noel vb.: at 7 o\'clock, at night','on + gün, tarih: on Monday, on 5th June','in + ay, yıl, mevsim, uzun süre: in July, in 2020, in summer'],
+    examples:[
+      {en:'The meeting is at 3 o\'clock.',tr:'Toplantı saat 3\'te.'},
+      {en:'She was born on 15th March.',tr:'15 Mart\'ta doğdu.'},
+      {en:'We went to London in the summer.',tr:'Yazın Londra\'ya gittik.'},
+      {en:'He usually wakes up at night.',tr:'Genellikle gece uyanır.'}
+    ],
+    notes:'Dikkat: at the weekend (İngiliz İng.) / on the weekend (Amerikan İng.). Kural dışılar: at Christmas, at Easter. "In the morning/afternoon/evening" ama "at night".'
+  },
+  {
+    id:6,icon:'⚡',bg:'#2a0e1a',
+    tr:'So / Such ... That',en:'so / such … that',
+    desc:'"O kadar … ki" anlamında sonuç belirten yapılar.',
+    detail:'<b>So + sıfat/zarf + that</b> ve <b>such + (a/an) + isim + that</b> yapıları "o kadar … ki" anlamında sonuç bildirmek için kullanılır.',
+    form:['so + sıfat/zarf + that + cümle','such + a/an + sıfat + isim + that + cümle','such + sıfat + çoğul/sayılamaz isim + that + cümle'],
+    examples:[
+      {en:'It was so cold that we stayed inside.',tr:'O kadar soğuktu ki içeride kaldık.'},
+      {en:'She spoke so quickly that I couldn\'t follow.',tr:'O kadar hızlı konuştu ki takip edemedim.'},
+      {en:'It was such a good film that we watched it twice.',tr:'O kadar iyi bir filmdi ki iki kez izledik.'},
+      {en:'They were such kind people that everyone loved them.',tr:'O kadar nazik insanlardı ki herkes onları severdi.'}
+    ],
+    notes:'Kural: so = sıfat/zarf önünde; such = isim önünde. "So much/many/little/few" isim gruplarıyla kullanılır: so many people, so much time.'
+  },
+  {
+    id:7,icon:'🔧',bg:'#1a2a0e',
+    tr:'Ettirgen Yapılar',en:'Causatives: make / let / have / get',
+    desc:'Birisine bir şey yaptırmak veya izin vermek için kullanılan ettirgen yapılar.',
+    detail:'Ettirgen yapılar başkalarına bir şey yaptırmayı ifade eder. Her birinin yapısı ve anlam nüansı farklıdır.',
+    form:['make + kişi + fiil (zorunluluk): make him work','let + kişi + fiil (izin): let her go','have + kişi + fiil (hizmet/düzenleme): have him fix it','get + kişi + to-fiil (ikna/razı etme): get her to help'],
+    examples:[
+      {en:'The teacher made the students rewrite the essay.',tr:'Öğretmen öğrencilere denemeyi yeniden yazdırdı.'},
+      {en:'She let her children stay up late.',tr:'Çocuklarının geç saate kadar uyanık kalmasına izin verdi.'},
+      {en:'I had my car repaired yesterday.',tr:'Arabamı dün tamir ettirdim.'},
+      {en:'He got his sister to help him with the project.',tr:'Kız kardeşini projede yardım etmeye ikna etti.'}
+    ],
+    notes:'"Have something done" çok önemli: I had my hair cut = saçımı kestirdim (başkasına yaptırdım). Get something done da aynı anlamda kullanılır: I got my hair cut.'
+  },
+  {
+    id:8,icon:'🔄',bg:'#0e2a2a',
+    tr:'Present Perfect Continuous',en:'have/has been + -ing',
+    desc:'Geçmişte başlayıp hâlâ devam eden veya yakın geçmişte biten ve izi olan eylemleri anlatır.',
+    detail:'Present Perfect Continuous, <b>eylemin süresi ve devam ettiği</b> gerçeğini vurgular. Present Perfect ise sonucu vurgular.',
+    form:['have/has been + fiil + -ing','How long have you been + -ing?','Olumsuz: haven\'t/hasn\'t been + -ing'],
+    examples:[
+      {en:'I\'ve been studying for three hours.',tr:'Üç saattir çalışıyorum.'},
+      {en:'She\'s been living in London since 2021.',tr:'2021\'den beri Londra\'da yaşıyor.'},
+      {en:'They\'ve been arguing all morning.',tr:'Bütün sabah tartışıyorlar.'},
+      {en:'He looks tired — he\'s been working all day.',tr:'Yorgun görünüyor — bütün gün çalışıyor.'}
+    ],
+    notes:'Stative verbs (know, like, believe) ile kullanılmaz. Present Perfect: "I\'ve read the book" (bitirdim, sonuç önemli). PP Continuous: "I\'ve been reading the book" (süreci/devamı önemli).'
+  },
+  {
+    id:9,icon:'🔗',bg:'#2a1e0e',
+    tr:'Bağlayıcı Kelimeler (Discourse Markers)',en:'firstly / moreover / therefore / as a result',
+    desc:'Yazılı ve sözlü anlatımı düzenlemek ve fikirleri birbirine bağlamak için kullanılan yapılar.',
+    detail:'Discourse markers (söylem işaretçileri) fikirlerin akışını düzenler. Eklerken, karşı çıkarken, açıklarken veya sonuç bildirirken farklı kelimeler kullanılır.',
+    form:['Ekleme: firstly, moreover, in addition, furthermore','Karşı çıkma: however, on the other hand, nevertheless','Sonuç: therefore, as a result, consequently','Örnek verme: for instance, for example, such as'],
+    examples:[
+      {en:'Firstly, I checked the weather. Moreover, I packed an umbrella.',tr:'Öncelikle havayı kontrol ettim. Üstelik bir şemsiye de aldım.'},
+      {en:'She studied hard. Therefore, she passed the exam.',tr:'Sıkı çalıştı. Bu nedenle sınavı geçti.'},
+      {en:'On the other hand, some people prefer online shopping.',tr:'Öte yandan bazı insanlar online alışverişi tercih ediyor.'},
+      {en:'For instance, London has many museums.',tr:'Örneğin Londra\'da pek çok müze var.'}
+    ],
+    notes:'Resmi yazıda: furthermore, consequently, in conclusion. Sözlü dilde: also, but, so, anyway daha yaygındır. Discourse markers cümle başında virgülle ayrılır.'
+  },
+  {
+    id:10,icon:'📍',bg:'#1a0e2a',
+    tr:'Yer Edatları',en:'Prepositions of Place (at/on/in/by/near…)',
+    desc:'Nesnelerin, kişilerin ve mekânların konumunu belirtmek için kullanılan edatlar.',
+    detail:'Yer edatları konum ve konumsal ilişkileri ifade eder. Hangisinin kullanılacağı bağlama ve ölçeğe göre değişir.',
+    form:['in = kapalı alan, şehir, ülke: in the box, in London','at = belirli nokta, adres: at the station, at 22 Baker St','on = yüzey, cadde: on the table, on Oxford Street','by/near = yanında/yakınında · between = arasında · opposite = karşısında'],
+    examples:[
+      {en:'She is at the airport.',tr:'Havaalanında.'},
+      {en:'The book is on the shelf.',tr:'Kitap rafın üstünde.'},
+      {en:'He lives in a small flat in London.',tr:'Londra\'da küçük bir dairede yaşıyor.'},
+      {en:'The café is opposite the museum.',tr:'Kafe müzenin karşısında.'}
+    ],
+    notes:'"At home / at work / at school" — belirli aktivite yerleri. "In hospital / in prison / in bed" — o kurumun işlevinde. "On a bus/train" ama "in a car/taxi".'
+  },
+  {
+    id:11,icon:'🧮',bg:'#0e2a1a',
+    tr:'Sayılamaz ve Sayılabilir İsimler',en:'Countable & Uncountable Nouns',
+    desc:'"Some/any/much/many/a lot of" kullanımını belirleyen isim kategorileri.',
+    detail:'İngilizce\'de isimler sayılabilir (countable) ve sayılamaz (uncountable) olarak ikiye ayrılır. Bu ayrım, hangi determinerin kullanılacağını doğrudan belirler.',
+    form:['Sayılabilir: a/an, many, few, number of + isim','Sayılamaz: much, little, amount of + isim (tekil fiil)','Her ikisi: some/any/a lot of/plenty of + isim','Tür belirtmek için: a cup of tea, a piece of advice'],
+    examples:[
+      {en:'There are many students in the class.',tr:'Sınıfta pek çok öğrenci var.'},
+      {en:'How much water do you drink a day?',tr:'Günde ne kadar su içiyorsunuz?'},
+      {en:'I have a little time but not much.',tr:'Biraz zamanım var ama çok değil.'},
+      {en:'Can I give you a piece of advice?',tr:'Sana bir tavsiyede bulunabilir miyim?'}
+    ],
+    notes:'Uncountable: advice, information, news, luggage, furniture, money, traffic, weather. Bunlar a/an almaz, çoğullanmaz. "An advice" / "informations" yanlıştır.'
+  }
+];
+
+// ═══════════════════ QUIZ DATA ═══════════════════
+const TQ = [
+  // 0 modals
+  [{type:'mc',q:"'She ___ be tired — she's worked all day.'",opts:['might','must','can','should'],ans:1,exp:"Kanıta dayalı güçlü olumlu çıkarım → must."},
+   {type:'tf',q:"'He can't be serious' → O, kesinlikle ciddi değildir.",ans:true,exp:"Can't = güçlü olumsuz çıkarım: imkânsız."},
+   {type:'fill',q:"That ___ be the new teacher — she matches the description.",ans:'must',exp:"Kanıta dayalı çıkarım: must."},
+   {type:'mc',q:"Geçmiş çıkarım için hangi yapı kullanılır?",opts:['must be','must have + V3','might + V3','can\'t be'],ans:1,exp:"Geçmiş çıkarım: must have + past participle."},
+   {type:'tf',q:"'They might be at the café' kesin bilgi ifade eder.",ans:false,exp:"Might = olasılık, kesinlik değil."}],
+  // 1 question tags
+  [{type:'mc',q:"'It's a lovely day, ___ it?'",opts:['is','isn\'t','wasn\'t','hasn\'t'],ans:1,exp:"Olumlu cümle → olumsuz tag. It's → isn't it?"},
+   {type:'tf',q:"'She hasn't called, has she?' doğru bir soru ekidir.",ans:true,exp:"Olumsuz cümle → olumlu tag."},
+   {type:'fill',q:"I am right, ___ I?",ans:"aren't",exp:"I am → aren't I? (istisna)."},
+   {type:'mc',q:"'Let's go, ___ we?'",opts:['will','shall','do','won\'t'],ans:1,exp:"Let's → shall we?"},
+   {type:'tf',q:"'You can swim, can you?' doğrudur.",ans:false,exp:"Olumlu cümle → olumsuz tag: can't you?"}],
+  // 2 articles
+  [{type:'mc',q:"'She is ___ engineer.'",opts:['a','an','the','—'],ans:1,exp:"Engineer sesli harfle başlar → an."},
+   {type:'tf',q:"'The dogs are loyal animals' genel bir gerçek için doğrudur.",ans:false,exp:"Genel gerçeklerde zero article: Dogs are loyal animals."},
+   {type:'fill',q:"I saw ___ dog. ___ dog was brown. (2. boşluk)",ans:'The',exp:"İkinci söylenişte belirli → the."},
+   {type:'mc',q:"Hangisinde 'the' kullanılmaz?",opts:['the Pacific Ocean','the Moon','the Turkey','the Times'],ans:2,exp:"Ülke adlarında the kullanılmaz (bazı istisnalar hariç): Turkey, not the Turkey."},
+   {type:'tf',q:"'an umbrella' doğru kullanımdır.",ans:true,exp:"'Umbrella' sesli harfle başlar → an."}],
+  // 3 comparatives
+  [{type:'mc',q:"'London is ___ than Manchester.' (büyük)",opts:['more big','biggest','bigger','most big'],ans:2,exp:"Kısa sıfat (1 hece) → -er: bigger."},
+   {type:'tf',q:"'She is more intelligent than her brother' doğrudur.",ans:true,exp:"Uzun sıfat (3+ hece) → more + sıfat."},
+   {type:'fill',q:"This is the ___ coffee I've ever had. (good)",ans:'best',exp:"good → better → best (düzensiz)."},
+   {type:'mc',q:"'The weather is getting ___ and ___.' (kötü)",opts:['more bad / more bad','worse / worse','worst / worst','bad / bad'],ans:1,exp:"Double comparative: worse and worse."},
+   {type:'tf',q:"'More good' doğru karşılaştırma biçimidir.",ans:false,exp:"good → better (düzensiz). More good yanlış."}],
+  // 4 phrasal verbs
+  [{type:'mc',q:"'She ___ smoking last year.' (bıraktı)",opts:['gave up','gave in','gave out','gave away'],ans:0,exp:"Give up + -ing = bırakmak."},
+   {type:'tf',q:"'Look after' ayrılamaz bir phrasal verbdir.",ans:true,exp:"Look after = bakmak; nesne arasına giremez."},
+   {type:'fill',q:"The meeting was called ___ due to rain.",ans:'off',exp:"Call off = iptal etmek."},
+   {type:'mc',q:"'Find out' ne anlama gelir?",opts:['bulmak','öğrenmek/keşfetmek','çıkmak','bakmak'],ans:1,exp:"Find out = öğrenmek, bilgi edinmek."},
+   {type:'tf',q:"'Turn off the light' ve 'Turn the light off' ikisi de doğrudur.",ans:true,exp:"Ayrılabilir phrasal verb → nesne ikisinde de gelebilir."}],
+  // 5 prepositions time
+  [{type:'mc',q:"'The meeting is ___ 3 o\'clock.'",opts:['in','on','at','by'],ans:2,exp:"Belirli saat → at."},
+   {type:'tf',q:"'She was born in 15th March' doğrudur.",ans:false,exp:"Tarih → on: on 15th March."},
+   {type:'fill',q:"We went to London ___ the summer.",ans:'in',exp:"Mevsim → in: in the summer."},
+   {type:'mc',q:"'At night' mi 'in the night' mi?",opts:['at night','in the night','on the night','by night'],ans:0,exp:"'At night' kalıplaşmış ifade. In the morning/evening ama at night."},
+   {type:'tf',q:"'On Monday' ve 'on 5th June' doğru kullanımlardır.",ans:true,exp:"Gün ve tarihler → on."}],
+  // 6 so/such
+  [{type:'mc',q:"'It was ___ cold that we stayed inside.'",opts:['such','so','too','very'],ans:1,exp:"So + sıfat + that."},
+   {type:'tf',q:"'Such a good film that...' doğru yapıdır.",ans:true,exp:"Such + a/an + sıfat + isim + that."},
+   {type:'fill',q:"She spoke ___ quickly that I couldn't follow.",ans:'so',exp:"So + zarf + that."},
+   {type:'mc',q:"'They were ___ kind people that everyone loved them.'",opts:['so','such','too','very'],ans:1,exp:"Such + sıfat + çoğul isim + that (a/an yok)."},
+   {type:'tf',q:"'So much people came' doğrudur.",ans:false,exp:"People sayılabilir → so many people."}],
+  // 7 causatives
+  [{type:'mc',q:"'The teacher ___ the students rewrite the essay.'",opts:['let','got','made','had'],ans:2,exp:"Make + kişi + fiil = zorla yaptırmak."},
+   {type:'tf',q:"'I had my car repaired' → Arabamı kendim tamir ettim.",ans:false,exp:"Have something done = başkasına yaptırtmak."},
+   {type:'fill',q:"She let her children ___ up late.",ans:'stay',exp:"Let + kişi + fiil (yalın): let them stay."},
+   {type:'mc',q:"'Get someone to do' ne anlama gelir?",opts:['Zorla yaptırmak','İkna edip yaptırmak','İzin vermek','Hizmet aldırmak'],ans:1,exp:"Get + kişi + to-fiil = ikna ederek yaptırmak."},
+   {type:'tf',q:"'Make him to work' doğru yapıdır.",ans:false,exp:"Make + kişi + fiil (yalın, to yok): make him work."}],
+  // 8 PPC
+  [{type:'mc',q:"'I ___ studying for three hours.'",opts:['have been','was','had been','am'],ans:0,exp:"Present perfect continuous: have been + -ing."},
+   {type:'tf',q:"'She's been living here since 2021' hâlâ yaşıyor anlamına gelir.",ans:true,exp:"PP Continuous + since → başladı ve devam ediyor."},
+   {type:'fill',q:"He looks tired — he ___ been working all day.",ans:'has',exp:"Has been + -ing (he → has)."},
+   {type:'mc',q:"PPC ile PP farkı nedir?",opts:['Hiç fark yok','PPC süreyi, PP sonucu vurgular','PP süreyi, PPC sonucu vurgular','Sadece zaman farkı var'],ans:1,exp:"PPC = süreç/devam; PP = sonuç/tamamlanma."},
+   {type:'tf',q:"'I've been knowing her for years' doğrudur.",ans:false,exp:"Know stative verb → PP kullanılır: I've known her for years."}],
+  // 9 discourse markers
+  [{type:'mc',q:"'She studied hard. ___, she passed.' (bu nedenle)",opts:['Moreover','However','Therefore','Nevertheless'],ans:2,exp:"Sonuç → Therefore."},
+   {type:'tf',q:"'On the other hand' zıtlık bildirir.",ans:true,exp:"On the other hand = öte yandan, karşı görüş."},
+   {type:'fill',q:"___, London has many museums. (Örneğin)",ans:'For instance',exp:"Örnek verme: For instance / For example."},
+   {type:'mc',q:"'Furthermore' hangi kategoride?",opts:['Sonuç','Ekleme','Karşı çıkma','Örnek'],ans:1,exp:"Furthermore = ayrıca, üstelik → ekleme."},
+   {type:'tf',q:"Discourse markers cümle başında virgülle ayrılır.",ans:true,exp:"Therefore, … / However, … gibi virgül zorunludur."}],
+  // 10 place prepositions
+  [{type:'mc',q:"'She is ___ the airport.'",opts:['in','on','at','by'],ans:2,exp:"Belirli nokta/yer → at: at the airport."},
+   {type:'tf',q:"'The book is in the shelf' doğrudur.",ans:false,exp:"Yüzey → on: on the shelf."},
+   {type:'fill',q:"He lives ___ a small flat in London.",ans:'in',exp:"Kapalı alan/daire → in."},
+   {type:'mc',q:"'On a bus' mı, 'in a bus' mı?",opts:['on a bus','in a bus','at a bus','by a bus'],ans:0,exp:"Toplu taşıma → on: on a bus/train. In a car/taxi."},
+   {type:'tf',q:"'The café is opposite the museum' müzenin karşısında demektir.",ans:true,exp:"Opposite = karşısında."}],
+  // 11 countable/uncountable
+  [{type:'mc',q:"'How ___ water do you drink?' (ne kadar)",opts:['many','much','few','any'],ans:1,exp:"Water sayılamaz → how much."},
+   {type:'tf',q:"'An advice' doğru kullanımdır.",ans:false,exp:"Advice sayılamaz → a piece of advice."},
+   {type:'fill',q:"There are ___ students in the class. (pek çok)",ans:'many',exp:"Students sayılabilir → many."},
+   {type:'mc',q:"Hangisi sayılamaz isimdir?",opts:['student','table','luggage','book'],ans:2,exp:"Luggage (bagaj) sayılamaz; çoğullanamaz."},
+   {type:'tf',q:"'Some information' ve 'some advice' doğrudur.",ans:true,exp:"Some her ikisiyle de kullanılır; information/advice sayılamaz."}]
+];
+
+// KARMA (20 soru)
+const KQ = [
+  {type:'mc',q:"'She ___ be tired — she's worked all day.'",opts:['might','must','can','should'],ans:1,exp:"Güçlü olumlu çıkarım → must.",topic:'Modal Çıkarım'},
+  {type:'tf',q:"'You haven't met him, have you?' doğrudur.",ans:true,exp:"Olumsuz cümle → olumlu tag.",topic:'Soru Ekleri'},
+  {type:'fill',q:"I saw a dog. ___ dog was very big.",ans:'The',exp:"2. söylenişte belirli → the.",topic:'Artikeller'},
+  {type:'mc',q:"'London is ___ than Manchester.'",opts:['more big','biggest','bigger','most big'],ans:2,exp:"Kısa sıfat → -er comparative.",topic:'Karşılaştırma'},
+  {type:'tf',q:"'Turn off the light' ve 'Turn the light off' ikisi de doğrudur.",ans:true,exp:"Ayrılabilir phrasal verb.",topic:'Phrasal Verbs'},
+  {type:'mc',q:"'The meeting is ___ Monday.'",opts:['at','in','on','by'],ans:2,exp:"Gün → on.",topic:'Zaman Edatları'},
+  {type:'fill',q:"It was so cold ___ we stayed inside.",ans:'that',exp:"So + sıfat + that yapısı.",topic:'So / Such'},
+  {type:'mc',q:"'The teacher ___ the students rewrite the essay.'",opts:['let','got','made','had'],ans:2,exp:"Make + kişi + yalın fiil.",topic:'Ettirgen'},
+  {type:'tf',q:"'I've been studying for three hours' süreyi vurgular.",ans:true,exp:"PP Continuous = süreç/devam.",topic:'PPC'},
+  {type:'mc',q:"'She studied hard. ___, she passed.'",opts:['Moreover','However','Therefore','Nevertheless'],ans:2,exp:"Sonuç → Therefore.",topic:'Discourse Markers'},
+  {type:'fill',q:"She is ___ the airport.",ans:'at',exp:"Belirli nokta → at.",topic:'Yer Edatları'},
+  {type:'mc',q:"'How ___ water do you drink?'",opts:['many','much','few','any'],ans:1,exp:"Sayılamaz isim → much.",topic:'Sayılabilir/Sayılamaz'},
+  {type:'tf',q:"'He can't be serious' → O, kesinlikle ciddi değildir.",ans:true,exp:"Can't = güçlü olumsuz çıkarım.",topic:'Modal Çıkarım'},
+  {type:'fill',q:"It's a lovely day, ___ it?",ans:"isn't",exp:"Olumlu → olumsuz tag: isn't it?",topic:'Soru Ekleri'},
+  {type:'mc',q:"'Such a good film that we watched it twice.' — 'Such' yerine ne gelemez?",opts:['So good a film','Such','That','A'],ans:0,exp:"'So good a film' arkaik/resmi; günlük kullanımda 'such a good film' tercih edilir.",topic:'So / Such'},
+  {type:'tf',q:"'I had my car repaired' arabamı başkasına tamir ettirdim demektir.",ans:true,exp:"Have something done = başkasına yaptırmak.",topic:'Ettirgen'},
+  {type:'mc',q:"'She gave ___ smoking last year.'",opts:['in','up','out','off'],ans:1,exp:"Give up = bırakmak.",topic:'Phrasal Verbs'},
+  {type:'fill',q:"He looks tired — he ___ been working all day.",ans:'has',exp:"Has been + -ing (3. tekil).",topic:'PPC'},
+  {type:'mc',q:"'On the ___ hand, some prefer online shopping.'",opts:['first','other','second','third'],ans:1,exp:"On the other hand = öte yandan.",topic:'Discourse Markers'},
+  {type:'tf',q:"'Dogs are loyal animals' doğru bir genel gerçek ifadesidir.",ans:true,exp:"Genel gerçek → zero article.",topic:'Artikeller'}
+];
+
+// STORY QUIZ
+const SQ = [
+  {type:'mc',q:"Mert'in eski patronunun büyük ihtimalle ne hissettiği anlatılıyor?",opts:['Hayal kırıklığı','Gurur','Şaşkınlık','Kıskançlık'],ans:1,exp:"'Must be proud' → must = güçlü çıkarım."},
+  {type:'tf',q:"'It's a great day, isn't it?' soru eki doğru kullanılmıştır.",ans:true,exp:"Olumlu → olumsuz tag: isn't it?"},
+  {type:'mc',q:"'Such a busy city' yapısında 'such' neden kullanıldı?",opts:['Sıfat önünde','İsim grubu önünde','Zarf önünde','Fiil önünde'],ans:1,exp:"Such + a/an + sıfat + isim."},
+  {type:'fill',q:"He ___ his report checked by a colleague. (had)",ans:'had',exp:"Had something done = başkasına yaptırmak."},
+  {type:'tf',q:"'She's been working here since 2022' hâlâ çalışıyor anlamına gelir.",ans:true,exp:"PP Continuous + since → devam ediyor."},
+  {type:'mc',q:"'The Thames' ifadesinde the hangi kural için kullanıldı?",opts:['İlk söylenişte','Nehir/okyanus adlarında','Belirsizlik için','Çoğul için'],ans:1,exp:"Nehir adlarında the kullanılır: the Thames, the Nile."},
+  {type:'mc',q:"'Look after' phrasal verbinin anlamı nedir?",opts:['Bakmak','Aramak','Bulmak','İptal etmek'],ans:0,exp:"Look after = bakmak/ilgilenmek."},
+  {type:'tf',q:"'He got his colleague to review the report' → ikna ederek yaptırdı.",ans:true,exp:"Get + kişi + to-fiil = ikna ederek yaptırmak."},
+  {type:'fill',q:"The café is ___ the museum. (karşısında)",ans:'opposite',exp:"Opposite = karşısında."},
+  {type:'mc',q:"Hikayenin genel mesajı nedir?",opts:['Londra çok pahalı','Dilbilgisi gereksizdir','Doğru dil ve azimle her kapı açılır','İngiltere soğuk bir ülkedir'],ans:2,exp:"Dil bilgisi ve kararlılığın hayatı değiştirdiği işleniyor."}
+];
+
+// ═══════════════════ STORY ═══════════════════
+function buildStory() {
+  document.getElementById('sbody').innerHTML = `
+<p>Three years had passed. Mert, once a <span class="vm" data-w="timid" data-r="ürkek, çekingen">timid</span> student from Gaziantep, was now a <span class="vm" data-w="confident" data-r="kendinden emin">confident</span> engineer at <span class="vm" data-w="a prestigious firm" data-r="prestijli bir şirket">a prestigious firm</span>. He stood by the window of his office overlooking <span class="gm c1" data-t="Artikeller: The + nehir adı" data-d="'the Thames' → Nehir, okyanus ve dağ sıraları gibi coğrafi isimler the alır: the Thames, the Nile.">the Thames</span>, thinking how much had changed.</p>
+
+<p>His manager was clearly in a good mood. "It's <span class="gm c1" data-t="Superlative (En Üstünlük)" data-d="'the best quarter' → the + en üstünlük. Best = good'un superlative hali (düzensiz).">the best quarter</span> we've ever had, <span class="gm c0" data-t="Question Tag" data-d="'isn't it?' → Olumlu cümle → olumsuz tag. It's → isn't it?">isn't it?</span>" she said, smiling. Mert nodded. It was <span class="gm c2" data-t="Such ... That" data-d="'such a busy period' → such + a/an + sıfat + isim + that. İsim grubu önünde such.">such a busy period</span> that he had barely slept.</p>
+
+<p>On his desk sat a thick report. He <span class="gm c3" data-t="Causative: Had + V3" data-d="'had the report reviewed' → have something done = başkasına yaptırmak. Başkası inceledi.">had the report reviewed</span> by a senior colleague and then <span class="gm c3" data-t="Get Someone To Do" data-d="'got his assistant to proofread it' → get + kişi + to-fiil = ikna ederek yaptırmak.">got his assistant to proofread it</span>. <span class="vm" data-w="thoroughness" data-r="titizlik, kapsamlılık">Thoroughness</span>, he had learned, was everything in engineering.</p>
+
+<p>His colleague Priya walked in. "You <span class="gm c3" data-t="Present Perfect Continuous" data-d="'have been working' → have been + -ing. Sabahtan beri devam eden eylem vurgulanıyor.">have been working</span> since morning, <span class="gm c0" data-t="Question Tag" data-d="'haven't you?' → Olumlu cümle → olumsuz tag. Have been → haven't you?">haven't you?</span>" Mert grinned. "I've been <span class="gm c2" data-t="Phrasal Verb: looking after" data-d="'looking after this project' → look after = bakmak, ilgilenmek. Ayrılamaz phrasal verb.">looking after this project</span> all week," he replied. "You <span class="gm c0" data-t="Modal Çıkarım: Must" data-d="'must be exhausted' → Kanıta dayalı güçlü çıkarım: must. Bütün hafta çalıştı → yorgun olmalı.">must be exhausted</span>," she said.</p>
+
+<p>At lunchtime Mert went to <span class="gm c4" data-t="Yer Edatı: at" data-d="'at the small Italian café' → belirli bir nokta/mekân için at.">the small Italian café</span> <span class="gm c4" data-t="Yer Edatı: opposite" data-d="'opposite the office' → opposite = karşısında.">opposite the office</span>. It was <span class="gm c1" data-t="Comparatives: -er than" data-d="'quieter than usual' → kısa sıfat + -er + than. Quiet → quieter.">quieter than usual</span>. He ordered <span class="gm c1" data-t="Zero Article: Sayılamaz isim" data-d="'coffee' sayılamaz isim, belirsiz → sıfır artikel. 'A coffee' de denilebilir ama 'coffee' genel anlam.">coffee</span> and <span class="vm" data-w="a slice of cake" data-r="bir dilim kek">a slice of cake</span>. The <span class="vm" data-w="barista" data-r="kahve uzmanı, kahveci">barista</span>, a cheerful Italian woman, said "You've been coming here every day <span class="gm c4" data-t="Zaman Edatı: since" data-d="'since Monday' → since + başlangıç noktası. Burada zaman edatı olarak kullanılıyor.">since Monday</span>, <span class="gm c0" data-t="Question Tag" data-d="'haven't you?' → Olumlu PP cümle → olumsuz tag: haven't you?">haven't you?</span>"</p>
+
+<p>After lunch he <span class="gm c2" data-t="Phrasal Verb: found out" data-d="'found out' → find out = öğrenmek, keşfetmek. Ayrılabilir: found it out.">found out</span> that his old project team had been <span class="vm" data-w="shortlisted" data-r="kısa listeye alınmış, eleme geçmiş">shortlisted</span> for an industry award. <span class="gm c4" data-t="Discourse Marker: Furthermore" data-d="'Furthermore' → ekleme/pekiştirme. Moreover, in addition ile eşanlamlı.">Furthermore</span>, his manager wanted him to <span class="vm" data-w="present" data-r="sunmak, sunuş yapmak">present</span> the findings at a conference. It was <span class="gm c2" data-t="So ... That" data-d="'so exciting that' → so + sıfat + that yapısı. Exciting sıfat → so.">so exciting that</span> he almost called his mother right there in the office.</p>
+
+<p>That evening he video-called home. His mother looked <span class="gm c0" data-t="Modal Çıkarım: Must" data-d="'must be proud' → Kanıta dayalı çıkarım. Oglunun başarısını görünce gurur duyuyor olmalı.">must be proud</span>, he thought, watching her smile. "London is <span class="gm c1" data-t="Comparative: more + uzun sıfat" data-d="'more expensive' → 3 heceli sıfat → more + sıfat. Expensive → more expensive.">more expensive</span> than Gaziantep, <span class="gm c0" data-t="Question Tag" data-d="'isn't it?' → Olumlu cümle → olumsuz tag.">isn't it?</span>" she asked. He laughed. "It is, anne. But it's also <span class="gm c1" data-t="Superlative: the most" data-d="'the most exciting city' → the most + uzun sıfat. Exciting → most exciting.">the most exciting city</span> I know."</p>
+
+<p>Back at his <span class="gm c4" data-t="Yer Edatı: in (daire)" data-d="'in his flat' → kapalı alan, iç mekân → in. In a flat/room/building.">flat</span>, Mert made some tea — there was <span class="gm c1" data-t="Sayılamaz İsim + Little" data-d="'very little milk' → milk sayılamaz → little (az). Few sayılabilir isimlerle kullanılır.">very little milk</span> left — and sat by the window. <span class="gm c1" data-t="Zero Article: Genel çoğul" data-d="'Stars' genel çoğul → zero article. Bütün yıldızlar genel anlamda söyleniyor.">Stars</span> were hard to see through the London <span class="vm" data-w="haze" data-r="sis, pus">haze</span>, but he didn't mind. <span class="gm c4" data-t="Discourse Marker: Therefore" data-d="'Therefore' → sonuç bildirme. As a result, consequently ile eşanlamlı.">Therefore</span>, he smiled to himself — he had built something here, word by word, grammar rule by grammar rule, and <span class="gm c3" data-t="PPC: have been + -ing" data-d="'has been growing' → have been + -ing. Büyüme süreci devam ediyor, vurgu süreçte.">it has been growing</span> every single day.</p>`;
+}
+
+// ═══════════════════ UI ═══════════════════
+function go(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  const m={home:0,quiz:1,karma:2,story:3};
+  document.querySelectorAll('.nb')[m[id]]?.classList.add('on');
+}
+
+function buildHome() {
+  const g=document.getElementById('tgrid');
+  T.forEach((t,i)=>{
+    const c=document.createElement('div');
+    c.className='tcard';
+    c.innerHTML=`<div class="ti"><div class="ticon" style="background:${t.bg}">${t.icon}</div><div><div class="tnum">Konu ${i+1}</div><div class="ttitle">${t.tr}</div></div></div><div class="ten">${t.en}</div><div class="tdesc">${t.desc}</div><div class="tarr">→</div>`;
+    c.onclick=()=>openM(i);
+    g.appendChild(c);
+  });
+}
+
+function openM(i) {
+  const t=T[i];
+  document.getElementById('mtitle').textContent=t.tr;
+  let h=`<span class="mtag">${t.en}</span>`;
+  h+=`<div class="msec"><h3>📖 Açıklama</h3><p>${t.detail}</p></div>`;
+  h+=`<div class="msec"><h3>📐 Yapı</h3>`;
+  t.form.forEach(f=>h+=`<span class="rpill">${f}</span>`);
+  h+=`</div><div class="msec"><h3>💬 Örnekler</h3>`;
+  t.examples.forEach(e=>h+=`<div class="ex"><div class="en">🇬🇧 ${e.en}</div><div class="tr">🇹🇷 ${e.tr}</div></div>`);
+  h+=`</div>`;
+  if(t.notes) h+=`<div class="msec"><h3>💡 Not</h3><p>${t.notes}</p></div>`;
+  h+=`<button class="mqbtn" onclick="closeM();go('quiz');selT(${i})">Bu Konuyu Sına →</button>`;
+  document.getElementById('mbody').innerHTML=h;
+  document.getElementById('mov').classList.add('on');
+}
+function closeM(){document.getElementById('mov').classList.remove('on');}
+function closeMO(e){if(e.target===document.getElementById('mov'))closeM();}
+
+let sti=0;
+function buildQTList(){
+  const l=document.getElementById('qtlist');
+  T.forEach((t,i)=>{
+    const d=document.createElement('div');d.className='qti'+(i===0?' sel':'');
+    d.innerHTML=`<div class="qt">${t.tr}</div><div class="qe">${t.en}</div>`;
+    d.onclick=()=>{document.querySelectorAll('.qti').forEach(x=>x.classList.remove('sel'));d.classList.add('sel');sti=i;};
+    l.appendChild(d);
+  });
+}
+function selT(i){sti=i;document.querySelectorAll('.qti').forEach((x,j)=>x.classList.toggle('sel',j===i));}
+function startTQ(){const c=document.getElementById('tqr');c.classList.add('on');runQ(TQ[sti],c,()=>{});}
+function startKQ(){const c=document.getElementById('kqr');c.classList.add('on');runQ(KQ,c,()=>{});}
+function buildSQ(){runQ(SQ,document.getElementById('sqr'),()=>{});}
+
+function runQ(questions,container,done){
+  let cur=0,sc=0;
+  function render(){
+    if(cur>=questions.length){result();return;}
+    const q=questions[cur];const pct=(cur/questions.length)*100;
+    let h=`<div class="qhdr2"><div class="qprog"><div class="qprogb" style="width:${pct}%"></div></div><span class="qctr">${cur+1}/${questions.length}</span><span class="qsc">✓ ${sc}</span></div>
+    <div class="qcard"><div class="qtype">${tlbl(q.type)}${q.topic?' · '+q.topic:''}</div><div class="qtext">${q.q}</div>`;
+    if(q.type==='mc'){
+      h+=`<div class="opts">`;
+      q.opts.forEach((o,i)=>h+=`<button class="ob" onclick="MC(this,${i},${q.ans},'${e(q.exp)}')">${o}</button>`);
+      h+=`</div>`;
+    } else if(q.type==='tf'){
+      h+=`<div class="tfrow"><button class="tfb" onclick="TF(this,true,${q.ans},'${e(q.exp)}')">✓ Doğru</button><button class="tfb" onclick="TF(this,false,${q.ans},'${e(q.exp)}')">✗ Yanlış</button></div>`;
+    } else {
+      h+=`<input class="finp" id="fi" type="text" placeholder="Cevabınızı yazın..."><button class="chkbtn" onclick="FI('${e(q.ans)}','${e(q.exp)}')">Kontrol Et</button>`;
+    }
+    h+=`<div class="fb" id="fb"></div><button class="nxtbtn" id="nb" onclick="NX()">İleri →</button></div>`;
+    container.innerHTML=h;
+    if(q.type==='fill') document.getElementById('fi').addEventListener('keydown',ev=>{if(ev.key==='Enter')FI(q.ans,q.exp);});
+  }
+  function MC(btn,ch,cor,exp){
+    container.querySelectorAll('.ob').forEach(b=>b.disabled=true);
+    container.querySelectorAll('.ob')[cor].classList.add('ok');
+    const ok=ch===cor;if(!ok)btn.classList.add('no');else sc++;
+    FB(ok,exp);document.getElementById('nb').classList.add('on');
+  }
+  function TF(btn,ch,cor,exp){
+    container.querySelectorAll('.tfb').forEach(b=>b.disabled=true);
+    const ok=ch===cor;btn.classList.add(ok?'ok':'no');
+    if(!ok)container.querySelectorAll('.tfb').forEach(b=>{if((b.textContent.includes('Doğru')&&cor)||(b.textContent.includes('Yanlış')&&!cor))b.classList.add('ok');});
+    if(ok)sc++;FB(ok,exp);document.getElementById('nb').classList.add('on');
+  }
+  function FI(ans,exp){
+    const inp=document.getElementById('fi');if(!inp)return;
+    const ok=inp.value.trim().toLowerCase()===ans.toLowerCase();
+    inp.classList.add(ok?'ok':'no');inp.disabled=true;
+    if(!ok){const h=document.createElement('div');h.style.cssText='font-size:11px;color:var(--a3);margin-top:5px;';h.textContent='Doğru: '+ans;inp.after(h);}
+    if(ok)sc++;FB(ok,exp);document.getElementById('nb').classList.add('on');
+  }
+  function FB(ok,exp){const f=document.getElementById('fb');f.className='fb on '+(ok?'g':'b');f.textContent=(ok?'✓ Doğru! ':'✗ Yanlış. ')+exp;}
+  function NX(){cur++;render();}
+  function result(){
+    const pct=Math.round(sc/questions.length*100);
+    const msg=pct>=80?'🎉 Mükemmel!':pct>=60?'👍 Güzel gidiyor!':'📚 Daha çok tekrar!';
+    container.innerHTML=`<div class="qres on"><div class="rsc">${pct}%</div><div class="rmsg">${msg}</div><div class="rsub">${sc} / ${questions.length} doğru</div><div class="rbtns"><button class="rbtn p" onclick="location.reload()">Tekrar</button><button class="rbtn s" onclick="go('home')">Ana Sayfa</button></div></div>`;
+    done();
+  }
+  render();
+  window.MC=MC;window.TF=TF;window.FI=FI;window.NX=NX;
+}
+function tlbl(t){return{mc:'🔘 Çoktan Seçmeli',tf:'✅ Doğru/Yanlış',fill:'✏️ Boşluk Doldurma'}[t]||t;}
+function e(s){return String(s).replace(/'/g,'\\x27').replace(/"/g,'\\x22');}
+
+// TOOLTIPS
+document.addEventListener('mousemove',ev=>{
+  [document.getElementById('gtt'),document.getElementById('vtt')].forEach(el=>{
+    if(el.style.display==='block'){let x=ev.clientX+14,y=ev.clientY+14;if(x+285>innerWidth)x=ev.clientX-285;if(y+90>innerHeight)y=ev.clientY-90;el.style.left=x+'px';el.style.top=y+'px';}
+  });
+});
+document.addEventListener('mouseover',ev=>{
+  const gm=ev.target.closest('.gm'),vm=ev.target.closest('.vm');
+  if(gm){document.getElementById('gtt-t').textContent=gm.dataset.t;document.getElementById('gtt-d').textContent=gm.dataset.d;document.getElementById('gtt').style.display='block';document.getElementById('vtt').style.display='none';}
+  else if(vm){document.getElementById('vtt-w').textContent=vm.dataset.w;document.getElementById('vtt-r').textContent='🇹🇷 '+vm.dataset.r;document.getElementById('vtt').style.display='block';document.getElementById('gtt').style.display='none';}
+  else if(!ev.target.closest('.gtt')&&!ev.target.closest('.vtt')){document.getElementById('gtt').style.display='none';document.getElementById('vtt').style.display='none';}
+});
+
+buildHome();buildQTList();buildStory();buildSQ();
+</script>
+</body>
+</html>

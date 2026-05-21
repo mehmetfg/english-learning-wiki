@@ -1,0 +1,1381 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Verdana&family=Georgia:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --surface3: #1e2d42;
+    --accent: #3b82f6;
+    --accent2: #06b6d4;
+    --accent3: #10b981;
+    --gold: #f59e0b;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(59,130,246,0.3);
+    --danger: #ef4444;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --font-body: 'Verdana', Geneva, sans-serif;
+    --font-display: 'Georgia', serif;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 60px 1fr;
+    min-height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* HEADER */
+  .header {
+    grid-column: 1/-1;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--accent2);
+    letter-spacing: 0.5px;
+  }
+
+  .logo span {
+    color: var(--text2);
+    font-style: normal;
+    font-size: 11px;
+    font-family: var(--font-body);
+    margin-left: 8px;
+  }
+
+  .phase-bar {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    align-items: center;
+  }
+
+  .phase-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    font-family: var(--font-body);
+  }
+
+  .phase-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .phase-pill:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    overflow-y: auto;
+    position: sticky;
+    top: 60px;
+    height: calc(100vh - 60px);
+  }
+
+  .sidebar-section {
+    padding: 0 16px;
+    margin-bottom: 24px;
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+
+  .topic-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    color: var(--text2);
+    font-family: var(--font-body);
+    font-size: 12px;
+  }
+
+  .topic-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .topic-btn.active {
+    background: rgba(59,130,246,0.12);
+    color: var(--accent);
+    border-left: 2px solid var(--accent);
+  }
+
+  .topic-icon {
+    font-size: 14px;
+    width: 18px;
+    text-align: center;
+  }
+
+  .topic-meta {
+    margin-left: auto;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .badge-done {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+  }
+
+  /* PROGRESS in sidebar */
+  .progress-section {
+    padding: 12px 16px;
+    background: var(--surface2);
+    margin: 0 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .prog-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .prog-label { font-size: 11px; color: var(--text2); }
+  .prog-val { font-size: 11px; font-weight: bold; color: var(--accent2); }
+
+  .prog-bar {
+    height: 4px;
+    background: var(--surface3);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .prog-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* MAIN */
+  .main {
+    padding: 28px 32px;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+  }
+
+  /* PHASE TABS */
+  .phase-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+
+  .phase-tab {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    background: transparent;
+    color: var(--text3);
+    font-size: 11px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-body);
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .phase-tab.active {
+    background: var(--accent);
+    color: white;
+  }
+
+  .phase-tab:hover:not(.active) {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  /* CONTENT PANELS */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* READ PANEL */
+  .content-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .content-card h2 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-style: italic;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .content-card .subtitle {
+    font-size: 11px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .content-card p {
+    color: var(--text2);
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .content-card .highlight-box {
+    background: rgba(59,130,246,0.08);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 16px 0;
+    font-size: 12px;
+    color: var(--text);
+    font-style: italic;
+    font-family: var(--font-display);
+  }
+
+  .classical-box {
+    background: rgba(245,158,11,0.06);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin: 16px 0;
+  }
+
+  .classical-box .classical-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .classical-box p {
+    color: rgba(245,158,11,0.8);
+    font-size: 12px;
+    font-style: italic;
+    font-family: var(--font-display);
+  }
+
+  .sys-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .sys-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .sys-card:hover {
+    border-color: var(--accent);
+    background: rgba(59,130,246,0.05);
+  }
+
+  .sys-card.selected {
+    border-color: var(--accent);
+    background: rgba(59,130,246,0.1);
+  }
+
+  .sys-card .sys-icon { font-size: 20px; margin-bottom: 6px; }
+  .sys-card .sys-name { font-size: 12px; font-weight: bold; color: var(--text); margin-bottom: 4px; }
+  .sys-card .sys-desc { font-size: 11px; color: var(--text3); }
+
+  /* WRITE PANEL */
+  .write-prompt {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .write-prompt .prompt-label {
+    font-size: 11px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .write-prompt .prompt-text {
+    font-size: 15px;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.7;
+    resize: vertical;
+    min-height: 140px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+  }
+
+  textarea::placeholder { color: var(--text3); }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover { background: #2563eb; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    align-items: center;
+  }
+
+  /* AI RESPONSE */
+  .ai-response {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 18px;
+    margin-top: 16px;
+  }
+
+  .ai-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 11px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ai-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .ai-content {
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  /* COMPARE PANEL */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .compare-col h3 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-col.modern h3 { color: var(--accent); }
+  .compare-col.classic h3 { color: var(--gold); }
+
+  .compare-item {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .compare-item .item-title {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  .compare-item .item-body { color: var(--text2); }
+
+  /* QUERY PANEL */
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .quiz-q {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-style: italic;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .quiz-opt {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text2);
+    font-size: 13px;
+    background: var(--surface2);
+  }
+
+  .quiz-opt:hover:not(.answered) {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .quiz-opt.correct {
+    border-color: var(--success);
+    background: rgba(16,185,129,0.1);
+    color: var(--success);
+  }
+
+  .quiz-opt.wrong {
+    border-color: var(--danger);
+    background: rgba(239,68,68,0.1);
+    color: var(--danger);
+  }
+
+  .quiz-feedback {
+    margin-top: 16px;
+    padding: 14px;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--text2);
+    display: none;
+    border-left: 3px solid var(--accent2);
+  }
+
+  /* PRODUCE PANEL */
+  .produce-tasks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .task-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .task-card:hover {
+    border-color: var(--accent2);
+    background: rgba(6,182,212,0.05);
+  }
+
+  .task-card .task-type {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent2);
+    margin-bottom: 6px;
+  }
+
+  .task-card .task-title {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--text);
+    margin-bottom: 6px;
+    font-family: var(--font-display);
+    font-style: italic;
+  }
+
+  .task-card .task-desc { font-size: 11px; color: var(--text3); }
+
+  /* STATS BAR */
+  .stats-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text2);
+  }
+
+  .stat-pill .val {
+    font-weight: bold;
+    color: var(--text);
+  }
+
+  .stat-pill .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  /* LOADING */
+  .loader {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .loader span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: bounce 1.2s infinite;
+  }
+
+  .loader span:nth-child(2) { animation-delay: 0.2s; }
+  .loader span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+  }
+
+  .tag-blue { background: rgba(59,130,246,0.15); color: var(--accent); }
+  .tag-green { background: rgba(16,185,129,0.15); color: var(--success); }
+  .tag-gold { background: rgba(245,158,11,0.15); color: var(--gold); }
+
+  .xp-flash {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: var(--success);
+    color: white;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-weight: bold;
+    font-size: 14px;
+    z-index: 999;
+    animation: flash 2.5s forwards;
+    pointer-events: none;
+  }
+
+  @keyframes flash {
+    0% { opacity: 0; transform: translateY(-10px); }
+    15% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-10px); }
+  }
+
+  .notice {
+    background: rgba(6,182,212,0.08);
+    border: 1px solid rgba(6,182,212,0.2);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--accent2);
+    margin-bottom: 14px;
+  }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .sys-grid { grid-template-columns: 1fr 1fr; }
+    .compare-grid, .produce-tasks { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">Anatomia <span>· Çalışma Atölyesi</span></div>
+    <div class="phase-bar" id="phaseBar">
+      <div class="phase-pill active" onclick="setPhase(0)">1 · Oku</div>
+      <div class="phase-pill" onclick="setPhase(1)">2 · Yaz</div>
+      <div class="phase-pill" onclick="setPhase(2)">3 · Karşılaştır</div>
+      <div class="phase-pill" onclick="setPhase(3)">4 · Sorgula</div>
+      <div class="phase-pill" onclick="setPhase(4)">5 · Üret</div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">İlerleme</div>
+      <div class="progress-section">
+        <div class="prog-row"><span class="prog-label">Genel Tamamlanma</span><span class="prog-val" id="totalPct">0%</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="totalBar" style="width:0%;background:var(--accent)"></div></div>
+        <div class="prog-row"><span class="prog-label">XP Puanı</span><span class="prog-val" id="xpVal">0 XP</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="xpBar" style="width:0%;background:var(--gold)"></div></div>
+        <div class="prog-row"><span class="prog-label">Doğru Cevap</span><span class="prog-val" id="correctVal">0/0</span></div>
+        <div class="prog-bar"><div class="prog-fill" id="correctBar" style="width:0%;background:var(--success)"></div></div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Sistemler</div>
+      <button class="topic-btn active" onclick="setTopic(0,this)">
+        <span class="topic-icon">🦴</span> Kas-İskelet
+        <span class="topic-meta"><span class="badge-done" id="done-0" style="display:none"></span></span>
+      </button>
+      <button class="topic-btn" onclick="setTopic(1,this)">
+        <span class="topic-icon">❤️</span> Dolaşım
+        <span class="topic-meta"><span class="badge-done" id="done-1" style="display:none"></span></span>
+      </button>
+      <button class="topic-btn" onclick="setTopic(2,this)">
+        <span class="topic-icon">🫁</span> Solunum
+        <span class="topic-meta"><span class="badge-done" id="done-2" style="display:none"></span></span>
+      </button>
+      <button class="topic-btn" onclick="setTopic(3,this)">
+        <span class="topic-icon">🧠</span> Sinir Sistemi
+        <span class="topic-meta"><span class="badge-done" id="done-3" style="display:none"></span></span>
+      </button>
+      <button class="topic-btn" onclick="setTopic(4,this)">
+        <span class="topic-icon">🔬</span> Hücre & Doku
+        <span class="topic-meta"><span class="badge-done" id="done-4" style="display:none"></span></span>
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Döngü Durumu</div>
+      <div style="padding: 0 4px;">
+        <div id="cycleStatus" style="font-size:11px;color:var(--text3);line-height:1.8;">
+          Faz 1: Oku ✓ aktif<br>
+          Faz 2: Yaz — bekliyor<br>
+          Faz 3: Karşılaştır — bekliyor<br>
+          Faz 4: Sorgula — bekliyor<br>
+          Faz 5: Üret — bekliyor
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-pill"><span class="dot" style="background:var(--accent)"></span> Konu: <span class="val" id="currentTopicLabel">Kas-İskelet Sistemi</span></div>
+      <div class="stat-pill"><span class="dot" style="background:var(--gold)"></span> Faz: <span class="val" id="currentPhaseLabel">Oku</span></div>
+      <div class="stat-pill"><span class="dot" style="background:var(--success)"></span> Aktivite: <span class="val" id="activityCount">0</span></div>
+    </div>
+
+    <!-- PHASE TABS -->
+    <div class="phase-tabs">
+      <button class="phase-tab active" onclick="setPhase(0)">📖 Oku</button>
+      <button class="phase-tab" onclick="setPhase(1)">✍️ Yaz</button>
+      <button class="phase-tab" onclick="setPhase(2)">⚖️ Karşılaştır</button>
+      <button class="phase-tab" onclick="setPhase(3)">🔍 Sorgula</button>
+      <button class="phase-tab" onclick="setPhase(4)">🧬 Üret</button>
+    </div>
+
+    <!-- ═══ PHASE 0: OKU ═══ -->
+    <div class="panel active" id="panel-0">
+      <div class="content-card" id="readContent">
+        <!-- Dynamically filled -->
+      </div>
+    </div>
+
+    <!-- ═══ PHASE 1: YAZ ═══ -->
+    <div class="panel" id="panel-1">
+      <div class="content-card">
+        <h2>Yaz</h2>
+        <p class="subtitle">Kendi kelimelerinle ifade et</p>
+        <div class="notice">Okuduğun konuyu kapatıp kendi anlayışınla yaz. AI öğretmen cevabını analiz edip geri bildirim verecek.</div>
+        <div class="write-prompt" id="writePrompt">
+          <div class="prompt-label">Yazma Görevi</div>
+          <div class="prompt-text" id="writePromptText">Önce "Oku" fazını tamamla.</div>
+        </div>
+        <textarea id="writeArea" placeholder="Kendi cümlelerinle yaz... Terim kullanmak zorunda değilsin, anladığını anlatman yeterli." rows="6"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="submitWrite()" id="writeSubmitBtn">AI'ya Gönder</button>
+          <button class="btn btn-secondary" onclick="clearWrite()">Temizle</button>
+          <span id="writeLoader" style="display:none"><div class="loader"><span></span><span></span><span></span></div></span>
+        </div>
+        <div class="ai-response" id="writeResponse" style="display:none">
+          <div class="ai-header"><div class="ai-dot"></div> Anatomia AI · Geri Bildirim</div>
+          <div class="ai-content" id="writeResponseText"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PHASE 2: KARŞILAŞTIR ═══ -->
+    <div class="panel" id="panel-2">
+      <div class="content-card">
+        <h2>Karşılaştır</h2>
+        <p class="subtitle">Modern tıp ↔ Klasik tıp perspektifi</p>
+        <div id="compareContent"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PHASE 3: SORGULA ═══ -->
+    <div class="panel" id="panel-3">
+      <div class="content-card" id="quizCard">
+        <h2>Sorgula</h2>
+        <p class="subtitle">Kavramayı test et</p>
+        <div id="quizContent"></div>
+        <div class="btn-row" style="margin-top:20px">
+          <button class="btn btn-primary" onclick="loadNextQuiz()" id="nextQuizBtn">Sonraki Soru</button>
+          <span id="quizScore" style="font-size:12px;color:var(--text2)"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PHASE 4: ÜRET ═══ -->
+    <div class="panel" id="panel-4">
+      <div class="content-card">
+        <h2>Üret</h2>
+        <p class="subtitle">Sentez, yaratıcı uygulama</p>
+        <div class="notice">Bir görev seç — AI senin için özelleştirilmiş bir üretme görevi oluşturacak.</div>
+        <div class="produce-tasks" id="produceTasks"></div>
+        <div id="produceTaskArea" style="display:none">
+          <div class="write-prompt" id="produceTaskPrompt"></div>
+          <textarea id="produceArea" placeholder="Üretimini buraya yaz..." rows="8"></textarea>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="submitProduce()">Gönder ve Değerlendir</button>
+            <span id="produceLoader" style="display:none"><div class="loader"><span></span><span></span><span></span></div></span>
+          </div>
+          <div class="ai-response" id="produceResponse" style="display:none">
+            <div class="ai-header"><div class="ai-dot"></div> Anatomia AI · Değerlendirme</div>
+            <div class="ai-content" id="produceResponseText"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const TOPICS = [
+  {
+    id: 0,
+    name: "Kas-İskelet Sistemi",
+    icon: "🦴",
+    subtitle: "Ossium et Musculi — Kemikler ve Kaslar",
+    intro: `İnsan iskeleti 206 kemikten oluşur; bu sayı doğumda yaklaşık 270'tir, büyüme ile kemikler birleşerek azalır. İskelet sistemi yalnızca mekanik bir destek değil; aynı zamanda kan hücresi üreten (hematopoez), mineral depolayan (kalsiyum, fosfor) ve endokrin işlev gören dinamik bir dokudur.`,
+    body: `Kaslar vücudun yaklaşık %40'ını oluşturur. Üç temel kas türü vardır: iskelet kası (isteğe bağlı, çizgili), düz kas (istemsiz, iç organlar) ve kalp kası (istemsiz ama çizgili, yalnızca kalpte). İskelet kasları antagonist çiftler halinde çalışır: biceps bükerken triceps gevşer, bu zıt işleyiş hassas hareketi mümkün kılar.`,
+    classical: `İbn Sînâ'nın el-Kânûn fi't-Tıbb (Tıbbın Kanunu) eserinde kemikler "bedenin direği" (ركيزة البدن), kaslar ise "iradenin aletleri" (آلات الإرادة) olarak tanımlanmıştır. Galen'e göre kasların üç ilkesi vardır: güç (potentia), alet (instrumentum) ve amaç (opus). Bu teleolojik yaklaşım modern biyomekaniğin öncülüdür.`,
+    writePrompt: "Kas-iskelet sisteminin temel işlevlerini kendi cümlelerinle açıkla. Özellikle kasların nasıl koordine çalıştığını ve iskeleton neden sadece 'yapısal destek' olmadığını açıklamaya çalış.",
+    compare: {
+      modern: [
+        { title: "Kemik = Dinamik Doku", body: "Sürekli yenilenen, osteoblast/osteoklast dengesiyle kontrol edilen yaşayan bir doku." },
+        { title: "Hematopoez Merkezi", body: "Kırmızı kemik iliği, eritrosit, lökosit ve trombositlerin üretim yeridir." },
+        { title: "Mekanik Adaptasyon", body: "Wolff Yasası: kemik, üzerine binen yüke göre yapısını değiştirir." }
+      ],
+      classic: [
+        { title: "Dört Hılt Teorisi", body: "Kemikler soğuk-kuru mizacı temsil eder (balgam+sevda). Denge bozulunca hastalık gelir." },
+        { title: "İradenin Aleti", body: "İbn Sînâ: kaslar ruhun (nefs) iradesini bedene aktaran organlar." },
+        { title: "Galen'in Fibrası", body: "Kasların yöne göre uzanan lifler (fibrae) içerdiğini ilk tanımlayan Galen'dir." }
+      ]
+    },
+    quizzes: [
+      { q: "Erişkin bir insanda kaç kemik bulunur?", opts: ["176","206","256","300"], correct: 1, explain: "Doğumda ~270 olan kemik sayısı, epifiz kıkırdaklarının kaynaşmasıyla erişkinlikte 206'ya iner." },
+      { q: "Hangi kas türü istemsiz çalışır ancak çizgili görünümdedir?", opts: ["İskelet kası","Düz kas","Kalp kası","Yüz kası"], correct: 2, explain: "Kalp kası (miyokardiyum) hem çizgili hem istemsizdir — otonom sinir sistemi tarafından yönetilir ama histolojik yapısı iskelet kasına benzer." },
+      { q: "Hematopoez (kan hücresi üretimi) esas olarak nerede gerçekleşir?", opts: ["Sarı kemik iliği","Kırmızı kemik iliği","Periosteum","Endosteum"], correct: 1, explain: "Kırmızı kemik iliği (medulla ossium rubra) erişkinde özellikle omurga, sternum ve ilium'da aktiftir." },
+      { q: "Wolff Yasası neyi açıklar?", opts: ["Kasların antagonist çalışmasını","Kemiğin mekanik yüke göre yeniden yapılanmasını","Eklem aralığının azalmasını","Tendonların elastikiyetini"], correct: 1, explain: "Julius Wolff (1892): kemik, üzerine uygulanan mekanik streslere göre yapısını ve yoğunluğunu değiştirir. Egzersizle kemik yoğunluğu artar." }
+    ],
+    produceTasks: [
+      { type: "Diyagram", title: "Antagonist Kas Çifti Şeması", desc: "Biceps-triceps antagonizmasını adım adım açıklayan bir metin diyagramı çiz." },
+      { type: "Vaka Analizi", title: "Osteoporoz Vakası", desc: "60 yaşında bir kadın hastanın kemik yoğunluğu verileri üzerinden risk analizi yap." },
+      { type: "Karşılaştırma", title: "İbn Sînâ vs Modern Tıp", desc: "Kas teorisi açısından klasik ve modern yaklaşımı kıyasla, sentez yap." },
+      { type: "Öğretme", title: "Lise Öğrencisine Anlat", desc: "İskelet sisteminin işlevlerini 15 yaşındaki birine sade dille anlatan bir metin yaz." }
+    ]
+  },
+  {
+    id: 1,
+    name: "Dolaşım Sistemi",
+    icon: "❤️",
+    subtitle: "Systema Cardiovasculare",
+    intro: `Kalp, günde yaklaşık 100.000 kez atar ve yaşam boyu 2.5 milyar kez çalışır. Pompaladığı kan, 96.000 km'lik damar ağında dolaşır. Dolaşım iki büyük devre halinde çalışır: akciğerlere giden pulmoner (küçük) devre ve vücuda giden sistemik (büyük) devre.`,
+    body: `Kan dört bileşenden oluşur: eritrositler (O₂ taşır), lökositler (bağışıklık), trombositler (pıhtılaşma) ve plazma (taşıyıcı ortam). Kalp dört odacıklıdır; iki atrium (kulakçık) ve iki ventrikül (karıncık). Sol ventrikül, sağdan daha kasın çünkü tüm vücuda pompalama yapar. Frank-Starling yasası: kalp, ne kadar dolarsa o kadar güçlü pumalar.`,
+    classical: `Harvey'den (1628) önce Galenik sistem hükmediyordu: kan karaciğerde üretilir, venöz ve arteriyel sistem ayrıydı. İbn Nefis (13. yy) küçük dolaşımı Harvey'den 300 yıl önce tanımladı: "kan sağ kalp boşluğundan akciğerlere, oradan sol kalbe geçer." Bu keşif Batı'da uzun süre gözardı edildi.`,
+    writePrompt: "Kanın vücutta nasıl dolaştığını, kalbin nasıl çalıştığını, ve büyük ile küçük dolaşım arasındaki farkı kendi kelimelerinle açıkla.",
+    compare: {
+      modern: [
+        { title: "Harvey'nin Devrimi (1628)", body: "Kanın dairesel dolaşımını deneysel olarak kanıtladı; Galenik modeli çürüttü." },
+        { title: "Frank-Starling Yasası", body: "Ventrikül, diastolde ne kadar dolarsa (preload) o kadar güçlü kasılır." },
+        { title: "Elektriksel İletim", body: "SA düğümü → AV düğümü → His demeti → Purkinje lifleri. EKG bu yolağı görüntüler." }
+      ],
+      classic: [
+        { title: "Galenik Pnöma Teorisi", body: "Kan karaciğerde üretilip tüketilir, geri dönmez. Ruh (pneuma) kalpte ısınır." },
+        { title: "İbn Nefis'in Tespiti", body: "1242'de: kan sağ kalpten akciğer yoluyla sol kalbe geçer — modern pulmoner devreye eşdeğer." },
+        { title: "Dört Hılt ve Kalp", body: "Kalp sıcak-nemli mizacın merkezi; safra hakimiyetinde ateş, balgamda soğuma hastalık getirir." }
+      ]
+    },
+    quizzes: [
+      { q: "İbn Nefis, pulmoner dolaşımı Harvey'den kaç yıl önce tanımladı?", opts: ["50 yıl","100 yıl","300 yıl","500 yıl"], correct: 2, explain: "İbn Nefis 1242'de, Harvey ise 1628'de pulmoner dolaşımı tanımladı: yaklaşık 386 yıl fark." },
+      { q: "SA düğümü (sinoatriyal) ne işlev görür?", opts: ["Kapak açıp kapar","Kalbin elektrik ritmini başlatır","Kan volümünü ölçer","Oksijen taşır"], correct: 1, explain: "SA düğümü 'doğal kalp pili'dir; her atımı başlatan elektrik sinyalini üretir. Sağ atriumun duvarında bulunur." },
+      { q: "Sol ventrikül sağdan daha kalın duvarlıdır çünkü:", opts: ["Daha az kan pompalar","Tüm vücuda kan pompalar","Akciğerlere daha yakındır","İki kapağı vardır"], correct: 1, explain: "Sol ventrikül sistemik dolaşıma (tüm vücut) kan pompalar; bu yüksek dirence karşı çalışmak için daha güçlü kas gerektirir." },
+      { q: "Frank-Starling yasasına göre kalp nasıl çalışır?", opts: ["Hızlı dolunca daha az pumalar","Ne kadar dolarsa o kadar güçlü pumalar","Oksijen düştükçe yavaşlar","Diyastolde kasılır"], correct: 1, explain: "Diastolde ventrikül ne kadar gerilirse (dolum artar), sarkomerlerin örtüşmesi optimal hale gelir ve kasılma gücü artar." }
+    ],
+    produceTasks: [
+      { type: "Zaman Çizelgesi", title: "Dolaşım Keşiflerinin Tarihi", desc: "İbn Nefis'ten günümüze kardiyolojinin kilometre taşlarını kronolojik olarak listele." },
+      { type: "Mekanizma", title: "Bir Atımı Anlat", desc: "Tek bir kalp atımını elektrik uyarısından kan çıkışına kadar adım adım anlat." },
+      { type: "Hastalık Analizi", title: "Hipertansiyon Patofizyolojisi", desc: "Yüksek tansiyon kalbi nasıl etkiler? Frank-Starling üzerinden açıkla." },
+      { type: "Klasik-Modern", title: "Harvey'i Savun", body: "Harvey'in Galenik sistemi nasıl çürüttüğünü argümanlarıyla anlat." }
+    ]
+  },
+  {
+    id: 2,
+    name: "Solunum Sistemi",
+    icon: "🫁",
+    subtitle: "Systema Respiratorium",
+    intro: `Akciğerler dakikada 12-20 nefes alır; her nefeste yaklaşık 500 mL hava (tidal volüm) girer. Toplam akciğer kapasitesi 6 litre civarındadır. Gaz alışverişi, yüzeyi yaklaşık 70 m² olan 300 milyon alveolde gerçekleşir — bu alan bir tenis kortu büyüklüğüne eşittir.`,
+    body: `Solunum iki fazdan oluşur: inspirasyon (aktif — diyafram kasılır, hacim artar, basınç düşer) ve ekspirasyon (pasif — diyafram gevşer). Oksijen hemoglobine bağlanarak kana geçer; CO₂ ise büyük ölçüde bikarbonat (HCO₃⁻) olarak taşınır. Solunum merkezi beyinsapındadır ve esas olarak CO₂ düzeyine duyarlıdır, oksijene değil.`,
+    classical: `Galen'e göre akciğerler "hayati ruh" (pneuma zootikon) üretir. Solunum, kalbin ısısını serinletmek için zorunludur. İbn Sînâ hava kalitesinin hastalıkla ilişkisini görmüş, miasma (kötü hava) teorisini geliştirmiştir — bu modern epidemiyolojinin bir öncülü sayılır.`,
+    writePrompt: "Solunum sırasında havanın burundan alveole ulaşana kadar geçtiği yolu ve alveolde ne olduğunu açıkla. Neden CO₂ düzeyi O₂'den daha önemli bir tetikleyicidir?",
+    compare: {
+      modern: [
+        { title: "Dalton Yasası", body: "Her gazın kısmi basıncı bağımsızdır. O₂ ve CO₂ bu basınç farklarıyla difüze olur." },
+        { title: "Sürfaktan", body: "Alveol yüzeyindeki fosfolipit tabaka yüzey gerilimini azaltır; olmasa akciğerler çöker." },
+        { title: "CO₂ Kontrolü", body: "Beyinsapındaki kemoreseptörler CO₂/pH'ı izler; O₂ düşüşü ancak kritik eşikte devreye girer." }
+      ],
+      classic: [
+        { title: "Galen: Serinletme Teorisi", body: "Solunum kalbi soğutur; nefes alınca sağ ventriküle serinlik taşınır." },
+        { title: "Pneuma Zootikon", body: "Akciğerlerde hava, 'hayati ruh'a dönüşür ve arterlerle taşınır." },
+        { title: "İbn Sînâ: Miasma", body: "Kirli hava (miasma) salgınlara yol açar. Hava kalitesi ve karantina ilk defa sistematik anlatılır." }
+      ]
+    },
+    quizzes: [
+      { q: "Alveollerin toplam yüzey alanı yaklaşık ne kadardır?", opts: ["5 m²","20 m²","70 m²","200 m²"], correct: 2, explain: "~300 milyon alveol, yaklaşık 70 m² gaz alışverişi yüzeyi sağlar — bu bir tenis kortuna eşittir." },
+      { q: "Solunum merkezini uyaran asıl uyaran nedir?", opts: ["Düşük O₂","Yüksek CO₂","Düşük hemoglobin","Yüksek pH"], correct: 1, explain: "Beyinsapındaki merkezi kemoreseptörler CO₂ artışına (ve buna bağlı pH düşüşüne) duyarlıdır; hipoksi ancak çok kritik düzeyde devreye girer." },
+      { q: "Sürfaktanın işlevi nedir?", opts: ["Oksijen taşımak","Alveol yüzey gerilimini azaltmak","CO₂'yi kana vermek","Bronşları genişletmek"], correct: 1, explain: "Sürfaktan (surfactant), tip II pnömositler tarafından salgılanan fosfolipit karışımıdır; alveollerin çökmesini önler. Prematüre bebeklerde eksikliği RDS'e yol açar." }
+    ],
+    produceTasks: [
+      { type: "Mekanizma", title: "Bir Nefesi İzle", desc: "Havadan O₂'nin eritrosit hemoglobinine bağlanmasına kadar tüm süreci yaz." },
+      { type: "Klinik Bağlantı", title: "KOAH Patofizyolojisi", desc: "Amfizem ve kronik bronşitin solunum mekaniğini nasıl bozduğunu anlat." },
+      { type: "Klasik Perspektif", title: "İbn Sînâ'nın Mirası", desc: "Miasma teorisi ile modern hava kalitesi epidemiyolojisini karşılaştır." },
+      { type: "Öğretme", title: "Neden Nefes Alıyoruz?", desc: "CO₂'nin neden O₂'den daha kritik olduğunu günlük dilde anlatan bir metin yaz." }
+    ]
+  },
+  {
+    id: 3,
+    name: "Sinir Sistemi",
+    icon: "🧠",
+    subtitle: "Systema Nervosum",
+    intro: `İnsan beyninde yaklaşık 86 milyar nöron bulunur; her biri ortalama 7.000 sinaptik bağlantı kurabilir. Toplam sinaps sayısı 100 trilyon (10¹⁴) civarındadır. Sinir iletisi 0.5 ile 120 m/s arasında değişir. Beyin vücudun enerji ihtiyacının %20'sini, vücut ağırlığının ise yalnızca %2'sini oluşturan metabolik bir organdır.`,
+    body: `Sinir sistemi merkezi (MSS: beyin + omurilik) ve çevresel (ÇSS) olarak ayrılır. Otonom sinir sistemi ise sempatik (kaç-ya da savaş) ve parasempatik (dinlen-sindir) dallardan oluşur. Nöronlar elektrik-kimyasal sinyal iletir: aksiyonda potansiyel → sinaptik yarık → nörotransmiter salınımı → postsinaptik etki.`,
+    classical: `Galen, beyin ventriküllerinin "hayvansal ruh" (pneuma psychikon) ürettiğini düşünürdü. Ruh, ventriküllerde işlenir ve sinirlerle organlara dağılırdı. İbn Sînâ beşe ayırdığı iç duyular (common sense, hayal, vehim, hafıza, mütehayyile) teorisini geliştirdi — bu, modern bilişsel psikolojinin erken öncülüdür.`,
+    writePrompt: "Bir nöronun başka bir nörona nasıl sinyal ilettiğini (sinaptik iletim), ve sempatik-parasempatik sistemin günlük hayatımızda nasıl çalıştığını açıkla.",
+    compare: {
+      modern: [
+        { title: "Nörotransmiterler", body: "Glutamat (uyarıcı), GABA (baskılayıcı), dopamin, serotonin — kimyasal iletimin araçları." },
+        { title: "Nöroplastisite", body: "Beyin kullanımla yapısal olarak değişir. Hebb Yasası: birlikte ateşlenen nöronlar bağlanır." },
+        { title: "Aksiyonda Potansiyel", body: "Na⁺/K⁺ kanallarının sıralı açılmasıyla -70mV'dan +40mV'a depolarizasyon." }
+      ],
+      classic: [
+        { title: "Ventriküler Ruh Teorisi", body: "Beyin ventrikülleri 'hayvansal ruh'u işler; ön ventrikül hayal, arka ise hafıza merkezidir." },
+        { title: "İbn Sînâ: İç Duyular", body: "5 iç duyudan oluşan bilişsel şema: ortak his, hayal, vehim, hafıza, mütehayyile." },
+        { title: "Galen: Sinir Anatomisi", body: "Motor ve duysal sinirleri ilk kez ayıran Galen'dir; 7 kranial siniri tanımlamıştır." }
+      ]
+    },
+    quizzes: [
+      { q: "Aksiyonda potansiyelde hücreye ilk giren iyon hangidir?", opts: ["K⁺","Ca²⁺","Na⁺","Cl⁻"], correct: 2, explain: "Depolarizasyon aşamasında voltaj kapılı Na⁺ kanalları açılır; hızlı Na⁺ girişiyle membran potansiyeli -70'den +40 mV'a yükselir." },
+      { q: "Parasempatik sistemin ana nöromediyatörü nedir?", opts: ["Noradrenalin","Asetilkolin","Dopamin","Serotonin"], correct: 1, explain: "Parasempatik sistem (rest-and-digest) asetilkolin kullanır. Sempatik sistem ise efektör organlarda noradrenalin salgılar." },
+      { q: "İbn Sînâ'nın 'vehim' (estimative) duyusu hangi modern kavramla örtüşür?", opts: ["Duyusal hafıza","Sezgisel değerlendirme","Motor planlama","Görsel algı"], correct: 1, explain: "Vehim (wahm), duyusal olmayan nitelikleri (tehlike, arkadaşlık) değerlendirir — modern amygdala tabanlı duygusal değerlendirmeyle örtüşür." },
+      { q: "Beyin vücudun enerji ihtiyacının ne kadarını tüketir?", opts: ["Yaklaşık %2","Yaklaşık %10","Yaklaşık %20","Yaklaşık %40"], correct: 2, explain: "Beyin vücut ağırlığının %2'si olmasına rağmen enerji ihtiyacının %20'sini (400 kcal/gün) tüketir — bu yoğun metabolik aktivitenin göstergesidir." }
+    ],
+    produceTasks: [
+      { type: "Mekanizma", title: "Sinaptik İletim Haritası", desc: "Aksiyon potansiyelinden postsinaptik etkiye kadar tüm adımları sırala." },
+      { type: "Karşılaştırma", title: "Sempatik vs Parasempatik", desc: "Her iki sistemin kalp, akciğer, sindirim ve göz üzerindeki etkilerini tablo şeklinde yaz." },
+      { type: "Klasik-Modern", title: "Ventriküler Ruh → Nörotransmiter", body: "Galen'in ventriküler ruh teorisinden modern nörotransmiter anlayışına geçişi anlat." },
+      { type: "Klinik", title: "Parkinson'un Biyokimyası", desc: "Dopamin eksikliğinin bazal ganglion devresini nasıl etkilediğini açıkla." }
+    ]
+  },
+  {
+    id: 4,
+    name: "Hücre ve Doku",
+    icon: "🔬",
+    subtitle: "Cytologia et Histologia",
+    intro: `İnsan vücudu yaklaşık 37.2 trilyon hücreden oluşur. Her hücre dakikada 100.000'den fazla kimyasal reaksiyon gerçekleştirir. Hücreler 4 temel doku tipini oluşturur: epitel (örtü, salgı), bağ dokusu (destek, beslenme), kas dokusu (hareket) ve sinir dokusu (iletim). Bu hiyerarşi: hücre → doku → organ → sistem → organizma.`,
+    body: `Hücre zarı seçici geçirgen fosfolipit çift tabakalıdır. Mitokondri ATP üretir (hücrenin güç santrali). Çekirdek DNA'yı barındırır ve gen ifadesini yönetir. Ribozomlar protein sentezler. Lizozomlar hücre içi sindirim yapar. Hücre döngüsü: G1 → S (DNA replikasyonu) → G2 → Mitoz → Sitokinesis.`,
+    classical: `Antik çağda dokular "benzer parçalar" (homoiomere) olarak adlandırıldı (Aristoteles). Galen dört temel dokuyu (kan, kemik, sinir, et) hılt teorisiyle ilişkilendirdi. Mikroskobun icadına (1590) kadar hücre kavramı yoktu. Robert Hooke 1665'te mantar hücrelerini tanımladı; Virchow 1858'de "Omnis cellula e cellula" (Her hücre hücreden gelir) dedi.`,
+    writePrompt: "Hücrenin temel organellerini ve işlevlerini açıkla. Dört doku tipini ve vücuttaki rollerini anlat. Hücre neden bağımsız bir organizma gibi düşünülebilir?",
+    compare: {
+      modern: [
+        { title: "Hücre Teorisi (1839)", body: "Schleiden & Schwann: tüm canlılar hücrelerden oluşur. Virchow: hücre hücreden gelir." },
+        { title: "DNA Merkezi Dogma", body: "DNA → RNA → Protein. Genetik bilginin akış yönü evrensel kabul görür." },
+        { title: "Apoptoz", body: "Programlı hücre ölümü; gelişim için şart. Kanser apoptoz kaçağıdır." }
+      ],
+      classic: [
+        { title: "Aristoteles: Homoiomere", body: "Benzer parçalar teorisi: kan, kemik, et gibi tekdüze parçalar dokunun temelidir." },
+        { title: "Galen: Dört Doku + Hılt", body: "Her doku bir hılta karşılık gelir. Kan-kan dokusu, balgam-sinir dokusu vb." },
+        { title: "Hooke'un Hücresi (1665)", body: "Mantar kesitinde boşlukları 'cellula' (küçük oda) diye adlandırdı; canlı içerik görmedi." }
+      ]
+    },
+    quizzes: [
+      { q: "Virchow'un 'Omnis cellula e cellula' ilkesi ne anlama gelir?", opts: ["Hücre su içerir","Her hücre başka bir hücreden gelir","Hücreler oksijen üretir","Doku hücreden büyüktür"], correct: 1, explain: "Rudolf Virchow (1858): her hücre, önceden var olan bir hücreden bölünme ile oluşur. Bu ilke spontan üreme teorisini çürütmüştür." },
+      { q: "Hücrenin 'güç santrali' olarak adlandırılan organeli hangisidir?", opts: ["Ribozom","Çekirdek","Mitokondri","Lizozom"], correct: 2, explain: "Mitokondri, oksidatif fosforilasyon ile ATP sentezler. Kendi DNA'sı ve çift zarı olan bu organel, endosimbiyotik teoriye göre özgür yaşayan bir bakteriden evrimleşmiştir." },
+      { q: "DNA'dan proteine giden bilgi akışında doğru sıra hangisidir?", opts: ["Protein → RNA → DNA","RNA → DNA → Protein","DNA → RNA → Protein","DNA → Protein → RNA"], correct: 2, explain: "Merkezi Dogma (Crick, 1958): DNA transkripsiyon ile mRNA'ya, mRNA translasyon ile proteine dönüşür. Reverse transkriptazlar istisnayı oluşturur." },
+      { q: "Epitel dokusunun temel işlevi nedir?", opts: ["Güç ve destek","Sinyal iletimi","Örtme ve salgılama","Kasılma ve gevşeme"], correct: 2, explain: "Epitel doku vücut yüzeylerini örter, bezleri oluşturur ve salgı yapar. Ayrıca emilim ve bariyer işlevi görür." }
+    ],
+    produceTasks: [
+      { type: "Analoji", title: "Hücre = Şehir", desc: "Her organeli bir şehir kurumuna (belediye, elektrik santrali, fabrika...) benzeterek açıkla." },
+      { type: "Tarihsel", title: "Hücre Teorisinin Evrimi", desc: "Aristoteles'ten Virchow'a hücre anlayışının nasıl değiştiğini anlatan bir kronoloji yaz." },
+      { type: "Klinik", title: "Kanser = Apoptoz Kaçağı", desc: "Tümör hücrelerinin neden ölmediğini, apoptoz mekanizması üzerinden açıkla." },
+      { type: "Sentez", title: "Dört Doku - Bir Organ", desc: "Midede dört doku tipinin nasıl bir arada çalıştığını açıkla." }
+    ]
+  }
+];
+
+let state = {
+  currentTopic: 0,
+  currentPhase: 0,
+  xp: 0,
+  activities: 0,
+  quizIdx: 0,
+  quizCorrect: 0,
+  quizTotal: 0,
+  quizAnswered: false,
+  completedTopics: new Set(),
+  phasesCompleted: {}
+};
+
+function init() {
+  renderRead();
+  renderCompare();
+  renderProduce();
+  loadNextQuiz();
+  updateProgress();
+}
+
+function setTopic(idx, el) {
+  state.currentTopic = idx;
+  state.currentPhase = 0;
+  state.quizIdx = 0;
+  state.quizAnswered = false;
+  document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('currentTopicLabel').textContent = TOPICS[idx].name;
+  renderRead();
+  renderCompare();
+  renderProduce();
+  loadNextQuiz();
+  setPhase(0);
+  const wp = document.getElementById('writePromptText');
+  if(wp) wp.textContent = TOPICS[idx].writePrompt;
+  document.getElementById('writeArea').value = '';
+  document.getElementById('writeResponse').style.display = 'none';
+}
+
+function setPhase(idx) {
+  state.currentPhase = idx;
+  document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  document.querySelectorAll('.phase-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.phase-pill').forEach((t,i) => t.classList.toggle('active', i===idx));
+  const labels = ['Oku','Yaz','Karşılaştır','Sorgula','Üret'];
+  document.getElementById('currentPhaseLabel').textContent = labels[idx];
+  updateCycleStatus();
+}
+
+function renderRead() {
+  const t = TOPICS[state.currentTopic];
+  document.getElementById('readContent').innerHTML = `
+    <h2>${t.name}</h2>
+    <p class="subtitle">${t.subtitle}</p>
+    <span class="tag tag-blue">Giriş</span>
+    <span class="tag tag-green">Temel Bilgi</span>
+    <span class="tag tag-gold">Klasik Tıp</span>
+    <br><br>
+    <p>${t.intro}</p>
+    <div class="highlight-box">"Her büyük anatomi, kendi içinde bir felsefedir."</div>
+    <p>${t.body}</p>
+    <hr class="section-divider">
+    <div class="classical-box">
+      <div class="classical-label">⚗️ Klasik Tıp Perspektifi</div>
+      <p>${t.classical}</p>
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-primary" onclick="completeRead()">Okudum, Yaz Fazına Geç →</button>
+    </div>
+  `;
+  const wp = document.getElementById('writePromptText');
+  if(wp) wp.textContent = t.writePrompt;
+}
+
+function completeRead() {
+  addXP(10);
+  state.activities++;
+  document.getElementById('activityCount').textContent = state.activities;
+  setPhase(1);
+}
+
+function renderCompare() {
+  const t = TOPICS[state.currentTopic];
+  const c = t.compare;
+  let html = `<div class="compare-grid">
+    <div class="compare-col modern">
+      <h3>Modern Tıp Perspektifi</h3>
+      ${c.modern.map(i=>`<div class="compare-item"><div class="item-title">${i.title}</div><div class="item-body">${i.body}</div></div>`).join('')}
+    </div>
+    <div class="compare-col classic">
+      <h3>Klasik Tıp Perspektifi</h3>
+      ${c.classic.map(i=>`<div class="compare-item"><div class="item-title">${i.title}</div><div class="item-body">${i.body}</div></div>`).join('')}
+    </div>
+  </div>
+  <div style="margin-top:16px">
+    <button class="btn btn-primary" onclick="completeCompare()">Karşılaştırmayı Anladım ✓</button>
+  </div>`;
+  document.getElementById('compareContent').innerHTML = html;
+}
+
+function completeCompare() {
+  addXP(15);
+  state.activities++;
+  document.getElementById('activityCount').textContent = state.activities;
+  setPhase(3);
+}
+
+function renderProduce() {
+  const t = TOPICS[state.currentTopic];
+  const html = t.produceTasks.map((task,i)=>`
+    <div class="task-card" onclick="selectProduceTask(${i})">
+      <div class="task-type">${task.type}</div>
+      <div class="task-title">${task.title}</div>
+      <div class="task-desc">${task.desc}</div>
+    </div>
+  `).join('');
+  document.getElementById('produceTasks').innerHTML = html;
+  document.getElementById('produceTaskArea').style.display = 'none';
+}
+
+function selectProduceTask(idx) {
+  const t = TOPICS[state.currentTopic];
+  const task = t.produceTasks[idx];
+  document.getElementById('produceTaskArea').style.display = 'block';
+  document.getElementById('produceTaskPrompt').innerHTML = `
+    <div class="prompt-label">${task.type} Görevi</div>
+    <div class="prompt-text">${task.title}: ${task.desc}</div>
+  `;
+  document.getElementById('produceArea').value = '';
+  document.getElementById('produceResponse').style.display = 'none';
+  document.getElementById('produceArea').focus();
+}
+
+function loadNextQuiz() {
+  const t = TOPICS[state.currentTopic];
+  const quizzes = t.quizzes;
+  if(!quizzes || quizzes.length === 0) return;
+  const quiz = quizzes[state.quizIdx % quizzes.length];
+  state.quizAnswered = false;
+  document.getElementById('quizContent').innerHTML = `
+    <div class="quiz-q">${quiz.q}</div>
+    <div class="quiz-options">
+      ${quiz.opts.map((o,i)=>`<div class="quiz-opt" onclick="answerQuiz(${i},${quiz.correct},'${quiz.explain.replace(/'/g,"\\'")}')">
+        ${String.fromCharCode(65+i)}. ${o}
+      </div>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+  `;
+  document.getElementById('quizScore').textContent = `Soru ${(state.quizIdx%quizzes.length)+1}/${quizzes.length} · Doğru: ${state.quizCorrect}`;
+}
+
+function answerQuiz(chosen, correct, explain) {
+  if(state.quizAnswered) return;
+  state.quizAnswered = true;
+  state.quizTotal++;
+  document.getElementById('correctVal').textContent = `${state.quizCorrect}/${state.quizTotal}`;
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((o,i) => {
+    o.classList.add('answered');
+    if(i === correct) o.classList.add('correct');
+    else if(i === chosen) o.classList.add('wrong');
+  });
+  const fb = document.getElementById('quizFeedback');
+  fb.style.display = 'block';
+  fb.innerHTML = (chosen===correct ? '✅ Doğru! ' : '❌ Yanlış. ') + explain;
+  if(chosen === correct) {
+    state.quizCorrect++;
+    addXP(20);
+    state.activities++;
+    document.getElementById('activityCount').textContent = state.activities;
+  }
+  state.quizIdx++;
+  updateProgress();
+}
+
+async function submitWrite() {
+  const text = document.getElementById('writeArea').value.trim();
+  if(!text) { alert('Önce bir şeyler yaz!'); return; }
+  const btn = document.getElementById('writeSubmitBtn');
+  btn.disabled = true;
+  document.getElementById('writeLoader').style.display = 'inline-flex';
+  document.getElementById('writeResponse').style.display = 'none';
+  const t = TOPICS[state.currentTopic];
+  const prompt = `Sen, İnsan Anatomisi ve klasik tıp tarihi konusunda uzman bir Türkçe öğretmensin. Öğrenci "${t.name}" konusunu okudu ve şunu yazdı:
+
+"${text}"
+
+Yazma görevi şuydu: "${t.writePrompt}"
+
+Şunu yap:
+1. Öğrencinin anladığı doğru noktaları tebrik et (1-2 cümle)
+2. Eksik veya yanlış olan kavramları kibarca düzelt (somut olarak)
+3. Öğrencinin henüz değinmediği önemli bir noktayı açıkla
+4. Sonunda tek bir soru sor — konuyu daha derin düşünmesini sağlayacak
+
+Yanıtın 150-200 kelime, samimi ve teşvik edici olsun. Türkçe yaz.`;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const d = await r.json();
+    const txt = d.content?.map(c=>c.text||'').join('') || 'Yanıt alınamadı.';
+    document.getElementById('writeResponseText').textContent = txt;
+    document.getElementById('writeResponse').style.display = 'block';
+    addXP(25);
+    state.activities++;
+    document.getElementById('activityCount').textContent = state.activities;
+    updateProgress();
+  } catch(e) {
+    document.getElementById('writeResponseText').textContent = 'Bağlantı hatası. Lütfen tekrar dene.';
+    document.getElementById('writeResponse').style.display = 'block';
+  }
+  btn.disabled = false;
+  document.getElementById('writeLoader').style.display = 'none';
+}
+
+async function submitProduce() {
+  const text = document.getElementById('produceArea').value.trim();
+  if(!text) { alert('Önce üretimini yaz!'); return; }
+  document.getElementById('produceLoader').style.display = 'inline-flex';
+  document.getElementById('produceResponse').style.display = 'none';
+  const t = TOPICS[state.currentTopic];
+  const taskEl = document.getElementById('produceTaskPrompt');
+  const taskTitle = taskEl ? taskEl.querySelector('.prompt-text')?.textContent : '';
+  const prompt = `Sen bir anatomi öğretmenidir. Öğrenci şu görevi aldı: "${taskTitle}" (Konu: ${t.name}). Öğrencinin üretimi:
+
+"${text}"
+
+Değerlendirme yap (Türkçe, 150-200 kelime):
+1. Güçlü yönleri say
+2. Geliştirilebilecek alan varsa belirt
+3. Klasik tıp perspektifinden bir bağlantı kur
+4. Bir sonraki adım için tavsiye ver`;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const d = await r.json();
+    const txt = d.content?.map(c=>c.text||'').join('') || 'Yanıt alınamadı.';
+    document.getElementById('produceResponseText').textContent = txt;
+    document.getElementById('produceResponse').style.display = 'block';
+    addXP(30);
+    state.activities++;
+    document.getElementById('activityCount').textContent = state.activities;
+    updateProgress();
+  } catch(e) {
+    document.getElementById('produceResponseText').textContent = 'Bağlantı hatası.';
+    document.getElementById('produceResponse').style.display = 'block';
+  }
+  document.getElementById('produceLoader').style.display = 'none';
+}
+
+function addXP(amt) {
+  state.xp += amt;
+  const flash = document.createElement('div');
+  flash.className = 'xp-flash';
+  flash.textContent = `+${amt} XP`;
+  document.body.appendChild(flash);
+  setTimeout(() => flash.remove(), 2500);
+  updateProgress();
+}
+
+function updateProgress() {
+  const maxXP = 500;
+  const xpPct = Math.min(100, Math.round(state.xp / maxXP * 100));
+  document.getElementById('xpVal').textContent = state.xp + ' XP';
+  document.getElementById('xpBar').style.width = xpPct + '%';
+  const correctPct = state.quizTotal > 0 ? Math.round(state.quizCorrect/state.quizTotal*100) : 0;
+  document.getElementById('correctBar').style.width = correctPct + '%';
+  document.getElementById('correctVal').textContent = `${state.quizCorrect}/${state.quizTotal}`;
+  const totalPct = Math.min(100, Math.round(state.activities / 20 * 100));
+  document.getElementById('totalPct').textContent = totalPct + '%';
+  document.getElementById('totalBar').style.width = totalPct + '%';
+}
+
+function updateCycleStatus() {
+  const labels = ['Oku','Yaz','Karşılaştır','Sorgula','Üret'];
+  let html = '';
+  labels.forEach((l,i) => {
+    const status = i < state.currentPhase ? '✅' : i === state.currentPhase ? '✓ aktif' : '— bekliyor';
+    html += `Faz ${i+1}: ${l} ${status}<br>`;
+  });
+  document.getElementById('cycleStatus').innerHTML = html;
+}
+
+function clearWrite() {
+  document.getElementById('writeArea').value = '';
+  document.getElementById('writeResponse').style.display = 'none';
+}
+
+init();
+</script>
+
+</body>
+</html>

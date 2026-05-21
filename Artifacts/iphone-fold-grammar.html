@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Grammar Reader</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f13;
+    --surface: #16181f;
+    --border: #2a2d38;
+    --text: #d4cfc7;
+    --muted: #6b6d7a;
+
+    --noun: #5ba4cf;
+    --noun-bg: rgba(91,164,207,0.12);
+    --verb: #7ec88a;
+    --verb-bg: rgba(126,200,138,0.12);
+    --adj: #e8a44a;
+    --adj-bg: rgba(232,164,74,0.12);
+    --adv: #c47ece;
+    --adv-bg: rgba(196,126,206,0.12);
+    --prep: #e06c75;
+    --prep-bg: rgba(224,108,117,0.12);
+    --conj: #56b6c2;
+    --conj-bg: rgba(86,182,194,0.12);
+    --art: #abb2bf;
+    --art-bg: rgba(171,178,191,0.08);
+    --pron: #d19a66;
+    --pron-bg: rgba(209,154,102,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  header {
+    grid-column: 1 / -1;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  header p {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    grid-column: 1 / -1;
+    margin-bottom: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.2s;
+    user-select: none;
+    color: var(--text);
+  }
+
+  .legend-item:hover { border-color: var(--muted); }
+  .legend-item.active { opacity: 0.4; }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ARTICLE */
+  .article {
+    line-height: 1.95;
+    font-size: 1.05rem;
+  }
+
+  .article h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #f0ebe3;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .meta {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 28px;
+    letter-spacing: 0.05em;
+  }
+
+  .article p {
+    margin-bottom: 22px;
+  }
+
+  .article h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: #e8e0d0;
+    margin: 32px 0 14px;
+    font-weight: 700;
+  }
+
+  .bullets {
+    margin: 0 0 22px 0;
+    padding-left: 20px;
+  }
+
+  .bullets li {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+  }
+
+  .blockquote {
+    border-left: 3px solid var(--border);
+    padding: 12px 20px;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.92rem;
+    margin: 20px 0;
+  }
+
+  /* WORD HIGHLIGHTS */
+  w {
+    display: inline;
+    border-radius: 3px;
+    padding: 1px 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  w.noun  { color: var(--noun); background: var(--noun-bg); }
+  w.verb  { color: var(--verb); background: var(--verb-bg); }
+  w.adj   { color: var(--adj);  background: var(--adj-bg);  }
+  w.adv   { color: var(--adv);  background: var(--adv-bg);  }
+  w.prep  { color: var(--prep); background: var(--prep-bg); }
+  w.conj  { color: var(--conj); background: var(--conj-bg); }
+  w.art   { color: var(--art);  background: var(--art-bg);  }
+  w.pron  { color: var(--pron); background: var(--pron-bg); }
+
+  w:hover { filter: brightness(1.3); }
+
+  /* hide class */
+  .hide-noun  w.noun  { background: transparent; color: var(--text); }
+  .hide-verb  w.verb  { background: transparent; color: var(--text); }
+  .hide-adj   w.adj   { background: transparent; color: var(--text); }
+  .hide-adv   w.adv   { background: transparent; color: var(--text); }
+  .hide-prep  w.prep  { background: transparent; color: var(--text); }
+  .hide-conj  w.conj  { background: transparent; color: var(--text); }
+  .hide-art   w.art   { background: transparent; color: var(--text); }
+  .hide-pron  w.pron  { background: transparent; color: var(--text); }
+
+  /* TOOLTIP POPUP */
+  .popup {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1e2030;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 24px;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
+  }
+
+  .popup.show {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .popup-word {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: #f0ebe3;
+    margin-bottom: 4px;
+  }
+
+  .popup-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 99px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .popup-tag.noun { background: var(--noun-bg); color: var(--noun); }
+  .popup-tag.verb { background: var(--verb-bg); color: var(--verb); }
+  .popup-tag.adj  { background: var(--adj-bg);  color: var(--adj);  }
+  .popup-tag.adv  { background: var(--adv-bg);  color: var(--adv);  }
+  .popup-tag.prep { background: var(--prep-bg); color: var(--prep); }
+  .popup-tag.conj { background: var(--conj-bg); color: var(--conj); }
+  .popup-tag.art  { background: var(--art-bg);  color: var(--art);  }
+  .popup-tag.pron { background: var(--pron-bg); color: var(--pron); }
+
+  .popup-def {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .popup-tr {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-style: italic;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    margin-top: 4px;
+  }
+
+  .popup-close {
+    position: absolute;
+    top: 12px; right: 14px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 4px;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position: sticky;
+    top: 24px;
+  }
+
+  .sidebar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .sidebar-card h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  .stat-row:last-child { border-bottom: none; }
+
+  .stat-label { display: flex; align-items: center; gap: 8px; }
+  .stat-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .grammar-tip {
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .grammar-tip strong {
+    color: #f0ebe3;
+    font-weight: 400;
+  }
+
+  .tip-section {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tip-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .tip-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.67rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 5px;
+  }
+
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <header>
+    <h1>English Grammar Reader</h1>
+    <p>Click any highlighted word to see its grammar role and Turkish translation.</p>
+  </header>
+
+  <!-- LEGEND / FILTERS -->
+  <div class="legend" id="legend">
+    <div class="legend-item" data-type="noun" onclick="toggleType(this,'noun')">
+      <span class="dot" style="background:#5ba4cf"></span> Noun (İsim)
+    </div>
+    <div class="legend-item" data-type="verb" onclick="toggleType(this,'verb')">
+      <span class="dot" style="background:#7ec88a"></span> Verb (Fiil)
+    </div>
+    <div class="legend-item" data-type="adj" onclick="toggleType(this,'adj')">
+      <span class="dot" style="background:#e8a44a"></span> Adjective (Sıfat)
+    </div>
+    <div class="legend-item" data-type="adv" onclick="toggleType(this,'adv')">
+      <span class="dot" style="background:#c47ece"></span> Adverb (Zarf)
+    </div>
+    <div class="legend-item" data-type="prep" onclick="toggleType(this,'prep')">
+      <span class="dot" style="background:#e06c75"></span> Preposition (Edat)
+    </div>
+    <div class="legend-item" data-type="conj" onclick="toggleType(this,'conj')">
+      <span class="dot" style="background:#56b6c2"></span> Conjunction (Bağlaç)
+    </div>
+    <div class="legend-item" data-type="art" onclick="toggleType(this,'art')">
+      <span class="dot" style="background:#abb2bf"></span> Article (Artikel)
+    </div>
+    <div class="legend-item" data-type="pron" onclick="toggleType(this,'pron')">
+      <span class="dot" style="background:#d19a66"></span> Pronoun (Zamir)
+    </div>
+  </div>
+
+  <!-- MAIN ARTICLE -->
+  <main class="article" id="article">
+
+    <h2>Apple iPhone Fold Trial Production Status Remains Unconfirmed</h2>
+    <div class="meta">Ender Öztürk &nbsp;·&nbsp; April 29, 2026</div>
+
+    <p>
+      <w class="adj">Recent</w> <w class="noun">reports</w> <w class="verb">suggesting</w> <w class="conj">that</w> <w class="art">the</w> <w class="adj">highly</w> <w class="verb">anticipated</w> <w class="noun">iPhone</w> <w class="noun">Fold</w> <w class="verb">had</w> <w class="verb">commenced</w> <w class="noun">trial</w> <w class="noun">production</w> <w class="prep">at</w> <w class="noun">Foxconn</w> <w class="verb">may</w> <w class="verb">be</w> <w class="adj">premature</w>, <w class="prep">as</w> <w class="noun">industry</w> <w class="noun">insiders</w> <w class="adv">now</w> <w class="verb">indicate</w> <w class="conj">that</w> <w class="noun">Apple</w> <w class="verb">has</w> <w class="adv">yet</w> <w class="prep">to</w> <w class="verb">begin</w> <w class="adj">actual</w> <w class="noun">prototype</w> <w class="noun">manufacturing</w>. <w class="conj">While</w> <w class="adj">earlier</w> <w class="noun">speculation</w> <w class="verb">hinted</w> <w class="prep">at</w> <w class="adj">significant</w> <w class="noun">progress</w>, <w class="verb">including</w> <w class="art">the</w> <w class="adj">successful</w> <w class="noun">development</w> <w class="prep">of</w> <w class="art">a</w> <w class="adj">crease-free</w> <w class="noun">display</w>, <w class="adj">fresh</w> <w class="noun">updates</w> <w class="prep">from</w> <w class="noun">supply</w> <w class="noun">chain</w> <w class="noun">sources</w> <w class="verb">suggest</w> <w class="conj">that</w> <w class="art">the</w> <w class="noun">company</w> <w class="verb">is</w> <w class="adv">still</w> <w class="verb">refining</w> <w class="adj">critical</w> <w class="noun">design</w> <w class="noun">elements</w>. <w class="prep">As</w> <w class="prep">of</w> <w class="adj">mid-2026</w>, <w class="art">the</w> <w class="noun">absence</w> <w class="prep">of</w> <w class="noun">trial</w> <w class="noun">production</w> <w class="verb">indicates</w> <w class="conj">that</w> <w class="art">the</w> <w class="noun">device</w> <w class="verb">requires</w> <w class="adj">further</w> <w class="adj">technical</w> <w class="noun">adjustments</w> <w class="prep">before</w> <w class="pron">it</w> <w class="verb">can</w> <w class="verb">reach</w> <w class="noun">mass</w> <w class="noun">manufacturing</w> <w class="noun">stages</w>, <w class="verb">leaving</w> <w class="adj">potential</w> <w class="noun">customers</w> <w class="verb">waiting</w> <w class="prep">for</w> <w class="art">a</w> <w class="adj">clearer</w> <w class="noun">timeline</w> <w class="prep">regarding</w> <w class="art">the</w> <w class="noun">launch</w> <w class="prep">of</w> <w class="noun">Apple</w>'s <w class="adj">first</w> <w class="adj">foldable</w> <w class="noun">handset</w>.
+    </p>
+
+    <ul class="bullets">
+      <li><w class="adj">Current</w> <w class="noun">reports</w> <w class="verb">indicate</w> <w class="conj">that</w> <w class="noun">Apple</w> <w class="verb">has</w> <w class="adv">not</w> <w class="adv">yet</w> <w class="verb">initiated</w> <w class="art">the</w> <w class="noun">trial</w> <w class="noun">production</w> <w class="noun">phase</w> <w class="prep">for</w> <w class="art">the</w> <w class="noun">iPhone</w> <w class="noun">Fold</w>.</li>
+      <li><w class="art">The</w> <w class="noun">company</w> <w class="verb">continues</w> <w class="prep">to</w> <w class="verb">address</w> <w class="adj">complex</w> <w class="noun">challenges</w> <w class="verb">related</w> <w class="prep">to</w> <w class="noun">material</w> <w class="noun">selection</w> <w class="conj">and</w> <w class="noun">component</w> <w class="noun">pricing</w>.</li>
+      <li><w class="noun">Industry</w> <w class="noun">analysts</w> <w class="verb">project</w> <w class="conj">that</w> <w class="noun">mass</w> <w class="noun">production</w> <w class="prep">for</w> <w class="art">the</w> <w class="noun">device</w> <w class="conj">and</w> <w class="art">the</w> <w class="noun">iPhone</w> <w class="noun">18</w> <w class="verb">may</w> <w class="verb">commence</w> <w class="prep">in</w> <w class="noun">July</w>.</li>
+    </ul>
+
+    <h3>Technical Challenges Impede Development Progress</h3>
+
+    <p>
+      <w class="art">The</w> <w class="noun">transition</w> <w class="prep">from</w> <w class="noun">concept</w> <w class="prep">to</w> <w class="noun">manufacturing</w> <w class="verb">has</w> <w class="verb">proven</w> <w class="adj">difficult</w> <w class="prep">for</w> <w class="noun">Apple</w> <w class="prep">as</w> <w class="pron">it</w> <w class="verb">strives</w> <w class="prep">to</w> <w class="verb">maintain</w> <w class="pron">its</w> <w class="adj">high</w> <w class="noun">standards</w> <w class="prep">for</w> <w class="noun">hardware</w> <w class="noun">quality</w>. <w class="prep">Despite</w> <w class="noun">reports</w> <w class="conj">that</w> <w class="art">the</w> <w class="noun">engineering</w> <w class="noun">validation</w> <w class="noun">phase</w> <w class="verb">was</w> <w class="verb">underway</w>, <w class="noun">industry</w> <w class="noun">tipsters</w> <w class="verb">suggest</w> <w class="conj">that</w> <w class="art">the</w> <w class="noun">device</w> <w class="verb">is</w> <w class="adv">not</w> <w class="adj">quite</w> <w class="adj">ready</w> <w class="prep">for</w> <w class="art">the</w> <w class="noun">assembly</w> <w class="noun">line</w>. <w class="art">One</w> <w class="prep">of</w> <w class="art">the</w> <w class="adj">primary</w> <w class="noun">obstacles</w> <w class="verb">involves</w> <w class="art">the</w> <w class="noun">integration</w> <w class="prep">of</w> <w class="art">a</w> <w class="adj">specialized</w> <w class="adj">liquid</w> <w class="noun">metal</w> <w class="noun">hinge</w>, <w class="art">a</w> <w class="noun">component</w> <w class="verb">designed</w> <w class="prep">to</w> <w class="verb">eliminate</w> <w class="noun">screen</w> <w class="noun">creases</w> <w class="conj">but</w> <w class="pron">which</w> <w class="adv">currently</w> <w class="verb">presents</w> <w class="adj">significant</w> <w class="noun">manufacturing</w> <w class="noun">cost</w> <w class="conj">and</w> <w class="noun">scalability</w> <w class="noun">hurdles</w>.
+    </p>
+
+    <div class="blockquote">
+      The inability to finalize <w class="noun">material</w> <w class="noun">specifications</w> <w class="verb">remains</w> <w class="art">a</w> <w class="adj">significant</w> <w class="noun">bottleneck</w> <w class="prep">for</w> <w class="art">the</w> <w class="noun">iPhone</w> <w class="noun">Fold</w> <w class="noun">development</w> <w class="noun">team</w>.
+    </div>
+
+    <h3>Production Timelines Suggest Future Possibilities</h3>
+
+    <p>
+      <w class="conj">While</w> <w class="art">the</w> <w class="adj">current</w> <w class="noun">status</w> <w class="prep">of</w> <w class="art">the</w> <w class="noun">iPhone</w> <w class="noun">Fold</w> <w class="verb">remains</w> <w class="adj">uncertain</w>, <w class="noun">market</w> <w class="noun">observers</w> <w class="adv">still</w> <w class="verb">anticipate</w> <w class="art">a</w> <w class="adj">potential</w> <w class="noun">shift</w> <w class="prep">in</w> <w class="noun">momentum</w> <w class="prep">by</w> <w class="adj">mid-year</w>. <w class="noun">Predictions</w> <w class="prep">from</w> <w class="noun">industry</w> <w class="noun">analysts</w> <w class="verb">suggest</w> <w class="conj">that</w> <w class="conj">both</w> <w class="art">the</w> <w class="adj">foldable</w> <w class="noun">flagship</w> <w class="conj">and</w> <w class="art">the</w> <w class="adj">standard</w> <w class="noun">iPhone</w> <w class="noun">18</w> <w class="noun">lineup</w> <w class="verb">could</w> <w class="verb">enter</w> <w class="noun">mass</w> <w class="noun">production</w> <w class="prep">as</w> <w class="adv">early</w> <w class="prep">as</w> <w class="noun">July</w>. <w class="conj">If</w> <w class="pron">this</w> <w class="noun">timeline</w> <w class="verb">holds</w>, <w class="noun">Apple</w> <w class="verb">aims</w> <w class="prep">to</w> <w class="verb">produce</w> <w class="art">an</w> <w class="adj">initial</w> <w class="noun">inventory</w> <w class="prep">of</w> <w class="adj">11</w> <w class="noun">million</w> <w class="noun">units</w> <w class="prep">to</w> <w class="verb">satisfy</w> <w class="noun">consumer</w> <w class="noun">demand</w> <w class="prep">upon</w> <w class="noun">release</w>. <w class="conj">However</w>, <w class="verb">given</w> <w class="art">the</w> <w class="noun">secrecy</w> <w class="verb">surrounding</w> <w class="noun">Apple</w>'s <w class="noun">supply</w> <w class="noun">chain</w> <w class="noun">operations</w>, <w class="pron">these</w> <w class="noun">projections</w> <w class="verb">should</w> <w class="verb">be</w> <w class="verb">interpreted</w> <w class="prep">with</w> <w class="noun">caution</w>.
+    </p>
+
+    <div class="blockquote">
+      Apple <w class="verb">maintains</w> <w class="adj">strict</w> <w class="noun">control</w> <w class="prep">over</w> <w class="pron">its</w> <w class="noun">supply</w> <w class="noun">chain</w> <w class="noun">information</w> <w class="prep">to</w> <w class="verb">prevent</w> <w class="adj">premature</w> <w class="noun">leaks</w> <w class="verb">regarding</w> <w class="pron">its</w> <w class="adj">future</w> <w class="noun">product</w> <w class="noun">lineup</w>.
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sidebar-card">
+      <h4>Word Count by Type</h4>
+      <div class="stat-row">
+        <span class="stat-label"><span class="dot" style="background:#5ba4cf;width:8px;height:8px;border-radius:50%;display:inline-block"></span> Nouns</span>
+        <span class="stat-count" id="cnt-noun">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="dot" style="background:#7ec88a;width:8px;height:8px;border-radius:50%;display:inline-block"></span> Verbs</span>
+        <span class="stat-count" id="cnt-verb">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="dot" style="background:#e8a44a;width:8px;height:8px;border-radius:50%;display:inline-block"></span> Adjectives</span>
+        <span class="stat-count" id="cnt-adj">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="dot" style="background:#c47ece;width:8px;height:8px;border-radius:50%;display:inline-block"></span> Adverbs</span>
+        <span class="stat-count" id="cnt-adv">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="dot" style="background:#e06c75;width:8px;height:8px;border-radius:50%;display:inline-block"></span> Prepositions</span>
+        <span class="stat-count" id="cnt-prep">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="dot" style="background:#56b6c2;width:8px;height:8px;border-radius:50%;display:inline-block"></span> Conjunctions</span>
+        <span class="stat-count" id="cnt-conj">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="dot" style="background:#abb2bf;width:8px;height:8px;border-radius:50%;display:inline-block"></span> Articles</span>
+        <span class="stat-count" id="cnt-art">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="dot" style="background:#d19a66;width:8px;height:8px;border-radius:50%;display:inline-block"></span> Pronouns</span>
+        <span class="stat-count" id="cnt-pron">—</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <h4>Grammar Tips (Bu Makalede)</h4>
+
+      <div class="tip-section">
+        <div class="tip-label" style="color:#7ec88a">Present Perfect</div>
+        <div class="grammar-tip">
+          <strong>"has not yet initiated"</strong> → Subject + has/have + past participle.<br>
+          Geçmişten şimdiye uzanan eylem.
+        </div>
+      </div>
+
+      <div class="tip-section">
+        <div class="tip-label" style="color:#e8a44a">Modal Verbs</div>
+        <div class="grammar-tip">
+          <strong>"may be premature"</strong>, <strong>"could enter"</strong>, <strong>"should be interpreted"</strong><br>
+          Olasılık veya öneri bildiren yardımcı fiiller.
+        </div>
+      </div>
+
+      <div class="tip-section">
+        <div class="tip-label" style="color:#56b6c2">Subordinate Clauses</div>
+        <div class="grammar-tip">
+          <strong>"suggesting that…"</strong>, <strong>"while earlier speculation…"</strong><br>
+          <em>that / while / if / as</em> ile başlayan yan cümleler.
+        </div>
+      </div>
+
+      <div class="tip-section">
+        <div class="tip-label" style="color:#5ba4cf">Compound Nouns</div>
+        <div class="grammar-tip">
+          <strong>supply chain, trial production, mass manufacturing</strong><br>
+          İki ismin birleşmesiyle oluşan bileşik isimler.
+        </div>
+      </div>
+
+    </div>
+
+  </aside>
+
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <button class="popup-close" onclick="closePopup()">✕</button>
+  <div class="popup-word" id="popup-word"></div>
+  <span class="popup-tag" id="popup-tag"></span>
+  <div class="popup-def" id="popup-def"></div>
+  <div class="popup-tr" id="popup-tr"></div>
+</div>
+
+<script>
+const data = {
+  // NOUNS
+  "reports":{"tr":"raporlar","def":"Written or spoken accounts of something observed or investigated.","tag":"Noun"},
+  "production":{"tr":"üretim","def":"The process of manufacturing or creating goods.","tag":"Noun"},
+  "foxconn":{"tr":"Foxconn (şirket adı)","def":"A major Taiwanese electronics manufacturer that assembles Apple products.","tag":"Noun"},
+  "insiders":{"tr":"içeridekiler, sektör mensupları","def":"People with special knowledge or access within an organization or industry.","tag":"Noun"},
+  "apple":{"tr":"Apple (şirket)","def":"An American multinational technology company.","tag":"Noun"},
+  "prototype":{"tr":"prototip","def":"An early model of a product used for testing.","tag":"Noun"},
+  "manufacturing":{"tr":"üretim, imalat","def":"The large-scale production of goods in factories.","tag":"Noun"},
+  "speculation":{"tr":"spekülasyon, tahmin","def":"Forming a theory without firm evidence.","tag":"Noun"},
+  "progress":{"tr":"ilerleme","def":"Forward or onward movement toward a destination or goal.","tag":"Noun"},
+  "development":{"tr":"geliştirme, gelişme","def":"The process of growing or causing something to grow.","tag":"Noun"},
+  "display":{"tr":"ekran","def":"A screen for showing text or images.","tag":"Noun"},
+  "updates":{"tr":"güncellemeler, haberler","def":"New pieces of information about a recent event.","tag":"Noun"},
+  "company":{"tr":"şirket","def":"A commercial business organization.","tag":"Noun"},
+  "elements":{"tr":"unsurlar, öğeler","def":"Parts or components of something.","tag":"Noun"},
+  "absence":{"tr":"yokluk, eksiklik","def":"The state of not being present or existing.","tag":"Noun"},
+  "device":{"tr":"cihaz","def":"A piece of equipment made for a particular purpose.","tag":"Noun"},
+  "adjustments":{"tr":"ayarlamalar, düzenlemeler","def":"Small changes made to achieve the correct result.","tag":"Noun"},
+  "stages":{"tr":"aşamalar","def":"Phases in a process or development.","tag":"Noun"},
+  "customers":{"tr":"müşteriler","def":"People who buy goods or services.","tag":"Noun"},
+  "timeline":{"tr":"zaman çizelgesi","def":"A schedule of events in the order they will occur.","tag":"Noun"},
+  "launch":{"tr":"lansman, piyasaya çıkış","def":"The action of making a new product available to the public.","tag":"Noun"},
+  "handset":{"tr":"telefon cihazı","def":"A mobile phone device.","tag":"Noun"},
+  "phase":{"tr":"aşama","def":"A distinct period or stage in a process.","tag":"Noun"},
+  "selection":{"tr":"seçim","def":"The action of carefully choosing.","tag":"Noun"},
+  "pricing":{"tr":"fiyatlandırma","def":"The process of setting prices.","tag":"Noun"},
+  "analysts":{"tr":"analistler","def":"Experts who examine data and give assessments.","tag":"Noun"},
+  "transition":{"tr":"geçiş","def":"The process of changing from one state to another.","tag":"Noun"},
+  "concept":{"tr":"konsept, kavram","def":"An abstract idea or plan.","tag":"Noun"},
+  "standards":{"tr":"standartlar","def":"Levels of quality used as benchmarks.","tag":"Noun"},
+  "hardware":{"tr":"donanım","def":"Physical components of a computer or electronic device.","tag":"Noun"},
+  "quality":{"tr":"kalite","def":"The standard of something as measured against others.","tag":"Noun"},
+  "tipsters":{"tr":"ihbarcılar, kaynak kişiler","def":"People who give tips or advance information, often in the tech industry.","tag":"Noun"},
+  "line":{"tr":"hat, bant","def":"Here: 'assembly line' — a production system where workers/machines each do a step.","tag":"Noun"},
+  "obstacles":{"tr":"engeller","def":"Things that block progress or prevent achievement.","tag":"Noun"},
+  "integration":{"tr":"entegrasyon","def":"The combining of parts into a whole.","tag":"Noun"},
+  "metal":{"tr":"metal","def":"A hard material such as gold, steel, or iron.","tag":"Noun"},
+  "hinge":{"tr":"menteşe","def":"A movable joint on which a door or lid turns.","tag":"Noun"},
+  "component":{"tr":"bileşen, parça","def":"A part or element of a larger whole.","tag":"Noun"},
+  "creases":{"tr":"kırışıklar, kıvrımlar","def":"Lines or marks in a surface caused by folding.","tag":"Noun"},
+  "cost":{"tr":"maliyet","def":"The amount of money needed to buy or produce something.","tag":"Noun"},
+  "scalability":{"tr":"ölçeklenebilirlik","def":"The ability to increase in size or output as needed.","tag":"Noun"},
+  "hurdles":{"tr":"engeller, aşılması gereken zorluklar","def":"Obstacles or difficulties that must be overcome.","tag":"Noun"},
+  "specifications":{"tr":"özellikler, teknik şartname","def":"Detailed requirements or descriptions of something.","tag":"Noun"},
+  "bottleneck":{"tr":"darboğaz","def":"A point of congestion that slows down a process.","tag":"Noun"},
+  "team":{"tr":"ekip","def":"A group of people working together.","tag":"Noun"},
+  "status":{"tr":"durum","def":"The current state or condition of something.","tag":"Noun"},
+  "observers":{"tr":"gözlemciler","def":"People who watch and analyze events.","tag":"Noun"},
+  "shift":{"tr":"değişim, kayma","def":"A change or movement from one position to another.","tag":"Noun"},
+  "momentum":{"tr":"ivme, güç, hız","def":"The force or speed of an object or process.","tag":"Noun"},
+  "predictions":{"tr":"tahminler","def":"Statements about what will happen in the future.","tag":"Noun"},
+  "flagship":{"tr":"amiral gemisi ürünü, baş ürün","def":"The best or most important product in a range.","tag":"Noun"},
+  "lineup":{"tr":"ürün serisi, kadro","def":"A group of products or performers arranged together.","tag":"Noun"},
+  "inventory":{"tr":"stok, envanter","def":"A complete list or quantity of goods held in stock.","tag":"Noun"},
+  "units":{"tr":"birimler, adet","def":"Individual items in a quantity being counted.","tag":"Noun"},
+  "demand":{"tr":"talep","def":"Consumer desire for a product or service.","tag":"Noun"},
+  "release":{"tr":"piyasaya çıkış","def":"The action of making something available to the public.","tag":"Noun"},
+  "secrecy":{"tr":"gizlilik","def":"The practice of keeping things secret.","tag":"Noun"},
+  "operations":{"tr":"operasyonlar, faaliyetler","def":"The activities involved in running a business.","tag":"Noun"},
+  "projections":{"tr":"projeksiyonlar, tahminler","def":"Estimates of future figures based on current data.","tag":"Noun"},
+  "caution":{"tr":"dikkat, ihtiyat","def":"Care taken to avoid danger or mistakes.","tag":"Noun"},
+  "leaks":{"tr":"sızıntılar","def":"Unauthorized disclosures of confidential information.","tag":"Noun"},
+  "information":{"tr":"bilgi","def":"Facts provided or learned about something.","tag":"Noun"},
+  "control":{"tr":"kontrol","def":"The power to influence or direct something.","tag":"Noun"},
+
+  // VERBS
+  "suggesting":{"tr":"ima etmek, önermek","def":"Putting forward an idea for consideration.","tag":"Verb"},
+  "commenced":{"tr":"başlamak","def":"Began; started an activity.","tag":"Verb"},
+  "indicate":{"tr":"göstermek, belirtmek","def":"To point out or make known.","tag":"Verb"},
+  "begin":{"tr":"başlamak","def":"To start or initiate something.","tag":"Verb"},
+  "hinted":{"tr":"ima etmek","def":"Suggested indirectly without stating explicitly.","tag":"Verb"},
+  "suggest":{"tr":"önermek, ima etmek","def":"To put forward a possibility or recommendation.","tag":"Verb"},
+  "refining":{"tr":"rafine etmek, geliştirmek","def":"Improving or making small adjustments to something.","tag":"Verb"},
+  "indicates":{"tr":"belirtir, gösterir","def":"Points to or makes clear.","tag":"Verb"},
+  "requires":{"tr":"gerektirmek","def":"To need something as necessary.","tag":"Verb"},
+  "reach":{"tr":"ulaşmak","def":"To get to or arrive at a point or level.","tag":"Verb"},
+  "leaving":{"tr":"bırakmak","def":"Causing someone to remain in a particular state.","tag":"Verb"},
+  "waiting":{"tr":"beklemek","def":"Staying in one place until something happens.","tag":"Verb"},
+  "initiated":{"tr":"başlatmak","def":"Formally begun or set in motion.","tag":"Verb"},
+  "continues":{"tr":"devam etmek","def":"Keeps going without stopping.","tag":"Verb"},
+  "address":{"tr":"ele almak, üstlenmek","def":"To deal with or tackle a problem.","tag":"Verb"},
+  "related":{"tr":"ilgili","def":"Connected with something else.","tag":"Verb"},
+  "project":{"tr":"tahmin etmek, öngörmek","def":"To estimate future values or events.","tag":"Verb"},
+  "commence":{"tr":"başlamak","def":"To begin an activity or process.","tag":"Verb"},
+  "proven":{"tr":"kanıtlamak","def":"Demonstrated as true through evidence.","tag":"Verb"},
+  "strives":{"tr":"çabalamak","def":"Makes great efforts to achieve something.","tag":"Verb"},
+  "maintain":{"tr":"sürdürmek, korumak","def":"To keep at the same level or standard.","tag":"Verb"},
+  "underway":{"tr":"devam etmekte","def":"Currently happening or in progress.","tag":"Verb"},
+  "involves":{"tr":"içermek, kapsamak","def":"Includes or requires as a necessary part.","tag":"Verb"},
+  "designed":{"tr":"tasarlanmak","def":"Created for a specific purpose.","tag":"Verb"},
+  "eliminate":{"tr":"ortadan kaldırmak","def":"To completely remove or get rid of.","tag":"Verb"},
+  "presents":{"tr":"sunmak, ortaya çıkarmak","def":"Introduces or puts forward for consideration.","tag":"Verb"},
+  "remains":{"tr":"kalmak","def":"Continues to be in a certain state.","tag":"Verb"},
+  "anticipate":{"tr":"beklemek, ümit etmek","def":"To expect or predict something will happen.","tag":"Verb"},
+  "holds":{"tr":"geçerliliğini korumak","def":"Remains true or valid.","tag":"Verb"},
+  "aims":{"tr":"amaçlamak","def":"Has as an objective or goal.","tag":"Verb"},
+  "produce":{"tr":"üretmek","def":"To manufacture or create goods.","tag":"Verb"},
+  "satisfy":{"tr":"karşılamak, tatmin etmek","def":"To meet a need or requirement.","tag":"Verb"},
+  "given":{"tr":"göz önüne alındığında","def":"Taking into account or considering.","tag":"Verb"},
+  "surrounding":{"tr":"çevrelemek, kuşatmak","def":"Being all around something.","tag":"Verb"},
+  "interpreted":{"tr":"yorumlamak","def":"To explain or understand the meaning of something.","tag":"Verb"},
+  "maintains":{"tr":"korumak, sürdürmek","def":"Keeps in a particular state or condition.","tag":"Verb"},
+  "prevent":{"tr":"önlemek","def":"To stop something from happening.","tag":"Verb"},
+
+  // ADJECTIVES
+  "recent":{"tr":"son, güncel","def":"Having happened not long ago.","tag":"Adjective"},
+  "highly":{"tr":"son derece (güçlendirici)","def":"To a high degree; extremely.","tag":"Adjective"},
+  "anticipated":{"tr":"beklenen","def":"Expected or looked forward to.","tag":"Adjective"},
+  "premature":{"tr":"erken, vakitsiz","def":"Happening before the expected time.","tag":"Adjective"},
+  "earlier":{"tr":"önceki","def":"Happening before the present time.","tag":"Adjective"},
+  "significant":{"tr":"önemli","def":"Important or large enough to be worth noting.","tag":"Adjective"},
+  "successful":{"tr":"başarılı","def":"Accomplishing an aim or purpose.","tag":"Adjective"},
+  "crease-free":{"tr":"kırışıksız","def":"Without folds or lines in a surface.","tag":"Adjective"},
+  "fresh":{"tr":"taze, yeni","def":"New and not affected by previous events.","tag":"Adjective"},
+  "critical":{"tr":"kritik, önemli","def":"Of the greatest importance; essential.","tag":"Adjective"},
+  "actual":{"tr":"gerçek, fiili","def":"Existing in fact; real.","tag":"Adjective"},
+  "further":{"tr":"daha fazla, ek","def":"Additional or more advanced.","tag":"Adjective"},
+  "technical":{"tr":"teknik","def":"Relating to a particular subject or craft.","tag":"Adjective"},
+  "potential":{"tr":"potansiyel","def":"Having the capacity to develop into something.","tag":"Adjective"},
+  "clearer":{"tr":"daha net","def":"Easier to understand or see.","tag":"Adjective"},
+  "foldable":{"tr":"katlanabilir","def":"Able to be folded.","tag":"Adjective"},
+  "first":{"tr":"ilk","def":"Coming before all others in time or order.","tag":"Adjective"},
+  "current":{"tr":"mevcut, güncel","def":"Happening or existing now.","tag":"Adjective"},
+  "complex":{"tr":"karmaşık","def":"Made up of many different and connected parts.","tag":"Adjective"},
+  "difficult":{"tr":"zor","def":"Needing much effort or skill to do.","tag":"Adjective"},
+  "high":{"tr":"yüksek","def":"Of great extent or level.","tag":"Adjective"},
+  "primary":{"tr":"birincil, başlıca","def":"Of first importance; main.","tag":"Adjective"},
+  "specialized":{"tr":"özelleştirilmiş","def":"Designed for a specific purpose.","tag":"Adjective"},
+  "liquid":{"tr":"sıvı","def":"A fluid material; here describing a type of metal alloy.","tag":"Adjective"},
+  "uncertain":{"tr":"belirsiz","def":"Not known or definite.","tag":"Adjective"},
+  "standard":{"tr":"standart","def":"Used or accepted as normal; regular.","tag":"Adjective"},
+  "initial":{"tr":"başlangıç, ilk","def":"Relating to the beginning.","tag":"Adjective"},
+  "strict":{"tr":"sıkı, katı","def":"Demanding full compliance with rules.","tag":"Adjective"},
+  "future":{"tr":"gelecek","def":"At a later time; not yet happened.","tag":"Adjective"},
+
+  // ADVERBS
+  "now":{"tr":"şimdi","def":"At the present time.","tag":"Adverb"},
+  "yet":{"tr":"henüz, hâlâ","def":"Up until now; still.","tag":"Adverb"},
+  "still":{"tr":"hâlâ","def":"Continuing to the present time.","tag":"Adverb"},
+  "not":{"tr":"değil","def":"Used to negate a verb.","tag":"Adverb"},
+  "quite":{"tr":"oldukça, tam olarak","def":"To a certain extent; fairly.","tag":"Adverb"},
+  "currently":{"tr":"şu anda","def":"At the present time.","tag":"Adverb"},
+  "early":{"tr":"erken","def":"Before the expected time.","tag":"Adverb"},
+  "adv-still":{"tr":"hâlâ","def":"Up to this time and continuing.","tag":"Adverb"},
+
+  // PREPOSITIONS
+  "at":{"tr":"-da/-de, -a/-e","def":"Used to indicate location or a point in time.","tag":"Preposition"},
+  "as":{"tr":"gibi, -iken","def":"Used in comparisons or to introduce a clause.","tag":"Preposition"},
+  "from":{"tr":"-den/-dan","def":"Indicating origin or starting point.","tag":"Preposition"},
+  "of":{"tr":"-in/-ın (iyelik)","def":"Expressing a relationship of belonging.","tag":"Preposition"},
+  "in":{"tr":"-da/-de, içinde","def":"Indicating location or inclusion.","tag":"Preposition"},
+  "for":{"tr":"için","def":"Indicating purpose or benefit.","tag":"Preposition"},
+  "before":{"tr":"önce, -dan önce","def":"Earlier in time than something else.","tag":"Preposition"},
+  "regarding":{"tr":"ile ilgili olarak","def":"With respect to; concerning.","tag":"Preposition"},
+  "to":{"tr":"-a/-e (yön bildiren)","def":"Indicating direction or purpose (infinitive marker).","tag":"Preposition"},
+  "despite":{"tr":"rağmen","def":"Without being affected by; in spite of.","tag":"Preposition"},
+  "over":{"tr":"üzerinde, hakkında","def":"On the subject of; concerning.","tag":"Preposition"},
+  "upon":{"tr":"üzerinde, ile birlikte","def":"Immediately after or at the time of.","tag":"Preposition"},
+  "with":{"tr":"ile","def":"Accompanied by or having.","tag":"Preposition"},
+  "by":{"tr":"tarafından, -e kadar","def":"Indicating agency, manner, or deadline.","tag":"Preposition"},
+  "prep-as":{"tr":"-e kadar, -a kadar","def":"Used in 'as early as' to mark extent.","tag":"Preposition"},
+
+  // CONJUNCTIONS
+  "that":{"tr":"ki (bağlaç)","def":"Used to introduce a subordinate clause.","tag":"Conjunction"},
+  "while":{"tr":"iken, her ne kadar","def":"At the same time as; in contrast.","tag":"Conjunction"},
+  "including":{"tr":"dahil olmak üzere","def":"Containing as part of the whole.","tag":"Conjunction"},
+  "if":{"tr":"eğer","def":"Introducing a conditional clause.","tag":"Conjunction"},
+  "however":{"tr":"ancak, bununla birlikte","def":"Used to introduce a statement contrasting with a previous one.","tag":"Conjunction"},
+  "and":{"tr":"ve","def":"Used to connect words, clauses, or sentences.","tag":"Conjunction"},
+  "but":{"tr":"ama, fakat","def":"Used to introduce a phrase that contrasts with a previous one.","tag":"Conjunction"},
+  "both":{"tr":"her ikisi de","def":"Used to refer to two things together.","tag":"Conjunction"},
+
+  // ARTICLES
+  "the":{"tr":"the (belirli artikel)","def":"The definite article — refers to a specific noun already known.","tag":"Article"},
+  "a":{"tr":"bir (belirsiz artikel)","def":"The indefinite article — refers to a non-specific noun.","tag":"Article"},
+  "an":{"tr":"bir (sesli harften önce)","def":"The indefinite article used before a word starting with a vowel sound.","tag":"Article"},
+  "one":{"tr":"bir","def":"Used as an article or numeral referring to a single item.","tag":"Article"},
+
+  // PRONOUNS
+  "it":{"tr":"o (şey)","def":"Used to refer to a previously mentioned thing or idea.","tag":"Pronoun"},
+  "its":{"tr":"onun (iyelik)","def":"Possessive form of 'it'.","tag":"Pronoun"},
+  "which":{"tr":"ki o, hangi","def":"Used in relative clauses to refer to a thing.","tag":"Pronoun"},
+  "this":{"tr":"bu","def":"Refers to a specific thing nearby in context.","tag":"Pronoun"},
+  "these":{"tr":"bunlar","def":"Plural of 'this'; referring to nearby things.","tag":"Pronoun"},
+};
+
+function getInfo(word) {
+  const key = word.toLowerCase().replace(/[^a-z\-]/g,'');
+  return data[key] || {
+    tr: "(çeviri mevcut değil)",
+    def: "A word in this article.",
+    tag: "Word"
+  };
+}
+
+document.querySelectorAll('w').forEach(el => {
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    const word = el.textContent.trim();
+    const cls = el.className;
+    const info = getInfo(word);
+
+    document.getElementById('popup-word').textContent = word;
+    const tagEl = document.getElementById('popup-tag');
+    tagEl.textContent = info.tag;
+    tagEl.className = 'popup-tag ' + cls;
+    document.getElementById('popup-def').textContent = info.def;
+    document.getElementById('popup-tr').textContent = '🇹🇷 ' + info.tr;
+    document.getElementById('popup').classList.add('show');
+  });
+});
+
+document.addEventListener('click', () => closePopup());
+function closePopup() {
+  document.getElementById('popup').classList.remove('show');
+}
+
+function toggleType(btn, type) {
+  const article = document.getElementById('article');
+  const active = btn.classList.toggle('active');
+  article.classList.toggle('hide-' + type, active);
+}
+
+// Count words
+['noun','verb','adj','adv','prep','conj','art','pron'].forEach(t => {
+  const count = document.querySelectorAll('w.' + t).length;
+  const el = document.getElementById('cnt-' + t);
+  if (el) el.textContent = count;
+});
+</script>
+</body>
+</html>

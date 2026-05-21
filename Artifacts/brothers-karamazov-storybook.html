@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Brothers Karamazov – A Story Book</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:      #0D0A08;
+  --coal:     #161210;
+  --red:      #8B1A1A;
+  --crimson:  #C0392B;
+  --gold:     #C9A84C;
+  --amber:    #E8C56A;
+  --cream:    #F2E8D5;
+  --paper:    #EAD9BB;
+  --frost:    #C8D8E8;
+  --slate:    #6B7A8A;
+  --mist:     #9AA8B2;
+  --pine:     #2C4A3E;
+  --snow:     #EEF2F6;
+  --shadow:   rgba(0,0,0,0.7);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'EB Garamond', Georgia, serif;
+  background: var(--ink);
+  color: var(--cream);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ══ NOISE TEXTURE OVERLAY ══ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ══ COVER ══ */
+#cover {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 40px 20px;
+}
+
+.cover-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 20%, rgba(139,26,26,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(44,74,62,0.25) 0%, transparent 60%),
+    linear-gradient(180deg, #0A0806 0%, #110E0A 40%, #0D0A08 100%);
+}
+
+/* Animated candle flame */
+.candle-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  z-index: 0;
+}
+.flame {
+  width: 18px;
+  height: 32px;
+  background: radial-gradient(ellipse at 50% 80%, #fff 0%, #ffe066 30%, #ff9800 60%, transparent 100%);
+  border-radius: 50% 50% 40% 40%;
+  animation: flicker 1.8s ease-in-out infinite;
+  filter: blur(1px);
+  box-shadow: 0 0 18px 8px rgba(255,200,50,0.5), 0 0 40px 20px rgba(255,140,0,0.2);
+}
+@keyframes flicker {
+  0%,100% { transform: scaleX(1) scaleY(1) rotate(-1deg); opacity:1; }
+  25%      { transform: scaleX(0.9) scaleY(1.05) rotate(1deg); opacity:0.9; }
+  50%      { transform: scaleX(1.05) scaleY(0.95) rotate(-0.5deg); opacity:1; }
+  75%      { transform: scaleX(0.95) scaleY(1.08) rotate(1deg); opacity:0.95; }
+}
+.candle-body {
+  width: 14px;
+  height: 160px;
+  background: linear-gradient(180deg, #e8dcc8 0%, #c8b898 60%, #b8a888 100%);
+  border-radius: 2px 2px 0 0;
+}
+.candle-glow {
+  position: absolute;
+  bottom: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(ellipse, rgba(255,180,50,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.cover-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 680px;
+  width: 100%;
+}
+
+.cover-ornament-top {
+  font-size: 13px;
+  letter-spacing: 8px;
+  color: rgba(201,168,76,0.5);
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.cover-frame {
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 60px 50px 50px;
+  position: relative;
+  background: rgba(13,10,8,0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Corner ornaments */
+.cover-frame::before,
+.cover-frame::after {
+  font-size: 22px;
+  position: absolute;
+  color: rgba(201,168,76,0.4);
+  line-height: 1;
+}
+.cover-frame::before { content: '✦'; top: -12px; left: 50%; transform: translateX(-50%); }
+.cover-frame::after  { content: '✦'; bottom: -12px; left: 50%; transform: translateX(-50%); }
+
+.cover-label {
+  font-family: 'EB Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 6px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  opacity: 0.8;
+}
+
+.cover-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(38px, 7vw, 68px);
+  font-weight: 900;
+  line-height: 1.05;
+  color: var(--cream);
+  margin-bottom: 12px;
+  text-shadow: 0 2px 30px rgba(201,168,76,0.2);
+}
+.cover-title em {
+  display: block;
+  font-style: italic;
+  font-size: 0.55em;
+  color: var(--gold);
+  letter-spacing: 4px;
+  margin-bottom: 6px;
+}
+
+.cover-divider {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 24px auto;
+}
+
+.cover-author {
+  font-family: 'EB Garamond', serif;
+  font-size: 15px;
+  color: var(--mist);
+  letter-spacing: 2px;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+.cover-date {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: rgba(155,168,178,0.5);
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+
+.level-pill {
+  display: inline-block;
+  border: 1px solid rgba(139,26,26,0.6);
+  background: rgba(139,26,26,0.15);
+  color: rgba(232,197,106,0.85);
+  font-family: 'EB Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 4px;
+  padding: 5px 18px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+.cover-synopsis {
+  font-size: 16px;
+  line-height: 1.85;
+  color: rgba(242,232,213,0.65);
+  font-style: italic;
+  margin-bottom: 40px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.start-btn {
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.5);
+  color: var(--gold);
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 17px;
+  padding: 15px 48px;
+  cursor: pointer;
+  transition: all 0.4s;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+.start-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0) 0%, rgba(201,168,76,0.1) 100%);
+  transform: translateX(-100%);
+  transition: transform 0.4s;
+}
+.start-btn:hover { border-color: var(--gold); color: var(--amber); box-shadow: 0 0 30px rgba(201,168,76,0.15); }
+.start-btn:hover::before { transform: translateX(0); }
+
+/* ══ STORY WRAPPER ══ */
+#story { display: none; }
+
+/* Progress */
+.progress-bar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(10,8,6,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(201,168,76,0.12);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.prog-chap {
+  font-family: 'EB Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--slate);
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+.prog-track {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  position: relative;
+}
+.prog-fill {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold));
+  transition: width 0.6s cubic-bezier(.4,0,.2,1);
+}
+.prog-pct {
+  font-family: 'EB Garamond', serif;
+  font-size: 12px;
+  color: var(--slate);
+  letter-spacing: 1px;
+}
+
+/* ══ PAGE ══ */
+.page {
+  display: none;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 28px 80px;
+  animation: pageIn 0.7s cubic-bezier(.4,0,.2,1);
+}
+.page.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.chap-tag {
+  font-family: 'EB Garamond', serif;
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.15;
+  margin-bottom: 36px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+}
+.page-title em {
+  display: block;
+  font-size: 0.5em;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+/* ══ ILLUSTRATIONS ══ */
+.scene {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 36px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Scene: specific CSS art per chapter */
+.scene-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.scene-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  padding: 28px 20px 14px;
+  text-align: center;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: 13.5px;
+  color: rgba(201,168,76,0.7);
+  letter-spacing: 1px;
+  z-index: 10;
+}
+
+/* ══ SCENE 1: Estate / Family intro ══ */
+.s1-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #0A1218 0%, #0D1820 40%, #0A0F0D 100%);
+}
+.s1-snow {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle 1px at 20% 15%, rgba(255,255,255,0.6) 1px, transparent 1px),
+    radial-gradient(circle 1px at 45% 8%, rgba(255,255,255,0.5) 1px, transparent 1px),
+    radial-gradient(circle 1px at 70% 20%, rgba(255,255,255,0.4) 1px, transparent 1px),
+    radial-gradient(circle 1px at 85% 10%, rgba(255,255,255,0.6) 1px, transparent 1px),
+    radial-gradient(circle 1px at 10% 35%, rgba(255,255,255,0.3) 1px, transparent 1px),
+    radial-gradient(circle 1px at 60% 30%, rgba(255,255,255,0.5) 1px, transparent 1px),
+    radial-gradient(circle 1px at 35% 25%, rgba(255,255,255,0.4) 1px, transparent 1px),
+    radial-gradient(circle 1px at 90% 40%, rgba(255,255,255,0.3) 1px, transparent 1px);
+}
+.s1-house {
+  position: absolute;
+  bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 200px; height: 120px;
+  background: #0D1015;
+  border: 1px solid rgba(100,120,140,0.3);
+}
+.s1-roof {
+  position: absolute;
+  bottom: 150px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 110px solid transparent;
+  border-right: 110px solid transparent;
+  border-bottom: 60px solid #0A0D10;
+}
+.s1-window {
+  position: absolute;
+  background: rgba(255,200,80,0.25);
+  border: 1px solid rgba(255,200,80,0.2);
+  box-shadow: 0 0 12px rgba(255,200,80,0.15);
+}
+.s1-door {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 32px; height: 50px;
+  background: #060810;
+  border: 1px solid rgba(100,120,140,0.2);
+  border-radius: 4px 4px 0 0;
+}
+.s1-snow-ground {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40px;
+  background: linear-gradient(0deg, rgba(200,220,240,0.1) 0%, transparent 100%);
+}
+.s1-tree { position: absolute; bottom: 38px; }
+.s1-trunk { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); background: #1A1008; }
+.s1-foliage { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: solid transparent; border-right: solid transparent; border-bottom: solid #0A120E; }
+
+/* ══ SCENE 2: Father & sons - tavern scene ══ */
+.s2-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 100%, rgba(100,40,10,0.5) 0%, rgba(10,6,4,1) 100%);
+}
+.s2-table {
+  position: absolute;
+  bottom: 30px; left: 50%; transform: translateX(-50%);
+  width: 260px; height: 18px;
+  background: linear-gradient(180deg, #2A1A08 0%, #1A0E04 100%);
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.s2-bottle {
+  position: absolute;
+  bottom: 48px;
+  width: 14px;
+  border-radius: 2px 2px 0 0;
+}
+.s2-candle-group { position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%); display: flex; gap: 40px; }
+.s2-candle { display: flex; flex-direction: column; align-items: center; }
+.s2-flame-sm { width: 8px; height: 14px; background: radial-gradient(ellipse at 50% 80%, #fff 0%, #ffdd44 40%, #ff8800 80%, transparent 100%); border-radius: 50% 50% 30% 30%; animation: flicker 1.5s ease-in-out infinite; filter: blur(0.5px); }
+.s2-wick { width: 2px; height: 6px; background: #333; }
+.s2-wax { width: 10px; height: 40px; background: linear-gradient(180deg, #e8dcc8 0%, #c8a878 100%); }
+.s2-glow-warm {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 85%, rgba(200,100,20,0.25) 0%, transparent 70%);
+}
+
+/* ══ SCENE 3: Monastery / Alyosha ══ */
+.s3-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #080C14 0%, #0C1020 50%, #080C10 100%);
+}
+.s3-arch {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 180px;
+  border: 2px solid rgba(150,160,180,0.2);
+  border-radius: 60px 60px 0 0;
+  border-bottom: none;
+}
+.s3-arch-inner {
+  position: absolute;
+  bottom: -1px; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 140px;
+  border: 1px solid rgba(100,110,130,0.15);
+  border-radius: 40px 40px 0 0;
+  border-bottom: none;
+  background: rgba(0,0,0,0.4);
+}
+.s3-cross {
+  position: absolute;
+  top: 20px; left: 50%; transform: translateX(-50%);
+}
+.s3-cross-v { width: 3px; height: 30px; background: rgba(200,210,220,0.4); margin: 0 auto; }
+.s3-cross-h { width: 20px; height: 3px; background: rgba(200,210,220,0.4); margin-top: -22px; }
+.s3-candle-light {
+  position: absolute;
+  bottom: 60px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 14px;
+  background: radial-gradient(ellipse at 50% 80%, #fff 0%, #ffdd44 40%, #ff8800 80%, transparent 100%);
+  border-radius: 50% 50% 30% 30%;
+  animation: flicker 2s ease-in-out infinite;
+  filter: blur(0.5px);
+  box-shadow: 0 0 20px 8px rgba(255,200,50,0.3);
+}
+.s3-rays {
+  position: absolute;
+  top: 20px; left: 0; right: 0;
+  height: 200px;
+  background: radial-gradient(ellipse 40% 60% at 50% 0%, rgba(200,200,255,0.06) 0%, transparent 70%);
+}
+.s3-stars {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle 1.5px at 15% 10%, rgba(255,255,255,0.7) 1px, transparent 1px),
+    radial-gradient(circle 1px at 30% 5%, rgba(255,255,255,0.5) 1px, transparent 1px),
+    radial-gradient(circle 1.5px at 75% 8%, rgba(255,255,255,0.6) 1px, transparent 1px),
+    radial-gradient(circle 1px at 88% 15%, rgba(255,255,255,0.4) 1px, transparent 1px),
+    radial-gradient(circle 1px at 55% 12%, rgba(255,255,255,0.5) 1px, transparent 1px),
+    radial-gradient(circle 1px at 40% 20%, rgba(255,255,255,0.3) 1px, transparent 1px),
+    radial-gradient(circle 1.5px at 92% 6%, rgba(255,255,255,0.6) 1px, transparent 1px);
+}
+
+/* ══ SCENE 4: Passion / rivalry ══ */
+.s4-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(80,10,10,0.6) 0%, #0A0504 100%);
+}
+.s4-silhouette {
+  position: absolute;
+  bottom: 0;
+}
+.s4-figure {
+  width: 40px; height: 100px;
+  background: rgba(0,0,0,0.8);
+  border-radius: 20px 20px 4px 4px;
+  position: relative;
+}
+.s4-figure::before {
+  content: '';
+  position: absolute;
+  top: -28px; left: 50%; transform: translateX(-50%);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.8);
+}
+.s4-glow { position: absolute; inset: 0; background: radial-gradient(ellipse 50% 40% at 50% 90%, rgba(180,30,30,0.2) 0%, transparent 65%); }
+
+/* ══ SCENE 5: Ivan / doubt / intellectual ══ */
+.s5-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, #080A10 0%, #0C0E18 50%, #080810 100%);
+}
+.s5-book {
+  position: absolute;
+  bottom: 50px; left: 50%; transform: translateX(-50%) rotate(-8deg);
+  width: 100px; height: 130px;
+  background: linear-gradient(135deg, #1A1408 0%, #0E0C06 100%);
+  border: 1px solid rgba(150,130,80,0.3);
+  border-radius: 2px;
+  box-shadow: 6px 6px 20px rgba(0,0,0,0.5), -2px 0 0 rgba(150,130,80,0.2);
+}
+.s5-pages {
+  position: absolute;
+  bottom: 52px; left: calc(50% + 5px);
+  width: 8px; height: 126px;
+  background: repeating-linear-gradient(0deg, rgba(240,230,200,0.6) 0px, rgba(240,230,200,0.6) 1px, transparent 1px, transparent 4px);
+  transform: rotate(-8deg) translateX(48px);
+}
+.s5-question {
+  position: absolute;
+  top: 30px; left: 50%; transform: translateX(-50%);
+  font-family: 'Playfair Display', serif;
+  font-size: 80px;
+  font-style: italic;
+  color: rgba(150,140,180,0.08);
+  white-space: nowrap;
+  letter-spacing: -5px;
+  user-select: none;
+}
+.s5-inkwell {
+  position: absolute;
+  bottom: 52px; left: 50%; transform: translateX(-50%) translateX(-70px);
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #1A1408 40%, #0A0806 100%);
+  border: 1px solid rgba(150,130,80,0.25);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* ══ SCENE 6: The Murder ══ */
+.s6-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, #120304 0%, #050102 100%);
+}
+.s6-door {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100px; height: 200px;
+  border: 2px solid rgba(80,30,20,0.5);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  background: rgba(8,2,2,0.8);
+}
+.s6-door-knob {
+  position: absolute;
+  right: 14px; top: 50%;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: rgba(180,120,60,0.4);
+}
+.s6-crack {
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 2px; height: 100%;
+  background: linear-gradient(0deg, transparent 0%, rgba(200,50,20,0.4) 40%, rgba(200,50,20,0.2) 100%);
+}
+.s6-blood {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 40px; height: 12px;
+  background: radial-gradient(ellipse, rgba(150,10,10,0.7) 0%, transparent 100%);
+  filter: blur(3px);
+}
+.s6-shadow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 50%, transparent 30%, rgba(0,0,0,0.7) 100%);
+}
+
+/* ══ SCENE 7: The Trial ══ */
+.s7-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #0A0C10 0%, #0D0F14 100%);
+}
+.s7-podium {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 100px;
+  background: linear-gradient(180deg, #1A1410 0%, #100C08 100%);
+  border: 1px solid rgba(150,130,80,0.2);
+}
+.s7-pillar {
+  position: absolute;
+  bottom: 0;
+  width: 18px;
+  background: linear-gradient(90deg, #1A1810 0%, #141210 50%, #1A1810 100%);
+  border-top: 6px solid rgba(150,130,80,0.3);
+}
+.s7-scales {
+  position: absolute;
+  top: 30px; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 60px;
+}
+.s7-crowd {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(20,18,16,0.9) 0px, rgba(20,18,16,0.9) 22px,
+    rgba(10,8,6,0.9) 22px, rgba(10,8,6,0.9) 44px
+  );
+  mask: linear-gradient(transparent 0%, black 40%);
+  -webkit-mask: linear-gradient(transparent 0%, black 40%);
+}
+
+/* ══ SCENE 8: Ending / hope ══ */
+.s8-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #080C18 0%, #0C1020 30%, #080C10 80%, #060806 100%);
+}
+.s8-horizon {
+  position: absolute;
+  bottom: 60px; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(200,168,100,0.3) 30%, rgba(200,168,100,0.5) 50%, rgba(200,168,100,0.3) 70%, transparent 100%);
+}
+.s8-sun-glow {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 400px; height: 160px;
+  background: radial-gradient(ellipse at 50% 100%, rgba(180,130,50,0.3) 0%, rgba(180,100,30,0.1) 40%, transparent 70%);
+}
+.s8-figure {
+  position: absolute;
+  bottom: 62px; left: 50%; transform: translateX(-50%);
+  width: 16px; height: 50px;
+  background: rgba(0,0,0,0.9);
+  border-radius: 8px 8px 3px 3px;
+}
+.s8-figure::before {
+  content: '';
+  position: absolute;
+  top: -18px; left: 50%; transform: translateX(-50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.9);
+}
+.s8-stars {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle 1.5px at 10% 8%, rgba(255,255,255,0.8) 1px, transparent 1px),
+    radial-gradient(circle 1px at 25% 12%, rgba(255,255,255,0.5) 1px, transparent 1px),
+    radial-gradient(circle 1.5px at 60% 6%, rgba(255,255,255,0.7) 1px, transparent 1px),
+    radial-gradient(circle 1px at 80% 10%, rgba(255,255,255,0.6) 1px, transparent 1px),
+    radial-gradient(circle 2px at 90% 5%, rgba(255,255,255,0.9) 1px, transparent 1px),
+    radial-gradient(circle 1px at 45% 18%, rgba(255,255,255,0.4) 1px, transparent 1px),
+    radial-gradient(circle 1px at 70% 20%, rgba(255,255,255,0.5) 1px, transparent 1px),
+    radial-gradient(circle 1.5px at 5% 22%, rgba(255,255,255,0.6) 1px, transparent 1px);
+}
+
+/* ══ STORY TEXT ══ */
+.story-text {
+  font-size: 17.5px;
+  line-height: 1.95;
+  color: rgba(242,232,213,0.88);
+  margin-bottom: 32px;
+}
+.story-text p { margin-bottom: 18px; }
+
+.hl {
+  color: var(--amber);
+  border-bottom: 1px dashed rgba(232,197,106,0.4);
+  cursor: help;
+  transition: color 0.2s;
+}
+.hl:hover { color: var(--gold); }
+
+/* Quote */
+.quote-block {
+  margin: 28px 0;
+  padding: 22px 30px 22px 28px;
+  border-left: 2px solid var(--gold);
+  background: linear-gradient(90deg, rgba(201,168,76,0.05) 0%, transparent 100%);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--cream);
+  line-height: 1.75;
+  position: relative;
+}
+.quote-block::before {
+  content: '\201C';
+  position: absolute;
+  top: 8px; left: 10px;
+  font-size: 40px;
+  color: rgba(201,168,76,0.2);
+  font-family: 'Playfair Display', serif;
+  line-height: 1;
+}
+
+/* Character card */
+.char-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 24px 0;
+}
+.char-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.07);
+  padding: 16px 14px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.char-card:hover { border-color: rgba(201,168,76,0.3); }
+.char-icon { font-size: 32px; margin-bottom: 8px; }
+.char-name { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--gold); font-weight: 700; margin-bottom: 4px; }
+.char-desc { font-size: 12.5px; color: var(--mist); line-height: 1.4; font-style: italic; }
+
+/* Vocab */
+.vocab-section {
+  border: 1px solid rgba(139,26,26,0.3);
+  background: linear-gradient(135deg, rgba(139,26,26,0.06) 0%, rgba(10,8,6,0) 100%);
+  padding: 26px 30px;
+  margin: 30px 0;
+}
+.vocab-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.vocab-header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.vocab-header-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(201,168,76,0.3), transparent);
+}
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 16px;
+}
+.vocab-item { display: flex; flex-direction: column; gap: 3px; }
+.vocab-word { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--amber); font-weight: 600; }
+.vocab-def { font-size: 13.5px; color: rgba(242,232,213,0.65); line-height: 1.45; }
+.vocab-tr  { font-size: 12px; color: var(--slate); font-style: italic; }
+
+/* Questions */
+.questions-section {
+  border: 1px solid rgba(107,122,138,0.2);
+  background: rgba(107,122,138,0.04);
+  padding: 26px 30px;
+  margin: 30px 0;
+}
+.questions-header {
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: var(--mist);
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+.question {
+  font-size: 15.5px;
+  color: rgba(242,232,213,0.78);
+  line-height: 1.65;
+  margin-bottom: 13px;
+  padding-left: 24px;
+  position: relative;
+}
+.question::before {
+  content: attr(data-n);
+  position: absolute; left: 0;
+  color: var(--gold);
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+}
+
+/* Nav */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 50px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.nav-btn {
+  background: transparent;
+  border: 1px solid rgba(107,122,138,0.3);
+  color: var(--slate);
+  font-family: 'EB Garamond', serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.nav-btn:hover:not(:disabled) { border-color: rgba(201,168,76,0.5); color: var(--gold); }
+.nav-btn:disabled { opacity: 0.18; cursor: default; }
+.nav-btn.fwd {
+  background: rgba(139,26,26,0.2);
+  border-color: rgba(139,26,26,0.5);
+  color: rgba(242,232,213,0.8);
+}
+.nav-btn.fwd:hover { background: rgba(139,26,26,0.35); border-color: var(--crimson); color: var(--cream); }
+.page-counter {
+  font-family: 'EB Garamond', serif;
+  font-size: 13px;
+  color: var(--slate);
+  letter-spacing: 2px;
+}
+
+/* Theme section */
+.themes-grid { display: grid; gap: 12px; margin: 28px 0; }
+.theme-item {
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 18px 22px;
+  background: rgba(255,255,255,0.02);
+  border-left: 2px solid rgba(139,26,26,0.5);
+}
+.theme-item h4 { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--gold); margin-bottom: 7px; font-weight: 700; }
+.theme-item p { font-size: 14px; color: rgba(242,232,213,0.65); line-height: 1.65; }
+
+/* Ending */
+.ending-wrap { text-align: center; padding: 50px 30px; border: 1px solid rgba(201,168,76,0.2); margin: 36px 0; background: radial-gradient(ellipse at 50% 50%, rgba(201,168,76,0.04) 0%, transparent 70%); }
+.ending-wrap h2 { font-family: 'Playfair Display', serif; font-size: 32px; font-style: italic; color: var(--gold); margin-bottom: 16px; }
+.ending-wrap p { color: rgba(242,232,213,0.65); font-size: 15.5px; line-height: 1.8; max-width: 500px; margin: 0 auto; }
+
+@media (max-width: 600px) {
+  .scene { height: 220px; }
+  .page { padding: 32px 18px 60px; }
+  .vocab-grid, .char-cards { grid-template-columns: 1fr; }
+  .cover-frame { padding: 40px 24px 36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ COVER ══════════════════════════ -->
+<div id="cover">
+  <div class="cover-bg"></div>
+
+  <div class="candle-wrap">
+    <div class="candle-glow"></div>
+    <div class="flame"></div>
+    <div class="wick" style="width:2px;height:8px;background:#555;margin:0 auto;"></div>
+    <div class="candle-body"></div>
+  </div>
+
+  <div class="cover-content">
+    <div class="cover-ornament-top">Fyodor Dostoevsky · 1880</div>
+
+    <div class="cover-frame">
+      <div class="cover-label">A B1 English Story Book</div>
+
+      <h1 class="cover-title">
+        <em>The Brothers</em>
+        Karamazov
+      </h1>
+
+      <div class="cover-divider"></div>
+
+      <div class="cover-author">Based on Fyodor Dostoevsky's masterpiece</div>
+      <div class="cover-date">Russia · 1879 – 1880</div>
+
+      <div class="level-pill">B1 · Intermediate English</div>
+
+      <p class="cover-synopsis">
+        A murdered father. Three very different sons.
+        Questions about God, guilt, love, and what it means to be human.
+        One of the greatest novels ever written — told for you, step by step.
+      </p>
+
+      <button class="start-btn" onclick="startStory()">Open the Book →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ STORY ══════════════════════════ -->
+<div id="story">
+
+  <div class="progress-bar">
+    <span class="prog-chap" id="prog-label">Chapter 1 of 8</span>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:12.5%"></div></div>
+    <span class="prog-pct" id="prog-pct">12%</span>
+  </div>
+
+  <!-- ══ PAGE 1 ══ -->
+  <div class="page active" id="page-1">
+    <div class="chap-tag">Chapter One</div>
+    <h1 class="page-title">
+      <em>Meeting the Family</em>
+      The Karamazovs
+    </h1>
+
+    <div class="scene">
+      <div class="s1-bg"></div>
+      <div class="s1-snow"></div>
+      <div class="s1-snow-ground"></div>
+      <div class="s1-roof"></div>
+      <div class="s1-house">
+        <div class="s1-window" style="width:30px;height:28px;top:20px;left:18px;"></div>
+        <div class="s1-window" style="width:30px;height:28px;top:20px;right:18px;"></div>
+        <div class="s1-window" style="width:24px;height:22px;top:62px;left:22px;"></div>
+        <div class="s1-door"></div>
+      </div>
+      <div class="s1-tree" style="left:12%;">
+        <div class="s1-trunk" style="width:8px;height:30px;"></div>
+        <div class="s1-foliage" style="border-left-width:18px;border-right-width:18px;border-bottom-width:50px;bottom:28px;"></div>
+        <div class="s1-foliage" style="border-left-width:14px;border-right-width:14px;border-bottom-width:40px;bottom:52px;"></div>
+        <div class="s1-foliage" style="border-left-width:10px;border-right-width:10px;border-bottom-width:30px;bottom:72px;"></div>
+      </div>
+      <div class="s1-tree" style="right:10%;">
+        <div class="s1-trunk" style="width:8px;height:24px;"></div>
+        <div class="s1-foliage" style="border-left-width:16px;border-right-width:16px;border-bottom-width:44px;bottom:22px;"></div>
+        <div class="s1-foliage" style="border-left-width:12px;border-right-width:12px;border-bottom-width:34px;bottom:46px;"></div>
+        <div class="s1-foliage" style="border-left-width:8px;border-right-width:8px;border-bottom-width:26px;bottom:64px;"></div>
+      </div>
+      <div class="scene-caption">A cold winter night in rural Russia — the Karamazov estate</div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        In a small town in Russia, there lives a family called the
+        <span class="hl" title="Karamazovs = Karamazovlar (hikayenin merkezi ailesi)">Karamazovs</span>.
+        The father, <strong>Fyodor Karamazov</strong>, is a rich old man.
+        But he is not a good man. He drinks too much, he lies, and he cares only about money and pleasure.
+        Nobody respects him — not even his own sons.
+      </p>
+      <p>
+        Fyodor has three very different sons. Each son represents a different part of the human soul.
+      </p>
+    </div>
+
+    <div class="char-cards">
+      <div class="char-card">
+        <div class="char-icon">⚔️</div>
+        <div class="char-name">Dmitri</div>
+        <div class="char-desc">The eldest son. Passionate, wild, and emotional. He loves life too much.</div>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">📚</div>
+        <div class="char-name">Ivan</div>
+        <div class="char-desc">The intellectual. He reads, thinks, and questions everything — including God.</div>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">🕊️</div>
+        <div class="char-name">Alyosha</div>
+        <div class="char-desc">The youngest and kindest. He is gentle, faithful, and full of love for people.</div>
+      </div>
+      <div class="char-card">
+        <div class="char-icon">🐍</div>
+        <div class="char-name">Smerdyakov</div>
+        <div class="char-desc">The secret fourth son — a servant in the house. Cold, quiet, and dangerous.</div>
+      </div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        The three brothers grew up apart — in different homes, with different people.
+        Now, as adults, they are all in the same town. And trouble is already beginning.
+        Dmitri is angry at his father over money.
+        Ivan has doubts about everything.
+        Only young Alyosha — who lives at the local
+        <span class="hl" title="monastery = manastır">monastery</span> —
+        tries to bring peace to the family.
+      </p>
+    </div>
+
+    <div class="vocab-section">
+      <div class="vocab-header">
+        <span class="vocab-header-title">New Words</span>
+        <span class="vocab-header-line"></span>
+      </div>
+      <div class="vocab-grid">
+        <div class="vocab-item">
+          <span class="vocab-word">represent</span>
+          <span class="vocab-def">to be a symbol or example of something</span>
+          <span class="vocab-tr">🇹🇷 temsil etmek</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">passionate</span>
+          <span class="vocab-def">having very strong feelings; full of emotion</span>
+          <span class="vocab-tr">🇹🇷 tutkulu, hevesli</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">intellectual</span>
+          <span class="vocab-def">someone who thinks deeply and loves ideas</span>
+          <span class="vocab-tr">🇹🇷 entelektüel, fikir insanı</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">monastery</span>
+          <span class="vocab-def">a place where monks or religious people live and pray</span>
+          <span class="vocab-tr">🇹🇷 manastır</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-section">
+      <div class="questions-header">Think About It</div>
+      <div class="question" data-n="1.">How are the three brothers different from each other?</div>
+      <div class="question" data-n="2.">Why do you think nobody respects Fyodor?</div>
+      <div class="question" data-n="3.">Which brother do you find most interesting? Why?</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" disabled>← Previous</button>
+      <span class="page-counter">1 / 8</span>
+      <button class="nav-btn fwd" onclick="goTo(2)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══ PAGE 2 ══ -->
+  <div class="page" id="page-2">
+    <div class="chap-tag">Chapter Two</div>
+    <h1 class="page-title">
+      <em>The Conflict Begins</em>
+      Father Against Son
+    </h1>
+
+    <div class="scene">
+      <div class="s2-bg"></div>
+      <div class="s2-glow-warm"></div>
+      <div class="s2-table"></div>
+      <div class="s2-candle-group">
+        <div class="s2-candle">
+          <div class="s2-flame-sm"></div>
+          <div class="s2-wick"></div>
+          <div class="s2-wax"></div>
+        </div>
+        <div class="s2-candle" style="animation-delay:0.5s">
+          <div class="s2-flame-sm" style="animation-delay:0.7s"></div>
+          <div class="s2-wick"></div>
+          <div class="s2-wax" style="height:32px"></div>
+        </div>
+      </div>
+      <div style="position:absolute;bottom:48px;left:calc(50% - 90px);width:12px;height:50px;background:linear-gradient(180deg,#2A1A06,#180E02);border-radius:2px 2px 0 0;border:1px solid rgba(150,100,40,0.3);"></div>
+      <div style="position:absolute;bottom:48px;right:calc(50% - 90px);width:10px;height:38px;background:linear-gradient(180deg,#2A1A06,#180E02);border-radius:2px 2px 0 0;border:1px solid rgba(150,100,40,0.3);"></div>
+      <div class="scene-caption">A tense meeting — candlelight, anger, and old wounds</div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        The first big meeting of the family takes place at the monastery of Elder
+        <span class="hl" title="Elder = Yaşlı Bilge (manastırda saygı duyulan dini lider)">Zosima</span>
+        — a wise, old, and deeply loved religious man.
+        Everyone hopes he can help the family make peace.
+        But the meeting goes badly.
+      </p>
+      <p>
+        <strong>Dmitri</strong> accuses his father of stealing his
+        <span class="hl" title="inheritance = miras">inheritance</span> —
+        money that was left to him by his dead mother. Fyodor laughs and denies everything.
+        The two men shout at each other. Elder Zosima watches sadly.
+      </p>
+      <div class="quote-block">
+        "You are a liar and a thief!" shouted Dmitri. "You have taken my money and you know it!"<br><br>
+        "Prove it!" said Fyodor, laughing coldly. "You cannot prove anything."
+      </div>
+      <p>
+        Ivan says nothing. He watches everything with cold, intelligent eyes.
+        Only gentle Alyosha tries to stop the argument. But nobody listens.
+      </p>
+      <p>
+        As everyone leaves, Elder Zosima does something
+        <span class="hl" title="unexpected = beklenmedik, sürpriz">unexpected</span>.
+        He walks up to Dmitri and bows deeply before him —
+        touching his head to the floor. Everyone is confused.
+        Zosima later explains: <em>"I bowed because of the great suffering that is coming to that man."</em>
+      </p>
+    </div>
+
+    <div class="vocab-section">
+      <div class="vocab-header">
+        <span class="vocab-header-title">New Words</span>
+        <span class="vocab-header-line"></span>
+      </div>
+      <div class="vocab-grid">
+        <div class="vocab-item">
+          <span class="vocab-word">inheritance</span>
+          <span class="vocab-def">money or property that someone leaves you when they die</span>
+          <span class="vocab-tr">🇹🇷 miras</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">accuse</span>
+          <span class="vocab-def">to say that someone did something wrong</span>
+          <span class="vocab-tr">🇹🇷 suçlamak, itham etmek</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">deny</span>
+          <span class="vocab-def">to say that something is not true</span>
+          <span class="vocab-tr">🇹🇷 inkâr etmek, reddetmek</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">bow</span>
+          <span class="vocab-def">to bend your body forward to show respect</span>
+          <span class="vocab-tr">🇹🇷 eğilmek, reverans yapmak</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-section">
+      <div class="questions-header">Think About It</div>
+      <div class="question" data-n="1.">What does Dmitri want from his father?</div>
+      <div class="question" data-n="2.">Why did Elder Zosima bow to Dmitri? What do you think this means?</div>
+      <div class="question" data-n="3.">How does Ivan behave during the fight? What does this tell us about him?</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(1)">← Previous</button>
+      <span class="page-counter">2 / 8</span>
+      <button class="nav-btn fwd" onclick="goTo(3)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══ PAGE 3 ══ -->
+  <div class="page" id="page-3">
+    <div class="chap-tag">Chapter Three</div>
+    <h1 class="page-title">
+      <em>The Gentle Brother</em>
+      Alyosha and the Elder
+    </h1>
+
+    <div class="scene">
+      <div class="s3-bg"></div>
+      <div class="s3-stars"></div>
+      <div class="s3-rays"></div>
+      <div class="s3-arch"></div>
+      <div class="s3-arch-inner"></div>
+      <div class="s3-cross">
+        <div class="s3-cross-v"></div>
+        <div class="s3-cross-h"></div>
+      </div>
+      <div class="s3-candle-light"></div>
+      <div class="scene-caption">The monastery at night — a place of silence, prayer, and wisdom</div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        Of all the brothers, <strong>Alyosha</strong> is the most special.
+        He is young — only twenty years old — but people feel a warmth and goodness in him
+        that is very rare. He does not judge anyone. He loves everyone.
+      </p>
+      <p>
+        Alyosha lives at the monastery with his teacher, Elder Zosima.
+        The Elder is very old and he knows he will die soon.
+        He calls Alyosha to him and says:
+      </p>
+      <div class="quote-block">
+        "I am sending you out into the world, Alyosha. You have a great task — you must go and love people. That is your work. Not prayers in a church — but love, real love, in the world."
+      </div>
+      <p>
+        Alyosha is sad to leave. But he
+        <span class="hl" title="obey = itaat etmek, uymak">obeys</span>
+        his teacher. He goes back into town — back to his difficult family.
+      </p>
+      <p>
+        When Elder Zosima dies shortly after, something strange happens.
+        According to tradition, the body of a holy man should not smell bad after death.
+        But Zosima's body begins to
+        <span class="hl" title="decay = çürümek, bozulmak">decay</span> quickly.
+        People are shocked. They say: <em>"This man was not holy after all!"</em>
+      </p>
+      <p>
+        Alyosha is deeply <span class="hl" title="shaken = sarsilmış, çok etkilenmiş">shaken</span>.
+        His faith is tested for the first time. He cries, alone, in the dark.
+        But during that night, he has a powerful spiritual experience — and in the morning,
+        he is stronger than ever before.
+      </p>
+    </div>
+
+    <div class="vocab-section">
+      <div class="vocab-header">
+        <span class="vocab-header-title">New Words</span>
+        <span class="vocab-header-line"></span>
+      </div>
+      <div class="vocab-grid">
+        <div class="vocab-item">
+          <span class="vocab-word">obey</span>
+          <span class="vocab-def">to follow someone's instructions or rules</span>
+          <span class="vocab-tr">🇹🇷 itaat etmek, uymak</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">decay</span>
+          <span class="vocab-def">to slowly break down and rot</span>
+          <span class="vocab-tr">🇹🇷 çürümek, bozulmak</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">faith</span>
+          <span class="vocab-def">a strong belief, especially in God or religion</span>
+          <span class="vocab-tr">🇹🇷 iman, inanç</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">shaken</span>
+          <span class="vocab-def">very upset or disturbed by something</span>
+          <span class="vocab-tr">🇹🇷 sarsılmış, etkilenmiş</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-section">
+      <div class="questions-header">Think About It</div>
+      <div class="question" data-n="1.">What did Elder Zosima ask Alyosha to do?</div>
+      <div class="question" data-n="2.">Why were people disappointed when Zosima's body decayed?</div>
+      <div class="question" data-n="3.">Have you ever had your beliefs tested? How did it feel?</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(2)">← Previous</button>
+      <span class="page-counter">3 / 8</span>
+      <button class="nav-btn fwd" onclick="goTo(4)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══ PAGE 4 ══ -->
+  <div class="page" id="page-4">
+    <div class="chap-tag">Chapter Four</div>
+    <h1 class="page-title">
+      <em>Love, Jealousy, and Money</em>
+      Dmitri's Passion
+    </h1>
+
+    <div class="scene">
+      <div class="s4-bg"></div>
+      <div class="s4-glow"></div>
+      <div class="s4-silhouette" style="left:25%">
+        <div class="s4-figure" style="transform:rotate(-5deg)"></div>
+      </div>
+      <div class="s4-silhouette" style="right:25%">
+        <div class="s4-figure" style="transform:rotate(4deg)"></div>
+      </div>
+      <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:3px;height:180px;background:linear-gradient(0deg,rgba(139,26,26,0.5),transparent);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(0deg,rgba(0,0,0,0.6),transparent);"></div>
+      <div class="scene-caption">Two rivals — one woman between them, a fortune at stake</div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        Dmitri Karamazov has a complicated love life. He was
+        <span class="hl" title="engaged = nişanlı">engaged</span>
+        to a proud, noble woman named <strong>Katerina Ivanovna</strong>.
+        But he has fallen deeply in love with another woman —
+        a beautiful and wild woman named <strong>Grushenka</strong>.
+      </p>
+      <p>
+        Here is the shocking part: old Fyodor is also in love with Grushenka!
+        Father and son are <span class="hl" title="rivals = rakipler">rivals</span>
+        for the same woman. This makes Dmitri furious.
+      </p>
+      <p>
+        To make things worse, Dmitri desperately needs money.
+        He spent the money he borrowed from Katerina — money he was supposed to give back.
+        Now he has nothing. He believes his father is hiding his
+        <span class="hl" title="inheritance = miras">inheritance</span>
+        and he is growing more and more angry.
+      </p>
+      <div class="quote-block">
+        "I am not a bad man," Dmitri said to Alyosha one night. "But I do bad things. I don't know why. There is something broken inside me."
+      </div>
+      <p>
+        Alyosha listens to his brother without judging him.
+        He is perhaps the only person in Dmitri's life who truly
+        <span class="hl" title="understands = anlıyor, kavramak">understands</span> him.
+        But Dmitri's anger is getting dangerous — and everyone can feel it.
+      </p>
+    </div>
+
+    <div class="vocab-section">
+      <div class="vocab-header">
+        <span class="vocab-header-title">New Words</span>
+        <span class="vocab-header-line"></span>
+      </div>
+      <div class="vocab-grid">
+        <div class="vocab-item">
+          <span class="vocab-word">engaged</span>
+          <span class="vocab-def">when two people have agreed to marry each other</span>
+          <span class="vocab-tr">🇹🇷 nişanlı</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">rival</span>
+          <span class="vocab-def">a person who is competing with you for the same thing</span>
+          <span class="vocab-tr">🇹🇷 rakip</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">desperately</span>
+          <span class="vocab-def">in a very urgent and worried way</span>
+          <span class="vocab-tr">🇹🇷 çaresizce, can havliyle</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">judge</span>
+          <span class="vocab-def">to have a negative opinion about someone or their actions</span>
+          <span class="vocab-tr">🇹🇷 yargılamak</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-section">
+      <div class="questions-header">Think About It</div>
+      <div class="question" data-n="1.">Why is Dmitri angry at his father?</div>
+      <div class="question" data-n="2.">What does Dmitri mean when he says "there is something broken inside me"?</div>
+      <div class="question" data-n="3.">Do you feel sorry for Dmitri? Is he a good person or a bad person?</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(3)">← Previous</button>
+      <span class="page-counter">4 / 8</span>
+      <button class="nav-btn fwd" onclick="goTo(5)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══ PAGE 5 ══ -->
+  <div class="page" id="page-5">
+    <div class="chap-tag">Chapter Five</div>
+    <h1 class="page-title">
+      <em>The Big Question</em>
+      Ivan's Rebellion
+    </h1>
+
+    <div class="scene">
+      <div class="s5-bg"></div>
+      <div class="s5-question">???</div>
+      <div class="s5-book"></div>
+      <div class="s5-pages"></div>
+      <div class="s5-inkwell"></div>
+      <div style="position:absolute;top:40px;right:60px;width:60px;height:80px;background:linear-gradient(135deg,#1A1408,#0E0C06);border:1px solid rgba(150,130,80,0.2);transform:rotate(12deg);border-radius:2px;"></div>
+      <div style="position:absolute;top:50px;right:50px;width:60px;height:80px;background:linear-gradient(135deg,#161206,#0A0804);border:1px solid rgba(150,130,80,0.15);transform:rotate(8deg);border-radius:2px;"></div>
+      <div class="scene-caption">Ivan's room — full of books, full of questions, full of doubt</div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        <strong>Ivan</strong> is the most complex brother. He is brilliant — he writes articles,
+        reads philosophy, and thinks deeply about God, goodness, and suffering.
+        And he has come to a very dark conclusion.
+      </p>
+      <p>
+        One evening, Ivan talks to Alyosha about his beliefs.
+        He tells his brother a story — a
+        <span class="hl" title="parable = kısa, öğretici hikaye / mesel">parable</span>
+        he wrote himself — called <em>The Grand Inquisitor</em>.
+        In the story, Jesus Christ returns to Earth — but the Church arrests him.
+        The Inquisitor tells Jesus:
+      </p>
+      <div class="quote-block">
+        "We don't need you anymore. People don't want freedom — they want bread and someone to tell them what to do. You gave them freedom, and it made them miserable. We fixed your mistake."
+      </div>
+      <p>
+        In the story, Jesus says nothing. He only kisses the Inquisitor on the lips.
+        Then he leaves.
+      </p>
+      <p>
+        Ivan's real message is this: <em>even if God exists, the world has too much suffering in it.
+        Children suffer. Innocent people suffer. If God allows this, Ivan does not
+        <span class="hl" title="accept = kabul etmek">accept</span> his world.</em>
+        He says: "It is not that I don't believe in God. I simply
+        <span class="hl" title="return the ticket = bileti iade etmek (İvana'nın metaforu)">return the ticket</span>."
+      </p>
+      <p>
+        Alyosha has no easy answer. But he also does not give up. He says quietly:
+        <em>"That is rebellion. But what about love?"</em>
+      </p>
+    </div>
+
+    <div class="vocab-section">
+      <div class="vocab-header">
+        <span class="vocab-header-title">New Words</span>
+        <span class="vocab-header-line"></span>
+      </div>
+      <div class="vocab-grid">
+        <div class="vocab-item">
+          <span class="vocab-word">parable</span>
+          <span class="vocab-def">a short story that teaches a moral or spiritual lesson</span>
+          <span class="vocab-tr">🇹🇷 mesel, öğretici kısa hikaye</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">freedom</span>
+          <span class="vocab-def">the ability to do or say what you want without control</span>
+          <span class="vocab-tr">🇹🇷 özgürlük</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">innocent</span>
+          <span class="vocab-def">not guilty; having done nothing wrong</span>
+          <span class="vocab-tr">🇹🇷 masum, suçsuz</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">rebellion</span>
+          <span class="vocab-def">a refusal to accept or obey something</span>
+          <span class="vocab-tr">🇹🇷 isyan, başkaldırı</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-section">
+      <div class="questions-header">Think About It</div>
+      <div class="question" data-n="1.">What is Ivan's main problem with the world?</div>
+      <div class="question" data-n="2.">What does "I return the ticket" mean? What ticket?</div>
+      <div class="question" data-n="3.">Do you think Ivan's argument is powerful? What would you say to him?</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(4)">← Previous</button>
+      <span class="page-counter">5 / 8</span>
+      <button class="nav-btn fwd" onclick="goTo(6)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══ PAGE 6 ══ -->
+  <div class="page" id="page-6">
+    <div class="chap-tag">Chapter Six</div>
+    <h1 class="page-title">
+      <em>A Dark Night</em>
+      The Murder
+    </h1>
+
+    <div class="scene">
+      <div class="s6-bg"></div>
+      <div class="s6-shadow"></div>
+      <div class="s6-door">
+        <div class="s6-door-knob"></div>
+        <div class="s6-crack"></div>
+      </div>
+      <div class="s6-blood"></div>
+      <div style="position:absolute;top:40px;left:30px;width:2px;height:80px;background:linear-gradient(0deg,transparent,rgba(80,80,100,0.3));"></div>
+      <div style="position:absolute;top:20px;right:40px;width:2px;height:100px;background:linear-gradient(0deg,transparent,rgba(80,80,100,0.2));"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 40% 30% at 50% 50%,rgba(100,0,0,0.08),transparent);"></div>
+      <div class="scene-caption">Fyodor's house — the night of the murder</div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        One night, old Fyodor Karamazov is found dead in his house.
+        Someone has <span class="hl" title="murdered = öldürülmüş (cinayet)">murdered</span> him.
+      </p>
+      <p>
+        The police begin their
+        <span class="hl" title="investigation = soruşturma">investigation</span>.
+        Very quickly, they point their fingers at <strong>Dmitri</strong>.
+        There are good reasons to suspect him:
+      </p>
+      <p style="padding-left:20px; border-left:1px solid rgba(201,168,76,0.3); color:rgba(242,232,213,0.75); font-style:italic;">
+        That same night, Dmitri was seen near his father's house, covered in blood.
+        He had threatened his father many times. And he needed money badly.
+      </p>
+      <p>
+        But Dmitri says he is <span class="hl" title="innocent = masum, suçsuz">innocent</span>.
+        He explains the blood: he hit a different man — an old servant — earlier that night.
+        But no one believes him easily.
+      </p>
+      <p>
+        Meanwhile, <strong>Smerdyakov</strong> — the secret fourth son who worked as Fyodor's servant —
+        suddenly has an
+        <span class="hl" title="epileptic fit = sara nöbeti">epileptic fit</span>
+        and falls ill. He cannot speak to the police.
+        He seems conveniently sick.
+      </p>
+      <p>
+        And <strong>Ivan</strong>? He had left town that same night. Was it a
+        <span class="hl" title="coincidence = tesadüf">coincidence</span>? Or something else?
+      </p>
+      <div class="quote-block">
+        The murder is clear. But the murderer is not.
+      </div>
+    </div>
+
+    <div class="vocab-section">
+      <div class="vocab-header">
+        <span class="vocab-header-title">New Words</span>
+        <span class="vocab-header-line"></span>
+      </div>
+      <div class="vocab-grid">
+        <div class="vocab-item">
+          <span class="vocab-word">murder</span>
+          <span class="vocab-def">to kill someone on purpose</span>
+          <span class="vocab-tr">🇹🇷 cinayet işlemek, öldürmek</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">investigation</span>
+          <span class="vocab-def">the process of finding out what happened in a crime</span>
+          <span class="vocab-tr">🇹🇷 soruşturma, araştırma</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">suspect</span>
+          <span class="vocab-def">to think someone may be guilty of something</span>
+          <span class="vocab-tr">🇹🇷 şüphelenmek; şüpheli (kişi)</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">coincidence</span>
+          <span class="vocab-def">when two things happen together by chance, with no connection</span>
+          <span class="vocab-tr">🇹🇷 tesadüf, rastlantı</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-section">
+      <div class="questions-header">Think About It</div>
+      <div class="question" data-n="1.">Why do people think Dmitri killed his father?</div>
+      <div class="question" data-n="2.">Who else could be the murderer? What do you think?</div>
+      <div class="question" data-n="3.">Why is it suspicious that Ivan left town that night?</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(5)">← Previous</button>
+      <span class="page-counter">6 / 8</span>
+      <button class="nav-btn fwd" onclick="goTo(7)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══ PAGE 7 ══ -->
+  <div class="page" id="page-7">
+    <div class="chap-tag">Chapter Seven</div>
+    <h1 class="page-title">
+      <em>Justice or Injustice?</em>
+      The Trial of Dmitri
+    </h1>
+
+    <div class="scene">
+      <div class="s7-bg"></div>
+      <div style="position:absolute;bottom:0;left:5%;width:18px;height:180px;background:linear-gradient(90deg,#1A1810,#141210,#1A1810);border-top:6px solid rgba(150,130,80,0.3);"></div>
+      <div style="position:absolute;bottom:0;left:20%;width:18px;height:160px;background:linear-gradient(90deg,#1A1810,#141210,#1A1810);border-top:6px solid rgba(150,130,80,0.3);"></div>
+      <div style="position:absolute;bottom:0;right:5%;width:18px;height:180px;background:linear-gradient(90deg,#1A1810,#141210,#1A1810);border-top:6px solid rgba(150,130,80,0.3);"></div>
+      <div style="position:absolute;bottom:0;right:20%;width:18px;height:160px;background:linear-gradient(90deg,#1A1810,#141210,#1A1810);border-top:6px solid rgba(150,130,80,0.3);"></div>
+      <div class="s7-podium"></div>
+      <div class="s7-crowd"></div>
+      <div style="position:absolute;top:20px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(150,130,80,0.15),transparent);"></div>
+      <div style="position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(180deg,rgba(10,8,6,0.9),transparent);"></div>
+      <div class="scene-caption">The courtroom — all of Russia watches</div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        The trial of Dmitri Karamazov becomes the most talked-about event in Russia.
+        Everyone has an opinion. Is he guilty? Is he innocent?
+        The courtroom is full every day.
+      </p>
+      <p>
+        The <span class="hl" title="prosecutor = savcı">prosecutor</span> presents
+        a powerful case: Dmitri had motive, he was near the house, he was covered in blood,
+        and he needed money. It all points to him.
+      </p>
+      <p>
+        But Dmitri's <span class="hl" title="defense lawyer = savunma avukatı">defense lawyer</span>
+        argues brilliantly: the evidence is all
+        <span class="hl" title="circumstantial = dolaylı (delil), kanıtlanmamış">circumstantial</span>.
+        No one actually saw Dmitri commit the murder. And there is another suspect
+        who has been ignored: Smerdyakov.
+      </p>
+      <p>
+        Before the verdict, Ivan has a secret visit with Smerdyakov.
+        And Smerdyakov tells him something
+        <span class="hl" title="devastating = yıkıcı, sarsıcı">devastating</span>:
+      </p>
+      <div class="quote-block">
+        "I killed him. I did it. But you wanted it done, Ivan. Remember your words? 'Everything is permitted.' You gave me the idea. We both killed him."
+      </div>
+      <p>
+        Ivan is horrified. He goes to the courtroom and tries to confess this truth.
+        But he is clearly sick and confused — he is losing his mind.
+        Nobody takes him seriously. In the end, Dmitri is found
+        <span class="hl" title="guilty = suçlu">guilty</span>.
+        He is sent to Siberia.
+      </p>
+    </div>
+
+    <div class="vocab-section">
+      <div class="vocab-header">
+        <span class="vocab-header-title">New Words</span>
+        <span class="vocab-header-line"></span>
+      </div>
+      <div class="vocab-grid">
+        <div class="vocab-item">
+          <span class="vocab-word">prosecutor</span>
+          <span class="vocab-def">the lawyer who argues in court that someone is guilty</span>
+          <span class="vocab-tr">🇹🇷 savcı</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">evidence</span>
+          <span class="vocab-def">information or objects that help prove something is true</span>
+          <span class="vocab-tr">🇹🇷 kanıt, delil</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">verdict</span>
+          <span class="vocab-def">the official decision in a court case: guilty or not guilty</span>
+          <span class="vocab-tr">🇹🇷 karar (mahkeme), hüküm</span>
+        </div>
+        <div class="vocab-item">
+          <span class="vocab-word">confess</span>
+          <span class="vocab-def">to admit that you did something wrong</span>
+          <span class="vocab-tr">🇹🇷 itiraf etmek</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-section">
+      <div class="questions-header">Think About It</div>
+      <div class="question" data-n="1.">Who really killed Fyodor Karamazov?</div>
+      <div class="question" data-n="2.">What did Smerdyakov mean when he said "we both killed him"?</div>
+      <div class="question" data-n="3.">Do you think the verdict was just? Is Dmitri guilty in any way?</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(6)">← Previous</button>
+      <span class="page-counter">7 / 8</span>
+      <button class="nav-btn fwd" onclick="goTo(8)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ══ PAGE 8 ══ -->
+  <div class="page" id="page-8">
+    <div class="chap-tag">Chapter Eight · The Final Chapter</div>
+    <h1 class="page-title">
+      <em>After the Storm</em>
+      Love Remains
+    </h1>
+
+    <div class="scene">
+      <div class="s8-bg"></div>
+      <div class="s8-stars"></div>
+      <div class="s8-sun-glow"></div>
+      <div class="s8-horizon"></div>
+      <div class="s8-figure"></div>
+      <div style="position:absolute;bottom:62px;left:calc(50% - 28px);width:12px;height:40px;background:rgba(0,0,0,0.9);border-radius:6px 6px 3px 3px;"></div>
+      <div style="position:absolute;bottom:62px;left:calc(50% - 28px);top:auto;" >
+        <div style="position:absolute;bottom:38px;left:6px;width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.9);"></div>
+      </div>
+      <div style="position:absolute;bottom:40px;left:0;right:0;height:30px;background:linear-gradient(0deg,rgba(0,0,0,0.4),transparent);"></div>
+      <div class="scene-caption">Alyosha speaks to the children — hope after tragedy</div>
+    </div>
+
+    <div class="story-text">
+      <p>
+        After the trial, everything has changed.
+        Dmitri is sent away to Siberia — but Grushenka, who truly loves him now,
+        decides to go with him. It is a kind of love story inside the tragedy.
+      </p>
+      <p>
+        Ivan is very ill. His meetings with Smerdyakov and his own dark thoughts
+        have broken his mind. He lies in bed, sick with guilt and fever.
+        Smerdyakov takes his own life. Ivan's great
+        <span class="hl" title="philosophy = felsefe">philosophy</span>
+        — "everything is permitted" — has ended in disaster.
+      </p>
+      <p>
+        And <strong>Alyosha</strong>? He continues to love everyone around him
+        — his broken brother, his sick brother, the town, the children he teaches.
+      </p>
+      <p>
+        In the final scene, a young boy named Ilyusha has just died.
+        His friends are standing at his
+        <span class="hl" title="grave = mezar">grave</span>,
+        crying. Alyosha speaks to them:
+      </p>
+      <div class="quote-block">
+        "Let us remember Ilyusha. Let us always remember the good moments, the kind moments. Even when life is dark, even when everything seems broken — love one another. That is the answer. That is all."
+      </div>
+      <p>
+        The boys shout: <em>"Karamazov! Karamazov!"</em> — not understanding fully,
+        but feeling something true and warm in his words.
+      </p>
+      <p>
+        Dostoevsky does not give us easy answers. But he gives us Alyosha —
+        a small light in a very dark world.
+      </p>
+    </div>
+
+    <div class="themes-grid">
+      <div style="font-family:'Playfair Display',serif;font-size:11px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:4px;display:flex;align-items:center;gap:14px;">
+        The Big Themes
+        <span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(201,168,76,0.3),transparent);display:block;"></span>
+      </div>
+      <div class="theme-item">
+        <h4>Faith vs. Doubt — İman ve Şüphe</h4>
+        <p>Ivan doubts God because of suffering. Alyosha believes in God because of love. Both are intelligent. Both are honest. Dostoevsky does not tell us who is right.</p>
+      </div>
+      <div class="theme-item">
+        <h4>Freedom and Responsibility — Özgürlük ve Sorumluluk</h4>
+        <p>Ivan said "everything is permitted." Smerdyakov took those words seriously. This shows us that ideas have consequences — thinking is not just private.</p>
+      </div>
+      <div class="theme-item">
+        <h4>Guilt and the "Karamazov spirit" — Suçluluk ve Karamazov Ruhu</h4>
+        <p>All the brothers are "guilty" in different ways — of anger, doubt, cowardice. But all of them also have goodness. Dostoevsky says we are all both — good and bad together.</p>
+      </div>
+      <div class="theme-item">
+        <h4>Love as the Answer — Cevap Olarak Sevgi</h4>
+        <p>Against all the darkness, Dostoevsky's final answer is simple: love people. Not perfectly, not easily — but sincerely. That is what Alyosha shows us.</p>
+      </div>
+    </div>
+
+    <div class="ending-wrap">
+      <h2>The End</h2>
+      <p>
+        You have read <em>The Brothers Karamazov</em> — one of the most powerful novels ever written.
+        Dostoevsky wrote it while he was dying. He finished it in 1880. He died in 1881.<br><br>
+        The questions he asked — about God, suffering, freedom, and love —
+        are still some of the most important questions we face today.
+      </p>
+    </div>
+
+    <div class="questions-section">
+      <div class="questions-header">Final Reflection</div>
+      <div class="question" data-n="1.">In your own words — what is the story of the Karamazov brothers?</div>
+      <div class="question" data-n="2.">Which brother do you identify with most — Dmitri, Ivan, or Alyosha? Why?</div>
+      <div class="question" data-n="3.">Ivan says "everything is permitted." Do you agree or disagree?</div>
+      <div class="question" data-n="4.">What is the most important lesson you take from this story?</div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" onclick="goTo(7)">← Previous</button>
+      <span class="page-counter">8 / 8</span>
+      <button class="nav-btn fwd" onclick="backToCover()">📖 Back to Cover</button>
+    </div>
+  </div>
+
+</div><!-- #story -->
+
+<script>
+const TOTAL = 8;
+
+function startStory() {
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('story').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function backToCover() {
+  document.getElementById('story').style.display = 'none';
+  document.getElementById('cover').style.display = 'flex';
+  window.scrollTo(0,0);
+}
+
+function goTo(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + n).classList.add('active');
+  const pct = Math.round(n / TOTAL * 100);
+  document.getElementById('prog-label').textContent = 'Chapter ' + n + ' of ' + TOTAL;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

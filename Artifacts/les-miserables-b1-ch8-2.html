@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les Misérables — Bölüm 8</title>
+<style>
+:root{--font:Verdana,Geneva,Tahoma,sans-serif;--radius:10px;--radius-sm:6px;--trans:0.22s ease;
+--bg:#070b18;--surface:#0c1120;--card:#101929;--card-hover:#16213a;
+--border:#1a2a44;--border-light:#243757;--text:#e2e8f0;--text-muted:#94a3b8;--text-dim:#475569;
+--blue:#3b82f6;--blue-bright:#60a5fa;--blue-dim:rgba(59,130,246,0.14);--indigo:#818cf8;
+--correct:#22c55e;--wrong:#ef4444;--correct-bg:rgba(34,197,94,0.1);--wrong-bg:rgba(239,68,68,0.1);
+--sticky-h:0px;
+--c1:#f472b6;--c2:#fbbf24;--c3:#4ade80;--c4:#38bdf8;--c5:#fb923c;--c6:#a78bfa;--c7:#34d399;--c8:#e879f9}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+button{cursor:pointer;font-family:var(--font)} input,textarea{font-family:var(--font)}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:13.5px;line-height:1.75}
+
+/* ══ STICKY NAV WRAPPER — sabit kalır */
+.sticky-nav{position:sticky;top:0;z-index:200;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 2px 16px rgba(0,0,0,.45)}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border)}
+.hl{display:flex;align-items:center;gap:14px} .bi{font-size:24px}
+header h1{font-size:17px;font-weight:bold;color:var(--blue-bright);letter-spacing:.02em}
+.hs{font-size:11px;color:var(--text-dim);margin-top:1px}
+.hr{display:flex;align-items:center;gap:10px}
+.cbadge{font-size:11px;background:var(--blue-dim);color:var(--blue-bright);border:1px solid rgba(96,165,250,0.25);padding:4px 11px;border-radius:20px;letter-spacing:.04em}
+.tbtn{background:var(--card);border:1px solid var(--border);color:var(--text-muted);padding:5px 12px;border-radius:var(--radius-sm);font-size:12px;transition:all var(--trans)}
+.tbtn:hover{background:var(--card-hover);color:var(--text)}
+.lvl-bar{background:rgba(59,130,246,0.08);border-bottom:1px solid rgba(59,130,246,0.12);padding:7px 28px;font-size:11.5px;color:var(--blue-bright);display:flex;align-items:center;gap:10px}
+.lvl-bar strong{font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.tnav{display:flex;padding:0 28px;overflow-x:auto;gap:0}
+.tnav::-webkit-scrollbar{height:3px} .tnav::-webkit-scrollbar-thumb{background:var(--border)}
+.tb{background:none;border:none;border-bottom:2px solid transparent;color:var(--text-muted);padding:11px 18px;font-size:12.5px;font-weight:bold;letter-spacing:.03em;white-space:nowrap;transition:all var(--trans)}
+.tb.active{color:var(--blue-bright);border-bottom-color:var(--blue)} .tb:hover{color:var(--text)}
+
+main{max-width:920px;margin:0 auto;padding:24px 28px 60px}
+.tp{display:none;animation:fu .22s ease} .tp.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.slbl{font-size:10px;font-weight:bold;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.slbl span{color:var(--blue)}
+.rh{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.rm h2{font-size:21px;color:#fff;font-weight:bold;margin-bottom:3px} .rm p{font-size:12px;color:var(--text-muted)}
+.bsm{background:var(--card);border:1px solid var(--border);padding:5px 13px;border-radius:20px;font-size:11px;color:var(--text-muted);white-space:nowrap}
+.bsm span{color:var(--blue-bright);font-weight:bold}
+.recall{background:rgba(96,165,250,0.07);border:1px solid rgba(96,165,250,0.18);border-left:3px solid var(--blue);border-radius:var(--radius-sm);padding:11px 15px;margin-bottom:20px;font-size:12.5px;color:var(--text-muted);line-height:1.7}
+.recall strong{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);display:block;margin-bottom:3px}
+.lgnd{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:13px 17px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:7px 18px}
+.lgnd-t{width:100%;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px}
+.li{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-muted)} .ld{width:8px;height:8px;border-radius:50%;flex-shrink:0} .li span{font-size:10px;color:var(--text-dim)}
+.ctx{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-left:3px solid var(--blue);border-radius:var(--radius-sm);padding:11px 15px;margin-bottom:20px;font-size:12.5px;color:var(--text-muted);line-height:1.7}
+.ctx strong{color:var(--blue-bright)}
+.passage{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:30px 34px;margin-bottom:8px}
+.passage p{margin-bottom:14px;font-size:14.5px;line-height:2;color:var(--text);text-align:justify}
+.passage p:last-child{margin-bottom:0}
+.pfoot{display:flex;justify-content:flex-end;font-size:11px;color:var(--text-dim);padding:7px 0 22px}
+.gt{cursor:help;border-bottom:2px solid;border-radius:1px;padding-bottom:1px;transition:opacity .15s} .gt:hover{opacity:.75}
+.gt.g1{color:var(--c1);border-color:var(--c1)} .gt.g2{color:var(--c2);border-color:var(--c2)}
+.gt.g3{color:var(--c3);border-color:var(--c3)} .gt.g4{color:var(--c4);border-color:var(--c4)}
+.gt.g5{color:var(--c5);border-color:var(--c5)} .gt.g6{color:var(--c6);border-color:var(--c6)}
+.gt.g7{color:var(--c7);border-color:var(--c7)} .gt.g8{color:var(--c8);border-color:var(--c8)}
+#tt{position:fixed;z-index:9999;background:#0a1628;border:1px solid var(--border-light);border-radius:var(--radius);padding:14px 16px;width:345px;pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 10px 40px rgba(0,0,0,.7)}
+#tt.on{opacity:1}
+.tth{display:flex;align-items:center;gap:8px;margin-bottom:9px} .tti{font-size:15px} .ttn{font-size:13px;font-weight:bold;color:#fff} .tts2{font-size:10px;color:var(--text-dim);margin-left:auto}
+.ttf{font-size:11px;font-family:monospace;padding:6px 10px;background:rgba(255,255,255,.04);border-radius:4px;color:#94a3b8;margin-bottom:8px}
+.tte{font-size:12px;color:#cbd5e1;margin-bottom:8px;line-height:1.65}
+.ttxi{border-left:2px solid;padding:4px 9px;margin-bottom:4px;border-radius:0 3px 3px 0}
+.tten{font-size:11.5px;color:#e2e8f0;margin-bottom:1px} .tttr{font-size:11px;color:#64748b}
+.ttedge{margin-top:8px;background:rgba(251,146,60,.08);border-radius:6px;padding:8px 10px}
+.ttedge-t{font-size:10px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:#f97316;margin-bottom:5px}
+.ttedge ul{padding-left:14px;margin:0} .ttedge li{font-size:11px;color:#fdba74;line-height:1.6;margin-bottom:1px}
+/* VOCAB */
+.vctrl{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.vfil{display:flex;flex-wrap:wrap;gap:7px}
+.fb{background:var(--card);border:1px solid var(--border);color:var(--text-muted);padding:6px 13px;border-radius:20px;font-size:12px;font-family:var(--font);transition:all .2s}
+.fb:hover{background:var(--card-hover)} .fb.active{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:bold}
+.mbtns{display:flex;gap:6px}
+.mbtn{background:var(--card);border:1px solid var(--border);color:var(--text-muted);padding:6px 13px;border-radius:var(--radius-sm);font-size:12px;font-family:var(--font);transition:all .2s}
+.mbtn.active{background:var(--blue-dim);border-color:var(--blue);color:var(--blue-bright)}
+.vcnt{font-size:11px;color:var(--text-dim);margin-bottom:16px} .vcnt span{color:var(--blue-bright)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:13px}
+.vc{height:152px;perspective:800px;cursor:pointer}
+.vci{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .42s cubic-bezier(.4,0,.2,1)}
+.vc.flipped .vci{transform:rotateY(180deg)}
+.vcf{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:var(--radius);padding:15px;border:1px solid var(--border);display:flex;flex-direction:column;justify-content:space-between;background:var(--card)}
+.vcf:hover{border-color:var(--border-light)} .vcb{transform:rotateY(180deg);background:var(--card-hover)}
+.vcw{font-size:16px;font-weight:bold;color:#fff} .vcp{font-size:11.5px;color:var(--blue);margin-top:3px}
+.vcat{font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:3px 7px;border-radius:8px;align-self:flex-start}
+.vch{font-size:10px;color:var(--text-dim);text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.sbadge{font-size:9px;background:rgba(251,146,60,.15);color:#fb923c;border:1px solid rgba(251,146,60,.25);padding:2px 6px;border-radius:8px}
+.vctr{font-size:14.5px;font-weight:bold;color:var(--blue-bright);margin-bottom:5px}
+.vcex{font-size:11.5px;color:var(--text-muted);line-height:1.5;font-style:italic;margin-bottom:4px}
+.vcst{font-size:10.5px;color:#fb923c;background:rgba(251,146,60,.08);border-radius:4px;padding:3px 7px;margin-top:2px}
+.cat-action{background:rgba(96,165,250,.15);color:#60a5fa} .cat-emotion{background:rgba(244,63,94,.15);color:#f43f5e}
+.cat-describe{background:rgba(45,212,191,.15);color:#2dd4bf} .cat-object{background:rgba(250,204,21,.15);color:#facc15}
+.cat-phrase{background:rgba(129,140,248,.15);color:#818cf8}
+#vquiz{display:none}
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:13px}
+.qq{font-size:14.5px;font-weight:bold;color:#fff;margin-bottom:13px}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qo{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);padding:9px 13px;border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);text-align:left;transition:all .18s}
+.qo:hover{background:var(--card-hover);color:var(--text);border-color:var(--border-light)}
+.qo.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.qo.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.qfb{font-size:12px;margin-top:9px;padding:8px 12px;border-radius:var(--radius-sm);display:none}
+.qfb.show{display:block} .qfb.ok{background:var(--correct-bg);color:var(--correct)} .qfb.bad{background:var(--wrong-bg);color:var(--wrong)}
+.qscore{background:var(--blue-dim);border:1px solid rgba(59,130,246,.25);border-radius:var(--radius);padding:12px 18px;margin-bottom:16px;font-size:13px;color:var(--blue-bright);display:flex;justify-content:space-between;align-items:center}
+.mreset{background:var(--blue-dim);border:1px solid rgba(59,130,246,.3);color:var(--blue-bright);padding:7px 16px;border-radius:var(--radius-sm);font-size:12px}
+#vmatch{display:none}
+.mboard{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:18px}
+.mcolt{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;text-align:center}
+.mcol{display:flex;flex-direction:column;gap:8px}
+.mi{background:var(--card);border:2px solid var(--border);color:var(--text-muted);padding:9px 12px;border-radius:var(--radius-sm);font-size:13px;text-align:center;cursor:pointer;transition:all .18s;user-select:none}
+.mi:hover{border-color:var(--blue);color:var(--text)} .mi.sel{border-color:var(--blue);background:var(--blue-dim);color:var(--blue-bright)}
+.mi.mat{border-color:var(--correct);background:var(--correct-bg);color:var(--correct);cursor:default}
+.mi.wfl{border-color:var(--wrong);background:var(--wrong-bg);animation:fl .4s ease}
+@keyframes fl{0%,100%{opacity:1}50%{opacity:.35}}
+.mscore{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text-muted)}
+.mscore span{color:var(--blue-bright);font-weight:bold}
+#vwrite{display:none}
+.swc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:12px}
+.sww{font-size:15px;font-weight:bold;color:#fff;margin-bottom:2px} .swtr{font-size:12px;color:var(--blue);margin-bottom:9px}
+.swp{font-size:12.5px;color:var(--text-muted);margin-bottom:7px;font-style:italic}
+.swi{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 13px;border-radius:var(--radius-sm);font-size:13px;outline:none;transition:border-color var(--trans)}
+.swi:focus{border-color:var(--blue)}
+.swbtns{display:flex;gap:8px;margin-top:8px}
+.swck{background:var(--blue);color:#fff;border:none;padding:7px 16px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:bold}
+.swsh{background:var(--card-hover);border:1px solid var(--border);color:var(--text-muted);padding:7px 14px;border-radius:var(--radius-sm);font-size:12.5px}
+.swfb{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:var(--radius-sm);display:none;line-height:1.6}
+.swfb.show{display:block} .swfb.ok{background:var(--correct-bg);color:var(--correct)} .swfb.bad{background:var(--wrong-bg);color:var(--wrong)} .swfb.info{background:var(--blue-dim);color:var(--blue-bright)}
+.stsec{background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius);padding:18px 22px;margin-top:8px}
+.stt{font-size:11px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;color:#fb923c;margin-bottom:12px}
+.sti{border-bottom:1px solid rgba(251,146,60,.12);padding-bottom:10px;margin-bottom:10px}
+.sti:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.stw{font-size:14px;font-weight:bold;color:#fff;margin-bottom:3px} .stn{font-size:12.5px;color:#fdba74;line-height:1.65} .stex{font-size:12px;color:var(--text-dim);margin-top:4px;font-style:italic}
+.gi{font-size:12.5px;color:var(--text-muted);margin-bottom:18px;line-height:1.7;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 17px}
+.ggrid{display:flex;flex-direction:column;gap:10px}
+.gc{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden} .gc:hover{border-color:var(--border-light)}
+.gch{display:flex;align-items:center;gap:12px;padding:13px 17px;cursor:pointer;user-select:none}
+.gcbar{width:4px;height:30px;border-radius:2px;flex-shrink:0}
+.gct{flex:1} .gct strong{font-size:13.5px;display:block;margin-bottom:1px} .gct small{font-size:11px;color:var(--text-dim)}
+.gcarr{font-size:14px;color:var(--text-dim);transition:transform .2s} .gc.open .gcarr{transform:rotate(90deg)}
+.gcb{display:none;padding:0 17px 17px;border-top:1px solid var(--border)} .gc.open .gcb{display:block}
+.gcf{font-family:monospace;font-size:12.5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 13px;margin:11px 0;color:var(--blue-bright)}
+.gce{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:12px}
+.gcex{border-left:3px solid;padding:5px 11px;margin-bottom:5px;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.gcen{font-size:13px;margin-bottom:2px} .gctr{font-size:11.5px;color:var(--text-dim)}
+.ebox{background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:13px}
+.ebt{font-size:10px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:#f97316;margin-bottom:7px}
+.ebox ul{padding-left:14px;margin:0} .ebox li{font-size:12px;color:#fdba74;line-height:1.7;margin-bottom:2px}
+.mq{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 15px}
+.mqt{font-size:10px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:9px}
+.mqq{font-size:13px;margin-bottom:8px}
+.mqo{display:flex;flex-direction:column;gap:5px}
+.mqb{background:var(--card);border:1px solid var(--border);color:var(--text-muted);padding:7px 12px;border-radius:var(--radius-sm);font-size:12.5px;font-family:var(--font);text-align:left;transition:all .15s}
+.mqb:hover{background:var(--card-hover);color:var(--text)}
+.mqb.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.mqb.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.mqf{font-size:12px;margin-top:8px;padding:6px 10px;border-radius:var(--radius-sm);display:none}
+.mqf.show{display:block} .mqf.ok{background:var(--correct-bg);color:var(--correct)} .mqf.bad{background:var(--wrong-bg);color:var(--wrong)}
+.exh{margin-bottom:20px} .exh h2{font-size:17px;color:#fff;margin-bottom:5px} .exh p{font-size:12.5px;color:var(--text-muted)}
+.sbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 17px;margin-bottom:18px;display:flex;align-items:center;gap:14px}
+.sl2{font-size:12px;color:var(--text-muted);flex-shrink:0}
+.strk{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.sfill{height:100%;background:var(--blue);border-radius:3px;transition:width .5s ease}
+.snum{font-size:13px;font-weight:bold;color:var(--blue-bright);flex-shrink:0}
+.exbl{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:19px 21px;margin-bottom:16px}
+.exblt{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.exn{width:26px;height:26px;background:var(--blue);color:#fff;border-radius:50%;font-size:12px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ext{font-size:14px;font-weight:bold} .exs{font-size:11.5px;color:var(--text-dim);margin-bottom:15px;margin-left:36px}
+.exi{margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid var(--border)} .exi:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.exq{font-size:13.5px;margin-bottom:7px;line-height:1.6}
+.exin{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 13px;border-radius:var(--radius-sm);font-size:13px;outline:none;transition:border-color var(--trans)}
+.exin:focus{border-color:var(--blue)}
+.exta{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 13px;border-radius:var(--radius-sm);font-size:13px;resize:vertical;min-height:75px;outline:none;transition:border-color var(--trans)}
+.exta:focus{border-color:var(--blue)}
+.exhnt{font-size:11px;color:var(--text-dim);margin-top:3px;font-style:italic}
+.exbtns{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+.exck{background:var(--blue);color:#fff;border:none;padding:7px 17px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:bold}
+.exck:hover{background:#2563eb}
+.exrv{background:var(--card-hover);border:1px solid var(--border);color:var(--text-muted);padding:7px 14px;border-radius:var(--radius-sm);font-size:12.5px}
+.exrv:hover{color:var(--text)}
+.exfb{margin-top:9px;padding:9px 13px;border-radius:var(--radius-sm);font-size:12.5px;line-height:1.6;display:none}
+.exfb.show{display:block}
+.exfb.correct{background:var(--correct-bg);border:1px solid rgba(34,197,94,.25);color:var(--correct)}
+.exfb.wrong{background:var(--wrong-bg);border:1px solid rgba(239,68,68,.25);color:var(--wrong)}
+.exfb.info{background:var(--blue-dim);border:1px solid rgba(59,130,246,.25);color:var(--blue-bright)}
+.ecopts{display:flex;flex-direction:column;gap:6px;margin-top:7px}
+.ecopt{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);padding:8px 13px;border-radius:var(--radius-sm);font-size:13px;font-family:var(--font);text-align:left;transition:all .15s}
+.ecopt:hover{background:var(--card);color:var(--text);border-color:var(--border-light)}
+.ecopt.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.ecopt.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.exsec{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:21px 25px;margin-bottom:16px}
+.exsec h3{font-size:15px;color:#fff;margin-bottom:3px;font-weight:bold} .exsec .sub{font-size:11px;color:var(--text-dim);margin-bottom:13px}
+.exsec p{font-size:13px;color:var(--text-muted);line-height:1.75;margin-bottom:11px} .exsec p:last-child{margin-bottom:0}
+.vi{font-weight:bold;color:#fff} .vi small{font-size:10.5px;color:var(--text-dim);font-weight:normal}
+.hp{background:var(--blue-dim);border-radius:3px;padding:1px 5px;color:var(--blue-bright);font-style:italic}
+.cbox{background:rgba(129,140,248,.07);border:1px solid rgba(129,140,248,.2);border-left:3px solid var(--indigo);border-radius:var(--radius-sm);padding:12px 16px;margin:12px 0;font-size:13px;color:#a5b4fc;line-height:1.75}
+.cbox strong{color:var(--indigo);display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.pbox{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.18);border-left:3px solid #22c55e;border-radius:var(--radius-sm);padding:12px 16px;margin:12px 0;font-size:13px;color:#86efac;line-height:1.75}
+.pbox strong{color:#4ade80;display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.ctbl{width:100%;border-collapse:collapse;margin:11px 0;font-size:12.5px}
+.ctbl th{background:var(--surface);padding:7px 11px;text-align:left;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);letter-spacing:.05em;text-transform:uppercase}
+.ctbl td{padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6}
+.ctbl tr:last-child td{border-bottom:none}
+.wa{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 17px;margin-top:13px}
+.wat{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:7px}
+/* Light theme overrides */
+[data-theme="light"]{--bg:#f0f4ff;--surface:#e4eaf8;--card:#d8e2f5;--text:#0f1729;--text-muted:#374151;--border:#bfcde8}
+@media(max-width:620px){
+  header{padding:12px 15px} main{padding:14px 15px 50px}
+  .tnav{padding:0 10px} .tb{padding:10px 11px;font-size:11.5px}
+  .passage{padding:19px 17px} .passage p{font-size:13.5px}
+  .vgrid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+  #tt{width:270px} .cbadge{display:none}
+  .qopts{grid-template-columns:1fr} .mboard{grid-template-columns:1fr;gap:12px}
+  .lvl-bar{padding:6px 15px}
+}
+</style>
+</head>
+<body>
+
+<div id="tt">
+  <div class="tth"><span class="tti" id="tti2"></span><span class="ttn" id="ttn2"></span><span class="tts2" id="tts3"></span></div>
+  <div class="ttf" id="ttf2"></div><div class="tte" id="tte2"></div><div id="ttex2"></div>
+  <div class="ttedge" id="ttedge2" style="display:none"><div class="ttedge-t">⚠️ Dikkat</div><ul id="ttedgelist2"></ul></div>
+</div>
+
+<!-- ══ STICKY WRAPPER — header + level + tabs hep görünür -->
+<div class="sticky-nav">
+  <header>
+    <div class="hl"><div class="bi">📖</div><div><h1>Les Misérables</h1><div class="hs">English Reading System &middot; Victor Hugo</div></div></div>
+    <div class="hr"><div class="cbadge">Bölüm 8 &middot; The Garden</div><button class="tbtn" onclick="toggleTheme()" id="themebtn">☀️ Açık</button></div>
+  </header>
+  <div class="lvl-bar"><span>🎯</span><div><strong>B1 Seviye</strong> — Cosette ve Marius bahçede. 8 yeni yapı. Menü her zaman görünür.</div></div>
+  <nav class="tnav">
+    <button class="tb active" data-tab="reading">📖 Reading</button>
+    <button class="tb" data-tab="vocabulary">📚 Vocabulary</button>
+    <button class="tb" data-tab="grammar">⚙️ Grammar</button>
+    <button class="tb" data-tab="exercises">✏️ Exercises</button>
+    <button class="tb" data-tab="explore">💭 Explore</button>
+  </nav>
+</div>
+
+<main>
+
+<!-- ████ READING -->
+<div class="tp active" id="tab-reading">
+  <div class="rh">
+    <div class="rm"><h2>The Garden</h2><p>Les Misérables, Part Three &middot; ~450 kelime &middot; Bölüm 8</p></div>
+    <div class="bsm">Seviye: <span>B1</span> &nbsp;|&nbsp; Hover: <span>renkler</span></div>
+  </div>
+
+  <div class="recall">
+    <strong>📌 Bölüm 7'den hatırla</strong>
+    Javert Valjean'ın Paris'teki evini buldu. Valjean ve Cosette gece gece kaçtı, Picpus Manastırı'nın duvarını aştı. İçeride yaşlı bahçıvan Fauchelevent onları bekliyordu. Manastırda yıllarca güvende yaşadılar. Sonunda Paris'e döndüler.
+  </div>
+
+  <div class="lgnd">
+    <div class="lgnd-t">Gramer etiketleri — imleci üstüne getir</div>
+    <div class="li"><div class="ld" style="background:var(--c1)"></div>Present Perfect Continuous <span>(has/have been + -ing)</span></div>
+    <div class="li"><div class="ld" style="background:var(--c2)"></div>it seems / it appears / it turns out <span>(görünüşe göre / meğer)</span></div>
+    <div class="li"><div class="ld" style="background:var(--c3)"></div>Reflexive Pronouns <span>(himself / herself / themselves)</span></div>
+    <div class="li"><div class="ld" style="background:var(--c4)"></div>would rather / would prefer <span>(tercih — -mayı tercih ederim)</span></div>
+    <div class="li"><div class="ld" style="background:var(--c5)"></div>such as / for instance / for example <span>(örneğin)</span></div>
+    <div class="li"><div class="ld" style="background:var(--c6)"></div>get + V3 passive <span>(get hurt / get lost / get noticed)</span></div>
+    <div class="li"><div class="ld" style="background:var(--c7)"></div>Noun Clause as Object <span>(I know that / I think that)</span></div>
+    <div class="li"><div class="ld" style="background:var(--c8)"></div>though / even though / although <span>(küçük farklar)</span></div>
+  </div>
+
+  <div class="ctx">
+    <strong>Bu bölümde ne oluyor?</strong> Manastır yıllarından sonra Valjean ve Cosette Paris'te küçük bir evde yaşıyor. Cosette artık on altı yaşında, güzel ve meraklı. Valjean her gün onu Lüksemburg Bahçesi'ne götürüyor. Bir gün genç bir adam — Marius — Cosette'e bakıyor. Ve her şey değişmeye başlıyor.
+  </div>
+
+  <div class="passage">
+
+    <p>For the past two years, Valjean and Cosette <span class="gt g1" data-g="g1">had been living</span> quietly in the Rue Plumet — a house with a small garden, tall trees, and a gate that stayed locked from the inside. Cosette <span class="gt g1" data-g="g1">had been growing</span>, in more ways than one. She was taller. She read books. She <span class="gt g3" data-g="g3">taught herself</span> to draw. She <span class="gt g3" data-g="g3">asked herself</span>, sometimes, whether the world was larger than the garden walls.</p>
+
+    <p>Every afternoon, Valjean <span class="gt g5" data-g="g5">would take her</span> to the Luxembourg Gardens — one of Paris's great parks, with long paths, stone benches, and <span class="gt g5" data-g="g5">such sights as</span> the city rarely offered: light through leaves, old men reading newspapers, children chasing pigeons.</p>
+
+    <p>One afternoon in spring, a young man was sitting on a bench near the fountain. His name was Marius Pontmercy. He was twenty years old, a law student — poor, idealistic, and, <span class="gt g2" data-g="g2">it seemed</span>, entirely alone in the world. He had been <span class="gt g6" data-g="g6">thrown out</span> of his grandfather's house after a political argument, and he <span class="gt g1" data-g="g1">had been living</span> on very little ever since.</p>
+
+    <p>He noticed Cosette first. <span class="gt g2" data-g="g2">It seemed to him</span> that he had never seen anyone like her — quiet and serious, <span class="gt g8" data-g="g8">though</span> clearly not unhappy. She walked with an old man — her father, he assumed — and they sat together every day on the same bench, the old man reading, the girl watching the fountain.</p>
+
+    <p>Marius <span class="gt g4" data-g="g4">would rather have</span> walked away. He <span class="gt g7" data-g="g7">knew that</span> staring was rude. He <span class="gt g7" data-g="g7">believed that</span> he was a serious person with serious concerns — politics, law, the poor of Paris. And yet, day after day, he returned to that same bench.</p>
+
+    <p>One afternoon he sat closer than usual. Cosette was reading. <span class="gt g8" data-g="g8">Although</span> she did not look up, she was aware of him — the way you are aware of a sound that does not stop. She <span class="gt g7" data-g="g7">thought that</span> he was probably a student. His coat was worn at the elbows. He looked <span class="gt g8" data-g="g8">though</span> he had not slept well.</p>
+
+    <p>Valjean noticed none of this. He <span class="gt g1" data-g="g1">had been reading</span> the same page for twenty minutes.</p>
+
+    <p>Then one day, the young man dropped a handkerchief near Cosette's bench. She picked it up <span class="gt g3" data-g="g3">herself</span>. Their eyes met for the first time. Neither of them spoke. <span class="gt g2" data-g="g2">It turned out</span> that silence could hold <span class="gt g5" data-g="g5">quite a lot — such as</span> a first name neither of them had said, and a question neither of them had asked.</p>
+
+    <p>That evening, Valjean <span class="gt g6" data-g="g6">got</span> a feeling he did not like. He <span class="gt g4" data-g="g4">would rather have</span> continued to believe <span class="gt g7" data-g="g7">that</span> the world was only the two of them, the garden, the books, and the locked gate. <span class="gt g8" data-g="g8">Even though</span> Cosette was now sixteen, <span class="gt g3" data-g="g3">she carried herself</span> with a seriousness that sometimes reminded him, painfully, of her mother.</p>
+
+    <p>He <span class="gt g6" data-g="g6">got worried</span> in a way he could not explain — <span class="gt g8" data-g="g8">although</span> he had not seen the young man, and had not heard anything, and could not have named what had changed. <span class="gt g2" data-g="g2">It seemed</span> that spring had arrived — not only in the garden, but in Cosette herself.</p>
+
+  </div>
+  <div class="pfoot">~450 kelime &nbsp;·&nbsp; B1 Seviye &nbsp;·&nbsp; Bölüm 8</div>
+</div>
+
+<!-- ████ VOCABULARY -->
+<div class="tp" id="tab-vocabulary">
+  <div class="slbl"><span>Vocabulary</span> — Kelime Hazinesi</div>
+  <div class="vctrl">
+    <div class="vfil" id="vfil">
+      <button class="fb active" data-filter="all">Tümü</button>
+      <button class="fb" data-filter="action">Eylem</button>
+      <button class="fb" data-filter="emotion">Duygu</button>
+      <button class="fb" data-filter="describe">Tanımlama</button>
+      <button class="fb" data-filter="object">Nesne</button>
+      <button class="fb" data-filter="phrase">Kalıp</button>
+    </div>
+    <div class="mbtns">
+      <button class="mbtn active" onclick="setMode('cards')">🃏 Kartlar</button>
+      <button class="mbtn" onclick="setMode('quiz')">🧠 Quiz</button>
+      <button class="mbtn" onclick="setMode('match')">🔗 Eşleştir</button>
+      <button class="mbtn" onclick="setMode('write')">✍️ Yaz</button>
+    </div>
+  </div>
+  <div class="vcnt">Toplam <span id="vcnt">20</span> kelime</div>
+  <div id="vcards"><div class="vgrid" id="vgrid"></div></div>
+  <div id="vquiz"><div class="qscore"><span>🧠 Quiz — <span id="qsc">0/0</span></span><button class="mreset" onclick="resetQuiz()">🔄 Yeniden</button></div><div id="qcont"></div></div>
+  <div id="vmatch"><div class="mscore"><span>🔗 <span id="msc">0</span>/8 eşleşti</span><button class="mreset" onclick="resetMatch()">🔄 Yeniden</button></div>
+    <div class="mboard"><div><div class="mcolt">İngilizce</div><div class="mcol" id="mleft"></div></div><div><div class="mcolt">Türkçe</div><div class="mcol" id="mright"></div></div></div></div>
+  <div id="vwrite"><div id="wrcont"></div><div class="stsec" style="margin-top:20px"><div class="stt">🗣️ Sokak Dili — Formal vs Günlük</div><div id="stcont"></div></div></div>
+</div>
+
+<!-- ████ GRAMMAR -->
+<div class="tp" id="tab-grammar">
+  <div class="slbl"><span>Grammar</span> — 8 Yeni Yapı</div>
+  <div class="gi">Her kart: formül → açıklama → pasajdan örnekler → dikkat maddeleri → mini test.</div>
+  <div class="ggrid" id="ggrid"></div>
+</div>
+
+<!-- ████ EXERCISES -->
+<div class="tp" id="tab-exercises">
+  <div class="exh"><h2>Exercises — Alıştırmalar</h2><p>Önce kendin dene. Sonra kontrol et.</p></div>
+  <div class="sbar"><div class="sl2">İlerleme:</div><div class="strk"><div class="sfill" id="sfill" style="width:0%"></div></div><div class="snum" id="snum">0/12</div></div>
+
+  <div class="exbl">
+    <div class="exblt"><div class="exn">1</div><div class="ext">Present Perfect Continuous</div></div>
+    <div class="exs">Parantezi Present Perfect Continuous'a çevir.</div>
+    <div class="exi" data-answer="has been living" data-exid="pc1">
+      <div class="exq">1. Cosette ______ (live) in Paris for two years.</div>
+      <input class="exin" placeholder="has been..." data-item="pc1">
+      <div class="exhnt">💡 has/have been + V-ing. İki yıldır devam ediyor.</div>
+      <div class="exbtns"><button class="exck" onclick="chkFill('pc1')">Kontrol Et</button><button class="exrv" onclick="rvlFill('pc1')">Cevabı Gör</button></div>
+      <div class="exfb" id="fb-pc1"></div>
+    </div>
+    <div class="exi" data-answer="have been waiting" data-exid="pc2">
+      <div class="exq">2. We ______ (wait) for the results since this morning.</div>
+      <input class="exin" placeholder="have been..." data-item="pc2">
+      <div class="exhnt">💡 "since this morning" = başlangıç noktası → devam ediyor.</div>
+      <div class="exbtns"><button class="exck" onclick="chkFill('pc2')">Kontrol Et</button><button class="exrv" onclick="rvlFill('pc2')">Cevabı Gör</button></div>
+      <div class="exfb" id="fb-pc2"></div>
+    </div>
+    <div class="exi" data-answer="has been reading" data-exid="pc3">
+      <div class="exq">3. Valjean ______ (read) the same page for twenty minutes.</div>
+      <input class="exin" placeholder="has been..." data-item="pc3">
+      <div class="exhnt">💡 Devam eden, bitmemiş eylem — belirli süre ile.</div>
+      <div class="exbtns"><button class="exck" onclick="chkFill('pc3')">Kontrol Et</button><button class="exrv" onclick="rvlFill('pc3')">Cevabı Gör</button></div>
+      <div class="exfb" id="fb-pc3"></div>
+    </div>
+  </div>
+
+  <div class="exbl">
+    <div class="exblt"><div class="exn">2</div><div class="ext">would rather / would prefer + Hata Bulma</div></div>
+    <div class="exs">Doğru cümleyi seç.</div>
+    <div class="exi" id="ec1">
+      <div class="exq">1. "would rather" için doğru cümle?</div>
+      <div class="ecopts">
+        <button class="ecopt" onclick="chkEC('ec1',false,'Hayır. "Would rather to stay" yanlış — "to" gelmez. "Would rather + base verb" ✓')">A) I would rather to stay at home today.</button>
+        <button class="ecopt" onclick="chkEC('ec1',true,'✓ Doğru! would rather + base verb (no to). "Stay" base form.')">B) I would rather stay at home today.</button>
+        <button class="ecopt" onclick="chkEC('ec1',false,'Hayır. "Would rather staying" — gerund değil, base verb. "Would rather stay" ✓')">C) I would rather staying at home today.</button>
+      </div>
+      <div class="exfb" id="fb-ec1"></div>
+    </div>
+    <div class="exi" id="ec2">
+      <div class="exq">2. Reflexive pronoun için doğru cümle?</div>
+      <div class="ecopts">
+        <button class="ecopt" onclick="chkEC('ec2',false,'Hayır. "Hisself" İngilizce değil. "Himself" ✓ — düzensiz ama böyle.')">A) He taught hisself to play the piano.</button>
+        <button class="ecopt" onclick="chkEC('ec2',true,'✓ Doğru! "himself" = kendisi. "Teach yourself" = kendi kendine öğrenmek.')">B) He taught himself to play the piano.</button>
+        <button class="ecopt" onclick="chkEC('ec2',false,'Hayır. "Himselves" yok — reflexive pronoun tekil kalır: "himself".')">C) He taught himselves to play the piano.</button>
+      </div>
+      <div class="exfb" id="fb-ec2"></div>
+    </div>
+    <div class="exi" id="ec3">
+      <div class="exq">3. "get + V3" passive için doğru cümle?</div>
+      <div class="ecopts">
+        <button class="ecopt" onclick="chkEC('ec3',false,'Hayır. "Get hurt" hem doğru hem yanlış değil ama "get be hurt" kesinlikle yanlış. "Get" zaten passive yardımcısı.')">A) He got be hurt in the accident.</button>
+        <button class="ecopt" onclick="chkEC('ec3',true,'✓ Doğru! get + hurt (V3). "Get hurt" = yaralanmak (genellikle beklenmedik/istemeden).')">B) He got hurt in the accident.</button>
+        <button class="ecopt" onclick="chkEC('ec3',false,'Hayır. "Get hurting" yanlış. Get + V3 (past participle), -ing değil.')">C) He got hurting in the accident.</button>
+      </div>
+      <div class="exfb" id="fb-ec3"></div>
+    </div>
+    <div class="exi" id="ec4">
+      <div class="exq">4. "it seems / it turns out" için doğru cümle?</div>
+      <div class="ecopts">
+        <button class="ecopt" onclick="chkEC('ec4',false,'Hayır. "It turns out" + that + clause. "It turns out him" yanlış — doğrudan isim almaz.')">A) It turns out him to be right.</button>
+        <button class="ecopt" onclick="chkEC('ec4',true,'✓ Doğru! It turns out + that + clause. "that" isteğe bağlı ama clause şart.')">B) It turns out that he was right.</button>
+        <button class="ecopt" onclick="chkEC('ec4',false,'Hayır. "It seems that" doğru ama burada "turns out" isteniyordu. "It seems out" diye bir yapı yok.')">C) It seems out that he was right.</button>
+      </div>
+      <div class="exfb" id="fb-ec4"></div>
+    </div>
+  </div>
+
+  <div class="exbl">
+    <div class="exblt"><div class="exn">3</div><div class="ext">Türkçeden İngilizceye</div></div>
+    <div class="exs">Bu bölümün yapılarını kullan.</div>
+    <div class="exi" id="tr1">
+      <div class="exq">1. İki saattir yağmur yağıyor. <em style="color:var(--text-dim)">(Present Perfect Continuous)</em></div>
+      <textarea class="exta" placeholder="It has been raining..."></textarea>
+      <div class="exbtns"><button class="exrv" onclick="rvlAns('tr1','It has been raining for two hours.')">Örnek Cevap</button></div>
+      <div class="exfb" id="fb-tr1"></div>
+    </div>
+    <div class="exi" id="tr2">
+      <div class="exq">2. Gitmektense burada kalmayı tercih ederim. <em style="color:var(--text-dim)">(would rather)</em></div>
+      <textarea class="exta" placeholder="I would rather..."></textarea>
+      <div class="exbtns"><button class="exrv" onclick="rvlAns('tr2','I would rather stay here than go.')">Örnek Cevap</button></div>
+      <div class="exfb" id="fb-tr2"></div>
+    </div>
+    <div class="exi" id="tr3">
+      <div class="exq">3. Meğer o da Paris'te yaşıyormuş. <em style="color:var(--text-dim)">(it turns out)</em></div>
+      <textarea class="exta" placeholder="It turns out that..."></textarea>
+      <div class="exbtns"><button class="exrv" onclick="rvlAns('tr3','It turns out that he was also living in Paris.')">Örnek Cevap</button></div>
+      <div class="exfb" id="fb-tr3"></div>
+    </div>
+    <div class="exi" id="tr4">
+      <div class="exq">4. Kendisi keman çalmayı öğrendi, kimse öğretmedi. <em style="color:var(--text-dim)">(reflexive + taught)</em></div>
+      <textarea class="exta" placeholder="He taught himself..."></textarea>
+      <div class="exbtns"><button class="exrv" onclick="rvlAns('tr4','He taught himself to play the violin.')">Örnek Cevap</button></div>
+      <div class="exfb" id="fb-tr4"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ████ EXPLORE -->
+<div class="tp" id="tab-explore">
+  <div class="slbl"><span>Explore</span> — Yazarlık · Felsefe · Çeviri</div>
+
+  <div class="exsec">
+    <h3>✍️ Yazarlık Dersi — Showing Love Without Saying It</h3>
+    <div class="sub">Hugo'nun en hassas tekniği bu bölümde</div>
+    <div class="cbox">
+      <strong>Yazarlık Tekniği: Indirect Revelation</strong>
+      Hugo Marius'un Cosette'e âşık olduğunu hiç söylemiyor. Bunun yerine: her gün aynı bankta oturuyor, yaklaşıyor, uzaklaşmak istiyor ama dönüyor, cebindeki mendili düşürüyor. Duygu doğrudan söylenmez — <em>davranışla gösterilir</em>. Okuyucu Marius'tan önce anlıyor. Bu "delayed revelation" — geciktirilmiş ifşaat.
+    </div>
+    <p>Valjean'ın sezgisi de aynı şekilde çalışıyor: "He got a feeling he did not like." Hugo nedenini açıklamıyor — çünkü Valjean da bilmiyor tam olarak. Sadece hissediyor. Korkusu belirsiz. Ve bu belirsizlik, açık bir korku ifadesinden çok daha güçlü.</p>
+    <div class="cbox">
+      <strong>Yazarlık Tekniği: The Handkerchief Moment</strong>
+      Küçük bir nesne — düşürülen bir mendil — iki hayatı birleştiriyor. Hugo büyük bir jest kullanmıyor. Senaryo yok, konuşma yok. Sadece bakışma. Bu teknik: <em>miniature turning point</em> — kocaman bir değişimi küçük bir jeste sığdırmak. Senin yazmanda da dene: büyük bir sahne yerine, küçük bir nesneyle veya sessizlikle sahneyi aç.
+    </div>
+  </div>
+
+  <div class="exsec">
+    <h3>🏛️ Felsefe — Aşk ve Kimlik</h3>
+    <div class="sub">İngilizce kelimelerle birlikte</div>
+    <div class="pbox">
+      <strong>Platon — The Symposium</strong>
+      Platon'un <em>Şölen</em> diyaloğunda Aristofanes şöyle anlatır: İnsanlar başlangıçta iki kişilik yaratıklardı. Tanrılar onları ikiye böldü. <span class="vi">Love <small>(aşk)</small></span>, o andan beri kendi <span class="vi">other half <small>(diğer yarı)</small></span>'ını arayan ruhun yolculuğudur. Hugo Marius'u Cosette'e bakarken tam bu arayış içinde gösteriyor: tanımıyor ama <em>tanıyor</em>.
+    </div>
+    <p>Aristoteles bu konuda daha <span class="vi">practical <small>(pratik)</small></span>: insanlar birbirini erdemde tamamlayan <span class="vi">companions <small>(yoldaşlar)</small></span>. Marius'un Cosette'e çekimi yüzeysel değil — ikisi de yalnız, ikisi de ciddiyetle yaşıyor. <span class="vi">Like attracts like <small>(benzer benzeri çeker)</small></span>.</p>
+    <p><strong style="color:#4ade80">Bu bölümün İngilizce anahtar kelimeleri:</strong> idealistic (idealist) / fountain (çeşme / fıskiye) / pigeon (güvercin) / bench (bank, oturma tahtası) / handkerchief (mendil) / worn (yıpranmış) / aware (farkında) / stare (bakmak) / assume (varsaymak) / seriousness (ciddiyet)</p>
+  </div>
+
+  <div class="exsec">
+    <h3>📚 Çeviri Karşılaştırması</h3>
+    <div class="sub">Sessizlik sahnesi — üç dilde</div>
+    <table class="ctbl">
+      <tr><th>Dil</th><th>Cümle</th><th>Dikkat</th></tr>
+      <tr>
+        <td><strong>Français</strong></td>
+        <td><span class="hp">Il se trouva qu'un silence pouvait contenir beaucoup.</span></td>
+        <td>"Il se trouva que" = It turned out that. "contenir" = içermek, barındırmak.</td>
+      </tr>
+      <tr>
+        <td><strong>English</strong></td>
+        <td><span class="hp">It turned out that silence could hold quite a lot.</span></td>
+        <td>"hold" = tutmak/barındırmak. "quite a lot" = oldukça fazla şey — sıradan kelimelerle derin anlam.</td>
+      </tr>
+      <tr>
+        <td><strong>Türkçe</strong></td>
+        <td><span class="hp">Meğer sessizlik oldukça çok şey barındırabiliyormuş.</span></td>
+        <td>"Meğer" = it turned out. Türkçe "meğer" çevirisi kusursuz. Hugo'nun anlaşılırlığı çeviride korunmuş.</td>
+      </tr>
+    </table>
+    <p>"<span class="vi">It turns out that...</span>" kalıbını günlük hayatında kullanabilirsin: <em>"It turns out that the café was closed."</em> (Meğer kafe kapalıymış.) Bu hem doğal hem akıcı B1 İngilizcesidir.</p>
+  </div>
+
+  <div class="exsec">
+    <h3>✍️ Yazma Görevi</h3>
+    <div class="wa">
+      <div class="wat">Bu Hafta — Marius'un İç Sesi</div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Marius bahçeden çıkarken ne düşünüyordu? 4–5 cümle yaz.<br><em style="font-size:11.5px;color:var(--text-dim)">Kullan: I have been / it seems / I know that / I would rather / myself / even though</em></p>
+      <textarea class="exta" style="min-height:120px" placeholder="Write Marius's thoughts in English..."></textarea>
+      <div class="exbtns" style="margin-top:10px"><button class="exrv" onclick="showSample()">Örnek Cevabı Gör</button></div>
+      <div class="exfb" id="fb-wr" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const G={
+  g1:{name:'Present Perfect Continuous',tr:'Devam Eden Yakın Geçmiş',icon:'⏳',color:'#f472b6',
+    formula:'have/has been + V-ing',
+    explain:'"Geçmişte başladı ve hâlâ devam ediyor" veya "az önce bitti ama izi görünüyor." Türkçede "-mekte / -makta" veya "-makta olmuş" ile karşılık bulur.',
+    examples:[
+      {en:'She <u>has been growing</u> up quickly.',tr:'Hızla büyümeye devam ediyor.'},
+      {en:'He <u>had been reading</u> the same page for twenty minutes.',tr:'Yirmi dakikadır aynı sayfayı okumaktaydı.'},
+      {en:'I <u>have been waiting</u> here since noon.',tr:'Öğleden beri burada bekliyorum.'}
+    ],
+    edge:['Present Perfect (have done) = tamamlanmış. Present Perfect Continuous (have been doing) = devam ediyor.','Duration (süre): "I have been learning English for 3 years." ✓','Result (sonuç izi): "I have been running — I\'m tired." — koşmayı bıraktı ama yorgunluk var.','State verbs (know/like/want/have) bu yapıyı almaz: "I have been knowing him." ❌ → "I have known him." ✓'],
+    quiz:{q:'"Sabahtan beri çalışıyorum." — doğru?',
+      opts:[
+        {t:'I have worked since morning.',correct:false,fb:'"Have worked" tamamlandı — ama hâlâ çalışıyorsa devam ediyor. "Have been working" ✓'},
+        {t:'I have been working since morning.',correct:true,fb:'✓ Doğru! have been + working. "Since morning" başlangıç noktası — devam ediyor.'},
+        {t:'I am working since morning.',correct:false,fb:'Present continuous + "since" birlikte kullanılmaz. Süre için present perfect continuous.'}
+      ]}},
+  g2:{name:'it seems / it appears / it turns out',tr:'Görünüşe Göre / Meğer',icon:'🔍',color:'#fbbf24',
+    formula:'It seems/appears + that + clause  |  It turns out + that + clause',
+    explain:'"It seems" = görünüşe göre, sanki. "It turns out" = meğer, sonunda anlaşıldı ki. Türkçede çok sık kullandığımız "meğer" ve "galiba" karşılıkları.',
+    examples:[
+      {en:'<u>It seemed to him</u> that he had never seen anyone like her.',tr:'Onun gibi birini hiç görmemiş gibi geldi ona.'},
+      {en:'<u>It turns out</u> that she was also from Paris.',tr:'Meğer o da Paris\'liymiş.'},
+      {en:'<u>It appeared that</u> the door had been left open.',tr:'Kapının açık bırakıldığı anlaşıldı.'}
+    ],
+    edge:['"It seems" = tahmin, gözlem. "It turns out" = öğrenilen/kesinleşen gerçek.','"It seems like + noun phrase": "It seems like rain." ✓ (isim tamlaması ile)','Kişisel: "She seems happy." = Mutlu görünüyor. (doğrudan sıfat ile)','Geçmiş: "It seemed that..." / "It turned out that..." — zaman uyumu önemli.'],
+    quiz:{q:'"Meğer o gün doğruymuş." — doğru?',
+      opts:[
+        {t:'It seems that he was right that day.',correct:false,fb:'"Seems" = hâlâ belirsiz/tahmin. "Turns out" = artık kesinleşti/öğrenildi. "Meğer" → "turns out".'},
+        {t:'It turns out that he was right that day.',correct:true,fb:'✓ Doğru! "It turns out" = meğer, sonradan anlaşıldı. Tam doğru.'},
+        {t:'It turns out he is right that day.',correct:false,fb:'Geçmiş referans (that day) → past tense: "was right" değil "is right". Zaman uyumu.'}
+      ]}},
+  g3:{name:'Reflexive Pronouns',tr:'Dönüşlü Zamirler',icon:'🪞',color:'#4ade80',
+    formula:'myself / yourself / himself / herself / itself / ourselves / yourselves / themselves',
+    explain:'Özne ile nesne aynı kişi olduğunda kullanılır. "Kendi kendine / kendisi" anlamı.',
+    examples:[
+      {en:'She <u>taught herself</u> to draw.',tr:'Kendine çizim öğretti. (kimse öğretmedi)'},
+      {en:'He <u>asked himself</u> whether it was wise.',tr:'Akıllıca olup olmadığını kendi kendine sordu.'},
+      {en:'She <u>carried herself</u> with dignity.',tr:'Kendini vakurla taşıdı. (davranışı/duruşu)'}
+    ],
+    edge:['Vurgu için de kullanılır: "I did it myself." = Kendim yaptım (yardım almadan).','Reciprocal (karşılıklı): "each other" ≠ reflexive: "They hurt each other." (karşılıklı) vs "They hurt themselves." (kendi kendilerine)','Common phrases: enjoy yourself / help yourself / make yourself at home / behave yourself','Durum fiilleri ile sık: "find yourself doing sth" = kendini bir şey yaparken bulmak.'],
+    quiz:{q:'"Onu görmekten kendini alıkoyamadı."',
+      opts:[
+        {t:'He couldn\'t stop him from looking at her.',correct:false,fb:'"Him" başka biri. Özne = nesne → reflexive: "couldn\'t stop himself"'},
+        {t:'He couldn\'t stop himself from looking at her.',correct:true,fb:'✓ Doğru! himself = Marius. Özne ve nesne aynı kişi → reflexive.'},
+        {t:'He couldn\'t stop hisself from looking at her.',correct:false,fb:'"Hisself" İngilizce değil. "Himself" ✓ — düzensiz ama doğru.'}
+      ]}},
+  g4:{name:'would rather / would prefer',tr:'Tercih İfadeleri',icon:'⚖️',color:'#38bdf8',
+    formula:'would rather + base verb  |  would prefer + to + verb  |  would rather... than...',
+    explain:'"Yapmayı tercih ederim" anlamı. "Would rather" base verb alır (to yok). "Would prefer" to alır.',
+    examples:[
+      {en:'He <u>would rather</u> walk away.',tr:'Uzaklaşmayı tercih ederdi.'},
+      {en:'I <u>would rather</u> stay than leave.',tr:'Gitmektense kalmayı tercih ederim.'},
+      {en:'She <u>would prefer to</u> read in silence.',tr:'Sessizlikte okumayı tercih ederdi.'}
+    ],
+    edge:['"Would rather" + base verb (no to): "I\'d rather go." ✓ / "I\'d rather to go." ❌','"Would prefer" + to + verb: "I\'d prefer to go." ✓','"Would rather" başkası için: "I\'d rather you came." (sen gelsen iyi olur — past tense dikkat!)','Shortened: "I\'d rather" — "I would" → "I\'d" konuşmada çok yaygın.'],
+    quiz:{q:'"Bugün evde kalmayı tercih ederim."',
+      opts:[
+        {t:'I would prefer staying at home today.',correct:false,fb:'"Would prefer + to + verb". "Would prefer staying" yanlış — "Would prefer to stay" ✓'},
+        {t:'I would rather stay at home today.',correct:true,fb:'✓ Doğru! would rather + base verb (stay — no to). Doğal ve sık kullanılan.'},
+        {t:'I would prefer stay at home today.',correct:false,fb:'"Would prefer + to + verb": "I would prefer to stay." "Prefer stay" — "to" eksik.'}
+      ]}},
+  g5:{name:'such as / for instance / for example',tr:'Örnek Verme Bağlaçları',icon:'📋',color:'#fb923c',
+    formula:'such as + noun(s)  |  for example / for instance + virgül + cümle',
+    explain:'"Örneğin" anlamı. "Such as" isimlerden önce. "For example/instance" cümle başında veya sonunda, virgülle.',
+    examples:[
+      {en:'Such sights <u>as</u> the city rarely offered.',tr:'Şehrin nadiren sunduğu manzaralar gibi.'},
+      {en:'He enjoyed outdoor activities, <u>such as</u> walking and reading.',tr:'Yürüyüş ve okuma gibi açık hava aktivitelerinden hoşlanırdı.'},
+      {en:'<u>For example</u>, she taught herself to draw.',tr:'Örneğin, kendine çizim öğretti.'}
+    ],
+    edge:['"Such as" ve "like" aynı anlam — ama "like" karşılaştırma da yapar.','"For example" cümle ortasında virgülle: "Many things, for example the weather, affect our mood."','"e.g." = for example (Latince exempli gratia). Yazılı akademik dilde.','"i.e." = that is / yani. "e.g." ile karıştırma — ikisi farklı!'],
+    quiz:{q:'"Elma ve portakal gibi meyveleri severim." — doğru?',
+      opts:[
+        {t:'I like fruits for example apple and orange.',correct:false,fb:'"For example" + virgül + tam cümle. İsim listesi için "such as": "such as apples and oranges".'},
+        {t:'I like fruits such as apples and oranges.',correct:true,fb:'✓ Doğru! "such as" + isim listesi. Doğal ve yaygın.'},
+        {t:'I like fruits, for instance apples and oranges.',correct:false,fb:'"For instance" + cümle — ama burada cümle yok, isim listesi var. "Such as" daha uygun.'}
+      ]}},
+  g6:{name:'get + V3 Passive',tr:'Edilgen "get" Yapısı',icon:'💢',color:'#a78bfa',
+    formula:'get + past participle (V3) — genellikle beklenmedik/istemeden olan',
+    explain:'"Be + V3" yerine kullanılan daha günlük bir passive. Genellikle beklenmedik, istenmeyen veya kişinin kontrolü dışında olan olaylar için.',
+    examples:[
+      {en:'He <u>got worried</u> in a way he could not explain.',tr:'Açıklayamadığı bir şekilde endişelendi.'},
+      {en:'She <u>got lost</u> in the old streets of Paris.',tr:'Paris\'in eski sokaklarında kayboldu.'},
+      {en:'He <u>got noticed</u> by the wrong people.',tr:'Yanlış insanlarca fark edildi.'}
+    ],
+    edge:['"Get" passive daha informal/günlük: "He got fired." ✓ (günlük) / "He was fired." ✓ (resmi)','"Get" + V3 genellikle değişim veya sonuç içerir: "get married / get dressed / get hurt / get paid"','Fark: "He was hurt." (passive, nötr) / "He got hurt." (beklenmedik, vurgu sonuçta)','"Get" + -ing ise farklı anlam: "get going" = harekete geç. "Get" + V3 ≠ "get" + V-ing'],
+    quiz:{q:'"Kaza sırasında yaralandı." — günlük söyleyiş?',
+      opts:[
+        {t:'He was injured during the accident.',correct:false,fb:'Doğru ama resmi. "Get" passive daha günlük: "He got hurt/injured" daha doğal konuşmada.'},
+        {t:'He got hurt during the accident.',correct:true,fb:'✓ Doğru! get + hurt (V3). Günlük dil, beklenmedik olay vurgusu.'},
+        {t:'He got hurting during the accident.',correct:false,fb:'"Get hurting" yanlış. "Get" + V3 (hurt) gerekli, V-ing değil.'}
+      ]}},
+  g7:{name:'Noun Clause as Object',tr:'İsim Cümlesi — Nesne',icon:'💬',color:'#34d399',
+    formula:'I know/think/believe/feel + that + clause',
+    explain:'"That" ile başlayan cümle, fiilin nesnesi olur. Türkçede "-dığını biliyorum / -eceğini düşünüyorum" yapısına karşılık gelir.',
+    examples:[
+      {en:'He <u>knew that</u> staring was rude.',tr:'Dik dik bakmanın kaba olduğunu biliyordu.'},
+      {en:'She <u>thought that</u> he was a student.',tr:'Onun öğrenci olduğunu düşündü.'},
+      {en:'I <u>believe that</u> kindness matters.',tr:'İyiliğin önemli olduğuna inanıyorum.'}
+    ],
+    edge:['"That" isteğe bağlı ama anlaşılırlık için çoğunlukla kullanılır: "I know (that) he is here." ✓','Zaman uyumu: "She thinks he IS here." (şimdiki) / "She thought he WAS here." (geçmiş — zaman kayar)','Sık kullanılan fiiller: think / know / believe / feel / say / hope / wish / wonder / notice / realise','Noun clause özne de olabilir: "That he lied surprised me." = Yalan söylemiş olması beni şaşırttı.'],
+    quiz:{q:'"Onun haklı olduğunu düşündüm."',
+      opts:[
+        {t:'I thought that he is right.',correct:false,fb:'Zaman uyumu: "thought" (past) → "was right" (past). "is right" present — uyumsuz.'},
+        {t:'I thought that he was right.',correct:true,fb:'✓ Doğru! thought (past) → was right (past). Zaman uyumu doğru.'},
+        {t:'I thought that he right.',correct:false,fb:'Fiil eksik. "He right" olmaz — "he was right" ✓.'}
+      ]}},
+  g8:{name:'though / even though / although',tr:'Zıtlık Bağlaçları — Nüans Farkları',icon:'↔️',color:'#e879f9',
+    formula:'although/even though + clause (resmi) | though + clause (günlük) | though = cümle sonu (konuşma)',
+    explain:'Üçü de "gerçi / -masına rağmen" anlamı taşır. Küçük nüans farkları var.',
+    examples:[
+      {en:'<u>Although</u> she did not look up, she was aware of him.',tr:'Bakmamasına rağmen onu fark ediyordu.'},
+      {en:'He looked <u>though</u> he had not slept well.',tr:'Uyumamış gibi görünüyordu. ("though" = as though)'},
+      {en:'<u>Even though</u> Cosette was sixteen, she seemed older.',tr:'Cosette on altısında olmasına rağmen daha büyük görünüyordu.'}
+    ],
+    edge:['"Although" = en resmi, yazılı dilde tercih edilir.','"Even though" = daha güçlü vurgu: "Her şeye rağmen, yine de..."','"Though" günlük konuşmada: "It was expensive though." (cümle sonunda) = ama, yine de.','"As though / as if" = sanki: "He looked as though he hadn\'t slept." — bu farklı bir kullanım.'],
+    quiz:{q:'"Tired, I still worked." — en doğal bağlaç?',
+      opts:[
+        {t:'Although I was tired, I still worked.',correct:true,fb:'✓ Doğru! "Although" cümle başında, resmi ve doğal.'},
+        {t:'Even I was tired, I still worked.',correct:false,fb:'"Even" tek başına bağlaç değil. "Even though I was tired" ✓'},
+        {t:'Though tired, I still worked.',correct:false,fb:'Yanlış değil ama reduced yapı (gerund clause). Tam cümle: "Though I was tired" veya "Although I was tired" daha açık.'}
+      ]}}
+};
+
+const VOCAB=[
+  {word:'idealistic',ph:'/aɪˌdiː.əˈlɪs.tɪk/',tr:'idealist, hayalperest (olumlu anlamda)',cat:'describe',ex:'Marius was twenty years old, poor, idealistic, and entirely alone.',street:'"Head in the clouds" = çok hayalci. Sokakta bazen eleştirel.'},
+  {word:'fountain',ph:'/ˈfaʊn.tɪn/',tr:'çeşme, fıskiye',cat:'object',ex:'They always sat near the fountain in the Luxembourg Gardens.',street:null},
+  {word:'pigeon',ph:'/ˈpɪdʒ.ɪn/',tr:'güvercin',cat:'object',ex:'Children were chasing pigeons around the park.',street:'"stool pigeon" = muhbir. "Pigeon-hole" = dar kategoriye sokmak. Mecazi anlamlar.'},
+  {word:'bench',ph:'/bentʃ/',tr:'bank, oturma tahtası; yargı kürsüsü',cat:'object',ex:'Every afternoon, they sat on the same bench.',street:null},
+  {word:'handkerchief',ph:'/ˈhæŋ.kər.tʃɪf/',tr:'mendil',cat:'object',ex:'The young man dropped a handkerchief near Cosette\'s bench.',street:'"Hanky" sokakta kısa hali. Çok az kullanılıyor artık.'},
+  {word:'worn',ph:'/wɔːrn/',tr:'yıpranmış, eskimiş; giyilmiş (V3)',cat:'describe',ex:'His coat was worn at the elbows — he clearly had very little money.',street:'"Worn out" = tamamen bitik (hem nesne hem insan için). "I\'m worn out."'},
+  {word:'aware',ph:'/əˈweər/',tr:'farkında, haberdar',cat:'describe',ex:'Although she did not look up, she was aware of him.',street:'"Heads up" = dikkat et, farkında ol. "FYI" (for your information) yazılı sokak dili.'},
+  {word:'assume',ph:'/əˈsjuːm/',tr:'varsaymak, sanmak',cat:'action',ex:'The old man was her father, he assumed.',street:'"I\'m guessing..." = sokakta çok daha doğal. "Assume" biraz resmi.'},
+  {word:'stare',ph:'/steər/',tr:'dik dik bakmak, gözünü dikmek',cat:'action',ex:'He knew that staring was rude — but he kept returning.',street:'"What are you staring at?" sokakta çok yaygın. Bazen sert tonda.'},
+  {word:'seriousness',ph:'/ˈsɪər.i.əs.nəs/',tr:'ciddiyet, ağırbaşlılık',cat:'object',ex:'She carried herself with a seriousness that reminded him of her mother.',street:null},
+  {word:'idealism',ph:'/aɪˈdiː.ə.lɪ.z əm/',tr:'idealizm, yüksek ilkelere bağlılık',cat:'object',ex:'His idealism was the reason he had been thrown out of his grandfather\'s house.',street:null},
+  {word:'path',ph:'/pɑːθ/',tr:'yol, patika, iz',cat:'object',ex:'The Luxembourg Gardens had long paths between the trees.',street:'"Down that path" mecazi: o yoldan gidersen... Uyarı için kullanılır.'},
+  {word:'concern',ph:'/kənˈsɜːrn/',tr:'endişe; ilgilenilen şey; önem',cat:'object',ex:'He had serious concerns — politics, law, the poor of Paris.',street:'"Not my concern." = Benim işim değil. Çok yaygın.'},
+  {word:'fold',ph:'/foʊld/',tr:'katlamak; kat; katlanmak',cat:'action',ex:'She kept the letter folded inside her book.',street:'"Fold" kumar: "I fold" = vazgeçiyorum. Mecazi anlamda da: "He folded under pressure."'},
+  {word:'lock',ph:'/lɒk/',tr:'kilitlemek; kilit',cat:'action',ex:'Their gate stayed locked from the inside.',street:'"On lockdown" = karantina, kısıtlama. Pandemi döneminde çok sık.'},
+  {word:'carry oneself',ph:'/ˈkær.i wʌnˈself/',tr:'kendini taşımak (duruş, davranış)',cat:'phrase',ex:'She carried herself with a seriousness beyond her age.',street:'"Hold yourself" veya "present yourself" benzer anlamda kullanılır.'},
+  {word:'gate',ph:'/ɡeɪt/',tr:'kapı (büyük/bahçe), geçit',cat:'object',ex:'The garden had a heavy gate that was always locked.',street:'"Pearly gates" = cennet kapıları. "Gate" ayrıca olay: "Watergate / Scandal-gate"'},
+  {word:'worn at the elbows',ph:'/wɔːrn æt ðə ˈel.boʊz/',tr:'dirsekleri yıpranmış (yoksulluğun işareti)',cat:'phrase',ex:'His coat was worn at the elbows — a sign of poverty.',street:null},
+  {word:'return',ph:'/rɪˈtɜːrn/',tr:'geri dönmek; dönüş',cat:'action',ex:'Day after day, he returned to that same bench.',street:'"Be back" sokakta çok yaygın: "I\'ll be back." "Return" biraz resmi.'},
+  {word:'notice',ph:'/ˈnoʊ.tɪs/',tr:'fark etmek; ihbar, bildirim',cat:'action',ex:'Valjean noticed none of this — he was lost in his book.',street:'"Heads up" = notice etmesi için uyarmak. "I didn\'t even notice." yaygın.'}
+];
+
+const STREET=[
+  {word:'idealistic',formal:'"He was an idealistic young man."',street:'"He had his head in the clouds." = çok hayalci, pratik değil. Eleştirel ton.'},
+  {word:'worn',formal:'"His coat was worn at the elbows."',street:'"Worn out" = bitik, eskimiş. "I\'m totally worn out." Hem nesne hem kişi için.'},
+  {word:'stare',formal:'"He was staring at her."',street:'"What are you looking at?" veya "Stop staring!" — sokakta doğrudan.'},
+  {word:'assume',formal:'"He assumed she was his daughter."',street:'"I figured she was his daughter." / "I guessed." — çok daha günlük.'},
+  {word:'return',formal:'"He returned to the same bench."',street:'"He went back." / "He kept coming back." — sokakta çok daha yaygın.'},
+];
+
+const MATCHP=[
+  {en:'fountain',tr:'çeşme'},
+  {en:'bench',tr:'bank'},
+  {en:'aware',tr:'farkında'},
+  {en:'assume',tr:'varsaymak'},
+  {en:'stare',tr:'dik dik bakmak'},
+  {en:'concern',tr:'endişe'},
+  {en:'worn',tr:'yıpranmış'},
+  {en:'gate',tr:'bahçe kapısı'},
+];
+
+let score=0,answered=new Set(),qAns={},qScore=0,mSel=null,mScore=0;
+
+document.addEventListener('DOMContentLoaded',()=>{initTabs();initTooltip();buildCards();buildGrammar();buildQuiz();buildMatch();buildWrite();updateScore();});
+
+function toggleTheme(){
+  const h=document.documentElement;
+  if(h.dataset.theme==='dark'){h.dataset.theme='light';document.getElementById('themebtn').textContent='🌙 Koyu';}
+  else{h.dataset.theme='dark';document.getElementById('themebtn').textContent='☀️ Açık';}
+}
+
+function initTabs(){
+  document.querySelectorAll('.tb').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.tb').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.tp').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+      // Scroll to top of main when tab changes
+      window.scrollTo({top:document.querySelector('.sticky-nav').offsetHeight,behavior:'smooth'});
+    });
+  });
+}
+
+let ttEl;
+function initTooltip(){ttEl=document.getElementById('tt');document.querySelectorAll('.gt').forEach(el=>{el.addEventListener('mouseenter',showTT);el.addEventListener('mouseleave',()=>ttEl.classList.remove('on'));el.addEventListener('mousemove',moveTT);});}
+function showTT(e){const g=G[e.target.dataset.g];if(!g)return;document.getElementById('tti2').textContent=g.icon;const n=document.getElementById('ttn2');n.textContent=g.name;n.style.color=g.color;document.getElementById('tts3').textContent=g.tr;document.getElementById('ttf2').textContent=g.formula;document.getElementById('tte2').textContent=g.explain;document.getElementById('ttex2').innerHTML=g.examples.map(ex=>`<div class="ttxi" style="border-color:${g.color}44"><div class="tten">${ex.en}</div><div class="tttr">${ex.tr}</div></div>`).join('');const eb=document.getElementById('ttedge2'),el2=document.getElementById('ttedgelist2');if(g.edge&&g.edge.length){eb.style.display='block';el2.innerHTML=g.edge.map(x=>`<li>${x}</li>`).join('');}else eb.style.display='none';ttEl.classList.add('on');moveTT(e);}
+function moveTT(e){let x=e.clientX+18,y=e.clientY+18;if(x+355>window.innerWidth-10)x=e.clientX-355-10;if(y+370>window.innerHeight-10)y=e.clientY-370-10;ttEl.style.left=x+'px';ttEl.style.top=y+'px';}
+
+function setMode(m){document.querySelectorAll('.mbtn').forEach((b,i)=>b.classList.toggle('active',['cards','quiz','match','write'][i]===m));['vcards','vquiz','vmatch','vwrite'].forEach((id,i)=>document.getElementById(id).style.display=(['cards','quiz','match','write'][i]===m?'block':'none'));}
+
+function buildCards(){document.getElementById('vgrid').innerHTML=VOCAB.map(v=>`<div class="vc" data-cat="${v.cat}" onclick="this.classList.toggle('flipped')"><div class="vci"><div class="vcf"><div><div class="vcw">${v.word}</div><div class="vcp">${v.ph}</div></div><div style="display:flex;justify-content:space-between;align-items:flex-end"><span class="vcat cat-${v.cat}">${v.cat}</span><div class="vch">${v.street?'<span class="sbadge">🗣️</span>':''} ↩ çevir</div></div></div><div class="vcf vcb"><div><div class="vctr">${v.tr}</div><div class="vcex">"${v.ex}"</div>${v.street?`<div class="vcst">🗣️ ${v.street}</div>`:''}</div><div style="font-size:10px;color:var(--text-dim)">↩ geri</div></div></div></div>`).join('');document.getElementById('vfil').addEventListener('click',e=>{if(!e.target.matches('.fb'))return;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));e.target.classList.add('active');const f=e.target.dataset.filter;let v=0;document.querySelectorAll('.vc').forEach(c=>{const s=f==='all'||c.dataset.cat===f;c.style.display=s?'':'none';if(s)v++;});document.getElementById('vcnt').textContent=v;});}
+
+function buildQuiz(){const pool=VOCAB.slice(0,12);document.getElementById('qcont').innerHTML=pool.map((v,i)=>{const w=VOCAB.filter(x=>x.word!==v.word).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.tr);const opts=[v.tr,...w].sort(()=>Math.random()-.5);return `<div class="qcard" id="qc-${i}"><div class="qq">🔤 "${v.word}" ne anlama gelir?</div><div class="qopts">${opts.map(o=>`<button class="qo" onclick="ansQ(${i},'${o.replace(/'/g,"\\'")}','${v.tr.replace(/'/g,"\\'")}',this)">${o}</button>`).join('')}</div><div class="qfb" id="qfb-${i}"></div></div>`;}).join('');}
+function ansQ(i,ch,cr){if(qAns[i])return;qAns[i]=true;document.getElementById('qc-'+i).querySelectorAll('.qo').forEach(b=>{b.classList.add(b.textContent===cr?'correct':'wrong');b.disabled=true;});if(ch===cr)qScore++;document.getElementById('qsc').textContent=`${qScore}/${Object.keys(qAns).length}`;const fb=document.getElementById('qfb-'+i);fb.className='qfb show '+(ch===cr?'ok':'bad');fb.textContent=ch===cr?'✓ Doğru!':'✗ Doğru: '+cr;}
+function resetQuiz(){qAns={};qScore=0;document.getElementById('qsc').textContent='0/0';buildQuiz();}
+
+function buildMatch(){const L=[...MATCHP].sort(()=>Math.random()-.5),R=[...MATCHP].sort(()=>Math.random()-.5);mSel=null;mScore=0;document.getElementById('msc').textContent='0';document.getElementById('mleft').innerHTML=L.map(p=>`<div class="mi" data-w="${p.en}" onclick="clkM(this,'l')">${p.en}</div>`).join('');document.getElementById('mright').innerHTML=R.map(p=>`<div class="mi" data-w="${p.en}" onclick="clkM(this,'r')">${p.tr}</div>`).join('');}
+function clkM(el,side){if(el.classList.contains('mat'))return;if(!mSel){document.querySelectorAll('.mi').forEach(i=>i.classList.remove('sel'));el.classList.add('sel');mSel={el,side};return;}if(mSel.side===side){mSel.el.classList.remove('sel');el.classList.add('sel');mSel={el,side};return;}const lEl=side==='r'?mSel.el:el,rEl=side==='r'?el:mSel.el;if(lEl.dataset.w===rEl.dataset.w){lEl.classList.replace('sel','mat');rEl.classList.replace('sel','mat');mScore++;document.getElementById('msc').textContent=mScore;}else{[lEl,rEl].forEach(x=>{x.classList.add('wfl');setTimeout(()=>x.classList.remove('wfl','sel'),450);});}mSel=null;}
+function resetMatch(){buildMatch();}
+
+function buildWrite(){const pool=VOCAB.slice(0,8);document.getElementById('wrcont').innerHTML=pool.map((v,i)=>`<div class="swc"><div class="sww">${v.word}</div><div class="swtr">${v.tr} · ${v.ph}</div><div class="swp">Bu kelimeyi kullanarak kendi hayatından bir cümle yaz:</div><input class="swi" id="swi-${i}" placeholder='"${v.word}" kelimesini kullanan bir cümle...'><div class="swbtns"><button class="swck" onclick="chkSW(${i},'${v.word.replace(/'/g,"\\'")}')">Kontrol Et</button><button class="swsh" onclick="shwSW(${i},'${v.ex.replace(/'/g,"\\'")}')">Örnek Gör</button></div><div class="swfb" id="swfb-${i}"></div></div>`).join('');document.getElementById('stcont').innerHTML=STREET.map(s=>`<div class="sti"><div class="stw">${s.word}</div><div class="stn">📌 Formal: <em>${s.formal}</em></div><div class="stex">🗣️ Sokakta: <strong>${s.street}</strong></div></div>`).join('');}
+function chkSW(i,w){const inp=document.getElementById('swi-'+i),fb=document.getElementById('swfb-'+i),t=inp.value.trim().toLowerCase();if(!t){fb.className='swfb show bad';fb.textContent='Önce bir cümle yaz.';return;}fb.className=t.includes(w.toLowerCase())?'swfb show ok':'swfb show bad';fb.textContent=t.includes(w.toLowerCase())?`✓ Harika! "${w}" doğru kullandın.`:`✗ "${w}" kelimesi yok. Tekrar dene.`;}
+function shwSW(i,ex){const fb=document.getElementById('swfb-'+i);fb.className='swfb show info';fb.textContent='Örnek: "'+ex+'"';}
+
+function buildGrammar(){document.getElementById('ggrid').innerHTML=Object.entries(G).map(([k,g])=>`<div class="gc" id="gc-${k}"><div class="gch" onclick="tglGC('${k}')"><div class="gcbar" style="background:${g.color}"></div><div class="gct"><strong style="color:${g.color}">${g.icon} ${g.name}</strong><small>${g.tr}</small></div><div class="gcarr">▶</div></div><div class="gcb"><div class="gcf">${g.formula}</div><div class="gce">${g.explain}</div><div>${g.examples.map(ex=>`<div class="gcex" style="border-color:${g.color}44"><div class="gcen">${ex.en}</div><div class="gctr">${ex.tr}</div></div>`).join('')}</div>${g.edge?`<div class="ebox"><div class="ebt">⚠️ Dikkat</div><ul>${g.edge.map(e=>`<li>${e}</li>`).join('')}</ul></div>`:''}<div class="mq" id="mq-${k}"><div class="mqt">🎯 Mini Test</div><div class="mqq">${g.quiz.q}</div><div class="mqo">${g.quiz.opts.map((o,i)=>`<button class="mqb" onclick="ansMQ('${k}',${i})">${String.fromCharCode(65+i)}) ${o.t}</button>`).join('')}</div><div class="mqf" id="mqfb-${k}"></div></div></div></div>`).join('');}
+function tglGC(k){document.getElementById('gc-'+k).classList.toggle('open');}
+function ansMQ(k,i){const g=G[k];document.querySelectorAll(`#mq-${k} .mqb`).forEach((b,j)=>{b.classList.add(g.quiz.opts[j].correct?'correct':'wrong');b.disabled=true;});const fb=document.getElementById('mqfb-'+k);fb.textContent=g.quiz.opts[i].fb;fb.className='mqf show '+(g.quiz.opts[i].correct?'ok':'bad');}
+
+function chkFill(id){const item=document.querySelector(`[data-exid="${id}"]`),inp=document.querySelector(`input[data-item="${id}"]`);const ans=item.dataset.answer.toLowerCase().trim(),usr=inp.value.toLowerCase().trim();const fb=document.getElementById('fb-'+id);if(!usr){fb.className='exfb show info';fb.textContent='Lütfen bir cevap yaz.';return;}const ok=usr===ans;if(ok){fb.className='exfb show correct';fb.innerHTML='✓ Doğru! <strong>'+item.dataset.answer+'</strong>';inp.style.borderColor='var(--correct)';if(!inp.dataset.sc){score++;inp.dataset.sc='1';updateScore();}}else{fb.className='exfb show wrong';fb.textContent='✗ Tam değil. "Cevabı Gör" butonuna bas.';inp.style.borderColor='var(--wrong)';}}
+function rvlFill(id){const item=document.querySelector(`[data-exid="${id}"]`),fb=document.getElementById('fb-'+id);fb.className='exfb show info';fb.innerHTML='Cevap: <strong>'+item.dataset.answer+'</strong>';}
+function rvlAns(id,ans){document.getElementById('fb-'+id).className='exfb show info';document.getElementById('fb-'+id).innerHTML='<strong>Örnek:</strong> '+ans;}
+function chkEC(id,ok,txt){document.querySelectorAll(`#${id} .ecopt`).forEach(b=>b.disabled=true);const fb=document.getElementById('fb-'+id);fb.className='exfb show '+(ok?'correct':'wrong');fb.innerHTML=txt;if(!answered.has(id)){answered.add(id);if(ok){score++;updateScore();}}}
+function updateScore(){const p=Math.round((score/12)*100);document.getElementById('sfill').style.width=p+'%';document.getElementById('snum').textContent=score+'/12';}
+
+function showSample(){const fb=document.getElementById('fb-wr');fb.style.display='block';fb.className='exfb show info';fb.innerHTML=`<strong>Örnek cevap:</strong><br><br>
+I have been sitting on that same bench for a week, even though I know it means nothing. It seems to me that she is different from anyone I have ever met — although I have never spoken to her. I know that I should concentrate on my studies, such as law and politics. I would rather not think about her at all. And yet, I caught myself smiling on the way home. It turns out that I am not as serious as I thought.`;}
+</script>
+</body>
+</html>

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar-First Daily — Motor A</title>
+<link rel="stylesheet" href="./_engine/engine.css">
+<style>
+  /* Sayfaya özel ufak dokunuşlar */
+  .gfd-hero {
+    background:linear-gradient(135deg, var(--bg) 0%, var(--bg3) 50%, var(--bg) 100%);
+    padding:24px 18px 18px; border-bottom:1px solid var(--border); text-align:center;
+  }
+  .gfd-hero h1 {font-size:20px; color:var(--accent); letter-spacing:2px; margin-bottom:6px;}
+  .gfd-hero p  {font-size:12px; color:var(--text2); max-width:580px; margin:0 auto; line-height:1.7;}
+  .gfd-pill   {display:inline-block; margin-top:8px; padding:3px 12px; background:rgba(251,191,36,.1);
+    color:var(--accent3); border:1px solid rgba(251,191,36,.25); border-radius:14px; font-size:11px;}
+
+  .topic-card {position:relative; cursor:pointer;}
+  .topic-card .arrow {position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--accent); opacity:0; transition:opacity .15s; font-size:14px;}
+  .topic-card:hover .arrow {opacity:1;}
+  .topic-card .bridge {font-size:12px; color:var(--text2); line-height:1.6; margin-top:4px;}
+  .topic-card .meta-row {display:flex; gap:6px; align-items:center; margin-top:8px; flex-wrap:wrap;}
+
+  .ph-row {display:flex; gap:8px; flex-wrap:wrap; margin-top:8px;}
+  .ph-row > span {font-size:11px; color:var(--text2); background:var(--card2); padding:3px 9px; border-radius:10px; border:1px solid var(--border);}
+
+  .quiz-actions {display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
+  .modal-quiz-box {margin-top:18px; padding-top:14px; border-top:1px dashed var(--border);}
+  .start-quiz-btn {
+    width:100%; margin-top:14px; padding:10px;
+    background:linear-gradient(90deg, var(--accent), var(--accent2));
+    color:#0d1219; border:none; border-radius:8px;
+    font-family:var(--font); font-size:13px; font-weight:bold; cursor:pointer;
+    transition: transform .12s;
+  }
+  .start-quiz-btn:hover {transform:translateY(-1px);}
+
+  .summary-table {width:100%; border-collapse:collapse; margin-top:8px; font-size:12px;}
+  .summary-table th, .summary-table td {padding:6px 8px; border-bottom:1px solid var(--border); text-align:left;}
+  .summary-table th {color:var(--text2); font-weight:normal; text-transform:uppercase; letter-spacing:1px; font-size:10px;}
+  .summary-table td .strength {display:inline-block; min-width:36px; padding:2px 6px; border-radius:10px; font-size:11px; text-align:center;}
+  .strength.s-good {background:rgba(52,211,153,.13); color:var(--green);}
+  .strength.s-mid  {background:rgba(251,191,36,.13); color:var(--accent3);}
+  .strength.s-low  {background:rgba(248,113,113,.13); color:var(--red);}
+  .strength.s-na   {background:rgba(136,150,176,.13); color:var(--text2);}
+
+  .closing-passage {background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin-top:18px;}
+  .closing-passage p {margin-bottom:10px; line-height:1.85;}
+  .closing-passage .lbl {font-size:11px; color:var(--accent3); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div class="gfd-hero">
+  <h1>GRAMMAR-FIRST · DAILY</h1>
+  <p>Önce gramer konusu — formül, açıklama, örnek. Sonra konuların hepsini ören kısa bir profil-uyumlu metin. Bugünün 6–8 konusu otomatik seçildi; aşağıdaki kartlara dokunarak çalışmaya başla.</p>
+  <span class="gfd-pill" id="hero-pill">⚙️ Motor A · Engine v1</span>
+</div>
+
+<header id="el-header-mount"></header>
+
+<main class="el-page">
+
+  <!-- 1) Bugünün konuları -->
+  <section style="margin-top:8px;">
+    <div class="el-section-title">📌 Bugünün Konuları</div>
+    <div class="el-section-sub">Her karta dokun → Türkçe köprü + formül + örnek + mini quiz. Tamamladıkça skor toparlanır.</div>
+    <div class="el-grid cols-2" id="topic-grid"></div>
+  </section>
+
+  <!-- 2) Skor barı -->
+  <section style="margin-top:18px;">
+    <div class="el-score-bar" id="score-bar">
+      <div>Tamamlanan: <b id="sb-done">0</b>/<b id="sb-total">0</b></div>
+      <div>Doğru: <b id="sb-correct">0</b></div>
+      <div>Yanlış: <b id="sb-wrong" style="color:var(--red);">0</b></div>
+      <div>Save'd: <b id="sb-saved">0</b> item</div>
+      <div style="flex:1; min-width:140px;">
+        <div class="el-progress"><div id="sb-bar" style="width:0%;"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3) Kapanış: profil uyumlu kısa metin (konuları örer) -->
+  <section style="margin-top:18px;">
+    <div class="el-section-title">📖 Bağlam Metni — Konuları Örer</div>
+    <div class="el-section-sub">Bugünün konularının her birinden bir örnek paragrafa örüldü. Saatleri tek tek vurgulamak yerine, gerçek metinde nasıl yan yana yaşadıklarını gör.</div>
+    <div class="closing-passage" id="closing-passage">
+      <div class="lbl">Bugünün dokuması</div>
+      <div id="passage-body">…</div>
+    </div>
+  </section>
+
+  <!-- 4) Genel ilerleme (history) -->
+  <section style="margin-top:22px;">
+    <div class="el-section-title">📈 Genel İlerleme</div>
+    <div class="el-section-sub">Tüm 56 konunun güç skoru (localStorage). Vault'a indirdiğin JSON Claude Code tarafından merkez tracking'e işlenecek.</div>
+    <div style="overflow:auto;">
+      <table class="summary-table" id="summary-table"></table>
+    </div>
+  </section>
+
+  <!-- 5) Export banner -->
+  <section class="el-export">
+    <div class="el-export-text">
+      <b>Çalışman bitti mi?</b>
+      <p>Üstteki "📥 Vault'a İndir" butonuyla bu oturumun JSON'unu indir, ardından dosyayı vault'ta <code>00_INBOX/</code> klasörüne sürükle. Claude Code orada bekliyor olacak.</p>
+    </div>
+    <button class="el-btn primary" onclick="exportSession()">📥 JSON İndir</button>
+  </section>
+
+</main>
+
+<!-- Modal -->
+<div class="el-modal-bg" id="modal">
+  <div class="el-modal">
+    <div class="el-modal-head">
+      <h2 id="m-title">—</h2>
+      <button class="el-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="el-modal-body" id="m-body"></div>
+  </div>
+</div>
+
+<!-- Tooltip element -->
+<div class="el-tt" id="tt"></div>
+
+<script src="./_engine/topics.js"></script>
+<script src="./_engine/profile.js"></script>
+<script src="./_engine/engine.js"></script>
+<script>
+/* ====== STATE ====== */
+const ENGINE_TAG = 'grammar-first';
+const SESSION_START = Date.now();
+const dailyTopics = ELV1.getDailyTopics(ENGINE_TAG);
+const perTopicResults = {}; // {slug: {correct, total, errors:[], subpatterns_touched:[], completed:bool}}
+const sessionBank = []; // items saved to bank during this session
+
+/* ====== HEADER ====== */
+const header = ELV1.renderHeader({
+  title: 'Motor A — Grammar-First',
+  subtitle: 'gün konularını çalış, JSON indir',
+  engineTag: ENGINE_TAG,
+  onExport: exportSession,
+  onReroll: () => { ELV1.rerollDailyTopics(); location.reload(); }
+});
+document.getElementById('el-header-mount').replaceWith(header);
+ELV1.attachHeaderActions(header, {
+  onExport: exportSession,
+  onReroll: () => { ELV1.rerollDailyTopics(); location.reload(); }
+});
+
+document.getElementById('el-topics-chip').textContent = '🎯 ' + dailyTopics.length + ' konu';
+
+/* ====== RENDER: TOPIC CARDS ====== */
+function renderTopicCards() {
+  const grid = document.getElementById('topic-grid');
+  grid.innerHTML = '';
+  dailyTopics.forEach((t, idx) => {
+    const card = document.createElement('div');
+    card.className = 'el-card hover topic-card';
+    card.innerHTML = `
+      <div class="el-card-h">
+        <div>
+          <div class="el-card-title">${idx+1}. ${ELV1.escapeHTML(t.name)}</div>
+          <div class="el-card-sub" style="margin-top:2px;">
+            <span class="el-tag cefr">${t.cefr}</span>
+            <span class="el-tag cat">${ELV1.T.categories[t.category] || t.category}</span>
+          </div>
+        </div>
+        <span class="arrow">→</span>
+      </div>
+      <div class="bridge">${ELV1.escapeHTML(t.tr_bridge)}</div>
+      <div class="ph-row">
+        ${(t.subpatterns || []).slice(0,4).map(sp => `<span>${ELV1.escapeHTML(sp)}</span>`).join('')}
+      </div>
+    `;
+    card.addEventListener('click', () => openTopic(t));
+    grid.appendChild(card);
+  });
+  document.getElementById('sb-total').textContent = dailyTopics.length;
+}
+
+/* ====== MODAL: per-topic teaching + quiz ====== */
+function openTopic(t) {
+  document.getElementById('m-title').textContent = t.name;
+  const body = document.getElementById('m-body');
+  const completed = perTopicResults[t.slug] && perTopicResults[t.slug].completed;
+
+  body.innerHTML = `
+    <div style="margin-bottom:12px;">
+      <span class="el-tag cefr">${t.cefr}</span>
+      <span class="el-tag cat">${ELV1.T.categories[t.category]}</span>
+      ${completed ? '<span class="el-tag" style="background:rgba(52,211,153,.13);color:var(--green);border-color:rgba(52,211,153,.25);">✓ tamamlandı</span>' : ''}
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <div style="font-size:10px;text-transform:uppercase;color:var(--accent3);letter-spacing:1px;margin-bottom:6px;">🇹🇷 Türkçe köprü</div>
+      <p style="font-size:13px; color:var(--text); line-height:1.75;">${ELV1.escapeHTML(t.tr_bridge)}</p>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <div style="font-size:10px;text-transform:uppercase;color:var(--accent3);letter-spacing:1px;margin-bottom:6px;">📐 Formül</div>
+      <div class="el-formula">${ELV1.escapeHTML(t.formula)}</div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <div style="font-size:10px;text-transform:uppercase;color:var(--accent3);letter-spacing:1px;margin-bottom:6px;">💬 Örnekler</div>
+      ${(t.examples || []).map((ex, i) => `
+        <div class="el-ex">
+          <div class="en">${ELV1.escapeHTML(ex.en)}</div>
+          <div class="tr">${ELV1.escapeHTML(ex.tr)}</div>
+          <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="el-bank-btn bank-btn"
+              data-item='${ELV1.escapeHTML(JSON.stringify({item: extractKeyChunk(ex.en, t), type:'chunk', definition_en:'', definition_tr: ex.tr, example: ex.en, source: {engine: ENGINE_TAG, topic: t.slug, subpattern: (t.subpatterns||[])[0]||null }}))}'>💾 Save chunk</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <div style="font-size:10px;text-transform:uppercase;color:var(--accent3);letter-spacing:1px;margin-bottom:6px;">⚠️ Yaygın Hatalar</div>
+      <ul style="font-size:12px; color:var(--text2); padding-left:18px;">
+        ${(t.common_errors || []).map(e => `<li>${ELV1.escapeHTML(e)}</li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="modal-quiz-box">
+      <div style="font-size:10px;text-transform:uppercase;color:var(--accent2);letter-spacing:1px;margin-bottom:6px;">🎯 Mini Quiz · 3 soru</div>
+      <div id="m-quiz"></div>
+      <button class="start-quiz-btn" id="m-start-quiz">Quiz'i Başlat</button>
+    </div>
+  `;
+
+  // bank buttons
+  body.querySelectorAll('.bank-btn').forEach(btn => {
+    const data = JSON.parse(btn.getAttribute('data-item'));
+    ELV1.attachBankButton(btn, data);
+    btn.addEventListener('click', () => {
+      sessionBank.push(data);
+      updateScoreBar();
+    });
+  });
+
+  // start quiz
+  document.getElementById('m-start-quiz').addEventListener('click', () => startMiniQuiz(t));
+
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') closeModal();
+});
+
+/* ====== MINI QUIZ ====== */
+function startMiniQuiz(t) {
+  const items = ELV1.genQuizForTopic(t, 3);
+  const wrap = document.getElementById('m-quiz');
+  document.getElementById('m-start-quiz').style.display = 'none';
+
+  let i = 0, correct = 0, total = 0;
+  const errors = [];
+
+  function renderItem() {
+    if (i >= items.length) return finishQuiz();
+    const it = items[i];
+    let html = `<div class="el-q-card">
+      <div class="el-q-type">${i+1}/${items.length} · ${it.type.toUpperCase()}</div>
+      <div class="el-q-text">${ELV1.escapeHTML(it.prompt)}</div>`;
+    if (it.tr) html += `<div class="el-q-meta">🇹🇷 ${ELV1.escapeHTML(it.tr)}</div>`;
+    if (it.formula_hint) html += `<div class="el-q-meta">Formül: <code>${ELV1.escapeHTML(it.formula_hint)}</code></div>`;
+    if (it.tr_hint) html += `<div class="el-q-meta">İpucu: ${ELV1.escapeHTML(it.tr_hint)}</div>`;
+
+    if (it.type === 'mcq') {
+      html += '<div class="el-q-opts">';
+      it.options.forEach(opt => {
+        html += `<button class="el-q-opt" data-opt="${ELV1.escapeHTML(opt)}">${ELV1.escapeHTML(opt)}</button>`;
+      });
+      html += '</div>';
+    } else if (it.type === 'fill') {
+      html += `<input class="el-q-input" id="q-input" placeholder="Boşluğu doldur (sadece tek kelime)..." autocomplete="off">
+        <div style="margin-top:8px;"><button class="el-btn primary" id="q-submit">Kontrol et</button></div>`;
+    } else if (it.type === 'errspot') {
+      html += `<input class="el-q-input" id="q-input" placeholder="Hatayı kısaca anlat veya boş bırak..." autocomplete="off">
+        <div style="margin-top:8px;display:flex;gap:6px;">
+          <button class="el-btn success" id="q-knew">Hatayı biliyorum</button>
+          <button class="el-btn danger" id="q-didnt">Bilmiyordum</button>
+        </div>`;
+      html += `<div style="margin-top:10px;font-size:12px;color:var(--text2);">İpucu (cevap): <i>${ELV1.escapeHTML(it.hint)}</i></div>`;
+    }
+    html += '<div id="q-fb"></div></div>';
+    wrap.innerHTML = html;
+
+    if (it.type === 'mcq') {
+      wrap.querySelectorAll('.el-q-opt').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sel = btn.getAttribute('data-opt');
+          const ok = sel === it.answer;
+          total++;
+          if (ok) { correct++; btn.classList.add('correct'); }
+          else {
+            btn.classList.add('wrong'); errors.push({type:'mcq', selected:sel, expected:it.answer, slug:t.slug});
+            wrap.querySelectorAll('.el-q-opt').forEach(b => { if (b.getAttribute('data-opt') === it.answer) b.classList.add('correct'); });
+          }
+          wrap.querySelectorAll('.el-q-opt').forEach(b => b.disabled = true);
+          document.getElementById('q-fb').innerHTML = `<div class="el-feedback ${ok?'correct':'wrong'}">${ok?'✓ Doğru':'✗ Doğru cevap: '+ELV1.escapeHTML(it.answer)}</div>`;
+          setTimeout(() => { i++; renderItem(); }, 1200);
+        });
+      });
+    } else if (it.type === 'fill') {
+      const inp = document.getElementById('q-input');
+      document.getElementById('q-submit').addEventListener('click', () => {
+        const v = (inp.value || '').trim().toLowerCase();
+        const ans = (it.answer || '').toLowerCase();
+        const ok = v === ans;
+        total++;
+        if (ok) { correct++; inp.classList.add('correct'); }
+        else { inp.classList.add('wrong'); errors.push({type:'fill', wrote:v, expected:ans, slug:t.slug}); }
+        document.getElementById('q-fb').innerHTML = `<div class="el-feedback ${ok?'correct':'wrong'}">${ok?'✓ Doğru':'✗ Beklenen: '+ELV1.escapeHTML(it.answer)}</div>`;
+        document.getElementById('q-submit').disabled = true;
+        inp.disabled = true;
+        setTimeout(() => { i++; renderItem(); }, 1300);
+      });
+      inp.addEventListener('keypress', e => { if (e.key === 'Enter') document.getElementById('q-submit').click(); });
+    } else if (it.type === 'errspot') {
+      function pick(ok){
+        total++;
+        if (ok) correct++; else errors.push({type:'errspot', wrote:document.getElementById('q-input').value, expected:it.hint, slug:t.slug});
+        document.getElementById('q-fb').innerHTML = `<div class="el-feedback ${ok?'correct':'wrong'}">${ok?'✓ Kaydedildi (öz-değerlendirme)':'⚠️ Not düşüldü, bu konu zayıf-kuyruğuna katkı verir.'}</div>`;
+        document.getElementById('q-knew').disabled = true;
+        document.getElementById('q-didnt').disabled = true;
+        setTimeout(() => { i++; renderItem(); }, 1100);
+      }
+      document.getElementById('q-knew').addEventListener('click', () => pick(true));
+      document.getElementById('q-didnt').addEventListener('click', () => pick(false));
+    }
+  }
+
+  function finishQuiz() {
+    perTopicResults[t.slug] = {
+      correct, total, errors,
+      subpatterns_touched: items.map(x => x.subpattern).filter(Boolean),
+      completed: true
+    };
+    ELV1.recordTopicResult(t.slug, correct, total, errors);
+    wrap.innerHTML = `<div class="el-q-card" style="text-align:center;">
+      <div style="font-size:14px; color:var(--accent2); margin-bottom:8px;">✅ Quiz tamamlandı</div>
+      <div style="font-size:24px; color:var(--accent3); margin-bottom:6px;">${correct} / ${total}</div>
+      <div style="font-size:12px; color:var(--text2);">${total>0?Math.round(correct/total*100):0}% · Yeni güç skoru kaydedildi</div>
+      <div style="margin-top:12px;">
+        <button class="el-btn" onclick="closeModal()">Devam Et</button>
+      </div>
+    </div>`;
+    updateScoreBar();
+    renderSummaryTable();
+  }
+
+  renderItem();
+}
+
+/* ====== UI HELPERS ====== */
+function extractKeyChunk(en, topic) {
+  // basit: ilk 3 anahtar kelimeyi al, topic.name'i ekle
+  const words = en.replace(/[.,;:!?]/g,'').split(/\s+/).filter(w => w.length > 3);
+  return (words.slice(0,3).join(' ') || topic.name).toLowerCase();
+}
+
+function updateScoreBar() {
+  const totals = Object.values(perTopicResults);
+  const done = totals.filter(t => t.completed).length;
+  const c = totals.reduce((s, t) => s + (t.correct || 0), 0);
+  const w = totals.reduce((s, t) => s + ((t.total||0) - (t.correct||0)), 0);
+  document.getElementById('sb-done').textContent = done;
+  document.getElementById('sb-correct').textContent = c;
+  document.getElementById('sb-wrong').textContent = w;
+  document.getElementById('sb-saved').textContent = sessionBank.length;
+  const totalTopics = dailyTopics.length;
+  document.getElementById('sb-bar').style.width = totalTopics ? (done/totalTopics*100) + '%' : '0%';
+}
+
+function renderClosingPassage() {
+  const out = ELV1.buildTextFirstPassage(dailyTopics);
+  document.getElementById('passage-body').innerHTML = out.html;
+  // tooltip wiring
+  document.querySelectorAll('#passage-body [data-g]').forEach(el => {
+    el.addEventListener('mouseenter', e => {
+      const slug = el.getAttribute('data-slug');
+      const t = ELV1.T.topics.find(x => x.slug === slug);
+      if (!t) return;
+      const tt = document.getElementById('tt');
+      tt.innerHTML = `<div class="tt-name">${ELV1.escapeHTML(t.name)} <span class="el-tag cefr" style="font-size:9px;">${t.cefr}</span></div>
+        <div class="tt-tr">${ELV1.escapeHTML(t.tr_bridge)}</div>
+        <div class="tt-formula">${ELV1.escapeHTML(t.formula)}</div>`;
+      tt.classList.add('show');
+      const r = el.getBoundingClientRect();
+      tt.style.left = Math.min(window.innerWidth - 320, r.left) + 'px';
+      tt.style.top  = (r.bottom + 6) + 'px';
+    });
+    el.addEventListener('mouseleave', () => { document.getElementById('tt').classList.remove('show'); });
+  });
+}
+
+function renderSummaryTable() {
+  const prog = ELV1.getTopicProgress();
+  const rows = ELV1.T.topics.map(t => {
+    const p = prog[t.slug] || {};
+    const strength = p.strength;
+    const lvl = strength == null ? 's-na' : strength >= 70 ? 's-good' : strength >= 45 ? 's-mid' : 's-low';
+    const lvlTxt = strength == null ? '—' : strength + '%';
+    return `<tr>
+      <td>${ELV1.escapeHTML(t.name)}</td>
+      <td><span class="el-tag cefr">${t.cefr}</span></td>
+      <td>${p.sessions || 0}</td>
+      <td>${p.last_date || '—'}</td>
+      <td><span class="strength ${lvl}">${lvlTxt}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('summary-table').innerHTML = `
+    <thead><tr><th>Konu</th><th>CEFR</th><th>Sessions</th><th>Son</th><th>Güç</th></tr></thead>
+    <tbody>${rows}</tbody>`;
+}
+
+/* ====== EXPORT ====== */
+function exportSession() {
+  const duration = Math.round((Date.now() - SESSION_START) / 1000);
+  const payload = ELV1.buildSessionPayload(ENGINE_TAG, dailyTopics, perTopicResults, duration);
+  // bank items as separate payload (or same dump array)
+  const dump = [payload];
+  if (sessionBank.length) {
+    dump.push(ELV1.buildBankAddPayload(sessionBank, ENGINE_TAG, payload.session_id));
+  }
+  ELV1.downloadJSON(dump, ELV1.nowTag() + '-grammar-first.json');
+  ELV1.showToast('JSON indirildi. 00_INBOX/ klasörüne sürükle.', 3200);
+}
+
+/* ====== INIT ====== */
+renderTopicCards();
+renderClosingPassage();
+renderSummaryTable();
+updateScoreBar();
+</script>
+</body>
+</html>

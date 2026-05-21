@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude ile Dil Öğrenme — Tam Rehber</title>
+<style>
+  :root {
+    --bg: #f0ebe3;
+    --bg-card: #f8f4ee;
+    --bg-card-alt: #eae3d8;
+    --text: #2a1f14;
+    --text-muted: #7a6a58;
+    --text-light: #a89880;
+    --accent: #b83228;
+    --accent-2: #4a6e4a;
+    --accent-3: #7a5a2a;
+    --border: #d8cfc4;
+    --border-strong: #b8a898;
+    --tag-bg: #e8e0d5;
+    --shadow: rgba(42,31,20,0.07);
+    --invert-icon: 0;
+  }
+  [data-theme="dark"] {
+    --bg: #16120e;
+    --bg-card: #1e1a15;
+    --bg-card-alt: #252018;
+    --text: #e8ddd0;
+    --text-muted: #9a8a78;
+    --text-light: #6a5a48;
+    --accent: #d4534a;
+    --accent-2: #6a9a6a;
+    --accent-3: #c8a050;
+    --border: #2e2820;
+    --border-strong: #4a4030;
+    --tag-bg: #2a2418;
+    --shadow: rgba(0,0,0,0.3);
+    --invert-icon: 1;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    height: 52px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .nav-brand { font-weight: 600; color: var(--text); text-transform: uppercase; }
+  .nav-right { display: flex; gap: 28px; align-items: center; }
+  .nav-link { color: var(--text-muted); text-decoration: none; text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; }
+  .nav-link:hover { color: var(--text); }
+  .theme-btn {
+    background: none; border: 1px solid var(--border); padding: 5px 12px;
+    border-radius: 2px; cursor: pointer; color: var(--text-muted);
+    font-family: inherit; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .theme-btn:hover { border-color: var(--border-strong); color: var(--text); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 160px 48px 100px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .hero-label {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 28px;
+  }
+  .hero-label::before { content: '01'; color: var(--accent); font-weight: 700; }
+  .hero-tag {
+    background: var(--tag-bg); border: 1px solid var(--border);
+    padding: 4px 12px; border-radius: 2px; font-size: 10px;
+    letter-spacing: 0.12em; font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .hero h1 {
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 36px;
+    color: var(--text);
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero-desc {
+    font-size: 18px; color: var(--text-muted); max-width: 560px;
+    line-height: 1.8; font-style: italic;
+  }
+  .hero-visual {
+    margin-top: 64px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; border: 1px solid var(--border);
+  }
+  .hero-quad {
+    padding: 40px; background: var(--bg-card);
+    display: flex; flex-direction: column; gap: 16px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-quad:nth-child(2), .hero-quad:nth-child(4) { border-right: none; }
+  .hero-quad:nth-child(3), .hero-quad:nth-child(4) { border-bottom: none; }
+  .quad-num { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.15em; color: var(--accent); }
+  .quad-title { font-size: 20px; font-weight: 400; }
+  .quad-body { font-size: 13px; color: var(--text-muted); line-height: 1.7; font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    border: none; border-top: 1px solid var(--border);
+    margin: 0 48px;
+  }
+
+  /* ── SECTION HEADER ── */
+  .sec-header {
+    padding: 72px 48px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex; align-items: baseline; gap: 20px;
+  }
+  .sec-num {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px; letter-spacing: 0.15em; color: var(--accent);
+    font-weight: 700; min-width: 32px;
+  }
+  .sec-title { font-size: clamp(36px, 5vw, 56px); font-weight: 400; letter-spacing: -0.01em; }
+  .sec-tag {
+    background: var(--tag-bg); border: 1px solid var(--border);
+    padding: 4px 12px; border-radius: 2px;
+    font-size: 10px; letter-spacing: 0.12em;
+    font-family: 'Helvetica Neue', Arial, sans-serif; text-transform: uppercase;
+    color: var(--text-muted); margin-left: auto;
+  }
+  .sec-desc {
+    padding: 0 48px 56px; max-width: 800px;
+    margin: 0 auto 0 48px;
+    font-size: 16px; color: var(--text-muted); font-style: italic; line-height: 1.8;
+  }
+
+  /* ── CAPABILITY CARDS ── */
+  .cards-grid {
+    padding: 0 48px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+  }
+  .cap-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .cap-card:hover { border-color: var(--border-strong); }
+  .cap-illustration {
+    width: 100%; height: 180px;
+    background: var(--bg-card-alt);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cap-body { padding: 28px 32px 32px; }
+  .cap-num {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.15em; color: var(--accent);
+    margin-bottom: 10px; font-weight: 700;
+  }
+  .cap-title { font-size: 22px; margin-bottom: 12px; font-weight: 400; }
+  .cap-desc { font-size: 13px; color: var(--text-muted); line-height: 1.75; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  .cap-footer {
+    padding: 16px 32px 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px; color: var(--text-muted);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cap-arrow { color: var(--accent); font-size: 14px; }
+
+  /* ── PROMPT EXAMPLES ── */
+  .prompts-section {
+    padding: 0 48px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .prompt-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    border-bottom: 1px solid var(--border);
+    min-height: 72px;
+  }
+  .prompt-row:first-child { border-top: 1px solid var(--border); }
+  .prompt-label {
+    padding: 20px 24px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px; letter-spacing: 0.1em;
+    color: var(--text-muted); text-transform: uppercase;
+    border-right: 1px solid var(--border);
+    display: flex; align-items: center;
+  }
+  .prompt-text {
+    padding: 20px 28px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px; color: var(--text);
+    display: flex; align-items: center; line-height: 1.5;
+    background: var(--bg-card);
+  }
+  .prompt-text span { color: var(--accent); }
+
+  /* ── WORKFLOW ── */
+  .workflow-section {
+    padding: 0 48px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .workflow-steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+  .workflow-step {
+    padding: 32px 24px;
+    border-right: 1px solid var(--border);
+    background: var(--bg-card);
+    position: relative;
+  }
+  .workflow-step:last-child { border-right: none; }
+  .step-num {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 28px; font-weight: 300; color: var(--border-strong);
+    margin-bottom: 16px;
+  }
+  .step-title { font-size: 14px; margin-bottom: 8px; }
+  .step-body {
+    font-size: 12px; color: var(--text-muted); line-height: 1.6;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+  .step-arrow {
+    position: absolute; right: -10px; top: 50%;
+    transform: translateY(-50%);
+    width: 20px; height: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--accent);
+    z-index: 1;
+  }
+
+  /* ── 5-LANE ── */
+  .lanes-section {
+    padding: 0 48px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .lane-row {
+    display: grid;
+    grid-template-columns: 60px 180px 1fr auto;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--border);
+    margin-bottom: -1px;
+    background: var(--bg-card);
+    transition: background 0.2s;
+  }
+  .lane-row:hover { background: var(--bg-card-alt); }
+  .lane-tag {
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    color: var(--accent); border-right: 1px solid var(--border);
+    align-self: stretch; padding: 0 12px;
+  }
+  .lane-name {
+    padding: 20px 20px;
+    border-right: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .lane-desc {
+    padding: 20px 24px;
+    font-size: 12px; color: var(--text-muted);
+    font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6;
+  }
+  .lane-trigger {
+    padding: 20px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px; color: var(--accent-2);
+    border-left: 1px solid var(--border);
+    min-width: 140px; text-align: center;
+  }
+
+  /* ── TIPS ── */
+  .tips-grid {
+    padding: 0 48px 80px;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .tip-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+  .tip-icon { margin-bottom: 20px; }
+  .tip-label {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 10px;
+  }
+  .tip-title { font-size: 18px; margin-bottom: 12px; font-weight: 400; }
+  .tip-body { font-size: 13px; color: var(--text-muted); line-height: 1.75; font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-brand {
+    font-size: 12px; color: var(--text-muted);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: 0.08em;
+  }
+  .footer-note { font-size: 11px; color: var(--text-light); font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+  /* ── SVG ILLUS ── */
+  svg { overflow: visible; }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 120px 20px 60px; }
+    .hero-visual { grid-template-columns: 1fr; }
+    .cards-grid { grid-template-columns: 1fr; padding: 0 20px 60px; }
+    .workflow-steps { grid-template-columns: 1fr; }
+    .tips-grid { grid-template-columns: 1fr; padding: 0 20px 60px; }
+    .sec-header, .sec-desc, .prompts-section, .workflow-section, .lanes-section { padding-left: 20px; padding-right: 20px; }
+    footer { padding: 32px 20px; flex-direction: column; gap: 16px; }
+    .lane-row { grid-template-columns: 48px 1fr; }
+    .lane-trigger { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">DİL ATLASI</div>
+  <div class="nav-right">
+    <a href="#capabilities" class="nav-link">Yetenekler</a>
+    <a href="#workflow" class="nav-link">Akış</a>
+    <a href="#practice" class="nav-link">Pratik</a>
+    <button class="theme-btn" onclick="toggleTheme()">◐ Tema</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-label">
+    <span>Claude ile İngilizce</span>
+    <span class="hero-tag">5 TEMEL BOYUT</span>
+  </div>
+  <h1>Dili Konuşan<br>Bir <em>Ortak.</em></h1>
+  <p class="hero-desc">Claude bir araç değil, düşünen bir dil ortağıdır. Gramer öğretmeninden sohbet arkadaşına, hata koçundan yazma mentoruna — tek sistemde tüm boyutlar.</p>
+
+  <div class="hero-visual">
+    <div class="hero-quad">
+      <div class="quad-num">BOYUT 01</div>
+      <div class="quad-title">Input</div>
+      <div class="quad-body">Okuma, dinleme ve anlama. Metinleri seviyene göre sadeleştir, kelime bilgini bağlamda genişlet, kültürel alt metinleri çöz.</div>
+    </div>
+    <div class="hero-quad">
+      <div class="quad-num">BOYUT 02</div>
+      <div class="quad-title">Processing</div>
+      <div class="quad-body">Gramer yapılarını kavramsallaştır, kalıpları tanı, hataların neden hata olduğunu anla. Kural ezberinden kavram inşasına.</div>
+    </div>
+    <div class="hero-quad">
+      <div class="quad-num">BOYUT 03</div>
+      <div class="quad-title">Output</div>
+      <div class="quad-body">Yaz, konuş, üret. Claude anlık feedback verir; hatasızlığı değil, kullanmayı ödüllendirir. Üretim kaygısını kır.</div>
+    </div>
+    <div class="hero-quad">
+      <div class="quad-num">BOYUT 04</div>
+      <div class="quad-title">Reflection</div>
+      <div class="quad-body">Hata pattern'lerini takip et, tekrar eden boşlukları gör, kazanımlarını portföyde biriktir. Öğrenme bilinçli hale gelir.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CAPABILITIES -->
+<div class="sec-header" id="capabilities">
+  <span class="sec-num">02</span>
+  <h2 class="sec-title">Yetenekler</h2>
+  <span class="sec-tag">10 Kapasite · Tek Ortak</span>
+</div>
+<p class="sec-desc">Her yetenek, gerçek bir öğrenme sürecini karşılar. Hangi aşamada olursan ol — kelime keşfinden ileri yazıma — Claude orada.</p>
+
+<div class="cards-grid">
+
+  <!-- 1. Sohbet Ortağı -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- Konuşma baloncukları -->
+        <rect x="20" y="20" width="100" height="36" rx="18" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="70" y="43" text-anchor="middle" font-family="Georgia" font-size="12" fill="var(--accent)">Hello, how are you?</text>
+        <rect x="90" y="65" width="110" height="36" rx="18" fill="none" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <text x="145" y="88" text-anchor="middle" font-family="Georgia" font-size="12" fill="var(--accent-2)">I'm doing well, thanks.</text>
+        <!-- dots for user -->
+        <circle cx="32" cy="38" r="8" fill="var(--accent)" opacity="0.15"/>
+        <circle cx="198" cy="83" r="8" fill="var(--accent-2)" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">01 · KONUŞMA</div>
+      <div class="cap-title">Sohbet Ortağı</div>
+      <div class="cap-desc">Gerçekçi diyaloglar kur. Kafe siparişinden iş toplantısına, günlük küçük konuşmadan tartışmaya. Claude hem konuşur hem anında koçluk yapar. Kırmızı kart yok — devam eder, düzeltir, teşvik eder.</div>
+    </div>
+    <div class="cap-footer">
+      <span>L3 Conversational Loop</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 2. Gramer Koçu -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- Gramer ağacı -->
+        <line x1="110" y1="95" x2="110" y2="60" stroke="var(--accent-2)" stroke-width="2"/>
+        <line x1="110" y1="60" x2="60" y2="30" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <line x1="110" y1="60" x2="110" y2="30" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <line x1="110" y1="60" x2="160" y2="30" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <circle cx="60" cy="28" r="7" fill="none" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <circle cx="110" cy="28" r="7" fill="none" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <circle cx="160" cy="28" r="7" fill="none" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <text x="60" y="32" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--accent-2)">S</text>
+        <text x="110" y="32" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--accent-2)">V</text>
+        <text x="160" y="32" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--accent-2)">O</text>
+        <rect x="82" y="84" width="56" height="18" rx="2" fill="none" stroke="var(--text-light)" stroke-width="1"/>
+        <text x="110" y="96" text-anchor="middle" font-family="Helvetica" font-size="9" fill="var(--text-muted)">SENTENCE</text>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">02 · GRAMER</div>
+      <div class="cap-title">Gramer Koçu</div>
+      <div class="cap-desc">Present Perfect'ten Inversion'a, herhangi bir yapıyı kural + örnek + drill döngüsüyle öğren. "Neden böyle?" sorusunu sorabilirsin. Soyut kural değil, kavram inşası.</div>
+    </div>
+    <div class="cap-footer">
+      <span>Concepts + L4 Error Drill</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 3. Okuma Arkadaşı -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- Açık kitap -->
+        <path d="M40 90 L40 30 Q110 20 110 30 L110 90 Q110 80 40 90Z" fill="none" stroke="var(--text-light)" stroke-width="1.5"/>
+        <path d="M180 90 L180 30 Q110 20 110 30 L110 90 Q110 80 180 90Z" fill="none" stroke="var(--text-light)" stroke-width="1.5"/>
+        <!-- text lines left -->
+        <line x1="55" y1="48" x2="100" y2="46" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="55" y1="56" x2="100" y2="54" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="55" y1="64" x2="90" y2="62" stroke="var(--accent)" stroke-width="1.5"/>
+        <line x1="55" y1="72" x2="100" y2="70" stroke="var(--text-light)" stroke-width="1"/>
+        <!-- highlight -->
+        <rect x="54" y="60" width="38" height="6" rx="1" fill="var(--accent)" opacity="0.2"/>
+        <!-- text lines right -->
+        <line x1="120" y1="48" x2="165" y2="46" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="120" y1="56" x2="165" y2="54" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="120" y1="64" x2="155" y2="62" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="120" y1="72" x2="165" y2="70" stroke="var(--text-light)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">03 · OKUMA</div>
+      <div class="cap-title">Okuma Arkadaşı</div>
+      <div class="cap-desc">Herhangi bir İngilizce metni getir. Claude seviyene göre sadeleştirir, bağlamda kelime açıklar, kültürel referansları çözer. Haber, roman, essay, akademik — hepsi ölçeklendirilir.</div>
+    </div>
+    <div class="cap-footer">
+      <span>Ingest Akışı · Sources</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 4. Yazma Mentoru -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- Kalem + annotation -->
+        <line x1="50" y1="85" x2="170" y2="85" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="60" y="82" font-family="Georgia" font-size="11" fill="var(--text-muted)">I have went to the store</text>
+        <!-- strikethrough -->
+        <line x1="60" y1="79" x2="142" y2="79" stroke="var(--accent)" stroke-width="1" opacity="0.5"/>
+        <!-- correction above -->
+        <text x="60" y="62" font-family="Georgia" font-size="11" fill="var(--accent-2)">I went to the store</text>
+        <!-- annotation mark -->
+        <text x="148" y="82" font-family="Helvetica" font-size="9" fill="var(--accent)">❌</text>
+        <!-- checkmark -->
+        <text x="168" y="62" font-family="Helvetica" font-size="9" fill="var(--accent-2)">✓</text>
+        <!-- arrow -->
+        <path d="M140 70 Q150 72 148 76" fill="none" stroke="var(--text-light)" stroke-width="1" marker-end="url(#a)"/>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">04 · YAZMA</div>
+      <div class="cap-title">Yazma Mentoru</div>
+      <div class="cap-desc">Yazdığın metni üç katmanda değerlendirir: ✅ doğru · ⚠️ güçlendirilebilir · ❌ hata. Sebep açıklar, alternatif önerir, stilini korur. Kırmızı kalemden değil, mentordan öğren.</div>
+    </div>
+    <div class="cap-footer">
+      <span>L1 Production Cell</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 5. Kelime Uzmanı -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- Kelime ağı -->
+        <circle cx="110" cy="60" r="18" fill="none" stroke="var(--accent-3)" stroke-width="2"/>
+        <text x="110" y="64" text-anchor="middle" font-family="Georgia" font-size="10" fill="var(--accent-3)">resilient</text>
+        <!-- bağlantı noktaları -->
+        <circle cx="50" cy="30" r="10" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="50" y="33" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--text-muted)">tough</text>
+        <circle cx="170" cy="30" r="10" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="170" y="33" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--text-muted)">flexible</text>
+        <circle cx="50" cy="90" r="10" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="50" y="93" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--text-muted)">durable</text>
+        <circle cx="170" cy="90" r="10" fill="none" stroke="var(--border-strong)" stroke-width="1"/>
+        <text x="170" y="93" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--text-muted)">hardy</text>
+        <line x1="92" y1="47" x2="60" y2="37" stroke="var(--border)" stroke-width="1"/>
+        <line x1="128" y1="47" x2="160" y2="37" stroke="var(--border)" stroke-width="1"/>
+        <line x1="92" y1="73" x2="60" y2="83" stroke="var(--border)" stroke-width="1"/>
+        <line x1="128" y1="73" x2="160" y2="83" stroke="var(--border)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">05 · KELİME</div>
+      <div class="cap-title">Kelime Uzmanı</div>
+      <div class="cap-desc">Kelimeleri izole ezberlemek yerine ağ içinde öğren. Synonym, antonym, collocation, register farkı, cümle içinde doğal kullanım. CEFR seviyesine göre dozaj.</div>
+    </div>
+    <div class="cap-footer">
+      <span>Vocabulary Hub · Spaced</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 6. Hata Avcısı -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- Pattern tracking bars -->
+        <rect x="40" y="80" width="16" height="30" fill="var(--accent)" opacity="0.3" rx="1"/>
+        <rect x="62" y="65" width="16" height="45" fill="var(--accent)" opacity="0.5" rx="1"/>
+        <rect x="84" y="50" width="16" height="60" fill="var(--accent)" opacity="0.7" rx="1"/>
+        <rect x="106" y="40" width="16" height="70" fill="var(--accent)" rx="1"/>
+        <rect x="128" y="60" width="16" height="50" fill="var(--accent-2)" opacity="0.6" rx="1"/>
+        <rect x="150" y="75" width="16" height="35" fill="var(--accent-2)" opacity="0.4" rx="1"/>
+        <!-- label -->
+        <text x="110" y="22" text-anchor="middle" font-family="Helvetica" font-size="9" fill="var(--text-muted)" letter-spacing="0.1em">HATA FREKANSI</text>
+        <line x1="35" y1="110" x2="180" y2="110" stroke="var(--border)" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">06 · HATA</div>
+      <div class="cap-title">Hata Örüntüsü Takibi</div>
+      <div class="cap-desc">Aynı hatayı 3 kez yapıyorsan "Boss Battle" modu devreye girer. Claude hata pattern'ini adlandırır, frekansını sayar, hedefe yönelik drill tasarlar. Bilinçsiz tekrardan bilinçli iyileşmeye.</div>
+    </div>
+    <div class="cap-footer">
+      <span>L4 Error Drill · Boss Battle</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 7. Stil Taklitçisi -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- İki yazı stili yan yana -->
+        <text x="55" y="45" text-anchor="middle" font-family="Georgia" font-size="13" font-style="italic" fill="var(--text-muted)">Orwell</text>
+        <text x="165" y="45" text-anchor="middle" font-family="Georgia" font-size="13" fill="var(--text-muted)">Hemingway</text>
+        <line x1="110" y1="30" x2="110" y2="95" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- sol metin -->
+        <line x1="22" y1="58" x2="96" y2="58" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="22" y1="66" x2="96" y2="66" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="22" y1="74" x2="80" y2="74" stroke="var(--text-light)" stroke-width="1"/>
+        <!-- sağ metin -->
+        <line x1="124" y1="58" x2="198" y2="58" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="124" y1="66" x2="168" y2="66" stroke="var(--text-light)" stroke-width="1"/>
+        <line x1="124" y1="74" x2="198" y2="74" stroke="var(--text-light)" stroke-width="1"/>
+        <!-- shadow -->
+        <circle cx="110" cy="95" r="6" fill="var(--accent)" opacity="0.6"/>
+        <text x="110" y="99" text-anchor="middle" font-family="Helvetica" font-size="8" fill="white">SEN</text>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">07 · STİL</div>
+      <div class="cap-title">Shadow Author</div>
+      <div class="cap-desc">Bir yazarın stilini taklit ederek yaz. Claude önce analiz eder (cümle uzunluğu, sıfat kullanımı, tempo), sonra constraint verir, sonra annotate eder. Orwell gibi, Didion gibi, Sontag gibi.</div>
+    </div>
+    <div class="cap-footer">
+      <span>L2 Shadow Writing</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 8. Egzersiz Tasarımcısı -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- Quiz kartları -->
+        <rect x="30" y="25" width="80" height="55" rx="3" fill="none" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <rect x="22" y="32" width="80" height="55" rx="3" fill="var(--bg-card)" stroke="var(--border)" stroke-width="1"/>
+        <text x="62" y="60" text-anchor="middle" font-family="Helvetica" font-size="9" fill="var(--text-muted)">She ___ here</text>
+        <text x="62" y="72" text-anchor="middle" font-family="Helvetica" font-size="9" fill="var(--text-muted)">since 2020.</text>
+        <!-- options -->
+        <rect x="110" y="30" width="85" height="16" rx="2" fill="none" stroke="var(--border)" stroke-width="1"/>
+        <rect x="110" y="52" width="85" height="16" rx="2" fill="none" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <rect x="110" y="74" width="85" height="16" rx="2" fill="none" stroke="var(--border)" stroke-width="1"/>
+        <text x="152" y="41" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--text-muted)">a) worked</text>
+        <text x="152" y="63" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--accent-2)">b) has worked ✓</text>
+        <text x="152" y="85" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--text-muted)">c) is working</text>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">08 · DRILL</div>
+      <div class="cap-title">Egzersiz Tasarımcısı</div>
+      <div class="cap-desc">Herhangi bir gramer konusu veya kelime seti için anında özel drill üret. Gap-fill, transformation, error correction, cümle kurma — istediğin format, istediğin zorluk. Şablona bağlı değil.</div>
+    </div>
+    <div class="cap-footer">
+      <span>Custom Exercises · Any Level</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 9. Çevirmen & Kültür Rehberi -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- İki dil arasında köprü -->
+        <text x="55" y="55" text-anchor="middle" font-family="Georgia" font-size="14" fill="var(--text-muted)">TR</text>
+        <text x="165" y="55" text-anchor="middle" font-family="Georgia" font-size="14" fill="var(--text-muted)">EN</text>
+        <!-- köprü -->
+        <path d="M80 60 Q110 40 140 60" fill="none" stroke="var(--accent)" stroke-width="2"/>
+        <path d="M80 70 Q110 90 140 70" fill="none" stroke="var(--accent-2)" stroke-width="2"/>
+        <!-- noktalar -->
+        <circle cx="80" cy="60" r="4" fill="var(--accent)"/>
+        <circle cx="140" cy="60" r="4" fill="var(--accent)"/>
+        <circle cx="80" cy="70" r="4" fill="var(--accent-2)"/>
+        <circle cx="140" cy="70" r="4" fill="var(--accent-2)"/>
+        <!-- labels -->
+        <text x="110" y="36" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--accent)">literal</text>
+        <text x="110" y="96" text-anchor="middle" font-family="Helvetica" font-size="8" fill="var(--accent-2)">natural</text>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">09 · KÜLTÜR</div>
+      <div class="cap-title">Çevirmen & Kültür Rehberi</div>
+      <div class="cap-desc">Salt çeviri değil: idiom'ların arka planı, register farkı (formal/informal/slang), Amerikan vs. İngiliz kullanım farkları, kültürel referanslar. Dili değil, kültürü öğren.</div>
+    </div>
+    <div class="cap-footer">
+      <span>Context · Register · Culture</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+  <!-- 10. Adaptif Seviye -->
+  <div class="cap-card">
+    <div class="cap-illustration">
+      <svg width="220" height="120" viewBox="0 0 220 120">
+        <!-- CEFR merdiveni -->
+        <line x1="50" y1="100" x2="170" y2="100" stroke="var(--border)" stroke-width="1"/>
+        <!-- Basamaklar -->
+        <rect x="50" y="88" width="20" height="12" fill="var(--accent)" opacity="0.3" rx="1"/>
+        <rect x="70" y="76" width="20" height="24" fill="var(--accent)" opacity="0.4" rx="1"/>
+        <rect x="90" y="64" width="20" height="36" fill="var(--accent)" opacity="0.55" rx="1"/>
+        <rect x="110" y="52" width="20" height="48" fill="var(--accent)" opacity="0.7" rx="1"/>
+        <rect x="130" y="40" width="20" height="60" fill="var(--accent)" opacity="0.85" rx="1"/>
+        <rect x="150" y="28" width="20" height="72" fill="var(--accent)" rx="1"/>
+        <!-- labels -->
+        <text x="60" y="85" text-anchor="middle" font-family="Helvetica" font-size="7" fill="white">A1</text>
+        <text x="80" y="73" text-anchor="middle" font-family="Helvetica" font-size="7" fill="white">A2</text>
+        <text x="100" y="61" text-anchor="middle" font-family="Helvetica" font-size="7" fill="white">B1</text>
+        <text x="120" y="49" text-anchor="middle" font-family="Helvetica" font-size="7" fill="white">B2</text>
+        <text x="140" y="37" text-anchor="middle" font-family="Helvetica" font-size="7" fill="white">C1</text>
+        <text x="160" y="25" text-anchor="middle" font-family="Helvetica" font-size="7" fill="white">C2</text>
+        <!-- cursor -->
+        <path d="M100 54 L95 44 L105 44 Z" fill="var(--accent-3)"/>
+      </svg>
+    </div>
+    <div class="cap-body">
+      <div class="cap-num">10 · SEVİYE</div>
+      <div class="cap-title">Adaptif Seviye Ayarı</div>
+      <div class="cap-desc">Claude'a seviyeni söyle — A2, B1, B2 — ve her şey uyarlanır: kelime seçimi, cümle karmaşıklığı, beklenen output uzunluğu. Aynı konu, üç farklı derinlikte öğrenilebilir.</div>
+    </div>
+    <div class="cap-footer">
+      <span>A1 → C2 · CEFR Uyumlu</span>
+      <span class="cap-arrow">→</span>
+    </div>
+  </div>
+
+</div>
+
+<hr class="section-divider">
+
+<!-- PROMPT ÖRNEKLERI -->
+<div class="sec-header" id="prompts">
+  <span class="sec-num">03</span>
+  <h2 class="sec-title">Nasıl Söylersin?</h2>
+  <span class="sec-tag">Prompt Formülleri</span>
+</div>
+<p class="sec-desc">Claude'u iyi kullanmak bir dil bilir. İşte en verimli prompt kalıpları — kopyala, uyarla, kullan.</p>
+
+<div class="prompts-section">
+  <div class="prompt-row">
+    <div class="prompt-label">Gramer Açıklama</div>
+    <div class="prompt-text">
+      <span>"Present Perfect ile Past Simple farkını A2 seviyem için</span>&nbsp;3 gerçek hayat örneğiyle açıkla."
+    </div>
+  </div>
+  <div class="prompt-row">
+    <div class="prompt-label">Hata Düzeltme</div>
+    <div class="prompt-text">
+      <span>"Şu paragrafı ✅ / ⚠️ / ❌</span>&nbsp;ile annotate et. Her hatanın sebebini bir cümleyle açıkla."
+    </div>
+  </div>
+  <div class="prompt-row">
+    <div class="prompt-label">Sohbet Başlatma</div>
+    <div class="prompt-text">
+      <span>"B1 seviyemde, iş görüşmesi senaryosunda</span>&nbsp;10 turlu bir diyalog yapalım. Ben adayım."
+    </div>
+  </div>
+  <div class="prompt-row">
+    <div class="prompt-label">Shadow Yazma</div>
+    <div class="prompt-text">
+      <span>"Orwell'ın sade, net nesir stilini taklit ederek</span>&nbsp;5 phrasal verb kullanarak 150 kelime yaz."
+    </div>
+  </div>
+  <div class="prompt-row">
+    <div class="prompt-label">Kelime Ağı</div>
+    <div class="prompt-text">
+      <span>"'Resilient' için: tanım, 4 synonym, 3 collocation,</span>&nbsp;register notu ve örnek cümle ver."
+    </div>
+  </div>
+  <div class="prompt-row">
+    <div class="prompt-label">Metin Uyarlama</div>
+    <div class="prompt-text">
+      <span>"Bu New York Times makalesini B1 seviyesine</span>&nbsp;sadeleştir, teknik terimleri glossary olarak ekle."
+    </div>
+  </div>
+  <div class="prompt-row">
+    <div class="prompt-label">Drill Üretimi</div>
+    <div class="prompt-text">
+      <span>"Passive Voice için 10 soruluk gap-fill drill üret.</span>&nbsp;Cevap anahtarını ayrı ver."
+    </div>
+  </div>
+  <div class="prompt-row">
+    <div class="prompt-label">Kültürel Bağlam</div>
+    <div class="prompt-text">
+      <span>"'Break a leg' ifadesinin kökeni, kullanım bağlamı</span>&nbsp;ve Türkçe eşdeğeri nedir?"
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- WORKFLOW -->
+<div class="sec-header" id="workflow">
+  <span class="sec-num">04</span>
+  <h2 class="sec-title">Öğrenme Akışı</h2>
+  <span class="sec-tag">5 Adım · Döngüsel</span>
+</div>
+<p class="sec-desc">Tek seferlik bir oturum değil, döngüsel bir sistem. Her adım bir sonrakini besler.</p>
+
+<div class="workflow-section">
+  <div class="workflow-steps">
+    <div class="workflow-step">
+      <div class="step-num">01</div>
+      <div class="step-title">Kaynak Getir</div>
+      <div class="step-body">Makale, roman bölümü, podcast transkripti, film diyaloğu — ne olursa olsun Claude'a ver.</div>
+      <div class="step-arrow">›</div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">02</div>
+      <div class="step-title">Analiz Et</div>
+      <div class="step-body">Claude gramer yapılarını, hedef kelimeleri ve öğrenme fırsatlarını tespit eder.</div>
+      <div class="step-arrow">›</div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">03</div>
+      <div class="step-title">Üret</div>
+      <div class="step-body">Konuş, yaz, çevir, özetle — constraint'li output üret. Hatasız değil, kullanmaya çalış.</div>
+      <div class="step-arrow">›</div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">04</div>
+      <div class="step-title">Geri Bildirim Al</div>
+      <div class="step-body">Annotation, açıklama, alternatif. Hata pattern'leri kayıt altına alınır.</div>
+      <div class="step-arrow">›</div>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">05</div>
+      <div class="step-title">Arşivle & Tekrarla</div>
+      <div class="step-body">En iyi output'lar portföyde birikir. Tekrar eden hatalar drill'e dönüşür.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- 5-LANE PRACTICE -->
+<div class="sec-header" id="practice">
+  <span class="sec-num">05</span>
+  <h2 class="sec-title">5 Pratik Şeridi</h2>
+  <span class="sec-tag">Output-Centric Sistem</span>
+</div>
+<p class="sec-desc">Her pratik talebi bir şeride girer. Şeritler farklı output türlerini hedefler — hepsinin ortak paydası üretim, yani kullanmak.</p>
+
+<div class="lanes-section">
+  <div class="lane-row">
+    <div class="lane-tag">L1</div>
+    <div class="lane-name">Production Cell</div>
+    <div class="lane-desc">Günlük serbest yazım hücresi. 15–20 dakika, constraint'li üretim, anlık annotation. Her gün bir hücre, her hücre bir kayıt.</div>
+    <div class="lane-trigger">"cell" · "L1"</div>
+  </div>
+  <div class="lane-row">
+    <div class="lane-tag">L2</div>
+    <div class="lane-name">Shadow Author</div>
+    <div class="lane-desc">Yazar taklidi. Bir yazarın stilini analiz et, onun sesini taklit ederek yaz, farkı gör. 25–30 dakika.</div>
+    <div class="lane-trigger">"shadow" · "X gibi yaz"</div>
+  </div>
+  <div class="lane-row">
+    <div class="lane-tag">L3</div>
+    <div class="lane-name">Conversational Loop</div>
+    <div class="lane-desc">Gerçek zamanlı diyalog. Senaryo kur, rol üstlen, konuş. Sohbet sonunda top 3 hata + ne iyi gitti raporu.</div>
+    <div class="lane-trigger">"sohbet" · "dialogue"</div>
+  </div>
+  <div class="lane-row">
+    <div class="lane-tag">L4</div>
+    <div class="lane-name">Error Drill</div>
+    <div class="lane-desc">Tekrar eden hata pattern'leri için özel savaş modu. 3+ tekrar → Boss Battle. Hedefe yönelik drill tasarımı.</div>
+    <div class="lane-trigger">"error drill" · "L4"</div>
+  </div>
+  <div class="lane-row">
+    <div class="lane-tag">L5</div>
+    <div class="lane-name">Retrieval Carnival</div>
+    <div class="lane-desc">Aralıklı tekrar karnavalı. Önceki haftalarda öğrenilen kelime ve yapılar, yeni bağlamlarda geri çağrılır.</div>
+    <div class="lane-trigger">"retrieval" · "L5"</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- TIPS -->
+<div class="sec-header" id="tips">
+  <span class="sec-num">06</span>
+  <h2 class="sec-title">Altın Kurallar</h2>
+  <span class="sec-tag">Verimli Kullanım</span>
+</div>
+<p class="sec-desc">Claude'u dil öğrenmede maksimum verimlilikle kullanmak için kaçınılacaklar ve yapılacaklar.</p>
+
+<div class="tips-grid">
+
+  <div class="tip-card">
+    <div class="tip-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="16" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="20" y="26" text-anchor="middle" font-size="18" fill="var(--accent)">!</text>
+      </svg>
+    </div>
+    <div class="tip-label">Kritik Kural</div>
+    <div class="tip-title">Seviyeni Her Oturumda Belirt</div>
+    <div class="tip-body">Claude'un cevap kalitesi, seviye bilgisine göre dramatik şekilde değişir. "B1 seviyeme göre" veya "A2 kelimesiyle" notu her prompt'a ekle. Varsayıma bırakma.</div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40">
+        <rect x="8" y="8" width="24" height="24" rx="3" fill="none" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <line x1="14" y1="20" x2="26" y2="20" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <line x1="20" y1="14" x2="20" y2="26" stroke="var(--accent-2)" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="tip-label">Üretim Önceliği</div>
+    <div class="tip-title">Okuma Değil, Yazma ve Konuşma</div>
+    <div class="tip-body">Claude sana sürekli açıklama sunabilir — ama dil ancak üretimle yerleşir. Her oturumun en az %50'si output olmalı. Soru sormak yerine üret, sonra soru sor.</div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40">
+        <polyline points="8,30 16,18 24,24 32,10" fill="none" stroke="var(--accent-3)" stroke-width="1.5"/>
+        <circle cx="8" cy="30" r="2.5" fill="var(--accent-3)"/>
+        <circle cx="16" cy="18" r="2.5" fill="var(--accent-3)"/>
+        <circle cx="24" cy="24" r="2.5" fill="var(--accent-3)"/>
+        <circle cx="32" cy="10" r="2.5" fill="var(--accent-3)"/>
+      </svg>
+    </div>
+    <div class="tip-label">Takip Sistemi</div>
+    <div class="tip-title">Hataları Kayıt Altına Al</div>
+    <div class="tip-body">Claude'dan hataları listelemesini iste, sonra bir yerde sakla. Pattern'ler ancak tekrarda görülür. Hata logunu tutmayan öğrenci, aynı tuzaklara düşmeye devam eder.</div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40">
+        <path d="M20 8 L24 16 L33 17 L27 23 L28 32 L20 28 L12 32 L13 23 L7 17 L16 16 Z" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="tip-label">Kalite Kontrolü</div>
+    <div class="tip-title">Constraint Kullan, Özgür Bırakma</div>
+    <div class="tip-body">Serbest yazım kolaydır — bildiklerine sığınırsın. Constraint ("şu 5 kelimeyi kullan", "passive voice olmadan yaz") seni bilinmeyene iter. Rahatsızlık öğrenmenin işaretidir.</div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="10" fill="none" stroke="var(--accent-2)" stroke-width="1.5"/>
+        <path d="M20 10 A10 10 0 0 1 30 20" stroke="var(--accent-2)" stroke-width="2.5" fill="none"/>
+        <circle cx="20" cy="10" r="2" fill="var(--accent-2)"/>
+      </svg>
+    </div>
+    <div class="tip-label">Süreklilik</div>
+    <div class="tip-title">Kısa ve Sık, Uzun ve Seyrek Değil</div>
+    <div class="tip-body">Haftada bir 3 saatlik maraton yerine günde 20 dakika çok daha verimli. Claude'u günlük dil jimnastiği ortağı olarak gör — bire bir koçluk, anında geri bildirim, sıfır yargı.</div>
+  </div>
+
+  <div class="tip-card">
+    <div class="tip-icon">
+      <svg width="40" height="40" viewBox="0 0 40 40">
+        <rect x="10" y="12" width="20" height="16" rx="2" fill="none" stroke="var(--accent-3)" stroke-width="1.5"/>
+        <line x1="14" y1="18" x2="26" y2="18" stroke="var(--accent-3)" stroke-width="1"/>
+        <line x1="14" y1="22" x2="22" y2="22" stroke="var(--accent-3)" stroke-width="1"/>
+        <path d="M24 28 L24 34 L30 34" stroke="var(--accent-3)" stroke-width="1.5" fill="none"/>
+      </svg>
+    </div>
+    <div class="tip-label">Wiki Sistemi</div>
+    <div class="tip-title">Öğrendiklerini Wiki'de Biriktir</div>
+    <div class="tip-body">Her Claude oturumu değerli içerik üretir. Gramer açıklamaları, kelime ağları, iyi yazılmış paragraflar wiki'ye eklenir. Birikim olmadan öğrenme, karlar gibi erir.</div>
+  </div>
+
+</div>
+
+<hr class="section-divider">
+
+<!-- QUICK REFERENCE -->
+<div class="sec-header">
+  <span class="sec-num">07</span>
+  <h2 class="sec-title">Hızlı Başlangıç</h2>
+  <span class="sec-tag">İlk 3 Adım</span>
+</div>
+
+<div style="padding: 0 48px 80px; max-width: 1100px; margin: 0 auto;">
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;">
+
+    <div style="background: var(--accent); padding: 48px 36px; color: white;">
+      <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.15em; opacity: 0.7; margin-bottom: 20px;">ADIM 01</div>
+      <div style="font-size: 22px; margin-bottom: 16px; font-weight: 400;">Seviyeni Belirle</div>
+      <div style="font-size: 13px; opacity: 0.85; line-height: 1.75; font-family: 'Helvetica Neue', Arial, sans-serif;">
+        Claude'a şunu söyle: "Ben B1 seviyesindeyim. Zayıf olduğum alan Present Perfect ve Passive Voice. Güçlü olduğum alan: Past Simple." Başlangıç profili oluştur.
+      </div>
+    </div>
+
+    <div style="background: var(--accent-2); padding: 48px 36px; color: white;">
+      <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.15em; opacity: 0.7; margin-bottom: 20px;">ADIM 02</div>
+      <div style="font-size: 22px; margin-bottom: 16px; font-weight: 400;">İlk Hücreyi Yaz</div>
+      <div style="font-size: 13px; opacity: 0.85; line-height: 1.75; font-family: 'Helvetica Neue', Arial, sans-serif;">
+        L1 modunu başlat: "Cell istiyorum. Konu: haftan nasıl geçti? Constraint: şu 3 phrasal verb'ü kullan: put off, get over, look forward to." Yaz ve annotate et.
+      </div>
+    </div>
+
+    <div style="background: var(--accent-3); padding: 48px 36px; color: white;">
+      <div style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.15em; opacity: 0.7; margin-bottom: 20px;">ADIM 03</div>
+      <div style="font-size: 22px; margin-bottom: 16px; font-weight: 400;">Hataları Kaydet</div>
+      <div style="font-size: 13px; opacity: 0.85; line-height: 1.75; font-family: 'Helvetica Neue', Arial, sans-serif;">
+        Oturum sonunda: "Bu oturumdaki top 3 hatamı pattern adıyla listele." Wiki'ye kaydet. Üç tekrarda Boss Battle. Takip olmadan iyileşme yok.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">DİL ATLASI · Claude ile İngilizce Rehberi · 2026</div>
+  <div class="footer-note">English Learning Wiki · wiki/artifacts/claude-language-guide.md</div>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    const btn = document.querySelector('.theme-btn');
+    btn.textContent = current === 'light' ? '◑ Tema' : '◐ Tema';
+  }
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,745 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Verdana, Geneva, sans-serif; }
+  
+  .page { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  /* NAV TABS */
+  .tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border-tertiary); padding-bottom: 0; }
+  .tab-btn { font-family: Verdana, sans-serif; font-size: 12px; padding: 8px 14px; border: none; background: none; cursor: pointer; color: var(--color-text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; border-radius: 4px 4px 0 0; }
+  .tab-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+  .tab-btn.active { color: #185FA5; border-bottom: 2px solid #185FA5; font-weight: 500; background: var(--color-background-secondary); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* HERO BANNER */
+  .hero { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .hero h1 { font-family: Verdana, sans-serif; font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
+  .hero p { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-family: Verdana, sans-serif; }
+  .badge-blue { background: #E6F1FB; color: #185FA5; }
+  .badge-teal { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-coral { background: #FAECE7; color: #993C1D; }
+
+  /* FORMULA BOX */
+  .formula-box { background: #E6F1FB; border: 1px solid #B5D4F4; border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+  .formula-box .formula { font-family: 'Courier New', monospace; font-size: 15px; color: #0C447C; font-weight: 500; letter-spacing: 0.5px; }
+  .formula-box .label { font-size: 11px; color: #185FA5; margin-bottom: 6px; font-family: Verdana, sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* MEANING CARDS GRID */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin: 1rem 0; }
+  .meaning-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 1rem; }
+  .meaning-card .card-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .meaning-card .card-title .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .meaning-card .card-body { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .example-line { font-size: 12px; margin-top: 8px; padding: 6px 10px; border-radius: 6px; font-style: italic; }
+  .ex-blue { background: #E6F1FB; color: #185FA5; border-left: 3px solid #378ADD; }
+  .ex-teal { background: #E1F5EE; color: #0F6E56; border-left: 3px solid #1D9E75; }
+  .ex-coral { background: #FAECE7; color: #993C1D; border-left: 3px solid #D85A30; }
+  .ex-amber { background: #FAEEDA; color: #854F0B; border-left: 3px solid #BA7517; }
+  .ex-purple { background: #EEEDFE; color: #3C3489; border-left: 3px solid #7F77DD; }
+  .ex-pink { background: #FBEAF0; color: #72243E; border-left: 3px solid #D4537E; }
+  .ex-green { background: #EAF3DE; color: #3B6D11; border-left: 3px solid #639922; }
+
+  /* TABLE */
+  .gram-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 1rem 0; }
+  .gram-table th { background: var(--color-background-secondary); padding: 8px 12px; text-align: left; font-weight: 500; font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--color-border-tertiary); }
+  .gram-table td { padding: 8px 12px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); line-height: 1.5; vertical-align: top; }
+  .gram-table tr:last-child td { border-bottom: none; }
+  .gram-table tr:hover td { background: var(--color-background-secondary); }
+  .highlight-gram { color: #185FA5; font-weight: 500; }
+  .highlight-neg { color: #A32D2D; font-weight: 500; }
+  .highlight-q { color: #3C3489; font-weight: 500; }
+
+  /* COMPARISON TABLE */
+  .comp-section { margin: 1.5rem 0; }
+  .comp-section h3 { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 0.75rem; }
+
+  /* SECTION HEADING */
+  .sec-head { font-size: 16px; font-weight: 500; color: var(--color-text-primary); margin: 1.5rem 0 0.75rem; padding-bottom: 6px; border-bottom: 1px solid var(--color-border-tertiary); }
+  .sec-subhead { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin: 1rem 0 0.5rem; }
+
+  /* READING PASSAGE */
+  .reading-wrap { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 1.5rem; margin: 1rem 0; }
+  .reading-title { font-size: 16px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem; }
+  .reading-text { font-family: Verdana, sans-serif; font-size: 13px; line-height: 2; color: var(--color-text-primary); }
+  .gram-mark { background: #B5D4F4; color: #0C447C; border-radius: 3px; padding: 1px 3px; font-weight: 500; }
+  .gram-neg-mark { background: #F7C1C1; color: #791F1F; border-radius: 3px; padding: 1px 3px; font-weight: 500; }
+  .vocab-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--color-border-tertiary); }
+  .vocab-item { font-size: 11px; padding: 3px 8px; background: #EEEDFE; color: #3C3489; border-radius: 4px; }
+
+  /* QUIZ */
+  .quiz-wrap { margin: 1rem 0; }
+  .q-block { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 12px; }
+  .q-num { font-size: 10px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .q-text { font-size: 13px; color: var(--color-text-primary); margin-bottom: 10px; line-height: 1.5; }
+  .q-options { display: flex; flex-direction: column; gap: 6px; }
+  .q-opt { font-family: Verdana, sans-serif; font-size: 12.5px; padding: 7px 12px; border: 0.5px solid var(--color-border-tertiary); border-radius: 6px; cursor: pointer; background: var(--color-background-secondary); color: var(--color-text-primary); text-align: left; transition: all 0.15s; }
+  .q-opt:hover:not(:disabled) { background: #E6F1FB; border-color: #378ADD; color: #185FA5; }
+  .q-opt.correct { background: #EAF3DE; border-color: #639922; color: #3B6D11; }
+  .q-opt.wrong { background: #FCEBEB; border-color: #E24B4A; color: #A32D2D; }
+  .q-opt:disabled { cursor: default; }
+  .q-feedback { font-size: 11.5px; margin-top: 6px; padding: 6px 10px; border-radius: 6px; display: none; }
+  .fb-correct { background: #EAF3DE; color: #27500A; display: block; }
+  .fb-wrong { background: #FCEBEB; color: #791F1F; display: block; }
+  .score-bar { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 1rem 1.25rem; margin-top: 1rem; text-align: center; display: none; }
+  .score-num { font-size: 28px; font-weight: 500; color: #185FA5; }
+  .score-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; }
+  .reset-btn { font-family: Verdana, sans-serif; font-size: 12px; padding: 6px 16px; border: 0.5px solid var(--color-border-secondary); border-radius: 6px; background: var(--color-background-secondary); color: var(--color-text-primary); cursor: pointer; margin-top: 10px; }
+  .reset-btn:hover { background: #E6F1FB; color: #185FA5; }
+
+  /* FILL IN THE BLANK */
+  .fib-input { font-family: Verdana, sans-serif; font-size: 12.5px; border: 1px solid var(--color-border-tertiary); border-radius: 4px; padding: 3px 8px; width: 180px; color: var(--color-text-primary); background: var(--color-background-primary); }
+  .fib-input.correct-inp { border-color: #639922; background: #EAF3DE; }
+  .fib-input.wrong-inp { border-color: #E24B4A; background: #FCEBEB; }
+  .fib-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--color-text-primary); margin: 6px 0; line-height: 2; }
+  .check-btn { font-family: Verdana, sans-serif; font-size: 11px; padding: 4px 12px; border: 0.5px solid #378ADD; border-radius: 5px; background: #E6F1FB; color: #185FA5; cursor: pointer; margin-top: 8px; }
+  .check-btn:hover { background: #B5D4F4; }
+
+  /* TRANSFORMATION */
+  .transform-block { background: var(--color-background-secondary); border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; font-size: 12.5px; color: var(--color-text-primary); }
+  .transform-block .orig { color: var(--color-text-secondary); font-size: 12px; margin-bottom: 4px; }
+  .transform-block textarea { font-family: Verdana, sans-serif; font-size: 12px; border: 0.5px solid var(--color-border-tertiary); border-radius: 5px; padding: 5px 8px; width: 100%; background: var(--color-background-primary); color: var(--color-text-primary); resize: none; height: 36px; }
+  .answer-reveal { font-size: 11.5px; color: #0F6E56; background: #E1F5EE; padding: 4px 8px; border-radius: 4px; margin-top: 4px; display: none; }
+
+  /* RELATED STRUCTURES */
+  .rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 1rem 0; }
+  .rel-card { border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; padding: 10px 12px; background: var(--color-background-primary); }
+  .rel-card .rt { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .rel-card .rd { font-size: 11.5px; color: var(--color-text-secondary); margin-bottom: 6px; line-height: 1.5; }
+  .rel-card .re { font-size: 12px; font-style: italic; color: #185FA5; }
+  .warn-box { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0 6px 6px 0; padding: 8px 12px; margin: 8px 0; font-size: 12px; color: #633806; line-height: 1.6; }
+  .tip-box { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0 6px 6px 0; padding: 8px 12px; margin: 8px 0; font-size: 12px; color: #085041; line-height: 1.6; }
+
+  @media(max-width:600px){
+    .cards-grid { grid-template-columns: 1fr; }
+    .rel-grid { grid-template-columns: 1fr; }
+    .tabs { gap: 2px; }
+    .tab-btn { font-size: 11px; padding: 6px 10px; }
+  }
+</style>
+
+<div class="page">
+
+  <div class="hero">
+    <h1>BE SUPPOSED TO — Gereklilik & Beklenti</h1>
+    <p>İngilizce gramerde zorunluluk, beklenti, planlama ve sosyal normları ifade etmek için kullanılan temel bir modal ifade.</p>
+    <div class="badge-row">
+      <span class="badge badge-blue">B1–B2 Seviye</span>
+      <span class="badge badge-teal">Modal Expression</span>
+      <span class="badge badge-amber">Obligation & Expectation</span>
+      <span class="badge badge-coral">Social Rules</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('grammar')">Gramer</button>
+    <button class="tab-btn" onclick="showTab('meanings')">Anlamlar</button>
+    <button class="tab-btn" onclick="showTab('comparison')">Karşılaştırma</button>
+    <button class="tab-btn" onclick="showTab('related')">İlgili Yapılar</button>
+    <button class="tab-btn" onclick="showTab('reading')">Okuma Parçası</button>
+    <button class="tab-btn" onclick="showTab('quiz')">Quiz</button>
+  </div>
+
+  <!-- GRAMMAR TAB -->
+  <div id="tab-grammar" class="tab-panel active">
+    <div class="sec-head">Yapı (Structure)</div>
+
+    <div class="formula-box">
+      <div class="label">Olumlu (Affirmative)</div>
+      <div class="formula">Subject + am / is / are + supposed to + V(base form)</div>
+    </div>
+    <div class="formula-box" style="background:#FCEBEB; border-color:#F7C1C1;">
+      <div class="label" style="color:#A32D2D;">Olumsuz (Negative)</div>
+      <div class="formula" style="color:#791F1F;">Subject + am / is / are + NOT supposed to + V(base form)</div>
+    </div>
+    <div class="formula-box" style="background:#EEEDFE; border-color:#CECBF6;">
+      <div class="label" style="color:#534AB7;">Soru (Question)</div>
+      <div class="formula" style="color:#3C3489;">Am / Is / Are + Subject + supposed to + V(base form)?</div>
+    </div>
+
+    <div class="sec-head">Zaman Çekimleri (Tenses)</div>
+
+    <table class="gram-table">
+      <thead>
+        <tr>
+          <th>Zaman</th>
+          <th>Yapı</th>
+          <th>Örnek</th>
+          <th>Anlam</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Present</strong></td>
+          <td><span class="highlight-gram">am/is/are supposed to</span></td>
+          <td>She <span class="highlight-gram">is supposed to</span> call me tonight.</td>
+          <td>Bu gece beni araması gerekiyor / bekleniyor.</td>
+        </tr>
+        <tr>
+          <td><strong>Past</strong></td>
+          <td><span class="highlight-gram">was/were supposed to</span></td>
+          <td>He <span class="highlight-gram">was supposed to</span> arrive at 9.</td>
+          <td>9'da gelmesi gerekiyordu (ama gelmedi — ima var).</td>
+        </tr>
+        <tr>
+          <td><strong>Present Neg.</strong></td>
+          <td><span class="highlight-neg">am/is/are not supposed to</span></td>
+          <td>You <span class="highlight-neg">aren't supposed to</span> smoke here.</td>
+          <td>Burada sigara içmemen gerekiyor / yasak.</td>
+        </tr>
+        <tr>
+          <td><strong>Past Neg.</strong></td>
+          <td><span class="highlight-neg">wasn't/weren't supposed to</span></td>
+          <td>I <span class="highlight-neg">wasn't supposed to</span> tell you.</td>
+          <td>Sana söylemem gerekmiyordu / yasaktı.</td>
+        </tr>
+        <tr>
+          <td><strong>Question</strong></td>
+          <td><span class="highlight-q">Is/Are ... supposed to?</span></td>
+          <td><span class="highlight-q">Are</span> we <span class="highlight-q">supposed to</span> wear uniforms?</td>
+          <td>Üniforma giymemiz gerekiyor mu?</td>
+        </tr>
+        <tr>
+          <td><strong>Past Question</strong></td>
+          <td><span class="highlight-q">Was/Were ... supposed to?</span></td>
+          <td><span class="highlight-q">Was</span> she <span class="highlight-q">supposed to</span> finish it?</td>
+          <td>Onu bitirmesi gerekiyordu mu?</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="sec-head">Past Supposed To — Önemli Nokta</div>
+    <div class="warn-box">
+      <strong>Was/Were supposed to</strong> genellikle gerçekleşmemiş bir beklentiyi veya ihlal edilen bir kuralı ima eder. Örneğin: "He <em>was supposed to</em> call" → "ama aramadı" anlamı taşır. Bu, İngilizcede çok önemli bir anlam farkıdır.
+    </div>
+    <div class="tip-box">
+      <strong>İpucu:</strong> "was/were supposed to" + <em>but...</em> kalıbı çok yaygındır: "She was supposed to meet us, <em>but she forgot.</em>"
+    </div>
+  </div>
+
+  <!-- MEANINGS TAB -->
+  <div id="tab-meanings" class="tab-panel">
+    <div class="sec-head">6 Temel Kullanım Anlamı</div>
+    <div class="cards-grid">
+
+      <div class="meaning-card">
+        <div class="card-title"><span class="dot" style="background:#378ADD;"></span> 1. Beklenti / Expectation</div>
+        <div class="card-body">Birinin bir şeyi yapmasının beklendiğini ifade eder. Çoğunlukla sosyal veya kurumsal bir beklentidir.</div>
+        <div class="example-line ex-blue">Students are supposed to submit their homework on time.<br><em>Öğrencilerin ödevlerini zamanında teslim etmesi beklenir.</em></div>
+      </div>
+
+      <div class="meaning-card">
+        <div class="card-title"><span class="dot" style="background:#1D9E75;"></span> 2. Kural / Sosyal Norm</div>
+        <div class="card-body">Toplumsal kuralları, yasaları veya yönetmelikleri anlatır. "Yasak" veya "zorunlu" manasında kullanılır.</div>
+        <div class="example-line ex-teal">You aren't supposed to park here.<br><em>Buraya park etmemen gerekiyor / yasak.</em></div>
+      </div>
+
+      <div class="meaning-card">
+        <div class="card-title"><span class="dot" style="background:#D85A30;"></span> 3. Plan / Arrangement</div>
+        <div class="card-body">Önceden yapılmış planları veya düzenlemeleri ifade eder. "Planlandı, kararlaştırıldı" anlamı taşır.</div>
+        <div class="example-line ex-coral">The train is supposed to leave at 6:30.<br><em>Trenin 6:30'da kalkması planlanmış.</em></div>
+      </div>
+
+      <div class="meaning-card">
+        <div class="card-title"><span class="dot" style="background:#BA7517;"></span> 4. İnanış / İtibar (Reputed to)</div>
+        <div class="card-body">Bir şeyin yaygın inanışa göre doğru veya öyle olduğunu söyler. "Denilir ki, biliniyor ki" manasındadır.</div>
+        <div class="example-line ex-amber">This restaurant is supposed to be excellent.<br><em>Bu restoranın mükemmel olduğu söylenir.</em></div>
+      </div>
+
+      <div class="meaning-card">
+        <div class="card-title"><span class="dot" style="background:#7F77DD;"></span> 5. Geçmişte Gerçekleşmemiş Eylem</div>
+        <div class="card-body">Olması gereken ama olmayan bir şeyi ifade eder. Hayal kırıklığı, eleştiri veya özür içerir.</div>
+        <div class="example-line ex-purple">He was supposed to fix it yesterday. (But he didn't.)<br><em>Dün tamir etmesi gerekiyordu. (Ama etmedi.)</em></div>
+      </div>
+
+      <div class="meaning-card">
+        <div class="card-title"><span class="dot" style="background:#D4537E;"></span> 6. Görev / Rol (Role-based duty)</div>
+        <div class="card-body">Birinin rolü veya görevi gereği yapması gereken şeyleri anlatır. Profesyonel veya sosyal roller için kullanılır.</div>
+        <div class="example-line ex-pink">Doctors are supposed to keep patient information confidential.<br><em>Doktorların hasta bilgilerini gizli tutması gerekir.</em></div>
+      </div>
+
+    </div>
+
+    <div class="sec-head">Bağlam Haritası</div>
+    <table class="gram-table">
+      <thead>
+        <tr><th>Bağlam</th><th>Örnek</th><th>Alt metin</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>İş Yeri</td><td>Employees are supposed to clock in by 9.</td><td>Şirket kuralı</td></tr>
+        <tr><td>Okul</td><td>You're not supposed to cheat on exams.</td><td>Akademik kural</td></tr>
+        <tr><td>Aile</td><td>Kids are supposed to respect their elders.</td><td>Sosyal norm</td></tr>
+        <tr><td>Trafik</td><td>You're supposed to stop at a red light.</td><td>Yasal zorunluluk</td></tr>
+        <tr><td>Plan</td><td>We're supposed to meet at noon.</td><td>Önceki anlaşma</td></tr>
+        <tr><td>Hayal kırıklığı</td><td>She was supposed to be here an hour ago.</td><td>Beklenti karşılanmadı</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- COMPARISON TAB -->
+  <div id="tab-comparison" class="tab-panel">
+    <div class="sec-head">Diğer Gereklilik İfadeleriyle Karşılaştırma</div>
+
+    <table class="gram-table">
+      <thead>
+        <tr><th>Yapı</th><th>Güç</th><th>Kaynak</th><th>Türkçe</th><th>Örnek</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>must</strong></td>
+          <td><span style="color:#A32D2D;">●●● Çok güçlü</span></td>
+          <td>Konuşanın kendi kuralı</td>
+          <td>-meli / -malı (kesin)</td>
+          <td>You must wear a seatbelt.</td>
+        </tr>
+        <tr>
+          <td><strong>have to</strong></td>
+          <td><span style="color:#A32D2D;">●●● Güçlü</span></td>
+          <td>Dışsal zorunluluk</td>
+          <td>zorunda olmak</td>
+          <td>I have to finish this report.</td>
+        </tr>
+        <tr>
+          <td><strong>should</strong></td>
+          <td><span style="color:#BA7517;">●● Orta</span></td>
+          <td>Tavsiye / ahlaki beklenti</td>
+          <td>-meli / öneri</td>
+          <td>You should eat more vegetables.</td>
+        </tr>
+        <tr>
+          <td><strong>be supposed to</strong></td>
+          <td><span style="color:#185FA5;">●● Orta</span></td>
+          <td>Dışsal beklenti / kural / plan</td>
+          <td>-ması gerekiyor / bekleniyor</td>
+          <td>You're supposed to be here at 9.</td>
+        </tr>
+        <tr>
+          <td><strong>ought to</strong></td>
+          <td><span style="color:#BA7517;">●● Orta</span></td>
+          <td>Ahlaki zorunluluk (resmi)</td>
+          <td>-malı (ahlaki)</td>
+          <td>You ought to apologize.</td>
+        </tr>
+        <tr>
+          <td><strong>had better</strong></td>
+          <td><span style="color:#A32D2D;">●●● Uyarı</span></td>
+          <td>Tehdit içeren tavsiye</td>
+          <td>...sana göre yap / yoksa...</td>
+          <td>You'd better not be late again.</td>
+        </tr>
+        <tr>
+          <td><strong>need to</strong></td>
+          <td><span style="color:#BA7517;">●● Güçlü</span></td>
+          <td>Pratik gereklilik</td>
+          <td>gereksinim duymak</td>
+          <td>You need to see a doctor.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box" style="margin-top:12px;">
+      <strong>Fark nedir?</strong> "You <em>must</em> be quiet" → konuşan kural koyuyor. "You <em>are supposed to</em> be quiet" → dışarıdan gelen bir kural var (kütüphane kuralı, vs.). Bu ayrım çok önemlidir!
+    </div>
+    <div class="warn-box">
+      <strong>Should vs. Be supposed to:</strong> "You <em>should</em> call her" = benim tavsiyem. "You <em>are supposed to</em> call her" = bir anlaşma ya da kural var ve bunu yapmak senin görevin.
+    </div>
+
+    <div class="sec-head" style="margin-top:1.5rem;">Olumsuz Anlam Farkları</div>
+    <table class="gram-table">
+      <thead><tr><th>Yapı</th><th>Anlam</th></tr></thead>
+      <tbody>
+        <tr><td><strong>mustn't</strong></td><td>Kesinlikle yasak (strong prohibition)</td></tr>
+        <tr><td><strong>don't have to / needn't</strong></td><td>Gerekmiyor, zorunlu değil</td></tr>
+        <tr><td><strong>shouldn't</strong></td><td>Yapmamasını tavsiye ederim</td></tr>
+        <tr><td><strong>aren't supposed to</strong></td><td>Kurallar/beklentiler gereği yapmamalı</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RELATED STRUCTURES TAB -->
+  <div id="tab-related" class="tab-panel">
+    <div class="sec-head">Benzer ve Bağlantılı Yapılar</div>
+    <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:1rem; line-height:1.7;">
+      "Be supposed to" ile aynı kategoride ya da bağlantılı olan yapılar — bunları öğrenmek tüm gereklilik sistemini pekiştirir.
+    </p>
+
+    <div class="rel-grid">
+      <div class="rel-card">
+        <div class="rt">be meant to</div>
+        <div class="rd">Amaçlanan, tasarlanan anlamı taşır. "supposed to"ya çok yakın ama "tasarım/amaç" odaklıdır.</div>
+        <div class="re">This button is meant to save the file.</div>
+      </div>
+      <div class="rel-card">
+        <div class="rt">be expected to</div>
+        <div class="rd">Beklenti daha resmi ve kurumsal. Genellikle yazılı kurallardan, iş bağlamından gelir.</div>
+        <div class="re">Employees are expected to arrive on time.</div>
+      </div>
+      <div class="rel-card">
+        <div class="rt">be required to</div>
+        <div class="rd">Resmi gereklilik — yasal, kurumsal veya akademik zorunluluk. En güçlü dışsal zorunluluktur.</div>
+        <div class="re">Passengers are required to show ID.</div>
+      </div>
+      <div class="rel-card">
+        <div class="rt">be allowed to</div>
+        <div class="rd">İzin verildiğini gösterir. "supposed to"nun izin boyutunu tamamlar.</div>
+        <div class="re">Students are allowed to use dictionaries.</div>
+      </div>
+      <div class="rel-card">
+        <div class="rt">be permitted to</div>
+        <div class="rd">"Allowed to"nun daha resmi hali. Yasal veya resmi bağlamlarda kullanılır.</div>
+        <div class="re">Visitors are not permitted to take photos.</div>
+      </div>
+      <div class="rel-card">
+        <div class="rt">be obliged / obligated to</div>
+        <div class="rd">Ahlaki ya da yasal yükümlülük ifade eder. Resmi İngilizce'de yaygındır.</div>
+        <div class="re">The company is obligated to pay taxes.</div>
+      </div>
+      <div class="rel-card">
+        <div class="rt">be due to</div>
+        <div class="rd">Zamanlanmış bir olayı veya son teslim tarihini anlatır. "is due" = son tarihi var.</div>
+        <div class="re">The report is due on Friday.</div>
+      </div>
+      <div class="rel-card">
+        <div class="rt">had better (not)</div>
+        <div class="rd">Tavsiyenin ötesinde, sonuçlarla birlikte gelen zorunluluk hissi verir. Tehdit içerebilir.</div>
+        <div class="re">You'd better not forget the meeting.</div>
+      </div>
+    </div>
+
+    <div class="sec-head" style="margin-top:1.5rem;">Önceki Konularla Bağlantılar</div>
+    <table class="gram-table">
+      <thead><tr><th>Önceki Konu</th><th>Bağlantı</th><th>Örnek</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Modal Verbs</strong> (can, must, should)</td>
+          <td>"supposed to" semi-modal'dır; "must/should"la karşılaştırarak öğrenilir</td>
+          <td>You must vs. You're supposed to</td>
+        </tr>
+        <tr>
+          <td><strong>Passive Voice</strong></td>
+          <td>"supposed to" fiil çekimi be + past participle yapısına benzer</td>
+          <td>is supposed ↔ is required / is expected</td>
+        </tr>
+        <tr>
+          <td><strong>Conditionals</strong></td>
+          <td>Past "was supposed to" → gerçekleşmemiş koşul gibi işlev görür</td>
+          <td>She was supposed to come but didn't.</td>
+        </tr>
+        <tr>
+          <td><strong>Reported Speech</strong></td>
+          <td>"He said he was supposed to go" — reported speech'te was/were kullanılır</td>
+          <td>She told me she was supposed to leave.</td>
+        </tr>
+        <tr>
+          <td><strong>Question Tags</strong></td>
+          <td>"You're supposed to be here, aren't you?" tag question'larla kullanılır</td>
+          <td>They're supposed to help, aren't they?</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tip-box" style="margin-top:12px;">
+      <strong>Not to / Not supposed to farkı:</strong> "be supposed to" ile "not" her zaman "supposed" dan önce gelir: "aren't supposed to" — asla "supposed not to" değil!
+    </div>
+  </div>
+
+  <!-- READING TAB -->
+  <div id="tab-reading" class="tab-panel">
+    <div class="sec-head">Okuma Parçası (~350 kelime)</div>
+    <div class="reading-wrap">
+      <div class="reading-title">Office Rules Nobody Follows</div>
+      <div class="reading-text">
+        <p>Marcus had been working at the company for exactly three weeks when he realized that nobody actually followed the employee handbook. The handbook was a thick, laminated document that spelled out exactly what everyone <span class="gram-mark">was supposed to</span> do. According to the handbook, employees <span class="gram-mark">were supposed to</span> arrive by 8:45 AM. In reality, most people strolled in after 9:15, coffee in hand, without a care in the world.</p>
+        <br>
+        <p>The kitchen was perhaps the best example of this gap between rules and reality. A large sign on the refrigerator said, "You <span class="gram-mark">are supposed to</span> label your food." Below it, in smaller letters, it read: "Unlabeled items will be thrown away every Friday." Yet every Monday morning, the fridge was packed with mystery containers. Nobody <span class="gram-mark">was supposed to</span> leave dishes in the sink overnight, but there were always three or four mugs sitting there by Tuesday morning.</p>
+        <br>
+        <p>Marcus approached his manager, Diana, about it. "I thought we <span class="gram-mark">were supposed to</span> follow the handbook strictly," he said. Diana laughed kindly. "In theory, yes. Employees <span class="gram-mark">are supposed to</span> attend all team meetings too, but Victor hasn't been to one in six months and he's our best developer." She paused and added, "You'<span class="gram-mark">re supposed to</span> use the project management software to log your hours. That one, actually, do follow — HR checks it."</p>
+        <br>
+        <p>Marcus nodded, beginning to understand the invisible hierarchy of rules. Some rules <span class="gram-mark">were supposed to</span> be followed absolutely. Others were more like gentle suggestions printed on laminated paper. The difficult part was figuring out which was which.</p>
+        <br>
+        <p>By the end of his first month, Marcus had learned to tell the difference. He <span class="gram-mark">wasn't supposed to</span> be late for client calls — that was non-negotiable. He <span class="gram-mark">was supposed to</span> document every decision in writing. But skipping the 8:45 start time? That rule, it seemed, <span class="gram-mark">was supposed to</span> exist mainly so that someone could point to it if things ever went wrong.</p>
+      </div>
+
+      <div class="vocab-row">
+        <span class="vocab-item">handbook = rehber / el kitabı</span>
+        <span class="vocab-item">laminated = plastik kaplı</span>
+        <span class="vocab-item">strolled in = salına salına girdi</span>
+        <span class="vocab-item">label = etiketlemek</span>
+        <span class="vocab-item">unlabeled = etiketsiz</span>
+        <span class="vocab-item">strictly = sıkı biçimde</span>
+        <span class="vocab-item">in theory = teoride</span>
+        <span class="vocab-item">invisible = görünmez</span>
+        <span class="vocab-item">hierarchy = hiyerarşi</span>
+        <span class="vocab-item">gentle suggestion = nazik öneri</span>
+        <span class="vocab-item">non-negotiable = tartışmasız, kesin</span>
+        <span class="vocab-item">document = kayıt altına almak</span>
+        <span class="vocab-item">skipping = atlayarak</span>
+        <span class="vocab-item">point to = işaret etmek, göstermek</span>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <strong>Dikkat edin:</strong> Metin boyunca <span style="background:#B5D4F4; color:#0C447C; padding:1px 4px; border-radius:3px; font-weight:500;">mavi işaretli</span> her "supposed to" farklı bir anlam bağlamında kullanılmıştır — kural, plan, beklenti ve ihlal.
+    </div>
+  </div>
+
+  <!-- QUIZ TAB -->
+  <div id="tab-quiz" class="tab-panel">
+
+    <!-- MCQ -->
+    <div class="sec-head">Bölüm 1 — Çoktan Seçmeli (Multiple Choice)</div>
+    <div class="quiz-wrap" id="mcq-wrap">
+
+      <div class="q-block" id="q1">
+        <div class="q-num">Soru 1 / 8</div>
+        <div class="q-text">The meeting starts at 10. We _______ be there on time.</div>
+        <div class="q-options">
+          <button class="q-opt" onclick="checkMCQ('q1','A','B')">A) must</button>
+          <button class="q-opt" onclick="checkMCQ('q1','B','B')">B) are supposed to</button>
+          <button class="q-opt" onclick="checkMCQ('q1','C','B')">C) were supposed to</button>
+          <button class="q-opt" onclick="checkMCQ('q1','D','B')">D) had better</button>
+        </div>
+        <div class="q-feedback" id="q1-fb"></div>
+      </div>
+
+      <div class="q-block" id="q2">
+        <div class="q-num">Soru 2 / 8</div>
+        <div class="q-text">He _______ call me last night, but he didn't. I'm still waiting for an explanation.</div>
+        <div class="q-options">
+          <button class="q-opt" onclick="checkMCQ('q2','A','C')">A) is supposed to</button>
+          <button class="q-opt" onclick="checkMCQ('q2','B','C')">B) should</button>
+          <button class="q-opt" onclick="checkMCQ('q2','C','C')">C) was supposed to</button>
+          <button class="q-opt" onclick="checkMCQ('q2','D','C')">D) must</button>
+        </div>
+        <div class="q-feedback" id="q2-fb"></div>
+      </div>
+
+      <div class="q-block" id="q3">
+        <div class="q-num">Soru 3 / 8</div>
+        <div class="q-text">You _______ talk during the exam. It's against the rules.</div>
+        <div class="q-options">
+          <button class="q-opt" onclick="checkMCQ('q3','A','B')">A) are not allowed to</button>
+          <button class="q-opt" onclick="checkMCQ('q3','B','B')">B) aren't supposed to</button>
+          <button class="q-opt" onclick="checkMCQ('q3','C','B')">C) don't have to</button>
+          <button class="q-opt" onclick="checkMCQ('q3','D','B')">D) needn't</button>
+        </div>
+        <div class="q-feedback" id="q3-fb"></div>
+      </div>
+
+      <div class="q-block" id="q4">
+        <div class="q-num">Soru 4 / 8</div>
+        <div class="q-text">This hotel _______ be one of the best in the city. I've heard great things about it.</div>
+        <div class="q-options">
+          <button class="q-opt" onclick="checkMCQ('q4','A','A')">A) is supposed to</button>
+          <button class="q-opt" onclick="checkMCQ('q4','B','A')">B) was supposed to</button>
+          <button class="q-opt" onclick="checkMCQ('q4','C','A')">C) must</button>
+          <button class="q-opt" onclick="checkMCQ('q4','D','A')">D) had better</button>
+        </div>
+        <div class="q-feedback" id="q4-fb"></div>
+      </div>
+
+      <div class="q-block" id="q5">
+        <div class="q-num">Soru 5 / 8</div>
+        <div class="q-text">What does "You are supposed to submit the form by Friday" mean?</div>
+        <div class="q-options">
+          <button class="q-opt" onclick="checkMCQ('q5','A','B')">A) You choose whether to submit it.</button>
+          <button class="q-opt" onclick="checkMCQ('q5','B','B')">B) There is a rule/expectation that you will submit it.</button>
+          <button class="q-opt" onclick="checkMCQ('q5','C','B')">C) You already submitted it.</button>
+          <button class="q-opt" onclick="checkMCQ('q5','D','B')">D) Submitting is optional.</button>
+        </div>
+        <div class="q-feedback" id="q5-fb"></div>
+      </div>
+
+      <div class="q-block" id="q6">
+        <div class="q-num">Soru 6 / 8</div>
+        <div class="q-text">Choose the CORRECT sentence:</div>
+        <div class="q-options">
+          <button class="q-opt" onclick="checkMCQ('q6','A','C')">A) She is supposed not to arrive late.</button>
+          <button class="q-opt" onclick="checkMCQ('q6','B','C')">B) She supposed to not arrive late.</button>
+          <button class="q-opt" onclick="checkMCQ('q6','C','C')">C) She isn't supposed to arrive late.</button>
+          <button class="q-opt" onclick="checkMCQ('q6','D','C')">D) She not supposed to arrive late.</button>
+        </div>
+        <div class="q-feedback" id="q6-fb"></div>
+      </div>
+
+      <div class="q-block" id="q7">
+        <div class="q-num">Soru 7 / 8</div>
+        <div class="q-text">The difference between "You should wear a helmet" and "You are supposed to wear a helmet" is:</div>
+        <div class="q-options">
+          <button class="q-opt" onclick="checkMCQ('q7','A','B')">A) No difference at all.</button>
+          <button class="q-opt" onclick="checkMCQ('q7','B','B')">B) "Should" = personal advice; "supposed to" = external rule/expectation.</button>
+          <button class="q-opt" onclick="checkMCQ('q7','C','B')">C) "Supposed to" is softer and more polite.</button>
+          <button class="q-opt" onclick="checkMCQ('q7','D','B')">D) "Should" refers to the past.</button>
+        </div>
+        <div class="q-feedback" id="q7-fb"></div>
+      </div>
+
+      <div class="q-block" id="q8">
+        <div class="q-num">Soru 8 / 8</div>
+        <div class="q-text">_____ we supposed to bring our own equipment to the workshop?</div>
+        <div class="q-options">
+          <button class="q-opt" onclick="checkMCQ('q8','A','B')">A) Do</button>
+          <button class="q-opt" onclick="checkMCQ('q8','B','B')">B) Are</button>
+          <button class="q-opt" onclick="checkMCQ('q8','C','B')">C) Have</button>
+          <button class="q-opt" onclick="checkMCQ('q8','D','B')">D) Did</button>
+        </div>
+        <div class="q-feedback" id="q8-fb"></div>
+      </div>
+
+      <div class="score-bar" id="mcq-score">
+        <div class="score-num" id="mcq-score-num">0 / 8</div>
+        <div class="score-label">Toplam puan (Çoktan seçmeli)</div>
+        <button class="reset-btn" onclick="resetMCQ()">Tekrar dene</button>
+      </div>
+    </div>
+
+    <!-- FILL IN THE BLANK -->
+    <div class="sec-head" style="margin-top:1.5rem;">Bölüm 2 — Boşluk Doldurma</div>
+    <div class="q-block">
+      <div class="q-text" style="margin-bottom:12px;">Kutuya doğru formu yazın. Parantez içindeki fiil ve (+/-) işareti size ipucu verir.</div>
+
+      <div class="fib-row">1. The library _____ (<span style="color:#185FA5;">open / +</span>) until 9 PM on weekdays. <input class="fib-input" id="fib1" placeholder="... supposed to ..."></div>
+      <div class="fib-row">2. We _____ (<span style="color:#A32D2D;">leave / −</span>) without telling the manager. <input class="fib-input" id="fib2" placeholder="... supposed to ..."></div>
+      <div class="fib-row">3. She _____ (<span style="color:#185FA5;">arrive / + past</span>) at 8, but she came at 10. <input class="fib-input" id="fib3" placeholder="... supposed to ..."></div>
+      <div class="fib-row">4. _____ he (<span style="color:#3C3489;">attend / ? present</span>) the orientation? <input class="fib-input" id="fib4" placeholder="Is/Are ..."></div>
+      <div class="fib-row">5. They _____ (<span style="color:#A32D2D;">use phones / − past</span>) during the performance. <input class="fib-input" id="fib5" placeholder="... supposed to ..."></div>
+
+      <button class="check-btn" onclick="checkFIB()">Cevapları kontrol et</button>
+      <div id="fib-result" style="font-size:12px; margin-top:8px; color:var(--color-text-secondary);"></div>
+    </div>
+
+    <!-- TRANSFORMATION -->
+    <div class="sec-head" style="margin-top:1.5rem;">Bölüm 3 — Cümle Dönüşümü</div>
+    <div class="q-block">
+      <div class="q-text" style="margin-bottom:10px;">Cümleyi "be supposed to" kullanarak yeniden yazın. Cevabı görmek için "Göster" butonuna tıklayın.</div>
+
+      <div class="transform-block">
+        <div class="orig">→ "The rules say employees must not take work items home."</div>
+        <textarea id="tr1" placeholder="Employees aren't..."></textarea>
+        <button class="check-btn" onclick="revealAnswer('tr1-ans')">Cevabı göster</button>
+        <div class="answer-reveal" id="tr1-ans">Employees aren't supposed to take work items home.</div>
+      </div>
+
+      <div class="transform-block">
+        <div class="orig">→ "The plan was for the package to arrive yesterday, but it didn't."</div>
+        <textarea id="tr2" placeholder="The package was..."></textarea>
+        <button class="check-btn" onclick="revealAnswer('tr2-ans')">Cevabı göster</button>
+        <div class="answer-reveal" id="tr2-ans">The package was supposed to arrive yesterday.</div>
+      </div>
+
+      <div class="transform-block">
+        <div class="orig">→ "People say this film is very funny."</div>
+        <textarea id="tr3" placeholder="This film is supposed..."></textarea>
+        <button class="check-btn" onclick="revealAnswer('tr3-ans')">Cevabı göster</button>
+        <div class="answer-reveal" id="tr3-ans">This film is supposed to be very funny.</div>
+      </div>
+    </div>
+
+  </div><!-- end quiz tab -->
+
+</div><!-- end page -->
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+var mcqAnswers = {};
+var totalMCQ = 8;
+
+var feedbacks = {
+  q1: {correct:"Doğru! Dışarıdan gelen bir beklenti (toplantı vakti) olduğu için 'are supposed to' en uygun seçimdir.", wrong:"Yanlış. Burada dışsal bir beklenti var (toplantı planı). 'Are supposed to' kullanılmalı."},
+  q2: {correct:"Doğru! Geçmişte gerçekleşmesi beklenen ama gerçekleşmeyen bir eylem — 'was supposed to' tam buraya giriyor.", wrong:"Yanlış. 'but he didn't' ifadesi geçmişte olması gereken ama olmayan bir şeyi gösterir. 'was supposed to' kullanılmalı."},
+  q3: {correct:"Doğru! Sınav kuralı dışsal bir yasaktır. 'aren't supposed to' bu bağlamda idealdir.", wrong:"Yanlış. 'don't have to / needn't' → gerekli değil anlamı verir, yasak değil. Doğru cevap: 'aren't supposed to'."},
+  q4: {correct:"Doğru! Yaygın bir inanış veya söylenti bildirirken 'is supposed to' kullanılır.", wrong:"Yanlış. Duyulan/bilinen bir itibar söz konusu. 'is supposed to be' = 'olduğu söyleniyor'."},
+  q5: {correct:"Doğru! 'Are supposed to' dışarıdan gelen bir beklenti veya kuralı ifade eder.", wrong:"Yanlış. 'Are supposed to' = dışsal beklenti ya da kural var demektir. Seçim veya geçmiş değil."},
+  q6: {correct:"Doğru! 'Isn't supposed to' — olumsuzluk her zaman 'supposed'dan önce gelir.", wrong:"Yanlış. Olumsuzluk 'be' fiilinden sonra gelir: 'isn't/aren't supposed to'. 'supposed not to' yanlış yapıdır."},
+  q7: {correct:"Doğru! 'Should' kişisel tavsiyedir. 'Supposed to' ise dışarıdan gelen kurala işaret eder.", wrong:"Yanlış. Aralarında önemli bir fark var: 'should' → benim tavsiyem; 'supposed to' → dışsal kural/beklenti."},
+  q8: {correct:"Doğru! Soru cümlelerinde 'be' fiili öznenin önüne alınır: 'Are we supposed to...'", wrong:"Yanlış. 'supposed to' bir 'be' fiili içerir, bu yüzden soru yaparken 'Are/Is/Was/Were' öne alınır."}
+};
+
+function checkMCQ(qid, selected, correct) {
+  if (mcqAnswers[qid]) return;
+  mcqAnswers[qid] = selected;
+  var block = document.getElementById(qid);
+  var opts = block.querySelectorAll('.q-opt');
+  opts.forEach(function(btn) {
+    btn.disabled = true;
+    var letter = btn.textContent.trim()[0];
+    if (letter === correct) btn.classList.add('correct');
+    else if (letter === selected && selected !== correct) btn.classList.add('wrong');
+  });
+  var fb = document.getElementById(qid + '-fb');
+  if (selected === correct) {
+    fb.className = 'q-feedback fb-correct';
+    fb.textContent = feedbacks[qid].correct;
+  } else {
+    fb.className = 'q-feedback fb-wrong';
+    fb.textContent = feedbacks[qid].wrong;
+  }
+  if (Object.keys(mcqAnswers).length === totalMCQ) {
+    var score = Object.keys(mcqAnswers).filter(function(k){ return mcqAnswers[k] === ({q1:'B',q2:'C',q3:'B',q4:'A',q5:'B',q6:'C',q7:'B',q8:'B'}[k]); }).length;
+    document.getElementById('mcq-score-num').textContent = score + ' / 8';
+    document.getElementById('mcq-score').style.display = 'block';
+  }
+}
+
+function resetMCQ() {
+  mcqAnswers = {};
+  for (var i = 1; i <= 8; i++) {
+    var block = document.getElementById('q' + i);
+    block.querySelectorAll('.q-opt').forEach(function(b) {
+      b.disabled = false;
+      b.classList.remove('correct', 'wrong');
+    });
+    var fb = document.getElementById('q' + i + '-fb');
+    fb.className = 'q-feedback';
+    fb.textContent = '';
+  }
+  document.getElementById('mcq-score').style.display = 'none';
+}
+
+var fibCorrect = [
+  'is supposed to open',
+  "aren't supposed to leave",
+  'was supposed to arrive',
+  'is he supposed to',
+  "weren't supposed to use"
+];
+
+function normalize(s) { return s.toLowerCase().replace(/\s+/g,' ').trim().replace(/'/g,"'"); }
+
+function checkFIB() {
+  var inputs = [
+    document.getElementById('fib1'),
+    document.getElementById('fib2'),
+    document.getElementById('fib3'),
+    document.getElementById('fib4'),
+    document.getElementById('fib5')
+  ];
+  var score = 0;
+  inputs.forEach(function(inp, i) {
+    var val = normalize(inp.value);
+    var ans = fibCorrect[i];
+    if (val === normalize(ans) || val.indexOf(ans.split(' ').slice(-2).join(' ')) >= 0) {
+      inp.className = 'fib-input correct-inp';
+      score++;
+    } else {
+      inp.className = 'fib-input wrong-inp';
+    }
+  });
+  document.getElementById('fib-result').textContent = score + '/5 doğru. (' + fibCorrect.map(function(a,i){ return (i+1)+'. ' + a; }).join(' | ') + ')';
+}
+
+function revealAnswer(id) {
+  var el = document.getElementById(id);
+  el.style.display = 'block';
+}
+</script>

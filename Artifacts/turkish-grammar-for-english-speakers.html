@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Türkçe Dil Bilgisi — Karşılaştırmalı Rehber (EN ↔ TR)</title>
+<style>
+  /* === Theme tokens — aligned with English Learning Engine v1 === */
+  :root {
+    --bg:#0d1219; --bg2:#141b26; --bg3:#1b2333;
+    --card:#182030; --card2:#1e2a3a;
+    --accent:#38bdf8; --accent2:#818cf8; --accent3:#fbbf24;
+    --green:#34d399; --red:#f87171; --pink:#f472b6;
+    --text:#dde3f0; --text2:#8896b0; --text3:#64748b;
+    --border:#243050;
+    --font:'Verdana',Geneva,sans-serif;
+    --radius:10px;
+  }
+  body.theme-light {
+    --bg:#fafafa; --bg2:#fff; --bg3:#f1f5f9;
+    --card:#fff; --card2:#f8fafc;
+    --text:#0f172a; --text2:#475569; --text3:#94a3b8;
+    --border:#cbd5e1;
+  }
+  body.theme-forest {
+    --bg:#0a1410; --bg2:#10221a; --bg3:#163326;
+    --card:#163326; --card2:#1d4332;
+    --accent:#10b981; --accent2:#34d399;
+    --border:#2d5a44;
+  }
+  body.theme-sunset {
+    --bg:#1a0a14; --bg2:#2a1220; --bg3:#3d1a2e;
+    --card:#3d1a2e; --card2:#52223a;
+    --accent:#f59e0b; --accent2:#fbbf24;
+    --border:#6e3050;
+  }
+
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:var(--font); font-size:14px; line-height:1.65; min-height:100vh; transition:background .3s; }
+
+  /* === Header (sticky) === */
+  .el-header {
+    position:sticky; top:0; z-index:100;
+    background:rgba(13,18,25,0.97); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:10px 18px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  }
+  body.theme-light .el-header { background:rgba(255,255,255,0.97); }
+  body.theme-forest .el-header { background:rgba(10,20,16,0.97); }
+  body.theme-sunset .el-header { background:rgba(26,10,20,0.97); }
+  .el-logo { font-size:13px; font-weight:bold; color:var(--accent); letter-spacing:1px; white-space:nowrap; }
+  .el-sub { font-size:11px; color:var(--text2); flex:1; min-width:140px; }
+  .el-chip { display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,.10); border:1px solid rgba(56,189,248,.25); border-radius:14px; padding:3px 10px; font-size:11px; color:var(--accent); }
+  .el-toolbar { display:flex; gap:5px; flex-wrap:wrap; }
+  .el-btn { background:rgba(255,255,255,.05); border:1px solid var(--border); color:var(--text2); padding:5px 10px; border-radius:6px; font-family:var(--font); font-size:11px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .el-btn:hover { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .el-btn.danger:hover { background:var(--red); border-color:var(--red); }
+
+  /* === Layout === */
+  .app { display:grid; grid-template-columns:280px 1fr; max-width:1300px; margin:0 auto; gap:0; }
+  @media (max-width:900px) { .app { grid-template-columns:1fr; } .sidebar { position:static !important; height:auto !important; max-height:none !important; } }
+
+  /* === Sidebar === */
+  .sidebar { position:sticky; top:54px; height:calc(100vh - 54px); overflow-y:auto; padding:18px 14px 30px; border-right:1px solid var(--border); background:var(--bg2); }
+  .sidebar::-webkit-scrollbar { width:6px; } .sidebar::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+  .progress-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:12px 13px; margin-bottom:14px; }
+  .progress-card .top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+  .progress-card .label { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text2); }
+  .progress-card .pct { font-size:18px; font-weight:bold; color:var(--accent); }
+  .progress-bar { height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; }
+  .progress-bar > div { height:100%; background:linear-gradient(90deg, var(--accent3), var(--green)); transition:width .4s; }
+  .progress-detail { font-size:10px; color:var(--text2); margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; }
+  .progress-detail span { display:inline-flex; align-items:center; gap:4px; }
+  .dot { width:7px; height:7px; border-radius:50%; display:inline-block; }
+  .dot.s0 { background:var(--text3); }
+  .dot.s1 { background:var(--accent3); }
+  .dot.s2 { background:var(--green); }
+
+  .search { width:100%; padding:7px 9px; border:1px solid var(--border); border-radius:6px; background:var(--bg3); color:var(--text); font-family:var(--font); font-size:12px; margin-bottom:10px; }
+  .search:focus { outline:none; border-color:var(--accent); }
+
+  .filter-tabs { display:flex; gap:3px; margin-bottom:12px; }
+  .filter-tabs button { flex:1; font-size:10px; padding:4px 2px; border:1px solid var(--border); background:var(--bg3); color:var(--text2); border-radius:5px; cursor:pointer; font-family:var(--font); }
+  .filter-tabs button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+  .nav-section { margin-bottom:11px; }
+  .nav-section-title { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text3); margin-bottom:5px; font-weight:bold; padding-left:4px; }
+  .nav-item { display:flex; align-items:center; gap:7px; padding:5px 7px; border-radius:5px; cursor:pointer; color:var(--text); font-size:12px; line-height:1.3; }
+  .nav-item:hover { background:var(--bg3); color:var(--accent); }
+  .nav-item .nav-dot { flex-shrink:0; }
+
+  /* === Main === */
+  .main { padding:24px 32px 80px; max-width:880px; }
+  @media (max-width:720px) { .main { padding:18px 14px 60px; } }
+
+  .hero { background:linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 50%, var(--bg2) 100%); border:1px solid var(--border); border-radius:12px; padding:22px 24px; margin-bottom:24px; }
+  .hero h1 { font-size:22px; color:var(--accent); letter-spacing:1px; margin-bottom:6px; }
+  .hero .subtitle { font-size:12px; color:var(--text2); max-width:680px; line-height:1.7; font-style:italic; margin-bottom:14px; }
+  .hero .key-idea { background:rgba(251,191,36,0.08); border-left:3px solid var(--accent3); border-radius:0 6px 6px 0; padding:10px 14px; font-size:12px; color:var(--text); line-height:1.6; }
+  .hero .key-idea b { color:var(--accent3); }
+  .hero .meta-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+
+  .section-header { margin:36px 0 14px; padding-bottom:8px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:baseline; }
+  .section-header h2 { margin:0; font-size:17px; color:var(--accent2); letter-spacing:1px; }
+  .section-header .section-meta { font-size:11px; color:var(--text3); }
+
+  .topic { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 22px; margin-bottom:16px; transition:border-color .2s; }
+  .topic:hover { border-color:var(--accent); }
+  .topic-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:6px; flex-wrap:wrap; }
+  .topic-title { font-size:16px; font-weight:bold; margin:0; line-height:1.35; color:var(--text); }
+  .topic-title .en-name { color:var(--text2); font-weight:normal; font-style:italic; font-size:13px; margin-left:6px; }
+
+  .status-toggle { display:flex; gap:3px; flex-shrink:0; }
+  .status-toggle button { font-size:10px; padding:4px 9px; border:1px solid var(--border); background:var(--bg3); color:var(--text2); border-radius:12px; cursor:pointer; font-family:var(--font); }
+  .status-toggle button:hover { border-color:var(--accent); color:var(--accent); }
+  .status-toggle button.active.s0 { background:var(--text3); color:#fff; border-color:var(--text3); }
+  .status-toggle button.active.s1 { background:var(--accent3); color:#1a1a1a; border-color:var(--accent3); font-weight:bold; }
+  .status-toggle button.active.s2 { background:var(--green); color:#0a1410; border-color:var(--green); font-weight:bold; }
+
+  .lang-block { margin-top:12px; padding:10px 14px; background:var(--bg3); border-left:3px solid var(--border); border-radius:0 6px 6px 0; }
+  .lang-block.tr { border-left-color:var(--accent); }
+  .lang-block.en { border-left-color:var(--accent2); }
+  .lang-label { font-size:10px; letter-spacing:1px; text-transform:uppercase; font-weight:bold; margin-bottom:5px; }
+  .lang-block.tr .lang-label { color:var(--accent); }
+  .lang-block.en .lang-label { color:var(--accent2); }
+  .lang-block p { margin:0; font-size:13px; line-height:1.65; color:var(--text); }
+
+  .examples { margin-top:12px; background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:11px 14px; }
+  .examples h4 { margin:0 0 7px; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--accent3); font-weight:bold; }
+  .ex { margin-bottom:6px; line-height:1.55; font-size:13px; }
+  .ex:last-child { margin-bottom:0; }
+  .ex .tr-text { color:var(--accent); font-weight:bold; }
+  .ex .en-text { color:var(--text); }
+  .ex .gloss { color:var(--text3); font-size:11px; font-style:italic; display:block; margin-left:12px; margin-top:1px; }
+
+  .edge { margin-top:12px; background:rgba(251,191,36,0.06); border:1px solid rgba(251,191,36,0.22); border-radius:8px; padding:10px 14px; }
+  .edge-label { font-size:10px; letter-spacing:1px; text-transform:uppercase; font-weight:bold; color:var(--accent3); margin-bottom:6px; }
+  .edge ul { margin:0; padding-left:18px; font-size:12px; color:var(--text); line-height:1.6; }
+  .edge li { margin-bottom:4px; }
+
+  .contrast { margin-top:12px; background:rgba(129,140,248,0.06); border:1px dashed rgba(129,140,248,0.32); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--text); line-height:1.6; }
+  .contrast-label { font-size:10px; letter-spacing:1px; text-transform:uppercase; font-weight:bold; color:var(--accent2); margin-bottom:5px; }
+  .contrast b { color:var(--accent2); }
+
+  code, .mono { font-family:'Courier New',monospace; font-size:12px; background:rgba(56,189,248,0.12); color:var(--accent); padding:1px 6px; border-radius:3px; border:1px solid rgba(56,189,248,0.18); }
+
+  .hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<header class="el-header">
+  <span class="el-logo">🇹🇷 TÜRKÇE GRAMMAR ATLAS</span>
+  <span class="el-sub">Comparative TR ↔ EN · for English speakers learning Turkish</span>
+  <div class="el-toolbar">
+    <button class="el-btn" id="themeToggle">🎨 Tema</button>
+    <button class="el-btn" id="exportBtn">⬇ Dışa aktar</button>
+    <button class="el-btn danger" id="resetBtn">↺ Sıfırla</button>
+  </div>
+</header>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="progress-card">
+      <div class="top"><span class="label">İlerleme</span><span class="pct" id="progressPct">0%</span></div>
+      <div class="progress-bar"><div id="progressBar" style="width:0%"></div></div>
+      <div class="progress-detail">
+        <span><span class="dot s0"></span><span id="cnt0">0</span> yeni</span>
+        <span><span class="dot s1"></span><span id="cnt1">0</span> çalışıldı</span>
+        <span><span class="dot s2"></span><span id="cnt2">0</span> pekişti</span>
+      </div>
+    </div>
+
+    <input type="text" class="search" id="searchBox" placeholder="🔍 Konu ara…">
+
+    <div class="filter-tabs">
+      <button class="active" data-filter="all">Tümü</button>
+      <button data-filter="0">Yeni</button>
+      <button data-filter="1">Yarım</button>
+      <button data-filter="2">Bitti</button>
+    </div>
+
+    <div id="navList"></div>
+  </aside>
+
+  <main class="main">
+    <div class="hero">
+      <div class="meta-row">
+        <span class="el-chip">12 bölüm · sections</span>
+        <span class="el-chip" id="topicCountChip">— konu · topics</span>
+        <span class="el-chip">TR ↔ EN</span>
+      </div>
+      <h1>TÜRKÇE DİL BİLGİSİ · KARŞILAŞTIRMALI ATLAS</h1>
+      <div class="subtitle">An English speaker's systematic path into Turkish grammar — and the mirror it holds up to English. Her konuda önce Türkçe, sonra İngilizce açıklama; çift dilli örnekler ve edge-case kutusu.</div>
+      <div class="key-idea"><b>Anahtar fikir · Key idea:</b> Türkçe <em>agglutinative</em> (sondan eklemeli) ve ünlü uyumuna bağlıdır; İngilizce <em>analytic</em> — bilgiyi ayrı kelimelerle taşır. Türkçe "sözcüğün içine inşa eder", İngilizce "yan yana dizer". Bu tek cümleyi içselleştirmek, geri kalanını çok daha kolay yapar.</div>
+    </div>
+
+    <div id="content"></div>
+  </main>
+</div>
+
+<script>
+const TOPICS = [
+  // ============== SECTION 1: FOUNDATIONS ==============
+  { section: "1. Temeller · Foundations", icon: "🔤", items: [
+    {
+      id: "alphabet",
+      tr_title: "Alfabe ve Sesler",
+      en_title: "The Alphabet & Sounds",
+      tr: "Türk alfabesi 29 harftir: Latin temellidir ama <code>q, w, x</code> yoktur; <code>ç, ğ, ı, i, ö, ş, ü</code> eklenmiştir. <strong>Her harf tek ses</strong>: yazıldığı gibi okunur, okunduğu gibi yazılır. <code>ı</code> (noktasız) ve <code>i</code> (noktalı) iki ayrı harftir. <code>ğ</code> (&quot;yumuşak g&quot;) tek başına ses çıkarmaz; önceki ünlüyü uzatır.",
+      en: "Turkish has 29 letters in a Latin-based, almost perfectly phonemic script. No <code>q, w, x</code>; new letters <code>ç, ğ, ı, i, ö, ş, ü</code>. Unlike English's chaotic spelling, what you see is what you say. Two huge gotchas for English readers: <strong>(1)</strong> dotted <code>i</code> and dotless <code>ı</code> are different letters (and different vowels); <strong>(2)</strong> <code>ğ</code> is a 'silent' letter that lengthens the preceding vowel — never pronounced as English 'g'.",
+      ex: [
+        { tr: "Ağa", en: "lord / elder", note: "ğ → 'aaa'" },
+        { tr: "kıl vs. kil", en: "hair vs. clay", note: "ı vs. i fully distinct" },
+        { tr: "çay", en: "tea", note: "ç = 'ch'; c = 'j' (cami = 'jah-mee')" }
+      ],
+      edge: [
+        "<code>c</code> = 'j' as in <em>judge</em>; <code>j</code> = soft French 'j' (rare).",
+        "Closed <code>e</code> (between e and i) exists phonetically but isn't written distinctly.",
+        "Stress usually falls on the LAST syllable — but vocatives and place names break this rule (<em>Ánkara, kárdeş!</em>)."
+      ],
+      contrast: "<b>English</b> writes 'enough', 'though', 'thought' — three sounds, one spelling family. <b>Turkish</b> never does this; orthography ≈ phonology."
+    },
+    {
+      id: "vowel-harmony",
+      tr_title: "Ünlü Uyumu",
+      en_title: "Vowel Harmony",
+      tr: "Türkçenin omurgası. Bir kelimedeki sonraki ünlüler, önceki ünlüye göre seçilir. <strong>Büyük uyum</strong>: ön ünlüler (<code>e, i, ö, ü</code>) ön ünlülerle; arka ünlüler (<code>a, ı, o, u</code>) arka ünlülerle gider. <strong>Küçük uyum (düz-yuvarlak)</strong>: <code>a, ı → a/ı</code>; <code>e, i → e/i</code>; <code>o, u → a/u</code>; <code>ö, ü → e/ü</code>. Bu yüzden çoğul eki <em>-lar / -ler</em>, ilgi eki <em>-ı/-i/-u/-ü</em> dört biçim alır.",
+      en: "The single most important Turkish phenomenon. Every suffix has 2–4 variants, and which one attaches depends on the last vowel of the stem. <strong>Front-back harmony</strong>: front vowels (e, i, ö, ü) pull front-vowel suffixes; back vowels (a, ı, o, u) pull back ones. <strong>Rounded-unrounded harmony</strong>: a 4-way version. Think of it as the word's vocal 'family resemblance' — every later vowel echoes the first. English has nothing remotely like this; the closest analogy is 'a' vs 'an' (a book / an apple), but harmony applies to <em>every</em> suffix.",
+      ex: [
+        { tr: "ev-ler / araba-lar", en: "houses / cars", note: "e (front) → -ler; a (back) → -lar" },
+        { tr: "göz-üm / kol-um", en: "my eye / my arm", note: "ö (front-round) → -üm; o (back-round) → -um" },
+        { tr: "İstanbul-da / Ankara-da", en: "in Istanbul / in Ankara", note: "both back; locative -da" }
+      ],
+      edge: [
+        "Loanwords sometimes break harmony: <em>kitap</em> (Arabic) → kitab-ı (NOT kitab-i, but suffix follows the loan's last vowel).",
+        "Compound words harmonize from the FINAL stem, not the first: <em>başkent-ler</em>, not -lar.",
+        "A few native words disobey: <em>anne</em> (mother) — etymologically irregular.",
+        "When in doubt as a writer: trust the LAST vowel of the stem and pick the suffix that 'sounds clean'."
+      ],
+      contrast: "Imagine if in English the plural -s changed shape depending on the noun's vowel: <em>cat-az, dog-oz, kid-iz</em>. That's daily life in Turkish."
+    },
+    {
+      id: "consonant-mutation",
+      tr_title: "Ünsüz Yumuşaması ve Sertleşmesi",
+      en_title: "Consonant Mutation",
+      tr: "Bir kelime sert ünsüzle bitiyorsa (<code>p, ç, t, k</code>) ve sesli ile başlayan bir ek alıyorsa, son ünsüz yumuşar: <code>p→b, ç→c, t→d, k→ğ</code>. Tersine, ek sert ünsüzle başlıyorsa (<code>-de, -di</code> gibi) ve kelime sert ünsüzle bitiyorsa, ek de sertleşir: <code>-de→-te, -di→-ti</code>.",
+      en: "Two paired rules that English doesn't share but you'll need every sentence. <strong>Softening</strong>: stem-final voiceless stops (p, ç, t, k) become voiced (b, c, d, ğ) before a vowel-initial suffix. <strong>Hardening</strong>: certain suffixes (locative -de, past -di, etc.) switch their initial d→t after a voiceless stem. So <em>kitap</em> (book) + accusative -ı → <em>kitabı</em>, and <em>sokak</em> (street) + locative -da → <em>sokakta</em>.",
+      ex: [
+        { tr: "kitap → kitab-ı", en: "the book (object)", note: "p → b" },
+        { tr: "ağaç → ağac-ı", en: "the tree (object)", note: "ç → c" },
+        { tr: "sokak → sokak-ta", en: "in the street", note: "hardening: -da → -ta" },
+        { tr: "gitmek → git-ti", en: "(he) went", note: "-di → -ti after voiceless t" }
+      ],
+      edge: [
+        "Monosyllables often resist softening: <em>at</em> (horse) → at-ı (NOT ad-ı). But <em>ad</em> (name) → ad-ı.",
+        "Foreign words may not soften: <em>hukuk → hukuku</em> (NOT huğuğu).",
+        "<code>k → ğ</code> is the most visible: <em>çocuk → çocuğu</em> (the child), <em>köpek → köpeği</em>."
+      ],
+      contrast: "<b>English</b> writes 'wife' but says 'wives' — a relic of similar voicing. Turkish does this <em>systematically</em>, by rule."
+    },
+    {
+      id: "buffer-letters",
+      tr_title: "Kaynaştırma Harfleri (y, n, s)",
+      en_title: "Buffer Letters",
+      tr: "İki ünlü yan yana gelmez. Araya kaynaştırma ünsüzü girer. <strong>-y-</strong>: ünlüyle biten kelimeye ünlüyle başlayan ek geldiğinde (<em>araba-y-ı</em>). <strong>-n-</strong>: 3. tekil iyelik (-(s)i) üzerine durum eki geldiğinde (<em>evi-n-de</em>). <strong>-s-</strong>: ünlüyle biten ismin 3. tekil iyelik ekinde (<em>araba-s-ı</em>).",
+      en: "Turkish forbids vowel hiatus. Three buffer consonants slip in to avoid two vowels touching. Memorize the triggers: <strong>-y-</strong> between a vowel-final stem and a vowel-initial suffix; <strong>-n-</strong> between a 3rd-person possessive and any case suffix; <strong>-s-</strong> inside the 3rd-person possessive when the stem ends in a vowel. They look small but they shape every other word.",
+      ex: [
+        { tr: "araba + -ı → araba<b>y</b>ı", en: "the car (object)" },
+        { tr: "araba + -i (poss) → araba<b>s</b>ı", en: "her car" },
+        { tr: "arabası + -da → arabası<b>n</b>da", en: "in her car" }
+      ],
+      edge: [
+        "<em>su</em> (water) and <em>ne</em> (what) take irregular buffers: <em>suyu</em>, <em>neyi</em>.",
+        "After numbers ending in vowel + ordinal -inci: <em>iki-nci</em>, not iki-y-inci."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 2: NOUNS ==============
+  { section: "2. İsim · Nouns", icon: "📦", items: [
+    {
+      id: "no-gender-article",
+      tr_title: "Cinsiyet ve Artikel Yok",
+      en_title: "No Gender, No Articles",
+      tr: "Türkçede gramer cinsiyeti yoktur. <em>O</em> hem 'he' hem 'she' hem 'it'tir. Belirli artikel (the) yoktur; belirsiz artikel olarak <em>bir</em> kullanılır (aslında 'one' demektir) ve çoğu zaman atlanabilir. Bir ismin belirli mi belirsiz mi olduğu, çoğu zaman <strong>belirtme hâli ekinden</strong> (accusative -ı/i/u/ü) anlaşılır.",
+      en: "Two huge simplifications and one new mechanic. <strong>(1)</strong> No grammatical gender — <em>he</em>, <em>she</em>, and <em>it</em> all collapse into <em>o</em>. <strong>(2)</strong> No definite article: <em>kitap</em> can mean 'book', 'a book', or 'the book' depending on context. <strong>(3)</strong> The work of English 'the' is partly done by the <em>accusative case suffix</em> on the object. <em>Kitap okudum</em> = I read a book; <em>kitabı okudum</em> = I read the book.",
+      ex: [
+        { tr: "Bir kedi gördüm.", en: "I saw a cat." },
+        { tr: "Kediyi gördüm.", en: "I saw the cat.", note: "accusative -yi marks definiteness" },
+        { tr: "O geldi.", en: "He / she / it came." }
+      ],
+      edge: [
+        "<em>bir</em> can also mean 'one' as a number — context disambiguates.",
+        "Possessed nouns are definite by default: <em>kitabımı okudum</em> always means 'I read my book' (definite).",
+        "Proper nouns and unique entities never need an article."
+      ],
+      contrast: "<b>English</b> burns words on <em>a/an/the/he/she/it</em>; <b>Turkish</b> doesn't. As a writer, this lets you be much terser in Turkish — but you must use case suffixes precisely to signal definiteness."
+    },
+    {
+      id: "plural",
+      tr_title: "Çoğul Eki (-lar / -ler)",
+      en_title: "Plural Suffix",
+      tr: "İsmin çoğulu <code>-lar</code> (arka ünlüden sonra) veya <code>-ler</code> (ön ünlüden sonra) ile yapılır. Ama Türkçede bir önemli kural: <strong>sayı veya niceleyici varsa çoğul eki kullanılmaz</strong>. 'Üç kitap' (NOT üç kitaplar) — 'three book'. Çoğul eki ayrıca saygı, çeşit ve tahmin ifade edebilir.",
+      en: "Plural is regular: <code>-lar</code> after back vowels, <code>-ler</code> after front vowels. The surprise for English speakers: <strong>Turkish drops the plural when a number or quantifier is present</strong>. 'Three cats' is <em>üç kedi</em>, literally 'three cat'. The plural is also used non-numerically — for respect (<em>annemler</em> 'mom and the others'), variety, and approximation (<em>saat beşlerde</em> 'around 5 o'clock').",
+      ex: [
+        { tr: "kedi-ler / araba-lar", en: "cats / cars" },
+        { tr: "beş kedi", en: "five cats", note: "NOT beş kediler" },
+        { tr: "Ahmet-ler geldi.", en: "Ahmet and his family came.", note: "associative plural" }
+      ],
+      edge: [
+        "<em>biz</em> (we) and <em>siz</em> (you-pl) already contain plurality; don't double-mark.",
+        "Some collective nouns resist plurality even without numbers: <em>insan</em> often stays singular generically.",
+        "Plural on a verb's subject is sometimes optional for inanimate subjects: <em>kitaplar düştü</em> OR <em>kitaplar düştüler</em> (rarer)."
+      ]
+    },
+    {
+      id: "noun-cases",
+      tr_title: "İsmin Hâlleri (Durum Ekleri)",
+      en_title: "Noun Cases",
+      tr: "Türkçenin altı temel hâli: <strong>Yalın</strong> (eksiz), <strong>Belirtme/Accusative</strong> (-ı/i/u/ü), <strong>Yönelme/Dative</strong> (-a/e), <strong>Bulunma/Locative</strong> (-da/de/ta/te), <strong>Ayrılma/Ablative</strong> (-dan/den/tan/ten), <strong>İlgi/Genitive</strong> (-ın/in/un/ün). Bunlar İngilizcedeki edatların (to, at, from, of) işini görür ve cümlenin omurgasıdır.",
+      en: "Six core cases do most of the prepositional work English handles with separate words. <strong>Nominative</strong> (∅): subject. <strong>Accusative</strong> (-ı/i/u/ü): definite direct object. <strong>Dative</strong> (-a/e): 'to', destination, indirect object. <strong>Locative</strong> (-da/de): 'at, in, on'. <strong>Ablative</strong> (-dan/den): 'from, out of'. <strong>Genitive</strong> (-ın/in): 'of, -'s'. Memorizing these six is the single biggest unlock; every Turkish sentence relies on them.",
+      ex: [
+        { tr: "ev / ev-i / ev-e / ev-de / ev-den / ev-in", en: "house / the house (obj) / to the house / at home / from home / of the house" },
+        { tr: "Okul-a git-ti-m.", en: "I went to school.", note: "dative" },
+        { tr: "İstanbul-dan gel-di.", en: "She came from Istanbul.", note: "ablative" },
+        { tr: "Ali-nin kitab-ı", en: "Ali's book", note: "genitive + 3sg poss = possessive construction" }
+      ],
+      edge: [
+        "Pronouns have irregular case forms: <em>ben</em> + dative ≠ <em>bana</em>, NOT <em>bene</em>. Likewise <em>sen → sana</em>.",
+        "Some verbs idiomatically demand specific cases: <em>bakmak</em> takes dative (<em>kitaba bakmak</em>, 'to look AT the book'), not accusative.",
+        "There's also a marginal <strong>instrumental</strong> case via the postposition <em>ile</em>, suffixed as <em>-(y)la / -(y)le</em>: <em>kalemle yazdım</em> 'I wrote with a pen'.",
+        "Accusative is ONLY used for <strong>definite</strong> direct objects. <em>Su içtim</em> 'I drank water', <em>suyu içtim</em> 'I drank the water'."
+      ],
+      contrast: "<b>English</b>: 'I gave the book to Ali at school yesterday.' <b>Turkish</b>: <em>Ali'ye okulda kitabı dün verdim.</em> Same info, but each role is glued to its noun via a case suffix instead of a preposition."
+    },
+    {
+      id: "possessive-suffixes",
+      tr_title: "İyelik Ekleri",
+      en_title: "Possessive Suffixes",
+      tr: "Türkçede 'my book' demek için ayrı bir kelime gerekmez; isme ek koyarsın: <em>kitab-ım</em>. İyelik ekleri: <strong>-(I)m, -(I)n, -(s)I, -(I)mIz, -(I)nIz, -lArI</strong> (büyük harf ünlü uyumuna göre değişir). 'Benim kitabım' demek iki kere işaretlemek demektir — vurgu için kullanılır.",
+      en: "Possession is shown directly on the noun, not by separate pronouns. Six suffixes, each harmonizing: <code>-(I)m</code> my, <code>-(I)n</code> your, <code>-(s)I</code> his/her/its, <code>-(I)mIz</code> our, <code>-(I)nIz</code> your-pl, <code>-lArI</code> their. The pronouns (benim, senin…) are optional emphasis. This is a huge stylistic resource: Turkish can be extremely compact, since 'my house', 'in my house', and 'to my house' are all one word.",
+      ex: [
+        { tr: "ev-im / ev-in / ev-i / ev-imiz / ev-iniz / ev-leri", en: "my/your/his/our/your-pl/their house" },
+        { tr: "kitab-ım", en: "my book", note: "softening: p→b" },
+        { tr: "araba-m", en: "my car", note: "vowel-final stem drops the I" }
+      ],
+      edge: [
+        "After vowel-final stems, drop the buffer vowel: <em>araba</em> → <em>arabam</em>, not arabaım.",
+        "3rd-person possessive needs the buffer -n- before any case suffix: <em>evinde</em> (in her house), not evi-de.",
+        "<em>onların</em> + plural noun → <em>onların evleri</em>; the -leri can mean both 'their houses' and 'their house' — ambiguous on purpose.",
+        "Family terms have special vocative forms: <em>annem</em> can mean 'my mother' OR be an affectionate address."
+      ]
+    },
+    {
+      id: "possessive-construction",
+      tr_title: "İsim Tamlaması",
+      en_title: "Noun Compounds (Possessive Construction)",
+      tr: "İki ismi birbirine bağlamanın üç yolu var: <strong>(1) Belirtili tamlama</strong> (her iki tarafta ek): <em>Ali-nin kitab-ı</em> 'Ali's book'. <strong>(2) Belirtisiz tamlama</strong> (sadece ikinci tarafta ek): <em>çocuk kitab-ı</em> 'children's book' (tür). <strong>(3) Takısız tamlama</strong> (ne ek ne de bağlaç): <em>demir kapı</em> 'iron door' (malzeme/sıfat işlevi).",
+      en: "Turkish has three distinct 'noun + noun' patterns that English lumps under 'X's Y' or 'X Y'. <strong>Definite genitive</strong> (Ali<em>nin</em> kitab<em>ı</em>): specific possession — Ali's particular book. <strong>Indefinite compound</strong> (çocuk kitab<em>ı</em>): a TYPE of thing — a children's book in general. <strong>Bare compound</strong> (demir kapı): material/attribute — like an English adjective. Confusing them is the single biggest writer's mistake foreigners make in Turkish.",
+      ex: [
+        { tr: "Ali'nin arabası", en: "Ali's car (specific)" },
+        { tr: "çocuk arabası", en: "stroller (lit. 'child car' — kind)" },
+        { tr: "altın yüzük", en: "gold ring (material)" }
+      ],
+      edge: [
+        "If both nouns are abstract and form a fixed compound, it's usually indefinite: <em>iş kitabı</em> 'workbook', <em>fikir özgürlüğü</em> 'freedom of thought'.",
+        "Place names: <em>İstanbul Boğazı</em> (the Bosphorus, indefinite) vs. <em>İstanbul'un boğazı</em> (would mean 'Istanbul's strait' — odd).",
+        "The 3rd-person possessive in indefinite compounds is NOT 'his/her/its' — it's purely structural. Don't translate it."
+      ],
+      contrast: "<b>English</b> 'glass door' (compound) vs. 'door of the glass' (full possessive). Turkish triples this: type, material, and ownership all get distinct shapes."
+    }
+  ]},
+
+  // ============== SECTION 3: PRONOUNS ==============
+  { section: "3. Zamirler · Pronouns", icon: "👤", items: [
+    {
+      id: "personal-pronouns",
+      tr_title: "Kişi Zamirleri",
+      en_title: "Personal Pronouns",
+      tr: "Ben, sen, o, biz, siz, onlar. Fiildeki kişi ekleri zaten özneyi belirttiği için, zamirler genellikle <strong>düşürülür</strong> (pro-drop). 'Geliyorum' başlı başına 'I'm coming' demektir; 'ben geliyorum' demek için sebep gerekir — vurgu, kontrast, netlik.",
+      en: "Turkish is a <strong>pro-drop</strong> language: the verb's personal ending already encodes who's doing the action, so the pronoun is usually omitted. Saying it explicitly adds emphasis or contrast — like English 'I did it' vs. '<em>I</em> did it'. <em>Sen</em> is informal singular 'you'; <em>siz</em> is plural <em>and</em> the formal singular ('vous' style).",
+      ex: [
+        { tr: "Geliyorum.", en: "I'm coming.", note: "pronoun dropped" },
+        { tr: "Ben geliyorum, sen değil.", en: "I'm coming, not you.", note: "contrast" },
+        { tr: "Siz nasılsınız?", en: "How are you? (formal/plural)" }
+      ],
+      edge: [
+        "<em>ben</em> + dative is irregular: <em>bana</em> (not bene). Same for <em>sen → sana</em>.",
+        "<em>o</em> can refer to any animate or inanimate third-person — there's no 'it'.",
+        "Modern Turkish business/email often uses <em>siz</em> even with one person you don't know well — using <em>sen</em> too early is rude."
+      ]
+    },
+    {
+      id: "demonstratives",
+      tr_title: "İşaret Zamirleri",
+      en_title: "Demonstratives",
+      tr: "Üç dereceli: <strong>bu</strong> (yakın — this), <strong>şu</strong> (orta mesafe / yeni gösterilen — that just-pointed-out), <strong>o</strong> (uzak veya bilinen — that). <em>şu</em> İngilizcede tek karşılığı olmayan bir nüans: 'şu' işaret ederken kullanılır, 'o' ise zaten bilineni gösterir.",
+      en: "Turkish has a <strong>three-way</strong> system where English has two. <em>Bu</em> is 'this' (near speaker). <em>O</em> is 'that' (far or known to both — also the 3rd-person pronoun). The middle term, <em>şu</em>, has no exact English match: it points to something just being introduced into the conversation, often with a physical gesture. 'Look at that-over-there I'm pointing to.' This is a stylistic resource: Turkish prose can choreograph attention more precisely.",
+      ex: [
+        { tr: "Bu kitap benim.", en: "This book is mine." },
+        { tr: "Şu adamı görüyor musun?", en: "Do you see that man (whom I'm pointing at)?" },
+        { tr: "O zamanlar İstanbul'da yaşıyorduk.", en: "Back then we lived in Istanbul." }
+      ],
+      edge: [
+        "Before a case suffix, <em>bu/şu/o</em> insert -n-: <em>bunda, şunda, onda</em>.",
+        "<em>şu</em> can sound condescending or distancing in some contexts — be careful.",
+        "<em>bu / şu / o</em> as standalone subjects = 'this one / that one / that one over there' — context fills in the noun."
+      ]
+    },
+    {
+      id: "kendi",
+      tr_title: "Dönüşlü Zamir: kendi",
+      en_title: "Reflexive: kendi",
+      tr: "<em>kendi</em> 'self' demektir; iyelik ekiyle çekilir: <em>kendim, kendin, kendisi, kendimiz, kendiniz, kendileri</em>. Üç işlevi var: <strong>(1) dönüşlü</strong> ('Kendimi yıkadım' I washed myself), <strong>(2) vurgu</strong> ('Bunu kendim yaptım' I did this myself), <strong>(3) bağlaması</strong> dolaylı söylemde özneyi ('Ahmet kendisinin haklı olduğunu söyledi' Ahmet said he himself was right).",
+      en: "<em>kendi</em> ('self') takes possessive endings to mean myself/yourself/etc. Beyond English's plain reflexive use, it also acts as an emphatic ('I did it myself') and — crucially in reported speech — distinguishes <strong>same-subject</strong> vs. <strong>different-subject</strong> reference. 'Ahmet said he-self was right' (kendisinin) implies Ahmet meant himself; 'Ahmet said he was right' (onun) might mean someone else.",
+      ex: [
+        { tr: "Kendimi seviyorum.", en: "I love myself." },
+        { tr: "Bunu kendin yaptın.", en: "You did this yourself." },
+        { tr: "Kendi evinde rahattır.", en: "He's comfortable in his own house." }
+      ],
+      edge: [
+        "<em>kendisi</em> alone often functions as a polite 3rd-person 'he/she' — softer than <em>o</em>.",
+        "Possessive on kendi is REQUIRED; *kendi by itself is rare outside fixed expressions.",
+        "Reciprocal 'each other' uses <em>birbiri</em>, not kendi."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 4: VERBS BASIC ==============
+  { section: "4. Fiiller — Temel · Verbs (Basic)", icon: "⚡", items: [
+    {
+      id: "verb-stem",
+      tr_title: "Fiil Kökü ve Mastar",
+      en_title: "Verb Stem & Infinitive",
+      tr: "Türkçede mastar eki <strong>-mek / -mak</strong>: gelmek, gitmek, yapmak, okumak. Mastar ekini çıkardığında <strong>fiil kökü</strong> kalır: gel-, git-, yap-, oku-. Tüm çekimler bu köke eklemelerle yapılır. <em>Olmak</em> ('to be / to become') ve <em>etmek</em> ('to do') yardımcı fiildir; isim/sıfata eklenerek bileşik fiil yapar (telefon etmek, mutlu olmak).",
+      en: "Turkish infinitives end in <strong>-mek</strong> (front vowels) or <strong>-mak</strong> (back vowels). Strip the ending and you have the verb stem — your launchpad. All tense, mood, voice, person, and negation are built by stacking suffixes onto that stem. There are no irregular verbs in the English sense; once you know the rules, you can conjugate every verb.",
+      ex: [
+        { tr: "gelmek → gel- → gel-iyor-um", en: "to come → come- → I'm coming" },
+        { tr: "yapmak → yap- → yap-ar-ım", en: "to do → do- → I do (habitually)" },
+        { tr: "telefon etmek", en: "to phone (compound verb)" }
+      ],
+      edge: [
+        "<em>etmek</em>, <em>olmak</em>, <em>kılmak</em>, <em>eylemek</em> are the four auxiliary verbs.",
+        "<em>demek</em> ('to say') is the only verb with truly irregular stem changes: di-yor-um, de-di-m.",
+        "Some compound verbs fuse: <em>hissetmek</em> (his + etmek), <em>kaybetmek</em>. Watch the doubling of the consonant."
+      ]
+    },
+    {
+      id: "personal-endings",
+      tr_title: "Kişi Ekleri",
+      en_title: "Personal Endings",
+      tr: "Her çekimli fiil sonunda kişi eki alır. İki ana grup: <strong>z-tipi</strong> (geniş/şimdiki/gelecek için: -ım/im, -sın/sin, ∅, -ız/iz, -sınız/siniz, -lar/ler) ve <strong>k-tipi</strong> (-di'li geçmiş ve şart için: -m, -n, ∅, -k, -nız/niz, -lar/ler). Hangi grup hangi zamanda? Ezberlemek yerine pattern'i hisset.",
+      en: "Person/number is marked by suffixes on the verb. Two paradigms exist: the <strong>z-type</strong> endings (used with present, future, aorist, evidential) and the <strong>k-type</strong> (used with definite past -di and conditional -se). They differ mainly in 1sg (-(y)Im vs. -m) and 1pl (-(y)Iz vs. -k). The reason: -di and -se historically come from a different morphology. As a writer this matters because mixing them = ungrammatical.",
+      ex: [
+        { tr: "geliyor-um / geldi-m", en: "I'm coming / I came", note: "z-type vs. k-type" },
+        { tr: "gelir-sin / geldi-n", en: "you come / you came" },
+        { tr: "gelecek-sin-iz / geldi-niz", en: "you-pl will come / you-pl came" }
+      ],
+      edge: [
+        "3rd-person singular usually has NO suffix in either group — silence marks 'he/she/it'.",
+        "3rd-person plural -lar/-ler is optional when the subject is inanimate, mandatory for animate humans.",
+        "In poetry/archaic registers you'll see -dır/-dir attached to verbs for assertion: <em>gelir-dir</em> ('it must come/will surely come')."
+      ]
+    },
+    {
+      id: "present-continuous",
+      tr_title: "Şimdiki Zaman (-yor)",
+      en_title: "Present Continuous (-yor)",
+      tr: "<code>-yor</code> eki şu an olan ya da bu sıralarda olan eylemleri anlatır. Vowel harmony 4 yönlü: <code>-iyor / -ıyor / -üyor / -uyor</code>. Ünsüzle biten köklere kaynaştırma ünlüsü gelir: <em>git-i-yor-um</em>. Ünlüyle biten kökler son ünlüyü düşürür: <em>oku-yor-um</em>, NOT okuayor.",
+      en: "<code>-(I)yor</code> is the workhorse 'now / these days' tense — broadest in usage, matching both English present continuous and many present-simple contexts. Note: <em>-yor</em> itself never harmonizes (always -yor), but the buffer vowel before it does (I → ı/i/u/ü). Vowel-final stems lose their final vowel: <em>okumak → oku-yorum</em>.",
+      ex: [
+        { tr: "Geliyorum.", en: "I'm coming." },
+        { tr: "Türkçe öğreniyorum.", en: "I'm learning Turkish.", note: "or 'I learn' generally" },
+        { tr: "Bu sıralarda kitap yazıyor.", en: "She's writing a book these days." }
+      ],
+      edge: [
+        "<em>-yor</em> is the only suffix in modern Turkish that doesn't harmonize fully — relic of Old Turkish <em>yorımak</em> 'to walk'.",
+        "1sg of vowel-final negative: <em>okumuyorum</em> (NOT okumayorum) — the -ma negative becomes -mu before -yor.",
+        "Used for near-future plans too: <em>yarın geliyorum</em> 'I'm coming tomorrow'."
+      ],
+      contrast: "<b>English</b> distinguishes 'I work' vs. 'I am working' sharply. <b>Turkish</b> -yor covers both, and the <em>aorist</em> (next topic) often covers what English calls 'simple present'."
+    },
+    {
+      id: "aorist",
+      tr_title: "Geniş Zaman (-r / -er / -ir)",
+      en_title: "Aorist — Habitual / General Truth",
+      tr: "<strong>Geniş zaman</strong> alışkanlıkları, genel doğruları, kişilik özelliklerini, kibar teklifleri ve gelecekteki olasılıkları belirtir. Tek heceli kök → <code>-er/-ar</code>; çok heceli kök → <code>-ir/-ır/-ür/-ur</code>. Bazı tek hecelilerde istisna: <em>gelmek → gelir</em>, <em>almak → alır</em>, <em>bilmek → bilir</em>.",
+      en: "The 'aorist' is Turkish's other 'present-ish' tense, but its semantics are wider: <strong>habits, general truths, character traits, polite offers, predictions, and modal nuances</strong>. The form is irregular by stem-type: monosyllables usually take <code>-er/-ar</code>, polysyllables take <code>-ir/-ır/-ür/-ur</code>, with a tricky list of exceptions you eventually memorize. As a writer this is the tense for proverbs and timeless prose.",
+      ex: [
+        { tr: "Her sabah kahve içerim.", en: "I drink coffee every morning." },
+        { tr: "Su 100 derecede kaynar.", en: "Water boils at 100°.", note: "general truth" },
+        { tr: "Çay ister misin?", en: "Would you like tea?", note: "polite offer" },
+        { tr: "Yarın yağmur yağar.", en: "It might rain tomorrow.", note: "soft prediction" }
+      ],
+      edge: [
+        "Aorist negative is irregular: <code>-mez/-maz</code>, not -mer-. <em>gelmem</em> 'I don't come' (NOT gelmerim).",
+        "13 monosyllabic verbs take -ir despite the rule (<em>bilmek, gelmek, almak…</em>) — list to memorize.",
+        "<em>-mez mi?</em> can express surprise: <em>geçen gün ne göreyim, Ali gelmez mi!</em> 'and lo, in walks Ali!'"
+      ],
+      contrast: "<b>English</b> 'simple present' (I drink coffee) ≈ Turkish aorist. 'Be drinking' (I am drinking coffee right now) ≈ Turkish -yor. Choosing wrong gives Turkish prose a foreign feel."
+    },
+    {
+      id: "past-definite",
+      tr_title: "-di'li Geçmiş",
+      en_title: "Definite Past (-di)",
+      tr: "Konuşanın <strong>tanık olduğu</strong>, kesin olarak bildiği geçmiş eylemler için. <code>-di / -dı / -du / -dü</code>; sert ünsüzden sonra <code>-ti / -tı / -tu / -tü</code>. Kişi ekleri k-tipi: <em>geldim, geldin, geldi, geldik, geldiniz, geldiler</em>.",
+      en: "The 'witnessed' or 'definite' past — for events the speaker personally saw, did, or knows with certainty. <code>-DI</code> (with 4-way harmony and consonant hardening to -tI). Personal endings are k-type: <em>geldim, geldin, geldi…</em>. Use this for narrative when you're claiming first-hand authority over the facts.",
+      ex: [
+        { tr: "Dün İstanbul'a gittim.", en: "I went to Istanbul yesterday." },
+        { tr: "Kitabı okudu.", en: "She read the book.", note: "speaker confirms" },
+        { tr: "Geçtiğimiz yaz çok sıcaktı.", en: "Last summer was very hot." }
+      ],
+      edge: [
+        "<em>-di</em> can also mark a sharp, sudden completion: <em>düştü!</em> 'down it went!'",
+        "Negative: <em>gelmedim</em> 'I didn't come'.",
+        "Question particle <em>mi/mı/mu/mü</em> stays separate: <em>geldi mi?</em> 'did he come?'"
+      ]
+    },
+    {
+      id: "past-evidential",
+      tr_title: "-miş'li Geçmiş",
+      en_title: "Evidential / Inferential Past (-miş)",
+      tr: "Konuşanın <strong>tanık olmadığı</strong>, başkasından duyduğu, sonradan fark ettiği, ya da rüya/masal/hikâye anlatımında kullandığı geçmiş. <code>-mış / -miş / -muş / -müş</code>. 'Ali gelmiş' = 'Apparently Ali came' (sonradan öğrendim / bana söylediler).",
+      en: "Turkish's <strong>evidential</strong> past — a category English lacks entirely. Use it when you did NOT witness the event: hearsay, inference, surprise, dreams, folktales, news reports. <em>Ali geldi</em> = 'Ali came' (I saw it). <em>Ali gelmiş</em> = 'Ali (apparently/I hear/it seems) came'. Mastering this is the threshold between sounding 'foreign' and sounding native.",
+      ex: [
+        { tr: "Yağmur yağmış.", en: "It (apparently) rained.", note: "I see wet streets" },
+        { tr: "Duydum ki evlenmişsin.", en: "I heard you got married." },
+        { tr: "Bir varmış, bir yokmuş…", en: "Once upon a time…", note: "folk-tale opener" }
+      ],
+      edge: [
+        "<em>-miş</em> is also a participle (see Section 7) — 'fallen', 'cooked' — same form, different role.",
+        "Combined with <em>-di</em> via <em>-mişti</em> for past perfect: <em>gelmişti</em> 'he had come'.",
+        "In journalism, <em>-miş</em> often marks claims the writer isn't endorsing — a stylistic distancing device.",
+        "Used emphatically to express surprise even about events you saw: <em>çok güzel olmuş!</em> 'it's turned out wonderfully!'"
+      ],
+      contrast: "<b>English</b> must add 'apparently', 'it seems', 'I heard' — separate words. <b>Turkish</b> bakes evidence into the tense. As a writer, you can swap -di and -miş to shift narrative point of view, distance, and reliability with one suffix."
+    },
+    {
+      id: "future",
+      tr_title: "Gelecek Zaman (-ecek / -acak)",
+      en_title: "Future (-ecek)",
+      tr: "<code>-ecek / -acak</code>: gelecekte gerçekleşecek eylemler, planlar, vaatler, tahminler. Ünlüden önce <code>-ecek</code> → <code>-eceğ</code> (k → ğ): <em>geleceğim</em>. Tek bir gelecek vardır; İngilizcedeki 'will/going to' ayrımı yoktur, ama <em>-acak</em>'ın yanında belirteçler ('belki', 'mutlaka') nüans ekler.",
+      en: "One future for everything English splits into 'will', 'going to', 'shall', 'be doing'. <code>-(y)EcEk</code>: vowel-final stems take buffer -y- (<em>oku-y-acağ-ım</em>); the final k softens to ğ before a vowel suffix (<em>geleceğim</em>, not gelecekim). Adverbs and context shade meaning where English uses different forms.",
+      ex: [
+        { tr: "Yarın geleceğim.", en: "I'll come tomorrow." },
+        { tr: "Belki yağmur yağacak.", en: "Maybe it'll rain." },
+        { tr: "Bunu yapacağız!", en: "We'll do this!", note: "promise/determination" }
+      ],
+      edge: [
+        "Used in conditionals to express obligation/certainty: <em>gidecek misin gitmeyecek misin?</em> 'are you going or not?'",
+        "In storytelling, sometimes replaces the present for dramatic foreshadowing: <em>az sonra her şey değişecek.</em>",
+        "Spoken Turkish often shortens <em>geleceğim → gelicem</em>, <em>yapacağız → yapcaz</em> — informal."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 5: VERBS ADVANCED ==============
+  { section: "5. Fiiller — İleri · Verbs (Advanced)", icon: "🔥", items: [
+    {
+      id: "imperative",
+      tr_title: "Emir Kipi",
+      en_title: "Imperative",
+      tr: "Türkçede emir kipi kişiye göre değişir, üç ana biçim var: <strong>sen</strong> (eksiz fiil kökü: <em>gel!</em>), <strong>siz</strong> (-(y)In / -(y)InIz: <em>gelin / geliniz</em>), <strong>o</strong> ve <strong>onlar</strong> (-sIn / -sInlAr: <em>gelsin / gelsinler</em> 'let him come / let them come'). Birinci tekil/çoğul için emir yoktur — onun yerine istek kipi kullanılır.",
+      en: "Turkish imperatives are person-specific. Bare stem for 2sg <em>gel!</em>; -(y)In/-(y)InIz for 2pl/formal <em>gelin / geliniz</em>; -sIn for 3sg <em>gelsin</em> ('let him come'); -sInlAr for 3pl. There's no 1st-person imperative — for 'let's go!' you use the optative (next topic). The 3rd-person imperative is a powerful tool English mostly handles with 'let him/her' constructions.",
+      ex: [
+        { tr: "Gel!", en: "Come!" },
+        { tr: "Lütfen kitabı açınız.", en: "Please open the book.", note: "formal" },
+        { tr: "Ali de gelsin.", en: "Let Ali come too." }
+      ],
+      edge: [
+        "Negative imperative: -me/-ma + person ending. <em>gelme!</em> 'don't come', <em>gelmeyiniz</em> 'please don't come'.",
+        "<em>-sene / -sana</em> is a softened singular imperative + suggestion: <em>gelsene</em> 'why don't you come / come on'.",
+        "<em>buyurun</em> is the lexicalized polite invitation: 'please, go ahead / here you are'."
+      ]
+    },
+    {
+      id: "optative",
+      tr_title: "İstek Kipi",
+      en_title: "Optative (-e / -a)",
+      tr: "<code>-e / -a</code>: dilek, öneri, hafif emir, hedef bildirme. 1. tekil <em>geleyim</em> ('let me come / shall I come'), 1. çoğul <em>gelelim</em> ('let's come'). 3. kişi optatifi (-sin) genellikle 'emir' sayılır. Bu kip, alt cümlelerde de kullanılır: <em>gitmek istiyorum</em> mu, yoksa <em>gideyim diye</em> 'so that I go' mu?",
+      en: "The optative expresses wishes, suggestions, soft commands, and purpose. Most commonly seen in 1st-person forms — <em>geleyim</em> 'let me come' / 'shall I come?', <em>gelelim</em> 'let's come'. It also slots into purpose clauses (<em>diye</em> 'so that') and after certain conjunctions. Writers love it for its volitional softness.",
+      ex: [
+        { tr: "Şimdi ne yapalım?", en: "What shall we do now?" },
+        { tr: "Ben de bir bakayım.", en: "Let me have a look too." },
+        { tr: "Anlasınlar diye yavaş konuştum.", en: "I spoke slowly so they'd understand." }
+      ],
+      edge: [
+        "Optative + <em>mi</em> often expresses deliberation: <em>gitsem mi gitmesem mi?</em> 'should I go or not?' (with conditional).",
+        "Distinguish from future: <em>geleyim</em> 'let me come' vs. <em>geleceğim</em> 'I will come'."
+      ]
+    },
+    {
+      id: "necessitative",
+      tr_title: "Gereklilik Kipi (-meli)",
+      en_title: "Necessitative (-meli)",
+      tr: "<code>-meli / -malı</code>: gereklilik, zorunluluk, kuvvetli öneri. <em>Gelmeliyim</em> 'I must come / I should come'. İngilizcedeki 'must', 'should', 'have to' arasındaki ince ayrımları tek ekle taşır; kuvveti bağlamdan ya da ek belirteçten gelir.",
+      en: "<code>-mElI</code> compresses English's 'must / should / ought to / have to' into one suffix. The strength of the obligation comes from context, intonation, or modifier adverbs (<em>mutlaka gelmelisin</em> 'you absolutely must come' vs. <em>belki gelmelisin</em> 'maybe you should come'). For external obligation ('have to' in the institutional sense), Turkish often prefers <em>zorunda olmak</em> or <em>-mek zorunda</em> instead.",
+      ex: [
+        { tr: "Erken kalkmalıyım.", en: "I must get up early." },
+        { tr: "Bunu yapmamalıydın.", en: "You shouldn't have done this.", note: "past form" },
+        { tr: "Gitmek zorundayım.", en: "I have to go.", note: "external obligation" }
+      ],
+      edge: [
+        "Past necessitative: <em>gelmeliydim</em> 'I should have come / I had to come'.",
+        "Inferential: <em>gelmeliymiş</em> '(apparently) he should come'.",
+        "<em>-malı</em> tends to feel more advisory; <em>-zorunda</em> more compulsory."
+      ]
+    },
+    {
+      id: "conditional",
+      tr_title: "Şart Kipi (-se / -sa)",
+      en_title: "Conditional (-se)",
+      tr: "<code>-se / -sa</code> 'if' anlamı verir. Tek başına şart kipi olarak: <em>gelsem</em> 'if I came / if only I came'. Geçmişle birlikte (<em>geldiyse</em>) gerçek koşul; geniş veya gelecekle gerçek dışı/uzak koşul. Türkçenin koşul sistemi, eklerin <strong>katmanlanmasıyla</strong> çalışır — İngilizcedeki 'if + were + would' yerine tek kelime içinde her şey.",
+      en: "Turkish conditionals stack suffixes rather than using auxiliary chains. The <code>-sE</code> suffix marks 'if'. <strong>Real conditions</strong>: <em>geldiyse</em> 'if he came', <em>gelirse</em> 'if he comes (typically)'. <strong>Unreal/counterfactual</strong>: combine with past — <em>gelseydi</em> 'if he had come / if he were to come'. The matrix clause often uses aorist + di (<em>gelirdi</em>) for 'would come'.",
+      ex: [
+        { tr: "Vaktim olursa gelirim.", en: "If I have time, I'll come.", note: "real" },
+        { tr: "Vaktim olsaydı gelirdim.", en: "If I had had time, I would have come.", note: "counterfactual" },
+        { tr: "Keşke bilseydim.", en: "I wish I had known.", note: "wish + conditional" }
+      ],
+      edge: [
+        "<em>-sE</em> as a standalone wish: <em>bir yağmur yağsa</em> 'oh that it would rain'.",
+        "<em>-sE de</em> 'even if': <em>gelse de</em> 'even if he comes'.",
+        "After question word: <em>kim gelirse</em> 'whoever comes', <em>nereye gidersek</em> 'wherever we go'."
+      ]
+    },
+    {
+      id: "compound-tenses",
+      tr_title: "Birleşik Zamanlar (hikâye, rivayet, şart)",
+      en_title: "Compound Tenses",
+      tr: "Türkçe zamanlar üst üste binebilir. Üç ana 'üst ek' var: <strong>-di</strong> (hikâye — geçmişte olan), <strong>-miş</strong> (rivayet — duyulan/sonradan farkedilen), <strong>-se</strong> (şart). Geniş zaman + -di → <em>gelirdi</em> 'used to come / would come'. Şimdiki + -di → <em>geliyordu</em> 'was coming'. Gelecek + -di → <em>gelecekti</em> 'was going to come'.",
+      en: "Turkish builds 'compound tenses' by stacking a second TAM suffix (called the 'copular' or i-suffix layer). Three flavors: <strong>-(y)dI</strong> for past narrative (witnessed), <strong>-(y)mIş</strong> for evidential narrative (hearsay/inferred), <strong>-(y)sE</strong> for conditional. Apply any of these to any base tense and you get nuanced English equivalents: past continuous, past perfect, conditional perfect, etc., all morphologically.",
+      ex: [
+        { tr: "Geliyordu.", en: "She was coming.", note: "şimdiki + hikâye" },
+        { tr: "Gelirdi.", en: "He used to come / he would come.", note: "geniş + hikâye" },
+        { tr: "Gelmişti.", en: "He had come.", note: "miş + di" },
+        { tr: "Geliyormuş.", en: "(I hear) he's coming.", note: "şimdiki + rivayet" }
+      ],
+      edge: [
+        "<em>idi, imiş, ise</em> are the free-standing copular forms; they cliticize to the verb but can stand alone in formal writing.",
+        "<em>-dIysE</em> stacks past + conditional: <em>geldiyse</em> 'if he (in fact) came'.",
+        "Triple stacks are possible but rare: <em>gelecekmişti</em> 'apparently he was going to come'.",
+        "This is the system that makes Turkish look 'long' to learners — but every suffix earns its keep."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 6: VOICE & MOOD ==============
+  { section: "6. Çatı ve Olumsuzluk · Voice & Negation", icon: "🔀", items: [
+    {
+      id: "negation",
+      tr_title: "Olumsuzluk Eki (-me / -ma)",
+      en_title: "Negation",
+      tr: "Fiili olumsuzlaştırmak için köke <code>-me / -ma</code> eki gelir, sonra diğer ekler. <em>gel-me-di-m</em> 'I didn't come'. <strong>İstisna</strong>: geniş zaman negatifi düzensizdir — 1./4. kişide <code>-mem/-meyiz</code>, diğerlerinde <code>-mez</code>.",
+      en: "Verbal negation is one suffix: <code>-mE</code>, slotting between stem and tense. <em>gelmedim</em> 'I didn't come'. The big irregularity is the aorist negative — instead of expected -mer-, it's -mEz- (with quirky 1sg/1pl): <em>gelmem</em> 'I don't come', <em>gelmez</em> 'he doesn't come', <em>gelmeyiz</em> 'we don't come'. Non-verbal negation uses <em>değil</em> ('not').",
+      ex: [
+        { tr: "Gelmiyorum.", en: "I'm not coming." },
+        { tr: "Bilmem.", en: "I don't know.", note: "aorist neg, irregular" },
+        { tr: "Ben öğretmen değilim.", en: "I'm not a teacher.", note: "non-verbal: değil" }
+      ],
+      edge: [
+        "<em>değil</em> takes person endings: <em>değilim, değilsin, değil, değiliz…</em>",
+        "Double negative is common and grammatical: <em>hiç kimse gelmedi</em> 'nobody came' (lit. 'no one didn't come').",
+        "Negation interacts with the question particle: <em>gelmedi mi?</em> 'didn't he come?'"
+      ]
+    },
+    {
+      id: "question-particle",
+      tr_title: "Soru Eki (mi / mı / mu / mü)",
+      en_title: "Question Particle",
+      tr: "Evet/hayır sorularını yapmak için fiilden veya odaklanılan kelimeden sonra ayrı yazılan <code>mi / mı / mu / mü</code> partikeli gelir. Hangi kelimeden sonra koyduğun, sorunun <strong>odak</strong> noktasını değiştirir. <em>Sen mi geldin?</em> (Was it YOU?) vs. <em>Sen geldin mi?</em> (Did you come?).",
+      en: "Yes/no questions use a small particle (<em>mi/mı/mu/mü</em>, harmonizing) written separately from the verb. Its position changes <strong>focus</strong>: place it after the element you're questioning. <em>Sen mi geldin?</em> = 'Was it YOU who came?'; <em>Sen dün mü geldin?</em> = 'Was it YESTERDAY you came?'; <em>Sen geldin mi?</em> = 'Did you come (at all)?'.",
+      ex: [
+        { tr: "Geliyor musun?", en: "Are you coming?" },
+        { tr: "Türkçe öğreniyor musun?", en: "Are you learning Turkish?" },
+        { tr: "Yarın mı geliyorsun?", en: "Are you coming tomorrow (vs. another day)?" }
+      ],
+      edge: [
+        "Person ending attaches to <em>mi</em>, not the verb: <em>geliyor musun?</em> (not geliyorsun mu).",
+        "Wh-questions don't use mi: <em>nereden geliyorsun?</em> 'where are you coming from?'",
+        "<em>mi</em> can rhetorically intensify: <em>güzel mi güzel</em> 'oh so beautiful'."
+      ]
+    },
+    {
+      id: "passive",
+      tr_title: "Edilgen Çatı (-il / -in)",
+      en_title: "Passive",
+      tr: "<code>-il / -ıl / -ul / -ül</code>: ünsüzle biten köklere. <code>-in / -ın / -un / -ün</code>: <em>-l</em> ile biten köklere (bul-un-mak). Ünlüyle biten köklere yine <code>-n-</code>: <em>oku-n-mak</em>. Çift-edilgen: bazı fiiller hem -il hem -n alır.",
+      en: "Turkish passive is suffix-based: <code>-Il</code> after consonants, <code>-In</code> after <em>-l</em>-final stems, just <code>-n</code> after vowel-final stems. The agent, if mentioned, takes the postposition <em>tarafından</em> ('by'). Passives are far more common in Turkish than English; impersonal passives ('Burada sigara içilmez' 'No smoking here') are everywhere on signs.",
+      ex: [
+        { tr: "Kapı açıldı.", en: "The door was opened / opened." },
+        { tr: "Kitap Ahmet tarafından yazıldı.", en: "The book was written by Ahmet." },
+        { tr: "Burada Türkçe konuşulur.", en: "Turkish is spoken here.", note: "impersonal" }
+      ],
+      edge: [
+        "Some verbs use 'double passive' to mark especially impersonal/agentless events: <em>gidilir → gidiliniyor</em> (rare).",
+        "Reflexive (-in) and passive (-il) can look identical for some verbs — context distinguishes.",
+        "In academic Turkish, passive is the default voice — much more so than in English."
+      ]
+    },
+    {
+      id: "causative",
+      tr_title: "Ettirgen (-dir / -t)",
+      en_title: "Causative",
+      tr: "<code>-dir / -tir</code> (çok kullanılan) ve <code>-t</code> (ünlüyle veya <em>-l, -r</em> ile biten köklere) ettirgen oluşturur. <em>yemek</em> 'to eat' → <em>yedirmek</em> 'to feed'. <em>okumak</em> 'to read' → <em>okutmak</em> 'to make/teach to read'. Birden fazla katmanı olabilir: <em>öldürmek</em> 'to kill (cause to die)' → <em>öldürtmek</em> 'to have someone killed'.",
+      en: "The causative turns 'X does' into 'Y makes/has X do' — built on the verb itself. <code>-DIr</code> is the general workhorse; <code>-t</code> attaches after vowels or <em>l/r</em>; a handful of irregulars (<em>yemek → yedirmek</em>). Stacking is grammatical and common: <em>öldür-t-mek</em> 'to have someone killed'. English needs 'make/have/get/cause to' plus an embedded clause; Turkish needs one suffix.",
+      ex: [
+        { tr: "Çocuğa kitap okuttum.", en: "I made the child read a book." },
+        { tr: "Saçımı kestirdim.", en: "I had my hair cut." },
+        { tr: "Onu güldürdü.", en: "He made her laugh." }
+      ],
+      edge: [
+        "Causative and passive can stack: <em>yazdırıldı</em> 'was made to be written' / 'was had-written'.",
+        "Some verbs lexicalize the causative as a new verb: <em>bilmek</em> 'to know' → <em>bildirmek</em> 'to notify'.",
+        "Multiple causative layers are stylistic in spoken Turkish: <em>yıkattırttım</em> 'I had it had-washed' — funny but grammatical."
+      ]
+    },
+    {
+      id: "reflexive-reciprocal",
+      tr_title: "Dönüşlü ve İşteş Çatı",
+      en_title: "Reflexive & Reciprocal Voice",
+      tr: "<strong>Dönüşlü (-in)</strong>: eylem öznenin kendisine döner. <em>yıkanmak</em> 'to wash oneself', <em>giyinmek</em> 'to dress oneself'. <strong>İşteş (-iş)</strong>: karşılıklı yapma. <em>görüşmek</em> 'to see each other / to meet', <em>öpüşmek</em> 'to kiss each other'.",
+      en: "Two voice suffixes that English handles via separate pronouns ('-self', 'each other') are <strong>fully grammaticalized</strong> in Turkish. <code>-In</code> = reflexive: action returns to the subject (<em>yıkanmak</em> 'wash oneself'). <code>-Iş</code> = reciprocal/cooperative: mutual action (<em>görüşmek</em> 'meet each other'). Both can be lexicalized into new meanings: <em>bakışmak</em> 'to exchange glances'.",
+      ex: [
+        { tr: "Aynada kendimi gördüm.", en: "I saw myself in the mirror." },
+        { tr: "Tarandı.", en: "She combed her hair.", note: "reflexive" },
+        { tr: "Yarın görüşürüz.", en: "We'll see each other tomorrow." },
+        { tr: "Çocuklar dövüştü.", en: "The kids fought (each other)." }
+      ],
+      edge: [
+        "Reflexive -in vs. passive -in: same form, different meaning, distinguished by valence/context.",
+        "Reciprocal often requires plural subject (<em>onlar bakıştı</em>) — but lexicalized cases ignore this.",
+        "Voice stacking order: reflexive/reciprocal → causative → passive. <em>giy-in-dir-il-di</em> 'was made to dress oneself'."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 7: ADJ & ADV ==============
+  { section: "7. Sıfat ve Zarf · Adjectives & Adverbs", icon: "🎨", items: [
+    {
+      id: "adjectives",
+      tr_title: "Sıfatlar",
+      en_title: "Adjectives",
+      tr: "Sıfatlar Türkçede çekimsizdir: ne sayıya ne cinse uyarlar. İsmin önüne gelir: <em>güzel kız, güzel kızlar</em>. Tek başına kullanılırsa zamir olur: <em>güzeller geldi</em> 'the beautiful ones came'. Sıfat olarak kullanılan sözcükler aynı zamanda zarf olabilir: <em>iyi</em> 'good / well'.",
+      en: "Adjectives are <strong>invariant</strong>: no agreement with the noun, no plural form. They sit directly before the noun (<em>güzel kız</em> 'beautiful girl') and many can double as adverbs without modification (<em>iyi öğrenci / iyi öğreniyor</em> 'good student / learns well'). They can also stand alone as nouns by adding case suffixes (<em>iyiyi seçti</em> 'he chose the good one').",
+      ex: [
+        { tr: "büyük ev / büyük evler", en: "big house / big houses", note: "no change" },
+        { tr: "kırmızı bir araba", en: "a red car" },
+        { tr: "İyi konuştun.", en: "You spoke well.", note: "adj → adv" }
+      ],
+      edge: [
+        "Pre-numeric quantifiers stack: <em>bütün küçük kırmızı evler</em>.",
+        "Some adjectives only work attributively: <em>başka</em> 'other' can't be predicative without -dır.",
+        "Reduplication intensifies: <em>kıpkırmızı</em> 'bright red', <em>masmavi</em> 'deep blue'."
+      ]
+    },
+    {
+      id: "comparison",
+      tr_title: "Karşılaştırma (daha, en, kadar)",
+      en_title: "Comparison",
+      tr: "Türkçede ne <em>-er / -est</em> ne de düzensiz formlar var. <strong>daha</strong> 'more' karşılaştırma için (<em>daha büyük</em> 'bigger'); <strong>en</strong> 'most' üstünlük için (<em>en büyük</em> 'biggest'). 'Equality': <em>X kadar Y</em> 'as Y as X' (<em>baban kadar uzun</em> 'as tall as your dad'). Karşılaştırılan unsur ablative alır: <em>Ali Ahmet'ten uzun</em> 'Ali is taller than Ahmet'.",
+      en: "No comparative or superlative morphology — just two adverbs: <em>daha</em> 'more' and <em>en</em> 'most', placed before the adjective. The 'than' word is the <strong>ablative case</strong> on the standard of comparison: <em>Ali Ahmet-ten uzun</em> 'Ali is taller than Ahmet' (lit. 'Ali tall from Ahmet'). Equality is <em>X kadar Y</em>.",
+      ex: [
+        { tr: "Bu daha güzel.", en: "This is more beautiful." },
+        { tr: "En iyi öğrenci.", en: "The best student." },
+        { tr: "Senin kadar çalışkanım.", en: "I'm as hardworking as you." },
+        { tr: "Sınıfın en uzunuyum.", en: "I'm the tallest in the class.", note: "gen + en + adj-poss" }
+      ],
+      edge: [
+        "<em>daha</em> can intensify other adverbs: <em>daha çok</em> 'more', <em>daha az</em> 'less'.",
+        "Without explicit comparison, <em>daha</em> can mean 'still / yet': <em>daha gelmedi</em> 'he hasn't come yet'.",
+        "Superlative often requires possession of the 'group': <em>sınıfın en iyisi</em> 'the best of the class'."
+      ]
+    },
+    {
+      id: "participles",
+      tr_title: "Sıfat-fiiller (Ortaçlar)",
+      en_title: "Participles (Adjectivized Verbs)",
+      tr: "Türkçede fiilden sıfat yapmak için dört ana ek: <strong>-an / -en</strong> (geniş, etken: <em>okuyan adam</em> 'the reading man'), <strong>-dik</strong> (geçmiş, nesne odaklı: <em>okuduğum kitap</em> 'the book I read'), <strong>-acak</strong> (gelecek: <em>okuyacağım kitap</em> 'the book I will read'), <strong>-miş</strong> (durum/sonuç: <em>okumuş adam</em> 'a learned man / one who has read').",
+      en: "Turkish forms relative-clause-like adjectivals using four participle suffixes. These are also how Turkish builds <strong>relative clauses</strong> — there's no equivalent of 'who/which/that'. <code>-(y)An</code>: subject-headed, 'who/that VERBs' (<em>gelen adam</em> 'the man who came'). <code>-DIK</code>: object/oblique-headed past/general (<em>okuduğum kitap</em> 'the book I read'). <code>-(y)EcEK</code>: object/oblique future (<em>okuyacağım kitap</em>). <code>-mIş</code>: stative participle (<em>kırılmış cam</em> 'broken glass').",
+      ex: [
+        { tr: "Konuşan kadın annem.", en: "The woman who is speaking is my mom." },
+        { tr: "Yazdığım mektup.", en: "The letter I wrote." },
+        { tr: "Gideceğimiz şehir.", en: "The city we will go to." },
+        { tr: "Pişmiş yemek.", en: "Cooked food." }
+      ],
+      edge: [
+        "<em>-DIK</em> takes a possessive matching the subject of the relative clause: <em>okuduğ-um</em>, <em>okuduğ-un</em>, <em>okuduğ-u</em>…",
+        "Object of a <em>-DIK</em> clause is the head noun; the original subject becomes possessor.",
+        "Mixing them up is the #1 'tell' that Turkish was learned later: <em>okuyan kitap</em> ≠ <em>okuduğum kitap</em>."
+      ],
+      contrast: "<b>English</b>: 'the book <u>that I read</u>'. <b>Turkish</b>: <em>okuduğ-um kitap</em> — the clause becomes an adjective in front of the noun. This is the heart of complex Turkish."
+    },
+    {
+      id: "adverbs",
+      tr_title: "Zarflar",
+      en_title: "Adverbs",
+      tr: "Türkçede zarflar genelde değişmez. <strong>Zaman</strong> (dün, bugün, yarın, sonra, önce), <strong>yer</strong> (burada, orada, yukarı), <strong>tarz</strong> (yavaş, hızlı — sıfattan), <strong>derece</strong> (çok, biraz, oldukça), <strong>sıklık</strong> (her zaman, bazen, hiç). <em>-ce / -ca</em> eki sıfattan zarf üretir: <em>açıkça</em> 'clearly', <em>insanca</em> 'humanely'.",
+      en: "Most adverbs are bare lexical items (not derived from adjectives like English '-ly'). Time, place, manner, degree, frequency — all separate words: <em>dün</em> 'yesterday', <em>çok</em> 'very/much', <em>her zaman</em> 'always'. The suffix <code>-CA</code> turns some adjectives into manner adverbs (<em>açık → açıkça</em> 'clearly'), and many adjectives are simply reused unchanged (<em>hızlı koşmak</em> 'to run fast').",
+      ex: [
+        { tr: "Çok hızlı konuşuyor.", en: "She speaks very fast." },
+        { tr: "Dün geldim.", en: "I came yesterday." },
+        { tr: "Bunu açıkça söyledi.", en: "She said it clearly.", note: "-ce derivation" }
+      ],
+      edge: [
+        "<em>çok</em> covers both 'very' (with adj) and 'a lot' (with verb): <em>çok güzel / çok severim</em>.",
+        "Frequency adverbs often allow position flexibility: <em>her zaman gelir / o her zaman gelir</em>.",
+        "Some adverbs require negation: <em>hiç</em> 'never / at all' must occur with a negated verb."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 8: POSTPOSITIONS ==============
+  { section: "8. Edatlar (Sondan-bağlayıcılar) · Postpositions", icon: "🧷", items: [
+    {
+      id: "postpositions",
+      tr_title: "Edatlar (Sonradan Gelenler)",
+      en_title: "Postpositions",
+      tr: "İngilizce 'preposition' kullanır ('with you'), Türkçe ise <strong>postposition</strong> kullanır: kelime sondadır ('seninle' = 'sen + ile'). Önemli edatlar: <em>ile</em> 'with', <em>için</em> 'for', <em>gibi</em> 'like', <em>kadar</em> 'as much as / until', <em>göre</em> 'according to', <em>sonra</em> 'after', <em>önce</em> 'before'. Her edatın istediği hâl belli: <em>için</em> genitive ister (<em>senin için</em>), <em>göre</em> dative (<em>bana göre</em>).",
+      en: "Where English puts 'with', 'for', 'after' BEFORE the noun, Turkish puts equivalents AFTER. Each postposition demands a specific case on its complement: <em>ile</em> (with) → nominative/possessive; <em>için</em> (for) → genitive for pronouns/nominative for nouns; <em>göre</em> (according to) → dative; <em>sonra</em> (after) → ablative. This is a major writer's tool: postpositions enrich case meanings beyond the six core ones.",
+      ex: [
+        { tr: "Seninle gelirim.", en: "I'll come with you." },
+        { tr: "Senin için yaptım.", en: "I did it for you." },
+        { tr: "Bana göre yanlış.", en: "In my opinion, it's wrong." },
+        { tr: "Yemekten sonra gideriz.", en: "We'll go after the meal." }
+      ],
+      edge: [
+        "<em>ile</em> cliticizes to vowel-final stems as <em>-yla / -yle</em>: <em>arabayla</em> 'with the car / by car'.",
+        "<em>için</em> with verbs needs infinitive or participial: <em>gelmek için</em> 'in order to come', <em>geldiğin için</em> 'because you came'.",
+        "<em>kadar</em> has many meanings: comparison ('as'), extent ('until'), approximation ('about')."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 9: COMPLEX CLAUSES ==============
+  { section: "9. Karmaşık Yapılar · Complex Clauses", icon: "🌿", items: [
+    {
+      id: "verbal-nouns",
+      tr_title: "İsim-fiiller (Adlaştırma)",
+      en_title: "Verbal Nouns (Nominalization)",
+      tr: "Üç adlaştırma eki: <code>-mek/-mak</code> (mastar, somut: 'okumak bir zevk' 'reading is a pleasure'), <code>-me/-ma</code> (adlaştırılmış fiil, iyelik alır: 'gelmen' 'your coming'), <code>-iş/-ış</code> (eylemin tarzı/biçimi: 'gülüş' 'a smile / way of smiling'). İngilizce bunları 'to V', 'V-ing', '(the) act of V-ing' diye ayırır.",
+      en: "Where English uses gerunds ('reading'), infinitives ('to read'), and abstract nouns ('the reading of'), Turkish has three distinct nominalizers. <code>-mEk</code>: bare infinitive, often subject/object of another verb. <code>-mE</code>: a 'fact-/event-' nominalization, takes possessive endings indicating who does it (<em>gelmen</em> 'your coming'). <code>-Iş</code>: 'manner/instance' nominalization (<em>gülüş</em> 'a smile', <em>bakış</em> 'a look').",
+      ex: [
+        { tr: "Yüzmek sağlıklıdır.", en: "Swimming is healthy." },
+        { tr: "Gelmeni istiyorum.", en: "I want you to come.", note: "-mE + poss" },
+        { tr: "Tatlı bir bakış.", en: "A sweet look." }
+      ],
+      edge: [
+        "<em>-mE</em> + accusative + verbs of perception/wanting: <em>geldiğini gördüm</em> ('I saw that he came') — uses <em>-DIK</em>, not -mE.",
+        "<em>-mEk</em> vs. <em>-mE</em> with the same matrix verb often picks different complements: <em>okumak istiyorum</em> 'I want to read' vs. <em>okumamı istiyorum</em> '*' (ungrammatical with same subject)."
+      ]
+    },
+    {
+      id: "dik-clauses",
+      tr_title: "-dik / -ecek Yan Cümleleri",
+      en_title: "-DIK / -EcEK Clauses",
+      tr: "Türkçenin <strong>'that-cümleleri'</strong>. Bildirme fiilleri (söylemek, bilmek, sanmak, görmek, duymak) çoğunlukla bunlarla işler. <em>Onun geldiğini biliyorum</em> 'I know that he came'. Yapı: özne genitive + fiil + -dik/-ecek + iyelik + cümlenin gerektirdiği hâl. Geçmiş/genel için -dik, gelecek için -ecek.",
+      en: "These are Turkish's main way to embed full clauses as objects of verbs of saying, knowing, seeing, thinking. Structure: subject in <strong>genitive</strong>, verb + <strong>-DIK</strong> (past/general) or <strong>-(y)EcEK</strong> (future) + <strong>possessive</strong> agreeing with the subject + case suffix the matrix verb demands. <em>Ali'nin geldiğini biliyorum</em> 'I know that Ali came'. Once this clicks, complex Turkish opens up.",
+      ex: [
+        { tr: "Ali'nin geldiğini gördüm.", en: "I saw that Ali came." },
+        { tr: "Yarın yağmur yağacağını söylediler.", en: "They said it'll rain tomorrow." },
+        { tr: "Senin haklı olduğunu biliyorum.", en: "I know you're right." }
+      ],
+      edge: [
+        "Subject case is <strong>genitive</strong>, not nominative — easy mistake.",
+        "If same subject as matrix, can use bare infinitive instead: <em>gelmek istiyorum</em> not <em>gelmemi istiyorum</em>.",
+        "Negation slots before -DIK: <em>gelmediğini</em> 'that he didn't come'.",
+        "Question word inside: <em>nereden geldiğini bilmiyorum</em> 'I don't know where he came from'."
+      ]
+    },
+    {
+      id: "adverbial-clauses",
+      tr_title: "Zarf-fiiller (Bağ-fiiller)",
+      en_title: "Adverbial Clauses (Converbs)",
+      tr: "Eylemleri 'zarflaştıran' ekler. <strong>-ince</strong> 'when' (gelince 'when he came'), <strong>-erek</strong> 'by V-ing / while V-ing' (koşarak 'by running'), <strong>-ip</strong> 'and then' (gelip 'come and then'), <strong>-meden</strong> 'without V-ing / before V-ing' (gelmeden 'without coming'), <strong>-dikçe</strong> 'as long as / whenever' (geldikçe 'as he keeps coming').",
+      en: "Turkish has a rich set of 'converbs' — verb forms that act as adverbial clauses, often replacing English subordinators. <code>-(y)IncE</code> 'when/upon V-ing'; <code>-(y)ErEk</code> 'by V-ing / while V-ing' (manner); <code>-(y)Ip</code> 'and then' (sequential, same subject); <code>-mEdEn</code> 'without/before V-ing'; <code>-DIkçE</code> 'as long as / whenever'. They're efficient and flexible — a writer's playground.",
+      ex: [
+        { tr: "Eve gelince yemek yedim.", en: "When I got home, I ate." },
+        { tr: "Gülerek konuştu.", en: "She spoke while laughing." },
+        { tr: "Kapıyı açıp içeri girdi.", en: "He opened the door and went in." },
+        { tr: "Sormadan gitti.", en: "He left without asking." }
+      ],
+      edge: [
+        "<em>-Ip</em> requires same subject across the two clauses; <em>-erek</em> usually too.",
+        "<em>-IncE</em> can have a different subject — that's why it's so common.",
+        "<em>-DIğI zaman / -DIğIndE</em> are alternative 'when' constructions, more explicit."
+      ]
+    },
+    {
+      id: "reported-speech",
+      tr_title: "Dolaylı Anlatım",
+      en_title: "Reported Speech",
+      tr: "Türkçede dolaylı anlatımın iki yolu var: <strong>(1) Tam alıntı</strong>: 'X dedi'/'X diyor' ile (\"Geliyorum,\" dedi). <strong>(2) Dolaylı</strong>: -dik/-ecek + iyelik + ki (Geldiğini söyledi). İngilizcedeki backshift (said → had said) yoktur; zaman olduğu gibi kalır. <em>diye</em> hem 'saying' hem 'so that' hem 'thinking that' anlamına gelir — çok-amaçlı bir kelime.",
+      en: "Turkish reported speech rarely backshifts tenses the way English does. Two main strategies: <strong>direct quote</strong> + <em>dedi/diyor</em>, and <strong>indirect</strong> via <em>-DIK/-EcEK</em> clauses (see previous topic). The conjunction <em>diye</em> is a swiss-army knife: 'saying that', 'so that', 'because', 'as'. Modern journalism uses the <em>-miş</em> evidential to mark unverified claims — a built-in 'allegedly'.",
+      ex: [
+        { tr: "\"Yarın geleceğim,\" dedi.", en: "\"I'll come tomorrow,\" he said.", note: "direct" },
+        { tr: "Yarın geleceğini söyledi.", en: "He said he'd come tomorrow.", note: "indirect" },
+        { tr: "Geç kalmayayım diye koştum.", en: "I ran so I wouldn't be late." }
+      ],
+      edge: [
+        "Reported imperatives use <em>-mEsI</em> + matrix verb: <em>gelmesini söyledim</em> 'I told him to come'.",
+        "<em>diye</em> + question word: <em>nereye gidiyorsun diye sordum</em> 'I asked where he was going'.",
+        "<em>-miş</em> in headlines: <em>Başbakan istifa etmiş</em> 'The PM has (reportedly) resigned'."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 10: WORD ORDER & DISCOURSE ==============
+  { section: "10. Söz Dizimi ve Söylem · Word Order & Discourse", icon: "🎯", items: [
+    {
+      id: "word-order",
+      tr_title: "Söz Dizimi (SOV)",
+      en_title: "Word Order (SOV)",
+      tr: "Türkçenin nötr söz dizimi <strong>Özne–Nesne–Yüklem</strong>: <em>Ali kitabı okudu</em>. Ama Türkçe ekleyişle çalıştığı için sıra <strong>esnek</strong>: anlam değişmez, ama <strong>vurgu/odak</strong> değişir. Fiilin hemen önündeki öğe en güçlü vurguyu alır. Konuşurken bu, virgülün ve italiklerin yerini tutar.",
+      en: "Default order is <strong>Subject–Object–Verb</strong> (SOV), but because cases tell you who's doing what, you can reorder freely without losing meaning. The catch: word order encodes <strong>information structure</strong> — the slot <em>immediately before the verb</em> is the focus position. English uses 'it-clefts', stress, and word choice ('It was ALI who…'); Turkish just moves the element next to the verb.",
+      ex: [
+        { tr: "Ali kitabı okudu.", en: "Ali read the book.", note: "neutral" },
+        { tr: "Kitabı Ali okudu.", en: "It was Ali who read the book.", note: "focus on Ali" },
+        { tr: "Ali okudu kitabı.", en: "Ali READ the book (background: book).", note: "right-dislocation" }
+      ],
+      edge: [
+        "Topics often appear at the very beginning: <em>kitabı Ali okudu</em> can read as 'as for the book, Ali read it'.",
+        "Verb-fronting (verb first) signals exclamation or narrative drama: <em>geldi sonunda!</em> 'finally she came!'",
+        "Question particle position interacts: focus + <em>mi</em> tells you exactly what's being asked."
+      ],
+      contrast: "<b>English</b> uses intonation and clefts to highlight; <b>Turkish</b> shuffles word order. For an English writer learning Turkish: stop reaching for emphatic auxiliaries and learn to <em>place</em> the focused word before the verb."
+    },
+    {
+      id: "var-yok",
+      tr_title: "Var / Yok (Varlık Bildirme)",
+      en_title: "Existential 'var / yok'",
+      tr: "İngilizcedeki 'there is / there are' Türkçede <em>var</em> ('exists') ve olumsuzu <em>yok</em> ('does not exist') ile yapılır. Sahip olma da bununla: <em>arabam var</em> 'I have a car' (lit. 'my car exists'). Tek başına yardımcı fiil yok — <em>olmak</em> birleşince zaman ekleri alır: <em>vardı, yoktu, olacak</em>.",
+      en: "There's no Turkish verb 'to have'. Possession and existence both use <em>var</em> ('there is/exists') and its negative <em>yok</em> ('there is not'). Possession = possessor in possessive form + <em>var</em>: <em>arabam var</em> 'I have a car' (literally 'my car exists'). Tenses are added by switching to the verb <em>olmak</em>: <em>vardı</em> 'there was', <em>olacak</em> 'there will be'.",
+      ex: [
+        { tr: "Masada kitap var.", en: "There's a book on the table." },
+        { tr: "Param yok.", en: "I have no money / I don't have money." },
+        { tr: "Eskiden burada bir cami vardı.", en: "There used to be a mosque here." }
+      ],
+      edge: [
+        "Possessive + var/yok is the standard way to say 'I have / I don't have' — burn this in.",
+        "<em>var mı?</em> 'is there?' / <em>yok mu?</em> 'isn't there?' for existential questions.",
+        "<em>var olmak</em> is a literary/abstract verb meaning 'to exist (philosophically)': <em>düşünüyorum, öyleyse varım</em>."
+      ]
+    },
+    {
+      id: "copula",
+      tr_title: "Ek-fiil (-dir / Zayıf Copula)",
+      en_title: "Copula & '-dir'",
+      tr: "Türkçede 'to be' fiili çoğu zaman <strong>yoktur</strong> — basit cümlede hiç fiil olmadan kurulur: <em>Ben öğretmenim</em> 'I am a teacher' (ben + öğretmen + im). Sadece kişi eki taşır. <strong>-dir</strong> eki bunun resmî/genelleştirici biçimidir: <em>İstanbul büyük bir şehirdir</em> 'Istanbul is a big city' (genel doğru/resmî). Konuşma dilinde 3. tekil için -dir genelde atılır.",
+      en: "Turkish has no separate verb 'to be' in the present tense. You glue person endings directly to the predicate: <em>öğretmenim</em> 'I am a teacher', <em>güzelsin</em> 'you are beautiful'. The optional <code>-DIr</code> suffix on 3rd person adds <strong>generic truth, formality, or assertion</strong> — used heavily in textbooks, news, and definitions, less in speech. Past 'was' uses the copular -DI: <em>öğretmendim</em> 'I was a teacher'.",
+      ex: [
+        { tr: "Ben Türk'üm.", en: "I'm Turkish." },
+        { tr: "Su iki hidrojen atomundan oluşur.", en: "Water consists of two hydrogen atoms.", note: "generic" },
+        { tr: "İstanbul büyüktür.", en: "Istanbul is big.", note: "formal/asserted" },
+        { tr: "O zaman çocuktum.", en: "I was a child then." }
+      ],
+      edge: [
+        "<em>-DIr</em> on a verb adds modal assurance: <em>gelmiştir</em> 'he must have come / surely has come'.",
+        "Spoken Turkish almost never uses <em>-dir</em> in conversation; written essays use it heavily — register marker.",
+        "<em>değil</em> negates copular sentences (see Negation): <em>öğretmen değilim</em> 'I'm not a teacher'."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 11: WORD FORMATION ==============
+  { section: "11. Sözcük Türetme · Word Formation", icon: "🧩", items: [
+    {
+      id: "derivational-suffixes",
+      tr_title: "Yapım Ekleri",
+      en_title: "Derivational Suffixes",
+      tr: "Türkçe sözcük yapımının kalbi: kökten yeni sözcükler üretmek için onlarca yapım eki. <strong>İsimden isim</strong>: -lik (göz-lük 'glasses'), -ci (taksi-ci 'taxi driver'), -li (Ankara-lı 'from Ankara'). <strong>İsimden fiil</strong>: -le (su-la-mak 'to water'), -leş (taş-laş-mak 'to petrify'). <strong>Fiilden isim</strong>: -gi/-gı (sevgi 'love'), -ci (yazıcı 'writer/printer'). <strong>Fiilden fiil</strong>: zaten çatı eklerinde (passive, causative, etc.).",
+      en: "Turkish builds vocabulary by chaining derivational suffixes — far more productively than English. Knowing ~20 suffixes lets you decode (and coin) hundreds of words. Top ones: <code>-lIk</code> (-ness, container, profession: <em>güzellik</em> 'beauty', <em>gözlük</em> 'glasses'); <code>-ci</code> (agent: <em>balıkçı</em> 'fisherman'); <code>-li</code> (with/-y: <em>tuzlu</em> 'salty', <em>İstanbullu</em> 'from Istanbul'); <code>-siz</code> (without/-less: <em>tuzsuz</em> 'saltless'); <code>-lE</code> (verbalizer: <em>başla-mak</em> 'to begin').",
+      ex: [
+        { tr: "kitap → kitap-çı → kitap-çı-lık", en: "book → bookseller → bookselling/bookshop business" },
+        { tr: "göz → göz-lük → göz-lük-çü", en: "eye → glasses → optician" },
+        { tr: "su → su-la-mak → su-lan-mak", en: "water → to water → to be watered" }
+      ],
+      edge: [
+        "Order matters: derivational suffixes come BEFORE inflectional ones (case, person).",
+        "<em>-lik</em> on adjectives = abstract noun (güzel-lik 'beauty'); on locations = container (tuz-luk 'saltshaker').",
+        "Modern coinages still use these productively: <em>bilgisayar</em> 'computer' = bilgi (info) + sayar (counter)."
+      ]
+    }
+  ]},
+
+  // ============== SECTION 12: EDGE CASES ==============
+  { section: "12. Edge Case'ler ve Stil · Edge Cases & Style", icon: "🎭", items: [
+    {
+      id: "vowel-drop",
+      tr_title: "Ünlü Düşmesi ve Genleşme",
+      en_title: "Vowel Drop & Vowel Insertion",
+      tr: "Bazı isimler ek alırken iç ünlüsünü düşürür: <em>ağız → ağzı</em> 'his mouth' (ı düştü), <em>burun → burnu</em> 'his nose', <em>oğul → oğlu</em> 'his son'. Tersine, bazı yabancı kökenli kelimeler ek alırken araya ünlü doldurur. Bu, ezberlemen gereken kısa bir liste.",
+      en: "A small but high-frequency closed class of nouns drops their final vowel when a vowel-initial suffix attaches: <em>ağız → ağzı</em>, <em>burun → burnu</em>, <em>oğul → oğlu</em>, <em>karın → karnı</em>, <em>gönül → gönlü</em>, <em>ömür → ömrü</em>. Most are body parts or core relational nouns. Conversely, some Arabic/Persian loans <em>insert</em> a vowel on inflection. There's no rule — just learn the list.",
+      ex: [
+        { tr: "ağız → ağzım", en: "mouth → my mouth" },
+        { tr: "oğul → oğlu", en: "son → his son" },
+        { tr: "şehir → şehri", en: "city → his city / the city's" }
+      ],
+      edge: [
+        "Common droppers: ağız, burun, gönül, karın, oğul, omuz, ömür, akıl, sabır, fikir, ilim, isim, şehir, resim, hüküm.",
+        "Doesn't apply if the suffix starts with a consonant: <em>burun-da</em> 'in the nose', not <em>burunda → burnda</em>."
+      ]
+    },
+    {
+      id: "ki",
+      tr_title: "ki — Üç Farklı 'ki'",
+      en_title: "The Three 'ki's",
+      tr: "Türkçenin en tehlikeli kelimesi. <strong>(1) Bağlaç 'ki'</strong> (ayrı yazılır, Farsça kökenli, 'that' anlamında): <em>biliyorum ki…</em> 'I know that…'. <strong>(2) Sıfat eki '-ki'</strong> (bitişik, ünlü uyumuna girmez!): <em>masadaki kitap</em> 'the book on the table'. <strong>(3) Aitlik 'ki'</strong> (bitişik, iyelik benzeri): <em>benimki</em> 'mine'.",
+      en: "The single 'ki' is three different things and a famous trap: <strong>(1) Conjunction <em>ki</em></strong> (separate word, Persian-origin): 'that, so that, because' — <em>biliyorum ki geldi</em> 'I know that he came'. <strong>(2) Locative/temporal adjectivizer <code>-ki</code></strong> (attached, does NOT undergo harmony — always -ki): <em>masadaki kitap</em> 'the book on the table', <em>dünkü gazete</em> 'yesterday's paper'. <strong>(3) Pronominal <code>-ki</code></strong> (attached after genitive): <em>benimki</em> 'mine', <em>seninki</em> 'yours'. Mixing these up = instantly foreign-sounding.",
+      ex: [
+        { tr: "Sandım ki gelmeyecek.", en: "I thought (that) he wouldn't come.", note: "conjunction" },
+        { tr: "Buradaki kitaplar.", en: "The books that are here.", note: "adjectivizer" },
+        { tr: "Bu araba benim, o ise seninki.", en: "This car is mine, that one is yours.", note: "pronominal" }
+      ],
+      edge: [
+        "Spelling check: conjunction 'ki' is ALWAYS separate; the other two are ALWAYS attached.",
+        "The adjectivizer -ki violates vowel harmony — it's the most famous exception: <em>akşamki</em> (not akşamkı).",
+        "Doubled in: <em>benimkinde</em> 'in mine' = ben-im-ki-n-de."
+      ]
+    },
+    {
+      id: "register",
+      tr_title: "Yazı Dili vs. Konuşma Dili",
+      en_title: "Written vs. Spoken Register",
+      tr: "Türkçe yazı dili konuşma dilinden belirgin biçimde farklıdır. Yazıda <em>-dir</em>, uzun ek zincirleri, edilgen yapı baskındır. Konuşmada kısaltmalar (<em>geliyor → geliyo</em>, <em>yapacağım → yapcam</em>), <em>-ki</em> bağlaçları, ünlemler. Resmî yazıda Arapça/Farsça köklü kelimeler artar; günlük dilde halk diline yakın 'öz Türkçe' tercih edilir.",
+      en: "Spoken Turkish drops final consonants and full vowels aggressively (<em>yapacağım → yapcam</em>, <em>geliyor → geliyo</em>), reorders for spoken focus, and avoids <em>-dir</em>. Written Turkish — especially academic/journalistic — uses long suffix chains, passives, and Ottoman-era loanwords. The 'literary' register feels closer to legal English; the everyday register feels close to spoken English. As a writer, this is your single biggest stylistic dial.",
+      ex: [
+        { tr: "yapcam → yapacağım", en: "informal → standard 'I will do (it)'" },
+        { tr: "Geldin mi → Geldin mi? / Geldin miydi?", en: "speech vs. nuanced written" },
+        { tr: "şehir → kent (Öztürkçe alternative)", en: "city — Ottoman vs. neologism" }
+      ],
+      edge: [
+        "Email/professional Turkish leans formal: <em>iyi günler dilerim</em>, '-iniz' polite forms, <em>siz</em>.",
+        "Literary fiction varies widely — Orhan Pamuk uses long Ottoman-flavored sentences; Sait Faik uses sparse spoken-feel prose.",
+        "Translations from English often over-passive — recognize this when you see clunky Turkish."
+      ]
+    },
+    {
+      id: "frozen-idioms",
+      tr_title: "Kalıplaşmış İfadeler ve Hâl Tuzakları",
+      en_title: "Frozen Idioms & Case Traps",
+      tr: "Bazı fiil + hâl birleşmeleri ezberlenmelidir. <strong>Dative isteyenler</strong>: bakmak, başlamak, gitmek, bayılmak, inanmak, sormak. <strong>Ablative isteyenler</strong>: korkmak, hoşlanmak, nefret etmek, vazgeçmek. <strong>Accusative</strong>: aramak (someone) ama <em>aramaya gitmek</em> (dative when goal). Kalıplar: <em>kafa yormak</em>, <em>aklı başına gelmek</em>, <em>içine doğmak</em>.",
+      en: "Many Turkish verbs idiosyncratically require a non-obvious case on their object. Some 'dative-verbs': <em>bakmak</em> (look at + dat), <em>başlamak</em> (begin + dat), <em>inanmak</em> (believe + dat). 'Ablative-verbs': <em>korkmak</em> (fear + abl), <em>nefret etmek</em> (hate + abl), <em>hoşlanmak</em> (enjoy + abl). Memorize these as verb+case pairs the way you memorize English phrasal verbs. Frozen idioms abound: <em>kafa yormak</em> 'to rack one's brain', <em>içine doğmak</em> 'to have a feeling/intuition'.",
+      ex: [
+        { tr: "Köpekten korkuyorum.", en: "I'm afraid of the dog.", note: "ablative, not 'köpekten'" },
+        { tr: "Sana inanıyorum.", en: "I believe you.", note: "dative" },
+        { tr: "Filme bayıldım.", en: "I loved the movie.", note: "dative for 'to adore'" }
+      ],
+      edge: [
+        "<em>aramak</em> takes ACC for the searched-for (<em>kediyi aradım</em> 'I looked for the cat') but DAT for direction (<em>annene git, ona soruver</em>).",
+        "<em>etmek</em>-compounds often inherit the case: <em>dikkat etmek</em> + dative ('pay attention to').",
+        "Body-idiom verbs are wildly figurative; never literal — <em>çenesi düşmek</em> 'to be chatty' (lit. 'one's chin to fall')."
+      ]
+    },
+    {
+      id: "stylistic-tools",
+      tr_title: "Yazarın Aleti: Türkçe'ye Özgü Stil İmkânları",
+      en_title: "Stylistic Tools Unique to Turkish",
+      tr: "Yazar olarak Türkçenin sana sunduğu, İngilizcede tam karşılığı olmayan araçlar: <strong>(1)</strong> -miş ile mesafe yaratma (rivayet, ironi), <strong>(2)</strong> uzun ek zincirleriyle tek kelimede film izletmek (<em>Çekoslovakyalılaştıramadıklarımızdan mısınız?</em>), <strong>(3)</strong> şu/o ayrımıyla bakışı yönlendirmek, <strong>(4)</strong> SOV esnekliği ile vurguyu mühendislemek, <strong>(5)</strong> -dir ile retorik kesinlik, <strong>(6)</strong> reduplication ile yoğunluk (<em>upuzun</em>, <em>masmavi</em>), <strong>(7)</strong> ses sembolizmi (<em>cıvıl cıvıl</em>, <em>şıpır şıpır</em>).",
+      en: "As a bilingual writer, here's what Turkish gives you that English doesn't: <strong>(1)</strong> Evidentiality (<em>-miş</em>): write whole paragraphs that are formally non-committal — perfect for irony, gossip, dreams, unreliable narrators. <strong>(2)</strong> Word-internal cinema: stack suffixes to compress a whole subordinate clause (<em>okutturamadıklarımdan</em>). <strong>(3)</strong> Three-way deixis (<em>bu/şu/o</em>) to choreograph what the reader 'looks at'. <strong>(4)</strong> Free SOV reordering as built-in focus marking. <strong>(5)</strong> <em>-dir</em> as a register dial — rhetorical certainty without italics. <strong>(6)</strong> Intensifier reduplication (<em>kıpkırmızı</em>) — visual color words English can't match. <strong>(7)</strong> Onomatopoeic reduplication (<em>cıvıl cıvıl</em>, <em>şıpır şıpır</em>) — sound-symbolic vocabulary.",
+      ex: [
+        { tr: "Annem, beni okula göndermek istemiyormuş.", en: "Apparently my mom doesn't want to send me to school.", note: "evidential distancing" },
+        { tr: "Pencereden dışarı bir baktım, kar yağıyor!", en: "I glanced out the window — it's snowing!", note: "narrative present from -di" },
+        { tr: "Mavi mi mavi bir deniz.", en: "A sea so very blue.", note: "intensifier" }
+      ],
+      edge: [
+        "Mixing evidential and definite past in narrative is a known literary technique (Tanpınar, Tezer Özlü).",
+        "Bilingual writers (Pamuk in English vs. Turkish) report Turkish lets them say 'softer truths' — that's evidentiality doing work.",
+        "Translation note: when rendering English fiction into Turkish, choosing -di vs. -miş is the single biggest stylistic decision."
+      ],
+      contrast: "<b>Bottom line for English speakers</b>: Turkish lets you encode <em>information source, certainty, focus, deixis, and intensity</em> into morphology. To write well in Turkish you don't translate — you re-engineer the sentence around what Turkish marks grammatically that English marks lexically."
+    }
+  ]}
+];
+
+// ============== APP LOGIC ==============
+const STORAGE_KEY = 'tr-grammar-atlas-v1';
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { progress = {}; }
+
+const content = document.getElementById('content');
+const navList = document.getElementById('navList');
+
+function getStatus(id) { return progress[id] || 0; }
+function setStatus(id, s) {
+  progress[id] = s;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  render();
+}
+
+function buildTopic(t) {
+  const status = getStatus(t.id);
+  const examplesHtml = (t.ex || []).map(e => `
+    <div class="ex">
+      <span class="tr-text">${e.tr}</span> · <span class="en-text">${e.en}</span>
+      ${e.note ? `<span class="gloss">— ${e.note}</span>` : ''}
+    </div>`).join('');
+
+  const edgeHtml = t.edge && t.edge.length ? `
+    <div class="edge">
+      <div class="edge-label">⚠ Edge cases & gotchas</div>
+      <ul>${t.edge.map(e => `<li>${e}</li>`).join('')}</ul>
+    </div>` : '';
+
+  const contrastHtml = t.contrast ? `
+    <div class="contrast">
+      <div class="contrast-label">EN ↔ TR contrast</div>
+      ${t.contrast}
+    </div>` : '';
+
+  return `
+    <div class="topic" data-id="${t.id}" data-status="${status}">
+      <div class="topic-head">
+        <h3 class="topic-title">${t.tr_title}<span class="en-name">· ${t.en_title}</span></h3>
+        <div class="status-toggle" data-id="${t.id}">
+          <button class="s0 ${status===0?'active':''}" data-s="0">Yeni</button>
+          <button class="s1 ${status===1?'active':''}" data-s="1">Çalışıldı</button>
+          <button class="s2 ${status===2?'active':''}" data-s="2">Pekişti</button>
+        </div>
+      </div>
+      <div class="lang-block tr">
+        <div class="lang-label">🇹🇷 Türkçe</div>
+        <p>${t.tr}</p>
+      </div>
+      <div class="lang-block en">
+        <div class="lang-label">🇬🇧 English</div>
+        <p>${t.en}</p>
+      </div>
+      ${examplesHtml ? `<div class="examples"><h4>Örnekler · Examples</h4>${examplesHtml}</div>` : ''}
+      ${contrastHtml}
+      ${edgeHtml}
+    </div>`;
+}
+
+function buildSection(s) {
+  return `
+    <div class="section-header" id="sec-${s.section.replace(/[^a-z0-9]/gi,'-')}">
+      <h2>${s.icon} ${s.section}</h2>
+      <div class="section-meta">${s.items.length} konu · topic${s.items.length>1?'s':''}</div>
+    </div>
+    ${s.items.map(buildTopic).join('')}`;
+}
+
+function buildNav() {
+  return TOPICS.map(s => `
+    <div class="nav-section">
+      <div class="nav-section-title">${s.icon} ${s.section}</div>
+      ${s.items.map(t => {
+        const st = getStatus(t.id);
+        return `<div class="nav-item" data-target="${t.id}"><span class="dot s${st} nav-dot"></span><span>${t.tr_title}</span></div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+function updateProgressSummary() {
+  const all = TOPICS.flatMap(s => s.items);
+  const c0 = all.filter(t => getStatus(t.id) === 0).length;
+  const c1 = all.filter(t => getStatus(t.id) === 1).length;
+  const c2 = all.filter(t => getStatus(t.id) === 2).length;
+  const total = all.length;
+  const pct = Math.round(((c1 * 0.5 + c2) / total) * 100);
+  document.getElementById('cnt0').textContent = c0;
+  document.getElementById('cnt1').textContent = c1;
+  document.getElementById('cnt2').textContent = c2;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressBar').style.width = pct + '%';
+  const chip = document.getElementById('topicCountChip');
+  if (chip) chip.textContent = total + ' konu · topics';
+}
+
+function render() {
+  content.innerHTML = TOPICS.map(buildSection).join('');
+  navList.innerHTML = buildNav();
+  updateProgressSummary();
+  applyFilters();
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchBox').value.toLowerCase().trim();
+  const filter = document.querySelector('.filter-tabs button.active').dataset.filter;
+  document.querySelectorAll('.topic').forEach(el => {
+    const id = el.dataset.id;
+    const status = parseInt(el.dataset.status);
+    const text = el.textContent.toLowerCase();
+    const matchSearch = !search || text.includes(search);
+    const matchFilter = filter === 'all' || parseInt(filter) === status;
+    el.classList.toggle('hidden', !(matchSearch && matchFilter));
+  });
+  document.querySelectorAll('.nav-item').forEach(el => {
+    const t = TOPICS.flatMap(s => s.items).find(t => t.id === el.dataset.target);
+    if (!t) return;
+    const status = getStatus(t.id);
+    const text = (t.tr_title + ' ' + t.en_title).toLowerCase();
+    const matchSearch = !search || text.includes(search);
+    const matchFilter = filter === 'all' || parseInt(filter) === status;
+    el.classList.toggle('hidden', !(matchSearch && matchFilter));
+  });
+}
+
+// Event listeners
+document.addEventListener('click', e => {
+  const sBtn = e.target.closest('.status-toggle button');
+  if (sBtn) {
+    const id = sBtn.parentElement.dataset.id;
+    setStatus(id, parseInt(sBtn.dataset.s));
+    return;
+  }
+  const nav = e.target.closest('.nav-item');
+  if (nav) {
+    const el = document.querySelector(`.topic[data-id="${nav.dataset.target}"]`);
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    return;
+  }
+  const filterBtn = e.target.closest('.filter-tabs button');
+  if (filterBtn) {
+    document.querySelectorAll('.filter-tabs button').forEach(b => b.classList.remove('active'));
+    filterBtn.classList.add('active');
+    applyFilters();
+  }
+});
+
+document.getElementById('searchBox').addEventListener('input', applyFilters);
+
+const THEMES = ['', 'theme-light', 'theme-forest', 'theme-sunset'];
+const THEME_LABELS = { '': '🌙 Dark', 'theme-light': '☀️ Light', 'theme-forest': '🌲 Forest', 'theme-sunset': '🌅 Sunset' };
+function applyTheme(t) {
+  THEMES.forEach(c => { if (c) document.body.classList.remove(c); });
+  if (t) document.body.classList.add(t);
+  document.getElementById('themeToggle').textContent = THEME_LABELS[t] || '🌙 Dark';
+  localStorage.setItem(STORAGE_KEY + '-theme', t);
+}
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const cur = THEMES.find(c => c && document.body.classList.contains(c)) || '';
+  const next = THEMES[(THEMES.indexOf(cur) + 1) % THEMES.length];
+  applyTheme(next);
+});
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const data = { progress, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'turkish-grammar-progress.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('Tüm ilerleme silinecek. Emin misin?')) {
+    progress = {};
+    localStorage.removeItem(STORAGE_KEY);
+    render();
+  }
+});
+
+// Init theme
+const savedTheme = localStorage.getItem(STORAGE_KEY + '-theme');
+applyTheme(savedTheme !== null ? savedTheme : '');
+
+render();
+</script>
+</body>
+</html>

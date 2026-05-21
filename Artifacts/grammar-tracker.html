@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrammarPath · İngilizce Dilbilgisi Takip</title>
+<style>
+:root{--bg:#0f0f14;--bg2:#16161f;--bg3:#1e1e2e;--card:#1a1a28;--card-hover:#22223a;--border:#2a2a40;--text:#e8e8f0;--text2:#9090b0;--text3:#5a5a7a;--orange:#f97316;--purple:#a855f7;--blue:#3b82f6;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--teal:#14b8a6;--pink:#ec4899;--radius:14px;--radius-sm:8px;--shadow:0 4px 24px rgba(0,0,0,.4)}
+[data-theme=light]{--bg:#f0f0f8;--bg2:#e8e8f4;--bg3:#ddddf0;--card:#fff;--card-hover:#f5f5ff;--border:#d0d0e8;--text:#1a1a2e;--text2:#4a4a6a;--text3:#8a8aaa;--shadow:0 4px 24px rgba(0,0,0,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Verdana,Geneva,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+.navbar{position:sticky;top:0;z-index:100;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;gap:12px;height:58px}
+.nav-brand{font-size:16px;font-weight:700;color:var(--orange);letter-spacing:-.5px;flex-shrink:0}
+.nav-brand span{color:var(--purple)}
+.nav-links{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-btn{padding:6px 10px;border:none;background:none;color:var(--text2);font-family:Verdana,sans-serif;font-size:11px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:all .2s}
+.nav-btn:hover,.nav-btn.active{background:var(--bg3);color:var(--text)}
+.nav-btn.active{color:var(--orange);font-weight:700}
+.nav-right{display:flex;gap:6px;flex-shrink:0}
+.icon-round{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.icon-round:hover{background:var(--card-hover)}
+.page{display:none;padding:18px;max-width:1100px;margin:0 auto;width:100%}
+.page.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SEARCH */
+.search-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.85);padding:16px;flex-direction:column;gap:12px}
+.search-overlay.open{display:flex}
+.search-box{background:var(--bg2);border:2px solid var(--purple);border-radius:var(--radius);padding:11px 14px;display:flex;align-items:center;gap:8px}
+.search-box input{flex:1;background:none;border:none;outline:none;color:var(--text);font-family:Verdana,sans-serif;font-size:15px}
+.search-res{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow-y:auto;max-height:65vh}
+.search-item{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:10px}
+.search-item:hover{background:var(--card-hover)}
+.search-item:last-child{border-bottom:none}
+.search-close{align-self:flex-end;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 14px;border-radius:8px;cursor:pointer;font-family:Verdana,sans-serif;font-size:12px}
+
+/* DASHBOARD */
+.dash-header{margin-bottom:20px}
+.dash-header h1{font-size:20px;font-weight:700;margin-bottom:3px}
+.dash-header p{color:var(--text2);font-size:12px}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center;transition:transform .2s;cursor:default}
+.stat-card:hover{transform:translateY(-2px)}
+.stat-num{font-size:30px;font-weight:700;line-height:1}
+.stat-label{font-size:10px;color:var(--text2);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+.stat-card.c-orange .stat-num{color:var(--orange)}.stat-card.c-green .stat-num{color:var(--green)}.stat-card.c-blue .stat-num{color:var(--blue)}.stat-card.c-red .stat-num{color:var(--red)}.stat-card.c-purple .stat-num{color:var(--purple)}
+.progress-block{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px}
+.progress-block h3{font-size:12px;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px}
+.big-bar{height:14px;background:var(--bg3);border-radius:7px;overflow:hidden;margin-bottom:7px}
+.big-bar-fill{height:100%;border-radius:7px;background:linear-gradient(90deg,var(--orange),var(--purple));transition:width .7s ease}
+.prog-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:8px}
+.motivation{font-size:12px;color:var(--text2);font-style:italic;padding-top:6px;border-top:1px solid var(--border)}
+.dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:580px){.dash-cols{grid-template-columns:1fr}}
+.dash-col{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.dash-col h3{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+.mini-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s}
+.mini-row:last-child{border-bottom:none}
+.mini-row:hover{color:var(--orange)}
+.mini-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.mini-name{flex:1;font-size:11px}
+
+/* BADGES */
+.lv-badge{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;text-transform:uppercase}
+.lv-A1{background:#22c55e1a;color:var(--green);border:1px solid #22c55e33}
+.lv-A2{background:#14b8a61a;color:var(--teal);border:1px solid #14b8a633}
+.lv-B1{background:#3b82f61a;color:var(--blue);border:1px solid #3b82f633}
+.lv-B2{background:#a855f71a;color:var(--purple);border:1px solid #a855f733}
+.lv-C1{background:#f973161a;color:var(--orange);border:1px solid #f9731633}
+.lv-C2{background:#ef44441a;color:var(--red);border:1px solid #ef444433}
+.cat-badge{font-size:9px;padding:2px 6px;border-radius:4px;background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+
+/* TOPICS LIST */
+.filter-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;align-items:center}
+.filter-row input{flex:1;min-width:140px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Verdana,sans-serif;font-size:12px;outline:none}
+.filter-row input:focus{border-color:var(--purple)}
+.filter-sel{padding:7px 9px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Verdana,sans-serif;font-size:11px;cursor:pointer;outline:none}
+.filter-sel:focus{border-color:var(--purple)}
+.topic-list{display:flex;flex-direction:column;gap:8px}
+.topic-row{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.topic-row:hover{border-color:var(--purple);background:var(--card-hover);transform:translateX(3px)}
+.topic-row.is-done{border-left:4px solid var(--green)}
+.topic-row.is-review{border-left:4px solid var(--yellow)}
+.topic-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.topic-info{flex:1;min-width:0}
+.topic-head{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px}
+.topic-name{font-size:13px;font-weight:700}
+.topic-sub{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-btns{display:flex;gap:5px;flex-shrink:0}
+.sq-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s}
+.sq-btn:hover{background:var(--card-hover);color:var(--text)}
+.sq-btn.sq-done{background:#22c55e1a;border-color:var(--green);color:var(--green)}
+.sq-btn.sq-review{background:#eab3081a;border-color:var(--yellow);color:var(--yellow)}
+
+/* DETAIL */
+.back-btn{display:inline-flex;align-items:center;gap:5px;color:var(--text2);font-size:11px;cursor:pointer;margin-bottom:18px;padding:5px 9px;border-radius:7px;transition:all .2s}
+.back-btn:hover{background:var(--card);color:var(--text)}
+.detail-hero{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:16px;position:relative;overflow:hidden}
+.detail-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,var(--purple)15,transparent 70%);pointer-events:none}
+.detail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.detail-title{font-size:24px;font-weight:700;line-height:1.2}
+.detail-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.detail-btns{display:flex;gap:7px;flex-shrink:0}
+.action-btn{padding:7px 13px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:Verdana,sans-serif;font-size:11px;font-weight:700;transition:all .2s;display:flex;align-items:center;gap:5px}
+.btn-done{background:#22c55e1a;color:var(--green);border:1px solid var(--green)}
+.btn-done:hover,.btn-done.act{background:var(--green);color:#fff}
+.btn-review{background:#eab3081a;color:var(--yellow);border:1px solid var(--yellow)}
+.btn-review:hover,.btn-review.act{background:var(--yellow);color:#000}
+.detail-desc{font-size:13px;line-height:1.75;color:var(--text2)}
+.sec{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;animation:fadeIn .3s ease both}
+.sec h2{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px;display:flex;align-items:center;gap:5px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.struct-box{background:var(--bg3);border-radius:var(--radius-sm);padding:12px 14px;font-size:12px;line-height:1.9;border-left:3px solid var(--purple)}
+.note-box{margin-top:9px;padding:9px 13px;background:rgba(168,85,247,.08);border-radius:var(--radius-sm);border-left:3px solid var(--purple);font-size:11px;color:var(--text2)}
+.ex-list{display:flex;flex-direction:column;gap:9px}
+.ex-item{background:var(--bg3);border-radius:var(--radius-sm);padding:11px 13px;border-left:3px solid var(--blue)}
+.ex-en{font-size:13px;font-weight:700;margin-bottom:2px}
+.ex-tr{font-size:11px;color:var(--text2)}
+.ex-note{font-size:10px;color:var(--teal);margin-top:2px;font-style:italic}
+.prac-item{background:var(--bg3);border-radius:var(--radius-sm);padding:13px;margin-bottom:9px}
+.prac-tr{font-size:12px;color:var(--text2);margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.prac-tr strong{color:var(--yellow)}
+.prac-row{display:flex;gap:7px;align-items:center}
+.prac-input{flex:1;padding:7px 11px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:Verdana,sans-serif;font-size:12px;outline:none;transition:border .2s}
+.prac-input:focus{border-color:var(--purple)}
+.prac-input.ok{border-color:var(--green);background:#22c55e0d}
+.prac-input.no{border-color:var(--red);background:#ef44440d}
+.check-btn{padding:7px 13px;background:var(--purple);color:#fff;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:Verdana,sans-serif;font-size:11px;font-weight:700;transition:all .2s;white-space:nowrap}
+.check-btn:hover{background:#9333ea}
+.fb{font-size:11px;margin-top:5px;padding:5px 9px;border-radius:var(--radius-sm)}
+.fb.fb-ok{background:#22c55e1a;color:var(--green)}
+.fb.fb-no{background:#ef44441a;color:var(--red)}
+@media(max-width:540px){.prac-row{flex-direction:column}.prac-input{width:100%}}
+
+/* PROGRESS */
+.prog-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px}
+.prog-sum-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.prog-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .2s}
+.prog-card:hover{border-color:var(--purple);transform:translateY(-2px)}
+.prog-top{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.prog-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.prog-name{font-size:12px;font-weight:700;margin-bottom:3px}
+.prog-bar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:5px}
+.prog-bar-fill{height:100%;border-radius:3px;transition:width .5s}
+.prog-status{font-size:10px;color:var(--text2);display:flex;justify-content:space-between}
+
+/* CATEGORIES */
+.cat-toggle{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.cat-group{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.cat-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.cat-head-icon{font-size:18px}
+.cat-head-name{font-size:13px;font-weight:700;flex:1}
+.cat-count{font-size:10px;color:var(--text2);background:var(--bg3);padding:2px 7px;border-radius:9px}
+.cat-item{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:color .2s}
+.cat-item:last-child{border-bottom:none}
+.cat-item:hover{color:var(--orange)}
+.cat-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.cat-item-name{flex:1;font-size:11px}
+
+/* SCHEMA */
+.schema-tree{display:flex;flex-direction:column;gap:16px}
+.schema-level{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.schema-lvl-head{display:flex;align-items:center;gap:7px;margin-bottom:11px;font-size:12px}
+.schema-nodes{display:flex;flex-wrap:wrap;gap:7px}
+.schema-node{padding:6px 11px;border-radius:var(--radius-sm);font-size:11px;cursor:pointer;transition:all .2s;border:1px solid transparent;position:relative}
+.schema-node:hover{transform:scale(1.06)}
+.schema-node.sn-done::after,.schema-node.sn-review::after{content:'';position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;font-size:7px;display:flex;align-items:center;justify-content:center;line-height:12px;text-align:center}
+.schema-node.sn-done::after{content:'✓';background:var(--green);color:#fff}
+.schema-node.sn-review::after{content:'↩';background:var(--yellow);color:#000}
+.schema-conn{width:2px;height:16px;background:var(--border);margin:0 auto}
+
+/* EMPTY */
+.empty{text-align:center;padding:50px 16px;color:var(--text2)}
+.empty .e-ico{font-size:44px;margin-bottom:10px}
+
+/* SECTION TITLE */
+.sec-title{font-size:17px;font-weight:700;margin-bottom:18px}
+.sec-title span{color:var(--purple)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-brand">Grammar<span>Path</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="go('dashboard')">📊 Dashboard</button>
+    <button class="nav-btn" onclick="go('topics')">📚 Konular</button>
+    <button class="nav-btn" onclick="go('progress')">📈 İlerleme</button>
+    <button class="nav-btn" onclick="go('categories')">🗂 Kategoriler</button>
+    <button class="nav-btn" onclick="go('schema')">🧠 Şema</button>
+  </div>
+  <div class="nav-right">
+    <button class="icon-round" onclick="openSearch()">🔍</button>
+    <button class="icon-round" onclick="toggleTheme()" id="themeBtn">🌙</button>
+  </div>
+</nav>
+
+<div class="search-overlay" id="srchOvl">
+  <button class="search-close" onclick="closeSearch()">✕ Kapat</button>
+  <div class="search-box"><span>🔍</span><input type="text" id="srchIn" placeholder="Konu ara..." oninput="doSearch()"></div>
+  <div class="search-res" id="srchRes"></div>
+</div>
+
+<div class="page active" id="pg-dashboard">
+  <div class="dash-header"><h1 id="greeting">Merhaba! 👋</h1><p>Bugün ne öğreneceksin?</p></div>
+  <div class="stat-grid" id="statGrid"></div>
+  <div class="progress-block">
+    <h3>📊 Genel İlerleme</h3>
+    <div class="big-bar"><div class="big-bar-fill" id="bigBar" style="width:0%"></div></div>
+    <div class="prog-labels"><span id="progLbl">0 / 0 tamamlandı</span><span id="progPct">0%</span></div>
+    <div class="motivation" id="motiv"></div>
+  </div>
+  <div class="dash-cols">
+    <div class="dash-col"><h3>🔄 Tekrar Gereken</h3><div id="reviewList"></div></div>
+    <div class="dash-col"><h3>✅ Son Tamamlananlar</h3><div id="doneList"></div></div>
+  </div>
+</div>
+
+<div class="page" id="pg-topics">
+  <div class="sec-title">📚 Tüm <span>Konular</span></div>
+  <div class="filter-row">
+    <input type="text" id="topSrch" placeholder="Konu ara..." oninput="filterTopics()">
+    <select class="filter-sel" id="fLvl" onchange="filterTopics()">
+      <option value="">Tüm Seviyeler</option>
+      <option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option>
+    </select>
+    <select class="filter-sel" id="fCat" onchange="filterTopics()">
+      <option value="">Tüm Kategoriler</option>
+    </select>
+    <select class="filter-sel" id="fStat" onchange="filterTopics()">
+      <option value="">Tüm Durumlar</option>
+      <option value="done">✅ Tamamlandı</option>
+      <option value="review">🔄 Tekrar Gerek</option>
+      <option value="pending">⬜ Bekliyor</option>
+    </select>
+  </div>
+  <div class="topic-list" id="topicList"></div>
+</div>
+
+<div class="page" id="pg-progress">
+  <div class="sec-title">📈 <span>İlerleme</span> Takibi</div>
+  <div class="prog-summary" id="progSumm"></div>
+  <div class="prog-grid" id="progGrid"></div>
+</div>
+
+<div class="page" id="pg-categories">
+  <div class="sec-title">🗂 Kategori & <span>Seviye</span> Görünümü</div>
+  <div class="cat-toggle">
+    <button class="action-btn" id="btnByCat" onclick="setCatView('cat')" style="background:var(--purple);border:1px solid var(--purple);color:#fff">Kategoriye Göre</button>
+    <button class="action-btn" id="btnByLvl" onclick="setCatView('level')" style="background:var(--bg3);border:1px solid var(--border);color:var(--text)">Seviyeye Göre</button>
+  </div>
+  <div class="cat-grid" id="catGrid"></div>
+</div>
+
+<div class="page" id="pg-schema">
+  <div class="sec-title">🧠 Zihin <span>Şeması</span></div>
+  <p style="color:var(--text2);font-size:12px;margin-bottom:18px">Konular arasındaki ilişkileri ve öğrenme hiyerarşisini görsel olarak keşfet. Bir konuya gitmek için üstüne tıkla.</p>
+  <div id="schemaWrap"></div>
+</div>
+
+<div class="page" id="pg-detail">
+  <div id="detailContent"></div>
+</div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const T=[
+{id:'cond-zero',name:'Zero Conditional',level:'B1',cat:'Conditionals',emoji:'0️⃣',color:'#3b82f6',
+ short:'Genel gerçekler ve bilimsel yasalar için kullanılır.',
+ desc:'Zero Conditional, her zaman doğru olan evrensel gerçekleri, bilimsel yasaları ve mantıksal sonuçları ifade etmek için kullanılır. "If + present simple, present simple" yapısıyla kurulur. Koşul ne zaman sağlanırsa sağlansın, sonuç kesinlikle gerçekleşir. If yerine "when" kullanılabilir, anlam değişmez.',
+ struct:'If + <c>Present Simple</c>, <c>Present Simple</c>\nWhen + <c>Present Simple</c>, <c>Present Simple</c>',
+ note:'If yerine "when" kullanılabilir. Anlam değişmez. Gerçekler evrensel ise zero conditional kullanılır.',
+ examples:[
+  {en:'If you heat water to 100°C, it boils.',tr:'Suyu 100°C\'ye ısıtırsan, kaynar.',note:'Bilimsel gerçek'},
+  {en:'If it rains, the ground gets wet.',tr:'Yağmur yağarsa, zemin ıslanır.',note:'Doğal gerçek'},
+  {en:'When you mix red and blue, you get purple.',tr:'Kırmızı ve maviyi karıştırınca mor elde edersin.',note:'when ile kullanım'},
+  {en:'Plants die if they don\'t get enough sunlight.',tr:'Bitkiler yeterince güneş görmezse ölür.',note:'Olumsuz koşul'},
+  {en:'If people don\'t sleep, they get tired.',tr:'İnsanlar uyumazsa yorulur.',note:'İnsan davranışı'},
+ ],
+ prac:[
+  {tr:'Suyu dondurursan, buz olur.',ans:'If you freeze water, it turns into ice.'},
+  {tr:'Güneş batarsa, hava kararır.',ans:'If the sun sets, it gets dark.'},
+ ]
+},
+{id:'cond-first',name:'First Conditional',level:'B1',cat:'Conditionals',emoji:'1️⃣',color:'#3b82f6',
+ short:'Gerçekçi ve olası gelecek durumları ifade eder.',
+ desc:'First Conditional, gerçekleşmesi mümkün olan gelecek koşullar ve bu koşulların olası sonuçlarını ifade etmek için kullanılır. Koşulun gerçekleşme olasılığı yüksektir. "If + present simple, will + infinitive" yapısıyla kurulur. Unless (= if not) ile sık kullanılır.',
+ struct:'If + <c>Present Simple</c>, <c>will</c> + infinitive\nIf + <c>Present Simple</c>, <c>can/may/might</c> + infinitive',
+ note:'"Unless you study, you won\'t pass." Unless = if not anlamındadır.',
+ examples:[
+  {en:'If it rains tomorrow, I will take an umbrella.',tr:'Yarın yağmur yağarsa, şemsiye alacağım.',note:'Gerçekçi gelecek koşul'},
+  {en:'If she studies hard, she will pass the exam.',tr:'Sıkı çalışırsa, sınavı geçecek.',note:'Olası sonuç'},
+  {en:'Unless you hurry, you will miss the train.',tr:'Acele etmezsen treni kaçıracaksın.',note:'Unless kullanımı'},
+  {en:'If I have time, I might visit you.',tr:'Vaktim olursa seni ziyaret edebilirim.',note:'might ile belirsizlik'},
+  {en:'We will go for a picnic if the weather is nice.',tr:'Hava güzel olursa pikniğe gideceğiz.',note:'Ters sıralama'},
+ ],
+ prac:[
+  {tr:'Eğer sana yardım edersem, projeyi bitirebilirsin.',ans:'If I help you, you will be able to finish the project.'},
+  {tr:'Geç kalırsan, patron kızacak.',ans:'If you are late, the boss will get angry.'},
+ ]
+},
+{id:'cond-second',name:'Second Conditional',level:'B2',cat:'Conditionals',emoji:'2️⃣',color:'#a855f7',
+ short:'Hayali veya olası olmayan şimdiki / gelecek durumlar.',
+ desc:'Second Conditional, gerçekleşmesi pek mümkün olmayan ya da tamamen hayali koşulları ifade eder. Şu an gerçek olmayan durumlar veya düşük ihtimalli senaryolar için kullanılır. "If + past simple, would + infinitive" yapısıyla kurulur. "If I were you..." ifadesi tavsiye verirken çok yaygındır.',
+ struct:'If + <c>Past Simple</c>, <c>would</c> + infinitive\nIf + <c>Past Simple</c>, <c>could/might</c> + infinitive',
+ note:'"were" tüm öznelerle kullanılabilir (formal): "If I were you..." doğru kullanımdır.',
+ examples:[
+  {en:'If I had a million dollars, I would travel the world.',tr:'Bir milyon dolarım olsaydı, dünyayı gezerdim.',note:'Hayali koşul'},
+  {en:'If I were you, I wouldn\'t do that.',tr:'Senin yerinde olsaydım, bunu yapmazdım.',note:'were - tavsiye'},
+  {en:'She would learn faster if she practised every day.',tr:'Her gün pratik yapsaydı daha hızlı öğrenirdi.',note:'Ters sıralama'},
+  {en:'If we lived closer to the sea, we would swim more often.',tr:'Denize daha yakın oturseydik, daha sık yüzerdik.',note:'Gerçekleşmesi zor'},
+  {en:'What would you do if you lost your job?',tr:'İşini kaybetseydin ne yapardın?',note:'Soru formu'},
+ ],
+ prac:[
+  {tr:'Eğer kuş olsaydım, uçardım.',ans:'If I were a bird, I would fly.'},
+  {tr:'Daha fazla zamanın olsaydı, ne yapardın?',ans:'What would you do if you had more time?'},
+ ]
+},
+{id:'cond-third',name:'Third Conditional',level:'B2',cat:'Conditionals',emoji:'3️⃣',color:'#a855f7',
+ short:'Geçmişte gerçekleşmemiş durumların hayali sonuçları.',
+ desc:'Third Conditional, geçmişte yaşanmış bir durumun aksini hayal etmek için kullanılır. Pişmanlık, farklı senaryolar veya mazeret bildirme amacıyla kullanılır. "If + past perfect, would have + past participle" yapısıyla kurulur.',
+ struct:'If + <c>Past Perfect</c>, <c>would have</c> + past participle\nIf + <c>Past Perfect</c>, <c>could/might have</c> + past participle',
+ note:'Mixed conditionals: "If I had studied harder (3rd), I would be a doctor now (2nd)"',
+ examples:[
+  {en:'If she had studied harder, she would have passed.',tr:'Daha çok çalışmış olsaydı, geçerdi.',note:'Pişmanlık'},
+  {en:'If it hadn\'t rained, we would have gone for a walk.',tr:'Yağmur yağmasaydı, yürüyüşe çıkardık.',note:'Geçmişteki engel'},
+  {en:'You might have won if you had tried harder.',tr:'Daha çok deneseydin belki kazanabilirdin.',note:'might have'},
+  {en:'If I had known about the traffic, I would have left earlier.',tr:'Trafiği bilseydim daha erken çıkardım.',note:'Bilgi eksikliği'},
+  {en:'They could have been friends if they had met sooner.',tr:'Daha erken tanışsalardı arkadaş olabilirlerdi.',note:'could have'},
+ ],
+ prac:[
+  {tr:'O filmi izlemiş olsaydım, sana anlatırdım.',ans:'If I had watched that film, I would have told you.'},
+  {tr:'Erken kalkmış olsaydın, uçağı kaçırmazdın.',ans:'If you had woken up early, you wouldn\'t have missed the plane.'},
+ ]
+},
+{id:'wish-present',name:'Wish + Past Simple',level:'B2',cat:'Wish / If Only',emoji:'🌠',color:'#ec4899',
+ short:'Şimdiki durumu değiştirme isteği, pişmanlık veya hayaller.',
+ desc:'Wish + Past Simple, şu anki gerçekliğe dair pişmanlıkları veya değiştirmek istediğimiz durumları ifade eder. "Keşke şu an farklı olsaydı" anlamı taşır. "If only" daha duygusal/dramatik bir versiyondur. "Were" tüm öznelerle kullanılabilir.',
+ struct:'Subject + <c>wish</c> + subject + <c>Past Simple</c>\nSubject + <c>wish</c> + subject + <c>were</c> (tüm özneler için)',
+ note:'"If only" wish\'in daha dramatik versiyonu: "If only I had more time!" Daha güçlü bir pişmanlık ifadesidir.',
+ examples:[
+  {en:'I wish I spoke French fluently.',tr:'Keşke Fransızcayı akıcı konuşabilseydim.',note:'Şimdiki yetersizlik'},
+  {en:'She wishes she were taller.',tr:'Keşke daha uzun boylu olsaydı.',note:'Fiziksel özellik'},
+  {en:'I wish I didn\'t have to work so much.',tr:'Keşke bu kadar çok çalışmak zorunda olmasaydım.',note:'Zorunluluktan kaçış'},
+  {en:'If only I had more free time!',tr:'Keşke daha fazla boş zamanım olsaydı!',note:'If only - dramatik'},
+  {en:'He wishes he could drive.',tr:'Keşke araba kullanabilseydi.',note:'Yetenek eksikliği'},
+ ],
+ prac:[
+  {tr:'Keşke daha iyi şarkı söyleyebilseydim.',ans:'I wish I could sing better.'},
+  {tr:'Keşke burada olmasaydım.',ans:'I wish I weren\'t here.'},
+ ]
+},
+{id:'wish-past',name:'Wish + Past Perfect',level:'B2',cat:'Wish / If Only',emoji:'⌛',color:'#ec4899',
+ short:'Geçmişteki olaylar için pişmanlık ve özlem.',
+ desc:'Wish + Past Perfect, geçmişte yaşanan ancak farklı olmasını istediğimiz olaylar hakkında derin pişmanlık ifade eder. "Keşke geçmişte farklı davransaydım" anlamı taşır. Hata, kayıp fırsatlar ve özlem için kullanılır.',
+ struct:'Subject + <c>wish</c> + subject + <c>had</c> + past participle',
+ note:'"If only I had known!" gibi duygusal ifadeler çok yaygındır. Past perfect her zaman kullanılır.',
+ examples:[
+  {en:'I wish I had studied more for the test.',tr:'Keşke sınav için daha çok çalışmış olsaydım.',note:'Geçmiş pişmanlık'},
+  {en:'She wishes she hadn\'t said those words.',tr:'O kelimeleri söylememiş olmayı keşke.',note:'Söz pişmanlığı'},
+  {en:'If only I had taken that job offer!',tr:'Keşke o iş teklifini kabul etmiş olsaydım!',note:'Kaçan fırsat'},
+  {en:'We wish we had left earlier to avoid the traffic.',tr:'Keşke trafikten kurtulmak için daha erken çıkmış olsaydık.',note:'Ortak pişmanlık'},
+  {en:'He wishes he had apologised sooner.',tr:'Keşke daha erken özür dilemiş olsaydı.',note:'Kaçan an'},
+ ],
+ prac:[
+  {tr:'Keşke o partiye gitmiş olsaydım.',ans:'I wish I had gone to that party.'},
+  {tr:'Keşke o haberi duymamış olsaydım.',ans:'I wish I hadn\'t heard that news.'},
+ ]
+},
+{id:'wish-would',name:'Wish + Would',level:'B2',cat:'Wish / If Only',emoji:'😤',color:'#ec4899',
+ short:'Başkasının davranışından şikayet veya değişme isteği.',
+ desc:'Wish + Would, başka bir kişinin davranışını değiştirmesini istemek veya bir durumun değişmesini ümit etmek için kullanılır. Şikayet veya sabırsızlık ifadesidir. Önemli kural: Aynı özne için kullanılmaz (I wish I would → YANLIŞ).',
+ struct:'Subject + <c>wish</c> + (other subject) + <c>would</c> + verb\n⚠ Aynı özne için KULLANILMAZ!',
+ note:'"I wish I would..." YANLIŞ! Kendi isteğimiz için "wish + past simple" kullanılır.',
+ examples:[
+  {en:'I wish you would stop making so much noise.',tr:'Keşke bu kadar gürültü yapmayı bıraksan.',note:'Davranış şikayeti'},
+  {en:'She wishes he would call more often.',tr:'Keşke daha sık arasa.',note:'Beklenti'},
+  {en:'I wish it would stop raining!',tr:'Keşke yağmur dinse!',note:'Hava - doğa'},
+  {en:'They wish the government would do something about it.',tr:'Hükümetin bir şeyler yapmasını istiyorlar.',note:'Toplumsal beklenti'},
+  {en:'If only he would listen to my advice!',tr:'Keşke tavsiyelerimi dinlese!',note:'Hayal kırıklığı'},
+ ],
+ prac:[
+  {tr:'Keşke komşular sessiz olsa.',ans:'I wish the neighbours would be quiet.'},
+  {tr:'Keşke bu proje bitse.',ans:'I wish this project would end.'},
+ ]
+},
+{id:'supposed-to',name:'Be Supposed To',level:'B1',cat:'Modal Expressions',emoji:'📋',color:'#14b8a6',
+ short:'Beklenti, yükümlülük ve "olması gerekilen" durumlar.',
+ desc:'"Be supposed to" yapısı, birinin bir şeyi yapması gerektiğini (ama belki yapmadığını), bir kural veya düzenlemeyi, ya da duyuma dayalı bilgiyi ifade etmek için kullanılır. Hem yükümlülük hem de beklenti ifade eden çok yönlü bir kalıptır.',
+ struct:'Subject + <c>be supposed to</c> + infinitive\nSubject + <c>was/were supposed to</c> + infinitive (geçmiş)',
+ note:'"It\'s supposed to be great" → "Duyduğuma göre harika" anlamında duyum/itibar ifadesidir.',
+ examples:[
+  {en:'You are supposed to wear a seatbelt in the car.',tr:'Arabada emniyet kemeri takman gerekiyor.',note:'Kural/yükümlülük'},
+  {en:'She was supposed to call me an hour ago.',tr:'Bir saat önce beni araması gerekiyordu.',note:'Yerine getirilmemiş beklenti'},
+  {en:'This medicine is supposed to reduce pain.',tr:'Bu ilacın ağrıyı azaltması gerekiyor.',note:'Beklenen etki'},
+  {en:'You are not supposed to smoke here.',tr:'Burada sigara içmen yasak.',note:'Yasak/kural'},
+  {en:'The new restaurant is supposed to be amazing.',tr:'Yeni restoran harika olduğu söyleniyor.',note:'Duyuma dayalı bilgi'},
+ ],
+ prac:[
+  {tr:'Burada ayakkabılarını çıkarman gerekiyor.',ans:'You are supposed to take off your shoes here.'},
+  {tr:'Saat 9\'da burada olması gerekiyordu.',ans:'He was supposed to be here at 9 o\'clock.'},
+ ]
+},
+{id:'ordinals',name:'Ordinal Numbers',level:'A2',cat:'Numbers & Dates',emoji:'🔢',color:'#22c55e',
+ short:'Sıra sayıları: first, second, third ve ötesi.',
+ desc:'Ordinal numbers (sıra sayıları), nesnelerin sıradaki konumunu, tarihleri, kat numaralarını ve sıralamaları ifade etmek için kullanılır. İngilizce\'de kendine özgü son ekleri vardır: -st, -nd, -rd, -th. Tarih okunurken mutlaka ordinal kullanılır.',
+ struct:'1st=<c>first</c> | 2nd=<c>second</c> | 3rd=<c>third</c> | 4th=<c>fourth</c>\n-th eki 4. ve sonrasına eklenir. İstisnalar: 11th, 12th, 13th',
+ note:'Tarih söylenirken ordinal okunur: "5 June" → "the fifth of June". Kral unvanları: Henry VIII → Henry the Eighth.',
+ examples:[
+  {en:'My office is on the fifth floor.',tr:'Ofisim beşinci kattadır.',note:'Kat belirtme'},
+  {en:'She finished first in the marathon.',tr:'Maratonda birinci oldu.',note:'Yarışma sonucu'},
+  {en:'The meeting is on the 21st of March.',tr:'Toplantı 21 Mart\'ta.',note:'Tarih kullanımı'},
+  {en:'This is the third time I\'ve told you!',tr:'Sana bunu söylediğim üçüncü kez!',note:'Sayım/vurgu'},
+  {en:'Henry the Eighth was a famous English king.',tr:'VIII. Henry ünlü bir İngiliz kralıydı.',note:'Unvanlarda kullanım'},
+ ],
+ prac:[
+  {tr:'Kütüphane binada ikinci katta.',ans:'The library is on the second floor of the building.'},
+  {tr:'O yarışmada üçüncü oldu.',ans:'She came third in the competition.'},
+ ]
+},
+{id:'used-to',name:'Used To',level:'B1',cat:'Modal Expressions',emoji:'⏮',color:'#14b8a6',
+ short:'Geçmişteki alışkanlıklar ve artık olmayan durumlar.',
+ desc:'"Used to", geçmişte düzenli olarak yapılan ancak artık yapılmayan eylemleri veya geçmişte var olan ancak artık var olmayan durumları ifade eder. "Would" ile de alışkanlık ifade edilebilir fakat sadece eylemler için (durumlar için değil).',
+ struct:'Subject + <c>used to</c> + infinitive\nSubject + <c>didn\'t use to</c> + infinitive\nDid + subject + <c>use to</c> + infinitive?',
+ note:'"Be/get used to" = alışmak (farklı yapı!): "I am used to waking up early." – gerund alır!',
+ examples:[
+  {en:'I used to play football every weekend.',tr:'Her hafta sonu futbol oynardım.',note:'Geçmiş alışkanlık'},
+  {en:'She didn\'t use to drink coffee, but now she does.',tr:'Kahve içmezdi ama şimdi içiyor.',note:'Değişen alışkanlık'},
+  {en:'There used to be a cinema here.',tr:'Burada bir sinema vardı.',note:'Artık olmayan durum'},
+  {en:'Did you use to play an instrument?',tr:'Bir enstrüman çalar mıydın?',note:'Soru formu'},
+  {en:'I am getting used to living alone.',tr:'Yalnız yaşamaya alışıyorum.',note:'Get used to - farklı yapı'},
+ ],
+ prac:[
+  {tr:'Çocukken her gece hikaye okurdum.',ans:'I used to read stories every night when I was a child.'},
+  {tr:'Burada büyük bir orman vardı.',ans:'There used to be a big forest here.'},
+ ]
+},
+{id:'passive',name:'Passive Voice',level:'B1',cat:'Verb Forms',emoji:'🔄',color:'#f97316',
+ short:'Eylemin üzerinde yapıldığı nesneyi ön plana çıkarır.',
+ desc:'Passive voice (edilgen çatı), kim yaptığı önemli değilse, bilinmiyorsa veya vurgulanmak istenmiyorsa tercih edilir. "Be + past participle" yapısıyla kurulur ve zamanına göre "be" çekimlenir.',
+ struct:'Subject + <c>be</c> (tense\'e göre) + <c>past participle</c>\nYapan eklenecekse: + <c>by</c> + agent',
+ note:'Zamana göre be değişir: is/are, was/were, will be, has been, was being, had been...',
+ examples:[
+  {en:'The letter was written by Shakespeare.',tr:'Mektup Shakespeare tarafından yazıldı.',note:'Geçmiş pasif - by ile'},
+  {en:'English is spoken all over the world.',tr:'İngilizce dünyanın her yerinde konuşulur.',note:'Geniş zaman pasif'},
+  {en:'The new bridge will be opened next month.',tr:'Yeni köprü gelecek ay açılacak.',note:'Gelecek zaman pasif'},
+  {en:'My car has been repaired.',tr:'Arabam tamir edildi.',note:'Present perfect pasif'},
+  {en:'Mistakes were made, but lessons were learned.',tr:'Hatalar yapıldı ama dersler öğrenildi.',note:'Çoğul özne'},
+ ],
+ prac:[
+  {tr:'Bu köprü 1889\'da inşa edildi.',ans:'This bridge was built in 1889.'},
+  {tr:'İngilizce bu okulda öğretiliyor.',ans:'English is taught in this school.'},
+ ]
+},
+{id:'modals',name:'Modal Verbs',level:'B1',cat:'Modal Expressions',emoji:'⚡',color:'#14b8a6',
+ short:'Can, could, may, might, must, should ve kullanımları.',
+ desc:'Modal verbs, olasılık, yetenek, izin, zorunluluk ve tavsiye gibi çeşitli anlamları ifade eden yardımcı fiillerdir. Temel özellikleri: -s/-es almazlar, "to" ile kullanılmazlar ve yanlarına bare infinitive alırlar.',
+ struct:'Subject + <c>modal verb</c> + bare infinitive\ncan, could, may, might, must, should, shall, will, would, ought to',
+ note:'"Must" iç zorunluluk, "have to" dışsal zorunluluk. Anlam farkı önemli!',
+ examples:[
+  {en:'You must wear a helmet when cycling.',tr:'Bisiklete binerken kask takmalısın.',note:'must - zorunluluk'},
+  {en:'She might be late today.',tr:'Bugün geç kalabilir.',note:'might - düşük olasılık'},
+  {en:'Could you pass me the salt, please?',tr:'Tuzu bana verir misin lütfen?',note:'could - kibarca rica'},
+  {en:'You should see a doctor about that cough.',tr:'O öksürük için doktora gitmelisin.',note:'should - tavsiye'},
+  {en:'May I use your pen?',tr:'Kalemini kullanabilir miyim?',note:'may - kibarca izin'},
+ ],
+ prac:[
+  {tr:'Bahçede sigara içemezsin.',ans:'You cannot smoke in the garden.'},
+  {tr:'Erken ayrılman gerekebilir.',ans:'You might have to leave early.'},
+ ]
+},
+{id:'relative',name:'Relative Clauses',level:'B1',cat:'Clauses',emoji:'🔗',color:'#eab308',
+ short:'Who, which, that, whose ile yan cümlecikler.',
+ desc:'Relative clauses, bir isim hakkında ek bilgi vermek için kullanılır. Defining (kısıtlayıcı – virgüllü) ve non-defining (açıklayıcı – virgüllü) olarak ikiye ayrılır. Non-defining relative clause\'da "that" KULLANILMAZ.',
+ struct:'who/that (kişiler) | which/that (nesneler) | whose (sahiplik) | where (yer) | when (zaman)',
+ note:'Non-defining clause virgülle ayrılır ve cümleyi kaldırınca anlam bozulmaz. "That" kullanılmaz.',
+ examples:[
+  {en:'The man who lives next door is a doctor.',tr:'Yan tarafta yaşayan adam bir doktordur.',note:'Defining - kişi'},
+  {en:'This is the book which changed my life.',tr:'Bu hayatımı değiştiren kitap.',note:'Defining - nesne'},
+  {en:'My sister, who lives in London, is visiting us.',tr:'Londra\'da yaşayan ablam bizi ziyaret ediyor.',note:'Non-defining - virgül'},
+  {en:'That\'s the house where I grew up.',tr:'Büyüdüğüm ev bu.',note:'where - yer'},
+  {en:'She is the student whose essay won the prize.',tr:'Ödül kazanan denemeyi yazan öğrenci o.',note:'whose - sahiplik'},
+ ],
+ prac:[
+  {tr:'Dün gördüğüm film çok güzeldi.',ans:'The film that I saw yesterday was very good.'},
+  {tr:'İstanbul\'da doğan adam şimdi ünlü bir yazar.',ans:'The man who was born in Istanbul is now a famous writer.'},
+ ]
+},
+{id:'reported',name:'Reported Speech',level:'B2',cat:'Clauses',emoji:'💬',color:'#eab308',
+ short:'Dolaylı anlatım – başkasının söylediklerini aktarma.',
+ desc:'Reported speech, birinin söylediklerini kendi cümlelerimizle aktarmak için kullanılır. Direct speech\'ten reported speech\'e geçerken zaman kayması (backshift), zamirler ve zaman/yer zarfları değişir.',
+ struct:'"Direct" → Reported\nPresent Simple → <c>Past Simple</c>\nPast Simple → <c>Past Perfect</c>\nWill → <c>Would</c>',
+ note:'Hâlâ geçerli genel gerçekler için zaman kayması olmayabilir. Emir için "tell + not to" kullanılır.',
+ examples:[
+  {en:'"I am tired." → She said she was tired.',tr:'"Yorgunum." → Yorgun olduğunu söyledi.',note:'Temel zaman kayması'},
+  {en:'"I will help you." → He said he would help me.',tr:'"Sana yardım edeceğim." → Bana yardım edeceğini söyledi.',note:'Will → Would'},
+  {en:'"Did you see the film?" → She asked if I had seen the film.',tr:'"Filmi gördün mü?" → Filmi görüp görmediğimi sordu.',note:'Soru dolaylı anlatımı'},
+  {en:'"Don\'t open the window!" → He told me not to open the window.',tr:'"Pencereyi açma!" → Pencereyi açmamamı söyledi.',note:'Emir dolaylı anlatımı'},
+  {en:'"I have been waiting." → He said he had been waiting.',tr:'"Bekliyorum." → Beklediğini söyledi.',note:'Present Perf → Past Perf'},
+ ],
+ prac:[
+  {tr:'"Yarın geleceğim" dedi. (Dolaylı anlatıma çevir)',ans:'He said that he would come the next day.'},
+  {tr:'"Yağmur yağıyor mu?" diye sordu.',ans:'She asked if it was raining.'},
+ ]
+},
+{id:'gerund',name:'Gerund vs Infinitive',level:'B1',cat:'Verb Forms',emoji:'⚖',color:'#f97316',
+ short:'Fiilden sonra -ing mi, to + infinitive mi?',
+ desc:'Bazı fiiller kendinden sonra gerund (-ing), bazıları infinitive (to + verb), bazıları her ikisini de alabilir ama anlam değişebilir. Bu ayrım İngilizce\'nin en temel konularından biridir ve ezberlenmesi gereken listeler içerir.',
+ struct:'Gerund: <c>enjoy, avoid, mind, consider, suggest</c> + -ing\nInfinitive: <c>want, decide, hope, plan, refuse</c> + to\nHer ikisi: <c>like, love, hate, begin, start, prefer</c>',
+ note:'"remember/forget + gerund" = geçmişe atıfta, "+ infinitive" = geleceğe atıfta bulunur.',
+ examples:[
+  {en:'She enjoys reading novels in her free time.',tr:'Boş zamanlarında roman okumaktan hoşlanır.',note:'enjoy + gerund'},
+  {en:'I decided to study medicine at university.',tr:'Üniversitede tıp okumaya karar verdim.',note:'decide + infinitive'},
+  {en:'I remember locking the door. (past action)',tr:'Kapıyı kilitlediğimi hatırlıyorum.',note:'remember + gerund = geçmiş'},
+  {en:'Remember to lock the door! (future action)',tr:'Kapıyı kilitlemeyi unutma!',note:'remember + infinitive = gelecek'},
+  {en:'He stopped smoking for health reasons.',tr:'Sağlık nedeniyle sigarayı bıraktı.',note:'stop + gerund = bırakma'},
+ ],
+ prac:[
+  {tr:'Spor yapmaktan zevk alıyorum.',ans:'I enjoy doing sports.'},
+  {tr:'Erken kalkmayı unutma.',ans:'Don\'t forget to wake up early.'},
+ ]
+},
+{id:'pres-perfect',name:'Present Perfect',level:'B1',cat:'Tenses',emoji:'⏳',color:'#22c55e',
+ short:'Geçmişte olan ama şimdiye bağlı olan olaylar.',
+ desc:'Present Perfect, geçmişte başlayan ama hâlâ devam eden durumları, geçmişteki deneyimleri ve geçmişte olan ama şimdiki zamanla bağlantısı olan olayları ifade eder. Since, for, already, yet, ever, never gibi zarf ifadeleriyle sıkça kullanılır.',
+ struct:'Subject + <c>have/has</c> + past participle\nNeg: Subject + <c>have/has not</c> + past participle\nQ: <c>Have/Has</c> + subject + past participle?',
+ note:'FOR: süre belirtir ("for three years"). SINCE: başlangıç noktası ("since 2020"). YET: olumsuz/soru. ALREADY: olumlu.',
+ examples:[
+  {en:'I have visited Paris three times.',tr:'Paris\'i üç kez ziyaret ettim.',note:'Geçmiş deneyim'},
+  {en:'She has lived here since 2015.',tr:'2015\'den beri burada yaşıyor.',note:'since - başlangıç noktası'},
+  {en:'Have you ever eaten sushi?',tr:'Hiç suşi yedin mi?',note:'ever - yaşam deneyimi sorusu'},
+  {en:'I haven\'t finished my homework yet.',tr:'Henüz ödevimi bitirmedim.',note:'yet - olumsuz cümle'},
+  {en:'The train has already left.',tr:'Tren çoktan gitti.',note:'already - tamamlanmış eylem'},
+ ],
+ prac:[
+  {tr:'Hiç Londra\'ya gittin mi?',ans:'Have you ever been to London?'},
+  {tr:'İki saattir buradayım.',ans:'I have been here for two hours.'},
+ ]
+},
+{id:'articles',name:'Articles: a, an, the',level:'A2',cat:'Grammar Basics',emoji:'📌',color:'#a855f7',
+ short:'Belirli ve belirsiz artikellerin doğru kullanımı.',
+ desc:'İngilizce\'de iki tür artikel vardır: a/an (belirsiz) ve the (belirli). A/an ilk kez bahsedilen şeyler için, the daha önce bahsedilen veya dünyada tek olan şeyler için kullanılır. Sesli harf sesi (harf değil) a/an seçimini belirler.',
+ struct:'<c>a</c> + sessiz sesle başlayan kelimeler\n<c>an</c> + sesli sesle (a,e,i,o,u) başlayan kelimeler\n<c>the</c> + bilinen/özgün/eşsiz şeyler',
+ note:'"a university" (y sesi = sessiz), "an hour" (h okunmaz = sesli). Ses belirler, harf değil!',
+ examples:[
+  {en:'I saw a dog in the park. The dog was barking.',tr:'Parkta bir köpek gördüm. Köpek havlıyordu.',note:'İlk mention: a → tekrar: the'},
+  {en:'She plays the piano beautifully.',tr:'Piyanoyu güzel çalıyor.',note:'Enstrüman + the'},
+  {en:'He is an honest man.',tr:'O dürüst bir adam.',note:'an - sesli harf sesi'},
+  {en:'The sun rises in the east.',tr:'Güneş doğudan doğar.',note:'Eşsiz şeyler - the'},
+  {en:'I had a great time at the party.',tr:'Partide harika vakit geçirdim.',note:'Birlikte kullanım'},
+ ],
+ prac:[
+  {tr:'O bir doktor. Hastanede çalışıyor.',ans:'He is a doctor. He works in a hospital.'},
+  {tr:'Güneş her gün doğudan doğar.',ans:'The sun rises from the east every day.'},
+ ]
+},
+{id:'phrasal',name:'Phrasal Verbs',level:'B2',cat:'Vocabulary',emoji:'🔧',color:'#f97316',
+ short:'Fiil + edat/zarf kombinasyonlarından oluşan deyimsel yapılar.',
+ desc:'Phrasal verbs, bir fiil ve bir ya da iki edatın birleşiminden oluşur ve genellikle birleşen parçaların anlamlarından farklı anlam taşır. Separable (ayrılabilir) ve inseparable (ayrılamaz) olmak üzere ikiye ayrılır.',
+ struct:'Verb + <c>particle</c> (up, out, off, in, away...)\nSeparable: "turn off the light" / "turn the light off"\nInseparable: "look after the baby" (ayrılamaz)',
+ note:'Phrasal verb sözlüğü şart! Bağlam anlamı belirler. Aynı phrasal verb\'ün farklı anlamları olabilir.',
+ examples:[
+  {en:'Can you look after my cat while I\'m away?',tr:'Ben yokken kedime bakabilir misin?',note:'look after = bakmak'},
+  {en:'I came across an old photo of my grandmother.',tr:'Büyükannemin eski bir fotoğrafına rastladım.',note:'come across = rastlamak'},
+  {en:'The meeting has been called off due to illness.',tr:'Toplantı hastalık nedeniyle iptal edildi.',note:'call off = iptal etmek'},
+  {en:'We need to figure out a solution quickly.',tr:'Hızlıca bir çözüm bulmamız gerekiyor.',note:'figure out = çözmek'},
+  {en:'She gave up smoking after ten years.',tr:'On yıl sonra sigarayı bıraktı.',note:'give up = bırakmak'},
+ ],
+ prac:[
+  {tr:'Bu problemi nasıl çözeceğimizi bulmamız gerekiyor.',ans:'We need to figure out how to solve this problem.'},
+  {tr:'Toplantıyı iptal etmek zorunda kaldık.',ans:'We had to call off the meeting.'},
+ ]
+},
+{id:'future',name:'Future Forms',level:'B1',cat:'Tenses',emoji:'🚀',color:'#22c55e',
+ short:'Will, going to, present continuous ile gelecek ifadesi.',
+ desc:'İngilizce\'de gelecek zamanı ifade etmenin birden fazla yolu vardır. Will anlık kararlar ve tahminler için, going to planlar ve kanıta dayalı tahminler için, Present Continuous kesin planlanmış gelecek randevular için kullanılır.',
+ struct:'<c>will</c> + infinitive (anlık karar, tahmin, söz)\n<c>be going to</c> + infinitive (plan, niyet, kanıt)\n<c>Present Continuous</c> (kesin randevu/plan)',
+ note:'Future Perfect: "By 2030, I will have graduated." Belirli bir zamana kadar tamamlanacak eylemler için.',
+ examples:[
+  {en:'I\'ll have the chicken, please. (instant decision)',tr:'Tavuk alacağım lütfen.',note:'will - anlık karar'},
+  {en:'We\'re going to move to a new city next year.',tr:'Gelecek yıl yeni bir şehre taşınacağız.',note:'going to - niyet'},
+  {en:'Look at those clouds! It\'s going to rain.',tr:'Şu bulutlara bak! Yağmur yağacak.',note:'going to - kanıta dayalı'},
+  {en:'I\'m meeting Sarah at 3 pm tomorrow.',tr:'Yarın saat 3\'te Sarah ile buluşuyorum.',note:'Pres. Cont. - kesin plan'},
+  {en:'By the time you arrive, I will have finished cooking.',tr:'Sen gelene kadar yemek pişirmiş olacağım.',note:'Future Perfect'},
+ ],
+ prac:[
+  {tr:'Gelecek hafta sonu sinemaya gidiyoruz. (kesin plan)',ans:'We are going to the cinema next weekend.'},
+  {tr:'Sana bu konuda yardım edeceğim. (anlık karar)',ans:'I will help you with this.'},
+ ]
+},
+{id:'mixed-cond',name:'Mixed Conditionals',level:'C1',cat:'Conditionals',emoji:'🔀',color:'#ef4444',
+ short:'Farklı zaman dilimlerini birleştiren karışık koşul yapıları.',
+ desc:'Mixed conditionals, farklı zaman dilimlerini (geçmiş ve şimdi) tek bir cümlede bir araya getirir. En yaygın iki tipi: (1) Geçmişteki durumun şimdiki etkisi, (2) Şimdiki durumun geçmişe yansıması.',
+ struct:'Tip 1: If + <c>Past Perfect</c>, <c>would</c> + infinitive\nTip 2: If + <c>Past Simple</c>, <c>would have</c> + past participle',
+ note:'C1 düzeyi olup İngilizce\'nin en sofistike yapılarından biridir. Pratik gerektirir.',
+ examples:[
+  {en:'If I had studied medicine, I would be a doctor now.',tr:'Tıp okusaydım, şimdi doktor olurdum.',note:'Geçmiş karar → şimdiki durum'},
+  {en:'If she weren\'t so shy, she would have spoken up at the meeting.',tr:'Bu kadar çekingen olmasaydı, toplantıda söz alırdı.',note:'Şimdiki özellik → geçmiş etki'},
+  {en:'If I had saved more money, I could afford a holiday now.',tr:'Daha fazla para biriktirmiş olsaydım, şimdi tatil yapabilirdim.',note:'Geçmiş eylem → şimdiki imkân'},
+  {en:'If he were braver, he would have confessed his feelings years ago.',tr:'Daha cesur olsaydı, yıllar önce duygularını itiraf ederdi.',note:'Şimdiki karakter → geçmiş eylem'},
+  {en:'If they hadn\'t moved abroad, they would be living near us now.',tr:'Yurt dışına taşınmasalardı, şimdi yanımızda yaşıyor olabilirlerdi.',note:'Hayat kararı etkisi'},
+ ],
+ prac:[
+  {tr:'Daha çok çalışmış olsaydım, şimdi daha iyi bir pozisyonda olurdum.',ans:'If I had worked harder, I would be in a better position now.'},
+  {tr:'Daha sabırlı biri olsaydı, o kadar erken vazgeçmezdi.',ans:'If he were a more patient person, he wouldn\'t have given up so early.'},
+ ]
+},
+];
+
+const CAT_CLR={'Conditionals':'#3b82f6','Wish / If Only':'#ec4899','Modal Expressions':'#14b8a6','Verb Forms':'#f97316','Tenses':'#22c55e','Clauses':'#eab308','Numbers & Dates':'#22c55e','Grammar Basics':'#a855f7','Vocabulary':'#f97316'};
+const CAT_EMJ={'Conditionals':'🔀','Wish / If Only':'🌠','Modal Expressions':'⚡','Verb Forms':'🔧','Tenses':'⏰','Clauses':'🔗','Numbers & Dates':'🔢','Grammar Basics':'📌','Vocabulary':'📖'};
+const LV_ORDER=['A1','A2','B1','B2','C1','C2'];
+const LV_NAMES={A1:'Başlangıç',A2:'Temel',B1:'Orta Altı',B2:'Orta Üstü',C1:'İleri',C2:'Uzman'};
+const LV_CLR={A1:'#22c55e',A2:'#14b8a6',B1:'#3b82f6',B2:'#a855f7',C1:'#f97316',C2:'#ef4444'};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let S={},catView='cat',curPage='dashboard',prevPage='topics';
+window._pans={};
+
+function loadS(){try{const d=localStorage.getItem('gp2');if(d)S=JSON.parse(d)}catch(e){S={}}}
+function saveS(){localStorage.setItem('gp2',JSON.stringify(S))}
+function gs(id){return S[id]||{done:false,review:false}}
+function tdone(id,e){if(e)e.stopPropagation();const s=gs(id);s.done=!s.done;if(s.done)s.review=false;S[id]=s;saveS();refresh()}
+function treview(id,e){if(e)e.stopPropagation();const s=gs(id);s.review=!s.review;S[id]=s;saveS();refresh()}
+
+// ── NAV ──────────────────────────────────────────────────────────────────────
+function go(name,id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(name==='detail'&&id){
+    document.getElementById('pg-detail').classList.add('active');
+    renderDetail(id);curPage='detail';return;
+  }
+  prevPage=curPage;curPage=name;
+  document.getElementById('pg-'+name).classList.add('active');
+  const map={dashboard:'dashboard',topics:'konular',progress:'ilerleme',categories:'kategori',schema:'şema'};
+  document.querySelectorAll('.nav-btn').forEach(b=>{if(b.textContent.toLowerCase().includes(map[name]))b.classList.add('active');});
+  if(name==='dashboard')renderDash();
+  else if(name==='topics')renderTopics();
+  else if(name==='progress')renderProgress();
+  else if(name==='categories')renderCats();
+  else if(name==='schema')renderSchema();
+}
+function refresh(){
+  if(curPage==='dashboard')renderDash();
+  else if(curPage==='topics')filterTopics();
+  else if(curPage==='progress')renderProgress();
+  else if(curPage==='categories')renderCats();
+  else if(curPage==='schema')renderSchema();
+}
+function goBack(){go(prevPage==='detail'?'topics':prevPage)}
+
+// ── THEME ────────────────────────────────────────────────────────────────────
+function toggleTheme(){
+  const light=document.documentElement.getAttribute('data-theme')==='light';
+  document.documentElement.setAttribute('data-theme',light?'':'light');
+  document.getElementById('themeBtn').textContent=light?'🌙':'☀️';
+  localStorage.setItem('gp_theme',light?'dark':'light');
+}
+function loadTheme(){
+  const t=localStorage.getItem('gp_theme');
+  if(t==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️';}
+}
+
+// ── SEARCH ───────────────────────────────────────────────────────────────────
+function openSearch(){document.getElementById('srchOvl').classList.add('open');document.getElementById('srchIn').focus();}
+function closeSearch(){document.getElementById('srchOvl').classList.remove('open');document.getElementById('srchIn').value='';document.getElementById('srchRes').innerHTML='';}
+function doSearch(){
+  const q=document.getElementById('srchIn').value.toLowerCase();
+  const res=document.getElementById('srchRes');
+  if(!q){res.innerHTML='';return;}
+  const found=T.filter(t=>t.name.toLowerCase().includes(q)||t.short.toLowerCase().includes(q)||t.cat.toLowerCase().includes(q)||t.level.toLowerCase().includes(q));
+  if(!found.length){res.innerHTML='<div class="search-item" style="color:var(--text2)">Sonuç bulunamadı.</div>';return;}
+  res.innerHTML=found.map(t=>{const s=gs(t.id);return`<div class="search-item" onclick="closeSearch();go('detail','${t.id}')"><span style="font-size:20px">${t.emoji}</span><div><div style="font-size:12px;font-weight:700">${t.name}</div><div style="font-size:10px;color:var(--text2)">${t.cat} · ${t.level} ${s.done?'✅':s.review?'🔄':''}</div></div></div>`}).join('');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSearch();});
+
+// ── DASHBOARD ────────────────────────────────────────────────────────────────
+function renderDash(){
+  const total=T.length,done=T.filter(t=>gs(t.id).done).length,rev=T.filter(t=>gs(t.id).review).length,pct=Math.round(done/total*100);
+  const h=new Date().getHours();
+  document.getElementById('greeting').textContent=h<12?'Günaydın! ☀️':h<17?'İyi Günler! 🌤':'İyi Akşamlar! 🌙';
+  document.getElementById('statGrid').innerHTML=`
+    <div class="stat-card c-orange"><div class="stat-num">${total}</div><div class="stat-label">Toplam Konu</div></div>
+    <div class="stat-card c-green"><div class="stat-num">${done}</div><div class="stat-label">Tamamlandı</div></div>
+    <div class="stat-card c-red"><div class="stat-num">${rev}</div><div class="stat-label">Tekrar Gerek</div></div>
+    <div class="stat-card c-blue"><div class="stat-num">${total-done-rev}</div><div class="stat-label">Bekliyor</div></div>
+    <div class="stat-card c-purple"><div class="stat-num">${pct}%</div><div class="stat-label">Tamamlama</div></div>`;
+  document.getElementById('bigBar').style.width=pct+'%';
+  document.getElementById('progLbl').textContent=`${done} / ${total} konu tamamlandı`;
+  document.getElementById('progPct').textContent=pct+'%';
+  const mots=['🌱 Başlamak bitirilmenin yarısıdır! Her gün bir adım.','💪 '+done+' konu tamamladın. Harika ilerliyorsun!','🎯 Hedef net, yol belli. Devam et!','🔥 Her öğrenilen kural, daha akıcı bir İngilizce demek!','⚡ Düzenli çalışma kalıcı öğrenme sağlar.','🏆 Mükemmel olmak zorunda değilsin, sadece ileri gitmen yeterli!'];
+  document.getElementById('motiv').textContent=mots[Math.floor(Math.random()*mots.length)];
+  const revT=T.filter(t=>gs(t.id).review).slice(0,5);
+  document.getElementById('reviewList').innerHTML=revT.length?revT.map(t=>`<div class="mini-row" onclick="go('detail','${t.id}')"><div class="mini-dot" style="background:#eab308"></div><span class="mini-name">${t.emoji} ${t.name}</span><span class="lv-badge lv-${t.level}">${t.level}</span></div>`).join(''):'<div style="color:var(--text3);font-size:11px;padding:8px 0">Tekrar gereken konu yok 🎉</div>';
+  const doneT=T.filter(t=>gs(t.id).done).slice(-5).reverse();
+  document.getElementById('doneList').innerHTML=doneT.length?doneT.map(t=>`<div class="mini-row" onclick="go('detail','${t.id}')"><div class="mini-dot" style="background:#22c55e"></div><span class="mini-name">${t.emoji} ${t.name}</span><span class="lv-badge lv-${t.level}">${t.level}</span></div>`).join(''):'<div style="color:var(--text3);font-size:11px;padding:8px 0">Henüz tamamlanan konu yok.</div>';
+}
+
+// ── TOPICS ───────────────────────────────────────────────────────────────────
+function renderTopics(){
+  const cats=[...new Set(T.map(t=>t.cat))].sort();
+  const cs=document.getElementById('fCat');
+  if(cs.children.length===1)cats.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o);});
+  filterTopics();
+}
+function filterTopics(){
+  const q=document.getElementById('topSrch').value.toLowerCase();
+  const lv=document.getElementById('fLvl').value;
+  const ca=document.getElementById('fCat').value;
+  const st=document.getElementById('fStat').value;
+  const f=T.filter(t=>{
+    const s=gs(t.id);
+    if(q&&!t.name.toLowerCase().includes(q)&&!t.short.toLowerCase().includes(q))return false;
+    if(lv&&t.level!==lv)return false;
+    if(ca&&t.cat!==ca)return false;
+    if(st==='done'&&!s.done)return false;
+    if(st==='review'&&!s.review)return false;
+    if(st==='pending'&&(s.done||s.review))return false;
+    return true;
+  });
+  const el=document.getElementById('topicList');
+  if(!f.length){el.innerHTML='<div class="empty"><div class="e-ico">🔍</div>Konu bulunamadı.</div>';return;}
+  el.innerHTML=f.map(t=>{
+    const s=gs(t.id);
+    return`<div class="topic-row ${s.done?'is-done':s.review?'is-review':''}" onclick="go('detail','${t.id}')">
+      <div class="topic-icon" style="background:${t.color}1a;color:${t.color}">${t.emoji}</div>
+      <div class="topic-info">
+        <div class="topic-head"><span class="topic-name">${t.name}</span><span class="lv-badge lv-${t.level}">${t.level}</span><span class="cat-badge">${CAT_EMJ[t.cat]||''} ${t.cat}</span></div>
+        <div class="topic-sub">${t.short}</div>
+      </div>
+      <div class="row-btns" onclick="event.stopPropagation()">
+        <button class="sq-btn ${s.done?'sq-done':''}" onclick="tdone('${t.id}',event)" title="Tamamlandı">✅</button>
+        <button class="sq-btn ${s.review?'sq-review':''}" onclick="treview('${t.id}',event)" title="Tekrar Gerek">🔄</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+function renderProgress(){
+  const total=T.length,done=T.filter(t=>gs(t.id).done).length,rev=T.filter(t=>gs(t.id).review).length,pct=Math.round(done/total*100);
+  document.getElementById('progSumm').innerHTML=`
+    <div class="prog-sum-card"><div style="font-size:10px;color:var(--text2);margin-bottom:8px;text-transform:uppercase">Genel İlerleme</div><div class="prog-bar" style="height:9px"><div class="prog-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--orange),var(--purple))"></div></div><div style="font-size:13px;font-weight:700;color:var(--orange);margin-top:5px">${pct}% <span style="font-weight:400;color:var(--text2);font-size:10px">${done}/${total}</span></div></div>
+    <div class="prog-sum-card" style="text-align:center;border-color:#22c55e33"><div style="font-size:26px;font-weight:700;color:var(--green)">${done}</div><div style="font-size:10px;color:var(--text2)">Tamamlandı ✅</div></div>
+    <div class="prog-sum-card" style="text-align:center;border-color:#eab30833"><div style="font-size:26px;font-weight:700;color:var(--yellow)">${rev}</div><div style="font-size:10px;color:var(--text2)">Tekrar Gerek 🔄</div></div>
+    <div class="prog-sum-card" style="text-align:center"><div style="font-size:26px;font-weight:700;color:var(--text2)">${total-done-rev}</div><div style="font-size:10px;color:var(--text2)">Bekliyor ⬜</div></div>`;
+  document.getElementById('progGrid').innerHTML=T.map(t=>{
+    const s=gs(t.id);
+    const pBar=s.done?100:s.review?50:0;
+    const bClr=s.done?'#22c55e':s.review?'#eab308':'#3a3a5c';
+    const statTxt=s.done?'✅ Tamamlandı':s.review?'🔄 Tekrar Gerek':'⬜ Bekliyor';
+    return`<div class="prog-card" onclick="go('detail','${t.id}')">
+      <div class="prog-top"><div class="prog-icon" style="background:${t.color}1a;color:${t.color}">${t.emoji}</div><div><div class="prog-name">${t.name}</div><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="lv-badge lv-${t.level}">${t.level}</span><span class="cat-badge">${t.cat}</span></div></div></div>
+      <div class="prog-bar"><div class="prog-bar-fill" style="width:${pBar}%;background:${bClr}"></div></div>
+      <div class="prog-status"><span>${statTxt}</span><span>${pBar}%</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ── CATEGORIES ───────────────────────────────────────────────────────────────
+function setCatView(v){
+  catView=v;
+  ['cat','level'].forEach(x=>{
+    const btn=document.getElementById('btnBy'+x.charAt(0).toUpperCase()+x.slice(1));
+    btn.style.background=x===v?'var(--purple)':'var(--bg3)';
+    btn.style.border=x===v?'1px solid var(--purple)':'1px solid var(--border)';
+    btn.style.color=x===v?'#fff':'var(--text)';
+  });
+  renderCats();
+}
+function renderCats(){
+  let groups={};
+  if(catView==='cat'){T.forEach(t=>{if(!groups[t.cat])groups[t.cat]=[];groups[t.cat].push(t);});}
+  else{T.forEach(t=>{if(!groups[t.level])groups[t.level]=[];groups[t.level].push(t);});const sg={};LV_ORDER.forEach(l=>{if(groups[l])sg[l]=groups[l];});groups=sg;}
+  document.getElementById('catGrid').innerHTML=Object.entries(groups).map(([k,ts])=>{
+    const clr=catView==='cat'?(CAT_CLR[k]||'#a855f7'):(LV_CLR[k]||'#a855f7');
+    const emj=catView==='cat'?(CAT_EMJ[k]||'📂'):k;
+    const dn=ts.filter(t=>gs(t.id).done).length;
+    return`<div class="cat-group">
+      <div class="cat-head"><span class="cat-head-icon">${emj}</span><span class="cat-head-name" style="color:${clr}">${k}</span><span class="cat-count">${dn}/${ts.length} ✅</span></div>
+      ${ts.map(t=>{const s=gs(t.id);const dot=s.done?'#22c55e':s.review?'#eab308':'var(--border)';return`<div class="cat-item" onclick="go('detail','${t.id}')"><div class="cat-dot" style="background:${dot}"></div><span class="cat-item-name">${t.emoji} ${t.name}</span>${catView==='cat'?`<span class="lv-badge lv-${t.level}">${t.level}</span>`:`<span class="cat-badge" style="font-size:9px">${t.cat}</span>`}</div>`;}).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ── SCHEMA ───────────────────────────────────────────────────────────────────
+function renderSchema(){
+  const byLv={};LV_ORDER.forEach(l=>byLv[l]=[]);T.forEach(t=>{if(byLv[t.level])byLv[t.level].push(t);});
+  document.getElementById('schemaWrap').innerHTML='<div class="schema-tree">'+
+    LV_ORDER.filter(l=>byLv[l].length>0).map((l,i)=>`
+      ${i>0?'<div class="schema-conn"></div>':''}
+      <div class="schema-level" style="border-left:4px solid ${LV_CLR[l]}">
+        <div class="schema-lvl-head">
+          <span style="background:${LV_CLR[l]};color:#fff;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700">${l}</span>
+          <span style="color:var(--text2);font-size:12px">${LV_NAMES[l]}</span>
+          <span style="margin-left:auto;font-size:10px;color:var(--text3)">${byLv[l].filter(t=>gs(t.id).done).length}/${byLv[l].length} tamamlandı</span>
+        </div>
+        <div class="schema-nodes">
+          ${byLv[l].map(t=>{const s=gs(t.id);const cls=s.done?'sn-done':s.review?'sn-review':'';return`<div class="schema-node ${cls}" style="background:${t.color}1a;color:${t.color};border:1px solid ${t.color}33" onclick="go('detail','${t.id}')" title="${t.short}">${t.emoji} ${t.name}</div>`;}).join('')}
+        </div>
+      </div>`).join('')+'</div>';
+}
+
+// ── DETAIL ───────────────────────────────────────────────────────────────────
+function renderDetail(id){
+  const t=T.find(x=>x.id===id);if(!t)return;
+  const s=gs(t.id);
+  window._pans={};
+  t.prac.forEach((p,i)=>window._pans[id+'_'+i]=p.ans);
+  const struct=t.struct.replace(/\n/g,'<br>').replace(/<c>(.*?)<\/c>/g,'<code style="color:var(--orange);background:rgba(249,115,22,.12);padding:1px 5px;border-radius:3px;font-family:monospace;font-size:12px">$1</code>');
+  document.getElementById('detailContent').innerHTML=`
+    <div class="back-btn" onclick="goBack()">← Geri Dön</div>
+    <div class="detail-hero" style="border-top:4px solid ${t.color}">
+      <div class="detail-top">
+        <div>
+          <div style="font-size:30px;margin-bottom:5px">${t.emoji}</div>
+          <div class="detail-title">${t.name}</div>
+          <div class="detail-badges">
+            <span class="lv-badge lv-${t.level}">${t.level}</span>
+            <span class="cat-badge">${CAT_EMJ[t.cat]||''} ${t.cat}</span>
+            ${s.done?'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:#22c55e1a;color:var(--green);border:1px solid #22c55e33">✅ Tamamlandı</span>':''}
+            ${s.review?'<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:#eab3081a;color:var(--yellow);border:1px solid #eab30833">🔄 Tekrar Gerek</span>':''}
+          </div>
+        </div>
+        <div class="detail-btns">
+          <button class="action-btn btn-done ${s.done?'act':''}" onclick="tdone('${id}');renderDetail('${id}')">✅ ${s.done?'Tamamlandı':'Tamamla'}</button>
+          <button class="action-btn btn-review ${s.review?'act':''}" onclick="treview('${id}');renderDetail('${id}')">🔄 Tekrar</button>
+        </div>
+      </div>
+      <div class="detail-desc">${t.desc}</div>
+    </div>
+    <div class="sec" style="animation-delay:.05s">
+      <h2>⚙️ Yapı / Formül</h2>
+      <div class="struct-box">${struct}</div>
+      ${t.note?`<div class="note-box">💡 <strong style="color:var(--purple)">Not:</strong> ${t.note}</div>`:''}
+    </div>
+    <div class="sec" style="animation-delay:.1s">
+      <h2>📖 Örnek Cümleler</h2>
+      <div class="ex-list">
+        ${t.examples.map((ex,i)=>`<div class="ex-item"><div class="ex-en">${i+1}. ${ex.en}</div><div class="ex-tr">🇹🇷 ${ex.tr}</div>${ex.note?`<div class="ex-note">📌 ${ex.note}</div>`:''}</div>`).join('')}
+      </div>
+    </div>
+    <div class="sec" style="animation-delay:.15s">
+      <h2>✏️ Pratik Yap — Türkçeden İngilizceye</h2>
+      ${t.prac.map((p,i)=>`
+        <div class="prac-item">
+          <div class="prac-tr">🇹🇷 <strong>${p.tr}</strong></div>
+          <div class="prac-row">
+            <input class="prac-input" id="pi_${id}_${i}" type="text" placeholder="İngilizceye çevirin..." onkeydown="if(event.key==='Enter')checkAns('${id}',${i})">
+            <button class="check-btn" onclick="checkAns('${id}',${i})">Kontrol</button>
+          </div>
+          <div id="fb_${id}_${i}"></div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function checkAns(id,i){
+  const inp=document.getElementById(`pi_${id}_${i}`);
+  const fb=document.getElementById(`fb_${id}_${i}`);
+  const user=inp.value.trim().toLowerCase().replace(/[.,!?]/g,'');
+  const correct=(window._pans[id+'_'+i]||'').toLowerCase().replace(/[.,!?]/g,'');
+  const ok=user===correct||correct.split(' ').filter(w=>w.length>3).every(w=>user.includes(w));
+  inp.className='prac-input '+(ok?'ok':'no');
+  fb.innerHTML=ok?`<div class="fb fb-ok">✅ Harika! Doğru cevap.</div>`:`<div class="fb fb-no">❌ Doğru cevap: <strong>${window._pans[id+'_'+i]}</strong></div>`;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+loadS();loadTheme();
+go('dashboard');
+</script>
+</body>
+</html>

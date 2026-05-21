@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Grammar Explorer — 11 Yapı</title>
+<style>
+:root{
+  --bg:#f1f0eb;--bg2:#e6e4de;--bg3:#d8d5cd;
+  --surf:#fff;--surf2:#f6f5f0;
+  --bd:#ccc9c0;--bd2:#b0ada4;
+  --txt:#15140d;--mu:#6a6760;--mu2:#a09d95;
+  --acc:#2650d8;--acc-l:#eaf0fc;--acc-b:#88a8dd;
+
+  --c0:#1a5fa0;--c0l:#e8f2fc;--c0b:#7eb8e8; /* active */
+  --c1:#174a99;--c1l:#eaf0fc;--c1b:#88a8dd; /* passive */
+  --c2:#b03020;--c2l:#fceeec;--c2b:#e0a09a; /* causative */
+  --c3:#16703f;--c3l:#eaf5ee;--c3b:#7ec49a; /* pres perf */
+  --c4:#1a6060;--c4l:#e8f5f5;--c4b:#7ec4c4; /* past perf */
+  --c5:#7a4d00;--c5l:#fdf3e4;--c5b:#c9a056; /* modal */
+  --c6:#553399;--c6l:#f0ebfc;--c6b:#b094e0; /* cond */
+  --c7:#8a2060;--c7l:#faeaf4;--c7b:#d088b8; /* reported */
+  --c8:#3d5a00;--c8l:#eef5e0;--c8b:#92b840; /* relative */
+  --c9:#5a3800;--c9l:#fdf0e0;--c9b:#c8902a; /* gerund */
+  --c10:#2a5a5a;--c10l:#e0f5f5;--c10b:#60b0b0; /* cleft */
+
+  --f:Verdana,Geneva,Tahoma,sans-serif;
+  --rad:10px;
+}
+[data-theme=dark]{
+  --bg:#0d0c09;--bg2:#161512;--bg3:#1c1b17;
+  --surf:#1a1916;--surf2:#1c1b17;
+  --bd:#282724;--bd2:#363530;
+  --txt:#edecea;--mu:#888680;--mu2:#504e48;
+  --c0:#4a90d0;--c0l:#0c1e34;--c0b:#183860;
+  --c1:#5a88d8;--c1l:#0e1828;--c1b:#183060;
+  --c2:#e0685a;--c2l:#2a1512;--c2b:#582018;
+  --c3:#40a868;--c3l:#0e2016;--c3b:#184d28;
+  --c4:#30a8a8;--c4l:#0a2020;--c4b:#185050;
+  --c5:#d4902a;--c5l:#201608;--c5b:#4a3008;
+  --c6:#9970e0;--c6l:#1a1030;--c6b:#4a2898;
+  --c7:#d060a0;--c7l:#28101e;--c7b:#682048;
+  --c8:#70a820;--c8l:#141e06;--c8b:#304808;
+  --c9:#c88030;--c9l:#1e1006;--c9b:#483010;
+  --c10:#40a0a0;--c10l:#0a1e1e;--c10b:#184040;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--f);background:var(--bg);color:var(--txt);font-size:13px;line-height:1.65;min-height:100vh;transition:background .3s,color .3s}
+
+/* ── NAV ── */
+.nav{background:var(--surf);border-bottom:1px solid var(--bd);padding:0 16px;height:50px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.nav-logo{font-size:13px;font-weight:700;flex-shrink:0}
+.nav-right{display:flex;gap:6px;align-items:center}
+.tb{padding:5px 9px;border-radius:7px;border:1px solid var(--bd);background:var(--bg2);color:var(--mu);font-family:var(--f);font-size:12px;cursor:pointer}
+
+/* ── MAIN LAYOUT ── */
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 50px)}
+.sidebar{background:var(--surf);border-right:1px solid var(--bd);padding:16px 12px;position:sticky;top:50px;height:calc(100vh - 50px);overflow-y:auto}
+.main{padding:20px 24px 60px;overflow:auto}
+
+/* ── SIDEBAR ── */
+.sb-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--mu2);margin:14px 0 6px 4px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:2px;border:1px solid transparent}
+.sb-item:hover{background:var(--bg2)}
+.sb-item.active{background:var(--bg2);border-color:var(--bd)}
+.sb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sb-label{font-size:12px;font-weight:600;line-height:1.2}
+.sb-en{font-size:10px;color:var(--mu);line-height:1}
+
+/* ── GENERATOR ── */
+.gen-box{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rad);padding:20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.gen-top{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px}
+.gen-input{flex:1;min-width:200px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--bd2);background:var(--surf);color:var(--txt);font-family:var(--f);font-size:13px;transition:border-color .2s}
+.gen-input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(38,80,216,.1)}
+.btn{padding:9px 18px;border-radius:9px;border:none;font-family:var(--f);font-size:12px;font-weight:700;cursor:pointer;transition:all .18s;display:inline-block}
+.ba{background:var(--acc);color:#fff}.ba:hover{opacity:.9;transform:translateY(-1px)}
+.bg{background:var(--bg2);border:1px solid var(--bd2);color:var(--txt)}.bg:hover{background:var(--bg3)}
+.bsm{padding:6px 13px;font-size:11px}
+
+/* sentence display */
+.base-sent{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:12px 0 4px}
+.word-chip{padding:5px 10px;border-radius:6px;font-size:14px;font-weight:700;border:1.5px solid;display:inline-flex;align-items:center;gap:3px}
+.wc-role{font-size:8px;display:block;font-weight:400;opacity:.7;line-height:1;margin-top:1px}
+.sent-tr{font-size:11px;color:var(--mu);font-style:italic;padding-left:2px;margin-top:4px}
+
+/* ── STRUCTURE CARDS ── */
+.struct-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.struct-card{background:var(--surf);border:1px solid var(--bd);border-radius:var(--rad);overflow:hidden;border-top:3px solid;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:box-shadow .2s}
+.struct-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.sc-head{padding:14px 16px 10px;border-bottom:1px solid var(--bg3)}
+.sc-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.sc-name{font-size:14px;font-weight:700}
+.sc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;border:1px solid}
+.sc-formula{font-size:11px;background:var(--bg2);padding:5px 10px;border-radius:6px;font-weight:700;line-height:1.6;margin-top:6px}
+.sc-body{padding:14px 16px}
+.sc-tab-row{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.sc-tab{padding:4px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--bg2);font-size:10px;font-weight:700;cursor:pointer;color:var(--mu);transition:all .15s}
+.sc-tab.on{color:#fff}
+.sc-tab:hover:not(.on){background:var(--bg3)}
+
+/* sentence variants */
+.variant-box{margin-bottom:10px}
+.vb-sent{font-size:13px;font-weight:700;line-height:1.8;margin-bottom:3px}
+.vb-tr{font-size:11px;color:var(--mu);font-style:italic;margin-bottom:4px}
+.vb-exp{font-size:11px;color:var(--mu);line-height:1.6;padding:6px 10px;background:var(--bg2);border-radius:6px;border-left:3px solid}
+.highlight{padding:1px 4px;border-radius:3px;font-weight:700}
+
+/* ── SINGLE VIEW ── */
+.single-view{display:none}
+.sv-back{display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--mu);font-size:12px;margin-bottom:16px;font-weight:700}
+.sv-back:hover{color:var(--txt)}
+.sv-hero{border-radius:var(--rad);padding:20px;margin-bottom:16px;border:1px solid}
+.sv-hero-name{font-size:22px;font-weight:700;margin-bottom:4px}
+.sv-hero-tr{font-size:12px;opacity:.8;margin-bottom:12px}
+.sv-formula-big{font-size:13px;font-weight:700;background:rgba(0,0,0,.1);padding:8px 14px;border-radius:8px;display:inline-block;line-height:1.8}
+
+/* ── SCRAMBLE MINI ── */
+.scr-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--mu2);margin-bottom:8px}
+.scr-drop{min-height:40px;border:2px dashed var(--bd2);border-radius:8px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;background:var(--bg2);margin-bottom:6px;transition:border-color .2s}
+.scr-pool{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;min-height:36px}
+.wt{padding:5px 10px;border-radius:6px;background:var(--surf);border:1.5px solid var(--bd2);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;user-select:none}
+.wt:hover{border-color:var(--acc);background:var(--acc-l);color:var(--acc)}
+.wt.in{background:var(--bg3);border-color:var(--bd);color:var(--mu)}
+.scr-fb{font-size:11px;padding:7px 10px;border-radius:7px;margin-bottom:8px}
+.scr-fb.ok{background:var(--c3l);border:1px solid var(--c3b);color:var(--c3)}
+.scr-fb.er{background:var(--c2l);border:1px solid var(--c2b);color:var(--c2)}
+.scr-fb.hi{background:var(--c5l);border:1px solid var(--c5b);color:var(--c5)}
+
+/* ── COMPARISON ── */
+.cmp-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.cmp-table th{padding:8px 10px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--mu);border-bottom:1.5px solid var(--bd);background:var(--surf2)}
+.cmp-table td{padding:8px 10px;border-bottom:1px solid var(--bg3);vertical-align:top}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:hover td{background:var(--bg2)}
+
+/* ── AI LOADING ── */
+.ai-loading{display:flex;gap:4px;align-items:center;padding:8px 0}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--acc);animation:ab .8s ease-in-out infinite}
+.ai-dot:nth-child(2){animation-delay:.16s}.ai-dot:nth-child(3){animation-delay:.32s}
+@keyframes ab{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* ── PROGRESS BAR ── */
+.pbw{height:3px;background:var(--bg3);border-radius:999px;overflow:hidden;margin-bottom:12px}
+.pbf{height:100%;border-radius:999px;background:var(--acc);transition:width .4s}
+
+/* ── DIFF BANNER ── */
+.diff-banner{border-radius:8px;padding:10px 14px;font-size:12px;margin-top:10px;line-height:1.7;border-left:4px solid}
+
+/* UTILITY */
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.mu{color:var(--mu)}.sm{font-size:11px}.fw7{font-weight:700}.tc{text-align:center}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}
+.divl{border:none;border-top:1px solid var(--bd);margin:14px 0}
+@keyframes pop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+.pop{animation:pop .2s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}30%{transform:translateX(-4px)}70%{transform:translateX(4px)}}
+.shk{animation:shake .3s ease}
+
+@media(max-width:680px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .struct-grid{grid-template-columns:1fr}
+  .gen-top{flex-direction:column}
+  .gen-input{min-width:0;width:100%}
+}
+</style>
+</head>
+<body data-theme="light">
+
+<div class="nav">
+  <div class="nav-logo">🔬 Grammar Explorer — 11 Yapı</div>
+  <div class="nav-right">
+    <button class="tb" id="tBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</div>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-section">Yapılar</div>
+  <div id="sbList"></div>
+  <div class="divl"></div>
+  <div style="font-size:11px;color:var(--mu);line-height:1.7;padding:4px">
+    Herhangi bir yapı kartına veya soldaki menüye tıkla — detay görünümü açılır.
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- GENERATOR -->
+  <div class="gen-box">
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px">✨ Cümle Üretici</div>
+    <div class="gen-top">
+      <input class="gen-input" id="genInput" placeholder="Kendi cümlenizi yazın veya AI'dan üretin…" value="My assistant wrote the report."/>
+      <button class="btn ba" onclick="generateAISentence()">🤖 AI Üret</button>
+      <button class="btn bg" onclick="useCurrent()">▶ Bu Cümleyi Kullan</button>
+    </div>
+    <div id="genLoading" style="display:none"><div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div><span class="sm mu" style="margin-left:6px">AI cümle üretiyor…</span></div></div>
+    <div id="baseSentDisplay"></div>
+  </div>
+
+  <!-- OVERVIEW / SINGLE -->
+  <div id="overviewView">
+    <div style="font-size:11px;color:var(--mu);margin-bottom:12px">Her kart = bir yapı. Tıkla → detay, alıştırma ve karşılaştırma.</div>
+    <div class="struct-grid" id="structGrid"></div>
+  </div>
+  <div class="single-view" id="singleView"></div>
+</div>
+</div>
+
+<script>
+// ── THEME ──
+function toggleTheme(){
+  const t=document.body.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.body.setAttribute('data-theme',t);
+  document.getElementById('tBtn').textContent=t==='dark'?'☀️':'🌙';
+}
+
+// ── STRUCTURES META ──
+const STRUCTS=[
+  {id:0,name:'Active Voice',tr:'Etken Çatı',en:'Active',color:'--c0',
+   formula:'Subject + Verb + Object',
+   desc:'Özne eylemi bizzat yapar. En temel, en doğal yapı.',
+   diff:'Tüm yapıların çıkış noktası. Özne aktif, sorumlu, güçlü.',
+   tip:'Konuşma ve güçlü yazılarda tercih edilir. Yönetici sesi verir.'},
+  {id:1,name:'Passive Voice',tr:'Edilgen Çatı',en:'Passive',color:'--c1',
+   formula:'S + be (çekimli) + V3  [+ by …]',
+   desc:'Özne eylemi alan taraf. Kim yaptığı gizlenebilir.',
+   diff:'Active\'de özne yapan, Passive\'de özne yapılan. V3 her ikisinde sabit kalır.',
+   tip:'Resmi belgeler, akademik yazı. "by" eklenmezse fail gizlenir.'},
+  {id:2,name:'Causative',tr:'Ettirgen Fiiller',en:'HAVE / GET / MAKE / LET',color:'--c2',
+   formula:'HAVE: S+had+O+bare inf.|GET: S+got+O+TO+inf.|MAKE: S+made+O+bare inf.|LET: S+let+O+bare inf.',
+   desc:'Özne eylemi başkasına yaptırır, ikna eder, zorlar veya izin verir.',
+   diff:'HAVE=görev, GET=ikna, MAKE=zorlama, LET=izin. Sadece GET "to" alır.',
+   tip:'"to" kuralı kritik: GET got him TO write. MAKE made him write (to yok!).'},
+  {id:3,name:'Present Perfect',tr:'Bitmiş Şimdiki Zaman',en:'Pres. Perfect',color:'--c3',
+   formula:'S + have/has + V3',
+   desc:'Geçmişte tamamlandı, sonucu şu an hâlâ geçerli.',
+   diff:'Simple past sadece geçmişi anlatır. PP geçmiş+şimdi bağı kurar.',
+   tip:'already, yet, just, ever, never, since, for ile kullanılır.'},
+  {id:4,name:'Past Perfect',tr:'Geçmişte Önce Biten',en:'Past Perfect',color:'--c4',
+   formula:'S + had + V3',
+   desc:'Geçmişte iki eylem var — bu yapı daha önce olanı gösterir.',
+   diff:'Past Perfect ile Simple Past zinciri: PP olan biter, SP olan sonra olur.',
+   tip:'Reported Speech\'te zorunlu (backshift). Type 3 Conditional\'da kullanılır.'},
+  {id:5,name:'Modal Verbs',tr:'Modal Fiiller',en:'Modals',color:'--c5',
+   formula:'S + modal + bare infinitive  |  S + modal + have + V3 (geçmiş)',
+   desc:'Zorunluluk, yetenek, ihtimal, izin, öneri — anlam katar.',
+   diff:'Modal + bare inf. = şimdiki/gelecek. Modal + have + V3 = geçmişe dönük yorum.',
+   tip:'should have written = yazmadı ama yazmalıydı (pişmanlık/eleştiri).'},
+  {id:6,name:'Conditionals',tr:'Koşul Cümleleri',en:'Conditionals',color:'--c6',
+   formula:'Type 2: If+past, would+base  |  Type 3: If+had+V3, would have+V3',
+   desc:'Gerçek dışı veya gerçekleşmemiş koşulları anlatır.',
+   diff:'Type 2 = şimdi/gelecek gerçek dışı. Type 3 = geçmişteki gerçekleşmemiş.',
+   tip:'Type 3\'te "would have written" = modal + perfect — iki yapı bir arada!'},
+  {id:7,name:'Reported Speech',tr:'Dolaylı Anlatım',en:'Reported',color:'--c7',
+   formula:'S + said/told + (that) + backshifted clause',
+   desc:'Birisinin söylediklerini aktarırken zaman geriye kayar.',
+   diff:'write→wrote, wrote→had written, will→would, can→could, is→was.',
+   tip:'Zaman, yer, işaret kelimeleri de değişir: now→then, today→that day.'},
+  {id:8,name:'Relative Clause',tr:'İlgi Cümleciği',en:'Relative',color:'--c8',
+   formula:'Noun + who/which/that + clause  |  Noun + V3 (reduced)',
+   desc:'Bir ismi tanımlar veya açıklar. Cümleye bilgi ekler.',
+   diff:'Defining (virgülsüz) = zorunlu bilgi. Non-defining (virgüllü) = ek bilgi.',
+   tip:'"The report written by…" — "that was" düşebilir: reduced relative.'},
+  {id:9,name:'Gerund / Infinitive',tr:'Ulaç / Mastar',en:'Gerund/Inf.',color:'--c9',
+   formula:'Gerund: V-ing (isim gibi)  |  Infinitive: to + V (amaç/sonuç)',
+   desc:'Fiil isim veya amaç olarak cümlede görev alır.',
+   diff:'Gerund = tamamlanmış/alışkanlık. Infinitive = amaç/niyet/potansiyel.',
+   tip:'"needs writing" = "needs to be written" — gerund passive infinitive\'e eşdeğer!'},
+  {id:10,name:'Cleft Sentence',tr:'Vurgu Cümlesi',en:'Cleft',color:'--c10',
+   formula:'It + be + [vurgulanan] + who/that + rest  |  What-cleft',
+   desc:'Cümlenin belirli bir unsurunu güçlü biçimde öne çıkarır.',
+   diff:'Normal cümle bilgi verir. Cleft aynı bilgiyi VURGULAR. Anlam aynı, güç farklı.',
+   tip:'"It was MY ASSISTANT who…" = Kim? vurgusu. Tartışma ve düzeltmede çok etkili.'},
+];
+
+// ── CURRENT SENTENCE ──
+let BASE_SENT = {
+  en: 'My assistant wrote the report.',
+  tr: 'Asistanım raporu yazdı.',
+  subject: 'My assistant',
+  verb: 'wrote',
+  object: 'the report',
+  verbBase: 'write',
+  verbV3: 'written',
+};
+
+// ── GENERATE VARIANTS ──
+function buildVariants(s) {
+  const {subject,verb,object,verbBase,verbV3} = s;
+  const subj = subject;
+  const obj  = object;
+  const vb   = verbBase;
+  const v3   = verbV3;
+  // helper: lowercase first
+  const lc = str => str.charAt(0).toLowerCase()+str.slice(1);
+  // pronoun guess
+  const objPronoun = obj.toLowerCase().includes('report')||obj.toLowerCase().includes('letter')||obj.toLowerCase().includes('plan')||obj.toLowerCase().includes('project')||obj.toLowerCase().includes('message')||obj.toLowerCase().includes('email') ? 'it' : 'it';
+  const subjPronoun = subj.toLowerCase().startsWith('my ')||subj.toLowerCase().startsWith('the ') ? 'he' : subj.toLowerCase()==='i' ? 'I' : 'he';
+
+  return [
+    // 0 Active — multiple tenses
+    { variants:[
+      {label:'Simple Past',sent:`${subj} ${verb} ${obj}.`,tr:`${subj} ${lc(obj)} yaptı.`,exp:'Özne eylemi geçmişte bizzat yaptı.',key:[verb]},
+      {label:'Simple Present',sent:`${subj} ${vb}s ${obj}.`,tr:`${subj} ${lc(obj)} yapar/yapıyor.`,exp:'Alışkanlık veya genel gerçek.',key:[vb+'s',vb]},
+      {label:'Future',sent:`${subj} will ${vb} ${obj}.`,tr:`${subj} ${lc(obj)} yapacak.`,exp:'Gelecekteki niyet veya tahmin.',key:['will',vb]},
+    ]},
+    // 1 Passive
+    { variants:[
+      {label:'Simple Past Passive',sent:`${obj.charAt(0).toUpperCase()+obj.slice(1)} was ${v3} by ${lc(subj)}.`,tr:`${obj} ${lc(subj)} tarafından yapıldı.`,exp:'be + V3. Kim yaptığı "by" ile eklendi.',key:['was',v3]},
+      {label:'By gizlendi',sent:`${obj.charAt(0).toUpperCase()+obj.slice(1)} was ${v3}.`,tr:`${obj} yapıldı. (kim — gizli)`,exp:'Agent (yapan kişi) belirsiz veya önemsiz.',key:['was',v3]},
+      {label:'Present Passive',sent:`${obj.charAt(0).toUpperCase()+obj.slice(1)} is being ${v3}.`,tr:`${obj} şu an yapılıyor.`,exp:'is/are being + V3 — süregelen passive.',key:['is being',v3]},
+      {label:'Perfect Passive',sent:`${obj.charAt(0).toUpperCase()+obj.slice(1)} has been ${v3}.`,tr:`${obj} yapılmış (tamamlandı).`,exp:'have/has been + V3 — passive perfect.',key:['has been',v3]},
+    ]},
+    // 2 Causative
+    { variants:[
+      {label:'HAVE (görev)',sent:`I had ${lc(subj)} ${vb} ${obj}.`,tr:`${subj}'nı ${lc(obj)} yaptırdım.`,exp:'HAVE + object + bare infinitive. Resmi görevlendirme.',key:['had',vb]},
+      {label:'HAVE + V3 (pasif)',sent:`I had ${obj} ${v3}.`,tr:`${obj}'ı yaptırdım (kim — önemsiz).`,exp:'HAVE + object + V3. Pasif anlam — nesne işlemi gören şey.',key:['had',v3]},
+      {label:'GET (ikna)',sent:`I got ${lc(subj)} to ${vb} ${obj}.`,tr:`${subj}'nı ${lc(obj)} yapmaya ikna ettim.`,exp:'GET + object + TO + infinitive. "to" zorunlu!',key:['got','to '+vb]},
+      {label:'MAKE (zorlama)',sent:`I made ${lc(subj)} ${vb} ${obj}.`,tr:`${subj}'nı ${lc(obj)} yapmaya zorladım.`,exp:'MAKE + object + bare infinitive. Baskı, zorunluluk.',key:['made',vb]},
+      {label:'LET (izin)',sent:`I let ${lc(subj)} ${vb} ${obj}.`,tr:`${subj}'nın ${lc(obj)} yapmasına izin verdim.`,exp:'LET + object + bare infinitive. Engeli kaldır, izin ver.',key:['let',vb]},
+    ]},
+    // 3 Present Perfect
+    { variants:[
+      {label:'Present Perfect',sent:`${subj} has ${v3} ${obj}.`,tr:`${subj} ${lc(obj)} yapmış (sonuç şimdi hazır).`,exp:'have/has + V3. Geçmiş eylem + şimdiki sonuç.',key:['has',v3]},
+      {label:'PP Passive',sent:`${obj.charAt(0).toUpperCase()+obj.slice(1)} has been ${v3}.`,tr:`${obj} yapılmış ve hazır.`,exp:'has been + V3 — perfect passive. Edilgen perfect.',key:['has been',v3]},
+      {label:'PP Negative',sent:`${subj} hasn't ${v3} ${obj} yet.`,tr:`${subj} ${lc(obj)} henüz yapmamış.`,exp:'"yet" = henüz. Negative perfect ile sıkça kullanılır.',key:["hasn't",v3,'yet']},
+    ]},
+    // 4 Past Perfect
+    { variants:[
+      {label:'Past Perfect',sent:`${subj} had ${v3} ${obj} before the meeting.`,tr:`${subj} toplantıdan önce ${lc(obj)} yapmıştı.`,exp:'had + V3. İki geçmiş eylem — bu daha önce oldu.',key:['had',v3,'before']},
+      {label:'PP Passive',sent:`${obj.charAt(0).toUpperCase()+obj.slice(1)} had been ${v3} by the time I arrived.`,tr:`Ben geldiğimde ${lc(obj)} çoktan yapılmıştı.`,exp:'had been + V3 — past perfect passive.',key:['had been',v3]},
+      {label:'PP Negative',sent:`${subj} hadn't ${v3} ${obj} when I called.`,tr:`Ben aradığımda ${subj} henüz ${lc(obj)} yapmamıştı.`,exp:'hadn\'t + V3. Geçmişteki olumsuz önce-olan.',key:["hadn't",v3]},
+    ]},
+    // 5 Modals
+    { variants:[
+      {label:'should (öneri)',sent:`${subj} should ${vb} ${obj}.`,tr:`${subj} ${lc(obj)} yapmalı.`,exp:'should = öneri veya hafif zorunluluk.',key:['should',vb]},
+      {label:'must (güçlü)',sent:`${subj} must ${vb} ${obj} today.`,tr:`${subj} bugün ${lc(obj)} yapmak zorunda.`,exp:'must = güçlü zorunluluk veya mantıksal çıkarsama.',key:['must',vb]},
+      {label:'could (yetenek)',sent:`${subj} could ${vb} ${obj} faster.`,tr:`${subj} ${lc(obj)} daha hızlı yapabilir.`,exp:'could = geçmiş yetenek veya nazik olasılık.',key:['could',vb]},
+      {label:'should have (geçmiş pişmanlık)',sent:`${subj} should have ${v3} ${obj}.`,tr:`${subj} ${lc(obj)} yapmış olmalıydı (ama yapmadı).`,exp:'should have + V3 = geçmişteki pişmanlık veya eleştiri.',key:['should have',v3]},
+      {label:'Modal Passive',sent:`${obj.charAt(0).toUpperCase()+obj.slice(1)} should be ${v3} immediately.`,tr:`${obj} hemen yapılmalı.`,exp:'modal + be + V3 = modal passive.',key:['should be',v3]},
+    ]},
+    // 6 Conditionals
+    { variants:[
+      {label:'Type 2 (şimdi gerçek dışı)',sent:`If ${lc(subj)} ${verb} ${obj}, we would succeed.`,tr:`${subj} ${lc(obj)} yapsaydı, başarırdık.`,exp:'If + past simple, would + base. Şimdiki gerçek dışı.',key:['if',verb,'would']},
+      {label:'Type 3 (geçmiş gerçek dışı)',sent:`If ${lc(subj)} had ${v3} ${obj}, we would have won.`,tr:`${subj} ${lc(obj)} yapmış olsaydı, kazanırdık.`,exp:'If + past perfect, would have + V3. Geçmişteki kaçırılmış.',key:['if','had',v3,'would have']},
+      {label:'Mixed (geçmiş→şimdi)',sent:`If ${lc(subj)} had ${v3} ${obj}, we would be ready now.`,tr:`${lc(obj)} yapmış olsaydı, şimdi hazır olurduk.`,exp:'Mixed: past perfect + would (şimdi). Geçmiş→şimdiki etki.',key:['had',v3,'would be']},
+    ]},
+    // 7 Reported Speech
+    { variants:[
+      {label:'Statement (backshift)',sent:`${subj} said ${objPronoun === 'it' ? 'he' : subjPronoun} had ${v3} ${obj}.`,tr:`${subj} ${lc(obj)} yaptığını söyledi.`,exp:'wrote → had written (backshift). Zaman geriye kayar.',key:['said','had',v3]},
+      {label:'Question (aktarma)',sent:`I asked if ${lc(subj)} had ${v3} ${obj}.`,tr:`${lc(subj)}'nın ${lc(obj)} yapıp yapmadığını sordum.`,exp:'asked if + past perfect. Yes/no sorusunu aktarma.',key:['asked if','had',v3]},
+      {label:'Command (emir)',sent:`I told ${lc(subj)} to ${vb} ${obj}.`,tr:`${lc(subj)}'nı ${lc(obj)} yapmasını söyledim.`,exp:'told + object + to + inf. Emir cümlesinin aktarımı.',key:['told','to '+vb]},
+    ]},
+    // 8 Relative Clause
+    { variants:[
+      {label:'Defining (who)',sent:`The person who ${verb} ${obj} is my assistant.`,tr:`${obj}'ı yapan kişi benim asistanım.`,exp:'who + clause. Kişiyi tanımlayan zorunlu yan cümle.',key:['who',verb]},
+      {label:'Defining (that)',sent:`The ${obj} that ${lc(subj)} ${verb} is excellent.`,tr:`${subj}'nın yaptığı ${lc(obj)} mükemmel.`,exp:'that + subject + verb. Nesneyi tanımlayan yan cümle.',key:['that',verb]},
+      {label:'Reduced (participial)',sent:`The ${obj} ${v3} by ${lc(subj)} is ready.`,tr:`${subj} tarafından yapılan ${lc(obj)} hazır.`,exp:'"that was" düştü → reduced relative. V3 + by.',key:[v3,'by']},
+      {label:'Non-defining (virgüllü)',sent:`${obj.charAt(0).toUpperCase()+obj.slice(1)}, which ${lc(subj)} ${verb}, is excellent.`,tr:`${obj} — ${subj} onu yazdı — mükemmel.`,exp:'Virgüllü = ek bilgi. "that" kullanılamaz, sadece "which/who".',key:['which',verb]},
+    ]},
+    // 9 Gerund/Infinitive
+    { variants:[
+      {label:'Gerund özne',sent:`${vb.charAt(0).toUpperCase()+vb.slice(1)}ing ${obj} takes time.`,tr:`${obj} yapmak zaman alır.`,exp:'V-ing cümlenin öznesi oldu — "isim" gibi.',key:[vb+'ing']},
+      {label:'Gerund nesne',sent:`${subj} avoided ${vb}ing ${obj}.`,tr:`${subj} ${lc(obj)} yapmaktan kaçındı.`,exp:'avoid, enjoy, finish, mind → gerund alır.',key:[vb+'ing']},
+      {label:'Infinitive (amaç)',sent:`${subj} worked late to ${vb} ${obj}.`,tr:`${subj} ${lc(obj)} yapmak için geç çalıştı.`,exp:'to + inf. = amaç/niyet. "in order to" ile eşdeğer.',key:['to '+vb]},
+      {label:'Perfect gerund',sent:`Having ${v3} ${obj}, ${lc(subj)} left the office.`,tr:`${obj} yaptıktan sonra ${subj} ofisten ayrıldı.`,exp:'Having + V3 = önce tamamlanan eylem. Resmi ve akademik.',key:['Having',v3]},
+    ]},
+    // 10 Cleft
+    { variants:[
+      {label:'It-cleft (kim?)',sent:`It was ${lc(subj)} who ${verb} ${obj}.`,tr:`${obj}'ı yapan ${subj} idi (başkası değil!).`,exp:'It was + X + who. Kim? sorusunun dramatik cevabı.',key:['It was','who',verb]},
+      {label:'It-cleft (ne?)',sent:`It was ${obj} that ${lc(subj)} ${verb}.`,tr:`${subj}'nın yaptığı şey ${lc(obj)} idi.`,exp:'It was + X + that. Ne? vurgusu — nesneyi öne çıkarır.',key:['It was','that',verb]},
+      {label:'What-cleft',sent:`What ${lc(subj)} ${verb} was ${obj}.`,tr:`${subj}'nın yaptığı şey ${lc(obj)} idi.`,exp:'What + clause + was = It-cleft\'in alternatifi. Akademik tonda.',key:['What',verb,'was']},
+      {label:'All-cleft (vurgu)',sent:`All ${lc(subj)} did was ${vb} ${obj}.`,tr:`${subj}'nın yaptığı tek şey ${lc(obj)} idi.`,exp:'"all … did was" = minimalist vurgu. Sadece bunu yaptı.',key:['All','did was',vb]},
+    ]},
+  ];
+}
+
+// ── RENDER SIDEBAR ──
+function renderSidebar() {
+  const list = document.getElementById('sbList');
+  list.innerHTML = STRUCTS.map(s=>`
+    <div class="sb-item" id="sbi${s.id}" onclick="openSingle(${s.id})">
+      <div class="sb-dot" style="background:var(${s.color})"></div>
+      <div>
+        <div class="sb-label">${s.name}</div>
+        <div class="sb-en">${s.en}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── RENDER BASE SENTENCE ──
+function renderBaseSent() {
+  const s = BASE_SENT;
+  const el = document.getElementById('baseSentDisplay');
+  const roleColor={'subject':'--c3','verb':'--c2','object':'--c0'};
+  const parts = [
+    {word:s.subject,role:'Subject / Özne',c:'--c3'},
+    {word:s.verb,role:'Verb / Fiil',c:'--c2'},
+    {word:s.object,role:'Object / Nesne',c:'--c0'},
+  ];
+  el.innerHTML=`
+    <div class="base-sent">
+      ${parts.map(p=>`
+        <div class="word-chip" style="background:var(${p.c}22);color:var(${p.c});border-color:var(${p.c}55)">
+          <div><span>${p.word}</span><span class="wc-role">${p.role}</span></div>
+        </div>`).join('')}
+      <div style="font-size:20px;font-weight:700;color:var(--mu2)">→</div>
+      <div style="font-size:13px;font-weight:700;color:var(--mu)">${s.en}</div>
+    </div>
+    <div class="sent-tr">🇹🇷 ${s.tr}</div>
+  `;
+}
+
+// ── RENDER OVERVIEW CARDS ──
+let VARIANTS = buildVariants(BASE_SENT);
+function renderOverview() {
+  const grid = document.getElementById('structGrid');
+  grid.innerHTML = STRUCTS.map(s => buildCard(s)).join('');
+}
+
+function buildCard(s) {
+  const vs = VARIANTS[s.id].variants;
+  const v0 = vs[0];
+  const hl = highlight(v0.sent, v0.key, `var(${s.color})`);
+  const tabs = vs.map((v,i)=>`<button class="sc-tab ${i===0?'on':''}" style="${i===0?`background:var(${s.color});border-color:var(${s.color})`:'color:var(--mu)'}" id="tab${s.id}_${i}" onclick="switchTab(${s.id},${i})">${v.label}</button>`).join('');
+  return `
+  <div class="struct-card" style="border-top-color:var(${s.color})" id="card${s.id}">
+    <div class="sc-head">
+      <div class="sc-title-row">
+        <div class="sc-name" style="color:var(${s.color})" onclick="openSingle(${s.id})" style="cursor:pointer">${s.name}</div>
+        <span class="sc-badge" style="background:var(${s.color}22);color:var(${s.color});border-color:var(${s.color}55)">${s.en}</span>
+      </div>
+      <div class="sc-formula">${s.formula.split('|')[0]}</div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-tab-row">${tabs}</div>
+      <div id="variant${s.id}">
+        <div class="variant-box">
+          <div class="vb-sent">${hl}</div>
+          <div class="vb-tr">🇹🇷 ${v0.tr}</div>
+          <div class="vb-exp" style="border-color:var(${s.color})">${v0.exp}</div>
+        </div>
+      </div>
+      <div class="divl"></div>
+      <div class="row">
+        <button class="btn bg bsm" onclick="openSingle(${s.id})">📖 Detay & Alıştırma</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function switchTab(sid, idx) {
+  const vs = VARIANTS[sid].variants;
+  const v = vs[idx];
+  const s = STRUCTS[sid];
+  // update tabs
+  vs.forEach((_,i)=>{
+    const tb = document.getElementById(`tab${sid}_${i}`);
+    if(!tb)return;
+    if(i===idx){tb.classList.add('on');tb.style.background=`var(${s.color})`;tb.style.borderColor=`var(${s.color})`;tb.style.color='#fff';}
+    else{tb.classList.remove('on');tb.style.background='';tb.style.borderColor='';tb.style.color='var(--mu)';}
+  });
+  // update content
+  const hl = highlight(v.sent, v.key, `var(${s.color})`);
+  document.getElementById('variant'+sid).innerHTML=`
+    <div class="variant-box pop">
+      <div class="vb-sent">${hl}</div>
+      <div class="vb-tr">🇹🇷 ${v.tr}</div>
+      <div class="vb-exp" style="border-color:var(${s.color})">${v.exp}</div>
+    </div>`;
+}
+
+// ── HIGHLIGHT HELPER ──
+function highlight(sent, keys, color) {
+  let s = sent;
+  if(!keys)return s;
+  keys.forEach(k=>{
+    if(!k)return;
+    const re = new RegExp('('+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')', 'gi');
+    s = s.replace(re, `<span class="highlight" style="background:${color}22;color:${color}">$1</span>`);
+  });
+  return s;
+}
+
+// ── SINGLE VIEW ──
+function openSingle(id) {
+  const s = STRUCTS[id];
+  const vs = VARIANTS[id].variants;
+  document.getElementById('overviewView').style.display='none';
+  const sv = document.getElementById('singleView');
+  sv.style.display='block';
+  // update sidebar
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
+  const sbi = document.getElementById('sbi'+id);
+  if(sbi){sbi.classList.add('active');sbi.scrollIntoView({block:'nearest'});}
+
+  // build content
+  sv.innerHTML=`
+    <div class="sv-back" onclick="closeDetail()">← Tüm Yapılara Dön</div>
+    <div class="sv-hero" style="background:var(${s.color}22);border-color:var(${s.color}55)">
+      <div class="sv-hero-name" style="color:var(${s.color})">${s.name}</div>
+      <div class="sv-hero-tr" style="color:var(${s.color})">${s.tr}</div>
+      <div class="sv-formula-big">${s.formula.replace(/\|/g,' &nbsp;|&nbsp; ')}</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div class="gen-box" style="margin:0">
+        <div class="sm fw7 mb8">💡 Ne işe yarar?</div>
+        <div style="font-size:12px;color:var(--mu);line-height:1.75">${s.desc}</div>
+      </div>
+      <div class="gen-box" style="margin:0">
+        <div class="sm fw7 mb8">⚡ Kritik Fark</div>
+        <div style="font-size:12px;color:var(--mu);line-height:1.75">${s.diff}</div>
+        <div class="diff-banner" style="background:var(${s.color}11);border-color:var(${s.color}55);color:var(${s.color});margin-top:8px">🎯 ${s.tip}</div>
+      </div>
+    </div>
+
+    <div class="gen-box" style="margin-bottom:16px">
+      <div class="sm fw7 mb12">📋 Tüm Varyasyonlar — "${BASE_SENT.en}" cümlesinden</div>
+      ${vs.map((v,i)=>`
+        <div style="padding:12px 14px;border-radius:9px;margin-bottom:8px;background:var(${s.color}${i%2===0?'11':'0d'});border:1px solid var(${s.color}33)">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(${s.color});margin-bottom:6px">${v.label}</div>
+          <div class="vb-sent">${highlight(v.sent,v.key,'var('+s.color+')')}</div>
+          <div class="vb-tr mb8">🇹🇷 ${v.tr}</div>
+          <div class="vb-exp" style="border-color:var(${s.color})">${v.exp}</div>
+        </div>`).join('')}
+    </div>
+
+    <div class="gen-box" style="margin-bottom:16px">
+      <div class="sm fw7 mb8">🔤 Kelime Sıralama Alıştırması</div>
+      <div id="scrArea${id}"></div>
+    </div>
+
+    <div class="gen-box" style="margin-bottom:16px">
+      <div class="sm fw7 mb8">📊 Diğer Yapılarla Karşılaştırma</div>
+      ${buildCompTable(id)}
+    </div>
+  `;
+  buildScrArea(id, vs);
+}
+
+function closeDetail(){
+  document.getElementById('overviewView').style.display='block';
+  document.getElementById('singleView').style.display='none';
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
+}
+
+// ── SCRAMBLE ──
+function buildScrArea(sid, vs) {
+  const area = document.getElementById('scrArea'+sid);
+  if(!area)return;
+  // pick a random variant for scramble
+  const pick = vs[Math.floor(Math.random()*Math.min(vs.length,3))];
+  const words = pick.sent.replace('.','').split(' ');
+  const shuffled = [...words].sort(()=>Math.random()-.5);
+  const s = STRUCTS[sid];
+  let dropped=[], pool=[...shuffled];
+  function render(){
+    area.innerHTML=`
+      <div class="sm mu mb8" style="font-style:italic">Türkçe: <strong>${pick.tr}</strong></div>
+      <div class="sm mu" style="margin-bottom:5px">Cümle alanı (tıkla):</div>
+      <div class="scr-drop" id="sd${sid}">${dropped.map((w,i)=>`<span class="wt in" onclick="scr2pool(${sid},${i},'${sid}')">${w}</span>`).join('')}</div>
+      <div class="sm mu" style="margin-bottom:5px">Kelime havuzu:</div>
+      <div class="scr-pool" id="sp${sid}">${pool.map((w,i)=>`<span class="wt" onclick="scr2drop(${sid},${i},'${sid}')">${w}</span>`).join('')}</div>
+      <div id="sfb${sid}" style="display:none"></div>
+      <div class="row">
+        <button class="btn ba bsm" onclick="checkScrInline(${sid},'${pick.sent.replace(/'/g,"\\'")}','${pick.hint||pick.exp.split('.')[0].replace(/'/g,"\\'")}')">✓ Kontrol</button>
+        <button class="btn bg bsm" onclick="buildScrArea(${sid},[${JSON.stringify(vs)}].map?.[0]?.[0]||vs[0])">↺ Yeni</button>
+        <button class="btn bg bsm" onclick="showScrHint(${sid},'${pick.exp.replace(/'/g,"\\'")}')">💡 İpucu</button>
+      </div>`;
+  }
+  // store state
+  window[`__scr${sid}`]={dropped,pool,words,pick,render};
+  render();
+}
+
+// expose scr2drop / scr2pool globally
+window.scr2drop=function(sid,i,key){
+  const st=window[`__scr${sid}`];
+  st.dropped.push(st.pool.splice(i,1)[0]);
+  st.render();
+};
+window.scr2pool=function(sid,i,key){
+  const st=window[`__scr${sid}`];
+  st.pool.push(st.dropped.splice(i,1)[0]);
+  st.render();
+};
+window.checkScrInline=function(sid,correct,hint){
+  const st=window[`__scr${sid}`];
+  const att=st.dropped.join(' ')+'.';
+  const fb=document.getElementById('sfb'+sid);
+  if(!fb)return;
+  fb.style.display='block';
+  if(att===correct){fb.className='scr-fb ok pop';fb.innerHTML='✓ Doğru! <strong>'+correct+'</strong>';}
+  else{fb.className='scr-fb er pop';fb.innerHTML='✗ Yanlış. İpucu: <em>'+hint+'</em><br><strong>Doğru: '+correct+'</strong>';}
+};
+window.showScrHint=function(sid,hint){
+  const fb=document.getElementById('sfb'+sid);
+  if(!fb)return;
+  fb.style.display='block';fb.className='scr-fb hi';fb.innerHTML='💡 '+hint;
+};
+
+// ── COMPARISON TABLE ──
+function buildCompTable(activeId) {
+  const similar = STRUCTS.filter(s => s.id !== activeId).slice(0,4);
+  const rows = similar.map(s=>{
+    const v=VARIANTS[s.id].variants[0];
+    return `<tr>
+      <td><span style="font-size:11px;font-weight:700;color:var(${s.color})">${s.name}</span></td>
+      <td style="font-size:12px;font-weight:700">${v.sent}</td>
+      <td style="font-size:11px;color:var(--mu)">${v.exp.split('.')[0]}</td>
+    </tr>`;
+  }).join('');
+  const active=STRUCTS[activeId];
+  const av=VARIANTS[activeId].variants[0];
+  return `<table class="cmp-table">
+    <thead><tr><th>Yapı</th><th>Örnek Cümle</th><th>Ana Özellik</th></tr></thead>
+    <tbody>
+      <tr style="background:var(${active.color}11)">
+        <td><span style="font-size:11px;font-weight:700;color:var(${active.color})">★ ${active.name}</span></td>
+        <td style="font-size:12px;font-weight:700">${av.sent}</td>
+        <td style="font-size:11px;color:var(--mu)">${av.exp.split('.')[0]}</td>
+      </tr>
+      ${rows}
+    </tbody>
+  </table>`;
+}
+
+// ── AI SENTENCE GENERATOR ──
+async function generateAISentence(){
+  const loading=document.getElementById('genLoading');
+  loading.style.display='block';
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        system:`Sen bir İngilizce dil öğretmenisin. Görevin: gramer alıştırması için kullanılacak YALIN bir İngilizce cümle üretmek.
+KURALLAR:
+1. Cümle mutlaka şu yapıda olmalı: [Subject] + [simple past verb] + [object]
+2. Subject, verb, object ayrı ayrı bölünebilir olmalı
+3. Gerçek hayattan, ilgi çekici bir senaryo seç
+4. Cümle 5-8 kelime arası olsun
+5. Sadece şunu döndür (JSON):
+{"en":"[cümle]","tr":"[Türkçe çevirisi]","subject":"[özne]","verb":"[geçmiş zaman fiil]","object":"[nesne]","verbBase":"[mastar]","verbV3":"[V3 past participle]"}
+6. Başka hiçbir şey yazma.`,
+        messages:[{role:'user',content:'Yeni bir İngilizce alıştırma cümlesi üret. Ofis, seyahat, yemek, spor, doğa veya şehir hayatından seç.'}]
+      })
+    });
+    const data=await resp.json();
+    const raw=data.content&&data.content[0]&&data.content[0].text?data.content[0].text:'';
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+    BASE_SENT=parsed;
+    document.getElementById('genInput').value=parsed.en;
+    VARIANTS=buildVariants(BASE_SENT);
+    renderBaseSent();
+    renderOverview();
+    closeDetail();
+  }catch(e){
+    console.error(e);
+    alert('Hata: '+e.message);
+  }
+  loading.style.display='none';
+}
+
+function useCurrent(){
+  const val=document.getElementById('genInput').value.trim();
+  if(!val)return;
+  // simple parse: first word group = subject, last = object, middle = verb
+  const words=val.replace(/[.!?]/g,'').split(' ');
+  if(words.length<3){alert('En az 3 kelime girin (özne + fiil + nesne)');return;}
+  // naive split: first two words = subject if first is My/The/A, else first word
+  let subject,verb,object,verbBase,verbV3;
+  if(words[0].toLowerCase().match(/^(my|the|a|an|her|his|our|your|their)$/)){
+    subject=words[0]+' '+words[1];verb=words[2];object=words.slice(3).join(' ');
+  }else{
+    subject=words[0];verb=words[1];object=words.slice(2).join(' ');
+  }
+  verbBase=verb.replace(/ed$/,'').replace(/s$/,'');
+  verbV3=verb.endsWith('en')?verb:verb.endsWith('d')?verb:verb+'ed';
+  BASE_SENT={en:val,tr:'(Türkçe çevirisi)',subject,verb,object,verbBase,verbV3};
+  VARIANTS=buildVariants(BASE_SENT);
+  renderBaseSent();renderOverview();closeDetail();
+}
+
+// ── INIT ──
+renderSidebar();
+renderBaseSent();
+renderOverview();
+</script>
+</body>
+</html>

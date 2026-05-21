@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Mastery Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--bg:#08090e;--s1:#111318;--s2:#181b24;--s3:#1e2130;--b1:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);--tx:#e8eaf0;--tx2:#9ca3b0;--tx3:#5c6278;--sh:rgba(0,0,0,0.5);--rdone:rgba(34,197,94,0.11);--rdoneb:rgba(34,197,94,0.32)}
+[data-theme="light"]{--bg:#f2f4f9;--s1:#ffffff;--s2:#f0f2f8;--s3:#e5e8f2;--b1:rgba(0,0,0,0.08);--b2:rgba(0,0,0,0.14);--tx:#1a1d2e;--tx2:#4a5070;--tx3:#8890a8;--sh:rgba(0,0,0,0.1);--rdone:rgba(34,197,94,0.08);--rdoneb:rgba(34,197,94,0.35)}
+:root{--teal:#00d4aa;--violet:#8b5cf6;--rose:#f43f5e;--sky:#38bdf8;--gold:#f5c842;--green:#22c55e;--amber:#f59e0b;--blue:#3b82f6}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,170,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,0.02) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
+
+/* TOPBAR */
+.bar{position:sticky;top:0;z-index:100;background:var(--s1);border-bottom:1px solid var(--b2);height:52px;display:flex;align-items:center;padding:0 18px;gap:10px;box-shadow:0 2px 12px var(--sh)}
+.logo{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;cursor:pointer;white-space:nowrap}
+.logo span{background:linear-gradient(135deg,var(--teal),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav{display:flex;gap:2px;flex:1;overflow-x:auto}
+.nb{padding:5px 11px;border-radius:7px;font-size:12px;font-weight:500;color:var(--tx2);cursor:pointer;border:none;background:transparent;font-family:inherit;white-space:nowrap;transition:all .15s}
+.nb:hover{background:var(--s2);color:var(--tx)}
+.nb.on{background:var(--s3);color:var(--teal);font-weight:700}
+.tright{display:flex;gap:8px;align-items:center;margin-left:auto;flex-shrink:0}
+.pill{display:flex;align-items:center;gap:4px;background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.25);border-radius:20px;padding:3px 9px;font-size:11px;font-weight:700;color:var(--gold)}
+.tbtn{width:30px;height:30px;background:var(--s2);border:1px solid var(--b2);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}
+.tbtn:hover{background:var(--s3)}
+
+/* PAGES */
+.pg{display:none;padding:18px;max-width:1380px;margin:0 auto;width:100%;position:relative;z-index:1}
+.pg.on{display:block}
+
+/* FILTERS */
+.fb{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:16px;padding:11px 13px;background:var(--s1);border:1px solid var(--b1);border-radius:11px}
+.sw{position:relative;flex:1;min-width:150px;max-width:260px}
+.sw svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:12px;height:12px;color:var(--tx3);pointer-events:none}
+.si{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:6px 8px 6px 27px;color:var(--tx);font-family:inherit;font-size:12px;outline:none;transition:border-color .2s}
+.si:focus{border-color:var(--teal)}
+.si::placeholder{color:var(--tx3)}
+.fsel{background:var(--s2);border:1px solid var(--b1);border-radius:7px;padding:5px 24px 5px 8px;color:var(--tx);font-family:inherit;font-size:12px;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center}
+.fsel:focus{border-color:var(--teal);outline:none}
+.fc{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--b1);background:var(--s2);color:var(--tx2);transition:all .15s;white-space:nowrap}
+.fc:hover,.fc.on{border-color:var(--teal);background:rgba(0,212,170,.09);color:var(--teal)}
+.fc.fd.on{border-color:var(--green);background:rgba(34,197,94,.09);color:var(--green)}
+.fc.fs.on{border-color:var(--blue);background:rgba(59,130,246,.09);color:var(--blue)}
+.fc.fr.on{border-color:var(--amber);background:rgba(245,158,11,.09);color:var(--amber)}
+
+/* STATS */
+.srow{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:9px;margin-bottom:16px}
+.sc{background:var(--s1);border:1px solid var(--b1);border-radius:11px;padding:11px 15px}
+.sc-n{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;line-height:1;color:var(--cv,var(--teal))}
+.sc-l{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px}
+
+/* PBAR */
+.pbw{background:var(--s1);border:1px solid var(--b1);border-radius:11px;padding:14px 18px;margin-bottom:16px}
+.pbt{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.pbt-l{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.pbt-p{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;background:linear-gradient(135deg,var(--teal),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pbar{height:8px;background:var(--s3);border-radius:4px;overflow:hidden}
+.pbf{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--teal),var(--violet),var(--gold));transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+/* MINDMAP */
+.mms{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:14px;margin-bottom:16px}
+.mmh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.mmh h3{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+#mmc{width:100%;height:280px;display:block;border-radius:8px;cursor:grab}
+#mmc:active{cursor:grabbing}
+
+/* TABLE */
+.tw{background:var(--s1);border:1px solid var(--b1);border-radius:13px;overflow:hidden}
+.th{display:grid;grid-template-columns:40px 1fr 120px 55px 55px 100px;padding:7px 13px;background:var(--s2);border-bottom:1px solid var(--b2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--tx3)}
+.tr{display:grid;grid-template-columns:40px 1fr 120px 55px 55px 100px;padding:7px 13px;border-bottom:1px solid var(--b1);align-items:center;cursor:pointer;transition:background .12s}
+.tr:last-child{border-bottom:none}
+.tr:hover{background:var(--s2)}
+.tr.td{background:var(--rdone)!important;border-left:3px solid var(--green)}
+.tr.ts{border-left:3px solid var(--blue)}
+.tr.trp{border-left:3px solid var(--amber)}
+.trn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3);text-align:center}
+.trtb{min-width:0}
+.trtit{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trfm{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cdot{display:inline-flex;font-size:10px;padding:2px 7px;border-radius:20px;background:color-mix(in srgb,var(--bc) 12%,transparent);color:var(--bc);border:1px solid color-mix(in srgb,var(--bc) 28%,transparent);font-weight:600;max-width:115px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cen{display:flex;align-items:center;justify-content:center}
+.chi{width:25px;height:25px;border-radius:6px;border:1.5px solid var(--b2);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;transition:all .12s}
+.chi:hover{border-color:var(--teal);background:rgba(0,212,170,.08)}
+.chi.ck{background:rgba(34,197,94,.13);border-color:var(--green)}
+.chi.ckr.ck{background:rgba(245,158,11,.13);border-color:var(--amber)}
+.stw{display:flex;align-items:center;justify-content:center;gap:3px}
+.stb{width:25px;height:25px;border-radius:6px;border:1.5px solid var(--b2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .12s}
+.stb:hover{background:var(--s3)}
+.stb.as{background:rgba(59,130,246,.13);border-color:var(--blue)}
+.stb.ad{background:rgba(34,197,94,.13);border-color:var(--green)}
+.stb.ar{background:rgba(245,158,11,.13);border-color:var(--amber)}
+
+/* LEVEL GROUP */
+.lgh{display:flex;align-items:center;gap:9px;padding:7px 13px;background:var(--s2);border-bottom:1px solid var(--b2);cursor:pointer;user-select:none;transition:background .12s}
+.lgh:hover{background:var(--s3)}
+.lgb{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:2px 8px;border-radius:20px;background:color-mix(in srgb,var(--lc) 14%,transparent);color:var(--lc);border:1px solid color-mix(in srgb,var(--lc) 30%,transparent)}
+.lgt{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.lgpr{display:flex;align-items:center;gap:5px;margin-left:auto}
+.lgpb{width:65px;height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.lgpbf{height:100%;background:var(--lc);border-radius:2px;transition:width .7s}
+.lgpct{font-size:10px;color:var(--tx3);font-family:'JetBrains Mono',monospace}
+.lgchv{font-size:11px;color:var(--tx3);transition:transform .2s}
+.coll .lgchv{transform:rotate(-90deg)}
+
+/* CAT HUB */
+.chg{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:11px}
+.chc{background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:16px;cursor:pointer;transition:all .18s}
+.chc:hover{transform:translateY(-2px);box-shadow:0 7px 22px var(--sh);border-color:var(--b2)}
+.chci{font-size:24px;margin-bottom:7px}
+.chct{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:2px}
+.chcs{font-size:10px;color:var(--tx3);margin-bottom:9px}
+.chcp{height:4px;background:var(--s3);border-radius:2px;overflow:hidden}
+.chcpf{height:100%;border-radius:2px;transition:width .7s}
+.chcpct{font-size:10px;color:var(--tx3);margin-top:3px;font-family:'JetBrains Mono',monospace}
+
+/* CAT DETAIL */
+.cdh{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding-bottom:13px;border-bottom:1px solid var(--b1)}
+.cdicon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;background:color-mix(in srgb,var(--cc) 14%,transparent);border:1px solid color-mix(in srgb,var(--cc) 28%,transparent)}
+.cdtit{font-family:'Syne',sans-serif;font-size:19px;font-weight:800}
+.cdsub{font-size:11px;color:var(--tx3);margin-top:1px}
+.bbtn{padding:5px 11px;border-radius:7px;background:var(--s2);border:1px solid var(--b1);color:var(--tx2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;margin-left:auto}
+.bbtn:hover{background:var(--s3);color:var(--tx)}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:11px}
+.tc{background:var(--s1);border:1px solid var(--b1);border-radius:13px;overflow:hidden;cursor:pointer;transition:all .18s}
+.tc:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 6px 20px var(--sh)}
+.tc.dn{border-color:rgba(34,197,94,.26);background:color-mix(in srgb,var(--rdone) 60%,var(--s1))}
+.tc.st{border-color:rgba(59,130,246,.23)}
+.tc.rp{border-color:rgba(245,158,11,.23)}
+.tcst{height:3px;background:var(--b1)}
+.tc.dn .tcst{background:var(--green)}.tc.st .tcst{background:var(--blue)}.tc.rp .tcst{background:var(--amber)}
+.tcb{padding:13px}
+.tctop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.tcn{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx3);background:var(--s2);padding:1px 5px;border-radius:4px}
+.tct{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:2px}
+.tcf{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);margin-bottom:6px}
+.tcr{font-size:11px;color:var(--tx2);line-height:1.5}
+.tcft{display:flex;justify-content:space-between;align-items:center;margin-top:9px;padding-top:7px;border-top:1px solid var(--b1)}
+.tca{font-size:10px;color:var(--tx3)}
+.tco{padding:3px 9px;border-radius:6px;font-size:10px;font-weight:600;background:var(--s2);border:1px solid var(--b1);color:var(--tx2);cursor:pointer;font-family:inherit;transition:all .12s}
+.tco:hover{background:var(--teal);color:#000;border-color:var(--teal)}
+
+/* DETAIL PAGE */
+.dbc{font-size:11px;color:var(--tx3);margin-bottom:7px;display:flex;align-items:center;gap:4px}
+.bl{cursor:pointer;color:var(--teal)}.bl:hover{text-decoration:underline}
+.dtr{display:flex;align-items:flex-start;justify-content:space-between;gap:11px;flex-wrap:wrap;margin-bottom:9px}
+.dtit{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1.2}
+.dstr{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);margin-top:2px}
+.sar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;margin-bottom:5px}
+.sa{padding:6px 13px;border-radius:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border:1.5px solid;cursor:pointer;font-family:inherit;transition:all .18s}
+.sa-s{border-color:rgba(59,130,246,.3);color:var(--blue);background:transparent}
+.sa-s:hover,.sa-s.on{background:rgba(59,130,246,.11);border-color:var(--blue)}
+.sa-d{border-color:rgba(34,197,94,.3);color:var(--green);background:transparent}
+.sa-d:hover,.sa-d.on{background:rgba(34,197,94,.11);border-color:var(--green)}
+.sa-r{border-color:rgba(245,158,11,.3);color:var(--amber);background:transparent}
+.sa-r:hover,.sa-r.on{background:rgba(245,158,11,.11);border-color:var(--amber)}
+.dtabs{display:flex;gap:2px;background:var(--s2);border-radius:9px;padding:3px;margin:14px 0;flex-wrap:wrap}
+.dtab{flex:1;min-width:75px;padding:6px 9px;border-radius:7px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;color:var(--tx3);transition:all .18s}
+.dtab.on{background:var(--s1);color:var(--tx);box-shadow:0 2px 7px var(--sh)}
+.dtp{display:none}.dtp.on{display:block}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px}
+@media(max-width:600px){.dgrid{grid-template-columns:1fr}.th,.tr{grid-template-columns:34px 1fr 34px 34px 34px}.th div:nth-child(3),.tr .tr-cat{display:none}}
+.ib{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:13px}
+.ibt{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--teal);margin-bottom:7px}
+.ibb{font-size:12px;color:var(--tx2);line-height:1.7}
+.ibb ul{padding-left:15px}.ibb li{margin-bottom:3px}
+.exl{padding:8px 11px;background:var(--s2);border-radius:8px;margin-bottom:6px;border-left:3px solid var(--sky)}
+.exe{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sky);font-weight:500}
+.ext{font-size:11px;color:var(--tx3);margin-top:2px}
+.qq{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:12px;padding:11px 13px;background:var(--s2);border-radius:8px;border-left:3px solid var(--violet)}
+.qo{display:block;width:100%;text-align:left;padding:8px 11px;background:var(--s2);border:1px solid var(--b1);border-radius:7px;color:var(--tx);font-family:inherit;font-size:12px;cursor:pointer;transition:all .12s;margin-bottom:5px}
+.qo:hover{border-color:var(--b2)}
+.qo.cor{border-color:var(--green);background:rgba(34,197,94,.09);color:var(--green)}
+.qo.wrg{border-color:var(--rose);background:rgba(244,63,94,.09);color:var(--rose)}
+.qres{padding:9px;border-radius:7px;font-weight:700;font-size:12px;text-align:center;margin-top:7px}
+.qrg{background:rgba(34,197,94,.09);color:var(--green);border:1px solid rgba(34,197,94,.28)}
+.qrb{background:rgba(244,63,94,.09);color:var(--rose);border:1px solid rgba(244,63,94,.28)}
+.qbl{margin-bottom:18px}
+.al{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid var(--b1);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:all .12s}
+.al:hover{border-color:var(--b2);background:var(--s2)}
+.al.don{border-color:rgba(34,197,94,.28);background:var(--rdone)}
+.alck{width:17px;height:17px;border:2px solid var(--b2);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s}
+.al.don .alck{background:var(--green);border-color:var(--green)}
+.alic{font-size:13px;width:19px;text-align:center}
+.alab{flex:1}
+.all{font-size:12px;color:var(--tx2);font-weight:500}
+.al.don .all{text-decoration:line-through;text-decoration-color:rgba(34,197,94,.4)}
+.als{font-size:10px;color:var(--tx3);margin-top:1px}
+
+/* TOAST */
+.tst{position:fixed;bottom:20px;right:20px;background:var(--s2);border:1px solid var(--teal);border-radius:10px;padding:9px 14px;font-size:12px;transform:translateX(120%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);z-index:9999;max-width:250px;box-shadow:0 5px 18px var(--sh)}
+.tst.on{transform:translateX(0)}
+.cnf{position:fixed;width:7px;height:7px;border-radius:2px;pointer-events:none;z-index:9998;animation:cfal 2s ease-in forwards}
+.aifab{position:fixed;bottom:20px;left:20px;width:44px;height:44px;background:linear-gradient(135deg,var(--violet),var(--teal));border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;box-shadow:0 4px 18px rgba(139,92,246,.4);transition:transform .18s;z-index:500}
+.aifab:hover{transform:scale(1.1)}
+@keyframes cfal{0%{opacity:1;transform:translateY(-20px) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+@keyframes fup{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.fup{animation:fup .28s ease both}
+</style>
+</head>
+<body>
+<div style="position:relative;z-index:1">
+<div class="bar">
+  <div class="logo" onclick="go('home')">English <span>Mastery</span></div>
+  <nav class="nav">
+    <button class="nb on" data-pg="home" onclick="go('home')">🏠 Ana Sayfa</button>
+    <button class="nb" data-pg="cat" onclick="go('cat')">📂 Kategoriler</button>
+    <button class="nb" data-pg="lev" onclick="go('lev')">📊 Seviyeler</button>
+  </nav>
+  <div class="tright">
+    <div class="pill">🔥 <span id="snum">0</span></div>
+    <div class="tbtn" id="tbtn" onclick="toggleTheme()">🌙</div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="pg on" id="pg-home">
+  <div class="srow fup" id="sr"></div>
+  <div class="pbw fup">
+    <div class="pbt"><div class="pbt-l">Genel İlerleme</div><div class="pbt-p" id="mpct">0%</div></div>
+    <div class="pbar"><div class="pbf" id="mbf" style="width:0%"></div></div>
+  </div>
+  <div class="mms fup">
+    <div class="mmh"><h3>🗺️ Konu Haritası — tıkla → kategoriye git &nbsp; <span style="font-size:10px;color:var(--tx3)">sürükle</span></h3></div>
+    <canvas id="mmc"></canvas>
+  </div>
+  <div class="fb fup">
+    <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="si" id="hsr" placeholder="Konu ara..." oninput="rHT()"></div>
+    <select class="fsel" id="hct" onchange="rHT()"><option value="">Tüm Kategoriler</option></select>
+    <select class="fsel" id="hlv" onchange="rHT()"><option value="">Tüm Seviyeler</option></select>
+    <div class="fc on" id="hfa" onclick="setSF('all')">Tümü</div>
+    <div class="fc fd" id="hfd" onclick="setSF('done')">✓ Tamam</div>
+    <div class="fc fs" id="hfs" onclick="setSF('studying')">📖 Çalışıyor</div>
+    <div class="fc fr" id="hfr" onclick="setSF('repeat')">🔁 Tekrar</div>
+  </div>
+  <div class="tw fup">
+    <div class="th"><div>#</div><div>Başlık &amp; Formül</div><div>Kategori</div><div style="text-align:center">Oku</div><div style="text-align:center">Tekrar</div><div style="text-align:center">Durum</div></div>
+    <div id="htbl"></div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="pg" id="pg-cat">
+  <h2 style="font-family:'Syne',sans-serif;font-size:19px;font-weight:800;margin-bottom:14px">📂 Kategoriler</h2>
+  <div class="chg" id="chg"></div>
+</div>
+
+<!-- CAT DETAIL -->
+<div class="pg" id="pg-cdd">
+  <div class="cdh" id="cddh"></div>
+  <div class="fb">
+    <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="si" id="cdsr" placeholder="Ara..." oninput="rCD()"></div>
+    <div class="fc on" id="cdfa" onclick="setCDS('all')">Tümü</div>
+    <div class="fc fd" id="cdfd" onclick="setCDS('done')">✓ Tamam</div>
+    <div class="fc fs" id="cdfs" onclick="setCDS('studying')">📖 Çalışıyor</div>
+    <div class="fc fr" id="cdfr" onclick="setCDS('repeat')">🔁 Tekrar</div>
+  </div>
+  <div class="cg" id="cdg"></div>
+</div>
+
+<!-- LEVELS -->
+<div class="pg" id="pg-lev">
+  <h2 style="font-family:'Syne',sans-serif;font-size:19px;font-weight:800;margin-bottom:14px">📊 Seviyeler</h2>
+  <div class="fb">
+    <div class="sw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input class="si" id="lvsr" placeholder="Ara..." oninput="rLV()"></div>
+    <div class="fc on" id="lvfa" onclick="setLVS('all')">Tümü</div>
+    <div class="fc fd" id="lvfd" onclick="setLVS('done')">✓ Tamam</div>
+    <div class="fc fs" id="lvfs" onclick="setLVS('studying')">📖 Çalışıyor</div>
+    <div class="fc fr" id="lvfr" onclick="setLVS('repeat')">🔁 Tekrar</div>
+  </div>
+  <div class="tw">
+    <div class="th"><div>#</div><div>Başlık &amp; Formül</div><div>Kategori</div><div style="text-align:center">Oku</div><div style="text-align:center">Tekrar</div><div style="text-align:center">Durum</div></div>
+    <div id="lvtbl"></div>
+  </div>
+</div>
+
+<!-- TOPIC DETAIL -->
+<div class="pg" id="pg-td">
+  <div id="tdc"></div>
+</div>
+</div>
+
+<div class="tst" id="tst"><span id="tmsg"></span></div>
+<div class="aifab" onclick="openAI()" title="AI ile konuş">🤖</div>
+
+<script>
+const CATS={
+  'Temel Yapılar':{icon:'🏗️',c:'#f43f5e'},
+  'Sıfatlar & Zarflar':{icon:'✨',c:'#f59e0b'},
+  'Fiil Zamanları':{icon:'⏱️',c:'#3b82f6'},
+  'Modal Fiiller':{icon:'🎯',c:'#8b5cf6'},
+  'Bağlaçlar & Edatlar':{icon:'🔗',c:'#00d4aa'},
+  'Cümle Yapıları':{icon:'📐',c:'#38bdf8'},
+  'Karşılaştırma':{icon:'⚖️',c:'#f5c842'},
+  'Zamirler & Belirleyiciler':{icon:'👤',c:'#e879f9'},
+  'Günlük Dil':{icon:'💬',c:'#fb923c'},
+};
+const LV=[
+  {id:'l1',l:'Seviye 1',d:'Başlangıç',c:'#f43f5e'},
+  {id:'l2',l:'Seviye 2',d:'Temel',c:'#f59e0b'},
+  {id:'l3',l:'Seviye 3',d:'Orta-Alt',c:'#8b5cf6'},
+  {id:'l4',l:'Seviye 4',d:'Orta',c:'#38bdf8'},
+  {id:'l5',l:'Seviye 5',d:'Orta-Üst',c:'#00d4aa'},
+  {id:'l6',l:'Seviye 6',d:'İleri',c:'#f5c842'},
+];
+const TP=[
+  {id:'t01',lv:'l1',n:'01',t:'Be Fiili (Am/Is/Are)',s:'Subject + am/is/are',cat:'Temel Yapılar',r:'Özneden sonra durum veya isim cümleleri kurar. Tekil: is, çoğul: are, ben: am.',det:'Be fiili İngilizcenin temel taşı. Türkçedeki olmak fiiline benzer ama çok daha sık kullanılır. Soru için yer değiştirir.',exc:'Kısaltmalar: I\'m, you\'re, he\'s, she\'s, it\'s, we\'re, they\'re. Olumsuz: am not, isn\'t, aren\'t.',ex:[{e:'I am a student.',t:'Ben bir öğrenciyim.'},{e:'She is happy today.',t:'O bugün mutlu.'},{e:'They are my friends.',t:'Onlar benim arkadaşlarım.'},{e:'Is he a doctor?',t:'O bir doktor mu?'},{e:'We are not tired.',t:'Yorgun değiliz.'}],qz:[{q:'Hangi cümle doğrudur?',o:['I is a teacher.','She am tired.','They are students.','He are tall.'],a:2},{q:'I am happy -- kısaltması?',o:["I'm happy","I are happy","I be happy","I is happy"],a:0}]},
+  {id:'t02',lv:'l1',n:'02',t:'Temel Özne Zamirleri',s:'I / You / He / She / It / We / They',cat:'Zamirler & Belirleyiciler',r:'Cümlede özne olarak kullanılır. Cinsiyet ve canlılık durumuna göre seçilir.',det:'Türkçeden farklı olarak İngilizcede özne her zaman belirtilmek zorunda. Fiil değişse de zamir sabit.',exc:'Cinsiyeti bilinen evcil hayvanlar için He/She kullanılabilir. It cansız ve cinsiyeti bilinmeyenler için.',ex:[{e:'I am Robert.',t:'Ben Robert\'ım.'},{e:'He is a pilot.',t:'O bir pilot.'},{e:'She loves music.',t:'O müziği sever.'},{e:'It is cold today.',t:'Bugün soğuk.'},{e:'We live in Turkey.',t:'Türkiyede yaşıyoruz.'}],qz:[{q:'Bir kız için hangi zamir?',o:['He','It','She','They'],a:2},{q:'"Biz" hangi zamirdir?',o:['They','We','You','I'],a:1}]},
+  {id:'t03',lv:'l1',n:'03',t:'Aitlik Yapıları',s:'-\'s takısı ve "of" edatı',cat:'Temel Yapılar',r:'Sahiplik belirtir. İnsan/hayvanlarda -s, cansız varlıklarda of tercih edilir.',det:"-'s yapısı Türkçedeki -in/-ın ekine benzer. of ise -nın/-nin anlamını verir, cansız nesnelerde daha doğal.",exc:"Sonu s ile biten çoğul isimlerde sadece kesme işareti: the students' books.",ex:[{e:"Ashley's house is beautiful.",t:"Ashley'nin evi güzel."},{e:'The capital of Turkey is Ankara.',t:"Türkiye'nin başkenti Ankara."},{e:"The dog's tail is long.",t:'Köpeğin kuyruğu uzun.'},{e:'The end of the movie was shocking.',t:'Filmin sonu şok ediciydi.'}],qz:[{q:'Hangisi doğrudur?',o:['The car of John',"John's car","The car's John","Car's John"],a:1}]},
+  {id:'t04',lv:'l1',n:'04',t:'Sayılar ve Sayma',s:'Cardinal (1,2,3) & Ordinal (1st,2nd,3rd)',cat:'Temel Yapılar',r:'Cardinal sayılar miktarı, Ordinal sayılar sırayı belirtir.',det:'Ordinal sayılar -th ekiyle yapılır. İstisnalar: first, second, third. Yıllar ikiye bölünerek okunur.',exc:'40 yazılırken u harfi düşer: forty (fourty değil).',ex:[{e:'I am thirty-five years old.',t:'Otuz beş yaşındayım.'},{e:'She lives on the third floor.',t:'Üçüncü katta oturuyor.'},{e:'The year nineteen eighty-four.',t:'Bin dokuz yüz seksen dört yılı.'}],qz:[{q:'"Üçüncü" nasıl yazılır?',o:['Threeth','Third','Thirth','Thirdly'],a:1},{q:'40 nasıl yazılır?',o:['Fourty','Forty','Forthy','Four-ty'],a:1}]},
+  {id:'t05',lv:'l1',n:'05',t:'Saatler',s:"It's + past/to + minutes",cat:'Günlük Dil',r:'30a kadar past, 30dan sonra to kullanılır.',det:'Past geçiyor, to kala demektir. Dijital: four fifteen. Quarter = çeyrek, half = yarım.',exc:"Dakika 5'in katı değilse minutes eklenmeli: twenty-three minutes past four.",ex:[{e:"It's a quarter past ten.",t:'Onu çeyrek geçiyor.'},{e:"It's half past three.",t:'Üç buçuk.'},{e:"It's ten to seven.",t:'Yediyi on kala.'}],qz:[{q:'"Beşi çeyrek geçiyor"?',o:['A quarter to five','A quarter past five','Half past five','Five quarter'],a:1}]},
+  {id:'t06',lv:'l2',n:'06',t:'Yetenek ve İzin (Can)',s:'can / cannot + yalın fiil',cat:'Modal Fiiller',r:'Yetenek, izin, rica veya olasılık bildirir.',det:'Can her özneyle aynı kalır, -s almaz. Could hem geçmiş hem kibar rica için kullanılır.',exc:'Resmi ortamlarda ricada may daha uygundur.',ex:[{e:'I can speak three languages.',t:'Üç dil konuşabiliyorum.'},{e:'Can I use your phone?',t:'Telefonunu kullanabilir miyim?'},{e:"She can't swim yet.",t:'Henüz yüzemiyor.'},{e:'Could you help me please?',t:'Yardım eder misiniz?'}],qz:[{q:'Hangisi doğrudur?',o:['She can swims.','She can swim.','She cans swim.','She is can swim.'],a:1}]},
+  {id:'t07',lv:'l2',n:'07',t:'Öneride Bulunma',s:"Shall / Let's / Why don't / How about",cat:'Günlük Dil',r:'Farklı kalıplarla öneri sunmak için kullanılır.',det:"Let's grup aktivitesi önerisinde kullanılır. Shall çok resmi ama doğaldır.",exc:"Shall sadece I ve We ile. How about ve What about sonrası -ing gelir.",ex:[{e:"Let's build a snowman!",t:'Kardan adam yapalım!'},{e:"Why don't we order pizza?",t:'Pizza sipariş etsek?'},{e:'Shall we go to the cinema?',t:'Sinemaya gidelim mi?'},{e:'How about a walk in the park?',t:'Parkta yürüyüş etsek?'}],qz:[{q:'"How about..." sonrası ne gelir?',o:['go','going','we go','go to'],a:1}]},
+  {id:'t08',lv:'l2',n:'08',t:'Zaman Edatları',s:'in / on / at + zaman',cat:'Bağlaçlar & Edatlar',r:'Ay/yıl için in, günler için on, saatler için at.',det:'At en spesifik an için, in en geniş zaman dilimi. On tarihler ve günler için.',exc:'GECE için at night. Mevsimler için in. Sabah/öğle/akşam için in the morning/afternoon/evening.',ex:[{e:'In June, the weather is hot.',t:"Haziran'da hava sıcak."},{e:'On Monday we have class.',t:'Pazartesi dersimiz var.'},{e:"At 9 o'clock sharp.",t:"Saat 9'da tam."},{e:'At night the stars shine.',t:'Geceleri yıldızlar parlar.'}],qz:[{q:'"Salı günü" için?',o:['in Tuesday','at Tuesday','on Tuesday','by Tuesday'],a:2},{q:'"Geceleri" nasıl?',o:['in the night','on the night','at night','in night'],a:2}]},
+  {id:'t09',lv:'l2',n:'09',t:'Soru Kelimeleri (WH)',s:'What/Where/When/Why/Who/How',cat:'Temel Yapılar',r:'Cümle başında bilgi istemek için. Which sınırlı seçeneklerde.',det:'How + sıfat: How much, How many, How long, How far, How often.',exc:'Sınırsız seçeneklerde What, sınırlı seçeneklerde Which tercih edilir.',ex:[{e:'Where are we going?',t:'Nereye gidiyoruz?'},{e:'What is your name?',t:'Adın ne?'},{e:'Why are you late?',t:'Neden geç kaldın?'},{e:'How far is the station?',t:'İstasyon ne kadar uzak?'}],qz:[{q:'"Ne kadar uzak?" için?',o:['How much far','How long','How far','How many far'],a:2}]},
+  {id:'t10',lv:'l2',n:'10',t:'İyelik Zamirleri',s:'Mine/Yours/His/Hers/Ours/Theirs',cat:'Zamirler & Belirleyiciler',r:'İsmin yerini tutarlar, yanlarında isim kullanılmaz.',det:'Possessive adjectives (my, your) yanında isim ister. Possessive pronouns (mine, yours) tek başına durur.',exc:'Its yapısının iyelik zamiri formu yoktur: its own kullanılır.',ex:[{e:'This book is mine.',t:'Bu kitap benim.'},{e:'The decision is ours.',t:'Karar bizim.'},{e:"Is she a friend of yours?",t:'O senin arkadaşın mı?'}],qz:[{q:'"Bu benim kitabım" için?',o:['This book is my.','This book is mine.','This is my book.','B ve C doğru'],a:3}]},
+  {id:'t11',lv:'l3',n:'11',t:'Sahiplik (Have Got)',s:'have got / has got',cat:'Temel Yapılar',r:'Sahip olmayı belirtir. Sadece şimdiki zaman için.',det:"Have got = have. Amerikan İngilizcesinde do you have? daha yaygın.",exc:'Geçmişte had kullanılır: I had a dog last year.',ex:[{e:"I've got a big house.",t:'Büyük bir evim var.'},{e:'She has got blue eyes.',t:'Mavi gözleri var.'},{e:'Have you got any plans?',t:'Planın var mı?'}],qz:[{q:'Doğru soru formu?',o:['Has she got a car?','Has she have a car?','Does she has got?','She has got a car?'],a:0}]},
+  {id:'t12',lv:'l3',n:'12',t:'Üstünlük Sıfatları',s:'shorter + than / more beautiful + than',cat:'Karşılaştırma',r:'İki şeyi karşılaştırır. Kısa: -er, uzun: more + sıfat.',det:'1-2 heceli: -er. 3+ heceli: more. than karşılaştırma kelimesi.',exc:'Düzensizler: good→better, bad→worse, far→farther/further.',ex:[{e:'Winter is colder than summer.',t:'Kış yazdan daha soğuk.'},{e:'She is more intelligent than him.',t:'O ondan daha zeki.'},{e:'This phone is better than that.',t:'Bu telefon ondan daha iyi.'}],qz:[{q:'"İyi" kelimesinin comparative formu?',o:['Gooder','More good','Better','Weller'],a:2}]},
+  {id:'t13',lv:'l3',n:'13',t:'En Üstünlük Sıfatları',s:'the + tallest / the most beautiful',cat:'Karşılaştırma',r:'En üstün dereceyi belirtir. Kısa: -est, uzun: the most.',det:'Superlative ile genellikle the kullanılır. Karşılaştırma grubu in veya of ile.',exc:'Aitlik bildiren sonra the kullanılmaz: my best friend.',ex:[{e:'The giraffe is the tallest animal.',t:'Zürafa en uzun hayvandır.'},{e:'This is the most difficult question.',t:'Bu en zor soru.'},{e:'She is my best friend.',t:'O en iyi arkadaşım.'}],qz:[{q:'"En kötü" nasıl?',o:['The most bad','The baddest','The worst','The more bad'],a:2}]},
+  {id:'t14',lv:'l3',n:'14',t:'Eşitlik Karşılaştırması',s:'as + sıfat + as',cat:'Karşılaştırma',r:'İki şeyin eşit derecede olduğunu belirtir.',det:'"As...as" eşitlik, "not as...as" yetersizlik. Just as ile vurgu yapılabilir.',exc:'Benzetme isimle yapılıyorsa like kullanılır.',ex:[{e:'He is as tall as his brother.',t:'Erkek kardeşi kadar uzun.'},{e:'Istanbul is as big as London.',t:'İstanbul Londra kadar büyük.'}],qz:[{q:'"O benim kadar hızlı"?',o:['He is as fast than me.','He is as fast as me.','He is fast like me.','He is same fast'],a:1}]},
+  {id:'t15',lv:'l3',n:'15',t:'Zarflar',s:'Sıfat + -ly',cat:'Sıfatlar & Zarflar',r:'Eylemin nasıl/ne zaman yapıldığını belirtir.',det:'Bazı zarflar iki forma sahip: hard/hardly, late/lately (farklı anlam).',exc:'Good zarfı well. Fast, hard, early, late hem sıfat hem zarf.',ex:[{e:'He drives very slowly.',t:'Çok yavaş sürer.'},{e:'She speaks fluently.',t:'Akıcı konuşur.'},{e:'They arrived early.',t:'Erken geldiler.'}],qz:[{q:'"İyi" kelimesinin zarf formu?',o:['Goodly','Goodness','Well','Bestly'],a:2}]},
+  {id:'t16',lv:'l3',n:'16',t:'-ed ve -ing Sıfatları',s:'Verb+ed (hisseden) / Verb+ing (neden olan)',cat:'Sıfatlar & Zarflar',r:'-ed hisseden kişiyi, -ing hissettiren şeyi niteler.',det:'Türk öğrenciler sık hata yapar: I am boring yanlış, I am bored doğru.',exc:"Delight için delightful, scare için scary kullanılır.",ex:[{e:'I am bored. The lecture is boring.',t:'Sıkıldım. Ders sıkıcı.'},{e:'She is excited. The news is exciting.',t:'Heyecanlı. Haber heyecan verici.'},{e:'He is confused. Instructions are confusing.',t:'Kafası karışık. Talimatlar kafa karıştırıcı.'}],qz:[{q:'"Film sıkıcıydı"?',o:['The film was bored.','The film was boring.','The film is bored.','Film was bore.'],a:1}]},
+  {id:'t17',lv:'l3',n:'17',t:'Nicelik Belirleyiciler',s:'All/Some/Any/Most/None (+ of)',cat:'Zamirler & Belirleyiciler',r:'Miktarı belirtir. of ile belirli gruptan bahseder.',det:'Some olumlu ve teklif sorularında, any olumsuz ve diğer sorularda.',exc:'None doğrudan nesne almaz, None of kullanılır.',ex:[{e:'All of the food was delicious.',t:'Yiyeceklerin tamamı lezzetliydi.'},{e:'Some students passed.',t:'Bazı öğrenciler geçti.'},{e:'None of them came.',t:'Hiçbiri gelmedi.'}],qz:[{q:'Teklif sorusunda ne?',o:['Any cake?','Some cake?','All cake?','None cake?'],a:1}]},
+  {id:'t18',lv:'l4',n:'18',t:'Belirli Tanımlayıcı (The)',s:'The + isim',cat:'Temel Yapılar',r:'Tek olan varlıklar, müzik aletleri, nehirler, denizler ile.',det:'"The" ile kullanılmayanlar: tekil ülkeler, kıtalar, diller, öğünler, soyut kavramlar.',exc:'Tekil ülke, kıta, dil, spor, öğün ve soyut kavramlarla kullanılmaz.',ex:[{e:"The moon isn't out tonight.",t:'Bu gece ay yok.'},{e:'She plays the violin.',t:'Keman çalıyor.'},{e:'I live in the United States.',t:"Amerika'da yaşıyorum."}],qz:[{q:'Hangisiyle "the" kullanılmaz?',o:['Violin','Nile River','Turkey (country)','Pacific Ocean'],a:2}]},
+  {id:'t19',lv:'l4',n:'19',t:'Edilgen Yapı',s:'Be + V3 (Past Participle)',cat:'Cümle Yapıları',r:'Eylemden etkilenen özne odakta. By ile yapan belirtilir.',det:'Her zamanda kullanılabilir: is made, was made, will be made, has been made.',exc:'Geçişsiz fiiller edilgen yapılamaz: run, go, arrive.',ex:[{e:'The car was repaired.',t:'Araba tamir edildi.'},{e:'English is spoken here.',t:'Burada İngilizce konuşulur.'},{e:'The letter was written by Mary.',t:'Mektup Mary tarafından yazıldı.'}],qz:[{q:'"Pasta yapıldı" edilgen olarak?',o:['The cake was made.','The cake is make.','Make was the cake.','The cake made.'],a:0}]},
+  {id:'t20',lv:'l4',n:'20',t:'Zıtlık Bağlaçları',s:'Although / Despite / However',cat:'Bağlaçlar & Edatlar',r:'"Although" + tam cümle, "Despite" + isim tamlaması.',det:'In spite of = Despite. Even though daha güçlü vurgu yapar.',exc:'However ve Nevertheless yeni cümlede. Though cümle sonuna gelebilir.',ex:[{e:'Although it was cold, we went out.',t:'Soğuk olmasına rağmen çıktık.'},{e:'Despite the cold, we went out.',t:'Soğuğa rağmen çıktık.'},{e:'I was tired. However, I finished.',t:'Yorgundum. Buna rağmen bitirdim.'}],qz:[{q:'"Despite" sonrası ne gelir?',o:['it was raining','the rain','raining','it rained'],a:1}]},
+  {id:'t21',lv:'l4',n:'21',t:'Neden-Sonuç Bağlaçları',s:'Because/Since/As/Due to/Therefore',cat:'Bağlaçlar & Edatlar',r:'Sebep (because, since) veya sonuç (therefore, so) bildirir.',det:'Because en güçlü. Since/As daha informal. Due to/Because of + isim.',exc:'Thanks to sadece olumlu durumlar için. Now that değişen durumlar için.',ex:[{e:"Since it's raining, we stayed home.",t:'Yağmur yağdığı için kaldık.'},{e:'Due to heavy traffic, I was late.',t:'Trafik nedeniyle geç kaldım.'}],qz:[{q:'"Due to" sonrası ne?',o:['it was raining','the rain','raining','because of'],a:1}]},
+  {id:'t22',lv:'l4',n:'22',t:'Sıfat Cümlecikleri',s:'who/which/that/whose/where',cat:'Cümle Yapıları',r:'Bir ismi niteler. Defining zorunlu, Non-defining ek bilgi.',det:'Who insanlar, which şeyler, that her ikisi (sadece defining). Where yer, when zaman.',exc:'Virgüllü cümlelerde that kullanılamaz.',ex:[{e:'The man who is standing there is my uncle.',t:'Orada duran adam amcam.'},{e:'My mother, who is 45, is a doctor.',t:'Annem, 45 yaşında, doktordur.'}],qz:[{q:'Virgüllü relative clauseda kullanılamaz?',o:['who','which','that','whom'],a:2}]},
+  {id:'t23',lv:'l4',n:'23',t:'Kalıp Bağlaçlar',s:'Both...and / Either...or / Neither...nor',cat:'Bağlaçlar & Edatlar',r:'İki öğeyi bağlar. Fiil nor/ordan sonraki özneye göre çekimlenir.',det:'Neither...nor tamamen olumsuz. Both...and ikisini kapsar.',exc:'Either...or ve Neither...nordan sonra fiil ikinci özneye göre çekimlenir.',ex:[{e:'Neither he nor his wife came.',t:'Ne o ne de karısı geldi.'},{e:'Both the soup and salad were delicious.',t:'Hem çorba hem salata lezzetliydi.'}],qz:[{q:'"Neither Tom nor his friends __ here."',o:['is','are','was','were'],a:1}]},
+  {id:'t24',lv:'l5',n:'24',t:'Olasılık Belirtme (Modal)',s:"may/might/could/must/can't",cat:'Modal Fiiller',r:'must (%99), may (%50), might (%30), can\'t (%99 imkansız).',det:'Geçmiş için: may have been, must have done, can\'t have seen.',exc:"can't ve couldn't olumsuzda %99 imkansızlık bildirir.",ex:[{e:'The killer may be the gardener.',t:'Katil bahçıvan olabilir.'},{e:'He must be tired.',t:'Yorgun olmalı.'},{e:"That can't be true!",t:'Bu gerçek olamaz!'}],qz:[{q:'%99 kesin çıkarım için?',o:['May','Might','Must','Could'],a:2}]},
+  {id:'t25',lv:'l5',n:'25',t:'Keşke Cümleleri (Wish)',s:'I wish + Past Simple / Past Perfect',cat:'Cümle Yapıları',r:'Şimdiki pişmanlık: Past Simple. Geçmişte: Past Perfect.',det:'Wish + would: başkasının davranışını değiştirme isteği.',exc:"I wish I would... kendi kendine şikayet için kullanılmaz.",ex:[{e:'I wish I spoke English fluently.',t:'Keşke İngilizceyi akıcı konuşsam.'},{e:'I wish I had studied harder.',t:'Keşke daha çok çalışmış olsaydım.'}],qz:[{q:'Geçmişteki hataya pişmanlık?',o:['I wish I studied more.','I wish I had studied more.','I wish I study more.','I wish I have studied more.'],a:1}]},
+  {id:'t26',lv:'l5',n:'26',t:'Geçmişteki Planlar',s:'was/were going to',cat:'Fiil Zamanları',r:'Geçmişte planlanmış ama gerçekleşmemiş eylemler.',det:'was/were about to: anlık gerçekleşmek üzere olan eylem için.',exc:'Gerçekleşip gerçekleşmediği genellikle but ile anlaşılır.',ex:[{e:'I was going to buy a computer, but it was too expensive.',t:'Bilgisayar alacaktım ama pahalıydı.'},{e:'She was going to call you, but she forgot.',t:'Seni arayacaktı ama unuttu.'}],qz:[{q:'Hangisi doğru?',o:['I was going buy a car.','I was going to buy a car.','I was went to buy.','I going to buy a car.'],a:1}]},
+  {id:'t27',lv:'l5',n:'27',t:'Gelecek Zaman (Will)',s:'will + yalın fiil',cat:'Fiil Zamanları',r:'Tahmin, vasiyet veya ani kararlar için.',det:'Will spontane karar, going to planlanmış. Will tahmin, going to kanıta dayalı.',exc:'Tahminlerde probably fiilden önce gelir.',ex:[{e:'I will clean the house tomorrow.',t:'Yarın evi temizleyeceğim.'},{e:"I'll answer the phone.",t:'Telefona bakayım.'}],qz:[{q:'Spontane karar için?',o:['I am going to help.','I will help.','I am helping.','I help.'],a:1}]},
+  {id:'t28',lv:'l5',n:'28',t:'Güçlü Tavsiye (Had Better)',s:'had better + yalın fiil',cat:'Modal Fiiller',r:"Yapılmaması durumunda olumsuz sonuç. 'İyi edersin' anlamı.",det:'Had better görünüşte geçmiş ama şimdiki ve gelecek için kullanılır.',exc:'Bir tehdit veya uyarı mesajı barındırır.',ex:[{e:'You had better go home now.',t:'Evine gitsen iyi edersin.'},{e:"We'd better hurry or we'll miss the train.",t:'Acele etsek iyi olur.'}],qz:[{q:'"You had better not..." ne demek?',o:['Yapman daha iyi','Yapmasan iyi olur','Yapabilirsin','Öneririm'],a:1}]},
+  {id:'t29',lv:'l5',n:'29',t:'İsim Cümlecikleri (Ever)',s:'whatever/wherever/whenever/whoever',cat:'Cümle Yapıları',r:'"Her ne/nerede/ne zaman/kim" anlamları. Soru sormaz.',det:'"However you look at it" = nasıl bakarsanız bakın.',exc:'Bu yapılar soru sormaz, isim yerine geçen yan cümleler oluşturur.',ex:[{e:'Whatever you do, do it well.',t:'Ne yaparsan yap, iyi yap.'},{e:"Wherever you go, I'll find you.",t:'Nereye gidersen git, seni bulurum.'}],qz:[{q:'"Nereye gidersen git" için?',o:['Whenever','Whatever','Wherever','Whoever'],a:2}]},
+  {id:'t30',lv:'l6',n:'30',t:'Koşul Cümleleri Type 3',s:'If + Past Perfect, would have + V3',cat:'Cümle Yapıları',r:'Geçmişte gerçekleşmemiş durumlar ve hayali sonuçlar.',det:'Type 3: geçmişte gerçekleşmeyen varsayım. Pişmanlık ve hayal içerir.',exc:"Unless = if not. As long as ve provided that da koşul bildirir.",ex:[{e:'If I had known, I would have come.',t:'Bilseydim gelirdim.'},{e:'If she had studied, she would have passed.',t:'Çalışsaydı geçerdi.'}],qz:[{q:'Type 3te hangi zaman kullanılır?',o:['Past Simple','Past Perfect','Present Perfect','Simple Present'],a:1}]},
+  {id:'t31',lv:'l6',n:'31',t:'Mixed Conditionals',s:'If + Past Perfect, would + V',cat:'Cümle Yapıları',r:'Geçmişteki bir olayın şu anki etkisi.',det:'Sonuç cümlesinde now/today/still gibi şimdiye işaret eden kelimeler.',exc:'Type 3ten farkı: şimdiki zaman sonucu.',ex:[{e:"If I hadn't been born in Turkey, I wouldn't speak Turkish.",t:"Türkiye'de doğmasaydım Türkçe konuşmazdım."}],qz:[{q:'Mixedda sonuç cümlesinde ne?',o:['would have + V3','would + V','will + V','Past Simple'],a:1}]},
+  {id:'t32',lv:'l6',n:'32',t:'Deyimsel Fiiller',s:'Fiil + Edat/Zarf Öbeği',cat:'Cümle Yapıları',r:'Tamamen yeni/mecazi anlam kazandırır.',det:'İngilizcede binlerce phrasal verb. Separable ve inseparable türleri var.',exc:'Zamir nesne ile separable: "Turn it off" doğru, "Turn off it" yanlış.',ex:[{e:'Call off the wedding.',t:'Düğünü iptal etmek.'},{e:'Get over the shock.',t:'Şoku atlatmak.'},{e:'Give up smoking.',t:'Sigarayı bırakmak.'},{e:'Look after the children.',t:'Çocuklara bakmak.'}],qz:[{q:'"Give up" ne anlama gelir?',o:['Yukarı vermek','Bırakmak/Vazgeçmek','Geri vermek','Aşağı gitmek'],a:1}]},
+  {id:'t33',lv:'l6',n:'33',t:'Gelecekte Tamamlanmışlık',s:'will have + V3',cat:'Fiil Zamanları',r:'Gelecekte belirli noktada tamamlanmış olacak eylemler.',det:'"By" + zaman noktası → will have + V3. By then = o zamana kadar.',exc:'by the time genellikle when yerine tercih edilir.',ex:[{e:'I will have cleaned the house by tomorrow.',t:'Yarına kadar evi temizlemiş olacağım.'},{e:"By the time you arrive, I will have finished.",t:'Sen gelene kadar bitirmiş olacağım.'}],qz:[{q:'Future Perfect ile hangi edat?',o:['at','in','by','on'],a:2}]},
+  {id:'t34',lv:'l6',n:'34',t:'Future Perfect Continuous',s:'will have been + V-ing',cat:'Fiil Zamanları',r:'Gelecekte belirli vakte gelindiğinde süren eylem ve süresi.',det:'En az kullanılan yapılardan. Süreyi vurgulamak için kullanılır.',exc:'Stative verbs (know, love, believe) bu yapıyla kullanılmaz.',ex:[{e:'I will have been waiting for two hours by then.',t:'O zamana kadar iki saattir bekliyor olacağım.'}],qz:[{q:'Hangisi bu yapıyla kullanılamaz?',o:['run','know','work','study'],a:1}]},
+];
+const ACTS=[
+  {id:'study',l:'Konu Çalışması',i:'📚',d:'Kuralları ve örnekleri incele'},
+  {id:'quiz',l:'Quiz',i:'❓',d:'Çoktan seçmeli test'},
+  {id:'reading',l:'Paragraf Okuma',i:'📖',d:'Konuyu içeren metin oku'},
+  {id:'writing',l:'Yazma Etkinliği',i:'✍️',d:'Konu kullanarak cümleler yaz'},
+  {id:'speak_w',l:'Konuşma — Yaz & Oku',i:'🎤',d:'Yaz, sesli oku ve kaydet'},
+  {id:'speak_ai',l:'AI ile Konuşma',i:'🤖',d:'Claude ile pratik yap'},
+  {id:'mfg',l:'MFG Metin',i:'📝',d:'Akademi metni üzerinden'},
+  {id:'listen',l:'Dinleme',i:'🎧',d:'Dinle ve anlamlandır'},
+  {id:'flashcard',l:'Flashcard',i:'🃏',d:'Hızlı hafıza tazeleme'},
+  {id:'explain',l:'Açıklama',i:'🗣️',d:'Konuyu kendi ağzınla anlat'},
+];
+
+// STATE
+let S={st:{},acts:{},ts:{},streak:0,lastDate:null};
+let hSF='all',cdSF='all',lvSF='all';
+let curCat='',curT='';
+let coll={};
+let isDark=true;
+let mmN=[],mmPan={x:0,y:0},mmDrag=false,mmStart={x:0,y:0};
+
+function ld(){try{const d=localStorage.getItem('emhv5');if(d)S={...S,...JSON.parse(d)};}catch(e){}}
+function sv(){try{localStorage.setItem('emhv5',JSON.stringify(S));}catch(e){}}
+
+function toggleTheme(){
+  isDark=!isDark;
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('tbtn').textContent=isDark?'🌙':'☀️';
+  drawMM();
+}
+
+function go(pg,ex=''){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  const p=document.getElementById('pg-'+pg);
+  if(p)p.classList.add('on');
+  const nb=document.querySelector('[data-pg="'+pg+'"]');
+  if(nb)nb.classList.add('on');
+  if(pg==='home')rHome();
+  if(pg==='cat')rCatHub();
+  if(pg==='lev')rLV();
+  if(pg==='cdd'&&ex){curCat=ex;rCD();}
+  if(pg==='td'&&ex){curT=ex;rTD();}
+  window.scrollTo(0,0);
+}
+
+function cntS(s){return TP.filter(t=>(S.st[t.id]||'none')===s).length}
+function totA(){return Object.values(S.acts).filter(a=>a&&a.checked).length}
+
+function updSt(){
+  const d=cntS('done'),s=cntS('studying'),r=cntS('repeat'),tot=TP.length;
+  const pct=Math.round((d/tot)*100);
+  const mp=document.getElementById('mpct');if(mp)mp.textContent=pct+'%';
+  const mb=document.getElementById('mbf');if(mb)mb.style.width=pct+'%';
+  const sr=document.getElementById('sr');
+  if(sr)sr.innerHTML=`
+    <div class="sc"><div class="sc-n" style="color:var(--teal)">${tot}</div><div class="sc-l">Toplam</div></div>
+    <div class="sc"><div class="sc-n" style="color:var(--green)">${d}</div><div class="sc-l">Tamamlandı</div></div>
+    <div class="sc"><div class="sc-n" style="color:var(--blue)">${s}</div><div class="sc-l">Çalışıyor</div></div>
+    <div class="sc"><div class="sc-n" style="color:var(--amber)">${r}</div><div class="sc-l">Tekrar</div></div>
+    <div class="sc"><div class="sc-n" style="color:var(--violet)">${totA()}</div><div class="sc-l">Etkinlik</div></div>
+    <div class="sc"><div class="sc-n" style="color:var(--gold)">${S.streak||0}🔥</div><div class="sc-l">Seri</div></div>
+  `;
+  document.getElementById('snum').textContent=S.streak||0;
+}
+
+function rHome(){
+  updSt();populHF();rHT();setTimeout(drawMM,50);
+}
+
+function populHF(){
+  const cs=document.getElementById('hct');
+  if(cs.options.length>1)return;
+  Object.keys(CATS).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o);});
+  const ls=document.getElementById('hlv');
+  LV.forEach(l=>{const o=document.createElement('option');o.value=l.id;o.textContent=l.l+' — '+l.d;ls.appendChild(o);});
+}
+
+function setSF(s){
+  hSF=s;
+  ['hfa','hfd','hfs','hfr'].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('on');});
+  const m={all:'hfa',done:'hfd',studying:'hfs',repeat:'hfr'};
+  const e=document.getElementById(m[s]);if(e)e.classList.add('on');
+  rHT();
+}
+
+function getHF(){
+  const q=(document.getElementById('hsr')&&document.getElementById('hsr').value||'').toLowerCase();
+  const cat=(document.getElementById('hct')&&document.getElementById('hct').value)||'';
+  const lev=(document.getElementById('hlv')&&document.getElementById('hlv').value)||'';
+  return TP.filter(t=>{
+    const st=S.st[t.id]||'none';
+    if(hSF!=='all'&&st!==hSF)return false;
+    if(cat&&t.cat!==cat)return false;
+    if(lev&&t.lv!==lev)return false;
+    if(q&&!(t.t.toLowerCase().includes(q)||t.s.toLowerCase().includes(q)||t.cat.toLowerCase().includes(q)))return false;
+    return true;
+  });
+}
+
+function rHT(){
+  const fil=getHF();
+  const body=document.getElementById('htbl');
+  if(!body)return;
+  if(!fil.length){body.innerHTML='<div style="padding:32px;text-align:center;color:var(--tx3)">Konu bulunamadı.</div>';return;}
+  let h='';
+  LV.forEach(lv=>{
+    const lt=fil.filter(t=>t.lv===lv.id);
+    if(!lt.length)return;
+    const dn=lt.filter(t=>(S.st[t.id]||'none')==='done').length;
+    const pc=Math.round((dn/lt.length)*100);
+    const cl=coll[lv.id];
+    h+='<div class="lgh'+(cl?' coll':'')+'" onclick="togLG(\''+lv.id+'\')" style="--lc:'+lv.c+'">'
+      +'<span class="lgb">'+lv.l+'</span><span class="lgt">'+lv.d+'</span>'
+      +'<div class="lgpr"><div class="lgpb"><div class="lgpbf" style="width:'+pc+'%"></div></div><span class="lgpct">'+dn+'/'+lt.length+'</span></div>'
+      +'<span class="lgchv">▾</span></div>';
+    if(!cl)lt.forEach(t=>{h+=rRow(t);});
+  });
+  body.innerHTML=h;
+}
+
+function togLG(id){coll[id]=!coll[id];rHT();}
+
+function rRow(t){
+  const st=S.st[t.id]||'none';
+  const cc=CATS[t.cat]&&CATS[t.cat].c||'#6b7280';
+  const rd=S.acts[t.id+'_reading']&&S.acts[t.id+'_reading'].checked;
+  const fd=S.acts[t.id+'_flashcard']&&S.acts[t.id+'_flashcard'].checked;
+  return '<div class="tr'+(st==='done'?' td':st==='studying'?' ts':st==='repeat'?' trp':'')+'" onclick="go(\'td\',\''+t.id+'\')">'+
+    '<div class="trn">'+t.n+'</div>'+
+    '<div class="trtb"><div class="trtit">'+t.t+'</div><div class="trfm">'+t.s+'</div></div>'+
+    '<div class="tr-cat cen"><span class="cdot" style="--bc:'+cc+'">'+t.cat+'</span></div>'+
+    '<div class="cen"><div class="chi '+(rd?'ck':'')+'" onclick="event.stopPropagation();togAQ(\''+t.id+'\',\'reading\',this)" title="Okuma">📖</div></div>'+
+    '<div class="cen"><div class="chi ckr '+(fd?'ck':'')+'" onclick="event.stopPropagation();togAQ(\''+t.id+'\',\'flashcard\',this)" title="Tekrar">🔁</div></div>'+
+    '<div class="stw" onclick="event.stopPropagation()">'+
+      '<button class="stb '+(st==='studying'?'as':'')+'" onclick="setST(\''+t.id+'\',\'studying\')" title="Çalışıyorum">📖</button>'+
+      '<button class="stb '+(st==='done'?'ad':'')+'" onclick="setST(\''+t.id+'\',\'done\')" title="Tamam">✓</button>'+
+      '<button class="stb '+(st==='repeat'?'ar':'')+'" onclick="setST(\''+t.id+'\',\'repeat\')" title="Tekrar">↩</button>'+
+    '</div>'+
+  '</div>';
+}
+
+function togAQ(tid,aid,el){
+  const k=tid+'_'+aid;
+  const c=S.acts[k]&&S.acts[k].checked;
+  S.acts[k]={checked:!c,timestamp:!c?new Date().toISOString():null};
+  sv();updSt();
+  el.classList.toggle('ck',!c);
+  showT(!c?'✅ İşaretlendi':'↩️ Kaldırıldı');
+}
+
+function rCatHub(){
+  const g=document.getElementById('chg');
+  if(!g)return;
+  g.innerHTML='';
+  Object.entries(CATS).forEach(function(entry){
+    const name=entry[0],info=entry[1];
+    const topics=TP.filter(t=>t.cat===name);
+    const done=topics.filter(t=>(S.st[t.id]||'none')==='done').length;
+    const pct=topics.length?Math.round((done/topics.length)*100):0;
+    const card=document.createElement('div');
+    card.className='chc fup';
+    card.innerHTML='<div class="chci">'+info.icon+'</div><div class="chct">'+name+'</div><div class="chcs">'+topics.length+' konu · '+done+' tamamlandı</div><div class="chcp"><div class="chcpf" style="width:'+pct+'%;background:'+info.c+'"></div></div><div class="chcpct">'+pct+'%</div>';
+    card.onclick=function(){go('cdd',name);};
+    g.appendChild(card);
+  });
+}
+
+function setCDS(s){
+  cdSF=s;
+  ['cdfa','cdfd','cdfs','cdfr'].forEach(function(id){const e=document.getElementById(id);if(e)e.classList.remove('on');});
+  const m={all:'cdfa',done:'cdfd',studying:'cdfs',repeat:'cdfr'};
+  const e=document.getElementById(m[s]);if(e)e.classList.add('on');
+  rCD();
+}
+
+function rCD(){
+  const info=CATS[curCat];if(!info)return;
+  const topics=TP.filter(t=>t.cat===curCat);
+  const done=topics.filter(t=>(S.st[t.id]||'none')==='done').length;
+  const dh=document.getElementById('cddh');
+  if(dh)dh.innerHTML='<div class="cdicon" style="--cc:'+info.c+'">'+info.icon+'</div><div><div class="cdtit">'+curCat+'</div><div class="cdsub">'+topics.length+' konu · '+done+' tamamlandı</div></div><button class="bbtn" onclick="go(\'cat\')">← Geri</button>';
+  const q=document.getElementById('cdsr')&&document.getElementById('cdsr').value||'';
+  const ql=q.toLowerCase();
+  const fil=topics.filter(t=>{
+    const st=S.st[t.id]||'none';
+    if(cdSF!=='all'&&st!==cdSF)return false;
+    if(ql&&!t.t.toLowerCase().includes(ql)&&!t.s.toLowerCase().includes(ql))return false;
+    return true;
+  });
+  const cg=document.getElementById('cdg');
+  if(!cg)return;
+  cg.innerHTML=fil.map(function(t){
+    const st=S.st[t.id]||'none';
+    const ad=ACTS.filter(a=>S.acts[t.id+'_'+a.id]&&S.acts[t.id+'_'+a.id].checked).length;
+    const sc=st==='done'?'#22c55e':st==='studying'?'#3b82f6':'#f59e0b';
+    return '<div class="tc '+(st!=='none'?st.substring(0,2):'')+(st==='repeat'?'rp':'')+' fup" onclick="go(\'td\',\''+t.id+'\')">'
+      +'<div class="tcst"></div>'
+      +'<div class="tcb">'
+      +'<div class="tctop"><span class="tcn">#'+t.n+'</span>'+(st!=='none'?'<span style="font-size:10px;color:'+(st==='done'?'var(--green)':st==='studying'?'var(--blue)':'var(--amber)')+';font-weight:700">'+(st==='done'?'✓ Tamam':st==='studying'?'📖 Çalışıyor':'🔁 Tekrar')+'</span>':'')+'</div>'
+      +'<div class="tct">'+t.t+'</div>'
+      +'<div class="tcf">'+t.s+'</div>'
+      +'<div class="tcr">'+t.r.slice(0,80)+(t.r.length>80?'...':'')+'</div>'
+      +'<div class="tcft"><span class="tca">'+ad+'/'+ACTS.length+' etkinlik</span><button class="tco" onclick="event.stopPropagation();go(\'td\',\''+t.id+'\')">Detay →</button></div>'
+      +'</div></div>';
+  }).join('');
+}
+
+function setLVS(s){
+  lvSF=s;
+  ['lvfa','lvfd','lvfs','lvfr'].forEach(function(id){const e=document.getElementById(id);if(e)e.classList.remove('on');});
+  const m={all:'lvfa',done:'lvfd',studying:'lvfs',repeat:'lvfr'};
+  const e=document.getElementById(m[s]);if(e)e.classList.add('on');
+  rLV();
+}
+
+function rLV(){
+  const q=(document.getElementById('lvsr')&&document.getElementById('lvsr').value||'').toLowerCase();
+  let h='';
+  LV.forEach(function(lv){
+    const lt=TP.filter(t=>{
+      const st=S.st[t.id]||'none';
+      if(t.lv!==lv.id)return false;
+      if(lvSF!=='all'&&st!==lvSF)return false;
+      if(q&&!t.t.toLowerCase().includes(q)&&!t.s.toLowerCase().includes(q))return false;
+      return true;
+    });
+    if(!lt.length)return;
+    const dn=lt.filter(t=>(S.st[t.id]||'none')==='done').length;
+    const pc=Math.round((dn/lt.length)*100);
+    h+='<div class="lgh" style="--lc:'+lv.c+'"><span class="lgb">'+lv.l+'</span><span class="lgt">'+lv.d+'</span><div class="lgpr"><div class="lgpb"><div class="lgpbf" style="width:'+pc+'%"></div></div><span class="lgpct">'+dn+'/'+lt.length+'</span></div></div>';
+    lt.forEach(t=>{h+=rRow(t);});
+  });
+  const el=document.getElementById('lvtbl');
+  if(el)el.innerHTML=h||'<div style="padding:32px;text-align:center;color:var(--tx3)">Konu bulunamadı.</div>';
+}
+
+function rTD(){
+  const t=TP.find(x=>x.id===curT);if(!t)return;
+  const st=S.st[t.id]||'none';
+  const lv=LV.find(l=>l.id===t.lv);
+  const cc=CATS[t.cat]&&CATS[t.cat].c||'#6b7280';
+  const el=document.getElementById('tdc');
+  if(!el)return;
+  el.innerHTML='<div class="dbc">'
+    +'<span class="bl" onclick="go(\'home\')">🏠 Ana Sayfa</span> › '
+    +'<span class="bl" onclick="go(\'cat\')">Kategoriler</span> › '
+    +'<span class="bl" onclick="go(\'cdd\',\''+t.cat+'\')">'+t.cat+'</span> › '+t.t
+    +'</div>'
+    +'<div class="dtr"><div><div class="dtit">'+t.t+'</div><div class="dstr">'+t.s+'</div></div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-start">'
+    +'<span class="cdot" style="--bc:'+cc+';font-size:11px;padding:3px 9px">'+t.cat+'</span>'
+    +'<span class="lgb" style="--lc:'+(lv&&lv.c)+'">'+(lv&&lv.l)+' — '+(lv&&lv.d)+'</span>'
+    +'</div></div>'
+    +'<div class="sar">'
+    +'<button class="sa sa-s'+(st==='studying'?' on':'')+'" onclick="setST(\''+t.id+'\',\'studying\');rTD()">📖 Çalışıyorum</button>'
+    +'<button class="sa sa-d'+(st==='done'?' on':'')+'" onclick="setST(\''+t.id+'\',\'done\');rTD()">✅ Tamamlandı</button>'
+    +'<button class="sa sa-r'+(st==='repeat'?' on':'')+'" onclick="setST(\''+t.id+'\',\'repeat\');rTD()">🔁 Tekrar</button>'
+    +'</div>'
+    +(S.ts[t.id]?'<div style="font-size:10px;color:var(--tx3);font-family:\'JetBrains Mono\',monospace;margin-bottom:11px">✓ Tamamlanma: '+fmtD(S.ts[t.id])+'</div>':'')
+    +'<div class="dtabs">'
+    +'<div class="dtab on" onclick="swDT(\'dp-ov\',this)">📋 Genel</div>'
+    +'<div class="dtab" onclick="swDT(\'dp-ex\',this)">💬 Örnekler</div>'
+    +'<div class="dtab" onclick="swDT(\'dp-qz\',this)">❓ Quiz</div>'
+    +'<div class="dtab" onclick="swDT(\'dp-ac\',this)">✅ Etkinlikler</div>'
+    +'</div>'
+    +'<div id="dp-ov" class="dtp on">'
+    +'<div class="dgrid">'
+    +'<div class="ib"><div class="ibt">📌 Temel Kural</div><div class="ibb">'+t.r+'</div></div>'
+    +'<div class="ib"><div class="ibt">📚 Detay</div><div class="ibb">'+t.det+'</div></div>'
+    +'<div class="ib" style="grid-column:1/-1"><div class="ibt">⚠️ İstisnalar</div><div class="ibb">'+t.exc+'</div></div>'
+    +'</div></div>'
+    +'<div id="dp-ex" class="dtp">'
+    +'<div class="ib"><div class="ibt">💬 Örnek Cümleler</div>'
+    +t.ex.map(function(e,i){return '<div class="exl"><div class="exe">'+(i+1)+'. '+e.e+'</div><div class="ext">🇹🇷 '+e.t+'</div></div>';}).join('')
+    +'</div></div>'
+    +'<div id="dp-qz" class="dtp">'
+    +(t.qz&&t.qz.length?t.qz.map(function(q,qi){
+      return '<div class="qbl"><div class="qq">'+q.q+'</div>'
+        +q.o.map(function(o,oi){return '<button class="qo" id="qo'+qi+'_'+oi+'" onclick="ansQ('+qi+','+oi+','+q.a+')">'+String.fromCharCode(65+oi)+'. '+o+'</button>';}).join('')
+        +'<div id="qr'+qi+'"></div></div>';
+    }).join(''):'<div class="ib"><div class="ibb">Bu konu için quiz yakında.</div></div>')
+    +'</div>'
+    +'<div id="dp-ac" class="dtp">'
+    +'<div class="ib" style="margin-bottom:11px"><div class="ibt">🎯 Etkinlik Takibi</div><div class="ibb">Her etkinliği tamamladığında işaretle.</div></div>'
+    +ACTS.map(function(a){
+      const k=t.id+'_'+a.id;
+      const dn=S.acts[k]&&S.acts[k].checked;
+      const ts=S.acts[k]&&S.acts[k].timestamp;
+      return '<div class="al'+(dn?' don':'')+'" onclick="togAct(\''+t.id+'\',\''+a.id+'\')">'
+        +'<div class="alck">'+(dn?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="m20 6-11 11-5-5"/></svg>':'')+'</div>'
+        +'<div class="alic">'+a.i+'</div>'
+        +'<div class="alab"><div class="all">'+a.l+'</div><div class="als">'+(dn&&ts?'✓ '+fmtD(ts):a.d)+'</div></div>'
+        +'</div>';
+    }).join('')
+    +'<div style="margin-top:9px;padding:9px 11px;background:var(--s2);border-radius:7px;font-size:11px;color:var(--tx3)">💡 <strong style="color:var(--teal)">İpucu:</strong> Konuşma etkinliğinde önce yazıp sonra sesli oku!</div>'
+    +'</div>';
+}
+
+function swDT(id,el){
+  document.querySelectorAll('.dtp').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.dtab').forEach(function(b){b.classList.remove('on');});
+  const p=document.getElementById(id);if(p)p.classList.add('on');
+  if(el)el.classList.add('on');
+}
+
+function ansQ(qi,oi,cor){
+  const opts=document.querySelectorAll('[id^="qo'+qi+'_"]');
+  opts.forEach(function(b,i){b.disabled=true;if(i===cor)b.classList.add('cor');if(i===oi&&oi!==cor)b.classList.add('wrg');});
+  const r=document.getElementById('qr'+qi);
+  if(r)r.innerHTML=oi===cor?'<div class="qres qrg">✅ Doğru! Harika!</div>':'<div class="qres qrb">❌ Yanlış. Doğru: '+String.fromCharCode(65+cor)+'</div>';
+  showT(oi===cor?'✅ Doğru!':'❌ Yanlış, tekrar bak!');
+}
+
+function togAct(tid,aid){
+  const k=tid+'_'+aid;
+  const c=S.acts[k]&&S.acts[k].checked;
+  S.acts[k]={checked:!c,timestamp:!c?new Date().toISOString():null};
+  sv();updSt();
+  rTD();
+  setTimeout(function(){
+    document.querySelectorAll('.dtp').forEach(function(p){p.classList.remove('on');});
+    document.querySelectorAll('.dtab').forEach(function(b){b.classList.remove('on');});
+    const p=document.getElementById('dp-ac');if(p)p.classList.add('on');
+    const tabs=document.querySelectorAll('.dtab');if(tabs[3])tabs[3].classList.add('on');
+  },10);
+  const aName=ACTS.find(function(a){return a.id===aid;});
+  showT(!c?'✅ '+(aName?aName.l:'')+ ' tamamlandı!':'↩️ İşaret kaldırıldı');
+}
+
+function setST(id,s){
+  const old=S.st[id]||'none';
+  if(old===s){S.st[id]='none';showT('↩️ Sıfırlandı');}
+  else{
+    S.st[id]=s;
+    if(s==='done'){S.ts[id]=new Date().toISOString();updStreak();showT('🎉 Tamamlandı!');confetti();}
+    else if(s==='studying')showT('📖 Çalışmaya başlandı!');
+    else showT('🔁 Tekrar listesine eklendi');
+  }
+  sv();updSt();rHT();
+}
+
+function updStreak(){
+  const today=new Date().toDateString();
+  const yd=new Date();yd.setDate(yd.getDate()-1);
+  if(S.lastDate!==today){S.streak=(S.lastDate===yd.toDateString())?(S.streak||0)+1:1;S.lastDate=today;}
+}
+
+function drawMM(){
+  const cv=document.getElementById('mmc');if(!cv)return;
+  const dpr=window.devicePixelRatio||1;
+  const rc=cv.getBoundingClientRect();
+  if(rc.width===0)return;
+  cv.width=rc.width*dpr;cv.height=rc.height*dpr;
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  const W=rc.width,H=rc.height;
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  ctx.clearRect(0,0,W,H);
+  const cats=Object.entries(CATS);
+  const cx=W/2,cy=H/2,r=Math.min(W,H)*0.33;
+  mmN=[];
+  mmN.push({x:cx+mmPan.x,y:cy+mmPan.y,r:34,bc:'#00d4aa',cat:null,type:'center'});
+  cats.forEach(function(entry,i){
+    const name=entry[0],info=entry[1];
+    const a=(i/cats.length)*Math.PI*2-Math.PI/2;
+    const nx=cx+Math.cos(a)*r+mmPan.x,ny=cy+Math.sin(a)*r+mmPan.y;
+    const topics=TP.filter(t=>t.cat===name);
+    const dn=topics.filter(t=>(S.st[t.id]||'none')==='done').length;
+    mmN.push({x:nx,y:ny,r:26,icon:info.icon,label:name,col:info.c,bc:info.c,cat:name,pct:topics.length?dn/topics.length:0,dn:dn,tot:topics.length,ang:a});
+  });
+  mmN.slice(1).forEach(function(n){
+    ctx.beginPath();ctx.moveTo(mmN[0].x,mmN[0].y);ctx.lineTo(n.x,n.y);
+    ctx.strokeStyle=dark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.07)';
+    ctx.lineWidth=1.5;ctx.setLineDash([4,6]);ctx.stroke();ctx.setLineDash([]);
+  });
+  mmN.forEach(function(n){
+    if(n.pct>0&&n.cat){
+      ctx.beginPath();ctx.arc(n.x,n.y,n.r+4,-Math.PI/2,-Math.PI/2+n.pct*Math.PI*2);
+      ctx.strokeStyle=n.bc;ctx.lineWidth=2.5;ctx.stroke();
+    }
+    ctx.shadowColor=n.bc+'44';ctx.shadowBlur=12;
+    ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    if(!n.cat){const gr=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);gr.addColorStop(0,'#00d4aa18');gr.addColorStop(1,dark?'#111318':'#fff');ctx.fillStyle=gr;}
+    else ctx.fillStyle=dark?'#111318':'#fff';
+    ctx.fill();ctx.shadowBlur=0;
+    ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    ctx.strokeStyle=n.bc+(dark?'99':'bb');ctx.lineWidth=1.8;ctx.stroke();
+    if(n.cat){
+      ctx.font=(n.r*0.68)+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(n.icon,n.x,n.y-3);
+      ctx.font='700 8px DM Sans,sans-serif';ctx.fillStyle=dark?'rgba(255,255,255,0.5)':'rgba(0,0,0,0.4)';
+      ctx.fillText(n.dn+'/'+n.tot,n.x,n.y+n.r*0.55);
+      ctx.font='600 9px DM Sans,sans-serif';ctx.fillStyle=dark?'rgba(255,255,255,0.65)':'rgba(20,20,50,0.75)';
+      const lx=n.x+Math.cos(n.ang)*20,ly=n.y+Math.sin(n.ang)*20;
+      const parts=n.label.split(' & ');
+      parts.forEach(function(p,pi){ctx.fillText(p,lx,ly+(pi-parts.length/2+0.5)*11);});
+    } else {
+      ctx.font='700 8px Syne,sans-serif';ctx.fillStyle='#00d4aa';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('ENG',n.x,n.y-5);
+      ctx.font='7px DM Sans,sans-serif';ctx.fillStyle=dark?'rgba(0,212,170,.6)':'rgba(0,168,138,.7)';
+      ctx.fillText('MASTERY',n.x,n.y+5);
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  const cv=document.getElementById('mmc');
+  if(!cv)return;
+  function getXY(e){const rc=cv.getBoundingClientRect();const src=e.touches?e.touches[0]:e;return{x:src.clientX-rc.left,y:src.clientY-rc.top};}
+  cv.addEventListener('click',function(e){
+    const p=getXY(e);
+    const n=mmN.find(function(nd){return nd.cat&&Math.hypot(nd.x-p.x,nd.y-p.y)<=nd.r+8;});
+    if(n)go('cdd',n.cat);
+  });
+  cv.addEventListener('mousedown',function(e){mmDrag=true;const p=getXY(e);mmStart={x:p.x-mmPan.x,y:p.y-mmPan.y};});
+  cv.addEventListener('mousemove',function(e){if(!mmDrag)return;const p=getXY(e);mmPan={x:p.x-mmStart.x,y:p.y-mmStart.y};drawMM();});
+  cv.addEventListener('mouseup',function(){mmDrag=false;});
+  cv.addEventListener('mouseleave',function(){mmDrag=false;});
+  window.addEventListener('resize',drawMM);
+});
+
+function showT(msg){
+  const t=document.getElementById('tst');
+  const m=document.getElementById('tmsg');
+  if(!t||!m)return;
+  m.textContent=msg;t.classList.add('on');
+  setTimeout(function(){t.classList.remove('on');},2000);
+}
+
+function confetti(){
+  var cl=['#f5c842','#00d4aa','#8b5cf6','#f43f5e','#38bdf8','#22c55e'];
+  for(var i=0;i<20;i++){
+    var el=document.createElement('div');
+    el.className='cnf';
+    el.style.left=Math.random()*100+'vw';
+    el.style.top='0';
+    el.style.background=cl[i%cl.length];
+    el.style.animationDelay=Math.random()*0.4+'s';
+    el.style.animationDuration=(1.5+Math.random())+'s';
+    document.body.appendChild(el);
+    setTimeout(function(){el.remove&&el.remove();},2500);
+  }
+}
+
+function fmtD(iso){
+  var d=new Date(iso);
+  return d.toLocaleDateString('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+}
+
+function openAI(){
+  var t=curT?TP.find(function(x){return x.id===curT;}):null;
+  window.open('https://claude.ai/new?q='+encodeURIComponent(t?'"'+t.t+'" konusunu pratik yapmak istiyorum. Başlayalım!':'İngilizce pratik yapmak istiyorum, başlayalım!'),'_blank');
+}
+
+// INIT
+ld();
+updSt();
+rHome();
+document.getElementById('hfa')&&document.getElementById('hfa').classList.add('on');
+document.getElementById('cdfa')&&document.getElementById('cdfa').classList.add('on');
+document.getElementById('lvfa')&&document.getElementById('lvfa').classList.add('on');
+</script>
+</body>
+</html>

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anna Karenina — Leo Tolstoy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --bg2: #ede7d9;
+    --surface: #ffffff;
+    --surface2: #faf7f2;
+    --text: #1a1208;
+    --text2: #5c4a2a;
+    --text3: #8b7355;
+    --accent: #8b1a1a;
+    --accent2: #c0392b;
+    --gold: #c9a84c;
+    --gold2: #e8c96a;
+    --border: rgba(139,90,43,0.2);
+    --shadow: rgba(139,90,43,0.15);
+    --grammar-bg: rgba(139,26,26,0.08);
+    --grammar-border: #8b1a1a;
+    --keyword-bg: rgba(201,168,76,0.15);
+    --keyword-border: #c9a84c;
+    --progress-bg: rgba(139,90,43,0.1);
+    --nav-bg: rgba(245,240,232,0.92);
+  }
+  [data-theme="dark"] {
+    --bg: #0d0a06;
+    --bg2: #161008;
+    --surface: #1e1710;
+    --surface2: #251e14;
+    --text: #f0e8d8;
+    --text2: #c9b48a;
+    --text3: #8b7a5a;
+    --accent: #c0392b;
+    --accent2: #e74c3c;
+    --gold: #c9a84c;
+    --gold2: #e8c96a;
+    --border: rgba(201,168,76,0.15);
+    --shadow: rgba(0,0,0,0.4);
+    --grammar-bg: rgba(192,57,43,0.12);
+    --grammar-border: #c0392b;
+    --keyword-bg: rgba(201,168,76,0.12);
+    --keyword-border: #c9a84c;
+    --progress-bg: rgba(201,168,76,0.08);
+    --nav-bg: rgba(13,10,6,0.92);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lora', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    transition: background 0.4s, color 0.4s;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── DECORATIVE BACKGROUND ─── */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(ellipse 800px 600px at 20% 10%, rgba(139,26,26,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 800px at 80% 80%, rgba(201,168,76,0.05) 0%, transparent 60%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    background: var(--nav-bg);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    transition: background 0.4s;
+  }
+
+  .nav-brand {
+    font-family:'Playfair Display', serif;
+    font-size:1.1rem;
+    font-style:italic;
+    color:var(--accent);
+    letter-spacing:0.02em;
+  }
+
+  .nav-right { display:flex; align-items:center; gap:1rem; }
+
+  .progress-bar-wrap {
+    width:120px;
+    height:4px;
+    background:var(--progress-bg);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .progress-bar-fill {
+    height:100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius:2px;
+    transition: width 0.5s ease;
+  }
+
+  .theme-btn {
+    width:38px; height:22px;
+    border-radius:11px;
+    background: var(--surface2);
+    border:1px solid var(--border);
+    cursor:pointer;
+    position:relative;
+    transition:background 0.3s;
+  }
+  .theme-btn::after {
+    content:'';
+    position:absolute;
+    top:3px; left:3px;
+    width:14px; height:14px;
+    border-radius:50%;
+    background:var(--gold);
+    transition:transform 0.3s;
+  }
+  [data-theme="dark"] .theme-btn::after { transform:translateX(16px); }
+
+  /* ─── HERO ─── */
+  #hero {
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding-top:60px;
+    overflow:hidden;
+  }
+
+  .hero-ornament {
+    position:absolute;
+    width:600px; height:600px;
+    border:1px solid var(--border);
+    border-radius:50%;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    opacity:0.4;
+    animation: heroSpin 60s linear infinite;
+  }
+  .hero-ornament:nth-child(2) {
+    width:400px; height:400px;
+    animation-duration:40s;
+    animation-direction:reverse;
+    border-style:dashed;
+  }
+
+  @keyframes heroSpin { to { transform:translate(-50%,-50%) rotate(360deg); } }
+
+  .hero-content {
+    text-align:center;
+    position:relative;
+    z-index:2;
+    padding:2rem;
+  }
+
+  .hero-eyebrow {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.72rem;
+    font-weight:500;
+    letter-spacing:0.25em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:1.5rem;
+    animation: fadeInDown 0.8s ease 0.2s both;
+  }
+
+  .hero-title {
+    font-family:'Playfair Display', serif;
+    font-size:clamp(3rem,8vw,6rem);
+    line-height:1.1;
+    font-style:italic;
+    color:var(--text);
+    margin-bottom:0.5rem;
+    animation: fadeInDown 0.8s ease 0.4s both;
+  }
+
+  .hero-title span { color:var(--accent); }
+
+  .hero-author {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.85rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--text3);
+    margin-bottom:2.5rem;
+    animation: fadeInDown 0.8s ease 0.6s both;
+  }
+
+  .hero-tagline {
+    font-family:'Lora', serif;
+    font-size:1.05rem;
+    font-style:italic;
+    color:var(--text2);
+    max-width:500px;
+    margin:0 auto 3rem;
+    line-height:1.7;
+    animation: fadeInUp 0.8s ease 0.8s both;
+  }
+
+  .hero-stats {
+    display:flex;
+    gap:3rem;
+    justify-content:center;
+    margin-bottom:3rem;
+    animation: fadeInUp 0.8s ease 1s both;
+  }
+
+  .stat { text-align:center; }
+  .stat-num {
+    font-family:'Playfair Display', serif;
+    font-size:1.8rem;
+    color:var(--gold);
+    display:block;
+  }
+  .stat-label {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text3);
+  }
+
+  .start-btn {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.85rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--bg);
+    background:var(--accent);
+    border:none;
+    padding:0.85rem 2.5rem;
+    border-radius:2px;
+    cursor:pointer;
+    transition:all 0.3s;
+    animation: fadeInUp 0.8s ease 1.2s both;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .start-btn::before {
+    content:'';
+    position:absolute;
+    top:0; left:-100%;
+    width:100%; height:100%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition:left 0.5s;
+  }
+
+  .start-btn:hover { background:var(--accent2); transform:translateY(-2px); box-shadow:0 8px 24px var(--shadow); }
+  .start-btn:hover::before { left:100%; }
+
+  @keyframes fadeInDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeInUp   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ─── CHAPTER NAV ─── */
+  #chapter-nav {
+    position:sticky;
+    top:60px;
+    z-index:90;
+    background:var(--nav-bg);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:0 2rem;
+    display:flex;
+    gap:0;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  #chapter-nav::-webkit-scrollbar { display:none; }
+
+  .ch-tab {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.78rem;
+    font-weight:500;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text3);
+    padding:0.9rem 1.2rem;
+    border-bottom:2px solid transparent;
+    cursor:pointer;
+    transition:all 0.3s;
+    white-space:nowrap;
+    background:none;
+    border-left:none; border-right:none; border-top:none;
+  }
+  .ch-tab:hover { color:var(--text2); }
+  .ch-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+  /* ─── MAIN CONTENT ─── */
+  main {
+    position:relative;
+    z-index:1;
+    max-width:1100px;
+    margin:0 auto;
+    padding:4rem 2rem 6rem;
+  }
+
+  /* ─── CHAPTER ─── */
+  .chapter {
+    display:none;
+    animation: chapterIn 0.6s ease both;
+  }
+  .chapter.active { display:block; }
+
+  @keyframes chapterIn {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .chapter-header {
+    text-align:center;
+    margin-bottom:3.5rem;
+    padding-bottom:2.5rem;
+    border-bottom:1px solid var(--border);
+    position:relative;
+  }
+
+  .chapter-num {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.72rem;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:1rem;
+  }
+
+  .chapter-title {
+    font-family:'Playfair Display', serif;
+    font-size:clamp(1.8rem,4vw,2.8rem);
+    font-style:italic;
+    color:var(--text);
+    margin-bottom:1rem;
+    line-height:1.2;
+  }
+
+  .chapter-subtitle {
+    font-family:'Lora', serif;
+    font-style:italic;
+    font-size:1rem;
+    color:var(--text3);
+  }
+
+  .chapter-ornament {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:1rem;
+    margin-top:1.5rem;
+    color:var(--gold);
+    font-size:1rem;
+    opacity:0.6;
+  }
+  .chapter-ornament::before,
+  .chapter-ornament::after {
+    content:'';
+    width:60px;
+    height:1px;
+    background:var(--gold);
+    opacity:0.5;
+  }
+
+  /* ─── VISUAL CARD ─── */
+  .scene-visual {
+    width:100%;
+    max-width:680px;
+    margin:0 auto 3rem;
+    border-radius:4px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 20px 60px var(--shadow);
+  }
+
+  .scene-image {
+    width:100%;
+    height:280px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:6rem;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .scene-image::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to bottom, transparent 40%, var(--surface));
+    pointer-events:none;
+  }
+
+  .scene-caption {
+    background:var(--surface);
+    padding:1rem 1.5rem;
+    font-family:'DM Sans', sans-serif;
+    font-size:0.78rem;
+    letter-spacing:0.05em;
+    color:var(--text3);
+    text-align:center;
+    font-style:italic;
+  }
+
+  /* ─── PROSE ─── */
+  .prose {
+    font-size:1.05rem;
+    line-height:1.9;
+    color:var(--text2);
+    max-width:720px;
+    margin:0 auto;
+  }
+
+  .prose p {
+    margin-bottom:1.6rem;
+    text-indent:2rem;
+  }
+  .prose p:first-child { text-indent:0; }
+
+  .drop-cap::first-letter {
+    font-family:'Playfair Display', serif;
+    float:left;
+    font-size:4.5rem;
+    line-height:0.75;
+    margin:0.1em 0.1em 0 0;
+    color:var(--accent);
+    font-style:italic;
+  }
+
+  /* ─── GRAMMAR HIGHLIGHT ─── */
+  .grammar {
+    background:var(--grammar-bg);
+    border-bottom:2px solid var(--grammar-border);
+    padding:0 2px;
+    border-radius:2px 2px 0 0;
+    cursor:help;
+    position:relative;
+    transition:background 0.2s;
+    font-style:normal;
+  }
+  .grammar:hover { background:rgba(139,26,26,0.15); }
+
+  .grammar-tooltip {
+    position:absolute;
+    bottom:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--accent);
+    color:white;
+    font-family:'DM Sans', sans-serif;
+    font-size:0.72rem;
+    padding:0.4rem 0.7rem;
+    border-radius:3px;
+    white-space:nowrap;
+    pointer-events:none;
+    opacity:0;
+    transition:opacity 0.2s;
+    z-index:10;
+    letter-spacing:0.05em;
+  }
+  .grammar-tooltip::after {
+    content:'';
+    position:absolute;
+    top:100%; left:50%;
+    transform:translateX(-50%);
+    border:4px solid transparent;
+    border-top-color:var(--accent);
+  }
+  .grammar:hover .grammar-tooltip { opacity:1; }
+
+  /* ─── KEYWORD ─── */
+  .kw {
+    background:var(--keyword-bg);
+    border-bottom:1px solid var(--keyword-border);
+    padding:0 2px;
+    font-weight:500;
+    color:var(--text);
+    cursor:pointer;
+    border-radius:2px 2px 0 0;
+  }
+
+  /* ─── SECTION DIVIDER ─── */
+  .section-break {
+    text-align:center;
+    margin:2.5rem 0;
+    color:var(--gold);
+    font-size:0.8rem;
+    opacity:0.6;
+    letter-spacing:0.3em;
+  }
+
+  /* ─── QUOTE BLOCK ─── */
+  .quote-block {
+    border-left:3px solid var(--gold);
+    margin:2rem 0 2rem 1rem;
+    padding:1rem 1.5rem;
+    background:var(--surface2);
+    border-radius:0 4px 4px 0;
+  }
+  .quote-block p {
+    font-style:italic;
+    font-size:1.1rem;
+    color:var(--text2);
+    text-indent:0 !important;
+    margin-bottom:0.5rem !important;
+  }
+  .quote-source {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.78rem;
+    color:var(--text3);
+    letter-spacing:0.05em;
+  }
+
+  /* ─── CHARACTER CARD ─── */
+  .character-cards {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:1rem;
+    margin:2rem 0;
+  }
+  .char-card {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1.2rem;
+    text-align:center;
+    transition:transform 0.2s, box-shadow 0.2s;
+  }
+  .char-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px var(--shadow); }
+  .char-avatar {
+    width:56px; height:56px;
+    border-radius:50%;
+    margin:0 auto 0.8rem;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.6rem;
+    border:2px solid var(--border);
+  }
+  .char-name {
+    font-family:'Playfair Display', serif;
+    font-size:1rem;
+    color:var(--text);
+    font-style:italic;
+    margin-bottom:0.3rem;
+  }
+  .char-desc {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.75rem;
+    color:var(--text3);
+    letter-spacing:0.03em;
+  }
+
+  /* ─── GLOSSARY ─── */
+  .glossary {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:1.5rem 2rem;
+    margin-top:3rem;
+  }
+
+  .glossary-title {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.72rem;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:1.2rem;
+    display:flex;
+    align-items:center;
+    gap:0.5rem;
+  }
+  .glossary-title::after {
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--border);
+  }
+
+  .glossary-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:0.6rem;
+  }
+
+  .glossary-item {
+    display:flex;
+    gap:0.5rem;
+    align-items:baseline;
+    padding:0.4rem 0;
+    border-bottom:1px solid var(--border);
+  }
+  .gl-en {
+    font-weight:500;
+    font-size:0.88rem;
+    color:var(--text);
+    min-width:100px;
+  }
+  .gl-tr {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.8rem;
+    color:var(--text3);
+    font-style:italic;
+  }
+
+  /* ─── GRAMMAR LEGEND ─── */
+  .grammar-legend {
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.8rem;
+    margin-top:2rem;
+    padding:1rem 1.5rem;
+    background:var(--surface2);
+    border-radius:4px;
+    border:1px solid var(--border);
+  }
+  .legend-item {
+    display:flex;
+    align-items:center;
+    gap:0.4rem;
+    font-family:'DM Sans', sans-serif;
+    font-size:0.75rem;
+    color:var(--text3);
+  }
+  .legend-dot {
+    width:20px; height:3px;
+    border-radius:2px;
+  }
+  .legend-dot.red { background:var(--accent); }
+  .legend-dot.gold { background:var(--gold); }
+
+  /* ─── NAVIGATION BTNS ─── */
+  .chapter-nav-btns {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:4rem;
+    padding-top:2rem;
+    border-top:1px solid var(--border);
+  }
+
+  .nav-btn {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.8rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text2);
+    background:var(--surface);
+    border:1px solid var(--border);
+    padding:0.7rem 1.5rem;
+    border-radius:2px;
+    cursor:pointer;
+    transition:all 0.3s;
+  }
+  .nav-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .nav-btn:disabled { opacity:0.3; cursor:not-allowed; }
+  .nav-btn.next { background:var(--accent); color:white; border-color:var(--accent); }
+  .nav-btn.next:hover { background:var(--accent2); border-color:var(--accent2); }
+
+  /* ─── READING PROGRESS ─── */
+  .reading-time {
+    font-family:'DM Sans', sans-serif;
+    font-size:0.75rem;
+    color:var(--text3);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media(max-width:600px) {
+    .hero-stats { gap:1.5rem; }
+    .prose { font-size:0.95rem; }
+    #chapter-nav { padding:0 1rem; }
+    main { padding:2rem 1rem 4rem; }
+    .chapter-nav-btns { flex-direction:column; gap:1rem; }
+    .nav-btn { width:100%; text-align:center; }
+  }
+
+  /* ─── SCROLL INDICATOR ─── */
+  .scroll-line {
+    position:fixed;
+    top:0; left:0;
+    height:3px;
+    background:linear-gradient(90deg, var(--accent), var(--gold));
+    z-index:200;
+    transition:width 0.1s;
+  }
+
+  /* ─── SCENE BG COLORS ─── */
+  .bg-ballroom { background:radial-gradient(ellipse at center, #1a0a2e 0%, #0d0008 100%); }
+  .bg-winter   { background:radial-gradient(ellipse at center, #d4e8f0 0%, #8fb4c8 100%); }
+  .bg-spring   { background:radial-gradient(ellipse at center, #e8f5e9 0%, #a5c8a0 100%); }
+  .bg-station  { background:radial-gradient(ellipse at center, #2d2820 0%, #1a1510 100%); }
+  .bg-estate   { background:radial-gradient(ellipse at center, #f5e6c8 0%, #d4b896 100%); }
+  [data-theme="dark"] .bg-winter   { background:radial-gradient(ellipse at center, #1a2840 0%, #0d1820 100%); }
+  [data-theme="dark"] .bg-spring   { background:radial-gradient(ellipse at center, #0d2010 0%, #081408 100%); }
+  [data-theme="dark"] .bg-estate   { background:radial-gradient(ellipse at center, #201808 0%, #140e04 100%); }
+
+  /* ─── ANIMATE ENTRIES ─── */
+  .fade-up {
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.visible {
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  #hero { display:none; }
+  #app-view { display:block; }
+</style>
+</head>
+<body>
+
+<div class="scroll-line" id="scrollLine"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Anna Karenina</div>
+  <div class="nav-right">
+    <span class="reading-time" id="readingTime">Chapter 1 of 5</span>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progressFill" style="width:20%"></div>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle dark/light mode"></button>
+  </div>
+</nav>
+
+<!-- CHAPTER TABS -->
+<div id="chapter-nav">
+  <button class="ch-tab active" data-ch="0">I · Moscow</button>
+  <button class="ch-tab" data-ch="1">II · The Ball</button>
+  <button class="ch-tab" data-ch="2">III · Passion</button>
+  <button class="ch-tab" data-ch="3">IV · Choices</button>
+  <button class="ch-tab" data-ch="4">V · Tragedy</button>
+</div>
+
+<!-- MAIN -->
+<main id="app-view">
+
+  <!-- ═══════════════ CHAPTER 1 ═══════════════ -->
+  <section class="chapter active" id="ch0">
+    <div class="chapter-header fade-up">
+      <div class="chapter-num">Chapter I</div>
+      <h1 class="chapter-title">All Happy Families</h1>
+      <p class="chapter-subtitle">Moscow, 1873 — A world of wealth and secrets begins to crack</p>
+      <div class="chapter-ornament">✦</div>
+    </div>
+
+    <div class="scene-visual fade-up">
+      <div class="scene-image bg-estate" style="background:radial-gradient(ellipse at center,#e8d5b0 0%,#c4a57a 100%)">
+        🏛️
+      </div>
+      <div class="scene-caption">The Oblonsky estate, Moscow — a place of order that has lost its peace</div>
+    </div>
+
+    <div class="prose fade-up">
+
+      <div class="character-cards">
+        <div class="char-card">
+          <div class="char-avatar">👑</div>
+          <div class="char-name">Anna Karenina</div>
+          <div class="char-desc">Beautiful, intelligent, married to a minister</div>
+        </div>
+        <div class="char-card">
+          <div class="char-avatar">🎖️</div>
+          <div class="char-name">Alexei Karenin</div>
+          <div class="char-desc">Anna's husband — cold, powerful, respected</div>
+        </div>
+        <div class="char-card">
+          <div class="char-avatar">🌹</div>
+          <div class="char-name">Stiva Oblonsky</div>
+          <div class="char-desc">Anna's brother — charming but unfaithful</div>
+        </div>
+        <div class="char-card">
+          <div class="char-avatar">💐</div>
+          <div class="char-name">Dolly Oblonsky</div>
+          <div class="char-desc">Stiva's wife — loving, hurt, forgiving</div>
+        </div>
+      </div>
+
+      <p class="drop-cap">"<span class="grammar">All happy families<span class="grammar-tooltip">Subject + Verb — Present Simple (Genel gerçekler için)</span></span> <span class="grammar">are<span class="grammar-tooltip">to be — 3rd person plural present</span></span> alike; each unhappy family <span class="grammar">is<span class="grammar-tooltip">to be — 3rd person singular present</span></span> unhappy in its own way." This famous sentence <span class="grammar">opens<span class="grammar-tooltip">Simple Present — kitapların, filmlerin nasıl başladığını anlatmak için</span></span> one of the greatest novels ever <span class="grammar">written<span class="grammar-tooltip">Past Participle — passive voice "ever written = şimdiye kadar yazılmış"</span></span>.</p>
+
+      <p>The story <span class="grammar">begins<span class="grammar-tooltip">Simple Present — anlatı başlangıcı</span></span> in Moscow, in the grand home of Prince <span class="kw">Stepan</span> Oblonsky — known to everyone as "<span class="kw">Stiva</span>." Stiva is a charming, <span class="kw">handsome</span> man who <span class="grammar">works<span class="grammar-tooltip">Simple Present — süregelen meslek/alışkanlık</span></span> as a government official. He <span class="grammar">has been married<span class="grammar-tooltip">Present Perfect Passive — geçmişte başlayıp hala devam eden durum</span></span> to Dolly for many years, and they <span class="grammar">have<span class="grammar-tooltip">Simple Present (have) — sahiplik/aile ifadesi</span></span> five children together.</p>
+
+      <p>But this morning, the Oblonsky home <span class="grammar">is not<span class="grammar-tooltip">Simple Present Negative — şu anki olumsuz durum</span></span> a happy place. Dolly <span class="grammar">has discovered<span class="grammar-tooltip">Present Perfect — az önce öğrenilen/haber alınan bilgi</span></span> something terrible: Stiva <span class="grammar">has been having<span class="grammar-tooltip">Present Perfect Continuous — geçmişte başlayıp süregelen eylem (devam eden aldatma)</span></span> an affair with the French <span class="kw">governess</span> of their children. She <span class="grammar">found<span class="grammar-tooltip">Simple Past — belirli geçmiş an</span></span> a love letter in his coat pocket.</p>
+
+      <div class="quote-block">
+        <p>"She had found the letter and read it, and now she could not sleep, could not eat, could not speak to him without pain."</p>
+        <div class="quote-source">— Leo Tolstoy, Anna Karenina</div>
+      </div>
+
+      <p>Dolly <span class="grammar">refuses<span class="grammar-tooltip">Simple Present — kalıcı karar/tutum</span></span> to speak to Stiva. She <span class="grammar">has locked<span class="grammar-tooltip">Present Perfect — sonucu hala devam eden eylem (kapı hala kilitli)</span></span> herself in her room. The children <span class="grammar">are walking<span class="grammar-tooltip">Present Continuous — şu an olan eylem</span></span> around the house quietly, confused and <span class="kw">frightened</span>. The servants <span class="grammar">do not know<span class="grammar-tooltip">Simple Present Negative — bilgi eksikliği</span></span> how to act.</p>
+
+      <p>Stiva <span class="grammar">wakes up<span class="grammar-tooltip">Simple Present (phrasal verb) — günlük alışkanlık/rutin</span></span> happy, as usual. He <span class="grammar">is dreaming<span class="grammar-tooltip">Past Continuous → Present — rüyadan uyanma anı</span></span> of dinner parties and beautiful women. But when he <span class="grammar">remembers<span class="grammar-tooltip">Simple Present — ani anımsama</span></span> what <span class="grammar">has happened<span class="grammar-tooltip">Present Perfect — bugünün gerçekliğine bağlı geçmiş olay</span></span>, his smile <span class="grammar">disappears<span class="grammar-tooltip">Simple Present — dramatik anlatı için süreci hızlandırma</span></span>. He <span class="grammar">feels<span class="grammar-tooltip">Simple Present — duygusal durum fiili (stative verb)</span></span> <span class="kw">ashamed</span> — not deeply, not truly, but in the way a man feels ashamed when he <span class="grammar">is caught<span class="grammar-tooltip">Present Simple Passive — yakalanma anı</span></span>.</p>
+
+      <p>He <span class="grammar">sends<span class="grammar-tooltip">Simple Present — anlatıda hızlı eylem geçişi</span></span> a <span class="kw">telegram</span> to his sister, Anna Arkadyevna Karenina, in St. Petersburg. Anna is his <span class="kw">beloved</span> sister — calm, wise, and <span class="kw">elegant</span>. He <span class="grammar">believes<span class="grammar-tooltip">Simple Present — inanç/fikir bildiren stative verb</span></span> she is the only person who <span class="grammar">can help<span class="grammar-tooltip">Modal verb — yetenek/ihtimal (can)</span></span> him repair his broken <span class="kw">marriage</span>.</p>
+
+      <div class="section-break">· · ·</div>
+
+      <p>Meanwhile, in the countryside, a young nobleman named <span class="kw">Konstantin</span> Levin <span class="grammar">is traveling<span class="grammar-tooltip">Present Continuous — şu an süren yolculuk</span></span> to Moscow. Levin is serious, honest, and deeply in love. He <span class="grammar">wants<span class="grammar-tooltip">Simple Present — isteme fiili (stative)</span></span> to ask a young woman named <span class="kw">Kitty</span> Shcherbatskaya to marry him. He <span class="grammar">has been thinking<span class="grammar-tooltip">Present Perfect Continuous — uzun süredir devam eden düşünme eylemi</span></span> about her for a long time.</p>
+
+      <p>Kitty is eighteen years old — young, beautiful, and full of life. Her family <span class="grammar">hopes<span class="grammar-tooltip">Simple Present — aile tutumu/beklentisi</span></span> she <span class="grammar">will marry<span class="grammar-tooltip">Future Simple (will) — umut edilen gelecek</span></span> well. But Kitty herself <span class="grammar">is not sure<span class="grammar-tooltip">Present Simple Negative — belirsizlik hali</span></span> what she <span class="grammar">wants<span class="grammar-tooltip">Simple Present — kişisel istek</span></span>. Two men <span class="grammar">love<span class="grammar-tooltip">Simple Present — süregelen duygusal durum</span></span> her — Levin, the quiet farmer, and Count Vronsky, the <span class="kw">dashing</span> army officer she <span class="grammar">has recently met<span class="grammar-tooltip">Present Perfect — kısa süre önce gerçekleşen olay, hala güncel</span></span>.</p>
+
+      <p>Moscow <span class="grammar">is preparing<span class="grammar-tooltip">Present Continuous — şehrin şu anki koşulları</span></span> for the winter <span class="kw">season</span> — the balls, the <span class="kw">parties</span>, the <span class="kw">theater</span>. The city <span class="grammar">shines<span class="grammar-tooltip">Simple Present — bir şehrin karakterini anlatmak</span></span> with candlelight and jewels. But under this beautiful surface, lives <span class="grammar">are changing<span class="grammar-tooltip">Present Continuous — değişim süreci vurgusu</span></span>. Choices <span class="grammar">are being made<span class="grammar-tooltip">Present Continuous Passive — seçimlerin alındığı süreç</span></span> that <span class="grammar">will define<span class="grammar-tooltip">Future Simple — gelecekteki sonucu belirleyecek eylemler</span></span> everything.</p>
+
+    </div>
+
+    <div class="glossary fade-up">
+      <div class="glossary-title">🔑 Key Vocabulary — Temel Kelimeler</div>
+      <div class="glossary-grid">
+        <div class="glossary-item"><span class="gl-en">affair</span><span class="gl-tr">yasadışı ilişki, aldatma</span></div>
+        <div class="glossary-item"><span class="gl-en">governess</span><span class="gl-tr">mürebbiye, özel öğretmen</span></div>
+        <div class="glossary-item"><span class="gl-en">handsome</span><span class="gl-tr">yakışıklı, güzel görünüşlü</span></div>
+        <div class="glossary-item"><span class="gl-en">ashamed</span><span class="gl-tr">utanmış, mahcup</span></div>
+        <div class="glossary-item"><span class="gl-en">elegant</span><span class="gl-tr">zarif, kibar görünüşlü</span></div>
+        <div class="glossary-item"><span class="gl-en">beloved</span><span class="gl-tr">sevgili, çok değer verilen</span></div>
+        <div class="glossary-item"><span class="gl-en">marriage</span><span class="gl-tr">evlilik</span></div>
+        <div class="glossary-item"><span class="gl-en">dashing</span><span class="gl-tr">çekici, gösterişli, karizmatik</span></div>
+        <div class="glossary-item"><span class="gl-en">frightened</span><span class="gl-tr">korkmuş, ürkmüş</span></div>
+        <div class="glossary-item"><span class="gl-en">nobleman</span><span class="gl-tr">soylu, asil sınıftan kişi</span></div>
+        <div class="glossary-item"><span class="gl-en">telegram</span><span class="gl-tr">telgraf (eski iletişim yöntemi)</span></div>
+        <div class="glossary-item"><span class="gl-en">surface</span><span class="gl-tr">yüzey, görünen taraf</span></div>
+      </div>
+    </div>
+
+    <div class="grammar-legend fade-up">
+      <div class="legend-item"><div class="legend-dot red"></div> Underlined red = grammar structure (hover to see explanation / üzerine gel, açıklama görünür)</div>
+      <div class="legend-item"><div class="legend-dot gold"></div> Bold yellow = keyword (anahtar kelime)</div>
+    </div>
+
+    <div class="chapter-nav-btns">
+      <button class="nav-btn" disabled>← Previous</button>
+      <span class="reading-time">~8 min read</span>
+      <button class="nav-btn next" onclick="goChapter(1)">Next Chapter →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CHAPTER 2 ═══════════════ -->
+  <section class="chapter" id="ch1">
+    <div class="chapter-header fade-up">
+      <div class="chapter-num">Chapter II</div>
+      <h1 class="chapter-title">The Night of the Ball</h1>
+      <p class="chapter-subtitle">Moscow, Winter 1873 — Where destinies collide under candlelight</p>
+      <div class="chapter-ornament">✦</div>
+    </div>
+
+    <div class="scene-visual fade-up">
+      <div class="scene-image bg-ballroom">
+        🕯️
+      </div>
+      <div class="scene-caption">The grand Moscow ballroom — chandeliers, music, and a meeting that will change everything</div>
+    </div>
+
+    <div class="prose fade-up">
+
+      <p class="drop-cap">Anna Karenina <span class="grammar">arrives<span class="grammar-tooltip">Simple Present — anlatıda dramatik giriş anı</span></span> at Moscow station on a cold <span class="kw">December</span> evening. She <span class="grammar">is wearing<span class="grammar-tooltip">Present Continuous — tam o an giydiği kıyafet (sahne betimlemesi)</span></span> a dark dress that <span class="grammar">makes<span class="grammar-tooltip">Simple Present — kıyafetin etkisi, kalıcı özellik</span></span> her look both <span class="kw">mysterious</span> and <span class="kw">magnificent</span>. She <span class="grammar">has come<span class="grammar-tooltip">Present Perfect — seyahatin sonucu (şu an burada)</span></span> to help her brother Stiva with his troubled marriage.</p>
+
+      <p>At the station, a young officer named Count Alexei Vronsky <span class="grammar">is waiting<span class="grammar-tooltip">Present Continuous — bekleme eylemi devam ediyor</span></span> for his mother. When he <span class="grammar">sees<span class="grammar-tooltip">Simple Present — ani görme eylemi</span></span> Anna for the first time, he <span class="grammar">stops<span class="grammar-tooltip">Simple Present — ani durma, dramatik etki</span></span> completely. She <span class="grammar">is unlike<span class="grammar-tooltip">Present Simple (be) — karşılaştırma + olumsuz özellik</span></span> any woman he <span class="grammar">has ever seen<span class="grammar-tooltip">Present Perfect — superlative ile kullanılan present perfect</span></span>. She <span class="grammar">does not look<span class="grammar-tooltip">Simple Present Negative — beklentinin tersi</span></span> at him — but somehow, she <span class="grammar">knows<span class="grammar-tooltip">Simple Present — duygusal farkındalık (stative verb)</span></span> he <span class="grammar">is watching<span class="grammar-tooltip">Present Continuous — izleme eylemi devam ediyor</span></span> her.</p>
+
+      <div class="quote-block">
+        <p>"She turned and looked at him. Her dark eyes, bright with inner light, rested on his face for a moment, as if recognizing him, then passed on."</p>
+        <div class="quote-source">— Leo Tolstoy, Anna Karenina</div>
+      </div>
+
+      <p>That same evening, the great winter ball <span class="grammar">is taking place<span class="grammar-tooltip">Present Continuous — şu an devam eden büyük etkinlik</span></span> at the Prince Shcherbatsky home. Kitty <span class="grammar">has been preparing<span class="grammar-tooltip">Present Perfect Continuous — uzun süredir süren hazırlık</span></span> for this evening for weeks. She <span class="grammar">is wearing<span class="grammar-tooltip">Present Continuous — sahne betimlemesi</span></span> a white <span class="kw">gown</span> with pink roses — she <span class="grammar">looks<span class="grammar-tooltip">Simple Present (look = görünmek, stative)</span></span> like a dream. Her mother <span class="grammar">watches<span class="grammar-tooltip">Simple Present — anne olarak sürekli izleme</span></span> her with pride and hope.</p>
+
+      <p>Kitty <span class="grammar">believes<span class="grammar-tooltip">Simple Present — kişisel inanç (stative verb)</span></span> that Vronsky <span class="grammar">will ask<span class="grammar-tooltip">Future Simple — Kitty'nin kesin beklentisi</span></span> her to dance — and perhaps, to marry him. She <span class="grammar">has been dreaming<span class="grammar-tooltip">Present Perfect Continuous — rüya görmenin uzun süreli devamı</span></span> of this moment. Levin <span class="grammar">is also there<span class="grammar-tooltip">Present Simple + also — karşılaştırmalı durum</span></span>, watching her from across the room, his heart full of <span class="kw">longing</span>.</p>
+
+      <p>And then Anna <span class="grammar">enters<span class="grammar-tooltip">Simple Present — dramatik bir sahneye girişi anlatmak için</span></span> the ballroom. She <span class="grammar">is not trying<span class="grammar-tooltip">Present Continuous Negative — bilinçsiz etki</span></span> to be beautiful — she simply is. She <span class="grammar">wears<span class="grammar-tooltip">Simple Present — alışkanlık/kalıcı özellik olarak kıyafet</span></span> a black <span class="kw">velvet</span> dress and a simple ribbon in her dark hair. Every person in the room <span class="grammar">turns<span class="grammar-tooltip">Simple Present — anlık toplu tepki</span></span> to look at her. The music <span class="grammar">plays<span class="grammar-tooltip">Simple Present — arka plan müziği devam ediyor</span></span> on, but the energy of the room <span class="grammar">has shifted<span class="grammar-tooltip">Present Perfect — odadaki değişim, sonucu hissediliyor</span></span>.</p>
+
+      <div class="section-break">· · ·</div>
+
+      <p>Vronsky <span class="grammar">sees<span class="grammar-tooltip">Simple Present — ani görme eylemi</span></span> Anna and <span class="grammar">moves<span class="grammar-tooltip">Simple Present — hızlı eylem geçişi</span></span> toward her. He <span class="grammar">asks<span class="grammar-tooltip">Simple Present — doğrudan eylem</span></span> her to dance. Anna <span class="grammar">smiles<span class="grammar-tooltip">Simple Present — anlık duygu ifadesi</span></span> — a real, warm smile — and they <span class="grammar">begin<span class="grammar-tooltip">Simple Present — birlikte başlayan eylem</span></span> to dance. The room <span class="grammar">watches<span class="grammar-tooltip">Simple Present — izleyici olarak oda</span></span> them. Kitty <span class="grammar">watches<span class="grammar-tooltip">Simple Present — Kitty'nin yürek parçalayan izlemesi</span></span> them too. Her heart <span class="grammar">breaks<span class="grammar-tooltip">Simple Present — duygusal kırılma anı</span></span> slowly, quietly, like thin ice.</p>
+
+      <p>All evening, Vronsky <span class="grammar">dances<span class="grammar-tooltip">Simple Present — gecenin boyunca tekrarlayan eylem</span></span> with Anna. He <span class="grammar">cannot take<span class="grammar-tooltip">Modal — yetersizlik/imkânsızlık (cannot)</span></span> his eyes off her. Anna <span class="grammar">knows<span class="grammar-tooltip">Simple Present — farkındalık</span></span> what is <span class="grammar">happening<span class="grammar-tooltip">Present Continuous — gelişen durumun farkında olma</span></span>, and she feels both <span class="kw">flattered</span> and <span class="kw">frightened</span>. She is a married woman. She <span class="grammar">has a son<span class="grammar-tooltip">Simple Present (have) — sahiplik</span></span> named Seryozha whom she <span class="grammar">loves<span class="grammar-tooltip">Simple Present — derin sevgi</span></span> deeply. This should not be <span class="grammar">happening<span class="grammar-tooltip">Present Continuous — olmaması gereken ama olan şey</span></span>.</p>
+
+      <p>Levin, watching from the edge of the room, <span class="grammar">finally understands<span class="grammar-tooltip">Simple Present + finally — aniden gelen anlayış</span></span> that Kitty <span class="grammar">does not love<span class="grammar-tooltip">Simple Present Negative — gerçeğin kabulü</span></span> him. Her eyes <span class="grammar">are following<span class="grammar-tooltip">Present Continuous — gözlerin peşinden gitme eylemi</span></span> Vronsky wherever he <span class="grammar">goes<span class="grammar-tooltip">Simple Present — hareket eden kişi</span></span>. Levin <span class="grammar">leaves<span class="grammar-tooltip">Simple Present — sessiz ayrılış</span></span> the ball early, alone in the cold Moscow street, his <span class="kw">proposal</span> unspoken.</p>
+
+      <p>But the night <span class="grammar">is not<span class="grammar-tooltip">Present Simple Negative — gecenin henüz bitmediği</span></span> over. As Anna <span class="grammar">is leaving<span class="grammar-tooltip">Present Continuous — ayrılış süreci</span></span>, Vronsky <span class="grammar">finds<span class="grammar-tooltip">Simple Present — bulma eylemi</span></span> her alone for a moment. He <span class="grammar">tells<span class="grammar-tooltip">Simple Present — doğrudan eylem</span></span> her that he <span class="grammar">cannot stop<span class="grammar-tooltip">Modal Negative — içinden gelen güç</span></span> thinking about her. Anna <span class="grammar">looks<span class="grammar-tooltip">Simple Present</span></span> at him with those dark, bright eyes — and she <span class="grammar">does not tell<span class="grammar-tooltip">Simple Present Negative — söylememek de bir seçimdir</span></span> him to stop.</p>
+
+    </div>
+
+    <div class="glossary fade-up">
+      <div class="glossary-title">🔑 Key Vocabulary — Temel Kelimeler</div>
+      <div class="glossary-grid">
+        <div class="glossary-item"><span class="gl-en">magnificent</span><span class="gl-tr">muhteşem, ihtişamlı</span></div>
+        <div class="glossary-item"><span class="gl-en">mysterious</span><span class="gl-tr">gizemli, esrarengiz</span></div>
+        <div class="glossary-item"><span class="gl-en">gown</span><span class="gl-tr">uzun balo elbisesi, gecelik</span></div>
+        <div class="glossary-item"><span class="gl-en">longing</span><span class="gl-tr">özlem, derin arzu</span></div>
+        <div class="glossary-item"><span class="gl-en">velvet</span><span class="gl-tr">kadife (kumaş)</span></div>
+        <div class="glossary-item"><span class="gl-en">proposal</span><span class="gl-tr">evlilik teklifi</span></div>
+        <div class="glossary-item"><span class="gl-en">flattered</span><span class="gl-tr">gururu okşanan, pohpohlanan</span></div>
+        <div class="glossary-item"><span class="gl-en">unspoken</span><span class="gl-tr">söylenmemiş, dile getirilmemiş</span></div>
+        <div class="glossary-item"><span class="gl-en">shifted</span><span class="gl-tr">değişmiş, kaymış</span></div>
+        <div class="glossary-item"><span class="gl-en">inner light</span><span class="gl-tr">iç ışık, içten gelen parıltı</span></div>
+        <div class="glossary-item"><span class="gl-en">chandelier</span><span class="gl-tr">avize, kristal tavan lambası</span></div>
+        <div class="glossary-item"><span class="gl-en">ribbon</span><span class="gl-tr">kurdele, saç bant</span></div>
+      </div>
+    </div>
+
+    <div class="chapter-nav-btns">
+      <button class="nav-btn" onclick="goChapter(0)">← Previous</button>
+      <span class="reading-time">~9 min read</span>
+      <button class="nav-btn next" onclick="goChapter(2)">Next Chapter →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CHAPTER 3 ═══════════════ -->
+  <section class="chapter" id="ch2">
+    <div class="chapter-header fade-up">
+      <div class="chapter-num">Chapter III</div>
+      <h1 class="chapter-title">The Fire Within</h1>
+      <p class="chapter-subtitle">St. Petersburg — A love that cannot be contained begins to burn</p>
+      <div class="chapter-ornament">✦</div>
+    </div>
+
+    <div class="scene-visual fade-up">
+      <div class="scene-image" style="background:radial-gradient(ellipse at center,#2a1428 0%,#0d0008 100%)">
+        🔥
+      </div>
+      <div class="scene-caption">The golden halls of St. Petersburg — beauty hiding secrets and dangerous desires</div>
+    </div>
+
+    <div class="prose fade-up">
+
+      <p class="drop-cap">Anna <span class="grammar">returns<span class="grammar-tooltip">Simple Present — eve dönüş anı</span></span> to St. Petersburg, but she <span class="grammar">is not<span class="grammar-tooltip">Present Simple Negative — iç dünyanın değişimi</span></span> the same woman who <span class="grammar">left<span class="grammar-tooltip">Simple Past — ayrılış zamanı geçmişte kaldı</span></span>. Something <span class="grammar">has changed<span class="grammar-tooltip">Present Perfect — değişimin sonucu şu an hissediliyor</span></span> inside her. She <span class="grammar">tries<span class="grammar-tooltip">Simple Present — deneme eylemi</span></span> to return to her old life — to her <span class="kw">distinguished</span> husband Alexei Karenin, to her son Seryozha, to the social <span class="kw">duties</span> of an important lady — but her thoughts <span class="grammar">keep returning<span class="grammar-tooltip">Keep + Gerund — ısrarcı, durdurulamayan eylem</span></span> to Vronsky.</p>
+
+      <p>Her husband, Alexei Alexandrovich Karenin, is a tall, serious man with large ears and a <span class="kw">rigid</span> way of speaking. He <span class="grammar">works<span class="grammar-tooltip">Simple Present — meslek/rutin</span></span> for the government and <span class="grammar">believes<span class="grammar-tooltip">Simple Present — stative verb, inanç</span></span> deeply in order, duty, and <span class="kw">propriety</span>. He is not unkind — but he <span class="grammar">does not know<span class="grammar-tooltip">Simple Present Negative — duygusal körlük</span></span> how to love. He <span class="grammar">treats<span class="grammar-tooltip">Simple Present — davranış şekli, alışkanlık</span></span> Anna like a valued <span class="kw">possession</span> — beautiful, <span class="kw">useful</span>, and his.</p>
+
+      <div class="quote-block">
+        <p>"She wanted not to think of him, yet she could think of nothing else. There was something in her that she had not known was there."</p>
+        <div class="quote-source">— Leo Tolstoy, Anna Karenina</div>
+      </div>
+
+      <p>Vronsky <span class="grammar">follows<span class="grammar-tooltip">Simple Present — kasıtlı eylem, süreklilik</span></span> Anna to St. Petersburg. He <span class="grammar">does not hide<span class="grammar-tooltip">Simple Present Negative — gizlememek</span></span> his feelings. He <span class="grammar">attends<span class="grammar-tooltip">Simple Present — katılma alışkanlığı</span></span> every dinner, every theater evening, every social event where Anna <span class="grammar">might be<span class="grammar-tooltip">Modal (might) — olasılık, belirsizlik</span></span>. People <span class="grammar">are starting<span class="grammar-tooltip">Present Continuous — fark edilmeye başlayan süreç</span></span> to talk.</p>
+
+      <p>At first, Anna <span class="grammar">refuses<span class="grammar-tooltip">Simple Present — ilk tutumu</span></span> to see him alone. She <span class="grammar">tells<span class="grammar-tooltip">Simple Present — söyleme eylemi</span></span> herself that she <span class="grammar">does not love<span class="grammar-tooltip">Simple Present Negative — kendini ikna etme</span></span> him. But one evening, at a dinner party, their hands <span class="grammar">touch<span class="grammar-tooltip">Simple Present — dokunuş anı</span></span> briefly — and she <span class="grammar">feels<span class="grammar-tooltip">Simple Present — his etme</span></span> as if the world <span class="grammar">has stopped<span class="grammar-tooltip">Present Perfect — dünyanın durduğu his</span></span>.</p>
+
+      <div class="section-break">· · ·</div>
+
+      <p>In the countryside, Levin <span class="grammar">has returned<span class="grammar-tooltip">Present Perfect — döndü ve şu an orada</span></span> to his farm at Pokrovskoye. He <span class="grammar">is trying<span class="grammar-tooltip">Present Continuous — aktif çalışma süreci</span></span> to forget Kitty. He <span class="grammar">works<span class="grammar-tooltip">Simple Present — rutin iş</span></span> with his <span class="kw">peasants</span> in the fields, and this honest work <span class="grammar">makes<span class="grammar-tooltip">Simple Present — etki bildiren yapı</span></span> him feel better. He <span class="grammar">believes<span class="grammar-tooltip">Simple Present — kişisel inanç</span></span> that a simple, honest life close to the earth <span class="grammar">is<span class="grammar-tooltip">Simple Present — Levin'in felsefesi</span></span> the only true life.</p>
+
+      <p>His brother Nikolai <span class="grammar">visits<span class="grammar-tooltip">Simple Present — ziyaret eylemi</span></span> him. Nikolai <span class="grammar">is dying<span class="grammar-tooltip">Present Continuous — ilerleyen hastalık süreci</span></span> slowly from <span class="kw">tuberculosis</span>. He <span class="grammar">has spent<span class="grammar-tooltip">Present Perfect — geçmişte harcanan para, sonucu şu an yoksulluk</span></span> all his money on radical politics and a poor, sick woman he <span class="grammar">loves<span class="grammar-tooltip">Simple Present — hala devam eden duygu</span></span>. Levin looks at his brother and <span class="grammar">sees<span class="grammar-tooltip">Simple Present — derin anlayış anı</span></span> a truth that <span class="grammar">frightens<span class="grammar-tooltip">Simple Present — bir gerçeğin etkisi</span></span> him: love <span class="grammar">can destroy<span class="grammar-tooltip">Modal — olasılık (can)</span></span> a person just as easily as it <span class="grammar">can save<span class="grammar-tooltip">Modal — olasılık (can)</span></span> them.</p>
+
+      <p>Back in St. Petersburg, Anna and Vronsky <span class="grammar">meet<span class="grammar-tooltip">Simple Present — buluşma alışkanlığı</span></span> secretly at a friend's house. For the first time, they <span class="grammar">are truly alone<span class="grammar-tooltip">Present Continuous — sahne anının vurgusu</span></span>. Vronsky tells her that he <span class="grammar">has loved<span class="grammar-tooltip">Present Perfect — geçmişten bu ana uzanan sevgi</span></span> her since the moment he <span class="grammar">saw<span class="grammar-tooltip">Simple Past — ilk görüş anı</span></span> her. He <span class="grammar">says<span class="grammar-tooltip">Simple Present — söyleme anı</span></span> he <span class="grammar">cannot live<span class="grammar-tooltip">Modal Negative — yaşayamayacak</span></span> without her.</p>
+
+      <p>Anna <span class="grammar">trembles<span class="grammar-tooltip">Simple Present — anlık fiziksel tepki</span></span>. She <span class="grammar">knows<span class="grammar-tooltip">Simple Present — farkındalık</span></span> that if she <span class="grammar">says<span class="grammar-tooltip">Conditional Type 1 — gerçek bir olasılık</span></span> yes, her entire world <span class="grammar">will fall apart<span class="grammar-tooltip">Future Simple — olası sonuç</span></span>. Her <span class="kw">reputation</span>, her marriage, her son — everything <span class="grammar">will change<span class="grammar-tooltip">Future Simple — kaçınılmaz değişim</span></span>. But she also <span class="grammar">knows<span class="grammar-tooltip">Simple Present — karşı gerçek</span></span> that if she <span class="grammar">says<span class="grammar-tooltip">Conditional — ikinci koşul kolu</span></span> no, she <span class="grammar">will spend<span class="grammar-tooltip">Future Simple — olumsuz gelecek olasılığı</span></span> the rest of her life wondering what might have been.</p>
+
+      <p>She <span class="grammar">does not say<span class="grammar-tooltip">Simple Present Negative — söylememenin kendisi bir cevap</span></span> no.</p>
+
+    </div>
+
+    <div class="glossary fade-up">
+      <div class="glossary-title">🔑 Key Vocabulary — Temel Kelimeler</div>
+      <div class="glossary-grid">
+        <div class="glossary-item"><span class="gl-en">distinguished</span><span class="gl-tr">seçkin, saygın, görkemli</span></div>
+        <div class="glossary-item"><span class="gl-en">duties</span><span class="gl-tr">görevler, sorumluluklar</span></div>
+        <div class="glossary-item"><span class="gl-en">rigid</span><span class="gl-tr">katı, sert, esnek olmayan</span></div>
+        <div class="glossary-item"><span class="gl-en">propriety</span><span class="gl-tr">uygunluk, görgü kuralları</span></div>
+        <div class="glossary-item"><span class="gl-en">possession</span><span class="gl-tr">mülk, sahip olunan şey</span></div>
+        <div class="glossary-item"><span class="gl-en">peasants</span><span class="gl-tr">köylüler, çiftçiler</span></div>
+        <div class="glossary-item"><span class="gl-en">tuberculosis</span><span class="gl-tr">verem, tüberküloz hastalığı</span></div>
+        <div class="glossary-item"><span class="gl-en">reputation</span><span class="gl-tr">itibar, şöhret, toplumsal saygınlık</span></div>
+        <div class="glossary-item"><span class="gl-en">trembles</span><span class="gl-tr">titriyor, sarsılıyor</span></div>
+        <div class="glossary-item"><span class="gl-en">useful</span><span class="gl-tr">faydalı, işe yarayan</span></div>
+        <div class="glossary-item"><span class="gl-en">radical</span><span class="gl-tr">radikal, aşırı değişim isteyen</span></div>
+        <div class="glossary-item"><span class="gl-en">wondering</span><span class="gl-tr">merak etmek, ne olurdu diye düşünmek</span></div>
+      </div>
+    </div>
+
+    <div class="chapter-nav-btns">
+      <button class="nav-btn" onclick="goChapter(1)">← Previous</button>
+      <span class="reading-time">~9 min read</span>
+      <button class="nav-btn next" onclick="goChapter(3)">Next Chapter →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CHAPTER 4 ═══════════════ -->
+  <section class="chapter" id="ch3">
+    <div class="chapter-header fade-up">
+      <div class="chapter-num">Chapter IV</div>
+      <h1 class="chapter-title">The Weight of Choices</h1>
+      <p class="chapter-subtitle">Russia, 1874–1875 — Love, scandal, and the search for meaning</p>
+      <div class="chapter-ornament">✦</div>
+    </div>
+
+    <div class="scene-visual fade-up">
+      <div class="scene-image bg-spring">
+        🌿
+      </div>
+      <div class="scene-caption">Levin's farm in Pokrovskoye — where honest work and simple truth are discovered</div>
+    </div>
+
+    <div class="prose fade-up">
+
+      <p class="drop-cap">The <span class="kw">scandal</span> <span class="grammar">spreads<span class="grammar-tooltip">Simple Present — yayılma eylemi hızla devam ediyor</span></span> through St. Petersburg society like fire through dry grass. Anna and Vronsky <span class="grammar">are no longer hiding<span class="grammar-tooltip">Present Continuous Negative — gizlemenin sona ermesi</span></span> their relationship. They <span class="grammar">appear<span class="grammar-tooltip">Simple Present — toplumda görünme eylemi</span></span> together at the theater, at parties, in public. The city <span class="grammar">talks<span class="grammar-tooltip">Simple Present — şehrin dedikodu eylemi</span></span>. The newspapers <span class="grammar">whisper<span class="grammar-tooltip">Simple Present — mecazi kullanım</span></span>. Society <span class="grammar">turns<span class="grammar-tooltip">Simple Present — toplumun döneceğini anlatan dramatik present</span></span> its cold back on Anna.</p>
+
+      <p>Karenin <span class="grammar">knows<span class="grammar-tooltip">Simple Present — artık bilen bir koca</span></span>. He <span class="grammar">has known<span class="grammar-tooltip">Present Perfect — bir süredir biliyor ama harekete geçmedi</span></span> for some time. He <span class="grammar">chooses<span class="grammar-tooltip">Simple Present — aktif bir seçim yapıyor</span></span> not to act publicly — he <span class="grammar">fears<span class="grammar-tooltip">Simple Present — korkusunu itiraf eden yapı</span></span> <span class="kw">humiliation</span> more than <span class="kw">betrayal</span>. He <span class="grammar">speaks<span class="grammar-tooltip">Simple Present — konuşma eylemi</span></span> to Anna quietly, without <span class="kw">anger</span>: "I want only that the world <span class="grammar">sees<span class="grammar-tooltip">Simple Present in that-clause — Karenin'in isteği</span></span> order. I want your <span class="kw">obedience</span>." Anna <span class="grammar">feels<span class="grammar-tooltip">Simple Present — duygu</span></span> cold when she <span class="grammar">listens<span class="grammar-tooltip">Simple Present — dinleme anı</span></span> to him.</p>
+
+      <div class="quote-block">
+        <p>"He spoke as a man who has made up his mind — not from passion, but from duty. And that was somehow more frightening."</p>
+        <div class="quote-source">— Leo Tolstoy, Anna Karenina</div>
+      </div>
+
+      <p>Anna <span class="grammar">becomes<span class="grammar-tooltip">Simple Present — değişim anı</span></span> <span class="kw">pregnant</span> with Vronsky's child. Her situation <span class="grammar">is now<span class="grammar-tooltip">Present Simple + now — acil durum vurgusu</span></span> desperate. During childbirth, she <span class="grammar">nearly dies<span class="grammar-tooltip">Simple Present + nearly — tehlike ve dramatik an</span></span>. In her fever, she <span class="grammar">calls<span class="grammar-tooltip">Simple Present — çağırma eylemi</span></span> for Karenin. He <span class="grammar">comes<span class="grammar-tooltip">Simple Present — gelme eylemi</span></span> to her bedside and — in a moment of <span class="kw">extraordinary</span> human <span class="kw">grace</span> — he <span class="grammar">forgives<span class="grammar-tooltip">Simple Present — affetme eylemi, dramatik zirve</span></span> her. He even <span class="grammar">holds<span class="grammar-tooltip">Simple Present — tutma eylemi</span></span> Vronsky's hand and says he <span class="grammar">forgives<span class="grammar-tooltip">Simple Present — af tekrarı</span></span> him too.</p>
+
+      <p>This act of <span class="kw">forgiveness</span> <span class="grammar">confuses<span class="grammar-tooltip">Simple Present — kafaları karıştırma etkisi</span></span> everyone — including Vronsky, who <span class="grammar">feels<span class="grammar-tooltip">Simple Present</span></span> suddenly small and <span class="kw">ashamed</span>. He <span class="grammar">tries<span class="grammar-tooltip">Simple Present — girişim eylemi</span></span> to <span class="kw">shoot</span> himself, but he <span class="grammar">fails<span class="grammar-tooltip">Simple Present — başarısız olma</span></span>. Anna <span class="grammar">recovers<span class="grammar-tooltip">Simple Present — iyileşme süreci</span></span> and leaves Russia with Vronsky and their baby daughter. They <span class="grammar">travel<span class="grammar-tooltip">Simple Present — Avrupa'ya gidişi anlatan süreç</span></span> to Italy, to live freely, far from <span class="kw">judgment</span>.</p>
+
+      <div class="section-break">· · ·</div>
+
+      <p>In the countryside, Levin's story <span class="grammar">is moving<span class="grammar-tooltip">Present Continuous — ilerleyen süreç</span></span> in a different direction. Kitty Shcherbatskaya, <span class="grammar">rejected<span class="grammar-tooltip">Past Participle as adjective — reddedilmiş hali</span></span> by Vronsky and <span class="kw">humiliated</span>, <span class="grammar">fell<span class="grammar-tooltip">Simple Past — hastalığa düşme anı</span></span> ill and <span class="grammar">traveled<span class="grammar-tooltip">Simple Past — seyahat zamanı</span></span> abroad to <span class="grammar">recover<span class="grammar-tooltip">Infinitive of purpose — amaç bildiren infinitive</span></span>. She <span class="grammar">has grown<span class="grammar-tooltip">Present Perfect — kişisel gelişim, şu anda tamamlanmış</span></span> stronger, wiser, and more <span class="kw">compassionate</span>. She <span class="grammar">has learned<span class="grammar-tooltip">Present Perfect — öğrenmenin sonucu şu an var</span></span> to see people clearly.</p>
+
+      <p>When Levin <span class="grammar">sees<span class="grammar-tooltip">Simple Present — yeniden görme anı</span></span> Kitty again at his brother Nikolai's sickbed, something <span class="grammar">changes<span class="grammar-tooltip">Simple Present — değişim anı</span></span> between them. Kitty <span class="grammar">helps<span class="grammar-tooltip">Simple Present — yardım eylemi</span></span> care for the dying Nikolai with quiet <span class="kw">tenderness</span> and courage. Levin <span class="grammar">watches<span class="grammar-tooltip">Simple Present — izleme ve değerlendirme</span></span> her and <span class="grammar">realizes<span class="grammar-tooltip">Simple Present — farkına varma anı</span></span> that she <span class="grammar">is<span class="grammar-tooltip">Simple Present — derin bir gerçeği keşfetme</span></span> exactly who he <span class="grammar">needs<span class="grammar-tooltip">Simple Present — ihtiyaç stative verb</span></span>. Not perfect — but real. Not <span class="kw">glamorous</span> — but deeply good.</p>
+
+      <p>He <span class="grammar">asks<span class="grammar-tooltip">Simple Present — teklif etme eylemi</span></span> her to marry him. This time, he <span class="grammar">does not lose<span class="grammar-tooltip">Simple Present Negative — bu sefer</span></span> his words. This time, she <span class="grammar">says<span class="grammar-tooltip">Simple Present — cevap</span></span> yes. Their <span class="kw">engagement</span> <span class="grammar">is<span class="grammar-tooltip">Simple Present — bu an</span></span> quiet and private — no balls, no <span class="kw">ceremony</span> yet — just two honest people <span class="grammar">choosing<span class="grammar-tooltip">Present Participle — seçme eylemi</span></span> each other in the face of all life's <span class="kw">uncertainty</span>.</p>
+
+    </div>
+
+    <div class="glossary fade-up">
+      <div class="glossary-title">🔑 Key Vocabulary — Temel Kelimeler</div>
+      <div class="glossary-grid">
+        <div class="glossary-item"><span class="gl-en">scandal</span><span class="gl-tr">skandal, rezalet, utanç verici olay</span></div>
+        <div class="glossary-item"><span class="gl-en">humiliation</span><span class="gl-tr">aşağılanma, küçük düşürülme</span></div>
+        <div class="glossary-item"><span class="gl-en">betrayal</span><span class="gl-tr">ihanet, sadakatsizlik</span></div>
+        <div class="glossary-item"><span class="gl-en">obedience</span><span class="gl-tr">itaat, boyun eğme</span></div>
+        <div class="glossary-item"><span class="gl-en">forgiveness</span><span class="gl-tr">affetme, bağışlama</span></div>
+        <div class="glossary-item"><span class="gl-en">pregnant</span><span class="gl-tr">hamile, gebe</span></div>
+        <div class="glossary-item"><span class="gl-en">extraordinary</span><span class="gl-tr">olağanüstü, sıra dışı</span></div>
+        <div class="glossary-item"><span class="gl-en">grace</span><span class="gl-tr">zarafet; merhamet, lütuf</span></div>
+        <div class="glossary-item"><span class="gl-en">judgment</span><span class="gl-tr">yargılama, eleştiri</span></div>
+        <div class="glossary-item"><span class="gl-en">compassionate</span><span class="gl-tr">şefkatli, merhametli</span></div>
+        <div class="glossary-item"><span class="gl-en">tenderness</span><span class="gl-tr">şefkat, naziklik</span></div>
+        <div class="glossary-item"><span class="gl-en">engagement</span><span class="gl-tr">nişan, söz kesme</span></div>
+        <div class="glossary-item"><span class="gl-en">uncertainty</span><span class="gl-tr">belirsizlik, bilinmezlik</span></div>
+        <div class="glossary-item"><span class="gl-en">glamorous</span><span class="gl-tr">gösterişli, cazip, çekici</span></div>
+      </div>
+    </div>
+
+    <div class="chapter-nav-btns">
+      <button class="nav-btn" onclick="goChapter(2)">← Previous</button>
+      <span class="reading-time">~10 min read</span>
+      <button class="nav-btn next" onclick="goChapter(4)">Next Chapter →</button>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CHAPTER 5 ═══════════════ -->
+  <section class="chapter" id="ch4">
+    <div class="chapter-header fade-up">
+      <div class="chapter-num">Chapter V</div>
+      <h1 class="chapter-title">The Last Station</h1>
+      <p class="chapter-subtitle">1876 — The end of a life, and the beginning of understanding</p>
+      <div class="chapter-ornament">✦</div>
+    </div>
+
+    <div class="scene-visual fade-up">
+      <div class="scene-image bg-station">
+        🚂
+      </div>
+      <div class="scene-caption">The Obiralovka railway station — where Anna's journey comes to its terrible end</div>
+    </div>
+
+    <div class="prose fade-up">
+
+      <p class="drop-cap">Anna and Vronsky <span class="grammar">return<span class="grammar-tooltip">Simple Present — İtalya'dan dönüş</span></span> to Russia after their time in Italy. But life abroad <span class="grammar">has not solved<span class="grammar-tooltip">Present Perfect Negative — çözüme ulaşılamamış, sonuç şu an hissediliyor</span></span> anything. Anna <span class="grammar">cannot see<span class="grammar-tooltip">Modal Negative — görememe durumu</span></span> her son Seryozha — Karenin <span class="grammar">refuses<span class="grammar-tooltip">Simple Present — reddetme tutumu</span></span> to allow it. She <span class="grammar">misses<span class="grammar-tooltip">Simple Present — özlem duygusu</span></span> her boy with a pain that <span class="grammar">does not fade<span class="grammar-tooltip">Simple Present Negative — gitmeyen acı</span></span>.</p>
+
+      <p>Russian society <span class="grammar">does not welcome<span class="grammar-tooltip">Simple Present Negative — toplumsal ret</span></span> Anna back. Women <span class="grammar">refuse<span class="grammar-tooltip">Simple Present — reddetme, sosyal dışlama</span></span> to receive her in their homes. Doors <span class="grammar">close<span class="grammar-tooltip">Simple Present — kapıların kapanması mecazi anlamda</span></span> before her. She <span class="grammar">depends<span class="grammar-tooltip">Simple Present — bağımlılık</span></span> entirely on Vronsky now — for company, for love, for her sense of worth. This <span class="kw">dependence</span> <span class="grammar">begins<span class="grammar-tooltip">Simple Present — başlangıç noktası</span></span> to <span class="kw">suffocate</span> her, and it <span class="grammar">begins<span class="grammar-tooltip">Simple Present — aynı eylem farklı özne</span></span> to <span class="kw">suffocate</span> him too.</p>
+
+      <div class="quote-block">
+        <p>"She had not enough to live on, not enough to believe in, not enough to hold onto. And yet she could not let go."</p>
+        <div class="quote-source">— Leo Tolstoy, Anna Karenina</div>
+      </div>
+
+      <p>Vronsky <span class="grammar">grows<span class="grammar-tooltip">Simple Present — ilerleyen değişim</span></span> restless. He <span class="grammar">loves<span class="grammar-tooltip">Simple Present — hala var olan sevgi</span></span> Anna, but love alone <span class="grammar">is not<span class="grammar-tooltip">Simple Present Negative — sevginin yeterliliği</span></span> a life. He <span class="grammar">wants<span class="grammar-tooltip">Simple Present — stative verb, istek</span></span> to work, to <span class="kw">serve</span>, to <span class="grammar">be recognized<span class="grammar-tooltip">Passive Infinitive — tanınmak isteme</span></span>. Society <span class="grammar">still accepts<span class="grammar-tooltip">Simple Present + still — hala devam eden kabul</span></span> him — only Anna <span class="grammar">has been cast out<span class="grammar-tooltip">Present Perfect Passive — dışlanmışlık durumu</span></span>. This is not fair. He <span class="grammar">knows<span class="grammar-tooltip">Simple Present — bilgi</span></span> it <span class="grammar">is not<span class="grammar-tooltip">Simple Present Negative</span></span> fair. But he <span class="grammar">cannot change<span class="grammar-tooltip">Modal Negative — değiştirememek</span></span> it.</p>
+
+      <p>Anna's mind <span class="grammar">begins<span class="grammar-tooltip">Simple Present — mental bozulmanın başlangıcı</span></span> to crack under the pressure. She <span class="grammar">becomes<span class="grammar-tooltip">Simple Present — değişim süreci</span></span> <span class="kw">jealous</span> — <span class="kw">obsessively</span> so. She <span class="grammar">imagines<span class="grammar-tooltip">Simple Present — zihinsel eylem</span></span> that Vronsky <span class="grammar">is meeting<span class="grammar-tooltip">Present Continuous — şüpheyle gördüğü sahne</span></span> other women. She <span class="grammar">accuses<span class="grammar-tooltip">Simple Present — suçlama eylemi</span></span> him of things he <span class="grammar">has not done<span class="grammar-tooltip">Present Perfect Negative — yapmadığı eylemler</span></span>. She <span class="grammar">takes<span class="grammar-tooltip">Simple Present — tehlikeli bir eylem</span></span> <span class="kw">opium</span> drops to sleep. Each day <span class="grammar">is harder<span class="grammar-tooltip">Present Simple + comparative — giderek zorlaşma</span></span> than the last.</p>
+
+      <div class="section-break">· · ·</div>
+
+      <p>Meanwhile, Levin and Kitty <span class="grammar">are building<span class="grammar-tooltip">Present Continuous — inşa süreci devam ediyor</span></span> a real life together. They <span class="grammar">marry<span class="grammar-tooltip">Simple Present — evlilik anı, olayın özeti</span></span> in a simple ceremony and <span class="grammar">move<span class="grammar-tooltip">Simple Present — yaşam değişikliği</span></span> to Levin's estate. They <span class="grammar">have<span class="grammar-tooltip">Simple Present (have) — sahiplik</span></span> disagreements — Levin <span class="grammar">is<span class="grammar-tooltip">Simple Present — kişilik özelliği</span></span> sometimes cold, sometimes <span class="kw">philosophical</span> to the point of <span class="kw">exhaustion</span>. But they <span class="grammar">talk<span class="grammar-tooltip">Simple Present — alışkanlık olarak konuşma</span></span>, they <span class="grammar">try<span class="grammar-tooltip">Simple Present — çaba</span></span>, they <span class="grammar">grow<span class="grammar-tooltip">Simple Present — büyüme</span></span>. Their son <span class="grammar">is born<span class="grammar-tooltip">Present Simple Passive — doğma eylemi</span></span>, and Levin <span class="grammar">does not know<span class="grammar-tooltip">Simple Present Negative — beklenmedik durum</span></span> how to feel — terrified and <span class="kw">overwhelmed</span> with love at once.</p>
+
+      <p>Levin <span class="grammar">searches<span class="grammar-tooltip">Simple Present — süregelen arayış</span></span> for the meaning of life. He <span class="grammar">reads<span class="grammar-tooltip">Simple Present — okuma alışkanlığı</span></span> philosophy, science, religion. None of it <span class="grammar">satisfies<span class="grammar-tooltip">Simple Present — tatmin etmemek</span></span> him. Then one day, sitting with a peasant farmer, he <span class="grammar">hears<span class="grammar-tooltip">Simple Present — işitme anı</span></span> something simple: "A man <span class="grammar">must live<span class="grammar-tooltip">Modal — zorunluluk (must)</span></span> not for himself, but for God and for others." This small sentence <span class="grammar">changes<span class="grammar-tooltip">Simple Present — küçük bir cümlenin büyük etkisi</span></span> everything for him. He <span class="grammar">does not become<span class="grammar-tooltip">Simple Present Negative — dönüşümün sınırları</span></span> a saint — but he <span class="grammar">finds<span class="grammar-tooltip">Simple Present — bulma eylemi</span></span> a quiet, steady <span class="kw">faith</span>.</p>
+
+      <p>On a hot August evening, Anna <span class="grammar">stands<span class="grammar-tooltip">Simple Present — sahne: duruş</span></span> alone on a <span class="kw">platform</span> at the Obiralovka railway station. She <span class="grammar">has argued<span class="grammar-tooltip">Present Perfect — tartışmanın sonucu onu şu an burada</span></span> terribly with Vronsky. He <span class="grammar">has gone<span class="grammar-tooltip">Present Perfect — gitmiş ve geri dönmemiş</span></span>. She <span class="grammar">feels<span class="grammar-tooltip">Simple Present — anlık his</span></span> utterly alone. The train <span class="grammar">is coming<span class="grammar-tooltip">Present Continuous — yaklaşan tren</span></span>. Its lights <span class="grammar">grow<span class="grammar-tooltip">Simple Present — büyüyen ışık</span></span> larger in the dark.</p>
+
+      <p>Anna <span class="grammar">thinks<span class="grammar-tooltip">Simple Present — son düşünceler</span></span> of her son. She <span class="grammar">thinks<span class="grammar-tooltip">Simple Present — düşünce dizisi</span></span> of Vronsky. She <span class="grammar">remembers<span class="grammar-tooltip">Simple Present — anı hatırlama</span></span> the very first moment she <span class="grammar">saw<span class="grammar-tooltip">Simple Past — ilk an</span></span> a man <span class="grammar">die<span class="grammar-tooltip">Bare infinitive after saw — algı fiili</span></span> under a train at the Moscow station, the night she <span class="grammar">met<span class="grammar-tooltip">Simple Past — tanışma gecesi</span></span> Vronsky. She <span class="grammar">steps<span class="grammar-tooltip">Simple Present — en dramatik eylem, en sade fiil</span></span> forward.</p>
+
+      <div class="quote-block">
+        <p>"The candle by which she had read the book full of troubles, deceit, grief, and evil flared up with greater brightness than ever before, and then went out forever."</p>
+        <div class="quote-source">— Leo Tolstoy, Anna Karenina</div>
+      </div>
+
+      <p>Tolstoy <span class="grammar">does not judge<span class="grammar-tooltip">Simple Present Negative — yazarın tarafsızlığı</span></span> Anna. He <span class="grammar">shows<span class="grammar-tooltip">Simple Present — gösterme</span></span> us a woman who <span class="grammar">loved<span class="grammar-tooltip">Simple Past — severdi</span></span> deeply in a society that <span class="grammar">did not allow<span class="grammar-tooltip">Simple Past Negative — toplumun geçmişteki kısıtlaması</span></span> women to love freely. He <span class="grammar">shows<span class="grammar-tooltip">Simple Present — tekrar gösterme</span></span> us Levin, who <span class="grammar">searches<span class="grammar-tooltip">Simple Present — arayış</span></span> and <span class="grammar">stumbles<span class="grammar-tooltip">Simple Present — sendeleme</span></span> and finally <span class="grammar">finds<span class="grammar-tooltip">Simple Present — bulma</span></span> peace — not in <span class="kw">grand</span> answers, but in the ordinary, <span class="kw">sacred</span> act of living with love and <span class="kw">purpose</span>.</p>
+
+      <p>This is the great question of the novel — perhaps of all great literature: <span class="grammar">How should<span class="grammar-tooltip">Modal — ahlaki soru (should = nasıl olmalı)</span></span> a person live? Anna's answer <span class="grammar">costs<span class="grammar-tooltip">Simple Present — bedelini anlatma</span></span> her everything. Levin's answer <span class="grammar">gives<span class="grammar-tooltip">Simple Present — armağan etme</span></span> him, slowly, at last, a reason to go on. And Tolstoy — the great Russian author — <span class="grammar">leaves<span class="grammar-tooltip">Simple Present — yazarın son hareketi</span></span> the question with us, the reader, to <span class="grammar">answer<span class="grammar-tooltip">Infinitive of purpose — bizim için bırakılmış</span></span> for ourselves.</p>
+
+    </div>
+
+    <div class="glossary fade-up">
+      <div class="glossary-title">🔑 Key Vocabulary — Temel Kelimeler</div>
+      <div class="glossary-grid">
+        <div class="glossary-item"><span class="gl-en">dependence</span><span class="gl-tr">bağımlılık, muhtaçlık</span></div>
+        <div class="glossary-item"><span class="gl-en">suffocate</span><span class="gl-tr">boğmak, nefes aldırmamak</span></div>
+        <div class="glossary-item"><span class="gl-en">serve</span><span class="gl-tr">hizmet etmek, görev yapmak</span></div>
+        <div class="glossary-item"><span class="gl-en">jealous</span><span class="gl-tr">kıskanç, çekemez</span></div>
+        <div class="glossary-item"><span class="gl-en">obsessively</span><span class="gl-tr">takıntılı bir şekilde</span></div>
+        <div class="glossary-item"><span class="gl-en">opium</span><span class="gl-tr">afyon (ağrı kesici, o dönem ilaç)</span></div>
+        <div class="glossary-item"><span class="gl-en">philosophical</span><span class="gl-tr">felsefi, derin düşünceli</span></div>
+        <div class="glossary-item"><span class="gl-en">exhaustion</span><span class="gl-tr">tükenme, bitkinlik</span></div>
+        <div class="glossary-item"><span class="gl-en">overwhelmed</span><span class="gl-tr">bunalmış, aşırı hislerle dolmuş</span></div>
+        <div class="glossary-item"><span class="gl-en">faith</span><span class="gl-tr">iman, inanç, güven</span></div>
+        <div class="glossary-item"><span class="gl-en">platform</span><span class="gl-tr">peron, tren istasyonu platformu</span></div>
+        <div class="glossary-item"><span class="gl-en">grand</span><span class="gl-tr">büyük, görkemli, yüce</span></div>
+        <div class="glossary-item"><span class="gl-en">sacred</span><span class="gl-tr">kutsal, dokunulmaz</span></div>
+        <div class="glossary-item"><span class="gl-en">purpose</span><span class="gl-tr">amaç, hedef, var oluş sebebi</span></div>
+      </div>
+    </div>
+
+    <div class="grammar-legend fade-up">
+      <div class="legend-item"><div class="legend-dot red"></div> Grammar highlights (hover / üzerine gel → açıklama) </div>
+      <div class="legend-item"><div class="legend-dot gold"></div> Key vocabulary (sözlükte Türkçe karşılığı var)</div>
+    </div>
+
+    <div class="chapter-nav-btns">
+      <button class="nav-btn" onclick="goChapter(3)">← Previous</button>
+      <span class="reading-time">~11 min read</span>
+      <button class="nav-btn" disabled style="opacity:0.3">End of Story</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // ─── THEME ───
+  const themeBtn = document.getElementById('themeBtn');
+  const saved = localStorage.getItem('ak-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+
+  themeBtn.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('ak-theme', next);
+  });
+
+  // ─── CHAPTER SWITCHING ───
+  let currentChapter = 0;
+  const tabs = document.querySelectorAll('.ch-tab');
+  const chapters = document.querySelectorAll('.chapter');
+  const progressFill = document.getElementById('progressFill');
+  const readingTime = document.getElementById('readingTime');
+
+  function goChapter(n) {
+    chapters[currentChapter].classList.remove('active');
+    tabs[currentChapter].classList.remove('active');
+    currentChapter = n;
+    chapters[n].classList.add('active');
+    tabs[n].classList.add('active');
+    progressFill.style.width = ((n + 1) / 5 * 100) + '%';
+    readingTime.textContent = `Chapter ${n + 1} of 5`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    triggerFadeUps();
+
+    // Scroll tab into view
+    tabs[n].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => goChapter(i));
+  });
+
+  // ─── SCROLL LINE ───
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+    document.getElementById('scrollLine').style.width = scrolled + '%';
+  });
+
+  // ─── FADE UP OBSERVER ───
+  function triggerFadeUps() {
+    setTimeout(() => {
+      const els = document.querySelectorAll('.chapter.active .fade-up');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      els.forEach((el, i) => {
+        el.style.transitionDelay = (i * 0.08) + 's';
+        obs.observe(el);
+      });
+    }, 100);
+  }
+
+  triggerFadeUps();
+</script>
+</body>
+</html>

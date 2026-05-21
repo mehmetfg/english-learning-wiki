@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanat Felsefesi Atölyesi · MFGocgun</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Verdana&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-dark: #0a0a0f;
+  --bg-card: #111118;
+  --bg-card2: #16161f;
+  --border: rgba(255,255,255,0.07);
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --teal: #2dd4bf;
+  --violet: #8b5cf6;
+  --rose: #f43f5e;
+  --text: #e8e6df;
+  --text-muted: #7a7870;
+  --text-dim: #b0aca3;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Verdana', sans-serif;
+
+  /* Light theme */
+  --light-bg: #f5f2eb;
+  --light-bg2: #ede9e0;
+  --light-card: #ffffff;
+  --light-border: rgba(0,0,0,0.1);
+  --light-text: #1a1814;
+  --light-text-muted: #6b6560;
+  --light-text-dim: #4a4640;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg-dark);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+
+body.light {
+  background: var(--light-bg);
+  color: var(--light-text);
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  height: 64px;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
+}
+body.light nav {
+  background: rgba(245,242,235,0.9);
+  border-bottom: 1px solid var(--light-border);
+}
+
+.nav-brand {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--gold); }
+body.light .nav-links a { color: var(--light-text-muted); }
+body.light .nav-links a:hover, body.light .nav-links a.active { color: var(--gold); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: var(--sans);
+  transition: all 0.2s;
+}
+.theme-toggle:hover { border-color: var(--gold); color: var(--gold); }
+body.light .theme-toggle { border-color: var(--light-border); color: var(--light-text-muted); }
+
+.xp-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem;
+}
+body.light .xp-pill { background: var(--light-card); border-color: var(--light-border); }
+.xp-num { color: var(--gold); font-weight: 700; }
+
+/* ── PAGES ── */
+.page { display: none; padding-top: 64px; min-height: 100vh; position: relative; z-index: 1; }
+.page.active { display: block; }
+
+/* ══════════════════════════════════════
+   ANA SAYFA
+══════════════════════════════════════ */
+#page-home {
+  display: none;
+}
+#page-home.active { display: block; }
+
+.hero {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5rem 3rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 80% 30%, rgba(139,92,246,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 40% at 60% 80%, rgba(45,212,191,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.1s forwards;
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 900;
+  line-height: 1.05;
+  max-width: 820px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.2s forwards;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--gold);
+  display: block;
+}
+
+.hero-sub {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--text-dim);
+  max-width: 560px;
+  margin-top: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.35s forwards;
+}
+body.light .hero-sub { color: var(--light-text-dim); }
+
+.hero-method {
+  display: flex;
+  gap: 0;
+  margin-top: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.5s forwards;
+  max-width: 600px;
+}
+
+.method-step {
+  flex: 1;
+  text-align: center;
+  padding: 0.8rem 0.5rem;
+  position: relative;
+  cursor: default;
+}
+.method-step::after {
+  content: '→';
+  position: absolute;
+  right: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+.method-step:last-child::after { display: none; }
+
+.method-num {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+.method-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+body.light .method-label { color: var(--light-text-muted); }
+
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.65s forwards;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: #0a0a0f;
+  padding: 0.85rem 2rem;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  padding: 0.85rem 2rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+body.light .btn-outline { color: var(--light-text); border-color: var(--light-border); }
+body.light .btn-outline:hover { color: var(--gold); }
+
+/* ── PROGRESS DASHBOARD ── */
+.progress-section {
+  padding: 4rem 3rem;
+  border-top: 1px solid var(--border);
+}
+body.light .progress-section { border-top: 1px solid var(--light-border); }
+
+.section-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+body.light .section-label { color: var(--light-text-muted); }
+
+.progress-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.prog-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.2rem;
+  transition: border-color 0.2s;
+}
+.prog-card:hover { border-color: rgba(201,168,76,0.3); }
+body.light .prog-card { background: var(--light-card); border-color: var(--light-border); }
+
+.prog-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+}
+.prog-title { font-size: 0.82rem; font-weight: 700; }
+.prog-pct { font-size: 0.75rem; color: var(--gold); }
+
+.prog-bar-bg {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+body.light .prog-bar-bg { background: rgba(0,0,0,0.1); }
+
+.prog-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  width: 0%;
+}
+
+.prog-meta {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+body.light .prog-meta { color: var(--light-text-muted); }
+
+/* ── MODULES GRID (Ana Sayfa) ── */
+.modules-section {
+  padding: 2rem 3rem 4rem;
+}
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+body.light .modules-grid { background: var(--light-border); border-color: var(--light-border); }
+
+.module-card {
+  background: var(--bg-card);
+  padding: 1.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+.module-card:hover { background: var(--bg-card2); }
+body.light .module-card { background: var(--light-card); }
+body.light .module-card:hover { background: var(--light-bg2); }
+
+.module-era {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+body.light .module-era { color: var(--light-text-muted); }
+
+.module-title {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.module-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+body.light .module-desc { color: var(--light-text-muted); }
+
+.module-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.2rem;
+}
+
+.module-badge {
+  font-size: 0.65rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.badge-kilit { background: rgba(139,92,246,0.15); color: var(--violet); }
+.badge-aktif { background: rgba(201,168,76,0.15); color: var(--gold); }
+.badge-tam { background: rgba(45,212,191,0.15); color: var(--teal); }
+
+.module-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+}
+.module-dot.done { background: var(--teal); }
+.module-dot.active { background: var(--gold); }
+
+
+/* ══════════════════════════════════════
+   DERS SAYFASI
+══════════════════════════════════════ */
+#page-ders { display: none; }
+#page-ders.active { display: block; }
+
+.lesson-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+.lesson-sidebar {
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 2rem 1.5rem;
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+}
+body.light .lesson-sidebar { background: var(--light-card); border-right-color: var(--light-border); }
+
+.sidebar-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+body.light .sidebar-title { color: var(--light-text-muted); }
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 2px;
+}
+.sidebar-item:hover { background: var(--bg-card2); }
+.sidebar-item.active { background: rgba(201,168,76,0.1); }
+body.light .sidebar-item:hover { background: var(--light-bg2); }
+body.light .sidebar-item.active { background: rgba(201,168,76,0.1); }
+
+.sidebar-icon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+.si-done { background: rgba(45,212,191,0.2); color: var(--teal); }
+.si-active { background: rgba(201,168,76,0.2); color: var(--gold); }
+.si-lock { background: var(--border); color: var(--text-muted); }
+
+.sidebar-text {
+  font-size: 0.78rem;
+  line-height: 1.3;
+}
+.sidebar-item.active .sidebar-text { color: var(--gold); font-weight: 700; }
+
+.lesson-main {
+  padding: 3rem;
+  max-width: 820px;
+}
+
+/* Reading Mode */
+.reading-header {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+body.light .reading-header { border-bottom-color: var(--light-border); }
+
+.reading-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+
+.reading-title {
+  font-family: var(--serif);
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.reading-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+body.light .reading-meta { color: var(--light-text-muted); }
+
+.reading-body {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: var(--text-dim);
+}
+body.light .reading-body { color: var(--light-text-dim); }
+
+.reading-body h3 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  color: var(--text);
+  margin: 2.5rem 0 1rem;
+  font-weight: 700;
+}
+body.light .reading-body h3 { color: var(--light-text); }
+
+.reading-body p { margin-bottom: 1.2rem; }
+
+.concept-box {
+  background: var(--bg-card);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 6px 6px 0;
+  padding: 1.2rem 1.5rem;
+  margin: 1.5rem 0;
+}
+body.light .concept-box { background: var(--light-bg2); }
+
+.concept-box strong {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.concept-box p { font-size: 0.85rem; color: var(--text-dim); margin: 0; }
+body.light .concept-box p { color: var(--light-text-dim); }
+
+.quote-block {
+  border-left: 2px solid var(--violet);
+  padding: 0.8rem 1.5rem;
+  margin: 2rem 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+body.light .quote-block { color: var(--light-text-dim); }
+
+.quote-attribution {
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--violet);
+  margin-top: 0.5rem;
+}
+
+/* Sorgulama kutuları */
+.inquiry-block {
+  background: rgba(139,92,246,0.07);
+  border: 1px solid rgba(139,92,246,0.2);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+body.light .inquiry-block { background: rgba(139,92,246,0.05); }
+
+.inquiry-title {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--violet);
+  margin-bottom: 1rem;
+}
+
+.inquiry-q {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+body.light .inquiry-q { color: var(--light-text); }
+
+/* Yaz modu */
+.write-area {
+  width: 100%;
+  min-height: 120px;
+  background: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  resize: vertical;
+  margin-top: 0.8rem;
+  transition: border-color 0.2s;
+}
+body.light .write-area { background: var(--light-bg); border-color: var(--light-border); color: var(--light-text); }
+.write-area:focus { outline: none; border-color: var(--gold); }
+
+/* AI Feedback */
+.ai-feedback {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  display: none;
+}
+body.light .ai-feedback { background: var(--light-bg2); border-color: var(--light-border); }
+.ai-feedback.visible { display: block; }
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.ai-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.ai-text {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-dim);
+  white-space: pre-wrap;
+}
+body.light .ai-text { color: var(--light-text-dim); }
+
+/* ── Step Tabs ── */
+.step-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 4px;
+}
+body.light .step-tabs { background: var(--light-card); border-color: var(--light-border); }
+
+.step-tab {
+  flex: 1;
+  padding: 0.6rem 0.5rem;
+  font-size: 0.7rem;
+  font-family: var(--sans);
+  letter-spacing: 0.08em;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.step-tab.active { background: var(--gold); color: #0a0a0f; font-weight: 700; }
+body.light .step-tab { color: var(--light-text-muted); }
+body.light .step-tab.active { background: var(--gold); color: #fff; }
+
+.step-content { display: none; }
+.step-content.active { display: block; }
+
+
+/* ══════════════════════════════════════
+   PRATİK SAYFASI
+══════════════════════════════════════ */
+#page-pratik { display: none; }
+#page-pratik.active { display: block; }
+
+.quiz-layout {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.quiz-header {
+  margin-bottom: 2.5rem;
+}
+.quiz-eyebrow {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+.quiz-title {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.quiz-modes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.quiz-mode-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quiz-mode-card:hover { border-color: var(--gold); }
+.quiz-mode-card.selected { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+body.light .quiz-mode-card { background: var(--light-card); border-color: var(--light-border); }
+body.light .quiz-mode-card.selected { background: rgba(201,168,76,0.08); }
+
+.qm-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.qm-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.3rem; }
+.qm-desc { font-size: 0.73rem; color: var(--text-muted); line-height: 1.5; }
+body.light .qm-desc { color: var(--light-text-muted); }
+
+/* Quiz Area */
+#quiz-area { display: none; }
+#quiz-area.visible { display: block; }
+
+.quiz-progress {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+body.light .quiz-progress { color: var(--light-text-muted); }
+
+.quiz-progress-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+body.light .quiz-progress-bar { background: rgba(0,0,0,0.1); }
+
+.quiz-progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: width 0.5s;
+}
+
+.question-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2rem;
+}
+body.light .question-card { background: var(--light-card); border-color: var(--light-border); }
+
+.question-type {
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--violet);
+  margin-bottom: 1rem;
+}
+
+.question-text {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  list-style: none;
+}
+
+.option-item {
+  padding: 0.9rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.option-item:hover { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+.option-item.correct { border-color: var(--teal); background: rgba(45,212,191,0.08); color: var(--teal); }
+.option-item.wrong { border-color: var(--rose); background: rgba(244,63,94,0.08); color: var(--rose); }
+body.light .option-item { border-color: var(--light-border); }
+
+.option-letter {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.feedback-box {
+  margin-top: 1.5rem;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.83rem;
+  line-height: 1.6;
+  display: none;
+}
+.feedback-box.visible { display: block; }
+.feedback-box.correct-fb { background: rgba(45,212,191,0.1); border: 1px solid rgba(45,212,191,0.2); color: var(--teal); }
+.feedback-box.wrong-fb { background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.2); color: var(--rose); }
+
+.quiz-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* ══════════════════════════════════════
+   ATÖ SAYFASI (AI Workshop)
+══════════════════════════════════════ */
+#page-atolye { display: none; }
+#page-atolye.active { display: block; }
+
+.workshop-layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  min-height: calc(100vh - 64px);
+}
+
+.workshop-left {
+  padding: 3rem;
+  border-right: 1px solid var(--border);
+}
+body.light .workshop-left { border-right-color: var(--light-border); }
+
+.workshop-right {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.workshop-title {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.workshop-sub {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+body.light .workshop-sub { color: var(--light-text-muted); }
+
+.prompt-templates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.prompt-tag {
+  padding: 0.35rem 0.8rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.prompt-tag:hover { border-color: var(--gold); color: var(--gold); }
+body.light .prompt-tag { background: var(--light-card); border-color: var(--light-border); }
+
+.workshop-input-area {
+  width: 100%;
+  min-height: 180px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.2rem;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+body.light .workshop-input-area { background: var(--light-card); border-color: var(--light-border); color: var(--light-text); }
+.workshop-input-area:focus { outline: none; border-color: var(--gold); }
+
+.workshop-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.api-key-input {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  margin-right: 1rem;
+}
+body.light .api-key-input { background: var(--light-card); border-color: var(--light-border); color: var(--light-text); }
+.api-key-input:focus { outline: none; border-color: var(--gold); }
+
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.chat-msg {
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  line-height: 1.7;
+  max-width: 90%;
+}
+.chat-msg.ai {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+  color: var(--text-dim);
+}
+.chat-msg.user {
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.2);
+  align-self: flex-end;
+  color: var(--text);
+}
+body.light .chat-msg.ai { background: var(--light-card); border-color: var(--light-border); color: var(--light-text-dim); }
+body.light .chat-msg.user { color: var(--light-text); }
+
+.chat-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.83rem;
+}
+body.light .chat-input { background: var(--light-card); border-color: var(--light-border); color: var(--light-text); }
+.chat-input:focus { outline: none; border-color: var(--gold); }
+
+.btn-send {
+  background: var(--gold);
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  color: #0a0a0f;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  transition: background 0.2s;
+}
+.btn-send:hover { background: var(--gold-light); }
+.btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+
+/* ── TIMELINE (Ders'te görsel) ── */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  margin: 2rem 0;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, var(--gold) 0%, var(--violet) 50%, transparent 100%);
+}
+
+.tl-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 0.4rem;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-left: -3.5px;
+}
+
+.tl-period {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+}
+
+.tl-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.tl-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+body.light .tl-desc { color: var(--light-text-muted); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  from { background-position: -400px 0; }
+  to { background-position: 400px 0; }
+}
+
+.loading-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  background-size: 400px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">✦ Sanat Felsefesi Atölyesi</a>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" class="active" id="nav-home">Ana Sayfa</a></li>
+    <li><a onclick="showPage('ders')" id="nav-ders">Ders</a></li>
+    <li><a onclick="showPage('pratik')" id="nav-pratik">Pratik</a></li>
+    <li><a onclick="showPage('atolye')" id="nav-atolye">Atölye</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="xp-pill">
+      <span>Lv.<span id="user-level">1</span></span>
+      <span class="xp-num" id="user-xp">0</span>
+      <span>XP</span>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">☀ / ☾</button>
+  </div>
+</nav>
+
+<!-- ══ ANA SAYFA ══ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-eyebrow">✦ Sanat Felsefesi · Varoluşsal İdrak</div>
+    <h1 class="hero-title">
+      Sanatı Görmek<br>
+      <em>Derinlemesine</em>
+    </h1>
+    <p class="hero-sub">
+      Aristoteles'ten modern sanata uzanan bir yolculuk. Bir sanat eserini gerçekten görmek, onun içinde gizli felsefi gerçeği kavramak demektir.
+    </p>
+    <div class="hero-method">
+      <div class="method-step">
+        <div class="method-num">01</div>
+        <div class="method-label">Oku</div>
+      </div>
+      <div class="method-step">
+        <div class="method-num">02</div>
+        <div class="method-label">Yaz</div>
+      </div>
+      <div class="method-step">
+        <div class="method-num">03</div>
+        <div class="method-label">Karşılaştır</div>
+      </div>
+      <div class="method-step">
+        <div class="method-num">04</div>
+        <div class="method-label">Sorgula</div>
+      </div>
+      <div class="method-step">
+        <div class="method-num">05</div>
+        <div class="method-label">Üret</div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="showPage('ders')">Öğrenmeye Başla</button>
+      <button class="btn-outline" onclick="showPage('pratik')">Pratik Yap</button>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-section">
+    <div class="section-label">İlerleme Durumu</div>
+    <div class="progress-grid">
+      <div class="prog-card">
+        <div class="prog-top"><span class="prog-title">Antik Yunan & Aristoteles</span><span class="prog-pct">0%</span></div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" data-pct="0"></div></div>
+        <div class="prog-meta">0 / 4 ders tamamlandı</div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-top"><span class="prog-title">Rönesans & Form Teorisi</span><span class="prog-pct">0%</span></div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" data-pct="0"></div></div>
+        <div class="prog-meta">0 / 5 ders tamamlandı</div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-top"><span class="prog-title">Kant & Yüce Kavramı</span><span class="prog-pct">0%</span></div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" data-pct="0"></div></div>
+        <div class="prog-meta">0 / 4 ders tamamlandı</div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-top"><span class="prog-title">Modernizm & Çağdaş Sanat</span><span class="prog-pct">0%</span></div>
+        <div class="prog-bar-bg"><div class="prog-bar-fill" data-pct="0"></div></div>
+        <div class="prog-meta">0 / 6 ders tamamlandı</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modules -->
+  <div class="modules-section">
+    <div class="section-label">Tüm Modüller</div>
+    <div class="modules-grid">
+      <div class="module-card" onclick="openLesson('aristoteles')">
+        <div class="module-era">Antik Yunan · MÖ 384–322</div>
+        <div class="module-title">Aristoteles'in Sanat Kuramı</div>
+        <div class="module-desc">Mimesis, Katharsis, Form ve Madde. Sanatın felsefi temellerini Aristoteles'in gözünden keşfet.</div>
+        <div class="module-footer">
+          <span class="module-badge badge-aktif">Aktif</span>
+          <div class="module-dot active"></div>
+        </div>
+      </div>
+      <div class="module-card" onclick="openLesson('platon')">
+        <div class="module-era">Antik Yunan · MÖ 428–348</div>
+        <div class="module-title">Platon ve İdealar Kuramı</div>
+        <div class="module-desc">Gerçekliğin gölgeleri olarak sanat. Platon'un sanatı neden tehlikeli bulduğunu anla.</div>
+        <div class="module-footer">
+          <span class="module-badge badge-aktif">Aktif</span>
+          <div class="module-dot"></div>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-era">Roma · MS 3. yy</div>
+        <div class="module-title">Plotinus & Neoplatonizm</div>
+        <div class="module-desc">Güzellik İlahi'nin yansıması mıdır? Madde üstü güzellik anlayışı.</div>
+        <div class="module-footer">
+          <span class="module-badge badge-kilit">Kilitli</span>
+          <div class="module-dot"></div>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-era">Rönesans · 14–17. yy</div>
+        <div class="module-title">Rönesans: Doğanın Taklidi mi, Yaratıcılık mı?</div>
+        <div class="module-desc">Leonardo, Michelangelo ve sanatın Tanrı'ya yaklaşma yolu olarak yorumlanması.</div>
+        <div class="module-footer">
+          <span class="module-badge badge-kilit">Kilitli</span>
+          <div class="module-dot"></div>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-era">Aydınlanma · 18. yy</div>
+        <div class="module-title">Kant: Güzellik ve Yüce</div>
+        <div class="module-desc">Estetik yargının saf doğası. Güzel neden herkes için geçerlidir?</div>
+        <div class="module-footer">
+          <span class="module-badge badge-kilit">Kilitli</span>
+          <div class="module-dot"></div>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-era">19. yy</div>
+        <div class="module-title">Hegel: Sanat, Din, Felsefe</div>
+        <div class="module-desc">Mutlak Tin'in sanat aracılığıyla tezahürü. Sanatın tarihi sonu mu geldi?</div>
+        <div class="module-footer">
+          <span class="module-badge badge-kilit">Kilitli</span>
+          <div class="module-dot"></div>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-era">19–20. yy</div>
+        <div class="module-title">Nietzsche: Apollon ve Dionysos</div>
+        <div class="module-desc">Sanatın iki ruhu: Düzen ve coşku arasındaki gerilim.</div>
+        <div class="module-footer">
+          <span class="module-badge badge-kilit">Kilitli</span>
+          <div class="module-dot"></div>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-era">20. yy</div>
+        <div class="module-title">Heidegger: Sanat Eserinin Kökeni</div>
+        <div class="module-desc">Hakikat nasıl açığa çıkar? Sanat eseri bir dünya kurar.</div>
+        <div class="module-footer">
+          <span class="module-badge badge-kilit">Kilitli</span>
+          <div class="module-dot"></div>
+        </div>
+      </div>
+      <div class="module-card">
+        <div class="module-era">Çağdaş · 20–21. yy</div>
+        <div class="module-title">Modernizm'den Postmodernizm'e</div>
+        <div class="module-desc">Büyük anlatıların çöküşü. Sanat artık ne anlama geliyor?</div>
+        <div class="module-footer">
+          <span class="module-badge badge-kilit">Kilitli</span>
+          <div class="module-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DERS SAYFASI ══ -->
+<div class="page" id="page-ders">
+  <div class="lesson-layout">
+    <div class="lesson-sidebar">
+      <div class="sidebar-title">Modül 1 · Aristoteles</div>
+      <div class="sidebar-item active" onclick="openLesson('aristoteles')">
+        <div class="sidebar-icon si-active">●</div>
+        <div class="sidebar-text">Mimesis: Taklit mi, Yaratma mı?</div>
+      </div>
+      <div class="sidebar-item" onclick="openLesson('katharsis')">
+        <div class="sidebar-icon si-lock">○</div>
+        <div class="sidebar-text">Katharsis ve Duygu Arınması</div>
+      </div>
+      <div class="sidebar-item">
+        <div class="sidebar-icon si-lock">○</div>
+        <div class="sidebar-text">Form, Madde ve Sanatın Amacı</div>
+      </div>
+      <div class="sidebar-item">
+        <div class="sidebar-icon si-lock">○</div>
+        <div class="sidebar-text">Poetika: Tragedya Analizi</div>
+      </div>
+      <br>
+      <div class="sidebar-title">Modül 2 · Platon</div>
+      <div class="sidebar-item">
+        <div class="sidebar-icon si-lock">○</div>
+        <div class="sidebar-text">İdealar ve Gölgeler Dünyası</div>
+      </div>
+      <div class="sidebar-item">
+        <div class="sidebar-icon si-lock">○</div>
+        <div class="sidebar-text">Devlet'te Sanatın Tehlikesi</div>
+      </div>
+    </div>
+
+    <div class="lesson-main" id="lesson-content">
+      <!-- Ders içeriği JS ile doldurulur -->
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRATİK SAYFASI ══ -->
+<div class="page" id="page-pratik">
+  <div class="quiz-layout">
+    <div class="quiz-header">
+      <div class="quiz-eyebrow">✦ Pratik · Değerlendirme</div>
+      <div class="quiz-title">Ne Kadar Kavradın?</div>
+    </div>
+
+    <div id="quiz-mode-select">
+      <p style="font-size:0.83rem;color:var(--text-muted);margin-bottom:1.2rem;">Bir pratik modu seç, ardından başla.</p>
+      <div class="quiz-modes">
+        <div class="quiz-mode-card" onclick="selectMode('kavram')" id="mode-kavram">
+          <div class="qm-icon">🎯</div>
+          <div class="qm-name">Kavram Testi</div>
+          <div class="qm-desc">Felsefi terimleri ve kavramları test et. Çoktan seçmeli.</div>
+        </div>
+        <div class="quiz-mode-card" onclick="selectMode('eserleri')" id="mode-eserleri">
+          <div class="qm-icon">🖼</div>
+          <div class="qm-name">Eserleri Tanı</div>
+          <div class="qm-desc">Tanımlanan sanat eserini akımına ve filozofuna bağla.</div>
+        </div>
+        <div class="quiz-mode-card" onclick="selectMode('bosluk')" id="mode-bosluk">
+          <div class="qm-icon">✏️</div>
+          <div class="qm-name">Boşluk Doldurma</div>
+          <div class="qm-desc">Alıntılardaki eksik felsefi kavramları tamamla.</div>
+        </div>
+        <div class="quiz-mode-card" onclick="selectMode('eslestir')" id="mode-eslestir">
+          <div class="qm-icon">🔗</div>
+          <div class="qm-name">Eşleştir</div>
+          <div class="qm-desc">Filozofları, eserleri ve kavramları doğru şekilde eşleştir.</div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="startQuiz()" id="start-btn" style="opacity:0.4;pointer-events:none;">Başla</button>
+    </div>
+
+    <div id="quiz-area">
+      <div class="quiz-progress">
+        <span id="q-num">Soru 1 / 5</span>
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" id="q-progress" style="width:0%"></div>
+        </div>
+        <span id="q-score">0 puan</span>
+      </div>
+
+      <div class="question-card">
+        <div class="question-type" id="q-type">Kavram Sorusu</div>
+        <div class="question-text" id="q-text"></div>
+        <ul class="options-list" id="q-options"></ul>
+        <div class="feedback-box" id="q-feedback"></div>
+      </div>
+
+      <div class="quiz-actions">
+        <button class="btn-outline" onclick="resetQuiz()">Sıfırla</button>
+        <button class="btn-primary" onclick="nextQuestion()" id="next-btn" style="display:none">Sonraki →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ATÖLYE SAYFASI ══ -->
+<div class="page" id="page-atolye">
+  <div class="workshop-layout">
+    <div class="workshop-left">
+      <div class="workshop-title">AI Sanat Analiz Atölyesi</div>
+      <div class="workshop-sub">Bir sanat eseri, bir dönem ya da bir kavram hakkında derin analiz yaptır. Profesör asistan olarak karşında.</div>
+
+      <div style="margin-bottom:1rem;">
+        <div class="section-label">Hazır Soru Şablonları</div>
+        <div class="prompt-templates">
+          <div class="prompt-tag" onclick="useTemplate(this)">Mona Lisa'yı Aristotelci yorumla</div>
+          <div class="prompt-tag" onclick="useTemplate(this)">Rönesans ve Antik Yunan estetik anlayışını karşılaştır</div>
+          <div class="prompt-tag" onclick="useTemplate(this)">Mimesis nedir, örneklerle açıkla</div>
+          <div class="prompt-tag" onclick="useTemplate(this)">Sistine Şapeli'nin teolojik ve estetik boyutları</div>
+          <div class="prompt-tag" onclick="useTemplate(this)">Picasso'nun Guernica'sı ne anlatır?</div>
+          <div class="prompt-tag" onclick="useTemplate(this)">Güzel ile Yüce arasındaki fark nedir?</div>
+          <div class="prompt-tag" onclick="useTemplate(this)">Sanatın bir amacı olması gerekir mi?</div>
+        </div>
+      </div>
+
+      <div class="section-label">Analiz İsteği</div>
+      <textarea class="workshop-input-area" id="workshop-input" placeholder="Bir sanat eseri, dönem veya kavram hakkında soru sor... Profesör asistan olarak cevap vereceğim."></textarea>
+
+      <div class="workshop-controls">
+        <input type="text" class="api-key-input" id="gemini-key" placeholder="Gemini API Anahtarı (isteğe bağlı)">
+        <button class="btn-primary" onclick="sendWorkshopMessage()" id="workshop-send-btn">Analiz Et →</button>
+      </div>
+    </div>
+
+    <div class="workshop-right">
+      <div class="section-label" style="margin-bottom:1rem;">Atölye Sohbeti</div>
+      <div class="chat-area" id="chat-area">
+        <div class="chat-msg ai">
+          Merhaba. Ben sanat tarihi ve felsefesi alanında sana rehberlik edecek AI asistanınım. Aristoteles'ten çağdaş sanata, estetik teoriden sanat eleştirisine kadar her konuda seninle derinlemesine düşünebiliriz.<br><br>
+          <strong>Bir eseri, dönemi veya kavramı sor.</strong> Sana hem tarihsel bağlamı hem felsefi anlamı hem de varoluşsal boyutuyla açıklayayım.
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" class="chat-input" id="chat-input" placeholder="Hızlı soru sor..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+        <button class="btn-send" onclick="sendChatMessage()" id="chat-send-btn">→</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// GLOBAL STATE
+// ═══════════════════════════════════════
+let state = {
+  xp: 0,
+  level: 1,
+  completedLessons: [],
+  quizMode: null,
+  quizIndex: 0,
+  quizScore: 0,
+  quizAnswered: false,
+  chatHistory: [],
+  theme: 'dark'
+};
+
+// ═══════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  document.body.classList.toggle('light', state.theme === 'light');
+}
+
+// ═══════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// PROGRESS BARS
+// ═══════════════════════════════════════
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.prog-bar-fill').forEach(bar => {
+      const pct = parseInt(bar.dataset.pct);
+      bar.style.width = pct + '%';
+    });
+  }, 400);
+});
+
+// ═══════════════════════════════════════
+// XP SYSTEM
+// ═══════════════════════════════════════
+function addXP(amount) {
+  state.xp += amount;
+  if (state.xp >= state.level * 100) {
+    state.level++;
+    showLevelUp();
+  }
+  document.getElementById('user-xp').textContent = state.xp;
+  document.getElementById('user-level').textContent = state.level;
+}
+
+function showLevelUp() {
+  const msg = document.createElement('div');
+  msg.style.cssText = 'position:fixed;top:80px;right:2rem;background:var(--gold);color:#0a0a0f;padding:1rem 1.5rem;border-radius:8px;font-weight:700;font-size:0.9rem;z-index:999;animation:fadeUp 0.4s forwards';
+  msg.textContent = '🎉 Seviye Atladın! Lv.' + state.level;
+  document.body.appendChild(msg);
+  setTimeout(() => msg.remove(), 3000);
+}
+
+// ═══════════════════════════════════════
+// LESSONS
+// ═══════════════════════════════════════
+const lessons = {
+  aristoteles: {
+    eyebrow: 'Modül 1 · Aristoteles · Antik Yunan',
+    title: 'Mimesis: Taklit mi, Yaratma mı?',
+    meta: ['~12 dk okuma', '4 kavram', '2 alıştırma'],
+    content: `
+      <h3>1. Adım: Oku — Aristoteles ve Mimesis</h3>
+      <p>
+        Aristoteles, sanatı <em>mimesis</em> kavramıyla açıklar. Türkçeye "taklit" olarak çevirilen bu sözcük, sıradan bir kopyalamayı değil, gerçekliğin özünü kavramayı ifade eder. Bu, hocamızın en kritik ilk dersidir: Sanat ne gerçeği taklit eder, ne de onu çarpıtır — sanat, gerçekliğin <em>özünü yeniden kurar</em>.
+      </p>
+
+      <div class="concept-box">
+        <strong>Mimesis (Μίμησις) — Taklit / Yeniden Kurma</strong>
+        <p>Aristoteles'e göre sanatçı, doğayı olduğu gibi değil, <em>olması gerektiği gibi</em> gösterir. Bu nedenle mimesis bir kopya değil, bir yorumdur — gerçekliğin daha derin bir ifadesidir.</p>
+      </div>
+
+      <p>
+        Platon, Aristoteles'in hocasıydı. Fakat Aristoteles, hocasının görüşünü tam tersine çevirdi. Platon için sanat tehlikeliydi çünkü gerçekliği değil, gerçekliğin gölgesini kopyalıyordu. Aristoteles ise bunun aksine, sanatın <em>tarihten daha derin bir hakikate</em> sahip olduğunu savundu.
+      </p>
+
+      <div class="quote-block">
+        "Şair, olmuş olanları değil, olabilecek olanları anlatır. Bu nedenle şiir, tarihten daha felsefi ve daha ciddidir."
+        <div class="quote-attribution">— Aristoteles, Poetika</div>
+      </div>
+
+      <h3>2. Boyut: Mimesis'in Üç Nesnesi</h3>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-period">İnsanlar</div>
+          <div class="tl-title">Eylem ve Karakter</div>
+          <div class="tl-desc">Tragedya, insanları olduklarından daha yüce gösterir; komedi ise daha aşağı. Her ikisi de mimesis'in farklı biçimleridir.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">Araç</div>
+          <div class="tl-title">Dil, Ritim, Ses</div>
+          <div class="tl-desc">Şiir ritim kullanır; müzik ses; dans beden. Mimesis'in aracı, sanatın türünü belirler.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-period">Yöntem</div>
+          <div class="tl-title">Anlatı vs. Gösterim</div>
+          <div class="tl-desc">Epik şiir anlatır; dram gösterir. Aristoteles, dramanın daha güçlü bir mimesis biçimi olduğunu savunur.</div>
+        </div>
+      </div>
+
+      <div class="inquiry-block">
+        <div class="inquiry-title">🔍 Sorgula</div>
+        <div class="inquiry-q">Eğer bir ressam gerçek bir manzarayı tuvaline aktarıyorsa, bu mimesis midir? Peki Picasso'nun kübist tablosu?</div>
+        <div class="inquiry-q" style="margin-top:0.7rem;">Aristoteles'e göre ikisi de mimesistir — fakat <em>farklı şeyleri</em> taklit etmektedir. Bu fikri kendine göre açıklamayı dene.</div>
+      </div>
+    `
+  },
+  katharsis: {
+    eyebrow: 'Modül 1 · Aristoteles · Duygu Teorisi',
+    title: 'Katharsis: Duyguların Arınması',
+    meta: ['~10 dk okuma', '3 kavram', '2 alıştırma'],
+    content: `
+      <h3>1. Adım: Oku — Katharsis Nedir?</h3>
+      <p>
+        Aristoteles'in sanat felsefesindeki ikinci büyük kavram <em>katharsis</em>'tir. Tragedyayı izlerken hissettiğimiz korku ve acıma, neden bizi rahatlatır? Bu paradoksa cevap, katharsis'tedir.
+      </p>
+
+      <div class="concept-box">
+        <strong>Katharsis (Κάθαρσις) — Arınma / Boşalım</strong>
+        <p>Tragedya izleyiciyi, acı ve korku duygularını güvenli bir ortamda yaşatarak bu duygulardan arındırır. Sanat, duyguları bastırmaz — onları dönüştürür.</p>
+      </div>
+
+      <div class="quote-block">
+        "Tragedya, uyandırdığı acıma ve korku aracılığıyla bu tür duyguların katharsis'ini, yani arınmasını gerçekleştirir."
+        <div class="quote-attribution">— Aristoteles, Poetika VI</div>
+      </div>
+
+      <div class="inquiry-block">
+        <div class="inquiry-title">🔍 Sorgula</div>
+        <div class="inquiry-q">Neden trajik bir film izledikten sonra kendimizi "temizlenmiş" hissederiz? Aristoteles'in katharsis kavramı bu duyguyu açıklıyor mu?</div>
+      </div>
+    `
+  }
+};
+
+function openLesson(id) {
+  showPage('ders');
+  const lesson = lessons[id];
+  if (!lesson) return;
+
+  const content = document.getElementById('lesson-content');
+  content.innerHTML = `
+    <div class="reading-header">
+      <div class="reading-eyebrow">${lesson.eyebrow}</div>
+      <h2 class="reading-title">${lesson.title}</h2>
+      <div class="reading-meta">
+        ${lesson.meta.map(m => `<span>${m}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="step-tabs">
+      <button class="step-tab active" onclick="switchTab(this,'read')">01 · Oku</button>
+      <button class="step-tab" onclick="switchTab(this,'write')">02 · Yaz</button>
+      <button class="step-tab" onclick="switchTab(this,'compare')">03 · Karşılaştır</button>
+      <button class="step-tab" onclick="switchTab(this,'inquire')">04 · Sorgula</button>
+      <button class="step-tab" onclick="switchTab(this,'produce')">05 · Üret</button>
+    </div>
+
+    <div class="step-content active reading-body" id="tab-read">
+      ${lesson.content}
+      <div style="margin-top:2.5rem;display:flex;gap:1rem;">
+        <button class="btn-primary" onclick="switchTabByName('write')">Devam: Yaz →</button>
+      </div>
+    </div>
+
+    <div class="step-content" id="tab-write">
+      <h3 style="font-family:var(--serif);font-size:1.4rem;margin-bottom:1rem;">02 · Kendi Kelimenle Yaz</h3>
+      <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.2rem;">
+        Az önce okuduklarını kendi cümlelerinle, kendi yorumunla yeniden ifade et. Öğrenmenin en güçlü biçimi budur.
+      </p>
+      <p style="font-size:0.82rem;color:var(--gold);margin-bottom:0.8rem;">Soru: Mimesis'i bir arkadaşına nasıl açıklardın? Aristoteles'in sanat anlayışının özü nedir?</p>
+      <textarea class="write-area" id="write-input" placeholder="Buraya yaz..."></textarea>
+      <div style="margin-top:1rem;display:flex;gap:1rem;">
+        <button class="btn-primary" onclick="analyzeWriting()">AI ile Karşılaştır →</button>
+      </div>
+      <div class="ai-feedback" id="write-feedback">
+        <div class="ai-header"><div class="ai-dot"></div>Profesör Analizi</div>
+        <div class="ai-text" id="write-feedback-text"></div>
+      </div>
+    </div>
+
+    <div class="step-content" id="tab-compare">
+      <h3 style="font-family:var(--serif);font-size:1.4rem;margin-bottom:1rem;">03 · Karşılaştır</h3>
+      <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem;">
+        Aristoteles'i başka bir düşünürle veya kavramla yan yana getir. Bu, kavramın sınırlarını görmeni sağlar.
+      </p>
+
+      <div class="concept-box" style="margin-bottom:1rem;">
+        <strong>Aristoteles vs. Platon: Mimesis Tartışması</strong>
+        <p><strong>Platon:</strong> Sanat, gerçekliğin (İdea'nın) sadece gölgesinin kopyasıdır. Üç kat uzak — tehlikeli ve aldatıcı.<br><br><strong>Aristoteles:</strong> Sanat, gerçekliğin özünü ortaya koyar. Tarihten daha evrensel hakikatlere ulaşır.</p>
+      </div>
+
+      <div class="inquiry-block">
+        <div class="inquiry-title">💡 Düşün ve Cevapla</div>
+        <div class="inquiry-q">Hang tarafta duruyorsun? Bir film izlediğinde gerçekten bir hakikat mi görüyorsun — yoksa aldatıcı bir illüzyon mu?</div>
+        <textarea class="write-area" placeholder="Kendi konumunu yaz..." style="min-height:80px;margin-top:0.8rem;"></textarea>
+      </div>
+    </div>
+
+    <div class="step-content" id="tab-inquire">
+      <h3 style="font-family:var(--serif);font-size:1.4rem;margin-bottom:1rem;">04 · Sorgula</h3>
+      <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem;">
+        Kavramı zorla. Sınırlarını test et. Felsefi düşünce ancak sorgulandığında derinleşir.
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem;">
+        ${[
+          'Bir fotoğraf makinesi de mimesis yapar mı? Aristoteles buna ne derdi?',
+          'Soyut sanat neyi taklit eder? Hiçbir şeyi taklit etmiyorsa sanat sayılır mı?',
+          'Bir mimari yapı (örn: Parthenon) Aristotelci anlamda bir sanat eseri midir?'
+        ].map(q => `
+          <div class="inquiry-block" style="margin:0;cursor:pointer;" onclick="sendToWorkshop('${q}')">
+            <div class="inquiry-title">🔍 Derin Soru</div>
+            <div class="inquiry-q">${q}</div>
+            <div style="font-size:0.7rem;color:var(--teal);margin-top:0.5rem;">→ Atölyede tartış</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="step-content" id="tab-produce">
+      <h3 style="font-family:var(--serif);font-size:1.4rem;margin-bottom:1rem;">05 · Üret</h3>
+      <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.5rem;">
+        Öğrendiklerini bir çıktıya dönüştür. Yazmak düşünmektir.
+      </p>
+
+      <div class="concept-box" style="margin-bottom:1.5rem;">
+        <strong>Görev: Kısa Sanat Analizi</strong>
+        <p>Bildiğin veya sevdiğin bir sanat eserini (resim, film, roman, müzik) seç. Aristoteles'in mimesis kavramını kullanarak 3–5 cümleyle analiz et. Eser neyi "taklit" ediyor? Bu taklit bize ne öğretiyor?</p>
+      </div>
+
+      <textarea class="write-area" id="produce-input" placeholder="Eserin adı ve analizin..." style="min-height:150px;"></textarea>
+      <div style="margin-top:1rem;display:flex;gap:1rem;">
+        <button class="btn-primary" onclick="evaluateProduce()">Profesöre Gönder →</button>
+      </div>
+      <div class="ai-feedback" id="produce-feedback">
+        <div class="ai-header"><div class="ai-dot"></div>Profesör Değerlendirmesi</div>
+        <div class="ai-text" id="produce-feedback-text"></div>
+      </div>
+    </div>
+  `;
+}
+
+function switchTab(btn, name) {
+  document.querySelectorAll('.step-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function switchTabByName(name) {
+  const tabs = document.querySelectorAll('.step-tab');
+  const map = { read: 0, write: 1, compare: 2, inquire: 3, produce: 4 };
+  switchTab(tabs[map[name]], name);
+}
+
+// ═══════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════
+const quizData = {
+  kavram: [
+    {
+      type: 'Kavram Sorusu',
+      text: 'Aristoteles\'e göre "mimesis" kavramı sanatı nasıl tanımlar?',
+      options: [
+        'Gerçekliğin birebir kopyası',
+        'Gerçekliğin özünü yorumlayarak yeniden kurma',
+        'Hayalin özgür ifadesi',
+        'Tanrısal ilhamın aktarımı'
+      ],
+      correct: 1,
+      explanation: 'Doğru! Aristoteles için mimesis, basit bir kopyalama değildir. Sanatçı, gerçekliği "olması gerektiği gibi" gösterir — bu nedenle sanat, tarihten daha evrensel bir hakikate sahiptir.'
+    },
+    {
+      type: 'Kavram Sorusu',
+      text: '"Katharsis" hangi anlamı taşır?',
+      options: [
+        'Sanat eserinin güzelliği',
+        'Yaratıcı sürecin doruk noktası',
+        'Duyguların tragedya aracılığıyla arınması',
+        'Form ve maddenin birleşimi'
+      ],
+      correct: 2,
+      explanation: 'Evet! Katharsis, tragedyanın izleyicide uyandırdığı korku ve acıma duyguları aracılığıyla gerçekleşen ruhsal arınmadır. Bu, sanatın terapötik işlevini açıklar.'
+    },
+    {
+      type: 'Karşılaştırma',
+      text: 'Platon ve Aristoteles\'in mimesis yorumu arasındaki temel fark nedir?',
+      options: [
+        'İkisi de mimesis\'i olumlu bulur',
+        'Platon sanatı tehlikeli, Aristoteles ise hakikate ulaştırıcı bulur',
+        'Aristoteles sanatı tehlikeli, Platon ise değerli bulur',
+        'İkisi de sanatı felsefeden üstün tutar'
+      ],
+      correct: 1,
+      explanation: 'Kesinlikle doğru! Platon için sanat, İdea\'nın gölgesinin kopyasıdır — üç kat uzak ve aldatıcı. Aristoteles ise aksine, sanatın tarihten daha felsefi ve evrensel olduğunu savunur.'
+    },
+    {
+      type: 'Kavram Sorusu',
+      text: 'Aristoteles\'e göre şiir tarihten neden daha "felsefi"dir?',
+      options: [
+        'Çünkü şiir daha güzel yazılır',
+        'Çünkü şiir duygulara hitap eder',
+        'Çünkü şiir tikel değil evrensel olanı anlatır',
+        'Çünkü şiir uzun süre hatırlanır'
+      ],
+      correct: 2,
+      explanation: 'Mükemmel! Tarih, olmuş tikelleri anlatır. Şiir ise olabilecek evrensel olanı. Bu nedenle şiir, insanlık durumunu daha derinlemesine kavrar.'
+    },
+    {
+      type: 'Uygulama',
+      text: 'Bir ressam gerçek bir manzarayı değil, manzaranın "ruhunu" tuvale aktarmaya çalışıyor. Aristoteles bu çabayı nasıl değerlendirirdi?',
+      options: [
+        'Bu mimesis değildir, saf hayal gücüdür',
+        'Bu tam anlamıyla mimesis\'tir — özü yakalamak',
+        'Bu Platoncu bir yaklaşımdır',
+        'Bu sanata değil, felsefeye aittir'
+      ],
+      correct: 1,
+      explanation: 'Doğru! Aristoteles için özü yakalamak, yüzeyi kopyalamaktan daha derin bir mimesis biçimidir. Sanatçı, görüneni değil, görünenin arkasındaki gerçekliği yeniden kurar.'
+    }
+  ]
+};
+
+let currentQuiz = [];
+let currentQ = 0;
+let quizScore = 0;
+
+function selectMode(mode) {
+  state.quizMode = mode;
+  document.querySelectorAll('.quiz-mode-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('mode-' + mode).classList.add('selected');
+  document.getElementById('start-btn').style.opacity = '1';
+  document.getElementById('start-btn').style.pointerEvents = 'auto';
+}
+
+function startQuiz() {
+  const data = quizData[state.quizMode] || quizData.kavram;
+  currentQuiz = data;
+  currentQ = 0;
+  quizScore = 0;
+  document.getElementById('quiz-mode-select').style.display = 'none';
+  document.getElementById('quiz-area').classList.add('visible');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  if (currentQ >= currentQuiz.length) {
+    showResults();
+    return;
+  }
+  const q = currentQuiz[currentQ];
+  const total = currentQuiz.length;
+  document.getElementById('q-num').textContent = `Soru ${currentQ + 1} / ${total}`;
+  document.getElementById('q-progress').style.width = (currentQ / total * 100) + '%';
+  document.getElementById('q-score').textContent = quizScore + ' puan';
+  document.getElementById('q-type').textContent = q.type;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-feedback').className = 'feedback-box';
+  document.getElementById('q-feedback').textContent = '';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const ul = document.getElementById('q-options');
+  ul.innerHTML = '';
+  const letters = ['A', 'B', 'C', 'D'];
+  q.options.forEach((opt, i) => {
+    const li = document.createElement('li');
+    li.className = 'option-item';
+    li.innerHTML = `<span class="option-letter">${letters[i]}</span>${opt}`;
+    li.onclick = () => answer(i, q.correct, q.explanation, li);
+    ul.appendChild(li);
+  });
+}
+
+function answer(selected, correct, explanation, el) {
+  if (document.getElementById('q-feedback').classList.contains('visible')) return;
+  const items = document.querySelectorAll('.option-item');
+  items.forEach(i => i.onclick = null);
+  const fb = document.getElementById('q-feedback');
+
+  if (selected === correct) {
+    el.classList.add('correct');
+    quizScore += 20;
+    addXP(15);
+    fb.className = 'feedback-box correct-fb visible';
+    fb.textContent = '✓ ' + explanation;
+  } else {
+    el.classList.add('wrong');
+    items[correct].classList.add('correct');
+    fb.className = 'feedback-box wrong-fb visible';
+    fb.textContent = '✗ ' + explanation;
+  }
+  document.getElementById('next-btn').style.display = 'block';
+  document.getElementById('q-score').textContent = quizScore + ' puan';
+}
+
+function nextQuestion() {
+  currentQ++;
+  renderQuestion();
+}
+
+function showResults() {
+  const area = document.getElementById('quiz-area');
+  area.innerHTML = `
+    <div style="text-align:center;padding:3rem 1rem;">
+      <div style="font-size:3rem;margin-bottom:1rem;">🎓</div>
+      <div style="font-family:var(--serif);font-size:2rem;font-weight:700;margin-bottom:0.5rem;">Tebrikler!</div>
+      <div style="font-size:1rem;color:var(--text-muted);margin-bottom:2rem;">${currentQuiz.length} sorudan ${quizScore / 20} doğru · ${quizScore} puan</div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1.5rem;max-width:400px;margin:0 auto 2rem;">
+        <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Kazanılan XP</div>
+        <div style="font-size:2.5rem;font-weight:700;color:var(--gold);">+${quizScore}</div>
+      </div>
+      <button class="btn-primary" onclick="resetQuiz()">Tekrar Dene</button>
+      <button class="btn-outline" onclick="showPage('ders')" style="margin-left:1rem;">Derse Dön</button>
+    </div>
+  `;
+}
+
+function resetQuiz() {
+  document.getElementById('quiz-area').classList.remove('visible');
+  document.getElementById('quiz-mode-select').style.display = 'block';
+  document.querySelectorAll('.quiz-mode-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('start-btn').style.opacity = '0.4';
+  document.getElementById('start-btn').style.pointerEvents = 'none';
+  state.quizMode = null;
+
+  const area = document.getElementById('quiz-area');
+  area.innerHTML = `
+    <div class="quiz-progress">
+      <span id="q-num">Soru 1 / 5</span>
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="q-progress" style="width:0%"></div></div>
+      <span id="q-score">0 puan</span>
+    </div>
+    <div class="question-card">
+      <div class="question-type" id="q-type">Kavram Sorusu</div>
+      <div class="question-text" id="q-text"></div>
+      <ul class="options-list" id="q-options"></ul>
+      <div class="feedback-box" id="q-feedback"></div>
+    </div>
+    <div class="quiz-actions">
+      <button class="btn-outline" onclick="resetQuiz()">Sıfırla</button>
+      <button class="btn-primary" onclick="nextQuestion()" id="next-btn" style="display:none">Sonraki →</button>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════
+// WORKSHOP & AI CHAT
+// ═══════════════════════════════════════
+const SYSTEM_PROMPT = `Sen deneyimli bir sanat tarihi ve estetik felsefesi profesörüsün. Aristoteles'ten başlayarak, Platon, Plotinus, Rönesans, Kant, Hegel, Nietzsche, Heidegger ve çağdaş sanat teorisine kadar tüm sanat felsefesi tarihini derinlemesine biliyorsun.
+
+Türkçe konuşan bir öğrenciye ders veriyorsun. Cevaplarında:
+1. Felsefi kavramları hem Yunanca/Latince orijinalleriyle hem Türkçe açıklamalarıyla ver
+2. Somut sanat eseri örnekleri kullan
+3. Tarihsel bağlamı, felsefi anlamı ve varoluşsal boyutu birlikte ele al
+4. Öğrenciyi düşünmeye teşvik eden sorular sor
+5. Sade ama derin bir dil kullan
+6. Her cevabın sonunda bir "derinleştirme sorusu" ekle
+
+Yanıtlarını Türkçe ver. Akademik ama erişilebilir bir üslup kullan.`;
+
+async function callGeminiAPI(userMessage) {
+  const apiKey = document.getElementById('gemini-key')?.value?.trim() ||
+    document.getElementById('chat-input-key')?.value?.trim() || '';
+
+  if (!apiKey) {
+    return simulatedAIResponse(userMessage);
+  }
+
+  try {
+    const history = state.chatHistory.map(m => ({
+      role: m.role === 'ai' ? 'model' : 'user',
+      parts: [{ text: m.text }]
+    }));
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents: [...history, { role: 'user', parts: [{ text: userMessage }] }]
+        })
+      }
+    );
+    const data = await res.json();
+    if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+      return data.candidates[0].content.parts[0].text;
+    }
+    return simulatedAIResponse(userMessage);
+  } catch {
+    return simulatedAIResponse(userMessage);
+  }
+}
+
+function simulatedAIResponse(msg) {
+  const lower = msg.toLowerCase();
+  if (lower.includes('mimesis') || lower.includes('taklit')) {
+    return `Aristoteles'in <em>mimesis</em> kavramı, çoğunlukla "taklit" olarak çevrilse de bu tercüme eksik kalır.\n\nAristoteles için mimesis, gerçekliğin basit bir kopyası değildir. Sanatçı, doğayı "olduğu gibi" değil, "olması gerektiği gibi" gösterir. Bu nedenle sanat, tarihin yapamadığını yapar: tikel olayların ötesine geçerek evrensel hakikate ulaşır.\n\nÖrnek: Bir tragedyada Oedipus'un kaderi, tarihsel bir figürün biyografisi değildir — insan varoluşunun özündeki kader ve özgürlük geriliminin felsefi ifadesidir.\n\n🔍 <strong>Düşünme sorusu:</strong> Bir fotoğraf ile bir yağlı boya tablo arasındaki fark, Aristoteles'in mimesis anlayışını nasıl aydınlatır?`;
+  }
+  if (lower.includes('platon') || lower.includes('idea')) {
+    return `Platon için sanat, tehlikeli bir etkinliktir. Neden?\n\nPlaton'un dünya tasavvurunda üç katman vardır:\n1. İdealar Dünyası — gerçek, değişmez, mükemmel\n2. Duyular Dünyası — İdea'nın eksik yansıması\n3. Sanat — Duyular Dünyası'nın kopyası\n\nSanat böylece gerçeklikten üç kat uzaktır. Ve bu mesafe yalnızca epistemolojik değil, ahlaki bir tehdittir: Sanat, izleyiciyi duygularına teslim ederek aklın hâkimiyetini zayıflatır.\n\n🔍 <strong>Düşünme sorusu:</strong> Platon bu görüşüyle günümüz sosyal medyası veya Netflix'e ne derdi?`;
+  }
+  return `Mükemmel bir soru. Bu konuyu derinlemesine ele almak için Gemini API anahtarınızı girerek gerçek AI analizi alabilirsiniz.\n\nYine de şunu söyleyebilirim: Sanat tarihi, yüzeysel bilgi birikiminden felsefi kavrayışa geçişi ancak "Neden?" sorusunu sormayı öğrenerek gerçekleştirebiliriz. Her sanat eseri bir dünya kurar, her akım bir soruya cevaptır.\n\n🔍 <strong>Düşünme sorusu:</strong> Bu konuyu hangi felsefi açıdan daha ilginç buluyorsun: Ontolojik mi (var ne?), epistemolojik mi (bilgi ne?), yoksa etik mi (ne yapmalı)?`;
+}
+
+function addChatMessage(role, text) {
+  state.chatHistory.push({ role, text });
+  const area = document.getElementById('chat-area');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + role;
+  div.innerHTML = text.replace(/\n/g, '<br>');
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  addChatMessage('user', text);
+
+  const btn = document.getElementById('chat-send-btn');
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  const response = await callGeminiAPI(text);
+  addChatMessage('ai', response);
+
+  btn.disabled = false;
+  btn.textContent = '→';
+}
+
+function useTemplate(el) {
+  const input = document.getElementById('workshop-input');
+  if (input) input.value = el.textContent;
+}
+
+function sendToWorkshop(question) {
+  showPage('atolye');
+  setTimeout(() => {
+    const input = document.getElementById('workshop-input');
+    if (input) input.value = question;
+  }, 100);
+}
+
+async function sendWorkshopMessage() {
+  const input = document.getElementById('workshop-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  showPage('atolye');
+  addChatMessage('user', text);
+  input.value = '';
+
+  const btn = document.getElementById('workshop-send-btn');
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  const response = await callGeminiAPI(text);
+  addChatMessage('ai', response);
+  addXP(10);
+
+  btn.disabled = false;
+  btn.textContent = 'Analiz Et →';
+}
+
+async function analyzeWriting() {
+  const text = document.getElementById('write-input')?.value?.trim();
+  if (!text) return;
+
+  const fb = document.getElementById('write-feedback');
+  const fbText = document.getElementById('write-feedback-text');
+  fb.classList.add('visible');
+  fbText.textContent = 'Analiz ediliyor...';
+
+  const prompt = `Bir öğrenci aşağıdaki metni yazdı. Aristoteles'in mimesis kavramını ne kadar doğru kavradığını değerlendir. Güçlü noktaları ve geliştirilebilecek yerleri belirt. Cesaretlendirici ve yapıcı ol.\n\nÖğrenci metni: "${text}"`;
+  const response = await callGeminiAPI(prompt);
+  fbText.innerHTML = response.replace(/\n/g, '<br>');
+  addXP(20);
+}
+
+async function evaluateProduce() {
+  const text = document.getElementById('produce-input')?.value?.trim();
+  if (!text) return;
+
+  const fb = document.getElementById('produce-feedback');
+  const fbText = document.getElementById('produce-feedback-text');
+  fb.classList.add('visible');
+  fbText.textContent = 'Profesör değerlendiriyor...';
+
+  const prompt = `Bir öğrenci Aristoteles'in mimesis kavramını kullanarak bir sanat eseri analizi yazdı. Analizi değerlendir:\n\n"${text}"\n\nMimesis kavramını doğru kullanmış mı? Felsefi derinlik var mı? Neyi iyi yapmış, neyi daha iyi yapabilirdi?`;
+  const response = await callGeminiAPI(prompt);
+  fbText.innerHTML = response.replace(/\n/g, '<br>');
+  addXP(30);
+}
+
+// ── Init ──
+openLesson('aristoteles');
+</script>
+</body>
+</html>

@@ -1,0 +1,1926 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Koddan Nesre Derleyici — The Code-to-Prose Compiler</title>
+<style>
+  :root {
+    --bg: #0f1014;
+    --panel: #1a1b23;
+    --panel-2: #22232d;
+    --code-bg: #0b0c11;
+    --text: #e4e4e7;
+    --text-muted: #9ca3af;
+    --text-dim: #6b7280;
+    --accent: #FF2D20;
+    --accent-soft: rgba(255, 45, 32, 0.12);
+    --accent-hover: #ff4d42;
+    --success: #10b981;
+    --success-soft: rgba(16, 185, 129, 0.12);
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --error-soft: rgba(239, 68, 68, 0.12);
+    --border: #2d2e3a;
+    --border-soft: #22232d;
+    --purple: #a78bfa;
+    --blue: #60a5fa;
+    --yellow: #fbbf24;
+    --green: #34d399;
+    --cyan: #22d3ee;
+  }
+  [data-theme="light"] {
+    --bg: #fafafa;
+    --panel: #ffffff;
+    --panel-2: #f4f4f5;
+    --code-bg: #1e1f29;
+    --text: #18181b;
+    --text-muted: #52525b;
+    --text-dim: #a1a1aa;
+    --accent: #FF2D20;
+    --accent-soft: rgba(255, 45, 32, 0.1);
+    --accent-hover: #e02617;
+    --success: #059669;
+    --success-soft: rgba(5, 150, 105, 0.1);
+    --warning: #d97706;
+    --error: #dc2626;
+    --error-soft: rgba(220, 38, 38, 0.1);
+    --border: #e4e4e7;
+    --border-soft: #f4f4f5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    font-family: Verdana, Geneva, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    font-size: 14px;
+  }
+  .mono {
+    font-family: Consolas, "Courier New", monospace;
+  }
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  header h1 .accent {
+    color: var(--accent);
+  }
+  header p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .header-controls {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  button {
+    font-family: Verdana, sans-serif;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+  button:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  button:active { transform: translateY(1px); }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    font-weight: bold;
+  }
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+  .topic-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .topic-tab {
+    padding: 10px 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+  .topic-tab:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+  .topic-tab.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: bold;
+  }
+  .metafor-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .metafor-box h3 {
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .metafor-box p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .metafor-box code {
+    background: var(--code-bg);
+    color: var(--cyan);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-family: Consolas, monospace;
+  }
+  .mode-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    background: var(--panel);
+    padding: 4px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+  .mode-tab {
+    padding: 8px 18px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .mode-tab:hover { color: var(--text); background: transparent; }
+  .mode-tab.active {
+    background: var(--accent);
+    color: white;
+    font-weight: bold;
+  }
+  .workspace {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 900px) {
+    .workspace { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .panel-header {
+    background: var(--panel-2);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-header .tag {
+    background: var(--code-bg);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .panel-body {
+    padding: 16px;
+  }
+  .form-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .form-row label {
+    flex: 0 0 110px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: Consolas, monospace;
+  }
+  .form-row input, .form-row select {
+    flex: 1;
+    padding: 8px 12px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: Consolas, monospace;
+  }
+  [data-theme="light"] .form-row input,
+  [data-theme="light"] .form-row select {
+    color: #fafafa;
+  }
+  .form-row input:focus, .form-row select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .form-group {
+    padding: 12px;
+    background: var(--panel-2);
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .form-group-title {
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  .code-display {
+    background: var(--code-bg);
+    border-radius: 4px;
+    padding: 14px;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    color: #e4e4e7;
+    min-height: 140px;
+    overflow-x: auto;
+  }
+  .code-display .kw { color: var(--purple); }
+  .code-display .cls { color: var(--yellow); }
+  .code-display .mth { color: var(--blue); }
+  .code-display .str { color: var(--green); }
+  .code-display .num { color: var(--cyan); }
+  .code-display .arr { color: var(--accent); }
+  .code-display .com { color: var(--text-dim); font-style: italic; }
+  .output-display {
+    background: var(--code-bg);
+    border-radius: 4px;
+    padding: 20px;
+    font-family: Georgia, serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--success);
+    min-height: 80px;
+    border-left: 3px solid var(--success);
+  }
+  .output-display.error {
+    color: var(--error);
+    border-left-color: var(--error);
+  }
+  .error-box {
+    background: var(--error-soft);
+    border: 1px solid var(--error);
+    border-radius: 4px;
+    padding: 12px;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 12px;
+  }
+  .error-box .err-title {
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .success-box {
+    background: var(--success-soft);
+    border: 1px solid var(--success);
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 12px;
+    color: var(--success);
+    margin-top: 12px;
+  }
+  .ast-tree {
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text);
+    padding: 14px;
+    background: var(--code-bg);
+    border-radius: 4px;
+    overflow-x: auto;
+  }
+  [data-theme="light"] .ast-tree {
+    color: #e4e4e7;
+  }
+  .ast-tree .node-type { color: var(--purple); font-weight: bold; }
+  .ast-tree .node-val { color: var(--green); }
+  .ast-tree .node-line { color: var(--text-dim); }
+  .presets {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+  }
+  .preset-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .preset-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .explanation {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .explanation h3 {
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .explanation p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    line-height: 1.75;
+  }
+  .explanation .example {
+    background: var(--code-bg);
+    padding: 10px 14px;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    margin: 8px 0;
+    border-left: 2px solid var(--accent);
+  }
+  .explanation ul {
+    margin-left: 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .explanation ul li { margin-bottom: 6px; }
+  .explanation strong { color: var(--text); }
+  .type-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 600px) {
+    .type-selector { grid-template-columns: repeat(2, 1fr); }
+  }
+  .type-btn {
+    padding: 10px 8px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.3;
+  }
+  .type-btn.active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: bold;
+  }
+  .type-btn small {
+    display: block;
+    font-size: 9px;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .challenge {
+    background: var(--panel-2);
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    border-left: 3px solid var(--warning);
+  }
+  .challenge-label {
+    font-size: 10px;
+    color: var(--warning);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+  .challenge-text {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .hint {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .footer-note {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--panel); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div>
+      <h1>🔧 Koddan Nesre <span class="accent">Derleyici</span></h1>
+      <p>The Code-to-Prose Compiler — Laravel mantığıyla İngilizce gramer</p>
+    </div>
+    <div class="header-controls">
+      <button id="themeToggle">🌙 Tema</button>
+    </div>
+  </header>
+
+  <nav class="topic-tabs" id="topicTabs">
+    <button class="topic-tab active" data-topic="conditionals">Conditionals</button>
+    <button class="topic-tab" data-topic="tenses">Tenses</button>
+    <button class="topic-tab" data-topic="passive">Passive Voice</button>
+    <button class="topic-tab" data-topic="relative">Relative Clauses</button>
+    <button class="topic-tab" data-topic="modals">Modal Verbs</button>
+    <button class="topic-tab" data-topic="reported">Reported Speech</button>
+    <button class="topic-tab" data-topic="articles">Articles</button>
+  </nav>
+
+  <div id="topicContent"></div>
+
+  <div class="footer-note">
+    Built for Mehmet Fatih · DAMITMA × LOGOS-1 · Single-file, no CDN, event delegation only
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   KODDAN NESRE DERLEYİCİ — The Code-to-Prose Compiler
+   Laravel söz dizimi ↔ İngilizce gramer
+   ============================================================ */
+
+/* ---------- Verb Engine (minik konjugasyon motoru) ---------- */
+const IRREGULAR = {
+  'be':    {past:'was', pastPl:'were', pp:'been', s:'is', ing:'being'},
+  'have':  {past:'had', pp:'had', s:'has', ing:'having'},
+  'do':    {past:'did', pp:'done', s:'does', ing:'doing'},
+  'go':    {past:'went', pp:'gone', s:'goes', ing:'going'},
+  'eat':   {past:'ate', pp:'eaten', s:'eats', ing:'eating'},
+  'see':   {past:'saw', pp:'seen', s:'sees', ing:'seeing'},
+  'know':  {past:'knew', pp:'known', s:'knows', ing:'knowing'},
+  'take':  {past:'took', pp:'taken', s:'takes', ing:'taking'},
+  'give':  {past:'gave', pp:'given', s:'gives', ing:'giving'},
+  'come':  {past:'came', pp:'come', s:'comes', ing:'coming'},
+  'win':   {past:'won', pp:'won', s:'wins', ing:'winning'},
+  'buy':   {past:'bought', pp:'bought', s:'buys', ing:'buying'},
+  'drive': {past:'drove', pp:'driven', s:'drives', ing:'driving'},
+  'read':  {past:'read', pp:'read', s:'reads', ing:'reading'},
+  'write': {past:'wrote', pp:'written', s:'writes', ing:'writing'},
+  'speak': {past:'spoke', pp:'spoken', s:'speaks', ing:'speaking'},
+  'leave': {past:'left', pp:'left', s:'leaves', ing:'leaving'},
+  'make':  {past:'made', pp:'made', s:'makes', ing:'making'},
+  'find':  {past:'found', pp:'found', s:'finds', ing:'finding'},
+  'think': {past:'thought', pp:'thought', s:'thinks', ing:'thinking'},
+  'feel':  {past:'felt', pp:'felt', s:'feels', ing:'feeling'},
+  'sleep': {past:'slept', pp:'slept', s:'sleeps', ing:'sleeping'},
+  'run':   {past:'ran', pp:'run', s:'runs', ing:'running'},
+  'swim':  {past:'swam', pp:'swum', s:'swims', ing:'swimming'},
+  'meet':  {past:'met', pp:'met', s:'meets', ing:'meeting'},
+  'tell':  {past:'told', pp:'told', s:'tells', ing:'telling'},
+  'say':   {past:'said', pp:'said', s:'says', ing:'saying'},
+  'get':   {past:'got', pp:'gotten', s:'gets', ing:'getting'},
+  'bring': {past:'brought', pp:'brought', s:'brings', ing:'bringing'},
+  'build': {past:'built', pp:'built', s:'builds', ing:'building'},
+  'catch': {past:'caught', pp:'caught', s:'catches', ing:'catching'},
+  'teach': {past:'taught', pp:'taught', s:'teaches', ing:'teaching'},
+};
+
+function conjugate(verb, form, subject) {
+  verb = (verb || '').trim().toLowerCase();
+  if (!verb) return '';
+  const irr = IRREGULAR[verb];
+  const isThird = /^(he|she|it|the |a |an )/.test((subject||'').toLowerCase().trim()) ||
+                  (!['i','you','we','they'].includes((subject||'').toLowerCase().trim()));
+  const pluralSubj = /^(we|they|you)$/.test((subject||'').toLowerCase().trim()) ||
+                      (subject||'').toLowerCase().trim().endsWith('s');
+
+  switch(form) {
+    case 'base': return verb;
+    case 'present':
+      if (verb === 'be') {
+        const s = (subject||'').toLowerCase().trim();
+        if (s === 'i') return 'am';
+        if (s === 'you' || s === 'we' || s === 'they' || s.endsWith('s')) return 'are';
+        return 'is';
+      }
+      if (irr && isThird && !pluralSubj) return irr.s;
+      if (isThird && !pluralSubj) return regularThird(verb);
+      return verb;
+    case 'past':
+      if (verb === 'be') {
+        const s = (subject||'').toLowerCase().trim();
+        if (s === 'you' || s === 'we' || s === 'they' || s.endsWith('s')) return 'were';
+        return 'was';
+      }
+      if (irr) return irr.past;
+      return regularPast(verb);
+    case 'wereForm': // Type 2 conditional: all persons use 'were'
+      if (verb === 'be') return 'were';
+      if (irr) return irr.past;
+      return regularPast(verb);
+    case 'pp':
+      if (irr) return irr.pp;
+      return regularPast(verb);
+    case 'ing':
+      if (irr) return irr.ing;
+      return regularIng(verb);
+  }
+  return verb;
+}
+function regularPast(v) {
+  if (v.endsWith('e')) return v + 'd';
+  if (v.endsWith('y') && !/[aeiou]y$/.test(v)) return v.slice(0,-1) + 'ied';
+  return v + 'ed';
+}
+function regularThird(v) {
+  if (/[sxz]$|sh$|ch$/.test(v)) return v + 'es';
+  if (v.endsWith('y') && !/[aeiou]y$/.test(v)) return v.slice(0,-1) + 'ies';
+  return v + 's';
+}
+function regularIng(v) {
+  if (v.endsWith('e') && v.length > 2) return v.slice(0,-1) + 'ing';
+  return v + 'ing';
+}
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ---------- Syntax Highlighter for generated Laravel-ish code ---------- */
+function hl(code) {
+  return code
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/(\/\/[^\n]*)/g, '<span class="com">$1</span>')
+    .replace(/('[^']*')/g, '<span class="str">$1</span>')
+    .replace(/\b(\d+)\b/g, '<span class="num">$1</span>')
+    .replace(/(-&gt;)/g, '<span class="arr">$1</span>')
+    .replace(/\b(Conditional|Tense|Passive|Relative|Modal|Reported|Article|Sentence)\b/g, '<span class="cls">$1</span>')
+    .replace(/(::[\w]+|-&gt;<\/span>[\w]+)/g, m => m.replace(/([\w]+)$/, '<span class="mth">$1</span>'))
+    .replace(/\b(new|return|function|public)\b/g, '<span class="kw">$1</span>');
+}
+
+/* ===========================================================
+   TOPIC: CONDITIONALS (full: compile, decompile, debug, AST)
+   =========================================================== */
+const TOPICS = {};
+
+TOPICS.conditionals = {
+  title: 'Conditionals',
+  metafor: `
+    <h3>📘 Laravel Metaforu</h3>
+    <p>Bir <code>Conditional</code> yapısı, Blade'deki <code>@if / @elseif</code> direktifine benzer: bir şartı (condition) alır, değerlendirir ve bir sonuç (consequence) üretir. <strong>Tip numarası</strong>, derleyicinin hangi <em>tense pipeline</em>'ını uygulayacağını belirler — tıpkı farklı middleware grupları gibi.</p>
+    <p style="margin-top:8px"><strong>Tip 0:</strong> <code>@if(true)</code> — evrensel gerçek. <strong>Tip 1:</strong> gerçekçi gelecek. <strong>Tip 2:</strong> şimdi/gelecek için hipotez (<code>were</code> tüm özneler için). <strong>Tip 3:</strong> geçmişte olmamış şey için hipotez (<code>had + V3</code>).</p>
+  `,
+  modes: ['compile','decompile','debug'],
+  defaultMode: 'compile'
+};
+
+function compileConditional(data) {
+  const {type, ifS, ifV, ifC, thenS, thenV, thenC} = data;
+  if (!ifS || !ifV || !thenS || !thenV) {
+    throw new Error('SubjectOrVerbMissing: if ve then bloklarında özne ve fiil zorunludur.');
+  }
+  let ifClause, thenClause;
+  switch(Number(type)) {
+    case 0:
+      ifClause = `if ${ifS} ${conjugate(ifV,'present',ifS)}${ifC?' '+ifC:''}`;
+      thenClause = `${thenS} ${conjugate(thenV,'present',thenS)}${thenC?' '+thenC:''}`;
+      break;
+    case 1:
+      ifClause = `if ${ifS} ${conjugate(ifV,'present',ifS)}${ifC?' '+ifC:''}`;
+      thenClause = `${thenS} will ${thenV}${thenC?' '+thenC:''}`;
+      break;
+    case 2:
+      ifClause = `if ${ifS} ${conjugate(ifV,'wereForm',ifS)}${ifC?' '+ifC:''}`;
+      thenClause = `${thenS} would ${thenV}${thenC?' '+thenC:''}`;
+      break;
+    case 3:
+      ifClause = `if ${ifS} had ${conjugate(ifV,'pp',ifS)}${ifC?' '+ifC:''}`;
+      thenClause = `${thenS} would have ${conjugate(thenV,'pp',thenS)}${thenC?' '+thenC:''}`;
+      break;
+    default: throw new Error('UnknownConditionalType: tip 0, 1, 2 veya 3 olmalı.');
+  }
+  return cap(`${ifClause}, ${thenClause}.`);
+}
+
+function conditionalCode(data) {
+  const {type, ifS, ifV, ifC, thenS, thenV, thenC} = data;
+  return `Conditional::type(${type})
+  ->if(subject: '${ifS}', verb: '${ifV}', complement: '${ifC}')
+  ->then(subject: '${thenS}', verb: '${thenV}', complement: '${thenC}')
+  ->compile();`;
+}
+
+function conditionalAST(data, compiled) {
+  const {type, ifS, ifV, ifC, thenS, thenV, thenC} = data;
+  const typeLabels = {
+    0: 'ZERO (Universal truth)',
+    1: 'FIRST (Real future)',
+    2: 'SECOND (Hypothetical present)',
+    3: 'THIRD (Hypothetical past)'
+  };
+  return `<span class="node-type">Sentence</span> <span class="node-val">"${compiled}"</span>
+<span class="node-line">├──</span> <span class="node-type">Type</span>: <span class="node-val">${typeLabels[type]}</span>
+<span class="node-line">├──</span> <span class="node-type">IfClause</span> <span class="node-val">(condition)</span>
+<span class="node-line">│   ├──</span> Subject: <span class="node-val">"${ifS}"</span>
+<span class="node-line">│   ├──</span> Verb: <span class="node-val">"${ifV}"</span> → <span class="node-val">"${conditionalVerbForm(type,'if',ifV,ifS)}"</span>
+<span class="node-line">│   └──</span> Complement: <span class="node-val">"${ifC||'∅'}"</span>
+<span class="node-line">└──</span> <span class="node-type">ThenClause</span> <span class="node-val">(consequence)</span>
+<span class="node-line">    ├──</span> Subject: <span class="node-val">"${thenS}"</span>
+<span class="node-line">    ├──</span> Modal: <span class="node-val">"${conditionalModal(type)}"</span>
+<span class="node-line">    ├──</span> Verb: <span class="node-val">"${thenV}"</span> → <span class="node-val">"${conditionalVerbForm(type,'then',thenV,thenS)}"</span>
+<span class="node-line">    └──</span> Complement: <span class="node-val">"${thenC||'∅'}"</span>`;
+}
+function conditionalVerbForm(type, slot, verb, subj) {
+  type = Number(type);
+  if (slot === 'if') {
+    if (type === 0 || type === 1) return conjugate(verb,'present',subj);
+    if (type === 2) return conjugate(verb,'wereForm',subj);
+    if (type === 3) return 'had ' + conjugate(verb,'pp',subj);
+  } else {
+    if (type === 0) return conjugate(verb,'present',subj);
+    if (type === 1) return 'will ' + verb;
+    if (type === 2) return 'would ' + verb;
+    if (type === 3) return 'would have ' + conjugate(verb,'pp',subj);
+  }
+  return verb;
+}
+function conditionalModal(type) {
+  type = Number(type);
+  if (type === 0) return '∅ (present)';
+  if (type === 1) return 'will';
+  if (type === 2) return 'would';
+  if (type === 3) return 'would have';
+  return '';
+}
+
+/* --- Renderers for each topic are attached lazily by renderTopic() --- */
+
+/* ===========================================================
+   TOPIC: TENSES
+   =========================================================== */
+TOPICS.tenses = {
+  title: 'Tenses & Aspects',
+  metafor: `
+    <h3>📘 Laravel Metaforu</h3>
+    <p>Bir cümle Laravel'deki <code>Request</code> gibi bir <em>lifecycle</em>'dan geçer. <code>->aspect('perfect')</code> çağrısı, referans anından önce tamamlanmış olma damgasını basan bir middleware'dir. <code>->aspect('continuous')</code> ise o anda çalışmakta olan bir job gibidir.</p>
+    <p style="margin-top:8px">12 tense = <strong>3 zaman</strong> (past, present, future) × <strong>4 aspect</strong> (simple, continuous, perfect, perfect-continuous).</p>
+  `,
+  modes: ['compile'],
+  defaultMode: 'compile'
+};
+
+function compileTense(data) {
+  const {time, aspect, subject, verb, object} = data;
+  if (!subject || !verb) throw new Error('Özne ve fiil zorunlu.');
+  const obj = object ? ' ' + object : '';
+  let vp;
+  const key = time + '_' + aspect;
+  switch(key) {
+    case 'present_simple':
+      vp = conjugate(verb,'present',subject); break;
+    case 'present_continuous':
+      vp = conjugate('be','present',subject) + ' ' + conjugate(verb,'ing'); break;
+    case 'present_perfect':
+      vp = conjugate('have','present',subject) + ' ' + conjugate(verb,'pp'); break;
+    case 'present_perfectContinuous':
+      vp = conjugate('have','present',subject) + ' been ' + conjugate(verb,'ing'); break;
+    case 'past_simple':
+      vp = conjugate(verb,'past',subject); break;
+    case 'past_continuous':
+      vp = conjugate('be','past',subject) + ' ' + conjugate(verb,'ing'); break;
+    case 'past_perfect':
+      vp = 'had ' + conjugate(verb,'pp'); break;
+    case 'past_perfectContinuous':
+      vp = 'had been ' + conjugate(verb,'ing'); break;
+    case 'future_simple':
+      vp = 'will ' + verb; break;
+    case 'future_continuous':
+      vp = 'will be ' + conjugate(verb,'ing'); break;
+    case 'future_perfect':
+      vp = 'will have ' + conjugate(verb,'pp'); break;
+    case 'future_perfectContinuous':
+      vp = 'will have been ' + conjugate(verb,'ing'); break;
+    default: throw new Error('Bilinmeyen tense kombinasyonu.');
+  }
+  return cap(`${subject} ${vp}${obj}.`);
+}
+function tenseCode(data) {
+  return `Tense::${data.time}()
+  ->aspect('${data.aspect}')
+  ->subject('${data.subject}')
+  ->verb('${data.verb}')
+  ->object('${data.object}')
+  ->compile();`;
+}
+
+/* ===========================================================
+   TOPIC: PASSIVE VOICE
+   =========================================================== */
+TOPICS.passive = {
+  title: 'Passive Voice',
+  metafor: `
+    <h3>📘 Laravel Metaforu</h3>
+    <p><strong>Facade pattern</strong>. Nasıl <code>Cache::get()</code> çağırdığında arkadaki gerçek sınıfı görmüyorsan, <em>passive voice</em> de gerçek özneyi (faili) gizler. "The cake was eaten" — kim yedi? Facade gibi, gerçek fail gizlenmiş.</p>
+    <p style="margin-top:8px">Formül: <code>be + past participle (V3)</code>. Aktiften pasife dönüşüm: <em>object</em> subject olur, <em>subject</em> 'by' ile optional hale gelir.</p>
+  `,
+  modes: ['compile'],
+  defaultMode: 'compile'
+};
+function compilePassive(data) {
+  const {tense, object, verb, agent} = data;
+  if (!object || !verb) throw new Error('Nesne ve fiil zorunlu.');
+  let beForm;
+  switch(tense) {
+    case 'present': beForm = conjugate('be','present',object); break;
+    case 'past': beForm = conjugate('be','past',object); break;
+    case 'presentPerfect': beForm = conjugate('have','present',object) + ' been'; break;
+    case 'pastPerfect': beForm = 'had been'; break;
+    case 'future': beForm = 'will be'; break;
+    case 'modal': beForm = 'can be'; break;
+  }
+  const pp = conjugate(verb,'pp');
+  const by = agent ? ' by ' + agent : '';
+  return cap(`${object} ${beForm} ${pp}${by}.`);
+}
+function passiveCode(data) {
+  return `Passive::make()
+  ->tense('${data.tense}')
+  ->object('${data.object}')
+  ->verb('${data.verb}')
+  ->agent('${data.agent}')
+  ->compile();`;
+}
+
+/* ===========================================================
+   TOPIC: RELATIVE CLAUSES
+   =========================================================== */
+TOPICS.relative = {
+  title: 'Relative Clauses',
+  metafor: `
+    <h3>📘 Laravel Metaforu</h3>
+    <p><strong>Query Builder constraint</strong>. <code>User::where('age','>',18)</code> aslında "users <em>who are</em> over 18" demenin koda dökülmüş halidir. <code>whereHas('posts')</code> = "users <em>who have</em> posts". Relative clause, isme takılan bir <code>->where()</code> zincirindir.</p>
+    <p style="margin-top:8px"><strong>who</strong> = insanlar · <strong>which</strong> = nesneler · <strong>that</strong> = ikisi de · <strong>whose</strong> = aitlik · <strong>where</strong> = yer · <strong>when</strong> = zaman.</p>
+  `,
+  modes: ['compile'],
+  defaultMode: 'compile'
+};
+function compileRelative(data) {
+  const {article, noun, pronoun, clauseVerb, clauseRest} = data;
+  if (!noun || !pronoun || !clauseVerb) throw new Error('Noun, pronoun ve clause verb zorunlu.');
+  return `${article} ${noun} ${pronoun} ${clauseVerb}${clauseRest?' '+clauseRest:''}`.trim();
+}
+function relativeCode(data) {
+  return `Relative::noun('${data.noun}')
+  ->article('${data.article}')
+  ->${data.pronoun}('${data.clauseVerb} ${data.clauseRest}')
+  ->compile();`;
+}
+
+/* ===========================================================
+   TOPIC: MODAL VERBS
+   =========================================================== */
+TOPICS.modals = {
+  title: 'Modal Verbs',
+  metafor: `
+    <h3>📘 Laravel Metaforu</h3>
+    <p><strong>Middleware pipeline</strong>. Bir fiili bir zorunluluk, olasılık veya izin katmanıyla <em>sarar</em>. <code>AuthMiddleware</code> ≈ <code>must</code> (zorunluluk). <code>OptionalMiddleware</code> ≈ <code>might</code> (olasılık). <code>PermissionMiddleware</code> ≈ <code>can</code> (izin/yetenek).</p>
+    <p style="margin-top:8px">Modal sonrası <strong>her zaman base form</strong> (yalın hal) gelir: <em>she can swim</em> (✓), <em>she can swims</em> (✗).</p>
+  `,
+  modes: ['compile'],
+  defaultMode: 'compile'
+};
+function compileModal(data) {
+  const {subject, modal, verb, complement, form} = data;
+  if (!subject || !modal || !verb) throw new Error('Özne, modal ve fiil zorunlu.');
+  const c = complement ? ' ' + complement : '';
+  let vp;
+  switch(form) {
+    case 'simple': vp = modal + ' ' + verb; break;
+    case 'perfect': vp = modal + ' have ' + conjugate(verb,'pp'); break;
+    case 'continuous': vp = modal + ' be ' + conjugate(verb,'ing'); break;
+    case 'perfectContinuous': vp = modal + ' have been ' + conjugate(verb,'ing'); break;
+    case 'passive': vp = modal + ' be ' + conjugate(verb,'pp'); break;
+  }
+  return cap(`${subject} ${vp}${c}.`);
+}
+function modalCode(data) {
+  return `Modal::${data.modal}()
+  ->subject('${data.subject}')
+  ->verb('${data.verb}')
+  ->form('${data.form}')
+  ->complement('${data.complement}')
+  ->compile();`;
+}
+
+/* ===========================================================
+   TOPIC: REPORTED SPEECH
+   =========================================================== */
+TOPICS.reported = {
+  title: 'Reported Speech',
+  metafor: `
+    <h3>📘 Laravel Metaforu</h3>
+    <p><strong>Events & Listeners</strong>. Bir event fire edildiğinde (direct speech), listener onu kaydeder ama <em>serialize</em> ederken zaman damgasını bir adım geri alır — buna <strong>tense backshift</strong> denir. <code>is → was</code>, <code>has → had</code>, <code>will → would</code>.</p>
+    <p style="margin-top:8px">Ayrıca zamir kaydırması: <code>I → he/she</code>, <code>you → I/they</code>, <code>we → they</code>.</p>
+  `,
+  modes: ['compile'],
+  defaultMode: 'compile'
+};
+function compileReported(data) {
+  const {reporter, reportVerb, innerSubject, innerTense, innerVerb, innerRest} = data;
+  if (!reporter || !innerSubject || !innerVerb) throw new Error('Reporter, inner subject ve verb zorunlu.');
+  // backshift
+  let shiftedVerb;
+  switch(innerTense) {
+    case 'present': shiftedVerb = conjugate(innerVerb,'past',innerSubject); break;
+    case 'past': shiftedVerb = 'had ' + conjugate(innerVerb,'pp'); break;
+    case 'presentPerfect': shiftedVerb = 'had ' + conjugate(innerVerb,'pp'); break;
+    case 'will': shiftedVerb = 'would ' + innerVerb; break;
+    case 'can': shiftedVerb = 'could ' + innerVerb; break;
+    case 'must': shiftedVerb = 'had to ' + innerVerb; break;
+  }
+  const rest = innerRest ? ' ' + innerRest : '';
+  return cap(`${reporter} ${conjugate(reportVerb,'past',reporter)} that ${innerSubject} ${shiftedVerb}${rest}.`);
+}
+function reportedCode(data) {
+  return `Reported::from('${data.reporter} ${data.reportVerb}s: "${data.innerSubject} ${data.innerVerb}..."')
+  ->backshift('${data.innerTense}')
+  ->compile();`;
+}
+
+/* ===========================================================
+   TOPIC: ARTICLES
+   =========================================================== */
+TOPICS.articles = {
+  title: 'Articles (a/an/the)',
+  metafor: `
+    <h3>📘 Laravel Metaforu</h3>
+    <p><strong>Eloquent retrieval methods</strong>. <code>Model::find(1)</code> = bilinen, spesifik bir kayıt → <strong>the</strong>. <code>Model::create()</code> = yeni, henüz tanıtılmamış bir kayıt → <strong>a/an</strong>. <code>Model::all()</code> = genel, jenerik koleksiyon → <strong>tanımlıksız çoğul</strong>.</p>
+    <p style="margin-top:8px"><strong>a</strong> = ünsüz sesle başlayan kelimeler, <strong>an</strong> = ünlü <em>sesle</em> başlayanlar (yazılış değil ses: "an hour", "a university").</p>
+  `,
+  modes: ['compile'],
+  defaultMode: 'compile'
+};
+function compileArticle(data) {
+  const {method, noun} = data;
+  if (!noun) throw new Error('İsim zorunlu.');
+  const n = noun.trim().toLowerCase();
+  const firstChar = n.charAt(0);
+  // crude vowel sound check
+  const vowelSound = /^[aeio]/.test(n) || n.startsWith('hour') || n.startsWith('honest');
+  const consonantSound = /^u[nr]i/.test(n); // university, unique → 'a'
+  let result;
+  switch(method) {
+    case 'find':
+      result = 'the ' + n; break;
+    case 'create':
+      result = (vowelSound && !consonantSound ? 'an ' : 'a ') + n; break;
+    case 'all':
+      // crude pluralization
+      let plural;
+      if (n.endsWith('y') && !/[aeiou]y$/.test(n)) plural = n.slice(0,-1) + 'ies';
+      else if (/[sxz]$|sh$|ch$/.test(n)) plural = n + 'es';
+      else plural = n + 's';
+      result = plural; break;
+  }
+  return cap(result);
+}
+function articleCode(data) {
+  return `Article::${data.method}('${data.noun}');
+// ${data.method === 'find' ? 'Known specific → the' : data.method === 'create' ? 'New instance → a/an' : 'Generic collection → ∅ plural'}`;
+}
+
+/* ===========================================================
+   RENDER ENGINE
+   =========================================================== */
+let currentTopic = 'conditionals';
+let currentMode = 'compile';
+
+function $(sel, root) { return (root||document).querySelector(sel); }
+function $$(sel, root) { return Array.from((root||document).querySelectorAll(sel)); }
+
+function renderTopic() {
+  const container = $('#topicContent');
+  const topic = TOPICS[currentTopic];
+  if (!topic) return;
+
+  if (!topic.modes.includes(currentMode)) currentMode = topic.defaultMode;
+
+  let html = `<div class="metafor-box">${topic.metafor}</div>`;
+
+  if (topic.modes.length > 1) {
+    html += `<div class="mode-tabs" data-role="modeTabs">`;
+    topic.modes.forEach(m => {
+      const label = {compile:'Compile Mode', decompile:'Decompile Mode', debug:'Debug Mode'}[m];
+      html += `<button class="mode-tab ${m===currentMode?'active':''}" data-mode="${m}">${label}</button>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `<div id="workspaceArea"></div>`;
+  html += `<div id="explainArea"></div>`;
+  container.innerHTML = html;
+
+  renderWorkspace();
+  renderExplain();
+}
+
+function renderWorkspace() {
+  const area = $('#workspaceArea');
+  if (currentTopic === 'conditionals') {
+    if (currentMode === 'compile') area.innerHTML = conditionalsCompileUI();
+    else if (currentMode === 'decompile') area.innerHTML = conditionalsDecompileUI();
+    else if (currentMode === 'debug') area.innerHTML = conditionalsDebugUI();
+  } else if (currentTopic === 'tenses') area.innerHTML = tensesUI();
+  else if (currentTopic === 'passive') area.innerHTML = passiveUI();
+  else if (currentTopic === 'relative') area.innerHTML = relativeUI();
+  else if (currentTopic === 'modals') area.innerHTML = modalsUI();
+  else if (currentTopic === 'reported') area.innerHTML = reportedUI();
+  else if (currentTopic === 'articles') area.innerHTML = articlesUI();
+
+  // Trigger initial compile for live preview
+  const firstRun = $('[data-action="run"]');
+  if (firstRun) firstRun.click();
+}
+
+/* ---------- Conditionals UIs ---------- */
+function conditionalsCompileUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Code Editor <span class="tag">.php</span></div>
+      <div class="panel-body">
+        <div class="type-selector" data-role="typeSelector">
+          <button class="type-btn active" data-type="0">Tip 0<small>Evrensel gerçek</small></button>
+          <button class="type-btn" data-type="1">Tip 1<small>Gerçek gelecek</small></button>
+          <button class="type-btn" data-type="2">Tip 2<small>Hipotetik şimdi</small></button>
+          <button class="type-btn" data-type="3">Tip 3<small>Hipotetik geçmiş</small></button>
+        </div>
+        <div class="form-group">
+          <div class="form-group-title">→ if() clause</div>
+          <div class="form-row"><label>subject:</label><input id="c_ifS" value="I"></div>
+          <div class="form-row"><label>verb:</label><input id="c_ifV" value="be"></div>
+          <div class="form-row"><label>complement:</label><input id="c_ifC" value="rich"></div>
+        </div>
+        <div class="form-group">
+          <div class="form-group-title">→ then() clause</div>
+          <div class="form-row"><label>subject:</label><input id="c_thenS" value="I"></div>
+          <div class="form-row"><label>verb:</label><input id="c_thenV" value="travel"></div>
+          <div class="form-row"><label>complement:</label><input id="c_thenC" value="the world"></div>
+        </div>
+        <button class="btn-primary" data-action="run" style="width:100%;padding:12px">▶ Compile</button>
+        <div class="presets">
+          <button class="preset-btn" data-preset="0">Tip 0 örneği</button>
+          <button class="preset-btn" data-preset="1">Tip 1 örneği</button>
+          <button class="preset-btn" data-preset="2">Tip 2 örneği</button>
+          <button class="preset-btn" data-preset="3">Tip 3 örneği</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Generated Code & Output <span class="tag">.en</span></div>
+      <div class="panel-body">
+        <div class="code-display" id="codeOut">// fill form and click Compile</div>
+        <div style="height:12px"></div>
+        <div class="output-display" id="englishOut">…</div>
+        <div style="height:12px"></div>
+        <div class="panel-header" style="margin:0 -16px 10px -16px;border-radius:0">AST — Abstract Syntax Tree</div>
+        <div class="ast-tree" id="astOut">…</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function conditionalsDecompileUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Challenge <span class="tag">decompile</span></div>
+      <div class="panel-body">
+        <div class="challenge">
+          <div class="challenge-label">🎯 Bu cümleyi kodla</div>
+          <div class="challenge-text" id="decompileTarget">If I had studied harder, I would have passed the exam.</div>
+          <div class="hint">Doğru tipi seç ve formu doldur. Cevabını compile ederek kontrol et.</div>
+        </div>
+        <div class="type-selector" data-role="typeSelector">
+          <button class="type-btn" data-type="0">Tip 0</button>
+          <button class="type-btn" data-type="1">Tip 1</button>
+          <button class="type-btn" data-type="2">Tip 2</button>
+          <button class="type-btn active" data-type="3">Tip 3</button>
+        </div>
+        <div class="form-group">
+          <div class="form-group-title">→ if() clause</div>
+          <div class="form-row"><label>subject:</label><input id="c_ifS" placeholder="I"></div>
+          <div class="form-row"><label>verb:</label><input id="c_ifV" placeholder="study (base form)"></div>
+          <div class="form-row"><label>complement:</label><input id="c_ifC" placeholder="harder"></div>
+        </div>
+        <div class="form-group">
+          <div class="form-group-title">→ then() clause</div>
+          <div class="form-row"><label>subject:</label><input id="c_thenS" placeholder="I"></div>
+          <div class="form-row"><label>verb:</label><input id="c_thenV" placeholder="pass (base form)"></div>
+          <div class="form-row"><label>complement:</label><input id="c_thenC" placeholder="the exam"></div>
+        </div>
+        <button class="btn-primary" data-action="check" style="width:100%;padding:12px">✓ Kontrol Et</button>
+        <div class="presets">
+          <button class="preset-btn" data-dchallenge="0">Yeni challenge: Tip 0</button>
+          <button class="preset-btn" data-dchallenge="1">Tip 1</button>
+          <button class="preset-btn" data-dchallenge="2">Tip 2</button>
+          <button class="preset-btn" data-dchallenge="3">Tip 3</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Result</div>
+      <div class="panel-body">
+        <div class="output-display" id="englishOut">Cevabını yaz ve kontrol et…</div>
+        <div id="decompileResult"></div>
+        <div style="height:12px"></div>
+        <div class="code-display" id="codeOut">// your compiled code will appear here</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function conditionalsDebugUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Broken Code <span class="tag">debug</span></div>
+      <div class="panel-body">
+        <div class="challenge">
+          <div class="challenge-label">🐛 Bu kod hata veriyor — düzelt</div>
+          <div class="code-display" id="brokenCode" style="font-family:Consolas,monospace"></div>
+        </div>
+        <div class="error-box" id="errorBox"></div>
+        <div style="height:14px"></div>
+        <div class="form-group">
+          <div class="form-group-title">Düzeltmen gereken alan</div>
+          <div class="form-row" id="fixRow">
+            <label id="fixLabel">fix:</label>
+            <input id="fixInput" placeholder="doğru değeri yaz">
+          </div>
+        </div>
+        <button class="btn-primary" data-action="checkFix" style="width:100%;padding:12px">✓ Düzeltmeyi Kontrol Et</button>
+        <div class="presets">
+          <button class="preset-btn" data-debug="next">▶ Yeni bug</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Compiler Feedback</div>
+      <div class="panel-body">
+        <div class="output-display" id="englishOut">Compiler beklemede…</div>
+        <div id="debugResult"></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Other Topic UIs ---------- */
+function tensesUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Tense Builder <span class="tag">.php</span></div>
+      <div class="panel-body">
+        <div class="form-group">
+          <div class="form-group-title">temporal dimension</div>
+          <div class="form-row">
+            <label>time:</label>
+            <select id="t_time">
+              <option value="present">present</option>
+              <option value="past">past</option>
+              <option value="future">future</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label>aspect:</label>
+            <select id="t_aspect">
+              <option value="simple">simple</option>
+              <option value="continuous">continuous</option>
+              <option value="perfect">perfect</option>
+              <option value="perfectContinuous">perfectContinuous</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-group-title">sentence parts</div>
+          <div class="form-row"><label>subject:</label><input id="t_subject" value="she"></div>
+          <div class="form-row"><label>verb:</label><input id="t_verb" value="read"></div>
+          <div class="form-row"><label>object:</label><input id="t_object" value="a book"></div>
+        </div>
+        <button class="btn-primary" data-action="run" style="width:100%;padding:12px">▶ Compile</button>
+        <div class="presets">
+          <button class="preset-btn" data-preset="pp">present perfect</button>
+          <button class="preset-btn" data-preset="pc">past continuous</button>
+          <button class="preset-btn" data-preset="fp">future perfect</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Output</div>
+      <div class="panel-body">
+        <div class="code-display" id="codeOut">…</div>
+        <div style="height:12px"></div>
+        <div class="output-display" id="englishOut">…</div>
+      </div>
+    </div>
+  </div>`;
+}
+function passiveUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Passive Builder</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <div class="form-row">
+            <label>tense:</label>
+            <select id="p_tense">
+              <option value="present">present</option>
+              <option value="past">past</option>
+              <option value="presentPerfect">presentPerfect</option>
+              <option value="pastPerfect">pastPerfect</option>
+              <option value="future">future (will)</option>
+              <option value="modal">modal (can)</option>
+            </select>
+          </div>
+          <div class="form-row"><label>object:</label><input id="p_object" value="the cake"></div>
+          <div class="form-row"><label>verb:</label><input id="p_verb" value="eat"></div>
+          <div class="form-row"><label>agent:</label><input id="p_agent" value="the children"></div>
+        </div>
+        <button class="btn-primary" data-action="run" style="width:100%;padding:12px">▶ Compile</button>
+        <div class="presets">
+          <button class="preset-btn" data-preset="built">built by Romans</button>
+          <button class="preset-btn" data-preset="written">written by Woolf</button>
+          <button class="preset-btn" data-preset="can">can be solved</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Output</div>
+      <div class="panel-body">
+        <div class="code-display" id="codeOut">…</div>
+        <div style="height:12px"></div>
+        <div class="output-display" id="englishOut">…</div>
+      </div>
+    </div>
+  </div>`;
+}
+function relativeUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Relative Clause Builder</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <div class="form-row">
+            <label>article:</label>
+            <select id="r_article">
+              <option>the</option><option>a</option><option>an</option>
+            </select>
+          </div>
+          <div class="form-row"><label>noun:</label><input id="r_noun" value="student"></div>
+          <div class="form-row">
+            <label>pronoun:</label>
+            <select id="r_pronoun">
+              <option>who</option><option>which</option><option>that</option>
+              <option>whose</option><option>where</option><option>when</option>
+            </select>
+          </div>
+          <div class="form-row"><label>clause verb:</label><input id="r_verb" value="reads"></div>
+          <div class="form-row"><label>rest:</label><input id="r_rest" value="books every day"></div>
+        </div>
+        <button class="btn-primary" data-action="run" style="width:100%;padding:12px">▶ Compile</button>
+        <div class="presets">
+          <button class="preset-btn" data-preset="book">book which I bought</button>
+          <button class="preset-btn" data-preset="city">city where I was born</button>
+          <button class="preset-btn" data-preset="man">man whose car broke</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Output</div>
+      <div class="panel-body">
+        <div class="code-display" id="codeOut">…</div>
+        <div style="height:12px"></div>
+        <div class="output-display" id="englishOut">…</div>
+      </div>
+    </div>
+  </div>`;
+}
+function modalsUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Modal Builder</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <div class="form-row"><label>subject:</label><input id="m_subject" value="she"></div>
+          <div class="form-row">
+            <label>modal:</label>
+            <select id="m_modal">
+              <option>can</option><option>could</option><option>may</option><option>might</option>
+              <option>must</option><option>should</option><option>would</option><option>will</option>
+              <option>shall</option><option>ought to</option>
+            </select>
+          </div>
+          <div class="form-row"><label>verb (base):</label><input id="m_verb" value="swim"></div>
+          <div class="form-row">
+            <label>form:</label>
+            <select id="m_form">
+              <option value="simple">simple (can swim)</option>
+              <option value="perfect">perfect (could have swum)</option>
+              <option value="continuous">continuous (must be swimming)</option>
+              <option value="perfectContinuous">perfect continuous</option>
+              <option value="passive">passive (should be done)</option>
+            </select>
+          </div>
+          <div class="form-row"><label>complement:</label><input id="m_complement" value="across the lake"></div>
+        </div>
+        <button class="btn-primary" data-action="run" style="width:100%;padding:12px">▶ Compile</button>
+        <div class="presets">
+          <button class="preset-btn" data-preset="regret">should have studied</button>
+          <button class="preset-btn" data-preset="deduction">must be sleeping</button>
+          <button class="preset-btn" data-preset="ability">can speak 3 languages</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Output</div>
+      <div class="panel-body">
+        <div class="code-display" id="codeOut">…</div>
+        <div style="height:12px"></div>
+        <div class="output-display" id="englishOut">…</div>
+      </div>
+    </div>
+  </div>`;
+}
+function reportedUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Reported Speech Builder</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <div class="form-group-title">report layer</div>
+          <div class="form-row"><label>reporter:</label><input id="rs_reporter" value="she"></div>
+          <div class="form-row">
+            <label>report verb:</label>
+            <select id="rs_reportVerb">
+              <option>say</option><option>tell</option><option>ask</option><option>explain</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="form-group-title">inner (quoted) layer</div>
+          <div class="form-row"><label>subject:</label><input id="rs_innerSubject" value="she"></div>
+          <div class="form-row">
+            <label>original tense:</label>
+            <select id="rs_innerTense">
+              <option value="present">present</option>
+              <option value="past">past</option>
+              <option value="presentPerfect">present perfect</option>
+              <option value="will">will + base</option>
+              <option value="can">can + base</option>
+              <option value="must">must + base</option>
+            </select>
+          </div>
+          <div class="form-row"><label>verb:</label><input id="rs_innerVerb" value="be"></div>
+          <div class="form-row"><label>rest:</label><input id="rs_innerRest" value="happy"></div>
+        </div>
+        <button class="btn-primary" data-action="run" style="width:100%;padding:12px">▶ Compile</button>
+        <div class="presets">
+          <button class="preset-btn" data-preset="happy">"I am happy"</button>
+          <button class="preset-btn" data-preset="finished">"I have finished"</button>
+          <button class="preset-btn" data-preset="come">"I will come"</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Output</div>
+      <div class="panel-body">
+        <div class="code-display" id="codeOut">…</div>
+        <div style="height:12px"></div>
+        <div class="output-display" id="englishOut">…</div>
+      </div>
+    </div>
+  </div>`;
+}
+function articlesUI() {
+  return `
+  <div class="workspace">
+    <div class="panel">
+      <div class="panel-header">Article Resolver</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <div class="form-row">
+            <label>method:</label>
+            <select id="a_method">
+              <option value="find">find() → the</option>
+              <option value="create">create() → a/an</option>
+              <option value="all">all() → ∅ plural</option>
+            </select>
+          </div>
+          <div class="form-row"><label>noun:</label><input id="a_noun" value="book"></div>
+        </div>
+        <button class="btn-primary" data-action="run" style="width:100%;padding:12px">▶ Compile</button>
+        <div class="presets">
+          <button class="preset-btn" data-preset="hour">an hour</button>
+          <button class="preset-btn" data-preset="uni">a university</button>
+          <button class="preset-btn" data-preset="cities">all cities</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Output</div>
+      <div class="panel-body">
+        <div class="code-display" id="codeOut">…</div>
+        <div style="height:12px"></div>
+        <div class="output-display" id="englishOut">…</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- Explanation panels ---------- */
+function renderExplain() {
+  const el = $('#explainArea');
+  const map = {
+    conditionals: `
+      <div class="explanation">
+        <h3>📚 Conditionals — Dört Tip, Dört Middleware</h3>
+        <p><strong>Tip 0 — Evrensel gerçek (zero conditional).</strong> Fizik yasası, alışkanlık, genel doğru. Her iki cümle de <em>simple present</em>.</p>
+        <div class="example">if you heat water, it boils.</div>
+        <p><strong>Tip 1 — Gerçekçi gelecek (first conditional).</strong> Olma ihtimali yüksek. if-clause: present; main: <em>will + base</em>.</p>
+        <div class="example">If it rains tomorrow, I will stay home.</div>
+        <p><strong>Tip 2 — Hipotetik şimdi/gelecek (second conditional).</strong> Şu anki gerçekliğe aykırı. <strong>Önemli:</strong> tüm öznelerde <code>were</code> kullanılır (formal doğru, "If I <em>was</em>" konuşma dilinde yaygın).</p>
+        <div class="example">If I were rich, I would travel the world.</div>
+        <p><strong>Tip 3 — Hipotetik geçmiş (third conditional).</strong> Geçmişte olmadı, şu an değiştirmek imkânsız — pişmanlık, varsayım. <em>had + V3</em> / <em>would have + V3</em>.</p>
+        <div class="example">If I had studied harder, I would have passed the exam.</div>
+        <p style="margin-top:14px"><strong>Laravel bağlantısı:</strong> Her tip farklı bir <em>middleware pipeline</em>'dır. Compiler, tip numarasına bakar ve doğru tense dönüşümlerini sırayla uygular. Özellikle Tip 3'teki <code>had + V3</code>, past perfect middleware'ini çağırmak gibidir.</p>
+      </div>`,
+    tenses: `
+      <div class="explanation">
+        <h3>📚 Tenses — 12 Kombinasyon</h3>
+        <p>12 tense = 3 zaman × 4 aspect. Laravel'deki gibi düşün: <code>Tense::present()->aspect('perfect')</code> = "referans anı şimdi, ama eylem önceden tamamlandı" middleware'i.</p>
+        <ul>
+          <li><strong>Simple:</strong> temel gerçek / tek seferlik eylem</li>
+          <li><strong>Continuous:</strong> o anda devam eden (<em>be + V-ing</em>)</li>
+          <li><strong>Perfect:</strong> referans anından önce tamamlanmış (<em>have + V3</em>)</li>
+          <li><strong>Perfect Continuous:</strong> önceden başlayıp hâlâ süren (<em>have been + V-ing</em>)</li>
+        </ul>
+        <p style="margin-top:10px">Dikkat: <code>he reads</code> (3. tekil <strong>-s</strong> eki), Laravel'deki <em>dependency injection</em>'a benzer: container özneye bakıp doğru fiil formunu enjekte eder.</p>
+      </div>`,
+    passive: `
+      <div class="explanation">
+        <h3>📚 Passive Voice — Failin Facade'landığı Yer</h3>
+        <p>Formül: <code>be (tense'e göre) + past participle</code>. Hangi tense'de olursa olsun bu iskelet değişmez — sadece <em>be</em> fiili konjuge edilir.</p>
+        <ul>
+          <li>Present: <em>is/are eaten</em></li>
+          <li>Past: <em>was/were eaten</em></li>
+          <li>Present Perfect: <em>has/have been eaten</em></li>
+          <li>Future: <em>will be eaten</em></li>
+          <li>Modal: <em>can be eaten</em></li>
+        </ul>
+        <p style="margin-top:10px"><strong>Ne zaman pasif?</strong> Failin bilinmediği, önemsiz olduğu veya gizlenmek istendiği durumlar. Akademik ve bilimsel yazımda da yaygındır çünkü süreci özneden bağımsız hale getirir.</p>
+      </div>`,
+    relative: `
+      <div class="explanation">
+        <h3>📚 Relative Clauses — Query Builder Sıkı Kısıtları</h3>
+        <p>Relative clause bir ismi (antecedent) <em>sınırlandırır</em> — tıpkı <code>->where()</code> zincirinin bir query'yi daraltması gibi.</p>
+        <ul>
+          <li><strong>who/that</strong> → insanlar için</li>
+          <li><strong>which/that</strong> → nesneler/hayvanlar için</li>
+          <li><strong>whose</strong> → aitlik bildirir</li>
+          <li><strong>where</strong> → yer bildirir (the city where I live)</li>
+          <li><strong>when</strong> → zaman bildirir (the day when we met)</li>
+        </ul>
+        <p style="margin-top:10px"><strong>Defining vs non-defining:</strong> "The man who called me is my brother" (defining, virgülsüz, who gerekli) ≠ "My father, who is 60, still works" (non-defining, virgülle, ekstra bilgi).</p>
+      </div>`,
+    modals: `
+      <div class="explanation">
+        <h3>📚 Modal Verbs — Middleware Katmanı</h3>
+        <p>Modal'lar fiilin anlamına bir <em>katman</em> ekler: zorunluluk, olasılık, izin, yetenek, tavsiye...</p>
+        <ul>
+          <li><strong>can / could:</strong> yetenek, izin, ihtimal</li>
+          <li><strong>must:</strong> güçlü zorunluluk, mantıksal çıkarım</li>
+          <li><strong>should / ought to:</strong> tavsiye, beklenti</li>
+          <li><strong>may / might:</strong> izin, düşük olasılık</li>
+          <li><strong>would:</strong> hipotez, geçmiş alışkanlık, rica</li>
+        </ul>
+        <p style="margin-top:10px"><strong>Perfect modal (modal + have + V3):</strong> geçmişe bakış. <em>"She must have forgotten"</em> = mantıksal çıkarım; <em>"I should have studied"</em> = pişmanlık; <em>"He could have won"</em> = kaçırılmış fırsat.</p>
+      </div>`,
+    reported: `
+      <div class="explanation">
+        <h3>📚 Reported Speech — Event Serialization</h3>
+        <p>Direkt konuşmayı dolaylıya çevirirken: <strong>tense backshift</strong> (zaman bir adım geri) + <strong>pronoun shift</strong> (zamir kaydırma) + <strong>time/place shift</strong> (now→then, here→there).</p>
+        <ul>
+          <li>present → past: <em>is → was</em></li>
+          <li>past → past perfect: <em>was → had been</em></li>
+          <li>present perfect → past perfect: <em>has done → had done</em></li>
+          <li>will → would, can → could, must → had to</li>
+        </ul>
+        <p style="margin-top:10px"><strong>İstisnalar:</strong> Evrensel gerçekler backshift'e uğramaz. <em>She said the Earth is round</em> ≠ <em>was round</em> (çünkü hâlâ yuvarlak).</p>
+      </div>`,
+    articles: `
+      <div class="explanation">
+        <h3>📚 Articles — Eloquent Retrieval Mentalitesi</h3>
+        <p>Her isim bir "database row" gibi. Soru şu: <em>hangi retrieval method?</em></p>
+        <ul>
+          <li><strong>the</strong> = <code>find(id)</code>: konuşucunun da dinleyicinin de bildiği spesifik kayıt</li>
+          <li><strong>a/an</strong> = <code>create()</code>: yeni tanıtılan, henüz bilinmeyen tek bir instance</li>
+          <li><strong>∅ (zero article, plural)</strong> = <code>all()</code>: jenerik, tüm sınıf ("Dogs bark")</li>
+        </ul>
+        <p style="margin-top:10px"><strong>a vs an:</strong> Yazılışa değil <em>sese</em> bak. <em>an hour</em> (h sessiz), <em>a university</em> (u "yu" diye okunur, ünsüz ses). <em>an MBA</em> ("em" ünlü ses), <em>a one-day trip</em> ("wan" ünsüz ses).</p>
+      </div>`
+  };
+  el.innerHTML = map[currentTopic] || '';
+}
+
+/* ===========================================================
+   EVENT HANDLING (delegation — NO inline handlers)
+   =========================================================== */
+let conditionalType = 0;
+let currentDecompileAnswer = null;
+let currentDebugBug = null;
+
+document.addEventListener('click', function(e) {
+  const t = e.target;
+
+  // theme toggle
+  if (t.id === 'themeToggle') {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'light' ? '' : 'light';
+    if (next) document.documentElement.setAttribute('data-theme','light');
+    else document.documentElement.removeAttribute('data-theme');
+    t.textContent = next === 'light' ? '☀️ Tema' : '🌙 Tema';
+    return;
+  }
+
+  // topic tab
+  const topicTab = t.closest('.topic-tab');
+  if (topicTab) {
+    $$('.topic-tab').forEach(b => b.classList.remove('active'));
+    topicTab.classList.add('active');
+    currentTopic = topicTab.dataset.topic;
+    currentMode = 'compile';
+    renderTopic();
+    return;
+  }
+
+  // mode tab
+  const modeTab = t.closest('.mode-tab');
+  if (modeTab) {
+    currentMode = modeTab.dataset.mode;
+    renderTopic();
+    return;
+  }
+
+  // conditional type selector
+  const typeBtn = t.closest('.type-btn');
+  if (typeBtn) {
+    const parent = typeBtn.parentElement;
+    $$('.type-btn', parent).forEach(b => b.classList.remove('active'));
+    typeBtn.classList.add('active');
+    conditionalType = Number(typeBtn.dataset.type);
+    if (currentMode === 'compile') runCurrent();
+    return;
+  }
+
+  // run / compile
+  if (t.dataset.action === 'run') { runCurrent(); return; }
+  if (t.dataset.action === 'check') { checkDecompile(); return; }
+  if (t.dataset.action === 'checkFix') { checkDebugFix(); return; }
+
+  // presets
+  if (t.dataset.preset) { applyPreset(t.dataset.preset); return; }
+  if (t.dataset.dchallenge) { loadDecompileChallenge(t.dataset.dchallenge); return; }
+  if (t.dataset.debug === 'next') { loadDebugBug(); return; }
+});
+
+// Live-update on input change
+document.addEventListener('input', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+    if (currentMode === 'compile') runCurrent();
+  }
+});
+
+function runCurrent() {
+  try {
+    if (currentTopic === 'conditionals') runConditional();
+    else if (currentTopic === 'tenses') runTense();
+    else if (currentTopic === 'passive') runPassive();
+    else if (currentTopic === 'relative') runRelative();
+    else if (currentTopic === 'modals') runModal();
+    else if (currentTopic === 'reported') runReported();
+    else if (currentTopic === 'articles') runArticle();
+  } catch (err) {
+    const out = $('#englishOut');
+    if (out) { out.classList.add('error'); out.textContent = '⚠ ' + err.message; }
+  }
+}
+
+function runConditional() {
+  const data = {
+    type: conditionalType,
+    ifS: $('#c_ifS').value.trim(),
+    ifV: $('#c_ifV').value.trim(),
+    ifC: $('#c_ifC').value.trim(),
+    thenS: $('#c_thenS').value.trim(),
+    thenV: $('#c_thenV').value.trim(),
+    thenC: $('#c_thenC').value.trim(),
+  };
+  try {
+    const compiled = compileConditional(data);
+    $('#codeOut').innerHTML = hl(conditionalCode(data));
+    const out = $('#englishOut');
+    out.classList.remove('error');
+    out.textContent = compiled;
+    if ($('#astOut')) $('#astOut').innerHTML = conditionalAST(data, compiled);
+  } catch (err) {
+    const out = $('#englishOut');
+    out.classList.add('error');
+    out.textContent = '⚠ CompilerError: ' + err.message;
+  }
+}
+function runTense() {
+  const data = {
+    time: $('#t_time').value,
+    aspect: $('#t_aspect').value,
+    subject: $('#t_subject').value.trim(),
+    verb: $('#t_verb').value.trim(),
+    object: $('#t_object').value.trim(),
+  };
+  const compiled = compileTense(data);
+  $('#codeOut').innerHTML = hl(tenseCode(data));
+  const out = $('#englishOut');
+  out.classList.remove('error');
+  out.textContent = compiled;
+}
+function runPassive() {
+  const data = {
+    tense: $('#p_tense').value,
+    object: $('#p_object').value.trim(),
+    verb: $('#p_verb').value.trim(),
+    agent: $('#p_agent').value.trim(),
+  };
+  const compiled = compilePassive(data);
+  $('#codeOut').innerHTML = hl(passiveCode(data));
+  const out = $('#englishOut');
+  out.classList.remove('error');
+  out.textContent = compiled;
+}
+function runRelative() {
+  const data = {
+    article: $('#r_article').value,
+    noun: $('#r_noun').value.trim(),
+    pronoun: $('#r_pronoun').value,
+    clauseVerb: $('#r_verb').value.trim(),
+    clauseRest: $('#r_rest').value.trim(),
+  };
+  const compiled = compileRelative(data);
+  $('#codeOut').innerHTML = hl(relativeCode(data));
+  const out = $('#englishOut');
+  out.classList.remove('error');
+  out.textContent = compiled;
+}
+function runModal() {
+  const data = {
+    subject: $('#m_subject').value.trim(),
+    modal: $('#m_modal').value,
+    verb: $('#m_verb').value.trim(),
+    form: $('#m_form').value,
+    complement: $('#m_complement').value.trim(),
+  };
+  const compiled = compileModal(data);
+  $('#codeOut').innerHTML = hl(modalCode(data));
+  const out = $('#englishOut');
+  out.classList.remove('error');
+  out.textContent = compiled;
+}
+function runReported() {
+  const data = {
+    reporter: $('#rs_reporter').value.trim(),
+    reportVerb: $('#rs_reportVerb').value,
+    innerSubject: $('#rs_innerSubject').value.trim(),
+    innerTense: $('#rs_innerTense').value,
+    innerVerb: $('#rs_innerVerb').value.trim(),
+    innerRest: $('#rs_innerRest').value.trim(),
+  };
+  const compiled = compileReported(data);
+  $('#codeOut').innerHTML = hl(reportedCode(data));
+  const out = $('#englishOut');
+  out.classList.remove('error');
+  out.textContent = compiled;
+}
+function runArticle() {
+  const data = {
+    method: $('#a_method').value,
+    noun: $('#a_noun').value.trim(),
+  };
+  const compiled = compileArticle(data);
+  $('#codeOut').innerHTML = hl(articleCode(data));
+  const out = $('#englishOut');
+  out.classList.remove('error');
+  out.textContent = compiled;
+}
+
+/* ---------- Presets ---------- */
+const PRESETS = {
+  conditionals: {
+    '0': {type:0, ifS:'you', ifV:'heat', ifC:'water', thenS:'it', thenV:'boil', thenC:''},
+    '1': {type:1, ifS:'it', ifV:'rain', ifC:'tomorrow', thenS:'I', thenV:'stay', thenC:'home'},
+    '2': {type:2, ifS:'I', ifV:'be', ifC:'you', thenS:'I', thenV:'tell', thenC:'the truth'},
+    '3': {type:3, ifS:'she', ifV:'study', ifC:'harder', thenS:'she', thenV:'pass', thenC:'the exam'},
+  },
+  tenses: {
+    'pp': {time:'present',aspect:'perfect',subject:'I',verb:'finish',object:'my book'},
+    'pc': {time:'past',aspect:'continuous',subject:'they',verb:'play',object:'football'},
+    'fp': {time:'future',aspect:'perfect',subject:'she',verb:'write',object:'three novels by 2030'},
+  },
+  passive: {
+    'built': {tense:'past',object:'the bridge',verb:'build',agent:'Romans'},
+    'written': {tense:'past',object:'this novel',verb:'write',agent:'Virginia Woolf'},
+    'can': {tense:'modal',object:'the problem',verb:'solve',agent:''},
+  },
+  relative: {
+    'book': {article:'the',noun:'book',pronoun:'which',clauseVerb:'I bought',clauseRest:'yesterday'},
+    'city': {article:'the',noun:'city',pronoun:'where',clauseVerb:'I was born',clauseRest:''},
+    'man': {article:'the',noun:'man',pronoun:'whose',clauseVerb:"car broke",clauseRest:'down'},
+  },
+  modals: {
+    'regret': {subject:'I',modal:'should',verb:'study',form:'perfect',complement:'harder'},
+    'deduction': {subject:'he',modal:'must',verb:'sleep',form:'continuous',complement:'right now'},
+    'ability': {subject:'she',modal:'can',verb:'speak',form:'simple',complement:'three languages'},
+  },
+  reported: {
+    'happy': {reporter:'she',reportVerb:'say',innerSubject:'she',innerTense:'present',innerVerb:'be',innerRest:'happy'},
+    'finished': {reporter:'he',reportVerb:'tell',innerSubject:'he',innerTense:'presentPerfect',innerVerb:'finish',innerRest:'the project'},
+    'come': {reporter:'they',reportVerb:'say',innerSubject:'they',innerTense:'will',innerVerb:'come',innerRest:'later'},
+  },
+  articles: {
+    'hour': {method:'create',noun:'hour'},
+    'uni': {method:'create',noun:'university'},
+    'cities': {method:'all',noun:'city'},
+  }
+};
+
+function applyPreset(key) {
+  const p = PRESETS[currentTopic] && PRESETS[currentTopic][key];
+  if (!p) return;
+  if (currentTopic === 'conditionals') {
+    conditionalType = p.type;
+    $$('.type-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.type) === p.type));
+    $('#c_ifS').value = p.ifS;
+    $('#c_ifV').value = p.ifV;
+    $('#c_ifC').value = p.ifC;
+    $('#c_thenS').value = p.thenS;
+    $('#c_thenV').value = p.thenV;
+    $('#c_thenC').value = p.thenC;
+  } else if (currentTopic === 'tenses') {
+    $('#t_time').value = p.time;
+    $('#t_aspect').value = p.aspect;
+    $('#t_subject').value = p.subject;
+    $('#t_verb').value = p.verb;
+    $('#t_object').value = p.object;
+  } else if (currentTopic === 'passive') {
+    $('#p_tense').value = p.tense;
+    $('#p_object').value = p.object;
+    $('#p_verb').value = p.verb;
+    $('#p_agent').value = p.agent;
+  } else if (currentTopic === 'relative') {
+    $('#r_article').value = p.article;
+    $('#r_noun').value = p.noun;
+    $('#r_pronoun').value = p.pronoun;
+    $('#r_verb').value = p.clauseVerb;
+    $('#r_rest').value = p.clauseRest;
+  } else if (currentTopic === 'modals') {
+    $('#m_subject').value = p.subject;
+    $('#m_modal').value = p.modal;
+    $('#m_verb').value = p.verb;
+    $('#m_form').value = p.form;
+    $('#m_complement').value = p.complement;
+  } else if (currentTopic === 'reported') {
+    $('#rs_reporter').value = p.reporter;
+    $('#rs_reportVerb').value = p.reportVerb;
+    $('#rs_innerSubject').value = p.innerSubject;
+    $('#rs_innerTense').value = p.innerTense;
+    $('#rs_innerVerb').value = p.innerVerb;
+    $('#rs_innerRest').value = p.innerRest;
+  } else if (currentTopic === 'articles') {
+    $('#a_method').value = p.method;
+    $('#a_noun').value = p.noun;
+  }
+  runCurrent();
+}
+
+/* ---------- Decompile Mode (conditionals) ---------- */
+const DECOMPILE_CHALLENGES = {
+  '0': {
+    target: 'If you mix red and blue, you get purple.',
+    answer: {type:0,ifS:'you',ifV:'mix',ifC:'red and blue',thenS:'you',thenV:'get',thenC:'purple'}
+  },
+  '1': {
+    target: 'If it snows tomorrow, we will build a snowman.',
+    answer: {type:1,ifS:'it',ifV:'snow',ifC:'tomorrow',thenS:'we',thenV:'build',thenC:'a snowman'}
+  },
+  '2': {
+    target: 'If I were a bird, I would fly to the mountains.',
+    answer: {type:2,ifS:'I',ifV:'be',ifC:'a bird',thenS:'I',thenV:'fly',thenC:'to the mountains'}
+  },
+  '3': {
+    target: 'If she had left earlier, she would have caught the train.',
+    answer: {type:3,ifS:'she',ifV:'leave',ifC:'earlier',thenS:'she',thenV:'catch',thenC:'the train'}
+  }
+};
+function loadDecompileChallenge(type) {
+  const ch = DECOMPILE_CHALLENGES[type];
+  if (!ch) return;
+  currentDecompileAnswer = ch.answer;
+  $('#decompileTarget').textContent = ch.target;
+  conditionalType = ch.answer.type;
+  $$('.type-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.type) === ch.answer.type));
+  ['c_ifS','c_ifV','c_ifC','c_thenS','c_thenV','c_thenC'].forEach(id => { $('#'+id).value = ''; });
+  $('#decompileResult').innerHTML = '';
+  $('#englishOut').textContent = 'Kodu yaz ve kontrol et…';
+  $('#codeOut').innerHTML = '// your code will appear here';
+}
+function checkDecompile() {
+  if (!currentDecompileAnswer) currentDecompileAnswer = DECOMPILE_CHALLENGES['3'].answer;
+  const data = {
+    type: conditionalType,
+    ifS: $('#c_ifS').value.trim(),
+    ifV: $('#c_ifV').value.trim(),
+    ifC: $('#c_ifC').value.trim(),
+    thenS: $('#c_thenS').value.trim(),
+    thenV: $('#c_thenV').value.trim(),
+    thenC: $('#c_thenC').value.trim(),
+  };
+  try {
+    const compiled = compileConditional(data);
+    $('#codeOut').innerHTML = hl(conditionalCode(data));
+    $('#englishOut').textContent = compiled;
+    const target = $('#decompileTarget').textContent.trim().toLowerCase().replace(/[.,]/g,'');
+    const mine = compiled.trim().toLowerCase().replace(/[.,]/g,'');
+    const resultBox = $('#decompileResult');
+    if (mine === target) {
+      resultBox.innerHTML = '<div class="success-box">✅ Mükemmel! Kodun hedef cümleyi tam olarak compile etti.</div>';
+    } else {
+      resultBox.innerHTML = `<div class="error-box"><div class="err-title">⚠ Eşleşmedi.</div>Hedef: <em>${$('#decompileTarget').textContent}</em><br>Senin: <em>${compiled}</em><br><br>İpucu: Tip doğru mu? Base form fiil mi yazdın (past/pp değil)?</div>`;
+    }
+  } catch (err) {
+    $('#decompileResult').innerHTML = `<div class="error-box"><div class="err-title">⚠ CompilerError</div>${err.message}</div>`;
+  }
+}
+
+/* ---------- Debug Mode (conditionals) ---------- */
+const DEBUG_BUGS = [
+  {
+    code: `Conditional::type(2)
+  ->if(subject: 'I', verb: 'was', complement: 'you')
+  ->then(subject: 'I', verb: 'help', complement: 'you')
+  ->compile();`,
+    error: 'TenseMismatchException at if.verb\nExpected: Type 2 requires "were" for all persons (formal)\nFound: "was"\nFix the verb field.',
+    field: 'if.verb',
+    expected: 'be',
+    hint: 'Tip 2\'de derleyici fiili kendisi "were" formuna çevirir. Sen base form ver: "be".'
+  },
+  {
+    code: `Conditional::type(1)
+  ->if(subject: 'it', verb: 'rain')
+  ->then(subject: 'I', verb: 'will stay')
+  ->compile();`,
+    error: 'DoubleModalException at then.verb\nType 1 compiler already injects "will" as modal.\nFound: "will stay" (contains modal)\nExpected: base form only.',
+    field: 'then.verb',
+    expected: 'stay',
+    hint: 'Tip 1 compiler\'ı "will"i kendisi ekler. Sen sadece base form fiil ver.'
+  },
+  {
+    code: `Conditional::type(3)
+  ->if(subject: 'he', verb: 'studied', complement: 'harder')
+  ->then(subject: 'he', verb: 'passed', complement: 'the exam')
+  ->compile();`,
+    error: 'VerbFormException at if.verb\nType 3 compiler handles past participle itself (had + V3).\nFound: "studied" (already past tense)\nExpected: base form.',
+    field: 'if.verb',
+    expected: 'study',
+    hint: 'Tip 3\'te <had + V3> dönüşümünü compiler yapar. Sen base form ("study") ver; "studied" veya "passed" değil.'
+  },
+  {
+    code: `Conditional::type(0)
+  ->if(subject: 'you', verb: 'heats', complement: 'water')
+  ->then(subject: 'it', verb: 'boils')
+  ->compile();`,
+    error: 'SubjectAgreementException at if.verb\nFound: "heats" with subject "you"\n3rd person -s suffix does not match 2nd person subject.',
+    field: 'if.verb',
+    expected: 'heat',
+    hint: 'Özne "you" olduğu için 3. tekil -s eki gelmez. Base form ver; compiler gerekirse eki ekler.'
+  }
+];
+let debugIndex = 0;
+function loadDebugBug() {
+  debugIndex = Math.floor(Math.random() * DEBUG_BUGS.length);
+  const bug = DEBUG_BUGS[debugIndex];
+  currentDebugBug = bug;
+  $('#brokenCode').innerHTML = hl(bug.code);
+  $('#errorBox').innerHTML = `<div class="err-title">⚠ CompilerError</div>${bug.error.replace(/\n/g,'<br>')}`;
+  $('#fixLabel').textContent = bug.field + ':';
+  $('#fixInput').value = '';
+  $('#debugResult').innerHTML = '';
+  $('#englishOut').textContent = 'Düzeltmeyi gir ve kontrol et…';
+  $('#englishOut').classList.remove('error');
+}
+function checkDebugFix() {
+  if (!currentDebugBug) return;
+  const val = $('#fixInput').value.trim().toLowerCase();
+  const resultBox = $('#debugResult');
+  if (val === currentDebugBug.expected.toLowerCase()) {
+    resultBox.innerHTML = `<div class="success-box">✅ Doğru! ${currentDebugBug.hint}</div>`;
+    $('#englishOut').textContent = '✓ Compiled successfully.';
+  } else {
+    resultBox.innerHTML = `<div class="error-box"><div class="err-title">⚠ Henüz değil.</div>İpucu: ${currentDebugBug.hint}</div>`;
+  }
+}
+
+/* ---------- Init ---------- */
+renderTopic();
+// Initialize debug bug on first debug mode entry
+document.addEventListener('click', function(e) {
+  const modeTab = e.target.closest('.mode-tab');
+  if (modeTab && modeTab.dataset.mode === 'debug' && currentTopic === 'conditionals') {
+    setTimeout(loadDebugBug, 50);
+  }
+}, true);
+
+</script>
+</body>
+</html>

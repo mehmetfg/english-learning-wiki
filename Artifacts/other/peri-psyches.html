@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Περὶ Ψυχῆς — Ruh Üzerine | Aristoteles</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#060a1a;--bg2:#080d20;--bg3:#0d1535;--bg4:#111a3e;
+  --border:#1a274d;--border2:#243660;
+  --accent:#3b82f6;--accent2:#60a5fa;--accent3:#93c5fd;
+  --cyan:#06b6d4;--gold:#f59e0b;--teal:#34d399;--purple:#818cf8;--rose:#f87171;
+  --text:#e2e8f0;--text2:#cbd5e1;--muted:#64748b;--muted2:#94a3b8;
+}
+.light{
+  --bg:#f0f4ff;--bg2:#e2eaf8;--bg3:#ffffff;--bg4:#dde7f7;
+  --border:#b8cae8;--border2:#a0b8e0;
+  --text:#1e293b;--text2:#334155;--muted:#64748b;--muted2:#475569;
+  --gold:#b45309;--teal:#065f46;--purple:#4f46e5;--rose:#dc2626;
+}
+html,body{height:100%;font-family:Verdana,Geneva,Tahoma,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.75}
+#app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* TOPBAR */
+#topbar{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0;height:48px}
+#logo-inline{display:flex;align-items:center;gap:8px;flex-shrink:0}
+#logo-inline .sym{font-size:22px;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+#logo-inline .ltitle{font-size:11px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+#tt{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:5px 13px;border-radius:6px;cursor:pointer;font-size:12px;font-family:Verdana,sans-serif;transition:all 0.2s;margin-left:auto;flex-shrink:0}
+#tt:hover{border-color:var(--accent);color:var(--accent2)}
+
+/* TAB NAV */
+#tabnav{background:var(--bg2);border-bottom:2px solid var(--border);display:flex;overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+#tabnav::-webkit-scrollbar{display:none}
+#tabnav a{display:flex;align-items:center;gap:6px;padding:10px 16px;text-decoration:none;color:var(--muted2);font-size:12px;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;cursor:pointer;user-select:none;transition:all 0.18s;flex-shrink:0}
+#tabnav a:hover{color:var(--text);background:rgba(59,130,246,0.06)}
+#tabnav a.active{color:var(--accent2);border-bottom-color:var(--accent);background:rgba(59,130,246,0.08)}
+#tabnav a .ico{font-size:14px}
+.tsep{width:1px;background:var(--border);margin:8px 2px;flex-shrink:0}
+
+/* MAIN */
+#main{flex:1;overflow-y:auto;padding:34px 44px 60px}
+
+/* PAGE */
+.page{display:none}
+.page.active{display:block;animation:fIn 0.3s ease}
+@keyframes fIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADERS */
+.ph{margin-bottom:38px}
+.ptag{font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--accent2);margin-bottom:7px}
+.ptitle{font-size:26px;font-weight:700;line-height:1.25;color:var(--text);margin-bottom:6px}
+.ptitle .gk{font-size:18px;color:var(--accent3);display:block;font-weight:normal;margin-top:2px}
+.pdesc{font-size:13px;color:var(--muted2);max-width:700px;line-height:1.85}
+
+/* CARDS */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:15px;margin-bottom:30px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:20px;transition:border-color 0.2s}
+.card:hover{border-color:var(--accent)}
+.cn{font-size:38px;font-weight:700;color:var(--border2);line-height:1;margin-bottom:11px}
+.ct{font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:7px}
+.cb{font-size:12.5px;color:var(--text2);line-height:1.75}
+
+/* PROPS */
+.plist{display:flex;flex-direction:column;gap:14px;margin-bottom:36px}
+.pitem{display:flex;gap:14px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px 20px;transition:all 0.2s}
+.pitem:hover{border-color:var(--accent);transform:translateX(3px)}
+.pnum{font-size:26px;font-weight:700;color:var(--accent);opacity:0.45;flex-shrink:0;width:44px;text-align:right;line-height:1;padding-top:2px}
+.pc h4{font-size:13.5px;color:var(--accent2);margin-bottom:5px;font-weight:700}
+.pc p{font-size:12.5px;color:var(--text2);line-height:1.75}
+
+/* SECTION */
+.sec{margin-bottom:44px}
+.stitle{font-size:16px;font-weight:700;color:var(--text);margin-bottom:15px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.stitle .sgk{font-size:13px;color:var(--gold);font-weight:normal}
+
+/* CONTENT */
+.cb2{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:15px}
+.cb2 h4{font-size:13.5px;color:var(--accent2);margin-bottom:10px;font-weight:700}
+.cb2 p,.cb2 li{font-size:13px;color:var(--text2);line-height:1.85;margin-bottom:9px}
+.cb2 ul{padding-left:18px}
+.cb2 p:last-child{margin-bottom:0}
+
+/* QUOTE */
+.qb{padding:15px 20px;margin:18px 0;background:var(--bg4);border-radius:0 9px 9px 0;border-left:3px solid;border-image:linear-gradient(to bottom,var(--accent),var(--cyan)) 1}
+.qb p{font-size:13px;color:var(--text2);font-style:italic;line-height:1.85;margin-bottom:6px}
+.qs{font-size:11px;color:var(--muted2)}
+
+/* TERMS */
+.tg{color:var(--gold);font-style:italic;cursor:help;border-bottom:1px dotted var(--gold)}
+.ta{color:var(--teal);cursor:help;border-bottom:1px dotted var(--teal);direction:rtl;display:inline-block;unicode-bidi:embed}
+.tk{color:var(--purple);font-weight:600}
+.tr2{color:var(--teal);font-style:italic}
+
+/* CONCEPT BOXES */
+.cbox{border:1px solid var(--border);border-radius:8px;padding:13px 17px;margin:10px 0;background:var(--bg4);display:inline-block;min-width:200px;vertical-align:top}
+.cbox .ct2{font-size:14px;color:var(--gold);font-style:italic;margin-bottom:2px}
+.cbox .ctr{font-size:11px;color:var(--muted2);margin-bottom:6px}
+.cbox .cd{font-size:12px;color:var(--text2);line-height:1.6}
+.cboxes{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
+
+/* PHILOSOPHER HEADER */
+.philh{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--border);border-radius:13px;padding:28px;margin-bottom:28px;position:relative;overflow:hidden}
+.philh::before{content:'';position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(59,130,246,0.08),transparent 70%)}
+.phar{font-size:34px;color:var(--teal);margin-bottom:4px;font-weight:400;direction:rtl;text-align:left}
+.phname{font-size:22px;font-weight:700;color:var(--text);margin-bottom:3px}
+.phdates{font-size:12px;color:var(--muted2);margin-bottom:10px}
+.phep{font-size:13px;color:var(--accent2);font-style:italic}
+.phworks{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.phworks span{display:inline-block;background:var(--bg);border:1px solid var(--border);padding:4px 10px;border-radius:5px;font-size:11px;color:var(--muted2);margin:3px 4px 3px 0}
+
+/* VOICE BOX */
+.vbox{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:22px 24px;margin-bottom:18px;position:relative}
+.vbox::before{content:'"';position:absolute;top:8px;left:16px;font-size:64px;color:var(--accent);opacity:0.1;font-family:Georgia,serif;line-height:1}
+.vlabel{font-size:9.5px;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin-bottom:10px}
+.vtext{font-size:13px;color:var(--text2);line-height:1.88}
+.vtext p{margin-bottom:10px}
+.vtext p:last-child{margin-bottom:0}
+.vtext strong{color:var(--text)}
+
+/* SPINE MAP */
+.spmap{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:22px;margin-bottom:30px}
+.sph{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:15px}
+.spflow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.spnode{background:var(--bg4);border:1px solid var(--border);border-radius:6px;padding:7px 13px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.2s}
+.spnode:hover{border-color:var(--accent);color:var(--accent2)}
+.sparrow{color:var(--muted);font-size:18px}
+
+/* TABLE */
+.ctable{width:100%;border-collapse:collapse;font-size:12.5px;margin:15px 0}
+.ctable th{background:var(--bg4);color:var(--accent2);padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:1px;border:1px solid var(--border)}
+.ctable td{padding:10px 14px;color:var(--text2);border:1px solid var(--border);line-height:1.65;vertical-align:top}
+.ctable tr:nth-child(even) td{background:var(--bg4)}
+
+/* REL GRID */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:28px}
+.rcard{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px;transition:all 0.2s}
+.rcard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.rice{font-size:22px;margin-bottom:9px}
+.rttl{font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:3px}
+.rtr{font-size:11px;color:var(--muted2);margin-bottom:8px}
+.rbdy{font-size:12px;color:var(--text2);line-height:1.65}
+
+/* ACCORDION */
+.acc{border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:10px}
+.ach{background:var(--bg4);padding:12px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text2);font-weight:600;user-select:none}
+.ach:hover{color:var(--accent2)}
+.acb{background:var(--bg3);padding:16px 18px;font-size:12.5px;color:var(--text2);line-height:1.8;display:none}
+.acc.open .acb{display:block}
+.chev{transition:transform 0.2s}
+.acc.open .chev{transform:rotate(180deg)}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* HIGHLIGHT ROW */
+.hlrow{background:linear-gradient(90deg,rgba(59,130,246,0.09),transparent);border-left:3px solid var(--accent);padding-left:16px;border-radius:0 6px 6px 0;margin:8px 0}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="topbar">
+  <div id="logo-inline"><span class="sym">Ψ</span><span class="ltitle">Περὶ Ψυχῆς</span></div>
+  <button id="tt" onclick="toggleTheme()">☀ Açık Tema</button>
+</div>
+<div id="tabnav">
+  <a onclick="go('home')" data-p="home" class="active"><span class="ico">◈</span>Ana Sayfa</a>
+  <a onclick="go('b1')" data-p="b1"><span class="ico">Α</span>Kitap I</a>
+  <a onclick="go('b2')" data-p="b2"><span class="ico">Β</span>Kitap II</a>
+  <a onclick="go('b3')" data-p="b3"><span class="ico">Γ</span>Kitap III</a>
+  <a onclick="go('rel')" data-p="rel"><span class="ico">⬡</span>Bağıntılar</a>
+  <div class="tsep"></div>
+  <a onclick="go('far')" data-p="far"><span class="ico">ف</span>Farabi</a>
+  <a onclick="go('sin')" data-p="sin"><span class="ico">س</span>İbn Sina</a>
+  <a onclick="go('rud')" data-p="rud"><span class="ico">ر</span>İbn Rüşd</a>
+</div>
+<main id="main">
+
+  <!-- ========== HOME ========== -->
+  <div id="page-home" class="page active">
+    <div class="ph">
+      <div class="ptag">Κεφαλή — Rehber Omurgası</div>
+      <div class="ptitle">Περὶ Ψυχῆς
+        <span class="gk">Ruh Üzerine</span>
+      </div>
+      <p class="pdesc">Ruh bilgisi, öteki bütün bilgiler arasında en yücelerden biri olmakla birlikte, en zorlarından da biridir. Hem doğa bilimlerine hem de hakikatin ilk ilkelerine en yakın duran bu araştırma, canlının özüne ilişkin temel soruyu sorar: Bir şeyi yaşatan nedir? Bu rehber, Aristoteles'in bu soruya verdiği cevabı üç kitap boyunca izler.</p>
+    </div>
+
+    <div class="spmap">
+      <div class="sph">Eserin Yapısı — Omurga Akışı</div>
+      <div class="spflow">
+        <span class="spnode" onclick="go('b1')">Α′ Önceki Görüşler</span>
+        <span class="sparrow">→</span>
+        <span class="spnode" onclick="go('b2')">Β′ Ruhun Tanımı</span>
+        <span class="sparrow">→</span>
+        <span class="spnode" onclick="go('b3')">Γ′ Duyum · Phantasia · Nous</span>
+        <span class="sparrow">→</span>
+        <span class="spnode" onclick="go('rel')">Külliyat Bağıntıları</span>
+        <span class="sparrow">→</span>
+        <span class="spnode" onclick="go('far')">İslam Yorumları</span>
+      </div>
+    </div>
+
+    <div class="stitle"><span class="ico">◇</span>Altı Ana Önerme <span class="sgk">αἱ ἀρχαί</span></div>
+    <div class="plist">
+      <div class="pitem">
+        <div class="pnum">I</div>
+        <div class="pc">
+          <h4>Ruh, yaşama bilkuvve sahip doğal cismin ilk entelekheisi'dir</h4>
+          <p><span class="tg" title="İlk gerçekleşme / birinci edimsellik">ἐντελέχεια πρώτη</span> — Madde ile form arasındaki tümel ayrım, canlı ile ruh arasındaki ilişkiye uygulandığında ortaya çıkan tanım budur. Ruh ne sadece madde ne de sadece bir işlevdir; o, canlı cismin bizzat formu, yani onun <em>ne olduğu</em>'dur.</p>
+        </div>
+      </div>
+      <div class="pitem">
+        <div class="pnum">II</div>
+        <div class="pc">
+          <h4>Ruh, beden olmadan var olamaz; beden ise ruhun aleti değil, cisimleşmiş halidir</h4>
+          <p>Ruhun bedenden bağımsız bir tözsel var oluşu bulunmaz — <em>ayrılabilir olanlar</em> (τὰ χωριστά) bu kuralın istisnasını oluşturmayı hak etmektedir, bunlar ayrıca incelenecektir. Bir şeklin mumu olmadan var olamayacağı gibi, ruh da bedenin formu olarak ondan bağımsız var olmaz.</p>
+        </div>
+      </div>
+      <div class="pitem">
+        <div class="pnum">III</div>
+        <div class="pc">
+          <h4>Ruhun yetileri bir hiyerarşi oluşturur: besleyici, duyusal, arzu edici ve düşünsel</h4>
+          <p><span class="tg" title="Yetiler / güçler">δυνάμεις</span> — Bitki besleyici ruha, hayvan besleyici ve duyusal ruha sahipken, insan bütün bu yetilerin üzerine düşünsel ruhu ekler. Alt yeti, üst yetiyi zorunlu kılmaz; ancak üst yeti, alt yetiyi zorunlu koşul olarak önceden varsayar.</p>
+        </div>
+      </div>
+      <div class="pitem">
+        <div class="pnum">IV</div>
+        <div class="pc">
+          <h4>Duyum, madde olmaksızın formun alınmasıdır</h4>
+          <p><span class="tg" title="Form olmaksızın maddeyi almak değil, maddesiz formu almak">τὸ εἶδος ἄνευ τῆς ὕλης δέχεσθαι</span> — Mühür yüzüğünün balmumuna baskısı bu ilkeyi somutlaştırır: balmumu altın ya da bronzun hiçbir parçasını almaz, yalnızca şeklini alır. Duyum da böyledir: duyu organı, duyulanın maddesini değil formunu alır.</p>
+        </div>
+      </div>
+      <div class="pitem">
+        <div class="pnum">V</div>
+        <div class="pc">
+          <h4>Akıl, fiilen düşünmeye başlamadan önce, potansiyel olarak var olan şeylerden hiçbiridir</h4>
+          <p><span class="tg" title="Düşünen kısım / akıl">νοῦς</span> — Akıl, yazmadan önce hiçbir şey yazılmamış levhaya (δέλτος) benzer. Duyum organından farklı olarak akıl bedene bağlı değildir; zira bedenli bir organ olsaydı, belirli bir niteliği olurdu ve bu nitelik yalnızca ona karşıt olanı değil her şeyi düşünmesini engellerdi.</p>
+        </div>
+      </div>
+      <div class="pitem">
+        <div class="pnum">VI</div>
+        <div class="pc">
+          <h4>Fail akıl, ayrılabilir, etkilenmez ve özü bakımından fiil olan bir ilkedir; ölümsüz ve ebedidir</h4>
+          <p><span class="tg" title="Yapıcı/etkin akıl">νοῦς ποιητικός</span> — Işığın renkleri bilkuvveden bilfiil renge çevirmesi gibi, fail akıl da bilkuvve aklı bilfiil düşünceye kavuşturur. Münfail akıl ölümlüdür ve beden bozulduğunda onunla birlikte yok olur; ama fail akıl, beden olmadan da kendi başına var olan tek yeti olabilir.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="stitle"><span>◈</span>Soruşturmanın Yeri ve Değeri</div>
+    <div class="cb2">
+      <p>Ruh hakkındaki bilginin, her iki açıdan da — hem doğruluk hem de değer bakımından — yüce bilgiler arasında yer aldığını kabul etmek yerinde olur. Doğanın doğru bir anlaşılmasına büyük ölçüde katkı sağladığı düşünüldüğünde, ruh araştırması <span class="tg" title="Doğa felsefesi / fizik">φύσεως θεωρία</span>'nın ayrılmaz parçasıdır; çünkü ruh, neredeyse tüm doğal varlıkların ilkesi (ἀρχή) ve nedenidir (αἴτιον). Bununla birlikte, varlığın doğasını ve özünün ne olduğunu, akabinde de onun başına gelen <span class="tg" title="İlinek / arızi özellik">συμβεβηκότα</span>'yı kavramaya çalışmak büyük güçlük arz eder.</p>
+      <p>Ruhun parçalı mı yoksa bütün olarak mı ele alınacağı, parçalıysa kaç türde ele alınacağı, ruhun hareketsiz mi yoksa hareketli mi olduğu — bu sorular baştan sona çözüme kavuşturulması gereken aporiai'dir (<span class="tg" title="Çözümsüz görünen güçlükler">ἀπορίαι</span>). Yöntemimiz ise bu güçlüklerden geçerek ilk ilkelere ulaşmaktır.</p>
+    </div>
+
+    <div class="cgrid">
+      <div class="card">
+        <div class="cn">Α′</div>
+        <div class="ct">Önceki Görüşler ve Eleştiri</div>
+        <div class="cb">Demokritos, Pythagorasçılar, Platon, Anaksagoras ve Empedokles'in ruh öğretileri sistematik biçimde ele alınıp çürütülür. Önceki tanımların neden yetersiz kaldığı ortaya konur.</div>
+      </div>
+      <div class="card">
+        <div class="cn">Β′</div>
+        <div class="ct">Ruhun Tanımı ve Yetiler</div>
+        <div class="cb">Madde-form ayrımından türetilen ruhun tanımı, besleyici ruhtan duyusal ruha uzanan yetiler hiyerarşisi ve duyumun temel ilkesi işlenir.</div>
+      </div>
+      <div class="card">
+        <div class="cn">Γ′</div>
+        <div class="ct">Nous, Hayal Gücü, Hareket</div>
+        <div class="cb">Ortak duyu, phantasia, münfail ve fail akıl, arzu ile hareketin ilişkisi ele alınır. Aklın bedenle ilişkisi ve ölümsüzlük sorunu burada belirir.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BOOK I ========== -->
+  <div id="page-b1" class="page">
+    <div class="ph">
+      <div class="ptag">Kitap I — Α′</div>
+      <div class="ptitle">Önce Gelenler ve Onların Güçlükleri
+        <span class="gk">Αἱ τῶν προτέρων δόξαι καὶ αἱ ἀπορίαι</span>
+      </div>
+      <p class="pdesc">Herhangi bir soruşturmaya girişirken, öncekilerin görüşlerini hem öğrenmek hem de çürütmek zorunludur. Hatayı bilmek doğruya giden yolun parçasıdır; ayrıca önceki görüşlerin tutarsızlığını saptamak, olumlu öğretinin hangi sorunları çözmesi gerektiğini açıkça gösterir.</p>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Soruşturmanın Zorluğu ve Yöntemi <span class="sgk">ἡ μέθοδος</span></div>
+      <div class="cb2">
+        <p>Ruhun doğasını araştırırken, önce onun hangi cins altına girdiğini, yani <span class="tg" title="Töz, birincil varlık kategorisi">οὐσία</span> mı yoksa nitelik ya da başka bir kategori mi olduğunu belirlememiz gerekir. Ardından, bilkuvve mi yoksa bilfiil mi olduğunu sormalıyız. Bu sorular, ruhun varlık tarzını ortaya koyar.</p>
+        <p>Bununla birlikte, ruhun ayrılabilir (χωριστή) bir şey mi yoksa cisimsel büyüklüğün bir <span class="tg" title="Nitelik, belirlenim">πάθος</span>'u mu olduğunu sormak da gereklidir. Ruhun tüm <span class="tg" title="Etkilenimler, hallerin belirlenimleri">παθήματα</span>'nı bedene ait mi yoksa ruha özgü bir şeyler de mi sayılacağını belirlemek büyük önem taşır. Zira eğer ruhun kendi başına herhangi bir etkinliği varsa, o zaman ruhun bedenden ayrılması mümkün görünür.</p>
+      </div>
+      <div class="qb">
+        <p>Eğer akıl yürütme, sevgi ya da nefret, bedenin değil de ruhun etkilenimleri ise, ruhun beden olmadan da var olması mümkün olur. Ama bedenin de etkilenimleri ise — örneğin kızmak (ὀργή), cesaretlenmek (θαρρεῖν), arzu etmek (ἐπιθυμεῖν), genel olarak duymak (αἰσθάνεσθαι) — o zaman ruhun bedensiz var olması mümkün değildir.</p>
+        <p class="qs">— Περὶ Ψυχῆς, 403a3-7</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Demokritos ve Leukippos <span class="sgk">Δημόκριτος</span></div>
+      <div class="cb2">
+        <p>Demokritos, ruhu ateş benzeri ve sıcak bir şey olarak tanımlar; sonsuz sayıdaki şekillerden küresel olanlar ruhtur ve bunlara ateş adı da verilir. Küresel atomlar her şeyin içinden geçebilir ve harekederek tüm hayvanı hareket ettirdiklerinden yaşamın ilkesi sayılırlar. Bu nedenle Demokritos, <span class="tg" title="Ruh = hareket = solunum">ψυχή = κίνησις</span> denklemini kurar.</p>
+        <p><strong>Eleştiri:</strong> Hareket, ruhun yeterlice tanımlanmasını sağlamaz. Demokritos, aklın (νοῦς) beyin ile ilişkili olduğunu, duyumun ise uygun atom dizilimlerinden kaynaklandığını söyler; ama bunun <em>nasıl</em> gerçekleştiğini açıklamaz. Neden küresel atomlar düşünebilirken köşeli atomlar düşünemez? Hareket ile bilgi arasındaki köprü kurulmamıştır.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Pythagorasçılar ve Armoni Kuramı <span class="sgk">Ἁρμονία</span></div>
+      <div class="cb2">
+        <p>Bazı Pythagorasçılar ruhu, hava içindeki toz zerreciklerine benzeterek hareketleri nedeniyle ruhun tanımını yaparlar. Bazıları ise şunu ileri sürer: Ruh, bedenin unsurlarının <span class="tg" title="Armoni, oran, uyum">ἁρμονία</span>'sıdır — yani bileşenlerin birbiriyle belirli oranlar içinde uyumlu karışımıdır.</p>
+        <p><strong>Eleştiri:</strong> Armoni, bir ilişkidir; bir töz değildir. Armoni, unsurlarından önce var olamaz; oysa ruhun bedenden önce var olduğu ya da en azından onunla eşzamanlı bulunduğu açıktır. Üstelik armoni azlık ve çokluk kabul eder: bir oran başka bir orandan daha fazla ya da daha az armoni taşıyabilir. Peki ruh da azlık ve çokluk kabul eder mi? Biri diğerinden daha ruhlu mudur? Bu sonuç saçmadır.</p>
+        <p>Ayrıca armoni görüşü, ruhun öfke, istek, algı gibi etkinliklerini açıklamakta büsbütün yetersiz kalır. Armoni <em>her</em> şeyin işlevi olamaz; oysa ruhun birden fazla işlevi vardır.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Platon'un Ruh Öğretisi <span class="sgk">Πλάτων · Τίμαιος</span></div>
+      <div class="cb2">
+        <p>Platon, Timaios'ta ruhu şöyle oluşturur: <span class="tg" title="Özdeş/Aynı">τὸ αὐτό</span> ile <span class="tg" title="Başka/Farklı">τὸ ἕτερον</span> ve <span class="tg" title="Varlık">τὸ ὄν</span> birleştirilerek ortaya orta bir bileşim çıkarılır; bu bileşimden dairesel hareketler üretilir ve bu hareketler bilginin kendisidir. Phaidon'da ise ruh, en iyi şey (τὸ ἄριστον) ile birlikte bulunur ve Devlet'te ruhun üç parçası — akılcı, öfkeli, arzulu — bir şehrin üç sınıfına benzetilir.</p>
+        <p><strong>Eleştiri:</strong> Eğer ruh uzaysal parçaları olan bir büyüklük ise, parçaları birbirinden farklı olacak ve bunlar birbirleriyle çelişecektir. Ayrıca ruh kendi kendini hareket ettiriyorsa (αὐτοκίνητον), bu hareket ne türlüdür? Yer değiştirme mi, nitelik değişimi mi, artma-azalma mı? Bunların hiçbiri ruh için uygun değildir. Ruh, uzamsal hareketle değil, düşünme, isteme, algılama gibi kendine özgü etkinliklerle tanımlanmalıdır.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Anaksagoras — Nous <span class="sgk">Ἀναξαγόρας · νοῦς</span></div>
+      <div class="cb2">
+        <p>Anaksagoras, aklı (νοῦς) tüm şeylerin efendisi (αἴτιον) olarak tanımlar ve onu basit, saf, hiçbir şeyle karışmamış olarak niteler. Yalnızca bu saflık sayesinde bildiğini söyler; karışmışlık bilgiyi engellerdi.</p>
+        <p><strong>Eleştiri:</strong> Bu görüşün iki güçlüğü vardır. Birincisi: Anaksagoras, aklın ne yaptığını söyler ama nasıl yaptığını söylemez; yani bilginin mekanizması açıklanmamıştır. İkincisi: Eğer karışmamışlık bilginin koşuluysa ve ruh bu akla sahipse, nasıl oluyor da ruh bedenle birleşiyor? Bedenle birleşmek bir tür karışmak değil midir? Ayrıca Anaksagoras, aklı kullanırken çoğunlukla bunu rastlantısal bir açıklama aracı olarak devreye sokar; oysa gerçek bir ilke, bütün oluşu açıklamalıdır.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Empedokles <span class="sgk">Ἐμπεδοκλῆς</span></div>
+      <div class="cb2">
+        <p>Empedokles, ruhu dört kök (ateş, su, toprak, hava) ve iki kuvvet (Sevgi — <span class="tg" title="Sevgi / çekim kuvveti">φιλία</span> ve Çekişme — <span class="tg" title="Nefret / itme kuvveti">νεῖκος</span>) ile açıklar. Temel ilkesi: benzer benzerini bilir (<span class="tg" title="Benzer benzeri tanır">τῷ ὁμοίῳ τὸ ὅμοιον γιγνώσκεσθαι</span>). Kemikleri toprak, suyu su, ateşi ateş algılarız.</p>
+        <p><strong>Eleştiri:</strong> Eğer ruh bu unsurların tümünden oluşuyorsa ve her şey de bu unsurlardan oluşuyorsa, ruhsuz taşla ruhlu bir hayvan arasındaki fark ne olacaktır? Bileşim oranı mı belirleyicidir? Ama Empedokles bunu açıklamamıştır. Ayrıca bu görüş, ruhun en temel etkinliği olan birleştirme (Sevgi) ve ayrıştırma (Nefret) işlevini makul biçimde açıklayamaz.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Sonuç: Neden Yeni Bir Tanıma İhtiyaç Duyulur</div>
+      <div class="cb2">
+        <p>Önceki görüşlerin tamamı iki temel hata içermektedir: ya ruhu salt harekete indirgemişler ya da salt bilmeye. Oysa ruh hem hareket ettirip hem de bilendir; ama bu iki etkinlik, onun tanımı için zemin değil, onun tanımından çıkan sonuçlardır. Tanım, daha köklü bir ilkeden — madde-form, bilkuvve-bilfiil ayrımından — gelmek zorundadır.</p>
+        <p>Önceki filozoflar ayrıca ruhun hangi bedene özgü olduğunu ya da bedenin ruhu nasıl aldığını belirtmemişlerdir. Oysa ruhun tanımı, hem canlılığın genelini hem de belirli bir türü açıklamalıdır.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BOOK II ========== -->
+  <div id="page-b2" class="page">
+    <div class="ph">
+      <div class="ptag">Kitap II — Β′</div>
+      <div class="ptitle">Ruhun Tanımı ve Yetiler
+        <span class="gk">Ὁρισμός τε τῆς ψυχῆς καὶ αἱ δυνάμεις</span>
+      </div>
+      <p class="pdesc">Önceki görüşlerin yetersizliği ortaya konulduktan sonra, ruhun doğru tanımına madde-form ayrımından yürüyerek ulaşmak gerekir. Bu tanımdan ruhun yetileri türetilecek, yetilerden de duyumun ilkesi çıkarılacaktır.</p>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">I. Madde, Form ve Entelekhe <span class="sgk">ὕλη · εἶδος · ἐντελέχεια</span></div>
+      <div class="cb2">
+        <p>Varlık (<span class="tg" title="Varlık">τὸ ὄν</span>) birçok anlamda söylenir; ama her şeyden önce tözü (οὐσία) ifade eder. Töz üç biçimde düşünülür: madde olarak (<span class="tg" title="Madde">ὕλη</span>), şekil ve form olarak (<span class="tg" title="Suret / form">εἶδος / μορφή</span>) ve bu ikisinin bileşimi olarak. Madde, kendi başına bu ya da şu şey olmayan belirsiz zemindi; form ise maddenin onunla bu belirli şey hâline geldiği şeydir.</p>
+        <p>Bu çerçevede: Madde, bilkuvvelik'tir (<span class="tg" title="Potansiyellik, güç hâlinde oluş">δύναμις</span>); form ise bilkuvvenin gerçekleşmesi, yani bilfiillik'tir (<span class="tg" title="Edimsellik, fiil hâlinde oluş">ἐνέργεια</span>). Bilfiilliğin iki derecesi vardır: <strong>birinci entelekhe</strong> (ilk gerçekleşme — bilgiye sahip olmak gibi) ve <strong>ikinci entelekhe</strong> (etkin kullanım — bilgiyi bizzat kullanmak gibi). Ruh, birinci entelekhe'dir.</p>
+      </div>
+      <div class="cboxes">
+        <div class="cbox"><div class="ct2">ὕλη</div><div class="ctr">madde / heyûlâ</div><div class="cd">Kendi başına belirsiz olan; potansiyel olarak her şey ama hiçbir şey olmayan zemin</div></div>
+        <div class="cbox"><div class="ct2">εἶδος</div><div class="ctr">form / suret</div><div class="cd">Maddeyi belirli bir şey yapan; onun "ne olduğu"</div></div>
+        <div class="cbox"><div class="ct2">ἐντελέχεια</div><div class="ctr">entelekhe / ilk edimsellik</div><div class="cd">Bilkuvvenin gerçekleşmesi; madde-form bileşiminin tam hâli</div></div>
+        <div class="cbox"><div class="ct2">δύναμις</div><div class="ctr">bilkuvvelik / kuvvet</div><div class="cd">Bir şeyin olabilme kapasitesi; henüz gerçekleşmemiş güç</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">II. Ruhun Tanımı <span class="sgk">ὁρισμός</span></div>
+      <div class="qb">
+        <p>Ruh, yaşama bilkuvve sahip olan doğal cismin ilk entelekheisi'dir — yani bilkuvve yaşayanın formu, ilk gerçekleşmesidir. Yaşamlı ise besleyici (θρεπτική) ruha sahip olandır.</p>
+        <p class="qs">— Περὶ Ψυχῆς, 412a27-29</p>
+      </div>
+      <div class="cb2">
+        <p>Bu tanımı anlamak için dikkat edilmesi gereken husus şudur: "bilkuvve yaşayan" ifadesi, tohumlar ve yumurtalar için de geçerlidir; oysa bunlar ruh taşımıyormuş gibi görünür. Oysa tanım bu durumu da kapsar: bilkuvve yaşayan, uygun koşullar oluştuğunda ruhla cisimleşecek bir potansiyeli olan demektir.</p>
+        <p>Tanımın pratik içeriği: Eğer bir alet — balta gibi — doğal bir cisim olsaydı, "baltası" (<span class="tg" title="Keskinlik, baltanın işlevi">τὸ πελεκᾶν</span>) onun ruhu olurdu. Ama balta doğal cisim değil, yapay alet olduğundan bu analoji gerçekleşmez. Yalnızca doğal cisimlerde form ile madde bu tarzda birleşir.</p>
+      </div>
+      <div class="cb2">
+        <h4>Göz Analojisi — Tanımın Sınanması</h4>
+        <p>Göz bir hayvan olsaydı, görme (<span class="tg" title="Görme, görme yetisi">ὄψις</span>) onun ruhu olurdu; zira görme, gözün tözsel formudur. Göz ise görmenin maddesidir. Görme ortadan kalktığında artık yalnızca mecazi anlamda göz denilebilir; tıpkı mermer bir gözün ya da resmedilmiş gözün göz sayılması gibi. Bunu tüm bedene uygularsak: beden, yaşamın maddesidir; ruh ise bu maddenin formu, yaşamın birinci edimselliğidir.</p>
+        <p>Buradan şu sonuç çıkar: Ruh ile beden birbirinden <em>koparılamaz</em>; tıpkı mumun şeklinden ya da demirin sertliğinden ayrılamayacağı gibi. Ancak bazı parçalar, doğaları gereği ayrılabilir olabilir — bu, düşünsel ruh meselesinde yeniden gündeme gelecektir.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">III. Ruhun Yetileri Hiyerarşisi <span class="sgk">αἱ δυνάμεις τῆς ψυχῆς</span></div>
+      <div class="cb2">
+        <p>Ruhun birçok yetisi vardır; bunlar bir hiyerarşi oluşturur. Alt yetinin, üst yetiyi zorunlu kılmadığına dikkat edin: her duyusal canlı besleyici ruha da sahip olmak zorundadır, ama her besleyici canlının duyusal ruha sahip olması gerekmez. Bu ilişki geometrideki şekillerinkine benzer: üçgen dörtgende içerilir; ama dörtgenin bulunması üçgeni zorunlu kılmaz.</p>
+      </div>
+      <table class="ctable">
+        <thead><tr><th>Yeti</th><th>Yunanca</th><th>Hangi canlılarda</th><th>Temel işlevler</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Besleyici Ruh</strong></td><td class="tg">θρεπτική ψυχή</td><td>Tüm canlılar (bitki dahil)</td><td>Beslenme, büyüme, üreme</td></tr>
+          <tr><td><strong>Duyusal Ruh</strong></td><td class="tg">αἰσθητική ψυχή</td><td>Hayvanlar ve insanlar</td><td>Beş duyu, ortak duyu, arzu, yer değiştirme</td></tr>
+          <tr><td><strong>Arzu Eden Ruh</strong></td><td class="tg">ὀρεκτική ψυχή</td><td>Hayvanlar ve insanlar</td><td>İştiyak (ἐπιθυμία), öfke (θυμός), isteme (βούλησις)</td></tr>
+          <tr><td><strong>Yer Değiştirici Ruh</strong></td><td class="tg">κινητική ψυχή</td><td>Hayvanlar ve insanlar</td><td>Uzamsal hareket</td></tr>
+          <tr><td><strong>Düşünsel Ruh</strong></td><td class="tg">νοητική ψυχή</td><td>Yalnızca insan</td><td>Akıl yürütme, düşünce, bilgi</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">IV. Besleyici Ruh <span class="sgk">θρεπτική ψυχή</span></div>
+      <div class="cb2">
+        <p>Besleyici ruh, hem en ilkel hem de en geniş dağılımlı ruh yetisidir; tüm canlılarda bulunur, bitkiler dahil. Bu ruhun işlevleri: <span class="tg" title="Beslenme">τροφή</span>, <span class="tg" title="Büyüme">αὔξησις</span> ve <span class="tg" title="Üreme / oluş">γένεσις</span>.</p>
+        <p>Beslenme, gıdanın ne sırf ham maddesiyle ne de sadece formuyla ilişkilidir; gıda, hem madde hem de form olarak alınır. Besleyici ruhun en doğal işlevi ise kendi türünden bir başkasını meydana getirmektir: bitki bitki, hayvan hayvan üretir. Bu, ölümlü varlığın ölümsüzlüğe katılımının mümkün olan tek yoludur — zira bireysel olarak ölümsüzleşemeyen canlı, türsel olarak varlığını sürdürür.</p>
+        <p>Besleyici ruh, ateşle karıştırılmamalıdır. Ateş de büyütür ve besler görünür; ama ateşin büyütmesi sınırsızdır, yakıt oldukça sürer. Doğal büyüme ise sınırlıdır ve belirli bir forma (εἶδος) yöneliktir; bu yönelim, onu besleyici ruhun işlevi yapan şeydir.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">V. Duyusal Ruh ve Duyumun İlkesi <span class="sgk">αἴσθησις</span></div>
+      <div class="cb2">
+        <h4>Temel İlke: Madde Olmaksızın Form</h4>
+        <p>Duyum, duyulanların (<span class="tg" title="Duyulurlar">αἰσθητά</span>) formunu, maddesi olmaksızın alma yetisidir. Mühür yüzüğünün balmumuna baskısı bu ilkeyi somutlaştırır: balmumu altın ya da bronzdan hiçbir parçayı almaz, yalnızca şekli alır. Duyum organı da duyulanın maddesini değil, <em>formunu</em> alır.</p>
+        <p>Bu, bilgi ile duyum arasındaki en köklü benzerlik ve farklılığı da ortaya koyar: her ikisi de formu alır; ama bilgi, duyumdan bağımsız olarak soyut formu alırken, duyum formla birlikte belirli bir tekliğe bağlıdır.</p>
+      </div>
+      <div class="cb2">
+        <h4>Görme — ὄψις</h4>
+        <p>Görülebilir olan (<span class="tg" title="Görülür şey">τὸ ὁρατόν</span>) renktir. Renk, <span class="tg" title="Saydam ortam">τὸ διαφανές</span> aracılığıyla görülür. Işık, saydam olanın bilfiilliğidir; karanlık ise onun bilkuvveliği. Renk, saydam olanı harekete geçirir; bu hareket, saydam ortam üzerinden göz merceğine ulaşır. Burada görme organı rengi almaksızın onun formunu alır.</p>
+      </div>
+      <div class="cb2">
+        <h4>İşitme — ἀκοή</h4>
+        <p>Ses (<span class="tg" title="Ses">ψόφος</span>), havanın hareketidir; özelde sert ve düzgün yüzeylerin çarpışmasından doğar. İşitme organı, bu havanın hareketini, havanın maddesini almaksızın yalnızca hareketinin formunu alır. Ses ile gürültü, ritimsiz olanı; müzik, ritmik olanı temsil eder.</p>
+      </div>
+      <div class="cb2">
+        <h4>Koku — ὄσφρησις</h4>
+        <p>Kokulanabilir (<span class="tg" title="Kokulanabilir">τὸ ὀσφραντόν</span>), hava ya da su ortamında taşınır. İnsanlarda koku duyusu, diğer hayvanlara kıyasla daha zayıftır; zira insan diğer hayvanlar gibi bizzat kokuya değmez. Koku, en az incelenmiş duyudur ve tam bir tanımı güçtür.</p>
+      </div>
+      <div class="cb2">
+        <h4>Tat — γεῦσις</h4>
+        <p>Tat, bir tür dokunma yetisidir; tatlanabilir (<span class="tg" title="Tatlanabilir şey">τὸ γευστόν</span>) dil aracılığıyla alınır. Temel tatlar: tatlı, acı, tuzlu, ekşi, keskin ve astrenjan. Tat, beslenmenin duyusal kılavuzudur.</p>
+      </div>
+      <div class="cb2">
+        <h4>Dokunma — ἁφή</h4>
+        <p>Dokunma, tüm hayvanların sahip olduğu tek duyudur ve bu nedenle en temel yetidir. Dokunma organının ortam gerektirmeyişi, onu diğer duyulardan ayırır: duyum organı bizzat nesneyle temas eder. Sıcak-soğuk, ıslak-kuru, sert-yumuşak çiftleri dokunmanın karşıtlarıdır. Dokunma olmadan hiçbir hayvan var olamaz; çünkü en temel yararlanma ve zarar görmeden korunma bu duyuya dayanır.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== BOOK III ========== -->
+  <div id="page-b3" class="page">
+    <div class="ph">
+      <div class="ptag">Kitap III — Γ′</div>
+      <div class="ptitle">Ortak Duyu, Phantasia, Nous ve Hareket
+        <span class="gk">Κοινὴ αἴσθησις · φαντασία · νοῦς · κίνησις</span>
+      </div>
+      <p class="pdesc">Beş duyunun ötesine geçerek akıl meselesine doğru ilerleriz. Bu kitap, Peri Psyches'in en zorlu ve en tartışmalı bölümünü oluşturur; zira burada insan ruhunun en yüksek yetisi olan nous'un doğası, beden ile ilişkisi ve ölümsüzlük sorunu ele alınır.</p>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">I. Beşinci Duyu Dışında Duyu Var mıdır? <span class="sgk">κοινὴ αἴσθησις</span></div>
+      <div class="cb2">
+        <p>Beş duyunun dışında altıncı bir duyunun var olup olmadığı sorusu kendiliğinden yanıtlanır: duyulurların her bir türü mevcut beş duyudan birine karşılık gelir. Ama <span class="tg" title="Ortak duyulurlar: hareket, durgunluk, şekil, büyüklük, sayı, birlik">τὰ κοινά</span> — yani hareket, durgunluk, büyüklük, şekil, sayı ve birlik — nasıl algılanır? Bunlar yalnızca tek bir duyuya özgü değildir; her duyu bunları kendi nesnesiyle birlikte algılar.</p>
+        <p>Bu <em>ortak duyulurlar</em>, birden fazla duyu tarafından eşzamanlı olarak alınan niteliklerdir. Bunlar için özel bir duyu organı yoktur; ancak bunları birbirinden ve diğer duyumlardan ayırt eden bir yeti mevcuttur: <span class="tg" title="Ortak duyu">κοινὴ αἴσθησις</span>. Bu yeti, beş duyu organını ortak bir merkeze bağlar ve bunların nesnesini karşılaştırabilir: "Beyaz, tatlıdan farklıdır" yargısı, yalnızca tek bir duyunun işi değildir.</p>
+        <p>Ayrıca bu yeti, kendi kendinin farkında olmayı sağlar: "Görüyorum" derken sadece görmüyorum; aynı zamanda gördüğümü de görüyorum. Bu ikinci düzey farkındalık, salt duyu organının değil, ortak duyunun işidir.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">II. Phantasia — Görünüm / Hayal Gücü <span class="sgk">φαντασία</span></div>
+      <div class="cb2">
+        <p>Hayal gücü (<span class="tg" title="Görünüm / imge / hayal gücü">φαντασία</span>), ne duyumla ne de kanaat ya da bilgiyle özdeştir. Bunların ne basit bileşimidir ne de başka bir şeydir. Şu kanıt yeterlidir: duyum ya gerçekleşmekte ya da bilkuvve hâldedir; hayal gücü ise ikisi de olmadığında ortaya çıkabilir — gözlerimizi kapattığımızda hâlâ önümüzde formlar belirir. Üstelik hayal gücünden doğan imgeler çoğunlukla yanlıştır; oysa duyum, kendi nesnesi söz konusu olduğunda yanılmaz.</p>
+        <p>Hayal gücü ile kanaat da özdeş değildir: kanaat (<span class="tg" title="Kanaat / varsayım">ὑπόληψις</span>) zorunlu olarak ikna olmayı (πίστις) içerir; ikna ise akıl yürütmeyi. Hayvanlar hayal gücüne sahiptir ama aklî kanaat taşımazlar. Güneş, gözlemciye bir ayak büyüklüğünde görünür; bu yanılgıyı bilmeme rağmen görünüm devam eder. Görünüm ile kanaat arasındaki bu ayrılma, ikisinin özdeş olmadığını kanıtlar.</p>
+        <p><strong>Phantasia'nın İşlevleri:</strong></p>
+        <ul>
+          <li>Duyum olmaksızın düşünce ve arzu için nesne sunar</li>
+          <li>Rüyaların ve anının temelini oluşturur (<span class="tg" title="Belleğin izleri">τύποι</span>)</li>
+          <li>Pratik akıl için nesne sağlar: arzulanan şeyin imgesi olmadan arzu harekete geçmez</li>
+          <li>Hayvanlarda akıl işlevini ikame eder; içgüdüsel davranışın zeminidir</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">III. Düşünen Ruh — Nous <span class="sgk">νοητικὴ ψυχή · νοῦς</span></div>
+      <div class="cb2">
+        <p>Ruha ait düşünen kısım (<span class="tg" title="Düşünür ve düşünülen şeyleri kavrar">τὸ νοητικὸν τῆς ψυχῆς</span>), duyum organından temelden ayrıdır. Duyum organı bedenli ve belirli bir organa bağlıyken, nous ne bedenli ne de herhangi bir organa bağlıdır. Eğer nous bedenli olsaydı, belirli bir niteliği olurdu; bu nitelik ise yalnızca ona karşıt olanı değil, her şeyi kavramasını engellerdi.</p>
+        <p>Dolayısıyla nous, fiilen düşünmeye başlamadan önce, potansiyel olarak var olan şeylerden hiçbiridir. Bu nedenle onun madde (<span class="tg" title="Madde">ὕλη</span>) ile karışmış olduğunu söylemek de doğru değildir. Nous, adeta yazılmadan önce hiçbir şey yazılı olmayan bir levhaya (<span class="tg" title="Levha / yazı tahtası">δέλτος</span>) benzer. Ne var ki bu levha, herhangi bir bedenin bir parçası değildir; aksi hâlde maddesel bir niteliği olurdu.</p>
+        <div class="qb">
+          <p>Nous, madde olmaksızın form olan şeydir. Duyum organı ise duyulanla birlikte var olur; ancak duyum organı çok güçlü bir duyulurla karşılaştığında işlev göremez olur. Oysa güçlü bir akıllanabilir nesne düşünmek, bundan sonraki düşünceyi zayıflatmaz; aksine güçlendirir.</p>
+          <p class="qs">— Περὶ Ψυχῆς, 429b1-9</p>
+        </div>
+      </div>
+      <div class="cb2">
+        <h4>Nous, Kendi Kendini Nasıl Düşünür?</h4>
+        <p>Nous, düşündüğü şeylerle özdeşleşir: madde olmaksızın formları bildiği zaman, bilgisi bilinen şeyle aynıdır. Bu, duyumdan farklıdır: duyum organı, duyulanı algılarken nesnenin tam formunu almaz; aracı organ devrededir. Ama akıl, aracısız olarak makullerin formlarını alır ve bu alımda bilgi ile bilinen özdeşleşir.</p>
+        <p>Peki nous kendi kendini düşünebilir mi? Evet: eğer nous madde olmaksızın form ise ve düşünen şey düşündüğüyle özdeşleşiyorsa, nous makul olduğu ölçüde düşünülebilirdir de. Kendi kendini düşünmesi, en yüksek akıl olan Tanrı'nın (<span class="tg" title="Tanrı, İlk Hareket Ettirici">θεός</span>) en saf hâlidir; insanda bu ancak kısmen ve aralıklı olarak gerçekleşir.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">IV. Fail Akıl — Nous Poietikos <span class="sgk">νοῦς ποιητικός</span></div>
+      <div class="cb2">
+        <p>Doğanın her cinsinde iki ilke bulunur: biri, tüm örneklere madde gibi davranır (bilkuvve o cinsin her üyesi olan); diğeri ise nedensel ve yapıcıdır, tümünü yapan bir etkin ajan. Bu ayrım, nous için de geçerlidir. Işık bu ikinci türün en açık örneğidir: ışık, bilkuvve renkler olan şeyleri bilfiil renge dönüştürür.</p>
+        <p>Buna göre <strong>münfail akıl</strong> (<span class="tg" title="Edinilen / pasif akıl">νοῦς παθητικός</span>): bilkuvve her makuli alabilmek için hiçbiri olmayan; madde gibi davranan; etkilenebilir; ölümlüdür — beden yok olduğunda onunla birlikte yok olur ve bu hâliyle birlikte hatırlamak da mümkün kalmaz.</p>
+        <p><strong>Fail akıl</strong> (<span class="tg" title="Yapıcı / etkin akıl">νοῦς ποιητικός</span>) ise:</p>
+        <ul>
+          <li><span class="tk">Χωριστός</span> — Ayrılabilir: bedenden bağımsız olarak var olabilir</li>
+          <li><span class="tk">Ἀπαθής</span> — Etkilenmez: maddesel hiçbir etkiye maruz kalmaz</li>
+          <li><span class="tk">Ἀμιγής</span> — Karışmamış: hiçbir maddeyle karışık değildir</li>
+          <li><span class="tk">Ἀθάνατος καὶ ἀΐδιος</span> — Ölümsüz ve ebedi: varlığı bedenin varlığına bağlı değildir</li>
+          <li>Özü bakımından edimdir (<span class="tg" title="Özde edim / fiil">κατ' ἐνέργειαν</span>): bilkuvveliği yoktur; daima bilfiildir</li>
+        </ul>
+        <div class="qb">
+          <p>Fail akıl, ayrılınca, yalnızca gerçekte olduğu şeydir ve yalnızca bu ölümsüz ve ebedidir. Bununla birlikte bunu hatırlamayız; çünkü bu akıl etkilenmezken edilgin akıl ölümlüdür. Ve bunlar olmadan hiçbir şey düşünülmez.</p>
+          <p class="qs">— Περὶ Ψυχῆς, 430a22-25</p>
+        </div>
+        <p>Fail akıl ile münfail akıl arasındaki ilişki tam olarak çözüme kavuşturulamamış bir aporiadır ve bu, Aristoteles'ten sonra gelen tüm filozofları — İslam dünyasından Hristiyanlığa kadar — meşgul eden merkezi sorudur.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">V. Hareket ve Arzu <span class="sgk">κίνησις καὶ ὄρεξις</span></div>
+      <div class="cb2">
+        <p>Canlıyı harekete geçiren nedir? Ne salt akıl (νοῦς) ne de salt arzu (ὄρεξις) tek başına yeterlidir. Teorik akıl, hareketi emretmez: "Bu iyi bir şeydir" önermesi, o şeye doğru hareketi kendiliğinden doğurmaz. Arzu ise eğer tek başına bırakılırsa aklın önüne geçer; arzuya kapılan kişi, neyin doğru olduğunu bildiği hâlde yanlış yapar — bu <span class="tg" title="Ahlaki güçsüzlük, iradesizlik">ἀκρασία</span>'dır.</p>
+        <p>Hareketi açıklayan şey şudur: <strong>Pratik aklın rehberliğindeki arzu.</strong> Hedef (<span class="tg" title="Erek, amaç, nihai neden">τὸ οὗ ἕνεκα</span>), arzuyu harekete geçirir; pratik akıl ise bu hedefe ulaşmanın araçlarını belirler. Hareketin ilkesi (<span class="tg" title="Hareketin başlangıç noktası">ἀρχὴ κινήσεως</span>), arzudaki hedeftir.</p>
+      </div>
+      <div class="cb2">
+        <h4>Üç Tür Arzu</h4>
+        <table class="ctable">
+          <thead><tr><th>Yunanca</th><th>Türkçe</th><th>Niteliği</th></tr></thead>
+          <tbody>
+            <tr><td class="tg">ἐπιθυμία</td><td>İştiyak / bedensel arzu</td><td>Bedenden kaynaklanan, haz-acı hedefli</td></tr>
+            <tr><td class="tg">θυμός</td><td>Öfke / duygu</td><td>Onur ve intikamla ilgili, yoğun güdü</td></tr>
+            <tr><td class="tg">βούλησις</td><td>İstek / akılsal arzu</td><td>Aklın denetimindeki arzu; iyi hedefler</td></tr>
+          </tbody>
+        </table>
+        <p>Tüm bu arzu biçimleri, birlikte <span class="tg" title="Genel arzu / iştiyak">ὄρεξις</span> adıyla anılır. Hareket, yalnızca bunlardan herhangi birinin ortaya çıkmasıyla değil; pratik akıl ile uyumlu bir arzunun bir hedefi görmesiyle başlar.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">VI. Ruhun Birliği <span class="sgk">ἡ ψυχὴ ὅλη</span></div>
+      <div class="cb2">
+        <p>Peki ruh, parçalardan mı oluşur yoksa bir bütün müdür? Besleyici, duyusal ve düşünsel ruhların birbirinden bağımsız "ruhlar" mı olduğu, yoksa aynı ruhun farklı yetileri mi olduğu sorusu vardır. Yanıt şudur: Ruh birdir; ama yetileri çoğuldur. Tıpkı bir çizginin hem çizgi hem de yarım çember olabilmesi gibi, ruhun yetileri onun birliğini bozmaz.</p>
+        <p>Ruhun bütünlüğü, onun işlevsel birliğinde kendini gösterir: duyum, arzu ve hareket birbirinden kopuk değil; birbirini tamamlayan bir sürecin parçalarıdır. İnsan eyleminde bu üçünün eşgüdümü, yaşamın bütünsel amacına — <span class="tg" title="Mutluluk / iyi yaşam">εὐδαιμονία</span>'ya — hizmet eder.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RELATIONS ========== -->
+  <div id="page-rel" class="page">
+    <div class="ph">
+      <div class="ptag">Aristoteles Külliyatı</div>
+      <div class="ptitle">Diğer Eserlerle Bağıntılar
+        <span class="gk">Συναφὴ πρὸς τὰ ἄλλα συγγράμματα</span>
+      </div>
+      <p class="pdesc">Peri Psyches, Aristoteles külliyatının izole bir çalışması değildir. O, hem doğa felsefesinin hem de pratik felsefenin kesişim noktasında durur. Aşağıdaki bağıntılar, bu eserin nasıl hem temel aldığı hem de beslendiği çalışmaları ortaya koymaktadır.</p>
+    </div>
+
+    <div class="rgrid">
+      <div class="rcard">
+        <div class="rice">📐</div>
+        <div class="rttl">Metafizik</div>
+        <div class="rtr">Τὰ Μετὰ τὰ Φυσικά</div>
+        <div class="rbdy">Madde-form, bilkuvve-bilfiil, töz doktrini — Peri Psyches'in tüm kavramsal çerçevesi buradan alınır. Θ kitabında geliştirilen güç-edim ayrımı, ruhun tanımının temelini oluşturur. Ζ kitabındaki töz tartışması, ruhun form olarak tözselliğini açıklar.</div>
+      </div>
+      <div class="rcard">
+        <div class="rice">⚡</div>
+        <div class="rttl">Fizik</div>
+        <div class="rtr">Φυσικὴ Ἀκρόασις</div>
+        <div class="rbdy">Doğal cisim kavramı, hareket teorisi ve dört neden doktrini, Peri Psyches'in dayanağıdır. "Doğal cisim" olarak bedenin tanımı, Fizik'in dördüncü ve beşinci kitaplarındaki tartışmayı gerektirir. Ruhun besleyici işlevi de büyüme ve üreme hareketiyle bağlantılıdır.</div>
+      </div>
+      <div class="rcard">
+        <div class="rice">⚖</div>
+        <div class="rttl">Nikomakhos'a Etik</div>
+        <div class="rtr">Ἠθικὰ Νικομάχεια</div>
+        <div class="rbdy">Peri Psyches, Etik'in psikolojik zeminini hazırlar. Ruhun akılcı ve akıl dışı kısımları arasındaki ayrım, Etik'te erdem teorisinin temelini oluşturur. İlk kitapta ruhun işlevi (ἔργον τῆς ψυχῆς) tartışması, doğrudan Peri Psyches'e dayanır.</div>
+      </div>
+      <div class="rcard">
+        <div class="rice">🏛</div>
+        <div class="rttl">Politika</div>
+        <div class="rtr">Πολιτικά</div>
+        <div class="rbdy">Ruhun akılcı ve arzucu kısımlarının yönetim ilişkisi, siyasi otorite modelinin psikolojik temeli olur. Köle-efendi, çocuk-ebeveyn, kadın-erkek ilişkilerinin "doğal" olduğu savı, ruhun kısımlarının hiyerarşik ilişkisine dayandırılır.</div>
+      </div>
+      <div class="rcard">
+        <div class="rice">🦎</div>
+        <div class="rttl">Hayvanların Parçaları</div>
+        <div class="rtr">Περὶ ζῴων μορίων</div>
+        <div class="rbdy">Besleyici ruhun işlevleri (sindirim, kalp, kan), doğrudan bu eserde anatomik ve fizyolojik olarak incelenir. Peri Psyches'in "besleyici ruh" bölümü, bu eserin psikolojik tamamlayıcısıdır. Form olarak ruh, organların işlevlerini bu eser aracılığıyla somutlaştırır.</div>
+      </div>
+      <div class="rcard">
+        <div class="rice">🥚</div>
+        <div class="rttl">Hayvanların Üremesi</div>
+        <div class="rtr">Περὶ ζῴων γενέσεως</div>
+        <div class="rbdy">Ruhun üremedeki rolü burada işlenir. Sperma, "hareketin ilkesini" (ruhun özünü değil ama işlevsel biçimini) taşıyan bir araçtır. Üretken ruhun (θρεπτική) en temel işlevi olan kendi türünden bir başkasını meydana getirme, bu eserde biyolojik detaylarıyla açıklanır.</div>
+      </div>
+      <div class="rcard">
+        <div class="rice">🧠</div>
+        <div class="rttl">Bellek Üzerine</div>
+        <div class="rtr">Περὶ μνήμης καὶ ἀναμνήσεως</div>
+        <div class="rbdy">Peri Psyches'te phantasia'nın belleğin temeli olduğu söylenir; bu kısa eser bu bağı somutlaştırır. Bellek, geçmişe ait bir phantasia'dır. Anımsama ise phantasia izlerinin aktif olarak aranmasıdır. Ortak duyunun zaman ve sıra kavramı da burada işlenir.</div>
+      </div>
+      <div class="rcard">
+        <div class="rice">💤</div>
+        <div class="rttl">Uyku ve Uyanıklık Üzerine</div>
+        <div class="rtr">Περὶ ὕπνου καὶ ἐγρηγόρσεως</div>
+        <div class="rbdy">Uyku ve uyanıklık, duyusal ruhun iki hâli olarak Peri Psyches'te ima edilir; bu eserde ayrıntılı incelenir. Uyku, duyum yetisinin bilkuvve hâle dönmesidir; uyanıklık ise onun bilfiilliğidir. Rüyalar, uyku sırasında süren phantasia etkinliğinin ürünleridir.</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Kavramsal Köprüler — Temel Çift Kavramlar</div>
+      <table class="ctable">
+        <thead><tr><th>Kavram Çifti</th><th>Metafizik'te</th><th>Peri Psyches'te</th><th>Etik'te</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Δύναμις / Ἐνέργεια</strong></td><td>Töz doktrinin temeli</td><td>Ruhun tanımının zemini</td><td>Erdemin oluşumunun yapısı</td></tr>
+          <tr><td><strong>Ὕλη / Εἶδος</strong></td><td>Her varlığın iki yönü</td><td>Beden-ruh ilişkisi</td><td>İnsan doğasının tanımı</td></tr>
+          <tr><td><strong>Νοῦς / Αἴσθησις</strong></td><td>İlk ilkelerin kavranışı</td><td>Bilişsel yetiler hiyerarşisi</td><td>Teorik vs. pratik erdem ayrımı</td></tr>
+          <tr><td><strong>Τέλος / Ἐνέργεια</strong></td><td>Her varlığın erek'i</td><td>Ruhun işlevi (ἔργον)</td><td>Eudaimonia — yaşamın amacı</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========== FARABI ========== -->
+  <div id="page-far" class="page">
+    <div class="ph">
+      <div class="ptag">İslam Şarihler — I</div>
+      <div class="ptitle">Farabi
+        <span class="gk">el-Muallimü's-Sânî — İkinci Öğretmen</span>
+      </div>
+    </div>
+
+    <div class="philh">
+      <div class="phar">أبو نصر الفارابي</div>
+      <div class="phname">Ebû Nasr el-Fârâbî</div>
+      <div class="phdates">Yaklaşık 872 — 950 · Fârâb (Türkistan) doğumlu; Bağdat ve Halep'te yaşadı</div>
+      <div class="phep">"Aristoteles'ten sonra gelen en büyük filozoftur; bu nedenle 'İkinci Öğretmen' unvanı kazanmıştır."</div>
+      <div class="phworks">
+        <strong style="font-size:11px;color:var(--muted2)">Temel Eserler:</strong><br>
+        <span>مقالة في العقل — Akıl Üzerine Risale</span>
+        <span>مبادئ آراء أهل المدينة الفاضلة — Erdemliler Şehrinin Görüşleri</span>
+        <span>الجمع بين رأيي الحكيمين — İki Hakimin Görüşlerinin Birleştirilmesi</span>
+        <span>فصوص الحكم — Hikmetin Mücevherleri</span>
+      </div>
+    </div>
+
+    <div class="vbox">
+      <div class="vlabel">Farabi Kendi Sesinden — Sudûr ve Akıl Hiyerarşisi</div>
+      <div class="vtext">
+        <p>Bil ki <span class="ta">الموجود الأول</span> (el-Mevcut el-Evvel — Birinci Varlık), varlığını başkasından almaksızın, kendi özünden zorunlu olarak var olandır; Aristoteles'in bize bıraktığı bu ilkeyi, onun ruh öğretisiyle bütünleştirmek filozofun gerçek görevidir. Aristoteles'in <span class="ta">نوس بويتيكوس</span>'u — yani Fail Akıl — salt bir insani yeti değildir. O, varlık zincirinin (silsile-i vücud) en alt halkasını oluşturan ve insan zihnine en yakın duran kozmik akıldır.</p>
+        <p>Bu zincir şöylece akar: Birinci Varlık'tan <span class="ta">العقل الأول</span> (el-Akl el-Evvel — Birinci Akıl) sudur eder; bu akıldan hem bir semavî küre hem de ikinci bir akıl doğar. Bu sudûr silsilesi, onuncu aklın ortaya çıkmasıyla son bulur. İşte bu onuncu akıl, <span class="ta">العقل الفعال</span> (el-Akl el-Fa'al — Fail Akıl)'dır; ay altı âlemin ruhu ve insan zihninin ufku budur.</p>
+        <p>Aristoteles'in <em>münfail akıl</em> dediği şey, insan zihninin bu kozmik Fail Akıl'la temas etme kapasitesidir; <em>fail akıl</em> ise bizzat kozmik ilkenin kendisidir. Bu ayrım olmadan Aristoteles'in suskunluğu anlaşılamaz.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">İnsan Aklının Dört Mertebesi <span class="sgk"><span class="ta">مراتب العقل الإنساني</span></span></div>
+      <div class="cb2">
+        <p>Aristoteles, potansiyel ve fiilî akıl arasında keskin bir ayrım yapmıştı; ben bunu dört mertebeye genişlettim:</p>
+        <table class="ctable">
+          <thead><tr><th>Mertebe</th><th>Arapça Terimi</th><th>Tanımı</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1. Maddesel Akıl</strong></td><td class="ta">العقل الهيولاني</td><td>Hiçbir formu henüz almamış saf bilkuvvelik; her insanda doğuştan var olan bir istidâd (yatkınlık)</td></tr>
+            <tr><td><strong>2. Meleke Hâlindeki Akıl</strong></td><td class="ta">العقل بالملكة</td><td>İlk makuller (tümel önermeler) edilgen olarak kazanılmış; artık bunları fiilî olarak düşünme kapasitesi mevcuttur</td></tr>
+            <tr><td><strong>3. Fiilî Akıl</strong></td><td class="ta">العقل بالفعل</td><td>Makuller fiilen düşünülmektedir; bilgi etkin hâldedir, fakat Fail Akıl'a henüz ulaşılmamıştır</td></tr>
+            <tr><td><strong>4. Kazanılmış Akıl</strong></td><td class="ta">العقل المستفاد</td><td>Fail Akıl'dan akan formların insanî akla yerleşmesi; en yüksek bilgi mertebesi — filozofun ve nebinin mertebesi</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="vbox">
+      <div class="vlabel">Nebi, Filozof ve Fail Akıl — Siyasi Boyut</div>
+      <div class="vtext">
+        <p>Aristoteles'in Peri Psyches'te sormadığı bir soru vardır: Fail Akıl'ın ışığı hangi insana daha dolaysız ulaşır? Bu soruyu sormak, aynı zamanda siyasi felsefenin psikolojik zeminini kurmaktır.</p>
+        <p><span class="ta">المدينة الفاضلة</span> (el-Medînetü'l-Fâzıla — Erdemli Şehir)'in başı, iki yoldan Fail Akıl'la temas kurar: felsefi akıl yürütme (<span class="ta">النظر العقلي</span>) ve hayal gücünün (<span class="ta">قوة التخيل</span>) mükemmelleşmesi yoluyla. Filozof, birinci yolu; nebî ise her ikisini birden kullanır. Nebî, soyut hakikati halk için imgeler ve semboller hâline dönüştürür; bu dönüşüm, Aristoteles'in phantasia'sının en yüce işlevidir.</p>
+        <p>Aristoteles'in ruh teorisi, benim yorumumda yalnızca bireyi değil topluluğu da kapsar: Ruhun yetileri hiyerarşisi, devlet yönetiminin sınıflarına karşılık gelir. Besleyici ruh → zanaatkâr ve çiftçi; duyusal ruh → asker; akılsal ruh → filozof-yönetici. Bu yapı kendiliğinde ortaya çıkmaz; bilinçli bir tesis gerektirir.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Farabi'nin Aristoteles'e Ekledikleri ve Dönüştürdükleri</div>
+      <table class="ctable">
+        <thead><tr><th>Mesele</th><th>Aristoteles</th><th>Farabi'nin Eklediği / Dönüştürdüğü</th></tr></thead>
+        <tbody>
+          <tr><td>Fail Akıl</td><td>Ruhun ölümsüz bir yetisi</td><td>10. kozmik akıl; insandan bağımsız bir varlık</td></tr>
+          <tr><td>Akıl Mertebeleri</td><td>Maddesel / Fiilî (2 mertebe)</td><td>4 mertebe: heyûlânî → meleke → fi'l → müstefad</td></tr>
+          <tr><td>Phantasia</td><td>Duyumun tortusu, düşüncenin zemini</td><td>Nebi'nin Fail Akıl'dan mütekâmil hayal yoluyla bilgi alışının aracı</td></tr>
+          <tr><td>Siyasi Boyut</td><td>Etik ve Politika ayrı eserler</td><td>Ruh teorisi ve siyasi felsefe tek bir çerçevede birleştirilir</td></tr>
+          <tr><td>Tanrı ile İlişki</td><td>Tanrı = Saf Düşünce (kendi kendini düşünen akıl)</td><td>Sudûr hiyerarşisi: Tanrı → 10 akıl → ruh → madde</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========== IBN SINA ========== -->
+  <div id="page-sin" class="page">
+    <div class="ph">
+      <div class="ptag">İslam Şarihler — II</div>
+      <div class="ptitle">İbn Sina
+        <span class="gk">Şeyhü'r-Reis — Üstatların Üstadı</span>
+      </div>
+    </div>
+
+    <div class="philh">
+      <div class="phar">ابن سينا · أبو علي الحسين</div>
+      <div class="phname">Ebû Alî el-Hüseyin ibn Sînâ</div>
+      <div class="phdates">980 — 1037 · Afşana (Buhara yakını) doğumlu; İran'ın çeşitli şehirlerinde yaşadı</div>
+      <div class="phep">"Hem hekim hem de filozoftur; tıbbın ve aklın bu birlikteliği, Aristoteles'i yeni bir zemin üzerinde yeniden kurar."</div>
+      <div class="phworks">
+        <strong style="font-size:11px;color:var(--muted2)">Temel Eserler:</strong><br>
+        <span>كتاب الشفاء — Kitâbü'ş-Şifâ (en-Nefs bölümü)</span>
+        <span>كتاب النجاة — Kitâbü'n-Necât</span>
+        <span>كتاب الإشارات والتنبيهات — İşaretler ve Tembihler</span>
+        <span>رسالة الطير — Kuş Risalesi (simgesel)</span>
+      </div>
+    </div>
+
+    <div class="vbox">
+      <div class="vlabel">İbn Sina Kendi Sesinden — Uçan Adam Düşünce Deneyi</div>
+      <div class="vtext">
+        <p>Aristoteles'in tanımını kabul etmekle başlayayım: Ruh, canlı cismin ilk entelekheisi'dir. Ama bu tanımın söylemediği bir şey var: Bu, ruhun cisim olmadan var <em>olamayacağı</em> anlamına mı gelir? Ben hayır diyorum; ve bunu bir düşünce deneyi ile göstereyim.</p>
+        <p>Bir insanı hayal edin: aniden, eksiksiz bir biçimde yaratılmış; ama havada asılı; gözleri kapalı; uzuvları birbirine değmez; dış duyular devre dışı. Bu insan ne kendi bedenini görebilir ne de hissedebilir. Hiçbir bedensel deneyime sahip değildir. Şimdi sorum şu: Bu kişi, kendi var olduğunun farkında mı olur?</p>
+        <p>Evet — kesinlikle ve tartışmasız biçimde. Bu kişi "Ben varım" diyecektir. Ama bu "ben" nedir? Beden değildir, çünkü bedenden hiçbir haber yoktur. O hâlde bu öz-farkındalık, bedenden bağımsız bir cevherin varlığına işaret eder.</p>
+        <p>İşte bu, <span class="ta">الإنسان الطائر</span> (el-İnsan et-Tâir — Uçan Adam) argümanıdır. Aristoteles bunu görmüştü, ama söylemedi. Onun tanımı ruhun <em>cisimle ilişkisini</em> tanımlar; benim argümanım ise ruhun <em>özünü</em> ortaya koyar: <span class="ta">النفس الناطقة</span> (en-Nefs en-Nâtıka — Konuşan/Düşünen Nefs), kendi başına var olan bir cevherdir (<span class="ta">جوهر قائم بنفسه</span>).</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">İç Duyular — Aristoteles'in Beş Duyusunun Ötesi <span class="sgk"><span class="ta">الحواس الباطنة</span></span></div>
+      <div class="cb2">
+        <p>Aristoteles beş dış duyuya ve ortak duyuya değindi; ama iç dünyanın zenginliğini yeterince incelemedi. Ben, <span class="ta">الحواس الباطنة</span> (el-Havâssü'l-Bâtıne — İç Duyular) dediğim beş yeti tespit ettim:</p>
+        <table class="ctable">
+          <thead><tr><th>#</th><th>Arapça Terimi</th><th>Türkçe Karşılığı</th><th>İşlevi</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td class="ta">الحس المشترك</td><td>Ortak Duyu (Hiss-i Müşterek)</td><td>Beş dış duyudan gelen suretleri alır ve birleştirir; Aristoteles'in koine aisthesis'i</td></tr>
+            <tr><td>2</td><td class="ta">الخيال / المصوّرة</td><td>Hayâl / Musavvire</td><td>Ortak duyunun aldığı suretleri dış uyaran kalktıktan sonra da muhafaza eder — suret deposu</td></tr>
+            <tr><td>3</td><td class="ta">المتخيّلة / المفكّرة</td><td>Mütehayyile / Müfekfire</td><td>Hayalde saklanan suretleri birbirinden ayırıp yeniden birleştirir; insanlarda aklın yönetiminde çalışır</td></tr>
+            <tr><td>4</td><td class="ta">الوهم</td><td>Vehim (Estimatif Yeti)</td><td><strong>Benim en özgün katkım.</strong> Duyularla algılanamayan ama tekil şeylerle ilgili manaları kavrar: koyunun kurdun tehlikeli olduğunu bilmesi bu yetiyle olur.</td></tr>
+            <tr><td>5</td><td class="ta">الذاكرة / الحافظة</td><td>Zâkire / Hâfıza</td><td>Vehim yetisinin idrak ettiği manaları muhafaza eder; tıpkı hayalin suretleri muhafaza etmesi gibi</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="vbox">
+      <div class="vlabel">Vehim — En Özgün Katkı</div>
+      <div class="vtext">
+        <p>Aristoteles'in bıraktığı en büyük boşluk şudur: Hayvanlar neden tehlikeden kaçar? Neden koyun kurdu görünce kaçar, çobanı görünce kaçmaz? Hem kurt hem de çoban görünür şeylerdir; renkleri ve şekilleri duyularla algılanır. Ama "tehlikeli" ve "güvenli" görünür şeyler değildir.</p>
+        <p>İşte bu "tehlikeli" ve "güvenli" manaları, ne dış duyunun ne de hayalin nesnesidir. Bunları kavrayan yeti, <span class="ta">الوهم</span> (el-Vehm — Vehim Yetisi)'dir. Bu yeti, duyulur tekillere ilgili gayr-i mahsûs (<span class="ta">غير محسوس</span> — duyularla kavranamayan) manaları idrak eder. İnsanlarda vehmin üstünde akıl bulunur ve vehmi denetler; hayvanlarda ise vehim en yüksek yeti olarak içgüdüsel davranışı yönetir.</p>
+        <p>Aristoteles bunu <em>örtük olarak</em> fark etti; ama sistematik olarak ortaya koymadı. Bu yeti olmadan hayvan davranışı açıklanamaz.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Nefsin Ölümsüzlüğü <span class="sgk"><span class="ta">خلود النفس</span></span></div>
+      <div class="cb2">
+        <p>Aristoteles, münfail aklın bedenle birlikte yok olduğunu, fail aklın ise ölümsüz olduğunu söyler; ancak bu ölümsüzlüğü bireysel mi yoksa türsel mi olduğu belirsiz bırakır. Ben bireysel nefsin ölümsüzlüğünü şöyle kanıtlarım:</p>
+        <ul>
+          <li><strong>Basitlik (Besâtet) Kanıtı:</strong> Nefs, bölünmez bir cevherdir. Bölünemeyen bir şey parçalara ayrılamaz; parçalara ayrılamayan bozulamaz; bozulmayanın yok olması düşünülemez.</li>
+          <li><strong>Öz-Farkındalık Kanıtı:</strong> Uçan Adam argümanında görüldüğü üzere, nefs kendi varlığının farkındadır. Bu farkındalık ne bedenin ne de bedenin herhangi bir parçasının işlevi değildir. Beden yok olursa, farkındalık kaynağı yok olmaz.</li>
+          <li><strong>Soyutlama Kanıtı:</strong> Nefs, maddesiz soyut formları kavrar. Maddesiz bir şey, maddenin bozulmasıyla bozulamaz.</li>
+        </ul>
+        <p>Aristoteles'in bu sonuca varmayışı, tanımının bir eksikliğinden değil; araştırmasının sınırından kaynaklanır. O, ruhun cisimle ilişkisini tanımladı; ruhun özgün varlığını tam olarak sormadı.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Fail Akıl — Suretler Vericisi <span class="sgk"><span class="ta">واهب الصور</span></span></div>
+      <div class="cb2">
+        <p>Farabi gibi ben de Fail Akıl'ı kozmik bir ilke olarak kabul ederim. Ama onun sudûr zincirini benimser değilim. Benim görüşümde <span class="ta">واهب الصور</span> (Vâhibü's-Suver — Suretler Vericisi), her maddi varlığa formunu veren ilahi ilkedir; hem tabii formlara hem de insani akla formu o verir.</p>
+        <p>İnsanî bilgi, bu Suretler Vericisi'nden bir ışımanın (feyiz) insanî akla düşmesiyle oluşur. Bu, bütünüyle Aristoteles'e sadık kalmak değil; onun sezgisel yolunu Platoncu feyiz teorisiyle tamamlamaktır. Ancak bu tamamlama, gerçekten orada olup da sessiz bırakılan şeyi açıkça ifade etmektir.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">İbn Sina'nın Aristoteles'e Ekledikleri ve Dönüştürdükleri</div>
+      <table class="ctable">
+        <thead><tr><th>Mesele</th><th>Aristoteles</th><th>İbn Sina'nın Eklediği / Dönüştürdüğü</th></tr></thead>
+        <tbody>
+          <tr><td>Ruhun Ontolojik Statüsü</td><td>Cismin formu; bağımsız var olamaz</td><td>Kendi başına var olan cevher (Uçan Adam kanıtı)</td></tr>
+          <tr><td>İç Duyular</td><td>Ortak duyu + phantasia (2-3 yeti)</td><td>5 iç duyu (hiss-i müşterek, hayal, mütehayyile, vehim, hafıza)</td></tr>
+          <tr><td>Vehim Yetisi</td><td>Yok</td><td>Tamamen özgün ekleme: duyulamayan manaları kavrayan yeti</td></tr>
+          <tr><td>Ölümsüzlük</td><td>Belirsiz bırakılmış</td><td>Bireysel nefsin ölümsüzlüğü sistematik olarak kanıtlanır</td></tr>
+          <tr><td>Fail Akıl</td><td>Ruhun bir yetisi</td><td>Vâhibü's-Suver: kozmik, maddeye ve akla form veren ilke</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========== IBN RUSHD ========== -->
+  <div id="page-rud" class="page">
+    <div class="ph">
+      <div class="ptag">İslam Şarihler — III</div>
+      <div class="ptitle">İbn Rüşd
+        <span class="gk">el-Şârih — Şârihlerin Şarihi</span>
+      </div>
+    </div>
+
+    <div class="philh">
+      <div class="phar">ابن رشد · أبو الوليد محمد</div>
+      <div class="phname">Ebü'l-Velîd Muhammed ibn Rüşd</div>
+      <div class="phdates">1126 — 1198 · Kurtuba (Endülüs) doğumlu; Marakeş'te vefat etti</div>
+      <div class="phep">"Aristoteles'i gerçek anlamda anlamak isteyen, önce Farabi ve İbn Sina'nın ona ne yaptığını görmelidir; sonra bu katmanları dikkatle kaldırmalı."</div>
+      <div class="phworks">
+        <strong style="font-size:11px;color:var(--muted2)">Temel Eserler (De Anima şerhleri):</strong><br>
+        <span>مختصر الحس والمحسوس — Kısa Şerh (Muhtasar)</span>
+        <span>تلخيص كتاب النفس — Orta Şerh (Telhis)</span>
+        <span>تفسير ما بعد الطبيعة — Büyük Şerh (Tefsir-i Kebir)</span>
+        <span>تهافت التهافت — Tutarsızlığın Tutarsızlığı (Gazzâlî'ye karşı)</span>
+      </div>
+    </div>
+
+    <div class="vbox">
+      <div class="vlabel">İbn Rüşd Kendi Sesinden — Şârihin Görevi</div>
+      <div class="vtext">
+        <p>Üç ayrı şerh kaleme aldım. Kısa şerhte (<span class="ta">المختصر</span>) gençler için genel bir özet; orta şerhte (<span class="ta">التلخيص</span>) metnin yapısına sadık bir açıklama; büyük şerhte (<span class="ta">التفسير الكبير</span>) ise cümle cümle, adım adım Aristoteles'in gerçek kastını ortaya koymayı denedim. Çünkü Aristoteles'e en büyük saygısızlık, onu anlaşılmaz kılmak ya da kendi görüşlerimizi ona yüklemektir.</p>
+        <p>Farabi ve İbn Sina'ya olan saygım büyüktür. Ama bu saygı, onların Aristoteles yorumlarındaki Platoncu sapmaları örtmeme izin vermez. Aristoteles'in metni elimizde; sapmanın nerede olduğu görülebilir.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">İbn Sina'nın "Uçan Adam"ına İtiraz <span class="sgk"><span class="ta">نقد الإنسان الطائر</span></span></div>
+      <div class="cb2">
+        <p>İbn Sina'nın Uçan Adam argümanı, ruhun bedenden bağımsız var olduğunu kanıtladığını iddia eder. Bunu reddediyorum; zira argümanın formu hatalıdır. "X hakkında bilgim olmaksızın Y hakkında bilgim olabilir" önermesinden, "X ve Y bağımsız varlıklardır" sonucu çıkmaz. Ben şu anda masa hakkında bilgi sahibi olmaksızın matematik hakkında düşünebilirim; ama bu, matematik ile masanın bağımsız varlıklar olduğu anlamına gelmez.</p>
+        <p>Aristoteles açıktır: Ruh, doğal cismin formu'dur. Form, maddeden ayrı bir cevher olarak var olamaz — tıpkı yuvarlığın maddeden bağımsız var olamaması gibi. Ruhun "kendi başına var olduğunu" söylemek, Platoncuların ruh anlayışına dönmektir; bu ise Aristoteles'in birinci kitaptaki eleştirilerini hiçe saymak demektir.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Maddesel Aklın Birliği — Monopsişizm <span class="sgk"><span class="ta">وحدة العقل الهيولاني</span></span></div>
+      <div class="cb2">
+        <p>Aristoteles şöyle der: "Akıl, bilkuvve var olan şeylerden hiçbiridir; fiilen düşünmeye başlamadan önce." Bu akıl, bireysel midir yoksa insanlığa ait tek bir akıl mıdır? Bu, Büyük Şerh'te en ayrıntılı biçimde ele aldığım sorudur.</p>
+        <div class="qb">
+          <p>Maddesel akıl (<span class="ta">العقل الهيولاني</span>), bireysel olamaz; zira onu niteleyecek bireysel bir maddi yüklem yoktur. Akıl, hiçbir maddi yüklemle nitelendirilemez; o hâlde tüm insanlık için tek ve birdir. Bireysel akıllar, bu tek aklın farklı varlıklarda somutlaşmasıdır.</p>
+          <p class="qs">— Tefsiru kitâbi'n-nefs, 3. Makale</p>
+        </div>
+        <p>Bu görüşün mantıksal sonuçlarını açıkça kabul ediyorum: Bireysel ölümsüzlük, Aristoteles'in öğretisiyle bağdaşmaz. Ölümsüz olan, Aristoteles'in de söylediği gibi, Fail Akıl'dır; bu ise bireysel değildir. Münfail akıl, bedenle birlikte yok olur.</p>
+        <p>Bu görüş, Avrupa'da "Averroes'un tekli ruh doktrini" — monopsychism — adıyla tartışıldı. Siger de Brabant ve Boethius of Dacia bu yorumu savundu; Thomas Aquinas ise buna karşı çıktı. Aquinas'ın itirazı, Aristoteles'in metinden değil; Hristiyan inancının bireysel ölümsüzlük gerektirdiğinden kaynaklanıyordu. Bu, bir teolojik itiraz olup felsefi değildir.</p>
+      </div>
+    </div>
+
+    <div class="vbox">
+      <div class="vlabel">Farabi'nin Kozmik Aklına İtiraz</div>
+      <div class="vtext">
+        <p>Farabi, Fail Akıl'ı sudûr zincirinin onuncu halkası olarak konumlandırır. Bu yorum Aristoteles'e değil; Plotinos'a aittir. Aristoteles'in <em>Metafizik</em>'inde ve <em>Peri Psyches</em>'inde kozmik akıllar hiyerarşisinden söz eden tek bir cümle yoktur. Aristoteles'in Fail Akıl'ı (νοῦς ποιητικός), insan ruhunun bir yetisidir; evrensel bir ilke değildir.</p>
+        <p>Farabi'nin bu yorumunu kabul edersek, Peri Psyches'i Plotinos'un Enneadlar'ı çerçevesinde okumak zorunda kalırız. Bu, metne yapılan en büyük ihanettir. Ben, Aristoteles'i Aristoteles'le yorumlarım.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">İbn Rüşd'ün Değerlendirmesi: Aristoteles'in Gerçek Öğretisi</div>
+      <div class="cb2">
+        <table class="ctable">
+          <thead><tr><th>Mesele</th><th>Aristoteles'in Gerçek Öğretisi<br>(İbn Rüşd'e göre)</th><th>Farabi / İbn Sina'nın Sapması</th></tr></thead>
+          <tbody>
+            <tr><td>Ruhun statüsü</td><td>Cismin formu; bağımsız var olamaz (nous hariç)</td><td>İbn Sina: kendi başına var olan cevher</td></tr>
+            <tr><td>Fail Akıl</td><td>İnsan ruhunun bir yetisi; ölümsüz</td><td>Farabi: 10. kozmik akıl; sudûr zinciri</td></tr>
+            <tr><td>Maddesel Akıl</td><td>Tüm insanlık için tek; bireysel değil</td><td>İbn Sina: bireyselleştirilmiş nefs cevheri</td></tr>
+            <tr><td>Ölümsüzlük</td><td>Yalnızca Fail Akıl; bireysel değil</td><td>Her ikisi de bireysel ölümsüzlüğü savunur</td></tr>
+            <tr><td>Nebî Psikolojisi</td><td>Aristoteles bu meseleyi sormaz</td><td>Farabi: nebî = mükemmel hayal gücü + Fail Akıl bağlantısı</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Latin Averroismi ve Tarihsel Etki</div>
+      <div class="cb2">
+        <p>Yorumlarım, Avrupa'ya Latinceye çevrilmiş hâlde ulaştı ve 13. yüzyılda "Latin Averroistleri" denilen bir okul oluştu. Bu okulun önde gelenleri — Siger de Brabant, Boethius of Dacia — aklın birliğini ve bireysel ölümsüzlüğün olanaksızlığını açıkça savundular.</p>
+        <p>Thomas Aquinas'ın <em>De Unitate Intellectus contra Averroistas</em> (Averroistlere Karşı Aklın Birliği Üzerine) adlı eseri, bu görüşe karşı yazılmıştır. Aquinas benim yorumumu yanlış bulur; ama itirazlarının büyük bölümü teolojik kaygılardan beslenir. Aristoteles'in metnini, bireysel ölümsüzlüğü gerektirecek şekilde okumak için Aristoteles'in söylemediği şeyleri eklemek gerekir.</p>
+        <p>Sonuç olarak: Ben Aristoteles'i doğru anlamış olabilirim ya da olmayabilirim. Ama en azından şunu söylemek doğrudur: Aristoteles'in metninden hareket ettim; ona kendi görüşlerimi yüklemedim.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="stitle">Üç Şârihin Karşılaştırmalı Tablosu</div>
+      <table class="ctable">
+        <thead><tr><th>Mesele</th><th>Farabi</th><th>İbn Sina</th><th>İbn Rüşd</th></tr></thead>
+        <tbody>
+          <tr><td>Ruhun tanımı</td><td>Cismin formu + sudûr zincirinin parçası</td><td>Kendi başına var olan cevher</td><td>Cismin formu; başka değil</td></tr>
+          <tr><td>Fail Akıl</td><td>10. kozmik akıl</td><td>Vâhibü's-Suver (kozmik)</td><td>İnsan ruhunun yetisi</td></tr>
+          <tr><td>Maddesel Akıl</td><td>Bireysel yatkınlık</td><td>Bireysel nefs cevherinin yetisi</td><td>Tüm insanlık için tek</td></tr>
+          <tr><td>Bireysel ölümsüzlük</td><td>Evet (Fail Akıl'la birleşme)</td><td>Evet (nefs cevherinin basitliğiyle)</td><td>Hayır (Aristoteles'e göre mümkün değil)</td></tr>
+          <tr><td>Aristoteles'e sadakat</td><td>Neoplatoncu çerçeve eklenmiş</td><td>Özgün katkılar çok, sapmalar da var</td><td>En sıkı filolojik sadakat iddiası</td></tr>
+          <tr><td>Özgün katkı</td><td>Nebî psikolojisi ve siyasi felsefe bütünlüğü</td><td>Uçan Adam, 5 iç duyu, vehim yetisi</td><td>Monopsychism, Averroismi</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+</div><!-- #app -->
+
+<script>
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#tabnav a').forEach(a => a.classList.remove('active'));
+  var pg = document.getElementById('page-' + id);
+  if(pg) pg.classList.add('active');
+  var link = document.querySelector('[data-p="' + id + '"]');
+  if(link) link.classList.add('active');
+  document.getElementById('main').scrollTop = 0;
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  document.getElementById('tt').textContent = 
+    document.body.classList.contains('light') ? '☾ Koyu Tema' : '☀ Açık Tema';
+}
+
+document.querySelectorAll('.ach').forEach(function(h) {
+  h.addEventListener('click', function() {
+    this.closest('.acc').classList.toggle('open');
+  });
+});
+</script>
+</body>
+</html>

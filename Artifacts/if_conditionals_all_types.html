@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans,'Anthropic Sans',sans-serif);color:var(--color-text-primary);padding:1.5rem 1rem}
+h2{font-size:18px;font-weight:500;margin-bottom:1.5rem;color:var(--color-text-primary)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tab{padding:6px 14px;border-radius:20px;border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;background:transparent;color:var(--color-text-secondary);transition:all .18s}
+.tab.active{background:var(--color-background-info);color:var(--color-text-info);border-color:transparent;font-weight:500}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg,12px);padding:1.25rem;display:none}
+.card.show{display:block}
+.type-badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:12px;margin-bottom:12px}
+.t0 .type-badge{background:#EAF3DE;color:#3B6D11}
+.t1 .type-badge{background:#E6F1FB;color:#185FA5}
+.t2 .type-badge{background:#FAEEDA;color:#854F0B}
+.t3 .type-badge{background:#FAECE7;color:#993C1D}
+.t4 .type-badge{background:#EEEDFE;color:#534AB7}
+.title{font-size:16px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem;line-height:1.5}
+.formula-block{border-radius:8px;padding:1rem;margin-bottom:1rem;font-size:14px;line-height:1.8}
+.t0 .formula-block{background:#EAF3DE}
+.t1 .formula-block{background:#E6F1FB}
+.t2 .formula-block{background:#FAEEDA}
+.t3 .formula-block{background:#FAECE7}
+.t4 .formula-block{background:#EEEDFE}
+.formula-block .part{display:inline-block;padding:2px 8px;border-radius:4px;font-weight:500;margin:2px 3px}
+.t0 .part.kw{background:#C0DD97;color:#173404}
+.t1 .part.kw{background:#B5D4F4;color:#042C53}
+.t2 .part.kw{background:#FAC775;color:#412402}
+.t3 .part.kw{background:#F5C4B3;color:#4A1B0C}
+.t4 .part.kw{background:#CECBF6;color:#26215C}
+.part.tr{background:rgba(120,190,120,0.18);color:var(--color-text-primary)}
+.part.fa{background:rgba(200,120,90,0.18);color:var(--color-text-primary)}
+.part.cm{background:rgba(160,160,160,0.13);color:var(--color-text-secondary);font-style:italic}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+@media(max-width:520px){.row2{grid-template-columns:1fr}}
+.ex-box{border-radius:8px;padding:.85rem;font-size:13px;line-height:1.6}
+.ex-box .lbl{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;opacity:.7}
+.ex-box pre{font-family:var(--font-mono,'Courier New',monospace);font-size:12.5px;white-space:pre-wrap;margin-bottom:6px}
+.ex-box .meaning{color:var(--color-text-secondary);font-size:12px}
+.t0 .ex-box{background:#f4faf0;border:0.5px solid #C0DD97}
+.t1 .ex-box{background:#eef6fd;border:0.5px solid #B5D4F4}
+.t2 .ex-box{background:#fef9ee;border:0.5px solid #FAC775}
+.t3 .ex-box{background:#fdf4f0;border:0.5px solid #F5C4B3}
+.t4 .ex-box{background:#f5f4fe;border:0.5px solid #CECBF6}
+@media(prefers-color-scheme:dark){
+  .t0 .ex-box{background:#1a2a15;border-color:#3B6D11}
+  .t1 .ex-box{background:#111d2e;border-color:#185FA5}
+  .t2 .ex-box{background:#2a1f0a;border-color:#854F0B}
+  .t3 .ex-box{background:#2a1509;border-color:#993C1D}
+  .t4 .ex-box{background:#1c1938;border-color:#534AB7}
+  .t0 .formula-block{background:#1a2a15}
+  .t1 .formula-block{background:#111d2e}
+  .t2 .formula-block{background:#2a1f0a}
+  .t3 .formula-block{background:#2a1509}
+  .t4 .formula-block{background:#1c1938}
+}
+.timeline{display:flex;align-items:center;gap:0;margin:1rem 0;flex-wrap:wrap}
+.tl-box{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;text-align:center}
+.tl-arr{font-size:18px;color:var(--color-text-tertiary);margin:0 4px}
+.t0 .tl-box.on{background:#639922;color:#fff}
+.t1 .tl-box.on{background:#185FA5;color:#fff}
+.t2 .tl-box.on{background:#BA7517;color:#fff}
+.t3 .tl-box.on{background:#993C1D;color:#fff}
+.t4 .tl-box.on{background:#534AB7;color:#fff}
+.tl-box.off{background:var(--color-background-secondary);color:var(--color-text-secondary)}
+.ask-btn{margin-top:1rem;padding:7px 16px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);font-size:13px;cursor:pointer;transition:background .15s}
+.ask-btn:hover{background:var(--color-background-secondary)}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1rem 0}
+</style>
+</head>
+<body>
+<h2>If Conditionals — Tüm Tipler</h2>
+<div class="tabs">
+  <button class="tab active" onclick="show(0)">Zero</button>
+  <button class="tab" onclick="show(1)">First</button>
+  <button class="tab" onclick="show(2)">Second</button>
+  <button class="tab" onclick="show(3)">Third</button>
+  <button class="tab" onclick="show(4)">Mixed</button>
+</div>
+
+<!-- ZERO -->
+<div class="card t0 show" id="c0">
+  <span class="type-badge">Zero Conditional</span>
+  <div class="title">Genel Gerçekler & Bilimsel Yasalar</div>
+  <div class="subtitle">Her zaman doğru olan şeyler için kullanılır. İkisi de <b>Simple Present</b> (Geniş Zaman).</div>
+  <div class="formula-block">
+    <span class="part kw">If</span> + <span class="part tr">Subject + V1</span> , <span class="part fa">Subject + V1</span>
+    <br>
+    <span class="part cm">If + Geniş Zaman , Geniş Zaman</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-box off">Geçmiş</div>
+    <span class="tl-arr">→</span>
+    <div class="tl-box on">Şimdi / Her zaman</div>
+    <span class="tl-arr">→</span>
+    <div class="tl-box off">Gelecek</div>
+  </div>
+  <hr class="divider">
+  <div class="row2">
+    <div class="ex-box">
+      <div class="lbl">İngilizce</div>
+      <pre>If you heat water, it boils.</pre>
+      <div class="meaning">Suyu ısıtırsan, kaynar. (Her zaman doğru)</div>
+    </div>
+    <div class="ex-box">
+      <div class="lbl">Başka örnek</div>
+      <pre>If it rains, the ground gets wet.</pre>
+      <div class="meaning">Yağmur yağarsa, zemin ıslanır.</div>
+    </div>
+  </div>
+  <button class="ask-btn" onclick="sendPrompt('Zero conditional hakkında daha fazla örnek ver')">Daha fazla örnek ↗</button>
+</div>
+
+<!-- FIRST -->
+<div class="card t1" id="c1">
+  <span class="type-badge">First Conditional</span>
+  <div class="title">Gerçek & Olası Gelecek</div>
+  <div class="subtitle">Gerçekleşmesi mümkün olan gelecek durumlar için. <b>If + Simple Present</b>, <b>will + V1</b>.</div>
+  <div class="formula-block">
+    <span class="part kw">If</span> + <span class="part tr">Subject + V1</span> , <span class="part fa">Subject + will + V1</span>
+    <br>
+    <span class="part cm">If + Geniş Zaman , will + Yalın Fiil</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-box off">Geçmiş</div>
+    <span class="tl-arr">→</span>
+    <div class="tl-box on">Şimdi (koşul)</div>
+    <span class="tl-arr">→</span>
+    <div class="tl-box on">Gelecek (sonuç)</div>
+  </div>
+  <hr class="divider">
+  <div class="row2">
+    <div class="ex-box">
+      <div class="lbl">İngilizce</div>
+      <pre>If I study hard, I will pass the exam.</pre>
+      <div class="meaning">Çok çalışırsam, sınavı geçeceğim. (Olası)</div>
+    </div>
+    <div class="ex-box">
+      <div class="lbl">Başka örnek</div>
+      <pre>If it rains, we will cancel the trip.</pre>
+      <div class="meaning">Yağmur yağarsa, gezimizi iptal ederiz.</div>
+    </div>
+  </div>
+  <button class="ask-btn" onclick="sendPrompt('First conditional ile will yerine can, may, might kullanımı hakkında örnekler ver')">can / may / might farkı ↗</button>
+</div>
+
+<!-- SECOND -->
+<div class="card t2" id="c2">
+  <span class="type-badge">Second Conditional</span>
+  <div class="title">Hayali / Gerçek Dışı Şimdi veya Gelecek</div>
+  <div class="subtitle">Şu an gerçekleşmemiş, hayal edilen durumlar için. <b>If + Simple Past</b>, <b>would + V1</b>.</div>
+  <div class="formula-block">
+    <span class="part kw">If</span> + <span class="part tr">Subject + V2</span> , <span class="part fa">Subject + would + V1</span>
+    <br>
+    <span class="part cm">If + Geçmiş Zaman (anlam: şimdi hayal) , would + Yalın Fiil</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-box off">Geçmiş</div>
+    <span class="tl-arr">→</span>
+    <div class="tl-box on">Şimdi (gerçek değil)</div>
+    <span class="tl-arr">→</span>
+    <div class="tl-box off">Gelecek</div>
+  </div>
+  <hr class="divider">
+  <div class="row2">
+    <div class="ex-box">
+      <div class="lbl">İngilizce</div>
+      <pre>If I were rich, I would travel the world.</pre>
+      <div class="meaning">Zengin olsaydım, dünyayı gezerdi. (Zengin değilim)</div>
+    </div>
+    <div class="ex-box">
+      <div class="lbl">Dikkat: were</div>
+      <pre>If she were here, she would help us.</pre>
+      <div class="meaning">"was" değil "were" — resmi kullanımda I/he/she ile de "were"</div>
+    </div>
+  </div>
+  <button class="ask-btn" onclick="sendPrompt('Second conditional\'de neden was yerine were kullanılır? Ayrıntılı açıkla')">Neden "were"? ↗</button>
+</div>
+
+<!-- THIRD -->
+<div class="card t3" id="c3">
+  <span class="type-badge">Third Conditional</span>
+  <div class="title">Geçmişteki Gerçek Dışı Durum</div>
+  <div class="subtitle">Artık değiştirilemeyen geçmiş olaylar için pişmanlık veya hayal. <b>If + Past Perfect</b>, <b>would have + V3</b>.</div>
+  <div class="formula-block">
+    <span class="part kw">If</span> + <span class="part tr">Subject + had + V3</span> , <span class="part fa">Subject + would have + V3</span>
+    <br>
+    <span class="part cm">If + Past Perfect , would have + Geçmiş Ortaç</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-box on">Geçmiş (gerçek değildi)</div>
+    <span class="tl-arr">→</span>
+    <div class="tl-box off">Şimdi</div>
+    <span class="tl-arr">→</span>
+    <div class="tl-box off">Gelecek</div>
+  </div>
+  <hr class="divider">
+  <div class="row2">
+    <div class="ex-box">
+      <div class="lbl">İngilizce</div>
+      <pre>If I had studied, I would have passed.</pre>
+      <div class="meaning">Çalışmış olsaydım, geçecektim. (Çalışmadım, geçemedim)</div>
+    </div>
+    <div class="ex-box">
+      <div class="lbl">Başka örnek</div>
+      <pre>If she had called, I would have answered.</pre>
+      <div class="meaning">Arasa, açacaktım. (Aramadı, açmadım)</div>
+    </div>
+  </div>
+  <button class="ask-btn" onclick="sendPrompt('Third conditional ile pişmanlık ifade eden 5 özgün örnek yaz')">Pişmanlık örnekleri ↗</button>
+</div>
+
+<!-- MIXED -->
+<div class="card t4" id="c4">
+  <span class="type-badge">Mixed Conditional</span>
+  <div class="title">Karma: Geçmiş + Şimdi veya Şimdi + Gelecek</div>
+  <div class="subtitle">İki farklı zamanı birleştirir. En yaygın iki tipi: geçmişin bugüne etkisi & bugünün geçmişe etkisi.</div>
+  <div class="formula-block">
+    <span class="part cm">Tip 1 (Geçmiş → Şimdi):</span><br>
+    <span class="part kw">If</span> + <span class="part tr">had + V3</span> , <span class="part fa">would + V1</span><br>
+    <span class="part cm" style="margin-top:8px;display:block">Tip 2 (Şimdi → Geçmiş):</span><br>
+    <span class="part kw">If</span> + <span class="part tr">were / V2</span> , <span class="part fa">would have + V3</span>
+  </div>
+  <div class="timeline">
+    <div class="tl-box on">Geçmiş</div>
+    <span class="tl-arr">⟷</span>
+    <div class="tl-box on">Şimdi</div>
+    <span class="tl-arr">⟷</span>
+    <div class="tl-box off">Gelecek</div>
+  </div>
+  <hr class="divider">
+  <div class="row2">
+    <div class="ex-box">
+      <div class="lbl">Geçmiş → Şimdi</div>
+      <pre>If I had studied medicine, I would be a doctor now.</pre>
+      <div class="meaning">Tıp okusaydım, şimdi doktor olurdum. (Okumadım, değilim)</div>
+    </div>
+    <div class="ex-box">
+      <div class="lbl">Şimdi → Geçmiş</div>
+      <pre>If I were braver, I would have spoken up.</pre>
+      <div class="meaning">Daha cesur olsaydım, o zaman konuşurdum. (Cesur değilim)</div>
+    </div>
+  </div>
+  <button class="ask-btn" onclick="sendPrompt('Mixed conditional\'in iki tipini daha fazla örnekle açıkla ve aralarındaki farkı göster')">İki tip arasındaki fark ↗</button>
+</div>
+
+<script>
+function show(n){
+  for(let i=0;i<5;i++){
+    document.getElementById('c'+i).classList.toggle('show',i===n);
+    document.querySelectorAll('.tab')[i].classList.toggle('active',i===n);
+  }
+}
+</script>
+</body>
+</html>

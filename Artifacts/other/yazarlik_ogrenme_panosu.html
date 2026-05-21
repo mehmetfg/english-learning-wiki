@@ -1,0 +1,180 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.board{padding:1rem 0 2rem}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:20px}
+.stat{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px}
+.stat-n{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.stat-l{font-size:12px;color:var(--color-text-tertiary);margin-top:2px}
+.progress-bar{height:4px;background:var(--color-border-tertiary);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.progress-fill{height:100%;background:var(--color-text-success);border-radius:2px;transition:width .4s}
+.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:start}
+.col{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:10px;min-height:200px}
+.col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 2px}
+.col-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em}
+.col-count{font-size:11px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:20px;padding:1px 7px;color:var(--color-text-tertiary)}
+.drop-zone{min-height:120px;border-radius:var(--border-radius-md);transition:background .15s;display:flex;flex-direction:column;gap:6px}
+.drop-zone.drag-over{background:var(--color-background-primary)}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;cursor:grab;transition:border-color .15s,opacity .15s;user-select:none}
+.card:hover{border-color:var(--color-border-secondary)}
+.card.dragging{opacity:.35;cursor:grabbing}
+.card-cat{font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+.card-name{font-size:13px;font-weight:500;color:var(--color-text-primary);line-height:1.3}
+.card-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:3px;line-height:1.4}
+.card-ask{display:none;margin-top:8px;width:100%;font-size:11px;padding:4px 8px;cursor:pointer;background:transparent;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);color:var(--color-text-secondary);text-align:left;transition:background .15s}
+.card-ask:hover{background:var(--color-background-secondary)}
+.card:hover .card-ask{display:block}
+.add-row{margin-top:8px}
+.add-input{width:100%;font-size:12px;padding:6px 10px;border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);background:transparent;color:var(--color-text-primary);display:none}
+.add-input:focus{outline:none;border-color:var(--color-border-primary);background:var(--color-background-primary)}
+.add-btn{width:100%;font-size:12px;padding:5px;cursor:pointer;background:transparent;border:0.5px dashed var(--color-border-tertiary);border-radius:var(--border-radius-md);color:var(--color-text-tertiary);transition:border-color .15s,color .15s}
+.add-btn:hover{border-color:var(--color-border-secondary);color:var(--color-text-secondary)}
+.cat-temel{color:#534AB7}
+.cat-anlati{color:#0F6E56}
+.cat-teknik{color:#993C1D}
+.cat-biciim{color:#993556}
+.cat-surec{color:#854F0B}
+</style>
+
+<div class="board">
+  <div class="stats">
+    <div class="stat"><div class="stat-n" id="s-total">0</div><div class="stat-l">toplam konu</div></div>
+    <div class="stat"><div class="stat-n" id="s-progress">0</div><div class="stat-l">öğreniliyor</div></div>
+    <div class="stat"><div class="stat-n" id="s-done">0</div><div class="stat-l">kavrandı</div></div>
+    <div class="stat"><div class="stat-n" id="s-pct">0%</div><div class="stat-l">tamamlandı</div></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+
+  <div class="cols" id="board">
+    <div class="col" id="col-kesfet" data-col="kesfet">
+      <div class="col-header"><span class="col-title">Keşfedilecek</span><span class="col-count" id="cnt-kesfet">0</span></div>
+      <div class="drop-zone" id="zone-kesfet"></div>
+      <div class="add-row"><button class="add-btn" onclick="showAdd('kesfet')">+ konu ekle</button><input class="add-input" id="add-kesfet" placeholder="konu adı..." onkeydown="addCard(event,'kesfet')"></div>
+    </div>
+    <div class="col" id="col-calisıyor" data-col="calisiyor">
+      <div class="col-header"><span class="col-title">Çalışılıyor</span><span class="col-count" id="cnt-calisiyor">0</span></div>
+      <div class="drop-zone" id="zone-calisiyor"></div>
+      <div class="add-row"><button class="add-btn" onclick="showAdd('calisiyor')">+ konu ekle</button><input class="add-input" id="add-calisiyor" placeholder="konu adı..." onkeydown="addCard(event,'calisiyor')"></div>
+    </div>
+    <div class="col" id="col-kavrandı" data-col="kavrandi">
+      <div class="col-header"><span class="col-title">Kavrandı</span><span class="col-count" id="cnt-kavrandi">0</span></div>
+      <div class="drop-zone" id="zone-kavrandi"></div>
+      <div class="add-row"><button class="add-btn" onclick="showAdd('kavrandi')">+ konu ekle</button><input class="add-input" id="add-kavrandi" placeholder="konu adı..." onkeydown="addCard(event,'kavrandi')"></div>
+    </div>
+    <div class="col" id="col-uygulandı" data-col="uygulandi">
+      <div class="col-header"><span class="col-title">Uygulandı</span><span class="col-count" id="cnt-uygulandi">0</span></div>
+      <div class="drop-zone" id="zone-uygulandi"></div>
+      <div class="add-row"><button class="add-btn" onclick="showAdd('uygulandi')">+ konu ekle</button><input class="add-input" id="add-uygulandi" placeholder="konu adı..." onkeydown="addCard(event,'uygulandi')"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const cats = {
+  temel:'Temel kavramlar',anlati:'Anlatı',teknik:'Teknik',biciim:'Biçim',surec:'Süreç'
+};
+
+const initial = [
+  {id:'c1',name:'Bakış açısı',sub:'1. / 3. tekil / çoğul kişi',cat:'temel',col:'kesfet'},
+  {id:'c2',name:'Anlatıcı türleri',sub:'güvenilmez, her bilen, sınırlı',cat:'temel',col:'kesfet'},
+  {id:'c3',name:'Tempo ve ritim',sub:'sahne, özet, durak',cat:'teknik',col:'kesfet'},
+  {id:'c4',name:'Göster / anlat',sub:'show don\'t tell ilkesi',cat:'teknik',col:'kesfet'},
+  {id:'c5',name:'Diyalog yazımı',sub:'alt metin, ses, ritim',cat:'anlati',col:'kesfet'},
+  {id:'c6',name:'Karakter istemi',sub:'istek, korku, iç çatışma',cat:'anlati',col:'kesfet'},
+  {id:'c7',name:'Olay örgüsü yapısı',sub:'kurgu, gelişme, çözüm',cat:'anlati',col:'kesfet'},
+  {id:'c8',name:'Çatışma türleri',sub:'iç / dış / toplumsal',cat:'anlati',col:'kesfet'},
+  {id:'c9',name:'Cümle ritmi',sub:'uzun-kısa denge, ses',cat:'teknik',col:'calisiyor'},
+  {id:'c10',name:'İmge ve mecaz',sub:'metafor, simge, alegori',cat:'teknik',col:'calisiyor'},
+  {id:'c11',name:'Sahne yapısı',sub:'giriş, dönüm, çıkış',cat:'anlati',col:'calisiyor'},
+  {id:'c12',name:'Zaman kurgusu',sub:'analepsi, prolepsi, elipsis',cat:'biciim',col:'calisiyor'},
+  {id:'c13',name:'Roman türleri',sub:'bildungsroman, gotik, distopik...',cat:'biciim',col:'kavrandi'},
+  {id:'c14',name:'Taslak yazımı',sub:'hız, sansürsüz ilk taslak',cat:'surec',col:'kavrandi'},
+  {id:'c15',name:'Geri bildirim almak',sub:'beta okuyucu, atölye',cat:'surec',col:'uygulandi'},
+  {id:'c16',name:'Revizyon döngüsü',sub:'makro → mikro düzenleme',cat:'surec',col:'uygulandi'},
+];
+
+let cards = JSON.parse(localStorage.getItem('yazarlik-board') || 'null') || initial;
+let dragging = null;
+
+function save(){
+  try{localStorage.setItem('yazarlik-board', JSON.stringify(cards))}catch(e){}
+}
+
+function catClass(cat){return 'cat-'+cat}
+
+function makeCard(c){
+  const el = document.createElement('div');
+  el.className='card';
+  el.id='card-'+c.id;
+  el.draggable=true;
+  el.innerHTML=`<div class="card-cat ${catClass(c.cat)}">${cats[c.cat]||c.cat}</div>
+<div class="card-name">${c.name}</div>
+${c.sub?`<div class="card-sub">${c.sub}</div>`:''}
+<button class="card-ask" onclick="askAbout('${c.name}')">Bu konuyu anlat ↗</button>`;
+  el.addEventListener('dragstart',e=>{
+    dragging=c.id;
+    setTimeout(()=>el.classList.add('dragging'),0);
+    e.dataTransfer.effectAllowed='move';
+  });
+  el.addEventListener('dragend',()=>{el.classList.remove('dragging');dragging=null;});
+  return el;
+}
+
+function render(){
+  const zones=['kesfet','calisiyor','kavrandi','uygulandi'];
+  zones.forEach(col=>{
+    const zone=document.getElementById('zone-'+col);
+    zone.innerHTML='';
+    const colCards=cards.filter(c=>c.col===col);
+    colCards.forEach(c=>zone.appendChild(makeCard(c)));
+    document.getElementById('cnt-'+col).textContent=colCards.length;
+    zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag-over');});
+    zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));
+    zone.addEventListener('drop',e=>{
+      e.preventDefault();zone.classList.remove('drag-over');
+      if(dragging){
+        const card=cards.find(c=>c.id===dragging);
+        if(card){card.col=col;save();render();}
+      }
+    });
+  });
+  const total=cards.length;
+  const done=cards.filter(c=>c.col==='kavrandi'||c.col==='uygulandi').length;
+  const prog=cards.filter(c=>c.col==='calisiyor').length;
+  const uyg=cards.filter(c=>c.col==='uygulandi').length;
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-progress').textContent=prog;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-pct').textContent=Math.round(uyg/total*100)+'%';
+  document.getElementById('prog').style.width=Math.round(done/total*100)+'%';
+}
+
+function showAdd(col){
+  const inp=document.getElementById('add-'+col);
+  inp.style.display='block';
+  inp.focus();
+}
+
+function addCard(e,col){
+  if(e.key==='Enter'){
+    const inp=document.getElementById('add-'+col);
+    const name=inp.value.trim();
+    if(name){
+      const newCard={id:'c'+Date.now(),name,sub:'',cat:'temel',col};
+      cards.push(newCard);
+      save();render();
+      inp.value='';inp.style.display='none';
+    }
+  }
+  if(e.key==='Escape'){
+    const inp=document.getElementById('add-'+col);
+    inp.value='';inp.style.display='none';
+  }
+}
+
+function askAbout(name){
+  sendPrompt('Yazarlık konusu olarak "'+name+'" konusunu bana kısa, öz ve somut örneklerle anlat. Sonunda pratik bir alıştırma öner.');
+}
+
+render();
+</script>
