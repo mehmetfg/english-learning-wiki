@@ -4,6 +4,12 @@ Append-only. Her giriş `## [YYYY-MM-DD] tip | başlık` formatında.
 
 ---
 
+## [2026-05-21] build | Grammar First Lesson 03 — Camden Market & Regent's Park
+
+`Artifacts/grammar-first-lesson-03.html` oluşturuldu. 7 yapı (Future Will, Going To, 2nd Conditional, Passive Voice, Adverbs of Manner/Freq., FANBOYS, Countable/Uncountable), ~350 kelime hikâye, 55 soru (7×5 + 10 mix + 5 comprehension), JSON export, dark/light tema, Card↔List view, highlight filter. Wiki kaydı: `wiki/artifacts/grammar-first-lesson-03.md`.
+
+---
+
 ## [2026-05-20] build | Feature Picker Wizard — Micro-App Spec Generator
 
 Kullanıcının "her seferinde istediğimi tam aktaramıyorum, görsel arayüzle seçeyim → JSON üretsin → sen onu okuyup tam istediğimi yap" talebine yanıt olarak `Artifacts/_feature-wizard.html` oluşturuldu.

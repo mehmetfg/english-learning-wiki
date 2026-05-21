@@ -15,7 +15,8 @@ Bu dosya tüm wiki içeriğinin haritasıdır. Her ingest ve güncelleme sonras�
 |-------|----------|
 | [[english-learning-engine-v1]] | 🆕 **Üç-motorlu günlük çalışma sistemi** — kefir + bisiklet prensibi, JSON+INBOX köprüsü, 56 konu rotation |
 | [[grammar-first-daily]] | **Motor A** — Önce kavram, sonra metin (kart + modal + mini quiz) |
-| [[grammar-first-lesson-02]] | 🆕 **Lesson 02** · Mert's Sunday on the South Bank — 8 yeni yapı (Past Cont, PPC, Relative, Ger/Inf, Used to, Quantifiers, 1st Cond, Reported); ~500 kelime; card↔list; sade okuma; 5-Q×8 bağımsız + General Mix + Combo + Comprehension; JSON export `lesson-progress-1.0` → `00_INBOX/` |
+| [[grammar-first-lesson-03]] | 🆕 **Lesson 03** · A Day in London: Camden Market & Regent's Park — 7 yapı (Future Will, Going To, 2nd Cond., Passive, Adverbs, FANBOYS, Countable/Unc.); ~350 kelime; renk kodlu hikâye; highlight filter; 55 soru; JSON export `lesson-progress-1.0` → `00_INBOX/` |
+| [[grammar-first-lesson-02]] | **Lesson 02** · Mert's Sunday on the South Bank — 8 yeni yapı (Past Cont, PPC, Relative, Ger/Inf, Used to, Quantifiers, 1st Cond, Reported); ~500 kelime; card↔list; sade okuma; 5-Q×8 bağımsız + General Mix + Combo + Comprehension; JSON export `lesson-progress-1.0` → `00_INBOX/` |
 | [[text-first-daily]] | **Motor B** — Önce metin, sonra kavram (renkli vurgu + 5 sekme + TTS) — Motor A ile çapraz teyit |
 | [[vocab-srs]] | **Vocab SRS** — SM-2, word bank'tan beslenir, leech/young/mature |
 | [[implementation-notes]] | Faz 1 baş ucu defteri — kararlar, sapmalar, edge case'ler, açık sorular |

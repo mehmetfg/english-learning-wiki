@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grammar First · Lesson 03 · Camden Market & Regent's Park</title>
+<style>
+:root {
+  --bg: #0f172a; --bg2: #1e293b; --bg3: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --border: #475569;
+  --will: #3b82f6; --will-bg: rgba(59,130,246,.15);
+  --goto: #22c55e; --goto-bg: rgba(34,197,94,.15);
+  --cond: #a855f7; --cond-bg: rgba(168,85,247,.15);
+  --pass: #f97316; --pass-bg: rgba(249,115,22,.15);
+  --advm: #ec4899; --advm-bg: rgba(236,72,153,.15);
+  --advf: #f59e0b; --advf-bg: rgba(245,158,11,.15);
+  --fanb: #14b8a6; --fanb-bg: rgba(20,184,166,.15);
+  --noun: #8b5cf6; --noun-bg: rgba(139,92,246,.15);
+}
+[data-theme="light"] {
+  --bg: #f8fafc; --bg2: #f1f5f9; --bg3: #e2e8f0;
+  --text: #1e293b; --muted: #64748b; --border: #cbd5e1;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 16px; line-height: 1.7; }
+a { color: inherit; text-decoration: none; }
+
+/* HEADER */
+.header { background: linear-gradient(135deg,#1e3a5f 0%,#0f2942 100%); padding: 32px 24px 24px; border-bottom: 2px solid var(--border); }
+.header-inner { max-width: 900px; margin: 0 auto; }
+.badge-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.lesson-badge { background: #3b82f6; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; letter-spacing: 1px; }
+.series-badge { background: var(--bg3); color: var(--muted); font-size: 11px; padding: 4px 10px; border-radius: 20px; }
+.header h1 { font-size: clamp(22px,4vw,32px); font-weight: 800; color: #fff; margin-bottom: 4px; }
+.header h2 { font-size: 15px; color: #93c5fd; font-weight: 400; margin-bottom: 16px; }
+.struct-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 12px; border: 1px solid; }
+.tag-will { color: var(--will); border-color: var(--will); background: var(--will-bg); }
+.tag-goto { color: var(--goto); border-color: var(--goto); background: var(--goto-bg); }
+.tag-cond { color: var(--cond); border-color: var(--cond); background: var(--cond-bg); }
+.tag-pass { color: var(--pass); border-color: var(--pass); background: var(--pass-bg); }
+.tag-adv  { color: var(--advm); border-color: var(--advm); background: var(--advm-bg); }
+.tag-fanb { color: var(--fanb); border-color: var(--fanb); background: var(--fanb-bg); }
+.tag-noun { color: var(--noun); border-color: var(--noun); background: var(--noun-bg); }
+
+/* CONTROLS */
+.controls { max-width: 900px; margin: 16px auto; padding: 0 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.btn { padding: 7px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg2); color: var(--text); font-size: 13px; cursor: pointer; transition: all .2s; }
+.btn:hover, .btn.active { background: var(--bg3); border-color: #93c5fd; }
+.btn-small { padding: 5px 12px; font-size: 12px; }
+.spacer { flex: 1; }
+#themeBtn { font-size: 16px; }
+
+/* SECTION */
+.section { max-width: 900px; margin: 0 auto; padding: 0 24px 32px; }
+.section-title { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+
+/* LEGEND */
+.legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.leg-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer; padding: 4px 8px; border-radius: 6px; transition: background .2s; }
+.leg-item:hover { background: var(--bg3); }
+.leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.leg-will { background: var(--will); }
+.leg-goto { background: var(--goto); }
+.leg-cond { background: var(--cond); }
+.leg-pass { background: var(--pass); }
+.leg-advm { background: var(--advm); }
+.leg-advf { background: var(--advf); }
+.leg-fanb { background: var(--fanb); }
+.leg-noun { background: var(--noun); }
+
+/* STORY */
+.story-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px 32px; font-size: 16px; line-height: 1.95; }
+.story-box p { margin-bottom: 18px; }
+.story-box p:last-child { margin-bottom: 0; }
+.para-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 1px; display: block; margin-bottom: 4px; margin-top: 20px; text-transform: uppercase; }
+.para-label:first-child { margin-top: 0; }
+
+/* Grammar highlights */
+.w, .g, .c, .p, .am, .af, .f, .n { border-radius: 3px; padding: 1px 3px; cursor: help; position: relative; font-weight: 600; }
+.w  { color: var(--will); background: var(--will-bg); }
+.g  { color: var(--goto); background: var(--goto-bg); }
+.c  { color: var(--cond); background: var(--cond-bg); }
+.p  { color: var(--pass); background: var(--pass-bg); }
+.am { color: var(--advm); background: var(--advm-bg); }
+.af { color: var(--advf); background: var(--advf-bg); }
+.f  { color: var(--fanb); background: var(--fanb-bg); }
+.n  { color: var(--noun); background: var(--noun-bg); }
+.w::after, .g::after, .c::after, .p::after, .am::after, .af::after, .f::after, .n::after {
+  content: attr(data-tip);
+  position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+  background: #1e293b; color: #e2e8f0; font-size: 11px; font-weight: 400;
+  padding: 5px 10px; border-radius: 6px; white-space: nowrap;
+  border: 1px solid var(--border); pointer-events: none;
+  opacity: 0; transition: opacity .2s; z-index: 10;
+}
+.w:hover::after, .g:hover::after, .c:hover::after, .p:hover::after,
+.am:hover::after, .af:hover::after, .f:hover::after, .n:hover::after { opacity: 1; }
+
+/* GRAMMAR CARDS */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+.cards-list .cards-grid { grid-template-columns: 1fr; }
+.gcard { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform .2s; }
+.gcard:hover { transform: translateY(-2px); }
+.gcard-head { padding: 14px 18px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.gcard-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.gcard-title { font-size: 15px; font-weight: 700; }
+.gcard-body { padding: 16px 18px; }
+.gcard-tr { font-size: 13px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+.formula { background: var(--bg); border-radius: 8px; padding: 10px 14px; font-family: monospace; font-size: 13px; margin-bottom: 12px; border-left: 3px solid; }
+.examples-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.ex-item { font-size: 13px; margin-bottom: 6px; padding: 6px 10px; background: var(--bg); border-radius: 6px; }
+.ex-en { font-weight: 600; }
+.ex-tr { color: var(--muted); font-size: 12px; }
+.tip { font-size: 12px; color: var(--muted); padding: 8px 12px; background: var(--bg); border-radius: 6px; border-left: 3px solid var(--border); margin-top: 10px; }
+.tip strong { color: var(--text); }
+
+/* QUIZ */
+.quiz-wrapper { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.quiz-tabs { display: flex; overflow-x: auto; border-bottom: 1px solid var(--border); background: var(--bg); }
+.quiz-tab { flex-shrink: 0; padding: 10px 16px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+.quiz-tab.active { color: var(--text); border-bottom-color: #3b82f6; background: var(--bg2); }
+.quiz-tab:hover:not(.active) { color: var(--text); background: var(--bg3); }
+.quiz-panel { display: none; padding: 24px; }
+.quiz-panel.active { display: block; }
+.quiz-progress { height: 4px; background: var(--bg3); border-radius: 2px; margin-bottom: 20px; }
+.quiz-progress-bar { height: 100%; background: #3b82f6; border-radius: 2px; transition: width .4s; }
+.q-box { margin-bottom: 20px; }
+.q-text { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+.q-num { color: var(--muted); font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; }
+.options { display: grid; gap: 8px; }
+.option { padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 14px; transition: all .2s; background: var(--bg); }
+.option:hover:not(.disabled) { border-color: #93c5fd; background: var(--bg3); }
+.option.correct { border-color: var(--goto); background: var(--goto-bg); color: var(--goto); font-weight: 600; }
+.option.wrong { border-color: #ef4444; background: rgba(239,68,68,.1); color: #ef4444; }
+.option.disabled { cursor: default; }
+.option.reveal { border-color: var(--goto); background: var(--goto-bg); opacity: .7; }
+.feedback { font-size: 13px; margin-top: 8px; padding: 8px 12px; border-radius: 6px; }
+.feedback.ok { background: var(--goto-bg); color: var(--goto); }
+.feedback.err { background: rgba(239,68,68,.1); color: #ef4444; }
+.quiz-score { text-align: center; padding: 20px; background: var(--bg); border-radius: 8px; margin-top: 16px; }
+.score-num { font-size: 36px; font-weight: 800; color: #3b82f6; }
+.score-label { font-size: 13px; color: var(--muted); }
+.btn-reset { display: block; margin: 12px auto 0; }
+
+/* EXPORT */
+.export-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.export-info { flex: 1; }
+.export-info h3 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.export-info p { font-size: 13px; color: var(--muted); }
+.btn-export { background: #3b82f6; border: none; color: #fff; font-weight: 600; }
+.btn-export:hover { background: #2563eb; }
+.export-status { font-size: 12px; color: var(--goto); margin-top: 6px; display: none; }
+
+/* TOTAL SCORE BAR */
+.total-bar { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.total-bar-label { font-size: 13px; color: var(--muted); flex: 1; }
+.total-bar-score { font-size: 20px; font-weight: 800; color: #3b82f6; }
+.total-bar-progress { width: 200px; height: 8px; background: var(--bg3); border-radius: 4px; flex-shrink: 0; }
+.total-bar-fill { height: 100%; background: linear-gradient(90deg,#3b82f6,#22c55e); border-radius: 4px; transition: width .5s; }
+
+/* FOOTER */
+.footer { text-align: center; padding: 24px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 32px; }
+
+@media (max-width: 600px) {
+  .story-box { padding: 18px 16px; }
+  .gcard-body { padding: 12px 14px; }
+  .quiz-panel { padding: 16px; }
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="badge-row">
+      <span class="lesson-badge">LESSON 03</span>
+      <span class="series-badge">Grammar First Series</span>
+      <span class="series-badge">A2 → B1</span>
+      <span class="series-badge">~350 words</span>
+    </div>
+    <h1>A Day in London</h1>
+    <h2>Camden Market &amp; Regent's Park — Mert + his mother</h2>
+    <div class="struct-tags">
+      <span class="tag tag-will">Future Will</span>
+      <span class="tag tag-goto">Future Going To</span>
+      <span class="tag tag-cond">2nd Conditional</span>
+      <span class="tag tag-pass">Passive Voice</span>
+      <span class="tag tag-adv">Adverbs of Manner &amp; Freq.</span>
+      <span class="tag tag-fanb">FANBOYS</span>
+      <span class="tag tag-noun">Countable &amp; Uncountable</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <button class="btn btn-small active" id="viewCard" onclick="setView('card')">⊞ Card View</button>
+  <button class="btn btn-small" id="viewList" onclick="setView('list')">☰ List View</button>
+  <div class="spacer"></div>
+  <button class="btn btn-small" id="themeBtn" onclick="toggleTheme()">☀️</button>
+</div>
+
+<!-- STORY -->
+<div class="section">
+  <div class="section-title">📖 Story — Read &amp; Notice</div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <span class="leg-item" onclick="filterStruct('will')"><span class="leg-dot leg-will"></span>Future Will</span>
+    <span class="leg-item" onclick="filterStruct('goto')"><span class="leg-dot leg-goto"></span>Future Going To</span>
+    <span class="leg-item" onclick="filterStruct('cond')"><span class="leg-dot leg-cond"></span>2nd Conditional</span>
+    <span class="leg-item" onclick="filterStruct('pass')"><span class="leg-dot leg-pass"></span>Passive Voice</span>
+    <span class="leg-item" onclick="filterStruct('advm')"><span class="leg-dot leg-advm"></span>Adv. Manner</span>
+    <span class="leg-item" onclick="filterStruct('advf')"><span class="leg-dot leg-advf"></span>Adv. Frequency</span>
+    <span class="leg-item" onclick="filterStruct('fanb')"><span class="leg-dot leg-fanb"></span>FANBOYS</span>
+    <span class="leg-item" onclick="filterStruct('noun')"><span class="leg-dot leg-noun"></span>Countable/Uncountable</span>
+    <span class="leg-item" onclick="filterStruct('all')" style="color:var(--text)">✕ Show All</span>
+  </div>
+
+  <div class="story-box" id="storyBox">
+
+    <span class="para-label">¶ 1 — The Plan</span>
+    <p>
+      The night before their trip, Mert and his mother made a plan.
+      "<span class="g" data-tip="Future Going To — plan">We're going to visit</span> Camden Market first," said his mother,
+      pointing at the map <span class="am" data-tip="Adverb of Manner — how?">carefully</span>.
+      "Then <span class="w" data-tip="Future Will — prediction">we'll walk</span> north to Regent's Park."
+      Mert <span class="af" data-tip="Adverb of Frequency — how often?">always</span> loves exploring new places,
+      <span class="f" data-tip="FANBOYS — So (result)">so</span> he nodded <span class="am" data-tip="Adverb of Manner — how?">eagerly</span>.
+    </p>
+
+    <span class="para-label">¶ 2 — Arrival</span>
+    <p>
+      The next morning, they arrived at Camden Town station <span class="am" data-tip="Adverb of Manner — how?">early</span>.
+      The streets were <span class="af" data-tip="Adverb of Frequency — how often?">already</span> busy.
+      "Look at that queue — <span class="g" data-tip="Future Going To — evidence-based prediction">it's going to be packed</span> today," said Mert <span class="am" data-tip="Adverb of Manner — how?">excitedly</span>.
+      His mother smiled <span class="am" data-tip="Adverb of Manner — how?">warmly</span>.
+      "I think <span class="w" data-tip="Future Will — prediction">we'll find</span> <span class="n" data-tip="Uncountable concept: some + adj + noun">some wonderful things</span>. Let's go!"
+    </p>
+
+    <span class="para-label">¶ 3 — The Market</span>
+    <p>
+      Camden Market <span class="p" data-tip="Passive Voice — Past Simple Passive">was founded</span> in 1974.
+      Today, it <span class="p" data-tip="Passive Voice — Present Simple Passive">is visited</span> by more than 100,000 people every weekend.
+      The stalls <span class="p" data-tip="Passive Voice — Present Simple Passive">are organised</span> <span class="am" data-tip="Adverb of Manner — how?">neatly</span> by category —
+      food, clothes, art, <span class="f" data-tip="FANBOYS — And (addition)">and</span> music.
+      Fresh food <span class="p" data-tip="Passive Voice — Present Simple Passive">is prepared</span> <span class="af" data-tip="Adverb of Frequency — how often?">daily</span>,
+      <span class="f" data-tip="FANBOYS — And (addition)">and</span> colourful decorations <span class="p" data-tip="Passive Voice — Present Simple Passive">are displayed</span> everywhere.
+      Mert walked <span class="am" data-tip="Adverb of Manner — how?">slowly</span> through the narrow paths,
+      looking at everything <span class="am" data-tip="Adverb of Manner — how?">carefully</span>.
+    </p>
+
+    <span class="para-label">¶ 4 — The Jacket</span>
+    <p>
+      "Look at this vintage jacket!" he cried. "<span class="c" data-tip="2nd Conditional — If + past, would + base">If I had enough money, I would definitely buy it</span>."
+      His mother laughed.
+      "<span class="c" data-tip="2nd Conditional — hypothetical present situation">If the jacket were cheaper, I would buy it for you right now</span>," she said <span class="am" data-tip="Adverb of Manner — how?">gently</span>.
+      They moved on.
+    </p>
+
+    <span class="para-label">¶ 5 — Food Time</span>
+    <p>
+      They were hungry, <span class="f" data-tip="FANBOYS — So (result)">so</span> they stopped at the food area.
+      There were <span class="n" data-tip="Countable — many + plural noun">many choices</span>: Japanese ramen, Ethiopian stews,
+      <span class="f" data-tip="FANBOYS — And (addition)">and</span> Mexican tacos,
+      <span class="f" data-tip="FANBOYS — But (contrast)">but</span> Mert chose something simple.
+      "I'd like <span class="n" data-tip="Uncountable — some + rice (uncountable)">some rice</span> and <span class="n" data-tip="Countable — a + piece (countable unit)">a piece of cake</span>," he said.
+      His mother ordered <span class="n" data-tip="Uncountable — some + soup">some soup</span> and <span class="n" data-tip="Countable — a + sandwich">a sandwich</span>.
+      "They use <span class="n" data-tip="Uncountable — fresh ingredients (uncountable)">fresh ingredients</span> here,
+      <span class="f" data-tip="FANBOYS — Yet (contrast/surprise)">yet</span> the prices are surprisingly high," she said <span class="am" data-tip="Adverb of Manner — how?">softly</span>.
+      Mert nodded <span class="f" data-tip="FANBOYS — But (contrast)">but</span> said nothing — the food was delicious.
+    </p>
+
+    <span class="para-label">¶ 6 — Regent's Park</span>
+    <p>
+      After lunch, they walked north to Regent's Park.
+      The park <span class="p" data-tip="Passive Voice — Present Simple Passive">is maintained</span> by the Royal Parks organisation,
+      <span class="f" data-tip="FANBOYS — And (addition)">and</span> its famous rose garden <span class="p" data-tip="Passive Voice — Present Simple Passive">is visited</span> by millions of tourists every year.
+      It <span class="p" data-tip="Passive Voice — Present Simple Passive">is considered</span> one of the most beautiful green spaces in London.
+    </p>
+
+    <span class="para-label">¶ 7 — By the Lake</span>
+    <p>
+      They sat <span class="am" data-tip="Adverb of Manner — how?">quietly</span> beside the lake.
+      Mert <span class="af" data-tip="Adverb of Frequency — how often?">usually</span> reads in peaceful places,
+      <span class="f" data-tip="FANBOYS — But (contrast)">but</span> today he just watched the ducks move <span class="am" data-tip="Adverb of Manner — how?">gracefully</span> across the water.
+      "Mum," he said <span class="am" data-tip="Adverb of Manner — how?">softly</span>,
+      "<span class="c" data-tip="2nd Conditional — unreal present situation">if we lived in London, we would come here every single weekend</span>."
+      His mother put her arm around him.
+      "<span class="c" data-tip="2nd Conditional — result clause">We would need</span> <span class="n" data-tip="Uncountable — a lot of + money">a lot of money</span> for that," she laughed.
+      "<span class="f" data-tip="FANBOYS — But (contrast)">But</span> yes — it would be perfect."
+    </p>
+
+    <span class="para-label">¶ 8 — The Promise</span>
+    <p>
+      The sun began to set <span class="am" data-tip="Adverb of Manner — how?">slowly</span> behind the trees.
+      Mert stood up <span class="am" data-tip="Adverb of Manner — how?">quickly</span>.
+      "<span class="w" data-tip="Future Will — spontaneous offer">I'll carry</span> the bag, Mum," he said.
+      "And <span class="w" data-tip="Future Will — spontaneous declaration">I'll tell</span> you something —
+      today was one of the best days of my life."
+      His mother hugged him <span class="am" data-tip="Adverb of Manner — how?">warmly</span>.
+      "For me too," she said.
+      "<span class="g" data-tip="Future Going To — firm promise/plan">We're going to do this again</span> next summer. That's a promise."
+    </p>
+
+  </div>
+</div>
+
+<!-- GRAMMAR CARDS -->
+<div class="section" id="grammarSection">
+  <div class="section-title">🔍 Grammar Breakdown — 7 Structures</div>
+  <div class="cards-grid" id="cardsGrid">
+
+    <!-- CARD 1: Future Will -->
+    <div class="gcard">
+      <div class="gcard-head">
+        <div class="gcard-num" style="background:var(--will)">1</div>
+        <div>
+          <div class="gcard-title" style="color:var(--will)">Future Will</div>
+          <div style="font-size:12px;color:var(--muted)">Gelecek Zaman (Will)</div>
+        </div>
+      </div>
+      <div class="gcard-body">
+        <div class="gcard-tr">Anlık kararlar, tahminler, vaatler, teklifler ve doğal akış ifadeleri için kullanılır. Planlanmamış, o an oluşan gelecek.</div>
+        <div class="formula" style="border-color:var(--will)">
+          Subject + <strong>will</strong> + base verb<br>
+          Negative: Subject + <strong>won't</strong> + base verb
+        </div>
+        <div class="examples-title">From the story:</div>
+        <div class="ex-item">
+          <div class="ex-en w" style="display:inline">"…we'll walk north to Regent's Park."</div>
+          <div class="ex-tr">→ Tahmini/doğal plan (spontaneous)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en w" style="display:inline">"I think we'll find some wonderful things."</div>
+          <div class="ex-tr">→ Tahmin (prediction)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en w" style="display:inline">"I'll carry the bag, Mum."</div>
+          <div class="ex-tr">→ Anlık teklif (spontaneous offer)</div>
+        </div>
+        <div class="tip"><strong>Key signal:</strong> "I think / probably / I'm sure / I promise" → <strong>will</strong></div>
+      </div>
+    </div>
+
+    <!-- CARD 2: Future Going To -->
+    <div class="gcard">
+      <div class="gcard-head">
+        <div class="gcard-num" style="background:var(--goto)">2</div>
+        <div>
+          <div class="gcard-title" style="color:var(--goto)">Future Going To</div>
+          <div style="font-size:12px;color:var(--muted)">Gelecek Zaman (Going To)</div>
+        </div>
+      </div>
+      <div class="gcard-body">
+        <div class="gcard-tr">Önceden yapılmış planlar ve mevcut kanıta dayalı tahminler için kullanılır. Zaten karar verilmiş, ya da şu an görülen bir şeyden çıkarılan sonuç.</div>
+        <div class="formula" style="border-color:var(--goto)">
+          Subject + <strong>am/is/are going to</strong> + base verb
+        </div>
+        <div class="examples-title">From the story:</div>
+        <div class="ex-item">
+          <div class="ex-en g" style="display:inline">"We're going to visit Camden Market first."</div>
+          <div class="ex-tr">→ Önceden yapılmış plan (prior plan)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en g" style="display:inline">"It's going to be packed today."</div>
+          <div class="ex-tr">→ Kanıta dayalı tahmin (queue = evidence)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en g" style="display:inline">"We're going to do this again next summer."</div>
+          <div class="ex-tr">→ Güçlü niyet / söz (firm intention)</div>
+        </div>
+        <div class="tip"><strong>Key signal:</strong> "Look!" / "I've already decided" / context of prior planning → <strong>going to</strong></div>
+      </div>
+    </div>
+
+    <!-- CARD 3: Second Conditional -->
+    <div class="gcard">
+      <div class="gcard-head">
+        <div class="gcard-num" style="background:var(--cond)">3</div>
+        <div>
+          <div class="gcard-title" style="color:var(--cond)">Second Conditional</div>
+          <div style="font-size:12px;color:var(--muted)">2. Tip Koşul Cümlesi</div>
+        </div>
+      </div>
+      <div class="gcard-body">
+        <div class="gcard-tr">Gerçek olmayan veya gerçekleşmesi düşük olan şimdiki/gelecek durumlar için kullanılır. Hayal, varsayım, tavsiye anlatımı.</div>
+        <div class="formula" style="border-color:var(--cond)">
+          <strong>If</strong> + past simple, <strong>would</strong> + base verb<br>
+          <em>Note: "were" for all persons (formal)</em>
+        </div>
+        <div class="examples-title">From the story:</div>
+        <div class="ex-item">
+          <div class="ex-en c" style="display:inline">"If I had enough money, I would definitely buy it."</div>
+          <div class="ex-tr">→ Gerçek değil — param yok (unreal)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en c" style="display:inline">"If the jacket were cheaper, I would buy it."</div>
+          <div class="ex-tr">→ Varsayım — ceket pahalı (hypothetical)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en c" style="display:inline">"If we lived in London, we would come here every weekend."</div>
+          <div class="ex-tr">→ Hayal — Londra'da yaşamıyoruz (dream)</div>
+        </div>
+        <div class="tip"><strong>vs. 1st Cond:</strong> "If it rains, I'll stay." (real/possible) ↔ "If it rained, I would stay." (unreal)</div>
+      </div>
+    </div>
+
+    <!-- CARD 4: Passive Voice -->
+    <div class="gcard">
+      <div class="gcard-head">
+        <div class="gcard-num" style="background:var(--pass)">4</div>
+        <div>
+          <div class="gcard-title" style="color:var(--pass)">Passive Voice</div>
+          <div style="font-size:12px;color:var(--muted)">Edilgen Çatı</div>
+        </div>
+      </div>
+      <div class="gcard-body">
+        <div class="gcard-tr">Eylemin nesilini (kim yaptı) değil, sonucunu ön plana çıkarmak için kullanılır. Genel gerçekler, resmi metin ve nesne odaklı anlatıda çok sık görülür.</div>
+        <div class="formula" style="border-color:var(--pass)">
+          Subject + <strong>be</strong> (conjugated) + <strong>past participle</strong><br>
+          Agent: + "<strong>by</strong> + person"
+        </div>
+        <div class="examples-title">From the story:</div>
+        <div class="ex-item">
+          <div class="ex-en p" style="display:inline">"Camden Market was founded in 1974."</div>
+          <div class="ex-tr">→ Past Simple Passive</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en p" style="display:inline">"It is visited by more than 100,000 people."</div>
+          <div class="ex-tr">→ Present Simple Passive + "by"</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en p" style="display:inline">"The stalls are organised neatly by category."</div>
+          <div class="ex-tr">→ Present Simple Passive</div>
+        </div>
+        <div class="tip"><strong>Pattern:</strong> Active: "People visit the park." → Passive: "The park <strong>is visited</strong> by people."</div>
+      </div>
+    </div>
+
+    <!-- CARD 5: Adverbs -->
+    <div class="gcard">
+      <div class="gcard-head">
+        <div class="gcard-num" style="background:var(--advm)">5</div>
+        <div>
+          <div class="gcard-title" style="color:var(--advm)">Adverbs of Manner &amp; Frequency</div>
+          <div style="font-size:12px;color:var(--muted)">Hal ve Sıklık Zarfları</div>
+        </div>
+      </div>
+      <div class="gcard-body">
+        <div class="gcard-tr"><strong>Manner (Hal):</strong> nasıl yapıldığını anlatır → fiil/sıfat sonra gelir. <strong>Frequency (Sıklık):</strong> ne sıklıkla yapıldığını anlatır → genel olarak yardımcı fiilden önce, ana fiilden önce.</div>
+        <div class="formula" style="border-color:var(--advm)">
+          <strong>Manner:</strong> verb + adverb (slowly, warmly…)<br>
+          <strong>Frequency:</strong> always &gt; usually &gt; often &gt; sometimes &gt; rarely &gt; never
+        </div>
+        <div class="examples-title">From the story:</div>
+        <div class="ex-item">
+          <div class="ex-en am" style="display:inline">"He walked slowly through the paths."</div>
+          <div class="ex-tr">→ Manner: walk + slowly (nasıl?)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en am" style="display:inline">"She said gently / smiled warmly."</div>
+          <div class="ex-tr">→ Manner: verb + adverb</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en af" style="display:inline">"Mert always loves exploring."</div>
+          <div class="ex-tr">→ Frequency: always (her zaman)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en af" style="display:inline">"Mert usually reads in peaceful places."</div>
+          <div class="ex-tr">→ Frequency: usually (genellikle)</div>
+        </div>
+        <div class="tip"><strong>Tip:</strong> Most manner adverbs = adjective + <strong>-ly</strong> (quick→quickly, warm→warmly). Exceptions: fast, hard, late (no -ly)</div>
+      </div>
+    </div>
+
+    <!-- CARD 6: FANBOYS -->
+    <div class="gcard">
+      <div class="gcard-head">
+        <div class="gcard-num" style="background:var(--fanb)">6</div>
+        <div>
+          <div class="gcard-title" style="color:var(--fanb)">Coordinating Conjunctions</div>
+          <div style="font-size:12px;color:var(--muted)">FANBOYS — Sıralama Bağlaçları</div>
+        </div>
+      </div>
+      <div class="gcard-body">
+        <div class="gcard-tr">İki bağımsız cümleyi, kelimeyi ya da ifadeyi bağlar. Virgül + bağlaç kuralına dikkat edin: iki tam cümle birleştiğinde araya virgül girer.</div>
+        <div class="formula" style="border-color:var(--fanb)">
+          <strong>F</strong>or · <strong>A</strong>nd · <strong>N</strong>or · <strong>B</strong>ut · <strong>O</strong>r · <strong>Y</strong>et · <strong>S</strong>o
+        </div>
+        <div class="examples-title">From the story:</div>
+        <div class="ex-item">
+          <div class="ex-en f" style="display:inline">"…food, clothes, art, <u>and</u> music."</div>
+          <div class="ex-tr">→ And: ekleme (addition)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en f" style="display:inline">"They were hungry, <u>so</u> they stopped."</div>
+          <div class="ex-tr">→ So: sonuç (result)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en f" style="display:inline">"…tacos, <u>but</u> Mert chose something simple."</div>
+          <div class="ex-tr">→ But: zıtlık (contrast)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en f" style="display:inline">"Fresh ingredients, <u>yet</u> surprisingly expensive."</div>
+          <div class="ex-tr">→ Yet: beklenmedik zıtlık (surprising contrast)</div>
+        </div>
+        <div class="tip"><strong>Comma rule:</strong> Two independent clauses → use comma before FANBOYS. Single words/phrases → no comma needed.</div>
+      </div>
+    </div>
+
+    <!-- CARD 7: Countable & Uncountable -->
+    <div class="gcard">
+      <div class="gcard-head">
+        <div class="gcard-num" style="background:var(--noun)">7</div>
+        <div>
+          <div class="gcard-title" style="color:var(--noun)">Countable &amp; Uncountable Nouns</div>
+          <div style="font-size:12px;color:var(--muted)">Sayılabilir ve Sayılamaz İsimler</div>
+        </div>
+      </div>
+      <div class="gcard-body">
+        <div class="gcard-tr"><strong>Sayılabilir (Countable):</strong> tekil veya çoğul olur, a/an alabilir. <strong>Sayılamaz (Uncountable):</strong> çoğul olmaz, a/an almaz, "some/much/a lot of" ile kullanılır.</div>
+        <div class="formula" style="border-color:var(--noun)">
+          Countable: <strong>a/an · the · many · a few · several</strong><br>
+          Uncountable: <strong>some · much · a lot of · a piece of</strong>
+        </div>
+        <div class="examples-title">From the story:</div>
+        <div class="ex-item">
+          <div class="ex-en n" style="display:inline">"I'd like some rice and a piece of cake."</div>
+          <div class="ex-tr">→ rice (unc.) / piece of cake (cnt.)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en n" style="display:inline">"some soup" / "a sandwich"</div>
+          <div class="ex-tr">→ soup (unc.) / sandwich (cnt.)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en n" style="display:inline">"There were many choices."</div>
+          <div class="ex-tr">→ choices (cnt. → many ✓)</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-en n" style="display:inline">"We would need a lot of money."</div>
+          <div class="ex-tr">→ money (unc. → a lot of ✓)</div>
+        </div>
+        <div class="tip"><strong>Partitives:</strong> <em>a piece of</em> cake/bread/advice · <em>a cup of</em> tea · <em>a glass of</em> water → make uncountable countable</div>
+      </div>
+    </div>
+
+  </div><!-- /cards-grid -->
+</div>
+
+<!-- QUIZ -->
+<div class="section">
+  <div class="section-title">✏️ Practice Quiz</div>
+
+  <div class="quiz-wrapper">
+    <div class="quiz-tabs">
+      <div class="quiz-tab active" onclick="switchTab(0)">Future Will</div>
+      <div class="quiz-tab" onclick="switchTab(1)">Going To</div>
+      <div class="quiz-tab" onclick="switchTab(2)">2nd Cond.</div>
+      <div class="quiz-tab" onclick="switchTab(3)">Passive</div>
+      <div class="quiz-tab" onclick="switchTab(4)">Adverbs</div>
+      <div class="quiz-tab" onclick="switchTab(5)">FANBOYS</div>
+      <div class="quiz-tab" onclick="switchTab(6)">Nouns</div>
+      <div class="quiz-tab" onclick="switchTab(7)">General Mix</div>
+      <div class="quiz-tab" onclick="switchTab(8)">Comprehension</div>
+    </div>
+
+    <!-- TAB 0: Future Will -->
+    <div class="quiz-panel active" data-tab="0">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-0"></div>
+      <div class="quiz-score" id="score-0" style="display:none">
+        <div class="score-num" id="snum-0">0/5</div>
+        <div class="score-label">Future Will — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(0)">↺ Try Again</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: Going To -->
+    <div class="quiz-panel" data-tab="1">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-1"></div>
+      <div class="quiz-score" id="score-1" style="display:none">
+        <div class="score-num" id="snum-1">0/5</div>
+        <div class="score-label">Future Going To — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(1)">↺ Try Again</button>
+      </div>
+    </div>
+
+    <!-- TAB 2: 2nd Conditional -->
+    <div class="quiz-panel" data-tab="2">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-2"></div>
+      <div class="quiz-score" id="score-2" style="display:none">
+        <div class="score-num" id="snum-2">0/5</div>
+        <div class="score-label">2nd Conditional — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(2)">↺ Try Again</button>
+      </div>
+    </div>
+
+    <!-- TAB 3: Passive -->
+    <div class="quiz-panel" data-tab="3">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-3"></div>
+      <div class="quiz-score" id="score-3" style="display:none">
+        <div class="score-num" id="snum-3">0/5</div>
+        <div class="score-label">Passive Voice — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(3)">↺ Try Again</button>
+      </div>
+    </div>
+
+    <!-- TAB 4: Adverbs -->
+    <div class="quiz-panel" data-tab="4">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-4"></div>
+      <div class="quiz-score" id="score-4" style="display:none">
+        <div class="score-num" id="snum-4">0/5</div>
+        <div class="score-label">Adverbs — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(4)">↺ Try Again</button>
+      </div>
+    </div>
+
+    <!-- TAB 5: FANBOYS -->
+    <div class="quiz-panel" data-tab="5">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-5"></div>
+      <div class="quiz-score" id="score-5" style="display:none">
+        <div class="score-num" id="snum-5">0/5</div>
+        <div class="score-label">FANBOYS — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(5)">↺ Try Again</button>
+      </div>
+    </div>
+
+    <!-- TAB 6: Nouns -->
+    <div class="quiz-panel" data-tab="6">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-6"></div>
+      <div class="quiz-score" id="score-6" style="display:none">
+        <div class="score-num" id="snum-6">0/5</div>
+        <div class="score-label">Countable &amp; Uncountable — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(6)">↺ Try Again</button>
+      </div>
+    </div>
+
+    <!-- TAB 7: General Mix -->
+    <div class="quiz-panel" data-tab="7">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-7"></div>
+      <div class="quiz-score" id="score-7" style="display:none">
+        <div class="score-num" id="snum-7">0/10</div>
+        <div class="score-label">General Mix — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(7)">↺ Try Again</button>
+      </div>
+    </div>
+
+    <!-- TAB 8: Comprehension -->
+    <div class="quiz-panel" data-tab="8">
+      <div class="quiz-progress"><div class="quiz-progress-bar" style="width:0%"></div></div>
+      <div id="qs-8"></div>
+      <div class="quiz-score" id="score-8" style="display:none">
+        <div class="score-num" id="snum-8">0/5</div>
+        <div class="score-label">Comprehension — complete!</div>
+        <button class="btn btn-small btn-reset" onclick="resetTab(8)">↺ Try Again</button>
+      </div>
+    </div>
+
+  </div><!-- /quiz-wrapper -->
+</div>
+
+<!-- TOTAL SCORE -->
+<div class="section">
+  <div class="section-title">📊 Overall Progress</div>
+  <div class="total-bar">
+    <div class="total-bar-label">Total score across all sections</div>
+    <div class="total-bar-score" id="totalScore">0 / 55</div>
+    <div class="total-bar-progress"><div class="total-bar-fill" id="totalFill" style="width:0%"></div></div>
+  </div>
+</div>
+
+<!-- EXPORT -->
+<div class="section">
+  <div class="section-title">💾 Export Progress</div>
+  <div class="export-box">
+    <div class="export-info">
+      <h3>Save to 00_INBOX/</h3>
+      <p>Export your quiz results as <code>lesson-progress-1.0</code> JSON for the tracking system.</p>
+      <div class="export-status" id="exportStatus">✓ Copied to clipboard — paste into 00_INBOX/lesson-03-progress.json</div>
+    </div>
+    <button class="btn btn-export" onclick="exportJSON()">⬇ Export JSON</button>
+  </div>
+</div>
+
+<div class="footer">Grammar First · Lesson 03 · Camden Market &amp; Regent's Park · 7 structures · 55 questions</div>
+
+<script>
+// ─── QUIZ DATA ───────────────────────────────────────────────────────────────
+const QUIZZES = [
+  // Tab 0: Future Will
+  [
+    { q:"Mert spontaneously offers to help his mother at the end of the story. Which sentence shows this?",
+      opts:["I'm going to carry the bag, Mum.", "I'll carry the bag, Mum.", "I would carry the bag, Mum.", "I carry the bag every time."], ans:1,
+      fb:"'I'll carry' = spontaneous offer made at that moment — classic Future Will." },
+    { q:"Which sentence expresses a prediction using 'will'?",
+      opts:["We're going to visit Camden Market first.", "Look at that queue — it's going to be packed!", "I think we'll find some wonderful things.", "The market was founded in 1974."], ans:2,
+      fb:"'I think we'll find…' = opinion-based prediction → will. The other options use 'going to' or passive." },
+    { q:"Complete: 'Don't worry, I ___ help you find the station.'",
+      opts:["am going to", "was going to", "will", "would"], ans:2,
+      fb:"Spontaneous decision made at the moment of speaking → will." },
+    { q:"Which use of 'will' is a PROMISE?",
+      opts:["I'll probably take the Northern line.", "I think it'll be sunny.", "I'll call you tonight, I promise.", "It won't take long."], ans:2,
+      fb:"'I'll call you tonight, I promise.' — 'I promise' + will = promise function of will." },
+    { q:"'We ___ walk north to Regent's Park.' — Why does the story use 'will' here?",
+      opts:["It was planned weeks ago.", "It is a spontaneous decision mentioned alongside the planned part.", "It expresses a past habit.", "It is a second conditional result."], ans:1,
+      fb:"The going-to plan is Camden first; the 'we'll walk' part flows naturally as next step — spontaneous continuation." }
+  ],
+
+  // Tab 1: Going To
+  [
+    { q:"'We're going to visit Camden Market first.' — Why is 'going to' used here?",
+      opts:["Mert decided this at that exact moment.", "They made this plan the night before.", "It is a prediction based on evidence.", "It expresses a wish."], ans:1,
+      fb:"The plan was made the night before → going to (prior plan/intention)." },
+    { q:"Complete: 'Look at those dark clouds — it ___ rain!'",
+      opts:["will", "is going to", "would", "rains"], ans:1,
+      fb:"Visual evidence (dark clouds) → going to for evidence-based prediction." },
+    { q:"Which sentence is NOT a correct use of 'going to'?",
+      opts:["She's going to start a new job next week.", "Look — that vase is going to fall!", "I going to eat some rice.", "We're going to do this again next summer."], ans:2,
+      fb:"Missing 'am/is/are' — correct form: 'I AM going to eat some rice.'" },
+    { q:"Mert's mother's final words: 'We're going to do this again next summer.' This is:",
+      opts:["A spontaneous offer (will)", "A prior plan made before the story (going to)", "An evidence-based prediction (going to)", "A firm promise expressed as going to — both intention and promise"], ans:3,
+      fb:"It is a firm intention expressed in the moment — going to for strong promises/commitments." },
+    { q:"'I've already booked the tickets. We ___ fly to London in June.'",
+      opts:["will fly", "are going to fly", "flew", "would fly"], ans:1,
+      fb:"Already booked = prior decision → going to. 'Will' would suggest spontaneous decision." }
+  ],
+
+  // Tab 2: 2nd Conditional
+  [
+    { q:"Which sentence is a Second Conditional?",
+      opts:["If I have time, I will help you.", "If I had enough money, I would buy the jacket.", "If I had bought it, I would have worn it.", "I buy things when I have money."], ans:1,
+      fb:"If + past simple → would + base = Second Conditional (unreal present/future)." },
+    { q:"'If the jacket ___ cheaper, I would buy it for you.' — Complete correctly.",
+      opts:["is", "was / were", "will be", "has been"], ans:1,
+      fb:"If-clause in 2nd Conditional uses past simple; 'were' is preferred for all persons in formal use." },
+    { q:"The Second Conditional is used for:",
+      opts:["Real, likely future situations", "Completed past regrets", "Unreal or hypothetical present/future situations", "General truths and habits"], ans:2,
+      fb:"2nd Cond. = imaginary, unlikely, or impossible situations in the present/future." },
+    { q:"Which sentence is NOT a Second Conditional?",
+      opts:["If she were here, she would love it.", "If it rained, we would go inside.", "If I win the lottery, I will travel the world.", "If Mert knew the city, he would walk faster."], ans:2,
+      fb:"'If I win / I will travel' = First Conditional (real, possible future). The others are 2nd Cond." },
+    { q:"'If we ___ in London, we would come here every weekend.' — Complete.",
+      opts:["live", "lived", "will live", "had lived"], ans:1,
+      fb:"2nd Conditional if-clause = past simple (lived). 'Had lived' would make it 3rd Conditional." }
+  ],
+
+  // Tab 3: Passive Voice
+  [
+    { q:"Change to passive: 'Someone founded Camden Market in 1974.'",
+      opts:["Camden Market founded in 1974.", "Camden Market was founded in 1974.", "Camden Market is founded in 1974.", "Camden Market has founded in 1974."], ans:1,
+      fb:"Past Simple Passive: was/were + past participle → 'was founded'." },
+    { q:"Which sentence correctly uses present passive voice?",
+      opts:["Tourists visit the park every year.", "The park is visited by millions of tourists every year.", "The park visited by tourists.", "Tourists are visiting the park."], ans:1,
+      fb:"Present Simple Passive: is/are + past participle → 'is visited by'." },
+    { q:"In passive voice, the agent (person who does the action) is shown with:",
+      opts:["for", "by", "with", "from"], ans:1,
+      fb:"'by' introduces the agent in passive constructions: 'visited BY tourists.'" },
+    { q:"'They maintain the park carefully.' → Convert to passive (present):",
+      opts:["The park maintained carefully.", "The park is maintained carefully.", "The park was maintained carefully.", "The park has been maintained carefully."], ans:1,
+      fb:"Present Simple Passive: The park IS maintained carefully. (Past 'was' would change tense.)" },
+    { q:"'Fresh food ___ every morning at Camden Market.' — Complete with correct passive.",
+      opts:["prepares", "is preparing", "is prepared", "prepared"], ans:2,
+      fb:"Present Simple Passive: is + past participle → 'is prepared'." }
+  ],
+
+  // Tab 4: Adverbs
+  [
+    { q:"Which word is an adverb of MANNER?",
+      opts:["always", "quickly", "never", "sometimes"], ans:1,
+      fb:"'Quickly' answers HOW → adverb of manner. The others answer HOW OFTEN → frequency." },
+    { q:"'She smiled ___ at the vendors.' — Which adverb of manner fits?",
+      opts:["usually", "often", "warmly", "rarely"], ans:2,
+      fb:"'Warmly' tells HOW she smiled → manner. The others are frequency adverbs." },
+    { q:"Where do adverbs of FREQUENCY most commonly go?",
+      opts:["Before the main verb (after auxiliary if present)", "After the direct object", "Always at the end of the sentence", "Always at the start of the sentence"], ans:0,
+      fb:"Frequency adverbs go before main verbs: 'He ALWAYS loves.' / After 'be': 'He is always excited.'" },
+    { q:"'Mert ___ loves exploring new places.' — Which is the adverb of frequency used in the story?",
+      opts:["quickly", "always", "carefully", "warmly"], ans:1,
+      fb:"'Always' = 100% frequency → adverb of frequency. Story: 'Mert always loves exploring.'" },
+    { q:"Which sentence uses an adverb INCORRECTLY?",
+      opts:["They walked slowly through the crowd.", "She rarely buys things on impulse.", "He excited always watches markets.", "They carefully looked at the stalls."], ans:2,
+      fb:"'He excited always watches' is wrong on two counts: 'excited' is an adjective, and adverb position is wrong. Should be: 'He always watches excitedly.'" }
+  ],
+
+  // Tab 5: FANBOYS
+  [
+    { q:"What does FANBOYS stand for?",
+      opts:["For, And, But, Or, Nor, Yet, So", "For, Also, But, Or, Not, Yes, Since", "First, And, But, Or, Now, Yet, So", "For, And, Because, Or, Nor, Yes, So"], ans:0,
+      fb:"FANBOYS = For · And · Nor · But · Or · Yet · So — the 7 coordinating conjunctions." },
+    { q:"'Mert liked the vintage clothes, ___ his mother preferred the food stalls.'",
+      opts:["so", "and", "but", "or"], ans:2,
+      fb:"'But' shows contrast — two different preferences." },
+    { q:"'The ingredients were fresh, ___ the prices were surprisingly high.'",
+      opts:["for", "and", "so", "yet"], ans:3,
+      fb:"'Yet' shows unexpected contrast/surprise — like 'but' but stronger surprise element." },
+    { q:"'They were hungry, ___ they decided to eat.' — Which conjunction shows RESULT?",
+      opts:["yet", "nor", "for", "so"], ans:3,
+      fb:"'So' introduces a result or consequence. 'For' introduces a reason (more formal)." },
+    { q:"'You can choose the rice, ___ you can have the pasta.' — Shows ALTERNATIVE.",
+      opts:["and", "but", "or", "nor"], ans:2,
+      fb:"'Or' presents alternatives/choices. 'Nor' is used in negative contexts ('neither…nor')." }
+  ],
+
+  // Tab 6: Countable & Uncountable
+  [
+    { q:"Which is an UNCOUNTABLE noun?",
+      opts:["sandwich", "stall", "bread", "market"], ans:2,
+      fb:"Bread is uncountable — you can't say 'a bread' or 'two breads' without a partitive (a loaf of bread)." },
+    { q:"'There ___ a lot of information about the market online.'",
+      opts:["are", "is", "were", "have"], ans:1,
+      fb:"'Information' is uncountable → singular verb: 'There IS a lot of information.'" },
+    { q:"Which quantifier is used with UNCOUNTABLE nouns?",
+      opts:["many", "a few", "several", "much"], ans:3,
+      fb:"Much + uncountable: much water, much money, much time. Many + countable: many stalls, many people." },
+    { q:"Which sentence is CORRECT?",
+      opts:["I need some informations.", "I bought two breads.", "I drank some water and ate a piece of cake.", "There were much stalls at Camden."], ans:2,
+      fb:"'Some water' (unc.) + 'a piece of cake' (partitive) ✓. Others: informations ✗, two breads ✗ (use loaves), much stalls ✗ (use many)." },
+    { q:"'I'd like ___ rice and ___ sandwich.' — Complete correctly.",
+      opts:["a / a", "some / a", "much / a", "many / some"], ans:1,
+      fb:"Rice = uncountable → 'some rice'. Sandwich = countable → 'a sandwich'." }
+  ],
+
+  // Tab 7: General Mix (10 questions)
+  [
+    { q:"'Look at that queue — ___ going to be packed today.' — Complete.",
+      opts:["it will", "it's", "it would", "it was"], ans:1,
+      fb:"Evidence-based prediction (visible queue) → going to. 'It's going to be packed.'" },
+    { q:"'The market ___ founded in 1974 by local traders.' — Complete.",
+      opts:["is", "was", "has been", "founded"], ans:1,
+      fb:"Past Simple Passive: was + founded. (Founded = past participle of found)" },
+    { q:"'If I ___ enough money, I would buy this jacket.' — Complete.",
+      opts:["have", "had", "will have", "have had"], ans:1,
+      fb:"2nd Conditional if-clause: past simple → 'had'." },
+    { q:"Mert walked ___ through the narrow paths. (How did he walk?)",
+      opts:["usually", "slowly", "always", "rarely"], ans:1,
+      fb:"'Slowly' answers HOW → adverb of manner. Position: verb + adverb." },
+    { q:"'They had ___ soup but couldn't finish ___ bowl.' — Complete.",
+      opts:["a / a", "some / the", "some / a", "many / the"], ans:1,
+      fb:"Soup is uncountable → some soup. Bowl is countable, specific → the bowl." },
+    { q:"'It was crowded, ___ they enjoyed every moment.' — FANBOYS conjunction.",
+      opts:["so", "for", "yet", "nor"], ans:2,
+      fb:"Yet = surprising contrast (crowded, but still enjoyed → unexpected). So would imply result." },
+    { q:"'___ going to do this again next summer. That's a promise.' — Mert's mother.",
+      opts:["We'll", "We're", "We'd", "We've"], ans:1,
+      fb:"We're going to = firm intention already decided → going to. 'We'll' would suggest it's spontaneous." },
+    { q:"'Fresh food ___ daily at Camden Market.' — Passive, present.",
+      opts:["prepared", "prepares", "is prepared", "was prepared"], ans:2,
+      fb:"Present Simple Passive: is/are + past participle → 'is prepared'." },
+    { q:"'I ___ carry the bag, Mum.' — Mert's spontaneous offer.",
+      opts:["am going to", "would", "'ll", "might going to"], ans:2,
+      fb:"Spontaneous offer → will ('ll). 'I'll carry the bag, Mum.'" },
+    { q:"'She smiled ___ and said nothing more.' — Choose the correct form.",
+      opts:["warm", "warming", "warmly", "more warmly than"], ans:2,
+      fb:"Adverb of manner modifies verb 'smiled' → needs -ly form: warmly." }
+  ],
+
+  // Tab 8: Comprehension (5 questions)
+  [
+    { q:"Where did Mert and his mother go FIRST?",
+      opts:["Regent's Park", "Camden Town station", "Camden Market", "A restaurant near the lake"], ans:2,
+      fb:"'We're going to visit Camden Market first' — their first destination after the station." },
+    { q:"When was Camden Market founded?",
+      opts:["1940", "1964", "1974", "1994"], ans:2,
+      fb:"Story: 'Camden Market was founded in 1974.'" },
+    { q:"What did Mert want to buy but couldn't afford?",
+      opts:["A vintage book", "A vintage jacket", "A vintage bicycle", "A vintage hat"], ans:1,
+      fb:"'Look at this vintage jacket! If I had enough money, I would definitely buy it.'" },
+    { q:"What did Mert eat at the market?",
+      opts:["Ethiopian stew and soup", "Mexican tacos and coffee", "Some rice and a piece of cake", "A sandwich and tea"], ans:2,
+      fb:"'I'd like some rice and a piece of cake,' said Mert." },
+    { q:"What promise did Mert's mother make at the end of the story?",
+      opts:["They would move to London.", "She would buy him the jacket.", "They would return next summer.", "She would take him to more markets every month."], ans:2,
+      fb:"'We're going to do this again next summer. That's a promise.'" }
+  ]
+];
+
+const TOTALS = [5,5,5,5,5,5,5,10,5]; // per tab
+const scores = [0,0,0,0,0,0,0,0,0];
+const answered = Array.from({length:9}, (_,i) => Array(TOTALS[i]).fill(false));
+let activeTab = 0;
+
+// ─── RENDER QUIZ ─────────────────────────────────────────────────────────────
+function renderTab(t) {
+  const container = document.getElementById('qs-' + t);
+  container.innerHTML = '';
+  QUIZZES[t].forEach((q, qi) => {
+    const div = document.createElement('div');
+    div.className = 'q-box';
+    div.id = `q-${t}-${qi}`;
+    div.innerHTML = `
+      <div class="q-text"><span class="q-num">Q${qi+1} / ${TOTALS[t]}</span>${q.q}</div>
+      <div class="options">
+        ${q.opts.map((o,oi) => `<div class="option" onclick="answer(${t},${qi},${oi})">${o}</div>`).join('')}
+      </div>
+      <div class="feedback" id="fb-${t}-${qi}" style="display:none"></div>`;
+    container.appendChild(div);
+  });
+  updateProgress(t);
+}
+
+function answer(t, qi, chosen) {
+  if (answered[t][qi]) return;
+  answered[t][qi] = true;
+  const q = QUIZZES[t][qi];
+  const box = document.getElementById(`q-${t}-${qi}`);
+  const opts = box.querySelectorAll('.option');
+  const fb = document.getElementById(`fb-${t}-${qi}`);
+  const correct = chosen === q.ans;
+  if (correct) scores[t]++;
+  opts.forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === q.ans) o.classList.add('correct');
+    else if (i === chosen && !correct) o.classList.add('wrong');
+  });
+  fb.style.display = 'block';
+  fb.className = 'feedback ' + (correct ? 'ok' : 'err');
+  fb.textContent = (correct ? '✓ Correct! ' : '✗ Not quite. ') + q.fb;
+  updateProgress(t);
+  if (answered[t].every(Boolean)) finishTab(t);
+  updateTotal();
+}
+
+function updateProgress(t) {
+  const done = answered[t].filter(Boolean).length;
+  const pct = (done / TOTALS[t]) * 100;
+  const panel = document.querySelector(`[data-tab="${t}"] .quiz-progress-bar`);
+  if (panel) panel.style.width = pct + '%';
+}
+
+function finishTab(t) {
+  document.getElementById('score-' + t).style.display = 'block';
+  document.getElementById('snum-' + t).textContent = scores[t] + '/' + TOTALS[t];
+}
+
+function resetTab(t) {
+  scores[t] = 0;
+  answered[t] = Array(TOTALS[t]).fill(false);
+  document.getElementById('score-' + t).style.display = 'none';
+  renderTab(t);
+  updateTotal();
+}
+
+function switchTab(t) {
+  document.querySelectorAll('.quiz-tab').forEach((el,i) => el.classList.toggle('active', i===t));
+  document.querySelectorAll('.quiz-panel').forEach((el,i) => el.classList.toggle('active', i===t));
+  activeTab = t;
+}
+
+function updateTotal() {
+  const total = scores.reduce((a,b)=>a+b,0);
+  const max = TOTALS.reduce((a,b)=>a+b,0);
+  document.getElementById('totalScore').textContent = total + ' / ' + max;
+  document.getElementById('totalFill').style.width = ((total/max)*100) + '%';
+}
+
+// ─── EXPORT ──────────────────────────────────────────────────────────────────
+function exportJSON() {
+  const keys = ['future-will','going-to','2nd-conditional','passive-voice','adverbs','fanboys','countable-uncountable','general-mix','comprehension'];
+  const structScores = {};
+  keys.forEach((k,i) => { structScores[k] = { correct: scores[i], total: TOTALS[i] }; });
+  const total = scores.reduce((a,b)=>a+b,0);
+  const max   = TOTALS.reduce((a,b)=>a+b,0);
+  const payload = {
+    schema: "lesson-progress-1.0",
+    lesson: "03",
+    title: "A Day in London: Camden Market & Regent's Park",
+    date: new Date().toISOString().slice(0,10),
+    structures: ["Future Will","Future Going To","Second Conditional","Passive Voice","Adverbs of Manner/Frequency","Coordinating Conjunctions (FANBOYS)","Countable & Uncountable Nouns"],
+    scores: structScores,
+    totalCorrect: total,
+    totalQuestions: max,
+    percentage: Math.round((total/max)*100)
+  };
+  const json = JSON.stringify(payload, null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    const el = document.getElementById('exportStatus');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  }).catch(() => {
+    const blob = new Blob([json], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'lesson-03-progress.json';
+    a.click();
+  });
+}
+
+// ─── VIEW / THEME ─────────────────────────────────────────────────────────────
+function setView(v) {
+  const sec = document.getElementById('grammarSection');
+  sec.classList.toggle('cards-list', v === 'list');
+  document.getElementById('viewCard').classList.toggle('active', v === 'card');
+  document.getElementById('viewList').classList.toggle('active', v === 'list');
+}
+
+function toggleTheme() {
+  const body = document.body;
+  const isDark = body.dataset.theme === 'dark';
+  body.dataset.theme = isDark ? 'light' : 'dark';
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+
+// ─── HIGHLIGHT FILTER ─────────────────────────────────────────────────────────
+function filterStruct(type) {
+  const classMap = {
+    will:'w', goto:'g', cond:'c', pass:'p', advm:'am', advf:'af', fanb:'f', noun:'n'
+  };
+  const story = document.getElementById('storyBox');
+  if (type === 'all') {
+    story.querySelectorAll('.w,.g,.c,.p,.am,.af,.f,.n').forEach(el => el.style.opacity = '1');
+    return;
+  }
+  const active = classMap[type];
+  story.querySelectorAll('.w,.g,.c,.p,.am,.af,.f,.n').forEach(el => {
+    el.style.opacity = el.classList.contains(active) ? '1' : '0.15';
+  });
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+for (let i = 0; i < 9; i++) renderTab(i);
+</script>
+</body>
+</html>
