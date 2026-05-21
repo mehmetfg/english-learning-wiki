@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collocation Heatmap v2 — Adj+Prep · Verb+Prep · Adv+Adj</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a2028; --text: #e6edf3; --muted: #8b949e;
+    --accent: #58a6ff; --border: #30363d;
+    --c-none: #1a2028; --c-weak: #4d4225; --c-mid: #8a6914; --c-strong: #d29922;
+    --c-text-on-cell: #1f2328;
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --panel: #f6f8fa; --text: #1f2328; --muted: #656d76;
+    --accent: #0969da; --border: #d0d7de;
+    --c-none: #f6f8fa; --c-weak: #fff8c5; --c-mid: #fae17d; --c-strong: #d4a72c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: var(--bg); color: var(--text); padding: 16px; min-height: 100vh;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
+  }
+  h1 { font-size: 18px; font-weight: 600; }
+  .subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .toolbar { display: flex; gap: 8px; }
+  .icon-btn {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .icon-btn:hover, .icon-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab {
+    padding: 10px 16px; background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 14px; border-bottom: 2px solid transparent;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .filters {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 16px;
+    flex-wrap: wrap; font-size: 13px;
+  }
+  .filters select, .filters input {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 10px; border-radius: 6px; font-size: 13px;
+  }
+  .legend { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; }
+
+  .matrix-note {
+    font-size: 12px; color: var(--muted); background: var(--panel);
+    border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px;
+    margin-bottom: 12px; line-height: 1.5;
+  }
+  .matrix-note strong { color: var(--accent); }
+
+  /* HEATMAP */
+  .heatmap-wrap { overflow-x: auto; }
+  .heatmap {
+    display: inline-grid; gap: 2px; padding: 4px;
+    background: var(--panel); border-radius: 8px; border: 1px solid var(--border);
+  }
+  .h-cell {
+    width: 74px; height: 38px; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; cursor: pointer; border-radius: 3px;
+    transition: transform 0.1s; user-select: none;
+  }
+  .h-cell.header {
+    background: transparent; color: var(--muted); font-weight: 600;
+    cursor: default; font-size: 12px;
+  }
+  .h-cell.row-header { justify-content: flex-end; padding-right: 8px; }
+  .h-cell.col-header { writing-mode: horizontal-tb; }
+  .h-cell.none { background: var(--c-none); color: var(--muted); }
+  .h-cell.weak { background: var(--c-weak); color: var(--c-text-on-cell); }
+  .h-cell.mid { background: var(--c-mid); color: var(--c-text-on-cell); }
+  .h-cell.strong { background: var(--c-strong); color: var(--c-text-on-cell); font-weight: 700; }
+  .h-cell:not(.header):hover { transform: scale(1.12); z-index: 5; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  .h-cell.selected { outline: 2px solid var(--accent); }
+
+  .detail {
+    margin-top: 16px; padding: 16px; background: var(--panel);
+    border-left: 3px solid var(--accent); border-radius: 6px;
+    display: none;
+  }
+  .detail.show { display: block; }
+  .detail-coll { font-size: 18px; font-weight: 600; color: var(--accent); }
+  .detail-meta { font-size: 12px; color: var(--muted); margin: 4px 0 12px; }
+  .detail-note { font-size: 13px; color: var(--warn); margin-bottom: 10px; font-style: italic; }
+  .detail-ex { margin: 8px 0; padding-left: 12px; border-left: 2px solid var(--border); }
+  .detail-ex .en { font-size: 14px; }
+  .detail-ex .tr { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* DRILL */
+  .drill-card {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 24px; border-radius: 12px; max-width: 640px; margin: 20px auto;
+  }
+  .drill-sentence { font-size: 18px; margin: 12px 0 20px; }
+  .drill-blank {
+    display: inline-block; min-width: 100px; border-bottom: 2px solid var(--accent);
+    color: var(--accent); text-align: center; font-weight: 600;
+  }
+  .drill-input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); padding: 10px; border-radius: 6px; font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .drill-input.correct { border-color: var(--c-strong); }
+  .drill-input.wrong { border-color: #f85149; }
+  .btn {
+    background: var(--accent); color: var(--bg); border: none;
+    padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    font-size: 13px; font-weight: 600;
+  }
+  .drill-feedback { margin-top: 12px; font-size: 13px; color: var(--muted); display: none; }
+  .drill-feedback.show { display: block; }
+
+  .stats-bar {
+    display: flex; gap: 16px; padding: 10px; background: var(--panel);
+    border-radius: 6px; margin-bottom: 12px; font-size: 13px;
+  }
+  .stats-bar span strong { color: var(--accent); }
+
+  :root { --warn: #d29922; }
+  .hidden { display: none !important; }
+
+  @media (max-width: 720px) {
+    .h-cell { width: 58px; height: 34px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>🔥 Collocation Heatmap v2</h1>
+      <div class="subtitle">Adj+Prep · Verb+Prep · Adv+Adj (yeni matrisleri) — B1 odak</div>
+    </div>
+    <div class="toolbar">
+      <button class="icon-btn" id="themeBtn" title="Tema (T)">🌓</button>
+      <button class="icon-btn" id="resetBtn" title="Sıfırla (Shift+R)">↺</button>
+      <button class="icon-btn" id="exportBtn" title="JSON indir (E)">📥</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="heatmap">🔥 Heatmap</button>
+    <button class="tab" data-tab="drill">✍️ Drill</button>
+  </div>
+
+  <!-- HEATMAP TAB -->
+  <div id="tab-heatmap">
+    <div class="filters">
+      <label>Matris:
+        <select id="matrixSel">
+          <option value="ap">Adj + Preposition</option>
+          <option value="vp">Verb + Preposition</option>
+          <option value="adv">Adverb + Adjective (yeni set)</option>
+        </select>
+      </label>
+      <label>CEFR:
+        <select id="cefrSel">
+          <option value="">Tümü</option>
+          <option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option>
+        </select>
+      </label>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--c-none)"></span>yanlış/yok</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--c-weak)"></span>zayıf</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--c-mid)"></span>orta</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:var(--c-strong)"></span>güçlü</span>
+      </div>
+    </div>
+
+    <div id="matrixNote" class="matrix-note"></div>
+
+    <div class="heatmap-wrap">
+      <div class="heatmap" id="heatmap"></div>
+    </div>
+
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <!-- DRILL TAB -->
+  <div id="tab-drill" class="hidden">
+    <div class="stats-bar">
+      <span>Doğru: <strong id="dCorrect">0</strong></span>
+      <span>Hata: <strong id="dWrong">0</strong></span>
+      <span>Streak: <strong id="dStreak">0</strong></span>
+    </div>
+    <div class="drill-card">
+      <p style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;" id="dMatrix">—</p>
+      <p class="drill-sentence" id="dSentence">—</p>
+      <input type="text" class="drill-input" id="dInput" placeholder="Eksik kelimeyi yaz…" autocomplete="off">
+      <button class="btn" id="dCheck">Kontrol Et (Enter)</button>
+      <button class="btn" id="dNext" style="background:transparent;color:var(--accent);border:1px solid var(--accent);margin-left:8px;">Sonraki (→)</button>
+      <div class="drill-feedback" id="dFeedback"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ===================== DATA =====================
+// Strength: 0=none/wrong, 1=weak, 2=mid, 3=strong
+const MATRICES = {
+
+  // ── MATRIX 1: Adjective + Preposition ──
+  ap: {
+    label: "Adjective + Preposition",
+    note: "<strong>Adjective + Preposition</strong> kombinasyonları: Her adj belirli bir preposition'la sabit bağ kurar — yanlış prep grammar hatası demektir. Hücre rengi = ne kadar sık/karıştırılabilir olduğu.",
+    rows: ["interested", "good", "afraid", "proud", "responsible", "fond", "capable", "worried"],
+    cols: ["in", "at", "of", "for", "about", "with"],
+    data: [
+      //        in  at  of  for  about  with
+      /* interested */ [3, 0, 0, 0, 2, 0],
+      /* good */       [0, 3, 1, 0, 0, 0],
+      /* afraid */     [0, 0, 3, 0, 1, 0],
+      /* proud */      [0, 0, 3, 0, 0, 0],
+      /* responsible */[0, 0, 2, 3, 0, 0],
+      /* fond */       [0, 0, 3, 0, 0, 0],
+      /* capable */    [0, 0, 3, 0, 0, 0],
+      /* worried */    [0, 0, 1, 0, 3, 0],
+    ],
+    examples: {
+      "interested+in": { cefr: "A2", ex: [
+        { en: "Are you interested in learning guitar?", tr: "Gitar öğrenmekle ilgileniyor musun?" },
+        { en: "She's never been interested in politics.", tr: "Politikaya hiç ilgi duymamış." }
+      ]},
+      "interested+about": { cefr: "B1", ex: [
+        { en: "(less common but possible: 'curious/enthusiastic about' is stronger)", tr: "Daha az yaygın; 'curious about' tercih et." }
+      ]},
+      "good+at": { cefr: "A2", ex: [
+        { en: "He's really good at maths.", tr: "Matematikte gerçekten iyidir." },
+        { en: "I'm not good at remembering names.", tr: "İsimleri hatırlamakta iyi değilim." }
+      ]},
+      "good+in": { cefr: "B1", ex: [
+        { en: "('Good in bed' is a fixed phrase; otherwise 'good at' is standard)", tr: "Sabit ifade dışında 'good at' kullan." }
+      ]},
+      "afraid+of": { cefr: "A2", ex: [
+        { en: "Many children are afraid of the dark.", tr: "Birçok çocuk karanlıktan korkar." }
+      ]},
+      "afraid+about": { cefr: "B1", ex: [
+        { en: "('worried about' is more natural here)", tr: "Bu anlamda 'worried about' daha doğal." }
+      ]},
+      "proud+of": { cefr: "A2", ex: [
+        { en: "Her parents are very proud of her.", tr: "Ailesi onunla çok gurur duyuyor." }
+      ]},
+      "responsible+for": { cefr: "B1", ex: [
+        { en: "Who is responsible for this decision?", tr: "Bu karardan kim sorumlu?" }
+      ]},
+      "responsible+of": { cefr: "B1", ex: [
+        { en: "(possible: 'it was irresponsible of him' — adj+of = judgement phrase)", tr: "Yargı ifadelerinde: 'It was careless of him.'" }
+      ]},
+      "fond+of": { cefr: "B1", ex: [
+        { en: "She's very fond of her grandmother.", tr: "Büyükannesine çok düşkün." },
+        { en: "I'm fond of Italian food.", tr: "İtalyan yemeğini severim." }
+      ]},
+      "capable+of": { cefr: "B1", ex: [
+        { en: "Do you think he's capable of lying?", tr: "Sence yalan söylemeye kabiliyetli mi?" }
+      ]},
+      "worried+about": { cefr: "A2", ex: [
+        { en: "I'm worried about the exam tomorrow.", tr: "Yarınki sınavdan endişeleniyorum." }
+      ]},
+      "worried+of": { cefr: "B1", ex: [
+        { en: "(incorrect — always 'worried about', never 'worried of')", tr: "YANLIŞ — daima 'worried about' kullan." }
+      ]},
+    }
+  },
+
+  // ── MATRIX 2: Verb + Preposition ──
+  vp: {
+    label: "Verb + Preposition",
+    note: "<strong>Verb + Preposition</strong> sabit bağlar: Türkçe kalıp genellikle yanlış yönlendirir. Örn. 'depend to' sık yapılan hata. Hücre rengi = öğrenci hata sıklığı.",
+    rows: ["depend", "agree", "apply", "believe", "result", "suffer", "consist", "succeed"],
+    cols: ["on", "with", "for", "in", "of", "from"],
+    data: [
+      //       on  with  for   in   of   from
+      /* depend */  [3,  0,   0,   1,   0,   0 ],
+      /* agree */   [0,  2,   0,   2,   0,   0 ],
+      /* apply */   [0,  0,   3,   2,   0,   0 ],
+      /* believe */ [0,  0,   0,   3,   0,   0 ],
+      /* result */  [0,  0,   0,   3,   0,   1 ],
+      /* suffer */  [0,  0,   0,   0,   0,   3 ],
+      /* consist */ [0,  0,   0,   0,   3,   0 ],
+      /* succeed */ [0,  0,   0,   3,   0,   0 ],
+    ],
+    examples: {
+      "depend+on": { cefr: "A2", ex: [
+        { en: "The result depends on how hard you work.", tr: "Sonuç ne kadar çok çalıştığına bağlı." },
+        { en: "I depend on my phone for everything.", tr: "Her şey için telefona bağımlıyım." }
+      ]},
+      "depend+in": { cefr: "B1", ex: [
+        { en: "(incorrect — 'depend on', never 'depend in')", tr: "YANLIŞ — daima 'depend on'." }
+      ]},
+      "agree+with": { cefr: "A2", ex: [
+        { en: "I agree with everything you said.", tr: "Söylediklerinin hepsine katılıyorum." }
+      ]},
+      "agree+in": { cefr: "B1", ex: [
+        { en: "('agree in principle' — formal, fixed phrase only)", tr: "'Agree in principle' sabit ifadesinde." }
+      ]},
+      "apply+for": { cefr: "B1", ex: [
+        { en: "She applied for three jobs this week.", tr: "Bu hafta üç işe başvurdu." }
+      ]},
+      "apply+in": { cefr: "B1", ex: [
+        { en: "('apply in writing / apply in person' — manner of applying, different meaning)", tr: "Başvuru şeklini belirtir: 'apply in person'." }
+      ]},
+      "believe+in": { cefr: "A2", ex: [
+        { en: "Do you believe in luck?", tr: "Şansa inanır mısın?" },
+        { en: "I believe in working smart, not just hard.", tr: "Sadece çok çalışmaya değil, akıllı çalışmaya inanıyorum." }
+      ]},
+      "result+in": { cefr: "B1", ex: [
+        { en: "The storm resulted in widespread power cuts.", tr: "Fırtına yaygın elektrik kesintilerine neden oldu." }
+      ]},
+      "result+from": { cefr: "B1", ex: [
+        { en: "The delay resulted from poor planning.", tr: "Gecikme kötü planlamadan kaynaklandı." }
+      ]},
+      "suffer+from": { cefr: "B1", ex: [
+        { en: "He suffers from migraines every week.", tr: "Her hafta migrenden muzdarip oluyor." },
+        { en: "The region suffers from water shortages.", tr: "Bölge su sıkıntısı yaşıyor." }
+      ]},
+      "consist+of": { cefr: "B1", ex: [
+        { en: "The committee consists of five members.", tr: "Komite beş üyeden oluşuyor." }
+      ]},
+      "succeed+in": { cefr: "B1", ex: [
+        { en: "She finally succeeded in passing the exam.", tr: "Sonunda sınavı geçmeyi başardı." }
+      ]},
+    }
+  },
+
+  // ── MATRIX 3: Adverb + Adjective (new high-B1/B2 set) ──
+  adv: {
+    label: "Adverb + Adjective (B1/B2 set)",
+    note: "<strong>Adverb + Adjective</strong> intensifier collocations: 'very' yerine daha zengin zarflar. Kırmızıya yakın = o kombinasyon gerçekten var ve güçlü; karanlık = o kombinasyon doğal değil.",
+    rows: ["completely", "deeply", "badly", "heavily", "strongly", "highly"],
+    cols: ["different", "moved", "needed", "armed", "influenced", "recommended"],
+    data: [
+      //            diff  moved  needed  armed  influenced  recommended
+      /* completely */  [3,    0,     2,     0,      0,          0 ],
+      /* deeply */      [0,    3,     0,     0,      2,          0 ],
+      /* badly */       [0,    0,     3,     0,      0,          0 ],
+      /* heavily */     [0,    0,     0,     3,      1,          0 ],
+      /* strongly */    [0,    0,     0,     0,      2,          2 ],
+      /* highly */      [0,    0,     0,     0,      0,          3 ],
+    ],
+    examples: {
+      "completely+different": { cefr: "B1", ex: [
+        { en: "The two cities are completely different.", tr: "İki şehir tamamen birbirinden farklı." }
+      ]},
+      "completely+needed": { cefr: "B1", ex: [
+        { en: "The change was completely needed.", tr: "Değişiklik tamamen gerekliydi." }
+      ]},
+      "deeply+moved": { cefr: "B2", ex: [
+        { en: "She was deeply moved by the performance.", tr: "Performanstan derinden etkilendi." }
+      ]},
+      "deeply+influenced": { cefr: "B2", ex: [
+        { en: "His writing was deeply influenced by Tolstoy.", tr: "Yazıları Tolstoy'dan derinden etkilenmişti." }
+      ]},
+      "badly+needed": { cefr: "B1", ex: [
+        { en: "This road is badly needed in the area.", tr: "Bu yol bölgede çok ihtiyaç duyulan bir şey." },
+        { en: "A good night's sleep is badly needed.", tr: "İyi bir gece uykusuna çok ihtiyaç var." }
+      ]},
+      "heavily+armed": { cefr: "B2", ex: [
+        { en: "The building was guarded by heavily armed soldiers.", tr: "Bina ağır silahlı askerler tarafından korunuyordu." }
+      ]},
+      "heavily+influenced": { cefr: "B2", ex: [
+        { en: "Her style is heavily influenced by jazz.", tr: "Stili caz müziğinden ağırlıklı olarak etkilenmiş." }
+      ]},
+      "strongly+influenced": { cefr: "B2", ex: [
+        { en: "He was strongly influenced by his mentor.", tr: "Mentöründen güçlü biçimde etkilendi." }
+      ]},
+      "strongly+recommended": { cefr: "B1", ex: [
+        { en: "This book is strongly recommended for beginners.", tr: "Bu kitap yeni başlayanlar için şiddetle öneriliyor." }
+      ]},
+      "highly+recommended": { cefr: "B1", ex: [
+        { en: "The restaurant is highly recommended by locals.", tr: "Restoran yerel halk tarafından şiddetle tavsiye ediliyor." },
+        { en: "It comes highly recommended.", tr: "Çok tavsiye edilen bir şey." }
+      ]},
+    }
+  }
+};
+
+// ── Drill items ──
+const DRILL = [
+  // Adj + Prep
+  { matrix: "Adj + Prep · A2", sentence: "She's very interested ___ photography.", blank: "in",
+    hint: "interested ___" },
+  { matrix: "Adj + Prep · A2", sentence: "He's good ___ fixing things around the house.", blank: "at",
+    hint: "good ___" },
+  { matrix: "Adj + Prep · A2", sentence: "Are you afraid ___ flying? Most people are.", blank: "of",
+    hint: "afraid ___" },
+  { matrix: "Adj + Prep · B1", sentence: "Who is responsible ___ organising the event?", blank: "for",
+    hint: "responsible ___" },
+  { matrix: "Adj + Prep · B1", sentence: "She's very fond ___ her cats — she has six of them.", blank: "of",
+    hint: "fond ___" },
+  { matrix: "Adj + Prep · B1", sentence: "I'm really worried ___ the exam next week.", blank: "about",
+    hint: "worried ___" },
+  // Verb + Prep
+  { matrix: "Verb + Prep · A2", sentence: "Everything depends ___ the weather tomorrow.", blank: "on",
+    hint: "depend ___" },
+  { matrix: "Verb + Prep · B1", sentence: "She applied ___ a scholarship and got it.", blank: "for",
+    hint: "apply ___" },
+  { matrix: "Verb + Prep · B1", sentence: "Do you believe ___ second chances?", blank: "in",
+    hint: "believe ___" },
+  { matrix: "Verb + Prep · B1", sentence: "The team consists ___ twelve people.", blank: "of",
+    hint: "consist ___" },
+  { matrix: "Verb + Prep · B1", sentence: "He finally succeeded ___ getting the promotion.", blank: "in",
+    hint: "succeed ___" },
+  { matrix: "Verb + Prep · B1", sentence: "She has suffered ___ back pain for years.", blank: "from",
+    hint: "suffer ___" },
+  // Adv + Adj
+  { matrix: "Adv + Adj · B1", sentence: "The twins look exactly the same but have completely ___ personalities.", blank: "different",
+    hint: "completely ___" },
+  { matrix: "Adv + Adj · B1", sentence: "More investment is badly ___ in rural areas.", blank: "needed",
+    hint: "badly ___" },
+  { matrix: "Adv + Adj · B1", sentence: "This documentary is highly ___ — don't miss it.", blank: "recommended",
+    hint: "highly ___" },
+];
+
+// ===================== STATE =====================
+const STORAGE_KEY = 'collocation-heatmap-v2';
+let state = loadState();
+let drillIdx = 0;
+let drillOrder = [];
+let dCorrect = 0, dWrong = 0, dStreak = 0;
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    return Object.assign({ matrix: 'ap', cefrFilter: '', selectedCell: null, theme: 'dark' }, s);
+  } catch { return { matrix: 'ap', cefrFilter: '', selectedCell: null, theme: 'dark' }; }
+}
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function esc(s) { return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+// ===================== HEATMAP =====================
+const STRENGTH_CLASS = ['none', 'weak', 'mid', 'strong'];
+
+function renderHeatmap() {
+  const m = MATRICES[state.matrix];
+  const note = document.getElementById('matrixNote');
+  note.innerHTML = m.note;
+
+  const grid = document.getElementById('heatmap');
+  const cols = m.cols.length;
+
+  grid.style.gridTemplateColumns = `80px repeat(${cols}, 74px)`;
+  grid.innerHTML = '';
+
+  // Corner
+  const corner = document.createElement('div');
+  corner.className = 'h-cell header';
+  grid.appendChild(corner);
+
+  // Column headers
+  m.cols.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'h-cell header col-header';
+    el.textContent = c;
+    grid.appendChild(el);
+  });
+
+  // Rows
+  m.rows.forEach((row, ri) => {
+    const rh = document.createElement('div');
+    rh.className = 'h-cell header row-header';
+    rh.textContent = row;
+    grid.appendChild(rh);
+
+    m.cols.forEach((col, ci) => {
+      const strength = m.data[ri][ci];
+      const key = `${row}+${col}`;
+      const ex = m.examples[key];
+      const el = document.createElement('div');
+      el.className = `h-cell ${STRENGTH_CLASS[strength]}`;
+      el.textContent = strength > 0 ? (strength === 3 ? '★★★' : strength === 2 ? '★★' : '★') : '—';
+      if (state.selectedCell === key) el.classList.add('selected');
+
+      // Apply CEFR filter
+      if (state.cefrFilter && ex && ex.cefr !== state.cefrFilter) {
+        el.style.opacity = '0.25';
+      }
+
+      el.addEventListener('click', () => {
+        state.selectedCell = state.selectedCell === key ? null : key;
+        save();
+        renderHeatmap();
+        renderDetail(key, row, col, strength, ex);
+      });
+      grid.appendChild(el);
+    });
+  });
+}
+
+function renderDetail(key, row, col, strength, ex) {
+  const detail = document.getElementById('detail');
+  if (!state.selectedCell) { detail.classList.remove('show'); return; }
+
+  const m = MATRICES[state.matrix];
+  const strengthLabel = ['Yok / Yanlış', 'Zayıf', 'Orta', 'Güçlü'][strength];
+  const cefr = ex?.cefr || '—';
+
+  let html = `<div class="detail-coll">${esc(row)} + ${esc(col)}</div>`;
+  html += `<div class="detail-meta">Güç: ${strengthLabel} &nbsp;·&nbsp; CEFR: ${esc(cefr)} &nbsp;·&nbsp; Matris: ${esc(m.label)}</div>`;
+
+  if (!ex || strength === 0) {
+    html += `<div class="detail-note">⚠ Bu kombinasyon doğal değil veya kullanılmıyor. Yukarıdaki kural notuna bak.</div>`;
+    if (ex?.ex) {
+      html += ex.ex.map(e => `<div class="detail-ex"><div class="en">${esc(e.en)}</div><div class="tr">${esc(e.tr)}</div></div>`).join('');
+    }
+  } else {
+    html += ex.ex.map(e => `<div class="detail-ex"><div class="en">${esc(e.en)}</div><div class="tr">${esc(e.tr)}</div></div>`).join('');
+  }
+
+  detail.innerHTML = html;
+  detail.classList.add('show');
+}
+
+// ===================== DRILL =====================
+function initDrill() {
+  drillOrder = DRILL.map((_, i) => i);
+  for (let i = drillOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [drillOrder[i], drillOrder[j]] = [drillOrder[j], drillOrder[i]];
+  }
+  drillIdx = 0;
+  dCorrect = 0; dWrong = 0; dStreak = 0;
+  renderDrill();
+}
+
+function renderDrill() {
+  if (drillIdx >= drillOrder.length) drillIdx = 0;
+  const item = DRILL[drillOrder[drillIdx]];
+  const parts = item.sentence.split('___');
+  document.getElementById('dMatrix').textContent = item.matrix;
+  document.getElementById('dSentence').innerHTML =
+    esc(parts[0]) + '<span class="drill-blank">___</span>' + esc(parts[1] || '');
+  const inp = document.getElementById('dInput');
+  inp.value = '';
+  inp.className = 'drill-input';
+  document.getElementById('dFeedback').classList.remove('show');
+  document.getElementById('dFeedback').innerHTML = '';
+  inp.focus();
+  updateDrillStats();
+}
+
+function checkDrill() {
+  const item = DRILL[drillOrder[drillIdx]];
+  const val = document.getElementById('dInput').value.trim().toLowerCase();
+  const correct = item.blank.toLowerCase();
+  const isOk = val === correct;
+  const inp = document.getElementById('dInput');
+  const fb = document.getElementById('dFeedback');
+  inp.className = 'drill-input ' + (isOk ? 'correct' : 'wrong');
+  if (isOk) {
+    dCorrect++; dStreak++;
+    fb.innerHTML = `✓ Doğru! <em>${esc(item.hint.replace('___', `<strong style="color:var(--accent)">${esc(correct)}</strong>`))}</em>`;
+  } else {
+    dWrong++; dStreak = 0;
+    fb.innerHTML = `✗ "${esc(val)}" — Doğru: <strong style="color:var(--accent)">${esc(correct)}</strong> → ${esc(item.hint.replace('___', correct))}`;
+  }
+  fb.classList.add('show');
+  updateDrillStats();
+}
+
+function updateDrillStats() {
+  document.getElementById('dCorrect').textContent = dCorrect;
+  document.getElementById('dWrong').textContent = dWrong;
+  document.getElementById('dStreak').textContent = dStreak;
+}
+
+// ===================== EVENT LISTENERS =====================
+document.getElementById('matrixSel').addEventListener('change', e => {
+  state.matrix = e.target.value; state.selectedCell = null; save();
+  renderHeatmap();
+  document.getElementById('detail').classList.remove('show');
+});
+document.getElementById('cefrSel').addEventListener('change', e => {
+  state.cefrFilter = e.target.value; save(); renderHeatmap();
+});
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const name = tab.dataset.tab;
+    document.getElementById('tab-heatmap').classList.toggle('hidden', name !== 'heatmap');
+    document.getElementById('tab-drill').classList.toggle('hidden', name !== 'drill');
+    if (name === 'drill') initDrill();
+  });
+});
+document.getElementById('dCheck').addEventListener('click', checkDrill);
+document.getElementById('dNext').addEventListener('click', () => { drillIdx++; renderDrill(); });
+document.getElementById('dInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkDrill();
+  if (e.key === 'ArrowRight') { drillIdx++; renderDrill(); }
+});
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const t = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  state.theme = t; save();
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Sıfırlansın mı?')) return;
+  state = { matrix: 'ap', cefrFilter: '', selectedCell: null, theme: state.theme };
+  save(); renderHeatmap();
+  document.getElementById('detail').classList.remove('show');
+  document.getElementById('matrixSel').value = 'ap';
+  document.getElementById('cefrSel').value = '';
+});
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify({ version: 'collocation-heatmap-v2', matrices: MATRICES, drill: DRILL }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `collocation-heatmap-v2-${Date.now()}.json`; a.click();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'T' || e.key === 't') document.getElementById('themeBtn').click();
+});
+
+// ===================== INIT =====================
+if (state.theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+document.getElementById('matrixSel').value = state.matrix;
+document.getElementById('cefrSel').value = state.cefrFilter;
+renderHeatmap();
+</script>
+</body>
+</html>

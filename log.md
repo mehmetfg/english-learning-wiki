@@ -4,6 +4,18 @@ Append-only. Her giriş `## [YYYY-MM-DD] tip | başlık` formatında.
 
 ---
 
+## [2026-05-21] build | Confusable Drill v2 + Collocation Heatmap v2 + Comparative Reader v2
+
+Üç yeni artifact oluşturuldu — v1 içeriklerinden farklı, yeni konular:
+
+**confusable-drill-v2.html** — 20 yeni çift (B1 odak): Modals (must/have to, could/was able to, may/might), Adverb pairs (hard/hardly, late/lately, near/nearly), Adj confusables (fun/funny, alone/lonely, sensible/sensitive, interested/interesting), Time adverbs (eventually/finally, actually/currently), trip/journey, by/until, beside/besides, let/make, its/it's, who/which, neither/either, in the end/at the end, go/come, although/despite. Category filter eklendi (Modals / Adverbs / Adjectives / Prepositions / Structure).
+
+**collocation-heatmap-v2.html** — 3 yeni matris: (1) Adj+Preposition 8×6 grid (interested/good/afraid/proud/responsible/fond/capable/worried × in/at/of/for/about/with), (2) Verb+Preposition 8×6 grid (depend/agree/apply/believe/result/suffer/consist/succeed × on/with/for/in/of/from), (3) Adv+Adj yeni set (completely/deeply/badly/heavily/strongly/highly × different/moved/needed/armed/influenced/recommended). Her kombinasyon için örnek cümleler + "yanlış" hücre notları.
+
+**comparative-reader-v2.html** — A2-B1 seviye, uzun metin: (1) Atomic Habits — The 1% Rule (5 chapter, 7 paragraf çifti, B1↔A2), (2) Don Quixote — The Windmills (6 chapter, 9 paragraf çifti, B1↔A2). Chapter label sistemi eklendi. Keyboard ← → ile segment gezme, sync scroll, legend tıkla filtrele.
+
+---
+
 ## [2026-05-21] build | Grammar First Lesson 03 — Camden Market & Regent's Park
 
 `Artifacts/grammar-first-lesson-03.html` oluşturuldu. 7 yapı (Future Will, Going To, 2nd Conditional, Passive Voice, Adverbs of Manner/Freq., FANBOYS, Countable/Uncountable), ~350 kelime hikâye, 55 soru (7×5 + 10 mix + 5 comprehension), JSON export, dark/light tema, Card↔List view, highlight filter. Wiki kaydı: `wiki/artifacts/grammar-first-lesson-03.md`.

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confusable Drill v2 — Modals, Adverbs & More</title>
+<style>
+  :root {
+    --bg: #0f1419; --panel: #1a2028; --text: #e6edf3; --muted: #8b949e;
+    --accent: #58a6ff; --correct: #3fb950; --wrong: #f85149; --warn: #d29922;
+    --border: #30363d; --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  [data-theme="light"] {
+    --bg: #ffffff; --panel: #f6f8fa; --text: #1f2328; --muted: #656d76;
+    --accent: #0969da; --correct: #1a7f37; --wrong: #cf222e; --warn: #9a6700;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+    min-height: 100vh; padding: 16px;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px;
+  }
+  h1 { font-size: 18px; font-weight: 600; }
+  .subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .toolbar { display: flex; gap: 8px; }
+  .icon-btn {
+    background: var(--panel); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .icon-btn:hover { border-color: var(--accent); }
+
+  .stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    background: var(--panel); padding: 12px; border-radius: 8px;
+    border: 1px solid var(--border); margin-bottom: 16px;
+  }
+  .stat { text-align: center; }
+  .stat-val { font-size: 20px; font-weight: 600; color: var(--accent); }
+  .stat-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .timer-bar {
+    height: 4px; background: var(--border); border-radius: 2px;
+    overflow: hidden; margin-bottom: 16px;
+  }
+  .timer-fill { height: 100%; background: var(--accent); transition: width 0.1s linear; }
+  .timer-fill.danger { background: var(--wrong); }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; box-shadow: var(--shadow);
+  }
+  .pair-tag {
+    display: inline-block; font-size: 11px; color: var(--muted);
+    border: 1px solid var(--border); padding: 2px 8px; border-radius: 4px;
+    margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .cefr {
+    display: inline-block; font-size: 10px; padding: 2px 6px;
+    background: var(--accent); color: var(--bg); border-radius: 3px;
+    margin-left: 6px; font-weight: 600;
+  }
+  .category-tag {
+    display: inline-block; font-size: 10px; padding: 2px 6px;
+    background: rgba(210,153,34,0.2); color: var(--warn); border-radius: 3px;
+    margin-left: 6px; border: 1px solid rgba(210,153,34,0.3);
+  }
+  .sentence { font-size: 20px; margin: 12px 0 24px; }
+  .blank {
+    display: inline-block; min-width: 80px; border-bottom: 2px solid var(--accent);
+    margin: 0 4px; text-align: center; color: var(--accent); font-weight: 600;
+  }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .opt {
+    background: var(--bg); border: 2px solid var(--border); color: var(--text);
+    padding: 16px; border-radius: 8px; cursor: pointer; font-size: 16px;
+    font-weight: 500; transition: all 0.15s;
+  }
+  .opt:hover { border-color: var(--accent); }
+  .opt.correct { border-color: var(--correct); background: rgba(63,185,80,0.1); }
+  .opt.wrong { border-color: var(--wrong); background: rgba(248,81,73,0.1); }
+  .opt:disabled { cursor: not-allowed; }
+
+  .feedback {
+    margin-top: 16px; padding: 12px; border-radius: 6px;
+    border-left: 3px solid var(--accent); background: var(--bg);
+    display: none; font-size: 14px;
+  }
+  .feedback.show { display: block; }
+  .feedback strong { color: var(--correct); }
+  .feedback.err strong { color: var(--wrong); }
+
+  .nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 20px;
+  }
+  .btn {
+    background: var(--accent); color: var(--bg); border: none;
+    padding: 10px 20px; border-radius: 6px; cursor: pointer;
+    font-size: 14px; font-weight: 600;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .progress { font-size: 13px; color: var(--muted); }
+
+  .summary {
+    background: var(--panel); border: 1px solid var(--border);
+    padding: 20px; border-radius: 12px; margin-top: 20px;
+  }
+  .summary h2 { font-size: 16px; margin-bottom: 12px; }
+  .err-list { font-size: 13px; }
+  .err-list li {
+    list-style: none; padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .err-list .pair-name { color: var(--warn); font-weight: 600; }
+  .err-list .count { color: var(--muted); }
+
+  .filter-bar {
+    display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .filter-btn {
+    background: var(--panel); border: 1px solid var(--border); color: var(--muted);
+    padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 12px;
+  }
+  .filter-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 480px) {
+    .options { grid-template-columns: 1fr; }
+    .sentence { font-size: 17px; }
+  }
+  @media print {
+    .toolbar, .nav, .options { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div>
+      <h1>⚖️ Confusable Drill v2</h1>
+      <div class="subtitle">Modals · Adverb pairs · Adj confusables · Prepositions · Relative · B1 focus</div>
+    </div>
+    <div class="toolbar">
+      <button class="icon-btn" id="themeBtn" title="Tema (T)">🌓</button>
+      <button class="icon-btn" id="resetBtn" title="Sıfırla (Shift+R)">↺</button>
+      <button class="icon-btn" id="exportBtn" title="JSON indir (E)">📥</button>
+    </div>
+  </header>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-cat="">Tümü</button>
+    <button class="filter-btn" data-cat="Modals">Modals</button>
+    <button class="filter-btn" data-cat="Adverbs">Adverbs</button>
+    <button class="filter-btn" data-cat="Adjectives">Adjectives</button>
+    <button class="filter-btn" data-cat="Prepositions">Prepositions</button>
+    <button class="filter-btn" data-cat="Structure">Structure</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="sCorrect">0</div><div class="stat-lbl">Doğru</div></div>
+    <div class="stat"><div class="stat-val" id="sWrong">0</div><div class="stat-lbl">Hata</div></div>
+    <div class="stat"><div class="stat-val" id="sStreak">0</div><div class="stat-lbl">Streak</div></div>
+    <div class="stat"><div class="stat-val" id="sRate">—</div><div class="stat-lbl">% Oran</div></div>
+  </div>
+
+  <div class="timer-bar"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+
+  <div id="drillCard" class="card">
+    <span class="pair-tag" id="pairTag">—</span>
+    <span class="cefr" id="cefrTag">B1</span>
+    <span class="category-tag" id="catTag">—</span>
+    <p class="sentence" id="sentence">Yükleniyor...</p>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nav">
+      <span class="progress" id="progress">0 / 20</span>
+      <button class="btn" id="nextBtn" disabled>Sonraki (Enter)</button>
+    </div>
+  </div>
+
+  <div id="summaryCard" class="summary hidden">
+    <h2>📊 Oturum Özeti</h2>
+    <p style="font-size:14px;margin-bottom:12px;">
+      <strong id="sumCorrect">0</strong> doğru · <strong id="sumWrong">0</strong> hata ·
+      <span id="sumDelta">Δ 0</span> (önceki oturuma göre)
+    </p>
+    <h3 style="font-size:13px;color:var(--muted);margin-bottom:8px;">Hata frekansı (errors/confusables'a düşer):</h3>
+    <ul class="err-list" id="errList"></ul>
+    <button class="btn" id="restartBtn" style="margin-top:16px;">Yeniden Başla</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ===================== DATA: 20 NEW Confusable Pairs =====================
+const PAIRS = [
+  // ── MODALS ──
+  { pair: "must / have to", cefr: "B1", cat: "Modals",
+    sentence: "You ___ show your passport at the border. It's the law.",
+    options: ["must", "have to"], correct: 1,
+    rule: "HAVE TO = external obligation (rules, others decide). MUST = internal obligation (speaker's own decision)." },
+
+  { pair: "could / was able to", cefr: "B1", cat: "Modals",
+    sentence: "He trained hard and finally ___ run the full marathon.",
+    options: ["could", "was able to"], correct: 1,
+    rule: "WAS ABLE TO = succeeded on one specific occasion. COULD = general past ability (always possible)." },
+
+  { pair: "may / might", cefr: "B1", cat: "Modals",
+    sentence: "Take an umbrella — it ___ rain later. (less certain)",
+    options: ["may", "might"], correct: 1,
+    rule: "MIGHT = less certain possibility (~30%). MAY = slightly more certain (~50%). In practice nearly interchangeable, but MIGHT signals more doubt." },
+
+  // ── ADVERB PAIRS ──
+  { pair: "hard / hardly", cefr: "B1", cat: "Adverbs",
+    sentence: "She ___ ever watches TV; she's always reading or studying.",
+    options: ["hard", "hardly"], correct: 1,
+    rule: "HARDLY = almost never / almost nothing (negative meaning). HARD = with great effort / difficult (positive adverb)." },
+
+  { pair: "late / lately", cefr: "B1", cat: "Adverbs",
+    sentence: "Have you been to any good restaurants ___?",
+    options: ["late", "lately"], correct: 1,
+    rule: "LATELY = recently (used with present perfect). LATE = not on time, or after the usual time." },
+
+  { pair: "near / nearly", cefr: "A2", cat: "Adverbs",
+    sentence: "I ___ missed my flight because the taxi was stuck in traffic.",
+    options: ["near", "nearly"], correct: 1,
+    rule: "NEARLY = almost (adverb before verb/adj). NEAR = close in distance (adjective/preposition)." },
+
+  // ── CONFUSABLE ADJECTIVES ──
+  { pair: "fun / funny", cefr: "A2", cat: "Adjectives",
+    sentence: "The party was really ___. We danced all night.",
+    options: ["fun", "funny"], correct: 0,
+    rule: "FUN = enjoyable (eğlenceli). FUNNY = making you laugh (komik). 'The party was funny' means it made you laugh — strange meaning!" },
+
+  { pair: "alone / lonely", cefr: "B1", cat: "Adjectives",
+    sentence: "She lived ___ in a big house and felt sad every evening.",
+    options: ["alone", "lonely"], correct: 1,
+    rule: "LONELY = feeling sad because you have no company. ALONE = simply no other people present (neutral fact)." },
+
+  { pair: "sensible / sensitive", cefr: "B1", cat: "Adjectives",
+    sentence: "He's very ___ — even small criticisms make him upset.",
+    options: ["sensible", "sensitive"], correct: 1,
+    rule: "SENSITIVE = easily affected emotionally, reacts strongly. SENSIBLE = practical, shows good judgment." },
+
+  { pair: "interested / interesting", cefr: "A2", cat: "Adjectives",
+    sentence: "The documentary was really ___. I learned a lot.",
+    options: ["interested", "interesting"], correct: 1,
+    rule: "-ING adjectives describe a property of the thing. -ED adjectives describe how a person feels. 'I was interested.' / 'It was interesting.'" },
+
+  // ── ADVERBS OF TIME / DEGREE ──
+  { pair: "eventually / finally", cefr: "B1", cat: "Adverbs",
+    sentence: "___ after checking in three wrong hotels, they found the right one.",
+    options: ["Eventually", "Finally"], correct: 0,
+    rule: "EVENTUALLY = after a long time, often with difficulty or delay. FINALLY = at the end of a series of things (can also show relief/impatience)." },
+
+  { pair: "actually / currently", cefr: "B1", cat: "Adverbs",
+    sentence: "He ___ works for a tech company in Berlin. He moved there last year.",
+    options: ["actually", "currently"], correct: 1,
+    rule: "CURRENTLY = at the present time (şu anda). ACTUALLY = in reality, used to correct or emphasise (aslında, gerçekte)." },
+
+  // ── TRAVEL VOCABULARY ──
+  { pair: "trip / journey", cefr: "A2", cat: "Structure",
+    sentence: "The ___ from Istanbul to Ankara by train takes about 4 hours.",
+    options: ["trip", "journey"], correct: 1,
+    rule: "JOURNEY = the act of travelling from A to B (the process). TRIP = going somewhere and coming back (the event)." },
+
+  // ── PREPOSITIONS / CONJUNCTIONS ──
+  { pair: "by / until", cefr: "B1", cat: "Prepositions",
+    sentence: "Please submit your application ___ Friday. (deadline — must be done before then)",
+    options: ["by", "until"], correct: 0,
+    rule: "BY = deadline (complete the action before this time). UNTIL = a continuing action stops at this point." },
+
+  { pair: "beside / besides", cefr: "B1", cat: "Prepositions",
+    sentence: "___ being expensive, the restaurant had very slow service.",
+    options: ["Beside", "Besides"], correct: 1,
+    rule: "BESIDES = in addition to, moreover. BESIDE = next to (physical position: she sat beside me)." },
+
+  // ── CAUSATIVE ──
+  { pair: "let / make", cefr: "B1", cat: "Structure",
+    sentence: "My manager ___ me rewrite the entire report from scratch.",
+    options: ["let", "made"], correct: 1,
+    rule: "MAKE sb do = force someone (no choice). LET sb do = allow someone (they have permission). Both take bare infinitive." },
+
+  // ── ITS / IT'S ──
+  { pair: "its / it's", cefr: "A2", cat: "Structure",
+    sentence: "The cat knocked over ___ water bowl and walked away.",
+    options: ["its", "it's"], correct: 0,
+    rule: "ITS = possessive (belonging to it — no apostrophe). IT'S = it is / it has (contraction — apostrophe for missing letter)." },
+
+  // ── RELATIVE PRONOUNS ──
+  { pair: "who / which", cefr: "A2", cat: "Structure",
+    sentence: "That's the novel ___ won the Booker Prize last year.",
+    options: ["who", "which"], correct: 1,
+    rule: "WHO = for people (and sometimes pets). WHICH = for things, animals, ideas. THAT = informal alternative for both." },
+
+  // ── IN THE END / AT THE END ──
+  { pair: "in the end / at the end", cefr: "B1", cat: "Prepositions",
+    sentence: "___ of the film, the main character walks into the sea.",
+    options: ["In the end", "At the end"], correct: 1,
+    rule: "AT THE END (OF) = the final part of a specific thing (film, road, meeting). IN THE END = finally, after everything (similar to 'eventually')." },
+
+  // ── ALTHOUGH / DESPITE ──
+  { pair: "although / despite", cefr: "B1", cat: "Structure",
+    sentence: "___ being tired, she stayed up to finish the project.",
+    options: ["Although", "Despite"], correct: 1,
+    rule: "DESPITE / IN SPITE OF + noun or V-ing (no subject+verb). ALTHOUGH + full clause (subject + verb)." },
+];
+
+// ===================== STATE =====================
+const STORAGE_KEY = 'confusable-drill-v2';
+const TIMER_SEC = 8;
+let activeCat = '';
+let filteredPairs = [];
+let state = loadState();
+
+function getFiltered(cat) {
+  return cat ? PAIRS.filter(p => p.cat === cat) : [...PAIRS];
+}
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    return Object.assign({
+      idx: 0, order: shuffleIdx(PAIRS.length),
+      correct: 0, wrong: 0, streak: 0,
+      errorFreq: {}, lastSessionScore: null,
+      theme: 'dark', reviews: [],
+    }, s);
+  } catch { return resetState(); }
+}
+function resetState(len) {
+  return {
+    idx: 0, order: shuffleIdx(len || PAIRS.length),
+    correct: 0, wrong: 0, streak: 0,
+    errorFreq: {}, lastSessionScore: null,
+    theme: state?.theme || 'dark', reviews: [],
+  };
+}
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function shuffleIdx(n) {
+  const arr = Array.from({length: n}, (_, i) => i);
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ===================== TIMER =====================
+let timerInterval = null;
+function startTimer() {
+  const fill = document.getElementById('timerFill');
+  fill.classList.remove('danger');
+  fill.style.width = '100%';
+  const start = Date.now();
+  timerInterval = setInterval(() => {
+    const elapsed = (Date.now() - start) / 1000;
+    const remaining = Math.max(0, TIMER_SEC - elapsed);
+    fill.style.width = (remaining / TIMER_SEC * 100) + '%';
+    if (remaining / TIMER_SEC < 0.25) fill.classList.add('danger');
+    if (remaining <= 0) { stopTimer(); handleAnswer(-1); }
+  }, 100);
+}
+function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
+
+// ===================== RENDER =====================
+function render() {
+  filteredPairs = getFiltered(activeCat);
+  if (state.idx >= state.order.length || state.order.length === 0) return renderSummary();
+  document.getElementById('drillCard').classList.remove('hidden');
+  document.getElementById('summaryCard').classList.add('hidden');
+
+  const pairIdx = state.order[state.idx] % filteredPairs.length;
+  const pair = filteredPairs[pairIdx];
+
+  document.getElementById('pairTag').textContent = pair.pair;
+  document.getElementById('cefrTag').textContent = pair.cefr;
+  document.getElementById('catTag').textContent = pair.cat;
+  document.getElementById('sentence').innerHTML = pair.sentence.replace('___', '<span class="blank">___</span>');
+  document.getElementById('progress').textContent = `${state.idx + 1} / ${state.order.length}`;
+
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  pair.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.dataset.idx = i;
+    btn.onclick = () => handleAnswer(i);
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('feedback').classList.remove('show', 'err');
+  document.getElementById('feedback').innerHTML = '';
+  document.getElementById('nextBtn').disabled = true;
+  startTimer();
+}
+
+function handleAnswer(chosen) {
+  stopTimer();
+  const pairIdx = state.order[state.idx] % filteredPairs.length;
+  const pair = filteredPairs[pairIdx];
+  const isCorrect = chosen === pair.correct;
+  const answerTime = Date.now();
+
+  const opts = document.querySelectorAll('.opt');
+  opts.forEach(b => { b.disabled = true; });
+  if (opts[pair.correct]) opts[pair.correct].classList.add('correct');
+  if (chosen >= 0 && chosen !== pair.correct) opts[chosen].classList.add('wrong');
+
+  const fb = document.getElementById('feedback');
+  if (isCorrect) {
+    state.correct++; state.streak++;
+    fb.innerHTML = `<strong>✓ Doğru!</strong> ${escHtml(pair.rule)}`;
+    fb.classList.add('show');
+    fb.classList.remove('err');
+  } else {
+    state.wrong++; state.streak = 0;
+    const got = chosen >= 0 ? pair.options[chosen] : '(süre doldu)';
+    fb.innerHTML = `<strong>✗ Hata.</strong> Seçilen: "${escHtml(got)}" → Doğru: "${escHtml(pair.options[pair.correct])}"<br>${escHtml(pair.rule)}`;
+    fb.classList.add('show', 'err');
+    state.errorFreq[pair.pair] = (state.errorFreq[pair.pair] || 0) + 1;
+  }
+
+  state.reviews.push({ pair: pair.pair, correct: isCorrect, ms: Date.now() - answerTime, ts: Date.now() });
+  updateStats();
+  saveState();
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function updateStats() {
+  document.getElementById('sCorrect').textContent = state.correct;
+  document.getElementById('sWrong').textContent = state.wrong;
+  document.getElementById('sStreak').textContent = state.streak;
+  const total = state.correct + state.wrong;
+  document.getElementById('sRate').textContent = total ? Math.round(state.correct / total * 100) + '%' : '—';
+}
+
+function renderSummary() {
+  document.getElementById('drillCard').classList.add('hidden');
+  document.getElementById('summaryCard').classList.remove('hidden');
+  document.getElementById('sumCorrect').textContent = state.correct;
+  document.getElementById('sumWrong').textContent = state.wrong;
+
+  const prev = state.lastSessionScore;
+  const curr = state.correct;
+  const delta = prev !== null ? (curr > prev ? `+${curr - prev}` : `${curr - prev}`) : '—';
+  document.getElementById('sumDelta').textContent = `Δ ${delta}`;
+  state.lastSessionScore = curr;
+  saveState();
+
+  const sorted = Object.entries(state.errorFreq).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const ul = document.getElementById('errList');
+  ul.innerHTML = sorted.length
+    ? sorted.map(([p, c]) => `<li><span class="pair-name">${escHtml(p)}</span> — <span class="count">${c} hata (errors/confusables dosyasına ekle)</span></li>`).join('')
+    : '<li style="color:var(--muted)">Hata yok! Mükemmel.</li>';
+}
+
+function escHtml(s) { return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+// ===================== EVENT LISTENERS =====================
+document.getElementById('nextBtn').addEventListener('click', () => { state.idx++; render(); });
+document.getElementById('restartBtn').addEventListener('click', () => {
+  filteredPairs = getFiltered(activeCat);
+  state = resetState(filteredPairs.length);
+  updateStats();
+  render();
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Tüm ilerleme sıfırlansın mı?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  filteredPairs = getFiltered(activeCat);
+  state = resetState(filteredPairs.length);
+  updateStats();
+  render();
+});
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const t = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  state.theme = t; saveState();
+});
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify({ version: 'confusable-drill-v2', state, pairs: PAIRS }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `confusable-drill-v2-${Date.now()}.json`; a.click();
+});
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCat = btn.dataset.cat;
+    filteredPairs = getFiltered(activeCat);
+    state = resetState(filteredPairs.length);
+    updateStats();
+    render();
+  });
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { const nb = document.getElementById('nextBtn'); if (!nb.disabled) { nb.click(); } }
+  if (e.key === 'T' || e.key === 't') document.getElementById('themeBtn').click();
+  if (e.shiftKey && (e.key === 'R' || e.key === 'r')) document.getElementById('resetBtn').click();
+  if (e.key === '1') { const o = document.querySelectorAll('.opt:not(:disabled)'); if (o[0]) o[0].click(); }
+  if (e.key === '2') { const o = document.querySelectorAll('.opt:not(:disabled)'); if (o[1]) o[1].click(); }
+});
+
+// ===================== INIT =====================
+if (state.theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+filteredPairs = getFiltered(activeCat);
+updateStats();
+render();
+</script>
+</body>
+</html>
