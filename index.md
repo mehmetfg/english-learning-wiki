@@ -1,6 +1,6 @@
 ---
 title: English Learning Wiki — İçerik Dizini
-updated: 2026-05-20
+updated: 2026-05-22
 ---
 
 # English Learning Wiki — İçerik Dizini
@@ -9,7 +9,23 @@ Bu dosya tüm wiki içeriğinin haritasıdır. Her ingest ve güncelleme sonras�
 
 ---
 
-## ⚙️ Daily Engine v1 (2026-05-18 — yeni sistem)
+## 🌐 Personal OS (2026-05-22 — yeni üst sistem)
+
+Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Projects/personal-os/`). Daily Engine v1'in halefi — multi-domain entelektüel takip sistemi. English + Philosophy ile başladı, sonraki fazlarda Reading + Films + Writing eklenecek.
+
+| Sayfa | Açıklama |
+|-------|----------|
+| [[personal-os-design-decisions]] | 🆕 Phase 1 MVP tasarım dökümanı — 8 KR, 15 edge case, faz planı, DB schema özeti |
+
+**Migrate edilen veri:** [[grammar-coverage]] (56 konu seed + 16 oturum durumu) · `Artifacts/_engine/topics.json` (56 konu zengin metadata)
+
+**Durum:** Phase 1 MVP kuruldu (lokal SQLite, 3 sayfa). Phase 2'de soru havuzu + FSRS scheduler + Turso + Vercel deploy.
+
+---
+
+## ⚙️ Daily Engine v1 (2026-05-18 — emekli, read-only arşive geçecek)
+
+> ⚠️ Bu sistem **Personal OS** tarafından yerine geçirildi (2026-05-22). Veriler migrate edildi. HTML motorları çalışmaya devam eder ama yeni iş yapılmaz.
 
 | Sayfa | Açıklama |
 |-------|----------|
@@ -93,6 +109,7 @@ Bu dosya tüm wiki içeriğinin haritasıdır. Her ingest ve güncelleme sonras�
 | [[comparative-reader]] | 1 dosya | (2026-05-20) Comparative Reader v1 — C1/B2↔A2 yan yana; Naval + Paul Graham seed (3'er paragraf) |
 | [[comparative-reader-v2]] | 1 dosya | 🆕 (2026-05-21) Comparative Reader v2 — B1↔A2 uzun metin; Atomic Habits (7 çift) + Don Quixote Windmills (9 çift); chapter labels; ← → keyboard nav |
 | [[daily-writing-loop]] | 1 dosya | 🆕 Daily Writing Loop — günlük üretim döngüsü; TR referans → Box A (real-time kırmızı diff + placeholder hint) → Box B (hafızadan, hibrit TR preview) → Check (word-level LCS); 16 hazır tema + Custom mod; PV tracker + 30 PV bağımsız drill; 5 görsel tema; streak; L1 Production Cell'in interaktif aracı |
+| [[writing-ladder]] | 1 dosya | 🆕 (2026-05-21) **Writing Ladder** — direkt yaz, kademeli bırak; A1→B2; 5 basamak scaffold (L1 Echo %80 → L5 Free %0); 25 prompt + Custom; sentence-by-sentence yazma; word/pattern/starter/voice yardım; auto-fade; streak (2 gün toleransı); 17 edge case; heuristic check (13 klasik Türk hata regex'i); recent sessions + revise mode; 5 görsel tema |
 
 ### 📚 Guides
 | Sayfa | Dosyalar | Açıklama |

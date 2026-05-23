@@ -1,0 +1,3182 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing Ladder — Direkt Yaz, Kademeli Bırak</title>
+<style>
+:root {
+  --bg: #0e1a2b;
+  --surface: #142539;
+  --surface-2: #1d3148;
+  --border: #2a4566;
+  --text: #e6eef7;
+  --muted: #8aa0bd;
+  --accent: #6fb3ff;
+  --accent-2: #4a90e2;
+  --success: #5cd1a0;
+  --warning: #f5b942;
+  --error: #f47272;
+  --highlight: #ffd86b;
+  --tr-tint: #9aa8b8;
+  --shadow: 0 6px 24px rgba(0,0,0,0.35);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --font: 'Segoe UI', Tahoma, system-ui, -apple-system, sans-serif;
+}
+
+[data-theme="forest"] {
+  --bg: #0f1d14; --surface: #16291c; --surface-2: #1f3a28; --border: #2c5238;
+  --accent: #7fd99b; --accent-2: #5cb377; --highlight: #ffe09a;
+}
+[data-theme="sunset"] {
+  --bg: #1f1410; --surface: #2d1d17; --surface-2: #3d271f; --border: #5a3b2f;
+  --accent: #ff9c6b; --accent-2: #e07a4d; --highlight: #ffd86b;
+}
+[data-theme="paper"] {
+  --bg: #faf6ee; --surface: #ffffff; --surface-2: #f3eddf; --border: #d8cfb8;
+  --text: #2c2820; --muted: #6e6557; --accent: #c47835; --accent-2: #a05f24;
+  --tr-tint: #8a8170; --success: #4a8a6a; --warning: #c48c1a; --error: #b94545;
+}
+[data-theme="midnight"] {
+  --bg: #000000; --surface: #0a0a0a; --surface-2: #161616; --border: #2a2a2a;
+  --text: #f0e88a; --muted: #888;
+  --accent: #ffd86b; --accent-2: #c4a83d; --highlight: #fff3a0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.55;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Header ─────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 18px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.logo {
+  font-weight: 600;
+  font-size: 17px;
+  color: var(--accent);
+  margin-right: auto;
+}
+.logo .sub {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: 0.4px;
+}
+.level-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.level-control label {
+  font-size: 12px;
+  color: var(--muted);
+}
+#levelSlider {
+  width: 110px;
+  accent-color: var(--accent);
+}
+#levelLabel {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  min-width: 78px;
+}
+.streak {
+  background: var(--surface-2);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 13px;
+}
+.streak.glow #streakCount {
+  color: var(--highlight);
+  font-weight: 700;
+}
+.header-actions { display: flex; gap: 6px; }
+.icon-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+.icon-btn:hover { background: var(--border); }
+
+/* ─── Main Layout ────────────────────────── */
+main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 14px;
+  padding: 14px;
+  min-height: 0;
+}
+@media (max-width: 880px) {
+  main { grid-template-columns: 1fr; }
+}
+
+/* ─── Left Panel ─────────────────────────── */
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.card .label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 6px;
+}
+
+.prompt-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.level-chip {
+  background: var(--surface-2);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+.prompt-emoji { font-size: 22px; margin-right: 6px; }
+#promptTitle { font-size: 16px; }
+#promptTitle .en { color: var(--muted); font-size: 13px; font-weight: 400; display: block; }
+#promptDesc {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 8px 0;
+  line-height: 1.5;
+}
+.prompt-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.btn {
+  background: var(--accent-2);
+  color: white;
+  border: none;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+}
+.btn:hover { background: var(--accent); }
+.btn.secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn.secondary:hover { background: var(--border); }
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px dashed var(--border);
+}
+.btn.ghost:hover { color: var(--accent); border-color: var(--accent); }
+.btn.success { background: var(--success); }
+.btn.danger { background: var(--error); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.tr-scratchpad textarea {
+  width: 100%;
+  min-height: 80px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+  margin-top: 6px;
+}
+.tr-scratchpad textarea:focus { outline: 2px solid var(--accent); }
+.banned-notice {
+  background: var(--error);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 6px;
+}
+
+.help-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.help-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: left;
+}
+.help-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── Writing Area ───────────────────────── */
+.writing-area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.level-info {
+  background: var(--surface-2);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+  border-left: 3px solid var(--accent);
+}
+.level-info .level-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+.level-info .level-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+#sentenceList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+  overflow-y: auto;
+  min-height: 240px;
+}
+
+.sentence-block {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  transition: border-color 0.15s;
+}
+.sentence-block:focus-within {
+  border-color: var(--accent);
+}
+.sentence-num {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sentence-num .del-btn {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+}
+.sentence-num .del-btn:hover { color: var(--error); }
+
+.tr-line {
+  font-size: 13px;
+  color: var(--tr-tint);
+  font-style: italic;
+  margin-bottom: 6px;
+  padding: 4px 0;
+  border-left: 2px solid var(--border);
+  padding-left: 8px;
+}
+
+.scaffold-line {
+  font-size: 13px;
+  color: var(--highlight);
+  background: rgba(255, 216, 107, 0.08);
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  font-family: 'Courier New', monospace;
+  border: 1px dashed rgba(255, 216, 107, 0.3);
+}
+
+.model-line {
+  font-size: 14px;
+  color: var(--success);
+  background: rgba(92, 209, 160, 0.08);
+  padding: 6px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  border: 1px dashed rgba(92, 209, 160, 0.3);
+  cursor: pointer;
+}
+.model-line:hover { background: rgba(92, 209, 160, 0.14); }
+.model-line::after {
+  content: ' 📋';
+  opacity: 0.5;
+  font-size: 11px;
+}
+
+.hints-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.hint-chip {
+  background: rgba(111, 179, 255, 0.1);
+  border: 1px solid rgba(111, 179, 255, 0.3);
+  color: var(--accent);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.hint-chip:hover { background: rgba(111, 179, 255, 0.2); }
+
+.sentence-input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 42px;
+}
+.sentence-input:focus { outline: 2px solid var(--accent); }
+
+.sentence-feedback {
+  margin-top: 6px;
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+.sentence-feedback.ok { background: rgba(92, 209, 160, 0.12); color: var(--success); }
+.sentence-feedback.warn { background: rgba(245, 185, 66, 0.12); color: var(--warning); }
+.sentence-feedback.err { background: rgba(244, 114, 114, 0.12); color: var(--error); }
+
+.writing-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ─── Modal ─────────────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+.modal.show { display: flex; }
+.modal-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 86vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+}
+.modal-content h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: var(--accent);
+}
+.modal-content h3 {
+  font-size: 14px;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.modal-content p { margin-bottom: 10px; font-size: 13px; color: var(--muted); }
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 22px;
+  cursor: pointer;
+  float: right;
+  padding: 0;
+  margin-top: -8px;
+  margin-right: -4px;
+}
+.modal-close:hover { color: var(--text); }
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.dict-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.dict-row input {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.pattern-list, .starter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pattern-list .pattern-item, .starter-list .starter-item {
+  background: var(--surface-2);
+  padding: 8px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  border: 1px solid var(--border);
+}
+.pattern-list .pattern-item:hover, .starter-list .starter-item:hover {
+  border-color: var(--accent);
+}
+.pattern-item .formula {
+  font-family: 'Courier New', monospace;
+  color: var(--highlight);
+  font-size: 12px;
+}
+.pattern-item .example {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.check-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 14px 0;
+}
+@media (max-width: 600px) {
+  .check-summary { grid-template-columns: repeat(2, 1fr); }
+}
+.stat-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+.stat-box .num { font-size: 22px; font-weight: 700; color: var(--accent); }
+.stat-box .lbl { font-size: 11px; color: var(--muted); }
+
+.check-sentence {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  margin-bottom: 8px;
+}
+.check-sentence .your { font-size: 13px; margin-bottom: 6px; }
+.check-sentence .note { font-size: 12px; color: var(--muted); }
+.check-sentence.ok { border-left: 3px solid var(--success); }
+.check-sentence.warn { border-left: 3px solid var(--warning); }
+.check-sentence.err { border-left: 3px solid var(--error); }
+
+.takeaways {
+  background: rgba(111, 179, 255, 0.06);
+  border: 1px solid rgba(111, 179, 255, 0.2);
+  padding: 10px;
+  border-radius: var(--radius-sm);
+}
+.takeaway {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 6px 0;
+  font-size: 13px;
+}
+.takeaway-num {
+  background: var(--accent);
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row label { font-size: 13px; }
+.settings-row .hint { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  cursor: pointer;
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  background: var(--muted);
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.toggle.on { background: var(--accent-2); border-color: var(--accent); }
+.toggle.on::after { left: 21px; background: white; }
+
+.theme-swatches { display: flex; gap: 6px; }
+.swatch {
+  width: 28px; height: 28px; border-radius: 50%;
+  cursor: pointer; border: 2px solid var(--border);
+}
+.swatch.active { border-color: var(--accent); }
+.swatch.navy { background: linear-gradient(135deg, #0e1a2b, #4a90e2); }
+.swatch.forest { background: linear-gradient(135deg, #0f1d14, #7fd99b); }
+.swatch.sunset { background: linear-gradient(135deg, #1f1410, #ff9c6b); }
+.swatch.paper { background: linear-gradient(135deg, #faf6ee, #c47835); }
+.swatch.midnight { background: linear-gradient(135deg, #000, #ffd86b); }
+
+.session-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.session-row .meta { color: var(--muted); font-size: 11px; }
+.session-row button { margin-left: 8px; }
+
+/* ─── Toast ─────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(50px);
+  background: var(--accent);
+  color: white;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  opacity: 0;
+  transition: 0.25s;
+  z-index: 200;
+  pointer-events: none;
+  box-shadow: var(--shadow);
+  max-width: 90%;
+  text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.warn { background: var(--warning); color: #2c2820; }
+#toast.err { background: var(--error); }
+#toast.ok { background: var(--success); }
+
+/* ─── Stuck Helper ──────────────────────── */
+.stuck-bubble {
+  margin-top: 6px;
+  background: var(--warning);
+  color: #2c2820;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+}
+.stuck-bubble:hover { opacity: 0.9; }
+
+/* ─── Bad Day Mode ──────────────────────── */
+.bad-day-badge {
+  background: var(--surface-2);
+  color: var(--warning);
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  margin-left: 6px;
+  border: 1px dashed var(--warning);
+}
+
+/* ─── Voice indicator ───────────────────── */
+.voice-recording {
+  background: var(--error) !important;
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ─── Print ─────────────────────────────── */
+@media print {
+  header, .left-panel, .writing-actions, .modal, #toast { display: none !important; }
+  main { grid-template-columns: 1fr; }
+  .writing-area { border: none; }
+}
+
+/* ─── Small ─────────────────────────────── */
+.small { font-size: 11px; color: var(--muted); }
+.kbd {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+}
+.tag-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.tag {
+  background: var(--surface-2);
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 10px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">
+    📝 Writing Ladder
+    <span class="sub">Direkt yaz, kademeli bırak</span>
+  </div>
+  <div class="level-control" title="Yardım seviyesi (1: en çok yardım, 5: tam serbest)">
+    <label>Lv</label>
+    <input type="range" min="1" max="5" value="1" id="levelSlider">
+    <span id="levelLabel">L1 Echo</span>
+  </div>
+  <div class="streak" title="Günlük yazma serisi">
+    🔥 <span id="streakCount">0</span>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" id="recentBtn" title="Önceki seanslar">📚</button>
+    <button class="icon-btn" id="themeBtn" title="Tema">🎨</button>
+    <button class="icon-btn" id="settingsBtn" title="Ayarlar">⚙️</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main>
+  <!-- Left -->
+  <aside class="left-panel">
+    <div class="card">
+      <div class="prompt-meta">
+        <span class="level-chip" id="promptLevel">A1</span>
+        <button class="icon-btn" id="newPromptBtn" title="Başka konu">↻</button>
+      </div>
+      <div id="promptTitle">
+        <span class="prompt-emoji">☀️</span>
+        <span id="promptTitleTR">—</span>
+        <span class="en" id="promptTitleEN">—</span>
+      </div>
+      <p id="promptDesc">—</p>
+      <div class="tag-row" id="promptTags"></div>
+      <div class="prompt-actions">
+        <button class="btn secondary" id="customPromptBtn">Kendi konum</button>
+        <button class="btn ghost" id="badDayBtn" title="Bugün moralim yok — tek cümle yeter">🌧️ Kötü gün</button>
+      </div>
+    </div>
+
+    <div class="card tr-scratchpad">
+      <div class="label">🇹🇷 TR scratchpad (opsiyonel)</div>
+      <textarea id="trScratch" placeholder="Önce Türkçe düşün, kısa not al... Sonra sağdan İngilizce yaz."></textarea>
+      <div class="banned-notice" id="bannedNotice" hidden>🚫 Banned TR mode — Türkçe alanı kapalı</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Yardım</div>
+      <div class="help-grid">
+        <button class="help-btn" data-help="word">💡 Kelime yardımı</button>
+        <button class="help-btn" data-help="pattern">🔧 Gramer kalıbı</button>
+        <button class="help-btn" data-help="starter">🎯 Başlangıç cümlesi</button>
+        <button class="help-btn" data-help="voice" id="voiceBtn">🎤 Sesle yaz</button>
+      </div>
+      <div class="small" style="margin-top: 8px;">
+        Kısayollar: <span class="kbd">Ctrl+Enter</span> bitir · <span class="kbd">Alt+N</span> yeni cümle
+      </div>
+    </div>
+  </aside>
+
+  <!-- Writing Area -->
+  <section class="writing-area">
+    <div class="level-info">
+      <div class="level-title" id="levelInfoTitle">L1 — Echo (Yankı)</div>
+      <div class="level-desc" id="levelInfoDesc">Türkçe fikir + tam İngilizce model. Modeli oku, kopyala, kendi cümlene dönüştür.</div>
+    </div>
+
+    <div id="sentenceList">
+      <!-- Sentence blocks rendered here -->
+    </div>
+
+    <div id="stuckBubble" class="stuck-bubble" hidden>
+      ⏸️ Tıkandın mı? Şu başlangıçla dene: <strong id="stuckSuggestion">Today I...</strong>
+    </div>
+
+    <div class="writing-actions">
+      <button class="btn secondary" id="addSentenceBtn">+ Cümle ekle</button>
+      <button class="btn secondary" id="saveBtn">💾 Ara kayıt</button>
+      <button class="btn success" id="finishBtn">✓ Bitir & Kontrol</button>
+      <span class="bad-day-badge" id="badDayBadge" hidden>Kötü gün modu (1 cümle yeter)</span>
+    </div>
+
+    <div class="stats">
+      <span>📝 <span id="wordCount">0</span> kelime</span>
+      <span>✏️ <span id="sentCount">0</span> cümle</span>
+      <span>⏱️ <span id="timeSpent">0</span> dk</span>
+    </div>
+  </section>
+</main>
+
+<!-- ─── Modals ─── -->
+
+<!-- Welcome (first run) -->
+<div class="modal" id="welcomeModal">
+  <div class="modal-content">
+    <h2>📝 Writing Ladder'a hoş geldin</h2>
+    <p><strong>Felsefe:</strong> Boş sayfa yerine basamaklı yardım. Başta %80 destek — model cümle yan yana. Sen hazır hissettikçe, slider'ı çek, destek azalır.</p>
+    <h3>5 basamak</h3>
+    <ul style="margin-left: 20px; font-size: 13px; line-height: 1.8;">
+      <li><strong>L1 Echo</strong> — Tam EN model + sen değiştir</li>
+      <li><strong>L2 Frame</strong> — İskelet + boşlukları doldur</li>
+      <li><strong>L3 Hint</strong> — Sadece anahtar kelimeler</li>
+      <li><strong>L4 Sketch</strong> — Yalnız TR fikir, sen yaz</li>
+      <li><strong>L5 Free</strong> — Yalnız prompt, tam serbest</li>
+    </ul>
+    <p style="margin-top: 14px;"><strong>Bugün:</strong> 5–15 dakika · 3+ cümle · küçük başla, her gün dön.</p>
+    <p style="font-size: 12px; color: var(--muted);">Tüm veriler tarayıcında kalır. Hiçbir şey gönderilmez.</p>
+    <div class="modal-actions">
+      <button class="btn" id="startBtn">Başlayalım</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom prompt -->
+<div class="modal" id="customPromptModal">
+  <div class="modal-content">
+    <button class="modal-close" data-close="customPromptModal">✕</button>
+    <h2>Kendi konunu yaz</h2>
+    <p>Bugün hangi konuda yazmak istiyorsun? Tek cümlelik bir özet yeterli.</p>
+    <input type="text" id="customPromptInput" placeholder="örn: Bugün metroda yaşadığım bir an"
+      style="width:100%; padding:10px; background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:6px; font-family:inherit;">
+    <div class="modal-actions">
+      <button class="btn secondary" data-close="customPromptModal">İptal</button>
+      <button class="btn" id="saveCustomPrompt">Bu konuyu kullan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Word help -->
+<div class="modal" id="wordHelpModal">
+  <div class="modal-content">
+    <button class="modal-close" data-close="wordHelpModal">✕</button>
+    <h2>💡 Kelime yardımı</h2>
+    <p>Tek kelime yaz (Türkçe ya da kavram), öneri al. Cümlenin tamamını çevirme — sadece sıkıştığın kelime için.</p>
+    <div style="display:flex; gap:6px; margin-top:8px;">
+      <input type="text" id="wordHelpInput" placeholder="örn: hatırlamak"
+        style="flex:1; padding:8px; background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:6px; font-family:inherit;">
+      <button class="btn" id="wordHelpSearch">Ara</button>
+    </div>
+    <div id="wordHelpResults" style="margin-top: 12px;"></div>
+    <p class="small" style="margin-top: 14px;">⚠️ Bilerek tam çeviri verilmez — yardımcı olur, ezber yaptırmaz.</p>
+  </div>
+</div>
+
+<!-- Pattern help -->
+<div class="modal" id="patternHelpModal">
+  <div class="modal-content">
+    <button class="modal-close" data-close="patternHelpModal">✕</button>
+    <h2>🔧 Gramer kalıpları</h2>
+    <p>Bir kalıba tıkla — örnek görür, scratchpad'e veya yazma alanına kopyalayabilirsin.</p>
+    <div class="pattern-list" id="patternList"></div>
+  </div>
+</div>
+
+<!-- Starter help -->
+<div class="modal" id="starterHelpModal">
+  <div class="modal-content">
+    <button class="modal-close" data-close="starterHelpModal">✕</button>
+    <h2>🎯 Başlangıç cümleleri</h2>
+    <p>Bir başlangıca tıkla — aktif cümleye eklenir, sen devam edersin.</p>
+    <div class="starter-list" id="starterList"></div>
+  </div>
+</div>
+
+<!-- Check / Finish -->
+<div class="modal" id="checkModal">
+  <div class="modal-content">
+    <button class="modal-close" data-close="checkModal">✕</button>
+    <h2>✓ Bugün yazdıkların</h2>
+    <div class="check-summary" id="checkSummary"></div>
+    <h3>Cümle cümle</h3>
+    <div id="checkSentences"></div>
+    <h3>3 öğrenme noktası</h3>
+    <div class="takeaways" id="takeaways"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" id="reviseBtn">Düzelt, devam et</button>
+      <button class="btn success" id="saveSessionBtn">Bugünü tamamla</button>
+    </div>
+  </div>
+</div>
+
+<!-- Recent sessions -->
+<div class="modal" id="recentModal">
+  <div class="modal-content">
+    <button class="modal-close" data-close="recentModal">✕</button>
+    <h2>📚 Geçmiş seanslar</h2>
+    <p>Son 14 günü gör. Bir seansa "Düzelt" diyerek yeniden aç.</p>
+    <div id="sessionList"></div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="modal" id="settingsModal">
+  <div class="modal-content">
+    <button class="modal-close" data-close="settingsModal">✕</button>
+    <h2>⚙️ Ayarlar</h2>
+
+    <div class="settings-row">
+      <div>
+        <label>Auto-fade</label>
+        <span class="hint">3 başarılı seans sonrası seviye otomatik yükselir</span>
+      </div>
+      <div class="toggle" data-setting="autoFade"></div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <label>Banned Turkish</label>
+        <span class="hint">İleri mod — Türkçe scratchpad'i devre dışı bırakır</span>
+      </div>
+      <div class="toggle" data-setting="bannedTR"></div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <label>Ugly first draft</label>
+        <span class="hint">Yazarken anlık hata uyarısı verme — sadece bitirince göster</span>
+      </div>
+      <div class="toggle" data-setting="uglyDraft"></div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <label>Stuck timer</label>
+        <span class="hint">30 saniye yazmazsan starter öneri çıkar</span>
+      </div>
+      <div class="toggle" data-setting="stuckTimer"></div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <label>Tema</label>
+        <span class="hint">Görsel tema</span>
+      </div>
+      <div class="theme-swatches">
+        <div class="swatch navy" data-tx="navy" title="Navy"></div>
+        <div class="swatch forest" data-tx="forest" title="Forest"></div>
+        <div class="swatch sunset" data-tx="sunset" title="Sunset"></div>
+        <div class="swatch paper" data-tx="paper" title="Paper"></div>
+        <div class="swatch midnight" data-tx="midnight" title="Midnight"></div>
+      </div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <label>Günlük hedef</label>
+        <span class="hint">Cümle sayısı (varsayılan 3)</span>
+      </div>
+      <input type="number" min="1" max="20" id="dailyTarget" value="3"
+        style="width:60px; padding:6px; background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:4px; font-family:inherit;">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn danger" id="resetBtn">Tümünü sıfırla</button>
+      <button class="btn" data-close="settingsModal">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+// ════════════════════════════════════════════════════════════
+//   DATA
+// ════════════════════════════════════════════════════════════
+
+const LEVELS = [
+  { id: 1, name: 'L1 Echo',   title: 'L1 — Echo (Yankı)',
+    desc: 'Türkçe fikir + tam İngilizce model. Modeli oku, kopyala, küçük değişikliklerle kendine uyarla. %80 destek.' },
+  { id: 2, name: 'L2 Frame',  title: 'L2 — Frame (İskelet)',
+    desc: 'Türkçe fikir + İngilizce iskelet (boşluklu). Boşlukları kendi düşüncenle doldur. %60 destek.' },
+  { id: 3, name: 'L3 Hint',   title: 'L3 — Hint (İpucu)',
+    desc: 'Türkçe fikir + 3-5 anahtar İngilizce kelime. Cümleyi sen kur. %40 destek.' },
+  { id: 4, name: 'L4 Sketch', title: 'L4 — Sketch (Eskiz)',
+    desc: 'Sadece Türkçe fikir. Cümleyi tamamen sen yaz. Sıkışınca tek kelime yardımı al. %20 destek.' },
+  { id: 5, name: 'L5 Free',   title: 'L5 — Free (Serbest)',
+    desc: 'Sadece tema. Tam serbest — kendi sesin, kendi yapıların. %0 destek.' }
+];
+
+const PROMPTS = [
+  // A1 (10) - daily life basics
+  {
+    slug: 'morning', level: 'A1', emoji: '☀️',
+    title_tr: 'Sabah rutinim', title_en: 'My morning routine',
+    desc_tr: 'Bu sabah uyandığında ne yaptın? Hangi sırayla?',
+    patterns: ['Present Simple', 'Sequence words (first/then/after that)'],
+    tags: ['daily', 'routine'],
+    tr_lines: [
+      'Saat yedide kalkıyorum.',
+      'Sonra dişlerimi fırçalıyorum.',
+      'Mutfakta kahvaltı yapıyorum.',
+      'Kahvaltıyla birlikte çay içerim.',
+      'Ondan sonra evden çıkarım.'
+    ],
+    en_lines: [
+      'I wake up at seven.',
+      'Then I brush my teeth.',
+      'I have breakfast in the kitchen.',
+      'I drink tea with my breakfast.',
+      'After that, I leave home.'
+    ],
+    frames: [
+      'I wake up at ___.',
+      'Then I ___.',
+      'I have breakfast in ___.',
+      'I drink ___ with my breakfast.',
+      'After that, I ___.'
+    ],
+    keywords: [
+      ['wake up', 'time'],
+      ['brush', 'teeth'],
+      ['breakfast', 'kitchen'],
+      ['drink', 'tea / coffee'],
+      ['leave', 'home / work']
+    ]
+  },
+  {
+    slug: 'breakfast', level: 'A1', emoji: '🍳',
+    title_tr: 'Kahvaltı', title_en: 'Breakfast',
+    desc_tr: 'Bugün ne yedin? Nerede? Kiminle?',
+    patterns: ['Present Simple', 'Food vocabulary'],
+    tags: ['daily', 'food'],
+    tr_lines: [
+      'Kahvaltıda peynir ve ekmek yiyorum.',
+      'Ben her zaman çay içerim.',
+      'Eşim kahveyi tercih eder.',
+      'Birlikte mutfakta yemek yeriz.',
+      'Pencereden güneşi izleriz.'
+    ],
+    en_lines: [
+      'For breakfast, I eat cheese and bread.',
+      'I always drink tea.',
+      'My partner prefers coffee.',
+      'We eat together in the kitchen.',
+      'We watch the sun through the window.'
+    ],
+    frames: [
+      'For breakfast, I eat ___.',
+      'I always ___.',
+      'My ___ prefers ___.',
+      'We eat together in ___.',
+      'We watch ___ through ___.'
+    ],
+    keywords: [
+      ['eat', 'breakfast food'],
+      ['always / usually', 'drink'],
+      ['family member', 'prefer'],
+      ['together', 'place'],
+      ['watch', 'window / view']
+    ]
+  },
+  {
+    slug: 'weather', level: 'A1', emoji: '🌤️',
+    title_tr: 'Bugünkü hava', title_en: 'Today\'s weather',
+    desc_tr: 'Bugün hava nasıl? Nasıl giyindin? Hangi mevsim?',
+    patterns: ['Present Simple', 'It is + adjective', 'Weather vocabulary'],
+    tags: ['weather', 'description'],
+    tr_lines: [
+      'Bugün hava soğuk.',
+      'Gökyüzü gri ve bulutlu.',
+      'Kalın bir mont giyiyorum.',
+      'Şemsiyemi yanıma alıyorum.',
+      'Kış bittiğinde mutlu olacağım.'
+    ],
+    en_lines: [
+      'It is cold today.',
+      'The sky is grey and cloudy.',
+      'I am wearing a thick coat.',
+      'I am taking my umbrella with me.',
+      'I will be happy when winter ends.'
+    ],
+    frames: [
+      'It is ___ today.',
+      'The sky is ___.',
+      'I am wearing ___.',
+      'I am taking ___ with me.',
+      'I will ___ when ___.'
+    ],
+    keywords: [
+      ['weather word'],
+      ['sky / colour'],
+      ['wearing', 'clothes'],
+      ['take', 'object'],
+      ['feel', 'season']
+    ]
+  },
+  {
+    slug: 'family', level: 'A1', emoji: '👨‍👩‍👧',
+    title_tr: 'Ailem', title_en: 'My family',
+    desc_tr: 'Ailende kim var? Onları kısaca anlat.',
+    patterns: ['have/has', 'Present Simple', 'Adjectives'],
+    tags: ['family', 'description'],
+    tr_lines: [
+      'Küçük bir ailem var.',
+      'Annem ve babam birlikte yaşar.',
+      'Bir kız kardeşim var.',
+      'O öğrenci ve çok çalışkandır.',
+      'Hafta sonları onları ziyaret ederim.'
+    ],
+    en_lines: [
+      'I have a small family.',
+      'My mother and father live together.',
+      'I have one sister.',
+      'She is a student and she is hardworking.',
+      'I visit them on weekends.'
+    ],
+    frames: [
+      'I have a ___ family.',
+      'My ___ and ___ live ___.',
+      'I have one ___.',
+      'She/He is ___ and ___.',
+      'I visit them on ___.'
+    ],
+    keywords: [
+      ['family size'],
+      ['parents', 'living situation'],
+      ['sibling'],
+      ['role', 'adjective'],
+      ['visit', 'frequency']
+    ]
+  },
+  {
+    slug: 'work-study', level: 'A1', emoji: '💼',
+    title_tr: 'İşim / Okulum', title_en: 'My work or school',
+    desc_tr: 'Ne iş yapıyorsun ya da nerede okuyorsun? Günün nasıl geçer?',
+    patterns: ['Present Simple', 'Time prepositions', 'Job vocabulary'],
+    tags: ['work', 'daily'],
+    tr_lines: [
+      'Bir ofiste çalışıyorum.',
+      'Sabah dokuzda başlarım.',
+      'Bilgisayar başında saatlerce otururum.',
+      'Öğle yemeğini iş arkadaşlarımla yerim.',
+      'Akşam beşte eve dönerim.'
+    ],
+    en_lines: [
+      'I work in an office.',
+      'I start at nine in the morning.',
+      'I sit at the computer for hours.',
+      'I have lunch with my colleagues.',
+      'I go home at five in the evening.'
+    ],
+    frames: [
+      'I work / study in ___.',
+      'I start at ___.',
+      'I ___ for hours.',
+      'I have lunch with ___.',
+      'I go home at ___.'
+    ],
+    keywords: [
+      ['work / study location'],
+      ['start time'],
+      ['main activity'],
+      ['lunch company'],
+      ['return time']
+    ]
+  },
+  {
+    slug: 'lunch', level: 'A1', emoji: '🥗',
+    title_tr: 'Öğle yemeği', title_en: 'Lunch today',
+    desc_tr: 'Bugün öğleyin ne yedin? Nerede? Beğendin mi?',
+    patterns: ['Past Simple', 'Food + opinion'],
+    tags: ['food', 'past'],
+    tr_lines: [
+      'Bugün öğleyin makarna yedim.',
+      'Çok lezzetliydi.',
+      'Yanında salata vardı.',
+      'Bir bardak su içtim.',
+      'Yemekten sonra biraz yürüdüm.'
+    ],
+    en_lines: [
+      'Today at lunch, I ate pasta.',
+      'It was very tasty.',
+      'There was a salad on the side.',
+      'I drank a glass of water.',
+      'After the meal, I walked a little.'
+    ],
+    frames: [
+      'Today at lunch, I ate ___.',
+      'It was ___.',
+      'There was ___.',
+      'I drank ___.',
+      'After the meal, I ___.'
+    ],
+    keywords: [
+      ['food eaten'],
+      ['adjective / taste'],
+      ['side dish'],
+      ['drink'],
+      ['after activity']
+    ]
+  },
+  {
+    slug: 'evening-plan', level: 'A1', emoji: '🌙',
+    title_tr: 'Bu akşam', title_en: 'This evening',
+    desc_tr: 'Akşam ne yapacaksın? Planın var mı?',
+    patterns: ['be going to', 'Future plans'],
+    tags: ['future', 'plans'],
+    tr_lines: [
+      'Bu akşam evde olacağım.',
+      'Bir film izleyeceğim.',
+      'Sonra bir kitap okuyacağım.',
+      'Erken yatmayı düşünüyorum.',
+      'Yarın için enerji toplamam gerek.'
+    ],
+    en_lines: [
+      'This evening, I am going to be at home.',
+      'I am going to watch a film.',
+      'Then I will read a book.',
+      'I am thinking about going to bed early.',
+      'I need to save energy for tomorrow.'
+    ],
+    frames: [
+      'This evening, I am going to ___.',
+      'I am going to ___.',
+      'Then I will ___.',
+      'I am thinking about ___.',
+      'I need to ___ for tomorrow.'
+    ],
+    keywords: [
+      ['location'],
+      ['activity'],
+      ['next activity'],
+      ['thinking about'],
+      ['reason / goal']
+    ]
+  },
+  {
+    slug: 'weekend', level: 'A1', emoji: '🏞️',
+    title_tr: 'Hafta sonu planı', title_en: 'Weekend plan',
+    desc_tr: 'Bu hafta sonu ne yapacaksın? Nereye gideceksin?',
+    patterns: ['will / be going to', 'Future'],
+    tags: ['future', 'leisure'],
+    tr_lines: [
+      'Bu hafta sonu parka gideceğim.',
+      'Bir arkadaşımla buluşacağım.',
+      'Hava güzelse yürüyüş yapacağız.',
+      'Yağmur yağarsa kafede otururuz.',
+      'Pazar günü dinleneceğim.'
+    ],
+    en_lines: [
+      'This weekend, I will go to the park.',
+      'I will meet a friend.',
+      'If the weather is nice, we will walk.',
+      'If it rains, we will sit in a café.',
+      'On Sunday, I will rest.'
+    ],
+    frames: [
+      'This weekend, I will go to ___.',
+      'I will meet ___.',
+      'If the weather is ___, we will ___.',
+      'If it ___, we will ___.',
+      'On Sunday, I will ___.'
+    ],
+    keywords: [
+      ['place'],
+      ['person'],
+      ['condition', 'activity'],
+      ['weather', 'plan B'],
+      ['rest / activity']
+    ]
+  },
+  {
+    slug: 'my-room', level: 'A1', emoji: '🛋️',
+    title_tr: 'Odam', title_en: 'My room',
+    desc_tr: 'Odanı tarif et. Ne var? Hangi köşeyi seviyorsun?',
+    patterns: ['There is/are', 'Prepositions of place'],
+    tags: ['description', 'place'],
+    tr_lines: [
+      'Odamda bir yatak ve bir masa var.',
+      'Masamın üstünde lambam var.',
+      'Pencereden ağaçları görebiliyorum.',
+      'Köşede küçük bir kitaplık var.',
+      'Bu odayı çok seviyorum.'
+    ],
+    en_lines: [
+      'In my room, there is a bed and a table.',
+      'There is a lamp on my table.',
+      'I can see trees from the window.',
+      'In the corner, there is a small bookshelf.',
+      'I love this room very much.'
+    ],
+    frames: [
+      'In my room, there is ___ and ___.',
+      'There is ___ on ___.',
+      'I can see ___ from ___.',
+      'In the corner, there is ___.',
+      'I ___ this room.'
+    ],
+    keywords: [
+      ['furniture'],
+      ['object', 'location'],
+      ['view'],
+      ['corner item'],
+      ['feeling']
+    ]
+  },
+  {
+    slug: 'a-friend', level: 'A1', emoji: '🤝',
+    title_tr: 'Bir arkadaşım', title_en: 'A friend of mine',
+    desc_tr: 'Yakın bir arkadaşını anlat. Adı ne? Ne yapar? Nasıl tanıştınız?',
+    patterns: ['Present Simple', 'Past Simple'],
+    tags: ['people', 'description'],
+    tr_lines: [
+      'Yakın bir arkadaşım var.',
+      'Adı Ahmet ve mühendis.',
+      'Onunla okulda tanıştım.',
+      'Çok dürüst ve sakin bir insan.',
+      'Her hafta birlikte yürüyüşe çıkarız.'
+    ],
+    en_lines: [
+      'I have a close friend.',
+      'His name is Ahmet and he is an engineer.',
+      'I met him at school.',
+      'He is a very honest and calm person.',
+      'Every week, we go for a walk together.'
+    ],
+    frames: [
+      'I have a ___ friend.',
+      'Her/His name is ___ and she/he is ___.',
+      'I met her/him at ___.',
+      'She/He is ___ and ___.',
+      'Every ___, we ___ together.'
+    ],
+    keywords: [
+      ['friendship type'],
+      ['name', 'job'],
+      ['where met'],
+      ['adj1', 'adj2'],
+      ['frequency', 'activity']
+    ]
+  },
+
+  // A2 (8)
+  {
+    slug: 'phone-call', level: 'A2', emoji: '📞',
+    title_tr: 'Bir telefon görüşmesi', title_en: 'A phone call',
+    desc_tr: 'Son zamanlarda yaptığın bir telefon görüşmesini anlat. Kiminle, ne hakkında?',
+    patterns: ['Past Simple', 'Reported Speech (basic)'],
+    tags: ['past', 'communication'],
+    tr_lines: [
+      'Dün annemi aradım.',
+      'Bana sağlığımı sordu.',
+      'Yorgun olduğumu söyledim.',
+      'O da bana erken yatmamı önerdi.',
+      'Görüşmeden sonra kendimi daha iyi hissettim.'
+    ],
+    en_lines: [
+      'Yesterday, I called my mother.',
+      'She asked me about my health.',
+      'I told her that I was tired.',
+      'She suggested that I go to bed early.',
+      'After the call, I felt better.'
+    ],
+    frames: [
+      'Yesterday, I called ___.',
+      'She/He asked me about ___.',
+      'I told her/him that I was ___.',
+      'She/He suggested that I ___.',
+      'After the call, I felt ___.'
+    ],
+    keywords: [
+      ['person called'],
+      ['topic asked'],
+      ['feeling told'],
+      ['suggestion'],
+      ['feeling after']
+    ]
+  },
+  {
+    slug: 'shopping', level: 'A2', emoji: '🛒',
+    title_tr: 'Markete gitmek', title_en: 'A shopping trip',
+    desc_tr: 'Son markete gidişini anlat. Ne aldın? Ne unuttun?',
+    patterns: ['Past Simple', 'Quantifiers (some, any, a few)'],
+    tags: ['past', 'daily'],
+    tr_lines: [
+      'Bu sabah markete gittim.',
+      'Biraz ekmek ve süt aldım.',
+      'Birkaç meyveye de baktım.',
+      'Ne yazık ki listeyi evde unuttum.',
+      'Eve dönünce yumurta almayı unuttuğumu fark ettim.'
+    ],
+    en_lines: [
+      'This morning, I went to the market.',
+      'I bought some bread and milk.',
+      'I also looked at a few fruits.',
+      'Unfortunately, I forgot the list at home.',
+      'When I got home, I realised I had forgotten to buy eggs.'
+    ],
+    frames: [
+      'This morning, I went to ___.',
+      'I bought some ___ and ___.',
+      'I also looked at ___.',
+      'Unfortunately, I forgot ___.',
+      'When I got home, I realised ___.'
+    ],
+    keywords: [
+      ['shopping place'],
+      ['items'],
+      ['additional look'],
+      ['forgotten item'],
+      ['realisation']
+    ]
+  },
+  {
+    slug: 'cafe', level: 'A2', emoji: '☕',
+    title_tr: 'Bir kafede', title_en: 'In a café',
+    desc_tr: 'Bir kafede geçirdiğin anı anlat. Ne içtin? Ne düşündün?',
+    patterns: ['Past Continuous', 'Past Simple'],
+    tags: ['past', 'leisure'],
+    tr_lines: [
+      'Dün öğleden sonra bir kafedeydim.',
+      'Pencereden insanları izliyordum.',
+      'Bir sıcak çikolata içtim.',
+      'O sırada birden eski bir arkadaşımı gördüm.',
+      'Birlikte uzun bir sohbet ettik.'
+    ],
+    en_lines: [
+      'Yesterday afternoon, I was at a café.',
+      'I was watching people through the window.',
+      'I drank a hot chocolate.',
+      'Suddenly, I saw an old friend.',
+      'We had a long conversation together.'
+    ],
+    frames: [
+      '___ afternoon, I was at ___.',
+      'I was ___ through ___.',
+      'I drank ___.',
+      'Suddenly, I ___.',
+      'We had ___ together.'
+    ],
+    keywords: [
+      ['time', 'place'],
+      ['watching what', 'where'],
+      ['drink'],
+      ['unexpected event'],
+      ['what happened']
+    ]
+  },
+  {
+    slug: 'small-problem', level: 'A2', emoji: '🔧',
+    title_tr: 'Küçük bir sorun', level_hint: 'A2',
+    title_en: 'A small problem',
+    desc_tr: 'Son zamanlarda yaşadığın küçük bir sorunu anlat. Nasıl çözdün?',
+    patterns: ['Past Simple', 'had to / could'],
+    tags: ['past', 'problem'],
+    tr_lines: [
+      'Geçen hafta anahtarımı kaybettim.',
+      'Önce bütün ceplerimi aradım.',
+      'Sonra çantamı boşalttım.',
+      'Sonunda mutfakta buldum.',
+      'O günden beri anahtarımı hep aynı yere koyuyorum.'
+    ],
+    en_lines: [
+      'Last week, I lost my key.',
+      'First, I searched all my pockets.',
+      'Then, I emptied my bag.',
+      'Finally, I found it in the kitchen.',
+      'Since that day, I always put my key in the same place.'
+    ],
+    frames: [
+      'Last ___, I lost ___.',
+      'First, I ___.',
+      'Then, I ___.',
+      'Finally, I found ___.',
+      'Since that day, I always ___.'
+    ],
+    keywords: [
+      ['lost thing'],
+      ['first action'],
+      ['second action'],
+      ['found place'],
+      ['new habit']
+    ]
+  },
+  {
+    slug: 'surprise-news', level: 'A2', emoji: '😮',
+    title_tr: 'Şaşırtıcı bir haber', title_en: 'A surprising piece of news',
+    desc_tr: 'Son zamanlarda duyduğun şaşırtıcı bir haberi anlat.',
+    patterns: ['Past Simple', 'Reported Speech'],
+    tags: ['past', 'news'],
+    tr_lines: [
+      'Geçen hafta bir arkadaşım beni aradı.',
+      'Bana iş değiştirdiğini söyledi.',
+      'Yeni şehre taşınacaktı.',
+      'Bu beni hem sevindirdi hem de üzdü.',
+      'Çünkü artık onu sık göremeyeceğim.'
+    ],
+    en_lines: [
+      'Last week, a friend called me.',
+      'She told me that she had changed jobs.',
+      'She was going to move to a new city.',
+      'This made me both happy and sad.',
+      'Because I will not see her often anymore.'
+    ],
+    frames: [
+      'Last ___, ___ called me.',
+      'She/He told me that ___.',
+      'She/He was going to ___.',
+      'This made me ___.',
+      'Because ___.'
+    ],
+    keywords: [
+      ['time', 'person'],
+      ['news content'],
+      ['next step'],
+      ['feeling'],
+      ['reason']
+    ]
+  },
+  {
+    slug: 'weekend-recap', level: 'A2', emoji: '📅',
+    title_tr: 'Geçen hafta sonu', title_en: 'Last weekend',
+    desc_tr: 'Geçen hafta sonu ne yaptın? En çok hangi an aklında kaldı?',
+    patterns: ['Past Simple', 'Time markers'],
+    tags: ['past', 'weekend'],
+    tr_lines: [
+      'Geçen hafta sonu sakin geçti.',
+      'Cumartesi günü bir kafede oturdum.',
+      'Pazar günü ailemle buluştuk.',
+      'Onlarla uzun zamandır görüşmemiştim.',
+      'O sofradaki kahkahaları unutamıyorum.'
+    ],
+    en_lines: [
+      'Last weekend was calm.',
+      'On Saturday, I sat in a café.',
+      'On Sunday, I met my family.',
+      'I had not seen them for a long time.',
+      'I cannot forget the laughter at that table.'
+    ],
+    frames: [
+      'Last weekend was ___.',
+      'On Saturday, I ___.',
+      'On Sunday, I ___.',
+      'I had not ___ for a long time.',
+      'I cannot forget ___.'
+    ],
+    keywords: [
+      ['weekend feeling'],
+      ['Saturday activity'],
+      ['Sunday activity'],
+      ['absence detail'],
+      ['memorable moment']
+    ]
+  },
+  {
+    slug: 'learn-today', level: 'A2', emoji: '🧠',
+    title_tr: 'Bugün öğrendiğim', title_en: 'Something I learnt today',
+    desc_tr: 'Bugün öğrendiğin yeni bir şeyi anlat. Nereden öğrendin?',
+    patterns: ['Past Simple', 'Present Perfect'],
+    tags: ['learning', 'reflection'],
+    tr_lines: [
+      'Bugün ilginç bir şey öğrendim.',
+      'Bir podcast dinledim.',
+      'Konu beyin ve uyku hakkındaydı.',
+      'Konuşmacı çok güzel açıkladı.',
+      'Bu konuyu daha fazla araştıracağım.'
+    ],
+    en_lines: [
+      'Today, I learnt something interesting.',
+      'I listened to a podcast.',
+      'The topic was about the brain and sleep.',
+      'The speaker explained it very well.',
+      'I will research this topic more.'
+    ],
+    frames: [
+      'Today, I learnt ___.',
+      'I listened to / read ___.',
+      'The topic was about ___.',
+      'The speaker/author ___.',
+      'I will ___ this topic ___.'
+    ],
+    keywords: [
+      ['learning'],
+      ['source'],
+      ['topic'],
+      ['quality observation'],
+      ['next step']
+    ]
+  },
+  {
+    slug: 'lost-keys', level: 'A2', emoji: '🔑',
+    title_tr: 'Komşuyla karşılaşma', title_en: 'Meeting a neighbour',
+    desc_tr: 'Komşunla son karşılaşmanı anlat. Ne konuştunuz?',
+    patterns: ['Past Continuous + Past Simple', 'Reported speech'],
+    tags: ['past', 'people'],
+    tr_lines: [
+      'Asansörü beklerken komşumla karşılaştım.',
+      'Bana hafta sonu nereye gittiğimi sordu.',
+      'Köye gittiğimi söyledim.',
+      'O da yakında köyüne gideceğini anlattı.',
+      'Kısa ama keyifli bir sohbetti.'
+    ],
+    en_lines: [
+      'While I was waiting for the lift, I met my neighbour.',
+      'She asked me where I had gone for the weekend.',
+      'I told her that I had gone to a village.',
+      'She said she was going to her village soon.',
+      'It was a short but pleasant conversation.'
+    ],
+    frames: [
+      'While I was ___, I met ___.',
+      'She/He asked me ___.',
+      'I told her/him that ___.',
+      'She/He said ___.',
+      'It was ___ conversation.'
+    ],
+    keywords: [
+      ['waiting context'],
+      ['question asked'],
+      ['my answer'],
+      ['their plan'],
+      ['conversation quality']
+    ]
+  },
+
+  // B1 (5)
+  {
+    slug: 'bad-day', level: 'B1', emoji: '🌧️',
+    title_tr: 'Kötü bir gün', title_en: 'A bad day',
+    desc_tr: 'Son zamanlarda yaşadığın kötü bir günü anlat. Sonunda ne öğrendin?',
+    patterns: ['Past Simple', 'Past Continuous', 'Past Perfect'],
+    tags: ['past', 'reflection'],
+    tr_lines: [
+      'Sabah uyandığımda kendimi yorgun hissediyordum.',
+      'Hiçbir şey planladığım gibi gitmiyordu.',
+      'Önce otobüsü kaçırdım, sonra önemli bir maili unuttum.',
+      'O an, biraz mola vermem gerektiğini fark ettim.',
+      'O günden öğrendiğim şey: her şeyi tek seferde halletmeye çalışmamak.'
+    ],
+    en_lines: [
+      'When I woke up in the morning, I was feeling tired.',
+      'Nothing was going the way I had planned.',
+      'First I missed the bus, and then I forgot an important email.',
+      'At that moment, I realised I needed to take a break.',
+      'What I learnt from that day was not to try to do everything at once.'
+    ],
+    frames: [
+      'When I ___, I was feeling ___.',
+      'Nothing was going the way ___.',
+      'First I ___, and then I ___.',
+      'At that moment, I realised ___.',
+      'What I learnt from that day was ___.'
+    ],
+    keywords: [
+      ['waking feeling'],
+      ['plan vs reality'],
+      ['two mishaps'],
+      ['realisation'],
+      ['lesson']
+    ]
+  },
+  {
+    slug: 'childhood', level: 'B1', emoji: '🧸',
+    title_tr: 'Çocukluk anısı', title_en: 'A childhood memory',
+    desc_tr: 'Çocukluğundan canlı kalan bir anı anlat. Neden bu kadar net hatırlıyorsun?',
+    patterns: ['Past Simple', 'used to', 'Past Perfect'],
+    tags: ['past', 'memory'],
+    tr_lines: [
+      'Çocukken her yaz büyükannemin köyüne giderdik.',
+      'Sabahları erken kalkar, bahçede oynardım.',
+      'Bir gün küçük bir kuş yavrusu bulmuştum.',
+      'Onu birkaç gün besledik, sonra serbest bıraktık.',
+      'O an benim için doğanın en güzel dersiydi.'
+    ],
+    en_lines: [
+      'When I was a child, we used to go to my grandmother\'s village every summer.',
+      'I would wake up early and play in the garden.',
+      'One day, I had found a small bird.',
+      'We fed it for a few days, and then we set it free.',
+      'That moment was the most beautiful lesson nature gave me.'
+    ],
+    frames: [
+      'When I was a child, we used to ___.',
+      'I would ___ and ___ in ___.',
+      'One day, I had found ___.',
+      'We ___ for ___, and then we ___.',
+      'That moment was ___.'
+    ],
+    keywords: [
+      ['childhood habit'],
+      ['daily activity'],
+      ['discovery'],
+      ['action sequence'],
+      ['reflection']
+    ]
+  },
+  {
+    slug: 'dream-trip', level: 'B1', emoji: '✈️',
+    title_tr: 'Hayalimdeki gezi', title_en: 'My dream trip',
+    desc_tr: 'Hayalindeki bir geziyi anlat. Nereye? Neden? Yanında kimi götürürdün?',
+    patterns: ['would', 'Conditional Type 2'],
+    tags: ['future', 'hypothetical'],
+    tr_lines: [
+      'Eğer param olsaydı, Japonya\'ya giderdim.',
+      'Tokyo\'da kalabalık caddelerde yürürdüm.',
+      'Geleneksel bir bahçede bir saat sessizce otururdum.',
+      'En iyi arkadaşımı da yanıma alırdım.',
+      'Bu gezi belki hayatımın en güzel haftası olurdu.'
+    ],
+    en_lines: [
+      'If I had money, I would go to Japan.',
+      'I would walk through the crowded streets of Tokyo.',
+      'I would sit quietly in a traditional garden for an hour.',
+      'I would also take my best friend with me.',
+      'This trip would probably be the best week of my life.'
+    ],
+    frames: [
+      'If I had ___, I would go to ___.',
+      'I would ___ through ___.',
+      'I would sit ___ in ___.',
+      'I would also take ___ with me.',
+      'This trip would probably be ___.'
+    ],
+    keywords: [
+      ['condition', 'destination'],
+      ['action', 'place'],
+      ['contemplative moment'],
+      ['companion'],
+      ['conclusion']
+    ]
+  },
+  {
+    slug: 'change', level: 'B1', emoji: '🔄',
+    title_tr: 'Bir değişiklik', title_en: 'A change',
+    desc_tr: 'Hayatında yaptığın bir değişikliği anlat. Önce nasıldı, sonra ne oldu?',
+    patterns: ['used to', 'Present Perfect'],
+    tags: ['change', 'past-present'],
+    tr_lines: [
+      'Eskiden geceleri çok geç yatardım.',
+      'Sabahları kalkmak benim için ızdıraptı.',
+      'Birkaç ay önce uyku düzenimi değiştirmeye karar verdim.',
+      'O zamandan beri her gece on birde yatıyorum.',
+      'Sonuçta hem enerjim hem de odaklanmam arttı.'
+    ],
+    en_lines: [
+      'I used to go to bed very late at night.',
+      'Getting up in the morning was painful for me.',
+      'A few months ago, I decided to change my sleep schedule.',
+      'Since then, I have been going to bed at eleven every night.',
+      'As a result, both my energy and my focus have increased.'
+    ],
+    frames: [
+      'I used to ___.',
+      '___ was ___ for me.',
+      '___ ago, I decided to ___.',
+      'Since then, I have been ___.',
+      'As a result, ___ and ___ have ___.'
+    ],
+    keywords: [
+      ['old habit'],
+      ['old struggle'],
+      ['decision moment'],
+      ['new habit'],
+      ['outcome']
+    ]
+  },
+  {
+    slug: 'opinion', level: 'B1', emoji: '💭',
+    title_tr: 'Bir konudaki fikrim', title_en: 'My opinion on something',
+    desc_tr: 'Önemsediğin bir konuyu seç. Düşüncen ne? Neden böyle düşünüyorsun?',
+    patterns: ['I think / believe', 'because / however'],
+    tags: ['opinion', 'argument'],
+    tr_lines: [
+      'Bence sosyal medya hayatımızı çok hızlı değiştiriyor.',
+      'Bir yandan insanlarla bağlantıda kalmamızı sağlıyor.',
+      'Ancak diğer yandan dikkatimizi parçalıyor.',
+      'Özellikle gençler bundan en çok etkileniyor.',
+      'Bence kullanım için açık sınırlar koymamız gerekiyor.'
+    ],
+    en_lines: [
+      'I think social media is changing our lives very quickly.',
+      'On the one hand, it keeps us connected with people.',
+      'However, on the other hand, it splits our attention.',
+      'Young people in particular are most affected by it.',
+      'I believe we need to set clear limits for its use.'
+    ],
+    frames: [
+      'I think ___ is ___.',
+      'On the one hand, it ___.',
+      'However, on the other hand, it ___.',
+      '___ in particular are most affected.',
+      'I believe we need to ___.'
+    ],
+    keywords: [
+      ['topic', 'main claim'],
+      ['positive side'],
+      ['negative side'],
+      ['most affected'],
+      ['recommendation']
+    ]
+  },
+
+  // B2 (2)
+  {
+    slug: 'ethical', level: 'B2', emoji: '⚖️',
+    title_tr: 'Etik bir ikilem', title_en: 'An ethical dilemma',
+    desc_tr: 'Karar vermesi zor bir durumu anlat. İki taraf da haklı olabilir.',
+    patterns: ['Mixed conditionals', 'Modal perfect', 'Concession (although, despite)'],
+    tags: ['reflection', 'argument'],
+    tr_lines: [
+      'Bazen doğru olduğunu bildiğimiz şey ile kolay olan birbirinden ayrılıyor.',
+      'Geçen ay iş yerinde böyle bir durumla karşılaştım.',
+      'Eğer sussaydım, kimse fark etmezdi; ama yine de huzursuz olurdum.',
+      'Konuştuğumda bazı ilişkilerimi zorladım, buna rağmen vicdanım rahat.',
+      'Bu deneyim bana şunu hatırlattı: kısa vadeli rahatlık, uzun vadeli huzura denk değildir.'
+    ],
+    en_lines: [
+      'Sometimes what we know is right and what is easy go in different directions.',
+      'Last month, I faced such a situation at work.',
+      'If I had stayed silent, no one would have noticed, but I would still have been uneasy.',
+      'When I spoke up, I strained some relationships; despite that, my conscience is clear.',
+      'This experience reminded me that short-term comfort is not equal to long-term peace.'
+    ],
+    frames: [
+      'Sometimes ___ and ___ go in different directions.',
+      'Last ___, I faced ___ at ___.',
+      'If I had ___, no one would have ___, but I would ___.',
+      'When I ___, I ___; despite that, ___.',
+      'This experience reminded me that ___.'
+    ],
+    keywords: [
+      ['tension'],
+      ['situation context'],
+      ['silent scenario'],
+      ['action + cost'],
+      ['lesson']
+    ]
+  },
+  {
+    slug: 'reflection', level: 'B2', emoji: '🪞',
+    title_tr: 'Derin bir gözlem', title_en: 'A deeper reflection',
+    desc_tr: 'Son zamanlarda fark ettiğin, kendine dair olan bir şeyi anlat.',
+    patterns: ['Inversion', 'Cleft sentences', 'Perfect aspects'],
+    tags: ['reflection', 'self'],
+    tr_lines: [
+      'Son haftalarda fark ettim ki kendime karşı bir kez olsun sabırlı olmamışım.',
+      'Yaptığım her hatadan sonra hemen bir sonrakine geçmişim.',
+      'Bu hızın aslında bir tür kaçış olduğunu daha yeni anlıyorum.',
+      'Eğer biraz dursam, hatanın bana ne öğrettiğini görebilirdim.',
+      'Şu an öğrenmeye çalıştığım şey: hızı değil, derinliği yakalamak.'
+    ],
+    en_lines: [
+      'In recent weeks, I have realised that I have never once been patient with myself.',
+      'After every mistake I made, I immediately moved on to the next thing.',
+      'Only now do I understand that this speed was actually a kind of escape.',
+      'If I had paused a little, I could have seen what the mistake was teaching me.',
+      'What I am trying to learn now is to catch depth, not speed.'
+    ],
+    frames: [
+      'In recent ___, I have realised that ___.',
+      'After every ___, I immediately ___.',
+      'Only now do I understand that ___.',
+      'If I had ___, I could have ___.',
+      'What I am trying to learn now is ___.'
+    ],
+    keywords: [
+      ['realisation context'],
+      ['repeated pattern'],
+      ['deeper meaning'],
+      ['hypothetical lesson'],
+      ['current intention']
+    ]
+  }
+];
+
+const PATTERNS = [
+  { name: 'Present Simple', formula: 'S + V(s/es)', example: 'I drink tea every morning. / She works in an office.', level: 'A1' },
+  { name: 'Present Continuous', formula: 'S + am/is/are + V-ing', example: 'I am writing right now. / It is raining.', level: 'A1' },
+  { name: 'Past Simple', formula: 'S + V2 / didn\'t + V1', example: 'I went home. / She didn\'t call.', level: 'A1' },
+  { name: 'be going to', formula: 'S + am/is/are going to + V1', example: 'I am going to read tonight. / It is going to rain.', level: 'A1' },
+  { name: 'will (future)', formula: 'S + will + V1', example: 'I will help you. / It will be fine.', level: 'A1' },
+  { name: 'There is / There are', formula: 'There is/are + noun', example: 'There is a book on the table. / There are two cups.', level: 'A1' },
+  { name: 'have / has got', formula: 'S + have/has + noun', example: 'I have a sister. / She has a new job.', level: 'A1' },
+  { name: 'Past Continuous', formula: 'S + was/were + V-ing', example: 'I was reading when she called.', level: 'A2' },
+  { name: 'Present Perfect', formula: 'S + have/has + V3', example: 'I have lived here for three years. / Have you ever tried sushi?', level: 'A2' },
+  { name: 'used to', formula: 'S + used to + V1', example: 'I used to smoke. / She used to live in Paris.', level: 'A2' },
+  { name: 'Modals (can/should/must)', formula: 'S + modal + V1', example: 'You should rest. / I must finish this.', level: 'A2' },
+  { name: 'Conditional Type 1', formula: 'If + present, will + V1', example: 'If it rains, I will stay home.', level: 'A2' },
+  { name: 'Conditional Type 2', formula: 'If + past, would + V1', example: 'If I had time, I would travel more.', level: 'B1' },
+  { name: 'Reported Speech', formula: 'said/told + that + S + V(backshift)', example: 'She told me that she was tired.', level: 'B1' },
+  { name: 'Linking words', formula: 'because / however / although / so', example: 'I stayed home because I was tired.', level: 'B1' },
+  { name: 'Past Perfect', formula: 'S + had + V3', example: 'When I arrived, she had already left.', level: 'B1' },
+  { name: 'Passive Voice', formula: 'S + be + V3', example: 'The cake was eaten. / It is made in Italy.', level: 'B1' },
+  { name: 'Relative Clauses', formula: 'noun + who/which/that + clause', example: 'The book that I read was great.', level: 'B1' },
+  { name: 'Mixed Conditionals', formula: 'If + past perfect, would + V1', example: 'If I had studied harder, I would be a doctor now.', level: 'B2' },
+  { name: 'Inversion (emphasis)', formula: 'Negative adv + aux + S + V', example: 'Never have I seen such a thing. / Only now do I understand.', level: 'B2' }
+];
+
+const STARTERS_A1 = [
+  'Today I...',
+  'I usually...',
+  'My favourite ___ is...',
+  'Yesterday I...',
+  'I am going to...',
+  'There is/are...',
+  'I have...',
+  'It is ___ today.',
+  'In the morning, I...',
+  'My ___ is/was ___.'
+];
+const STARTERS_A2 = [
+  'When I was a child, I used to...',
+  'Last week, I...',
+  'I have never...',
+  'I would like to...',
+  'If it rains, I will...',
+  'I was ___ when ___.',
+  'She told me that...',
+  'I have been ___ for...',
+  'Sometimes I think...',
+  'I remember when...'
+];
+const STARTERS_B1 = [
+  'On the one hand... on the other hand...',
+  'What surprised me was...',
+  'I had not realised that...',
+  'If I had ___, I would have ___.',
+  'The reason why I ___ is that...',
+  'Although ___, I...',
+  'In my opinion, ___ because ___.',
+  'What I learnt from this is...',
+  'It made me think about...',
+  'Since that day, I have...'
+];
+const STARTERS_B2 = [
+  'Only now do I realise...',
+  'What I am trying to say is...',
+  'There is no doubt that...',
+  'It is precisely this ___ that...',
+  'Had I known ___, I would...',
+  'Far from being ___, it is actually...',
+  'The more I think about it, the more...',
+  'What strikes me most is...',
+  'Despite everything, ___ remains...',
+  'In hindsight, ___.'
+];
+
+// Curated TR→EN word seed (small, focused on common needs)
+const WORD_SEED = {
+  'hatırlamak': ['remember', 'recall (more formal)', 'come to mind'],
+  'unutmak': ['forget', 'slip one\'s mind'],
+  'fark etmek': ['notice', 'realise', 'spot'],
+  'karar vermek': ['decide', 'make a decision', 'come to a decision'],
+  'hissetmek': ['feel', 'sense'],
+  'düşünmek': ['think', 'consider', 'reflect on'],
+  'merak etmek': ['wonder', 'be curious about'],
+  'beklemek': ['wait (for)', 'expect (something to happen)', 'await (formal)'],
+  'sevmek': ['like', 'love', 'enjoy + V-ing'],
+  'denemek': ['try', 'attempt', 'give it a go'],
+  'başarmak': ['succeed in + V-ing', 'manage to + V', 'achieve'],
+  'başarısız': ['fail', 'unsuccessful'],
+  'önemli': ['important', 'crucial', 'significant'],
+  'önemsiz': ['unimportant', 'trivial', 'minor'],
+  'zor': ['difficult', 'hard', 'challenging'],
+  'kolay': ['easy', 'simple', 'straightforward'],
+  'mutlu': ['happy', 'glad', 'pleased', 'content'],
+  'üzgün': ['sad', 'upset', 'down', 'heartbroken'],
+  'yorgun': ['tired', 'exhausted', 'worn out'],
+  'enerjik': ['energetic', 'full of energy', 'lively'],
+  'sıkılmak': ['get bored', 'be fed up', 'lose interest'],
+  'eğlenmek': ['have fun', 'enjoy oneself', 'have a great time'],
+  'anlamak': ['understand', 'get it (informal)', 'grasp'],
+  'açıklamak': ['explain', 'clarify', 'make clear'],
+  'sormak': ['ask', 'inquire (formal)'],
+  'cevap vermek': ['answer', 'reply', 'respond'],
+  'konuşmak': ['talk', 'speak', 'have a conversation'],
+  'dinlemek': ['listen (to)', 'pay attention to'],
+  'okumak': ['read', 'go through (a text)'],
+  'yazmak': ['write', 'jot down (notes)'],
+  'gitmek': ['go', 'head to', 'leave for'],
+  'gelmek': ['come', 'arrive'],
+  'durmak': ['stop', 'pause', 'stand still'],
+  'başlamak': ['start', 'begin', 'kick off'],
+  'bitmek': ['end', 'finish', 'be over'],
+  'devam etmek': ['continue', 'keep + V-ing', 'go on'],
+  'değişmek': ['change', 'shift', 'transform'],
+  'kalmak': ['stay', 'remain'],
+  'taşınmak': ['move (house)', 'relocate'],
+  'çalışmak': ['work', 'study (for an exam)'],
+  'dinlenmek': ['rest', 'take a break', 'relax'],
+  'kahvaltı': ['breakfast'],
+  'öğle yemeği': ['lunch'],
+  'akşam yemeği': ['dinner', 'supper'],
+  'kahve': ['coffee'],
+  'çay': ['tea'],
+  'su': ['water'],
+  'ekmek': ['bread'],
+  'peynir': ['cheese'],
+  'yumurta': ['egg(s)'],
+  'meyve': ['fruit(s)'],
+  'sebze': ['vegetable(s)'],
+  'arkadaş': ['friend', 'mate (informal British)', 'buddy'],
+  'aile': ['family'],
+  'anne': ['mother', 'mum'],
+  'baba': ['father', 'dad'],
+  'kardeş': ['sibling', 'brother', 'sister'],
+  'eş': ['partner', 'spouse (formal)', 'husband / wife'],
+  'çocuk': ['child', 'kid (informal)'],
+  'iş': ['job', 'work', 'business'],
+  'okul': ['school'],
+  'ev': ['home', 'house'],
+  'oda': ['room'],
+  'mutfak': ['kitchen'],
+  'salon': ['living room'],
+  'banyo': ['bathroom'],
+  'park': ['park'],
+  'kafe': ['café', 'coffee shop'],
+  'market': ['supermarket', 'grocery store'],
+  'şehir': ['city'],
+  'köy': ['village'],
+  'yol': ['road', 'way'],
+  'soğuk': ['cold', 'chilly'],
+  'sıcak': ['hot', 'warm'],
+  'yağmurlu': ['rainy'],
+  'güneşli': ['sunny'],
+  'rüzgarlı': ['windy'],
+  'karlı': ['snowy'],
+  'bulutlu': ['cloudy'],
+  'kitap': ['book'],
+  'film': ['film', 'movie (American)'],
+  'müzik': ['music'],
+  'şarkı': ['song'],
+  'haber': ['news (uncountable)', 'piece of news (countable)'],
+  'hikaye': ['story'],
+  'rüya': ['dream'],
+  'umut': ['hope'],
+  'endişe': ['worry', 'concern', 'anxiety'],
+  'huzur': ['peace', 'calm'],
+  'kalabalık': ['crowded', 'busy', 'a crowd'],
+  'sessiz': ['quiet', 'silent'],
+  'sakin': ['calm', 'peaceful'],
+  'hızlı': ['fast', 'quick', 'rapid'],
+  'yavaş': ['slow'],
+  'erken': ['early'],
+  'geç': ['late'],
+  'genç': ['young'],
+  'yaşlı': ['old (for people)', 'elderly (polite)'],
+  'yeni': ['new'],
+  'eski': ['old (for things)', 'former (previous)'],
+  'iyi': ['good', 'fine', 'well'],
+  'kötü': ['bad', 'poor', 'awful'],
+  'güzel': ['beautiful', 'nice', 'lovely'],
+  'çirkin': ['ugly'],
+  'lezzetli': ['tasty', 'delicious'],
+  'tatlı': ['sweet'],
+  'acı': ['bitter', 'spicy', 'painful'],
+  'tuzlu': ['salty']
+};
+
+// ════════════════════════════════════════════════════════════
+//   STATE
+// ════════════════════════════════════════════════════════════
+
+const STATE_KEY = 'writing_ladder_v1';
+
+function defaultState() {
+  return {
+    firstRun: true,
+    level: 1,
+    autoFade: true,
+    bannedTR: false,
+    uglyDraft: false,
+    stuckTimer: true,
+    visualTheme: 'navy',
+    dailyTarget: 3,
+    currentPromptSlug: 'morning',
+    customPrompt: null,
+    trScratch: '',
+    sentences: [], // { text: '', model: '', frame: '', keywords: [], tr: '' }
+    streak: 0,
+    lastCompletedDate: null,
+    todayCompleted: null, // YYYY-MM-DD
+    successesAtCurrentLevel: 0,
+    sessions: [], // { date, level, prompt, sentences[], target_n, words, time, score }
+    badDay: false,
+    sessionStart: null,
+    totalCompletions: 0
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STATE_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    return Object.assign(defaultState(), s);
+  } catch (e) {
+    console.warn('localStorage corrupt, resetting:', e);
+    return null;
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
+  } catch (e) {
+    showToast('Veri kaydedilemedi (depolama dolu olabilir)', 'err');
+  }
+}
+
+let state = loadState() || defaultState();
+
+function today() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10);
+}
+
+// ════════════════════════════════════════════════════════════
+//   RENDER
+// ════════════════════════════════════════════════════════════
+
+function $(s) { return document.querySelector(s); }
+function $$(s) { return Array.from(document.querySelectorAll(s)); }
+
+function currentPrompt() {
+  if (state.customPrompt) return state.customPrompt;
+  return PROMPTS.find(p => p.slug === state.currentPromptSlug) || PROMPTS[0];
+}
+
+function renderHeader() {
+  const slider = $('#levelSlider');
+  slider.value = state.level;
+  const lvl = LEVELS[state.level - 1];
+  $('#levelLabel').textContent = lvl.name;
+  $('#streakCount').textContent = state.streak;
+  $('#streakCount').parentElement.classList.toggle('glow', state.streak >= 3);
+  document.documentElement.setAttribute('data-theme', state.visualTheme);
+}
+
+function renderLevelInfo() {
+  const lvl = LEVELS[state.level - 1];
+  $('#levelInfoTitle').textContent = lvl.title;
+  $('#levelInfoDesc').textContent = lvl.desc;
+}
+
+function renderPrompt() {
+  const p = currentPrompt();
+  $('#promptLevel').textContent = p.level || 'Custom';
+  $('#promptTitleTR').textContent = p.title_tr || p.custom_title || '—';
+  $('#promptTitleEN').textContent = p.title_en ? `(${p.title_en})` : '';
+  $('#promptDesc').textContent = p.desc_tr || p.custom_desc || '';
+  const emoji = $('#promptTitle .prompt-emoji');
+  emoji.textContent = p.emoji || '✨';
+
+  const tags = $('#promptTags');
+  tags.innerHTML = '';
+  (p.tags || []).forEach(t => {
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.textContent = '#' + t;
+    tags.appendChild(span);
+  });
+  (p.patterns || []).forEach(pat => {
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.style.color = 'var(--accent)';
+    span.textContent = pat;
+    tags.appendChild(span);
+  });
+}
+
+function ensureSentenceState() {
+  const p = currentPrompt();
+  const targetN = state.badDay ? 1 : state.dailyTarget;
+  // Init sentences array
+  while (state.sentences.length < targetN) {
+    const idx = state.sentences.length;
+    state.sentences.push({
+      text: '',
+      tr: p.tr_lines ? p.tr_lines[idx] : '',
+      model: p.en_lines ? p.en_lines[idx] : '',
+      frame: p.frames ? p.frames[idx] : '',
+      keywords: p.keywords ? p.keywords[idx] : []
+    });
+  }
+  // Trim if too many (e.g., bad-day toggle)
+  if (state.sentences.length > targetN) {
+    state.sentences = state.sentences.slice(0, targetN);
+  }
+}
+
+function renderSentenceList() {
+  ensureSentenceState();
+  const list = $('#sentenceList');
+  list.innerHTML = '';
+  const p = currentPrompt();
+
+  state.sentences.forEach((s, i) => {
+    const block = document.createElement('div');
+    block.className = 'sentence-block';
+    block.dataset.idx = i;
+
+    let inner = `
+      <div class="sentence-num">
+        <span>Cümle ${i + 1}</span>
+        <button class="del-btn" data-del="${i}" title="Bu cümleyi sil">✕</button>
+      </div>
+    `;
+
+    // TR line (always shown, except in custom-no-tr cases)
+    if (s.tr && !state.bannedTR) {
+      inner += `<div class="tr-line">🇹🇷 ${escapeHtml(s.tr)}</div>`;
+    }
+
+    // Scaffold by level
+    if (state.level === 1 && s.model) {
+      // L1 Echo: full English model
+      inner += `<div class="model-line" data-copy="${i}">📋 ${escapeHtml(s.model)}</div>`;
+    } else if (state.level === 2 && s.frame) {
+      // L2 Frame: scaffolded with blanks
+      inner += `<div class="scaffold-line">🔧 ${escapeHtml(s.frame)}</div>`;
+    } else if (state.level === 3 && s.keywords && s.keywords.length) {
+      // L3 Hint: keywords
+      const chips = s.keywords.map(kw =>
+        `<span class="hint-chip" data-kw="${escapeHtml(kw)}">${escapeHtml(kw)}</span>`
+      ).join('');
+      inner += `<div class="hints-line">${chips}</div>`;
+    }
+    // L4 Sketch: just TR (already above)
+    // L5 Free: no TR even (handled below)
+
+    inner += `<textarea class="sentence-input" data-idx="${i}" placeholder="${getPlaceholder(i)}" rows="2">${escapeHtml(s.text)}</textarea>`;
+
+    block.innerHTML = inner;
+    list.appendChild(block);
+  });
+
+  // Update count
+  updateStats();
+}
+
+function getPlaceholder(idx) {
+  if (state.level === 1) return 'Modeli kopyala, kendine uyarla...';
+  if (state.level === 2) return 'Boşlukları kendi düşüncenle doldur...';
+  if (state.level === 3) return 'Anahtar kelimeleri kullanarak cümle kur...';
+  if (state.level === 4) return 'Türkçe fikri İngilizce\'ye çevir, kendi cümleni yaz...';
+  return 'Tema hakkında serbest yaz...';
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  })[c]);
+}
+
+function updateStats() {
+  const totalWords = state.sentences.reduce((sum, s) => {
+    return sum + (s.text ? s.text.trim().split(/\s+/).filter(Boolean).length : 0);
+  }, 0);
+  const nonEmpty = state.sentences.filter(s => s.text && s.text.trim()).length;
+  $('#wordCount').textContent = totalWords;
+  $('#sentCount').textContent = nonEmpty;
+
+  if (state.sessionStart) {
+    const min = Math.round((Date.now() - state.sessionStart) / 60000);
+    $('#timeSpent').textContent = min;
+  }
+}
+
+function renderAll() {
+  renderHeader();
+  renderLevelInfo();
+  renderPrompt();
+  renderSentenceList();
+  $('#trScratch').value = state.trScratch || '';
+  $('#bannedNotice').hidden = !state.bannedTR;
+  $('#trScratch').disabled = state.bannedTR;
+  $('#badDayBadge').hidden = !state.badDay;
+}
+
+// ════════════════════════════════════════════════════════════
+//   EVENTS
+// ════════════════════════════════════════════════════════════
+
+function init() {
+  // Welcome
+  if (state.firstRun) {
+    openModal('welcomeModal');
+  }
+
+  if (!state.sessionStart) state.sessionStart = Date.now();
+
+  renderAll();
+  bindEvents();
+  checkAutoFadeOffer();
+  checkStreakOnLoad();
+
+  // Stuck timer
+  if (state.stuckTimer) setupStuckTimer();
+}
+
+function bindEvents() {
+  // Welcome start
+  $('#startBtn').addEventListener('click', () => {
+    state.firstRun = false;
+    saveState();
+    closeModal('welcomeModal');
+  });
+
+  // Level slider
+  $('#levelSlider').addEventListener('input', (e) => {
+    const newLvl = parseInt(e.target.value);
+    if (newLvl !== state.level) {
+      state.level = newLvl;
+      state.successesAtCurrentLevel = 0;
+      saveState();
+      renderHeader();
+      renderLevelInfo();
+      renderSentenceList();
+      showToast(`Seviye: ${LEVELS[state.level-1].name}`);
+    }
+  });
+
+  // New prompt
+  $('#newPromptBtn').addEventListener('click', () => {
+    pickRandomPrompt();
+  });
+
+  // Custom prompt
+  $('#customPromptBtn').addEventListener('click', () => {
+    openModal('customPromptModal');
+  });
+  $('#saveCustomPrompt').addEventListener('click', () => {
+    const v = $('#customPromptInput').value.trim();
+    if (!v) return showToast('Boş geçilemez', 'warn');
+    state.customPrompt = {
+      slug: 'custom-' + Date.now(),
+      level: 'Custom',
+      emoji: '✨',
+      title_tr: v.slice(0, 80),
+      title_en: '',
+      desc_tr: v,
+      tags: ['custom'],
+      patterns: []
+      // No tr_lines/en_lines/frames/keywords — user is on their own at any level
+    };
+    state.sentences = [];
+    state.todayCompleted = null;
+    saveState();
+    renderAll();
+    closeModal('customPromptModal');
+    $('#customPromptInput').value = '';
+    showToast('Yeni konu hazır');
+  });
+
+  // Bad day
+  $('#badDayBtn').addEventListener('click', () => {
+    state.badDay = !state.badDay;
+    if (state.badDay && state.sentences.length > 1) {
+      // Keep only first
+      state.sentences = state.sentences.slice(0, 1);
+    }
+    saveState();
+    renderAll();
+    showToast(state.badDay ? 'Kötü gün modu açık — 1 cümle yeter' : 'Normal moda dönüldü', state.badDay ? 'warn' : 'ok');
+  });
+
+  // TR scratch save
+  $('#trScratch').addEventListener('input', (e) => {
+    state.trScratch = e.target.value;
+    saveState();
+  });
+
+  // Sentence inputs (delegated)
+  $('#sentenceList').addEventListener('input', (e) => {
+    if (e.target.classList.contains('sentence-input')) {
+      const idx = parseInt(e.target.dataset.idx);
+      state.sentences[idx].text = e.target.value;
+      updateStats();
+      saveState();
+      resetStuckTimer();
+    }
+  });
+  $('#sentenceList').addEventListener('click', (e) => {
+    // Delete sentence
+    if (e.target.dataset.del !== undefined) {
+      const idx = parseInt(e.target.dataset.del);
+      if (state.sentences.length <= 1) {
+        showToast('En az 1 cümle olmalı', 'warn');
+        return;
+      }
+      state.sentences.splice(idx, 1);
+      saveState();
+      renderSentenceList();
+    }
+    // Copy model (L1)
+    if (e.target.classList.contains('model-line')) {
+      const idx = parseInt(e.target.dataset.copy);
+      const block = e.target.closest('.sentence-block');
+      const ta = block.querySelector('.sentence-input');
+      ta.value = state.sentences[idx].model;
+      ta.focus();
+      state.sentences[idx].text = state.sentences[idx].model;
+      saveState();
+      updateStats();
+      showToast('Model kopyalandı — şimdi kendine uyarla');
+    }
+    // Hint chip click (L3)
+    if (e.target.classList.contains('hint-chip')) {
+      const kw = e.target.dataset.kw;
+      const block = e.target.closest('.sentence-block');
+      const ta = block.querySelector('.sentence-input');
+      ta.focus();
+      // Insert at cursor
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const before = ta.value.slice(0, start);
+      const after = ta.value.slice(end);
+      const sep = (before && !before.endsWith(' ')) ? ' ' : '';
+      ta.value = before + sep + kw + ' ' + after;
+      ta.selectionStart = ta.selectionEnd = start + sep.length + kw.length + 1;
+      const idx = parseInt(ta.dataset.idx);
+      state.sentences[idx].text = ta.value;
+      saveState();
+      updateStats();
+    }
+  });
+
+  // Add sentence
+  $('#addSentenceBtn').addEventListener('click', () => {
+    const p = currentPrompt();
+    const i = state.sentences.length;
+    if (i >= 15) {
+      showToast('Üst limit (15) — devam etmek istersen önce kaydet', 'warn');
+      return;
+    }
+    state.sentences.push({
+      text: '',
+      tr: p.tr_lines && p.tr_lines[i] ? p.tr_lines[i] : '',
+      model: p.en_lines && p.en_lines[i] ? p.en_lines[i] : '',
+      frame: p.frames && p.frames[i] ? p.frames[i] : '',
+      keywords: p.keywords && p.keywords[i] ? p.keywords[i] : []
+    });
+    saveState();
+    renderSentenceList();
+    // Focus the new one
+    setTimeout(() => {
+      const inputs = $$('.sentence-input');
+      if (inputs.length) inputs[inputs.length - 1].focus();
+    }, 50);
+  });
+
+  // Save (interim)
+  $('#saveBtn').addEventListener('click', () => {
+    saveState();
+    showToast('Kayıt edildi (ara)', 'ok');
+  });
+
+  // Finish & check
+  $('#finishBtn').addEventListener('click', () => {
+    finishAndCheck();
+  });
+
+  // Help buttons
+  $$('.help-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const help = btn.dataset.help;
+      if (help === 'word') openModal('wordHelpModal');
+      if (help === 'pattern') openPatternHelp();
+      if (help === 'starter') openStarterHelp();
+      if (help === 'voice') startVoice(btn);
+    });
+  });
+
+  // Word help search
+  $('#wordHelpSearch').addEventListener('click', searchWord);
+  $('#wordHelpInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') searchWord();
+  });
+
+  // Theme button
+  $('#themeBtn').addEventListener('click', () => {
+    openModal('settingsModal');
+  });
+  $('#settingsBtn').addEventListener('click', () => {
+    openModal('settingsModal');
+    refreshSettings();
+  });
+  $('#recentBtn').addEventListener('click', () => {
+    openModal('recentModal');
+    renderSessionList();
+  });
+
+  // Modal close
+  $$('[data-close]').forEach(b => {
+    b.addEventListener('click', () => closeModal(b.dataset.close));
+  });
+  $$('.modal').forEach(m => {
+    m.addEventListener('click', (e) => {
+      if (e.target === m) closeModal(m.id);
+    });
+  });
+
+  // Settings toggles
+  $$('.toggle').forEach(t => {
+    t.addEventListener('click', () => {
+      const key = t.dataset.setting;
+      state[key] = !state[key];
+      t.classList.toggle('on', state[key]);
+      saveState();
+      if (key === 'bannedTR') renderAll();
+    });
+  });
+  $$('.swatch').forEach(s => {
+    s.addEventListener('click', () => {
+      state.visualTheme = s.dataset.tx;
+      saveState();
+      renderHeader();
+      refreshSettings();
+    });
+  });
+  $('#dailyTarget').addEventListener('change', (e) => {
+    const v = Math.max(1, Math.min(20, parseInt(e.target.value) || 3));
+    state.dailyTarget = v;
+    e.target.value = v;
+    saveState();
+    renderSentenceList();
+  });
+
+  // Reset
+  $('#resetBtn').addEventListener('click', () => {
+    if (!confirm('Tüm veriler silinecek. Emin misin?')) return;
+    localStorage.removeItem(STATE_KEY);
+    location.reload();
+  });
+
+  // Check modal actions
+  $('#reviseBtn').addEventListener('click', () => closeModal('checkModal'));
+  $('#saveSessionBtn').addEventListener('click', saveSession);
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      finishAndCheck();
+    }
+    if (e.altKey && e.key.toLowerCase() === 'n') {
+      e.preventDefault();
+      $('#addSentenceBtn').click();
+    }
+    if (e.key === 'Escape') {
+      $$('.modal.show').forEach(m => closeModal(m.id));
+    }
+  });
+
+  // Hide voice button if no Speech API
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    const vb = $('#voiceBtn');
+    if (vb) vb.style.display = 'none';
+  }
+}
+
+function refreshSettings() {
+  ['autoFade', 'bannedTR', 'uglyDraft', 'stuckTimer'].forEach(k => {
+    const t = $(`.toggle[data-setting="${k}"]`);
+    if (t) t.classList.toggle('on', !!state[k]);
+  });
+  $$('.swatch').forEach(s => {
+    s.classList.toggle('active', s.dataset.tx === state.visualTheme);
+  });
+  $('#dailyTarget').value = state.dailyTarget;
+}
+
+function openModal(id) {
+  $(`#${id}`).classList.add('show');
+}
+function closeModal(id) {
+  $(`#${id}`).classList.remove('show');
+}
+
+function pickRandomPrompt() {
+  // Pick a prompt at or near user's current level
+  const level = LEVELS[state.level - 1];
+  const userCefr = inferUserCefr();
+  const pool = PROMPTS.filter(p => p.level === userCefr);
+  const candidates = pool.length ? pool : PROMPTS;
+  let pick;
+  let tries = 0;
+  do {
+    pick = candidates[Math.floor(Math.random() * candidates.length)];
+    tries++;
+  } while (pick.slug === state.currentPromptSlug && tries < 10);
+
+  state.currentPromptSlug = pick.slug;
+  state.customPrompt = null;
+  state.sentences = [];
+  state.todayCompleted = null;
+  saveState();
+  renderAll();
+  showToast(`Yeni konu: ${pick.title_tr}`);
+}
+
+function inferUserCefr() {
+  // L1-L2 → A1, L3 → A2, L4 → B1, L5 → B2
+  return ['A1', 'A1', 'A2', 'B1', 'B2'][state.level - 1];
+}
+
+// ════════════════════════════════════════════════════════════
+//   HELP
+// ════════════════════════════════════════════════════════════
+
+function searchWord() {
+  const q = $('#wordHelpInput').value.trim().toLowerCase();
+  const out = $('#wordHelpResults');
+  if (!q) {
+    out.innerHTML = '<p class="small">Bir kelime yaz.</p>';
+    return;
+  }
+  // Exact then partial
+  const direct = WORD_SEED[q];
+  let html = '';
+  if (direct) {
+    html += `<div class="dict-row">
+      <strong>🇹🇷 ${escapeHtml(q)}</strong>
+      <span>→</span>
+      <span>${direct.map(escapeHtml).join(' · ')}</span>
+    </div>`;
+  }
+  // Partial matches
+  const partial = Object.keys(WORD_SEED)
+    .filter(k => k !== q && (k.includes(q) || q.includes(k)))
+    .slice(0, 5);
+  partial.forEach(k => {
+    html += `<div class="dict-row">
+      <span>🇹🇷 ${escapeHtml(k)}</span>
+      <span>→</span>
+      <span>${WORD_SEED[k].map(escapeHtml).join(' · ')}</span>
+    </div>`;
+  });
+  if (!html) {
+    html = `<p class="small">Bulunamadı. İpucu: ana fiil kökünü dene (örn. "hatırlıyorum" yerine "hatırlamak").</p>
+            <p class="small">Sözlüğümüz küçük — bilinçli olarak. Yardım almak yerine başka kelimeyle ifade etmeyi dene.</p>`;
+  }
+  out.innerHTML = html;
+}
+
+function openPatternHelp() {
+  const lvl = inferUserCefr();
+  const order = { 'A1': 0, 'A2': 1, 'B1': 2, 'B2': 3 };
+  const list = PATTERNS.filter(p => order[p.level] <= order[lvl] + 1).sort((a, b) => order[a.level] - order[b.level]);
+  const container = $('#patternList');
+  container.innerHTML = '';
+  list.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'pattern-item';
+    item.innerHTML = `
+      <div><strong>${escapeHtml(p.name)}</strong> <span class="small">(${p.level})</span></div>
+      <div class="formula">${escapeHtml(p.formula)}</div>
+      <div class="example">${escapeHtml(p.example)}</div>
+    `;
+    item.addEventListener('click', () => {
+      copyToScratchpad(p.formula + ' — ' + p.example);
+      closeModal('patternHelpModal');
+    });
+    container.appendChild(item);
+  });
+  openModal('patternHelpModal');
+}
+
+function openStarterHelp() {
+  const lvl = inferUserCefr();
+  const map = { 'A1': STARTERS_A1, 'A2': STARTERS_A2, 'B1': STARTERS_B1, 'B2': STARTERS_B2 };
+  const list = map[lvl] || STARTERS_A1;
+  const container = $('#starterList');
+  container.innerHTML = '';
+  list.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'starter-item';
+    item.textContent = s;
+    item.addEventListener('click', () => {
+      insertIntoActiveSentence(s);
+      closeModal('starterHelpModal');
+    });
+    container.appendChild(item);
+  });
+  openModal('starterHelpModal');
+}
+
+function copyToScratchpad(text) {
+  const ta = $('#trScratch');
+  ta.value = (ta.value ? ta.value + '\n' : '') + text;
+  state.trScratch = ta.value;
+  saveState();
+  showToast('Scratchpad\'e eklendi');
+}
+
+function insertIntoActiveSentence(text) {
+  // Find empty sentence input first, else first
+  const inputs = $$('.sentence-input');
+  let target = inputs.find(i => !i.value.trim()) || inputs[0];
+  if (!target) return;
+  target.focus();
+  if (!target.value.trim()) {
+    target.value = text;
+  } else {
+    target.value = target.value + ' ' + text;
+  }
+  const idx = parseInt(target.dataset.idx);
+  state.sentences[idx].text = target.value;
+  saveState();
+  updateStats();
+}
+
+// ════════════════════════════════════════════════════════════
+//   VOICE
+// ════════════════════════════════════════════════════════════
+
+let recognition = null;
+function startVoice(btn) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    showToast('Tarayıcı sesli girişi desteklemiyor', 'warn');
+    return;
+  }
+  if (recognition) {
+    recognition.stop();
+    recognition = null;
+    btn.classList.remove('voice-recording');
+    return;
+  }
+  recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  btn.classList.add('voice-recording');
+  showToast('Konuş — sus, biter');
+  recognition.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    insertIntoActiveSentence(text);
+  };
+  recognition.onerror = (e) => {
+    showToast('Ses hatası: ' + e.error, 'err');
+  };
+  recognition.onend = () => {
+    btn.classList.remove('voice-recording');
+    recognition = null;
+  };
+  try {
+    recognition.start();
+  } catch (e) {
+    showToast('Mikrofona erişim yok', 'err');
+    btn.classList.remove('voice-recording');
+    recognition = null;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//   FINISH & CHECK
+// ════════════════════════════════════════════════════════════
+
+function finishAndCheck() {
+  const written = state.sentences.filter(s => s.text && s.text.trim());
+  if (written.length === 0) {
+    showToast('Önce bir şey yaz 😊', 'warn');
+    return;
+  }
+  if (!state.badDay && written.length < state.dailyTarget) {
+    if (!confirm(`Hedef ${state.dailyTarget} cümle, sen ${written.length} yazdın. Yine de bitirelim mi?`)) {
+      return;
+    }
+  }
+
+  const p = currentPrompt();
+  // Build checks
+  const checks = state.sentences.map((s, i) => {
+    if (!s.text || !s.text.trim()) {
+      return { kind: 'empty', text: '', note: '(Boş cümle — atlandı)' };
+    }
+    return analyseSentence(s, i, p);
+  }).filter(c => c.kind !== 'empty');
+
+  // Summary
+  const ok = checks.filter(c => c.kind === 'ok').length;
+  const warn = checks.filter(c => c.kind === 'warn').length;
+  const err = checks.filter(c => c.kind === 'err').length;
+  const totalWords = checks.reduce((sum, c) => sum + (c.text ? c.text.trim().split(/\s+/).filter(Boolean).length : 0), 0);
+
+  const score = checks.length
+    ? Math.round((ok + warn * 0.5) / checks.length * 100)
+    : 0;
+
+  $('#checkSummary').innerHTML = `
+    <div class="stat-box"><div class="num">${checks.length}</div><div class="lbl">Cümle</div></div>
+    <div class="stat-box"><div class="num">${totalWords}</div><div class="lbl">Kelime</div></div>
+    <div class="stat-box"><div class="num">${score}%</div><div class="lbl">Skor</div></div>
+    <div class="stat-box"><div class="num">${LEVELS[state.level-1].name.split(' ')[0]}</div><div class="lbl">Seviye</div></div>
+  `;
+
+  // Per sentence
+  $('#checkSentences').innerHTML = checks.map((c, i) => `
+    <div class="check-sentence ${c.kind}">
+      <div class="your"><strong>${i + 1}.</strong> ${escapeHtml(c.text)}</div>
+      <div class="note">${c.kind === 'ok' ? '✓' : c.kind === 'warn' ? '⚠️' : '❌'} ${escapeHtml(c.note)}</div>
+    </div>
+  `).join('');
+
+  // Takeaways
+  const takeaways = generateTakeaways(checks, state.level);
+  $('#takeaways').innerHTML = takeaways.map((t, i) => `
+    <div class="takeaway">
+      <span class="takeaway-num">${i + 1}</span>
+      <span>${escapeHtml(t)}</span>
+    </div>
+  `).join('');
+
+  // Stash for save
+  window._lastCheck = { score, ok, warn, err, checks, takeaways, totalWords };
+
+  openModal('checkModal');
+}
+
+function analyseSentence(s, idx, p) {
+  const text = s.text.trim();
+  const words = text.split(/\s+/).filter(Boolean);
+  const wordCount = words.length;
+
+  // Heuristic checks (no AI — just simple rules)
+  let kind = 'ok';
+  const notes = [];
+
+  // 1. Empty / too short
+  if (wordCount < 3) {
+    kind = 'warn';
+    notes.push('Çok kısa — 3+ kelime hedefle.');
+  }
+
+  // 2. Capitalisation
+  if (text && text[0] !== text[0].toUpperCase()) {
+    kind = kind === 'ok' ? 'warn' : kind;
+    notes.push('İlk harf büyük olmalı.');
+  }
+
+  // 3. Punctuation
+  const endsWithPunc = /[.!?]$/.test(text);
+  if (!endsWithPunc) {
+    kind = kind === 'ok' ? 'warn' : kind;
+    notes.push('Sonunda nokta/? /! eksik.');
+  }
+
+  // 4. Common mistakes (Turkish learners)
+  const lower = text.toLowerCase();
+  const cm = [
+    { rx: /\bi am go\b/, msg: '"I am go" → "I am going" / "I go"' },
+    { rx: /\bi am have\b/, msg: '"I am have" → "I have" (have is state verb)' },
+    { rx: /\bvery much (good|nice|happy|tired)\b/, msg: '"very much + adj" → "very + adj" (much = miktar)' },
+    { rx: /\bdoes not (likes|wants|has)\b/, msg: 'does not + V1 (V1, not V-s)' },
+    { rx: /\bi am agree\b/, msg: '"I am agree" → "I agree" (agree = fiil)' },
+    { rx: /\bin yesterday\b/, msg: '"in yesterday" → "yesterday" (preposition gerekmez)' },
+    { rx: /\bin home\b/, msg: '"in home" → "at home"' },
+    { rx: /\bgo to home\b/, msg: '"go to home" → "go home"' },
+    { rx: /\bmore better\b/, msg: '"more better" → "better"' },
+    { rx: /\bmore worse\b/, msg: '"more worse" → "worse"' },
+    { rx: /\bpeople is\b/, msg: '"people is" → "people are" (people = plural)' },
+    { rx: /\b(advice|information|news)s\b/, msg: 'sayılamayan isim — çoğul yapma' },
+    { rx: /\b(everyone|everybody|someone) are\b/, msg: 'everyone/somebody = singular → is/has' }
+  ];
+  cm.forEach(c => {
+    if (c.rx.test(lower)) {
+      kind = 'err';
+      notes.push(c.msg);
+    }
+  });
+
+  // 5. Level-appropriate praise
+  if (kind === 'ok' && wordCount >= 6) {
+    notes.push(`İyi (${wordCount} kelime).`);
+  } else if (kind === 'ok') {
+    notes.push('Düzgün cümle.');
+  }
+
+  // 6. Detect if it's identical to model (L1)
+  if (state.level === 1 && s.model && text === s.model) {
+    kind = 'warn';
+    notes.push('Model kopya — bir sonraki turda küçük değişiklik yap (kelime ekle/çıkar).');
+  }
+
+  return {
+    kind,
+    text,
+    note: notes.join(' '),
+    sentence: s
+  };
+}
+
+function generateTakeaways(checks, level) {
+  const out = [];
+  const errs = checks.filter(c => c.kind === 'err');
+  const warns = checks.filter(c => c.kind === 'warn');
+  const oks = checks.filter(c => c.kind === 'ok');
+
+  // 1. Skor odaklı
+  if (errs.length === 0 && warns.length <= 1) {
+    out.push(`Bugün ${checks.length} cümle, neredeyse hatasız. Hazır olduğunda slider'ı bir basamak yukarı çek (L${Math.min(5, level + 1)}).`);
+  } else if (errs.length >= 2) {
+    out.push(`${errs.length} cümlede yapısal hata var. Yarın aynı seviyede 2-3 cümle daha yaz, sonra ilerle.`);
+  } else {
+    out.push(`${oks.length}/${checks.length} cümle temiz. Süreklilik > mükemmellik.`);
+  }
+
+  // 2. Hata pattern'i
+  if (errs.length > 0) {
+    const firstNote = errs[0].note.split('.')[0];
+    out.push(`Bir hata not al: "${firstNote}" — yarın bu kalıp için bilinçli bir cümle kur.`);
+  } else {
+    out.push('Yarın daha karmaşık bir cümle dene: 2 fiil + "because" / "but" / "when".');
+  }
+
+  // 3. Süreklilik motivasyonu
+  if (state.streak === 0) {
+    out.push('İlk günün — yarın da gel, streak başlasın. 🔥');
+  } else if (state.streak < 3) {
+    out.push(`${state.streak + 1}. gün geliyor. 3 gün ardından alışkanlık tetiklenir.`);
+  } else if (state.streak < 7) {
+    out.push(`${state.streak + 1} gün streak. 7'ye doğru.`);
+  } else {
+    out.push(`${state.streak + 1} gün — bu artık bir kas. Bir gün atlasan bile sıfırlanmaz (2 gün toleransı var).`);
+  }
+
+  return out.slice(0, 3);
+}
+
+function saveSession() {
+  const c = window._lastCheck;
+  if (!c) return;
+
+  const t = today();
+  const session = {
+    date: t,
+    level: state.level,
+    levelName: LEVELS[state.level - 1].name,
+    prompt: currentPrompt().title_tr,
+    promptSlug: state.customPrompt ? 'custom' : state.currentPromptSlug,
+    sentences: state.sentences.filter(s => s.text && s.text.trim()).map(s => s.text),
+    score: c.score,
+    words: c.totalWords,
+    time_minutes: Math.round((Date.now() - (state.sessionStart || Date.now())) / 60000),
+    ok: c.ok, warn: c.warn, err: c.err
+  };
+
+  // Add to sessions (cap at 50)
+  state.sessions.unshift(session);
+  if (state.sessions.length > 50) state.sessions = state.sessions.slice(0, 50);
+
+  // Streak logic
+  updateStreak(t, c.score);
+
+  state.todayCompleted = t;
+  state.totalCompletions += 1;
+  if (c.score >= 70) state.successesAtCurrentLevel += 1;
+
+  // Reset session
+  state.sentences = [];
+  state.trScratch = '';
+  state.sessionStart = Date.now();
+  state.badDay = false;
+
+  saveState();
+  renderAll();
+  closeModal('checkModal');
+  showToast(`Tamamlandı! 🎉 Streak: ${state.streak} · Skor: ${c.score}%`, 'ok');
+
+  checkAutoFadeOffer();
+}
+
+function updateStreak(t, score) {
+  if (score < 30) {
+    // Don't break streak but don't extend
+    showToast('Düşük skor — streak korundu ama ilerlemiyor', 'warn');
+    return;
+  }
+  if (!state.lastCompletedDate) {
+    state.streak = 1;
+  } else {
+    const last = new Date(state.lastCompletedDate);
+    const now = new Date(t);
+    const diff = Math.round((now - last) / 86400000);
+    if (diff === 0) {
+      // Already completed today, no change
+    } else if (diff === 1) {
+      state.streak += 1;
+    } else if (diff === 2) {
+      // 2-day tolerance — streak preserved
+      state.streak += 1;
+      showToast('1 gün atladın — streak korundu (2 gün toleransı)', 'warn');
+    } else {
+      // Reset
+      state.streak = 1;
+      showToast('Streak sıfırlandı — yeniden başlıyoruz 🔄', 'warn');
+    }
+  }
+  state.lastCompletedDate = t;
+}
+
+function checkStreakOnLoad() {
+  if (!state.lastCompletedDate) return;
+  const last = new Date(state.lastCompletedDate);
+  const now = new Date(today());
+  const diff = Math.round((now - last) / 86400000);
+  if (diff > 2 && state.streak > 0) {
+    state.streak = 0;
+    saveState();
+    showToast('2+ gün ara — streak sıfırlandı. Yeniden başlayalım 🌱', 'warn');
+  }
+}
+
+function checkAutoFadeOffer() {
+  if (!state.autoFade) return;
+  if (state.successesAtCurrentLevel >= 3 && state.level < 5) {
+    setTimeout(() => {
+      if (confirm(`Son 3 seansta başarılı oldun. L${state.level} → L${state.level + 1}'e geçelim mi? (Hayır → bu seviyede kal)`)) {
+        state.level += 1;
+        state.successesAtCurrentLevel = 0;
+        saveState();
+        renderAll();
+        showToast(`Seviye atladı: ${LEVELS[state.level-1].name} 🎉`, 'ok');
+      } else {
+        state.successesAtCurrentLevel = 0; // dismiss for now
+        saveState();
+      }
+    }, 800);
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//   RECENT SESSIONS
+// ════════════════════════════════════════════════════════════
+
+function renderSessionList() {
+  const list = $('#sessionList');
+  const recent = state.sessions.slice(0, 14);
+  if (!recent.length) {
+    list.innerHTML = '<p class="small">Henüz seans yok.</p>';
+    return;
+  }
+  list.innerHTML = recent.map((s, i) => `
+    <div class="session-row">
+      <div>
+        <div>${escapeHtml(s.prompt)} <span class="meta">${s.levelName || 'L?'}</span></div>
+        <div class="meta">${s.date} · ${s.sentences.length} cümle · ${s.words} kelime · ${s.score}%</div>
+      </div>
+      <button class="btn secondary" data-revise="${i}">Düzelt</button>
+    </div>
+  `).join('');
+  list.querySelectorAll('[data-revise]').forEach(b => {
+    b.addEventListener('click', () => {
+      const i = parseInt(b.dataset.revise);
+      const ses = recent[i];
+      // Load sentences for revise
+      state.sentences = ses.sentences.map(text => ({
+        text, tr: '', model: '', frame: '', keywords: []
+      }));
+      // Find prompt by slug if exists
+      const p = PROMPTS.find(pp => pp.slug === ses.promptSlug);
+      if (p) {
+        state.currentPromptSlug = p.slug;
+        state.customPrompt = null;
+        // Re-inject scaffolding for current level
+        state.sentences.forEach((s, idx) => {
+          if (p.tr_lines && p.tr_lines[idx]) s.tr = p.tr_lines[idx];
+          if (p.en_lines && p.en_lines[idx]) s.model = p.en_lines[idx];
+          if (p.frames && p.frames[idx]) s.frame = p.frames[idx];
+          if (p.keywords && p.keywords[idx]) s.keywords = p.keywords[idx];
+        });
+      } else {
+        state.customPrompt = {
+          slug: 'revised',
+          level: 'Custom',
+          emoji: '🔁',
+          title_tr: '(Revize) ' + ses.prompt,
+          desc_tr: 'Geçmiş bir seansı yeniden ele al.',
+          tags: ['revise'],
+          patterns: []
+        };
+      }
+      state.todayCompleted = null;
+      saveState();
+      renderAll();
+      closeModal('recentModal');
+      showToast('Eski seans yüklendi — şimdi geliştir');
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//   STUCK TIMER
+// ════════════════════════════════════════════════════════════
+
+let stuckTimerId = null;
+function setupStuckTimer() {
+  // No timer if disabled
+  if (!state.stuckTimer) return;
+  resetStuckTimer();
+}
+function resetStuckTimer() {
+  $('#stuckBubble').hidden = true;
+  if (stuckTimerId) clearTimeout(stuckTimerId);
+  if (!state.stuckTimer) return;
+  stuckTimerId = setTimeout(() => {
+    const empty = state.sentences.findIndex(s => !s.text || !s.text.trim());
+    if (empty >= 0) {
+      const lvl = inferUserCefr();
+      const map = { 'A1': STARTERS_A1, 'A2': STARTERS_A2, 'B1': STARTERS_B1, 'B2': STARTERS_B2 };
+      const pool = map[lvl] || STARTERS_A1;
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      $('#stuckSuggestion').textContent = pick;
+      $('#stuckBubble').hidden = false;
+      $('#stuckBubble').onclick = () => {
+        insertIntoActiveSentence(pick);
+        $('#stuckBubble').hidden = true;
+      };
+    }
+  }, 30000);
+}
+
+// ════════════════════════════════════════════════════════════
+//   TOAST
+// ════════════════════════════════════════════════════════════
+
+let toastTimer = null;
+function showToast(msg, type = '') {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = '';
+  if (type) t.classList.add(type);
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ════════════════════════════════════════════════════════════
+//   INIT
+// ════════════════════════════════════════════════════════════
+
+// Pick a random A1 prompt for first-timers
+if (state.firstRun) {
+  const a1Prompts = PROMPTS.filter(p => p.level === 'A1');
+  if (a1Prompts.length) {
+    state.currentPromptSlug = a1Prompts[Math.floor(Math.random() * a1Prompts.length)].slug;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

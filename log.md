@@ -4,6 +4,493 @@ Append-only. Her giriş `## [YYYY-MM-DD] tip | başlık` formatında.
 
 ---
 
+## [2026-05-23] feature | Personal OS — TTS seslendirme özelliği
+
+**Web Speech API entegrasyonu** — sıfır maliyet, API key yok, tarayıcı native.
+
+Yeni dosya: `src/components/SpeakButton.tsx`
+- `SpeakButton` React bileşeni: size xs/sm/md/lg, speaking state ile pulse animasyonu
+- `speakText()` imperative util fonksiyonu: MatchGame'den çağrılır
+- Ses tercihi: `en-US` + localService (macOS'ta Samantha) → fallback zinciri
+
+Entegrasyon noktaları:
+1. **VocabFilter / VocabCard** — her kartta sağ alt köşede `xs` boyut buton (link tıklamasını engellemiyor, `stopPropagation` var)
+2. **vocabulary/[slug]/page.tsx** — lemma h1 yanında `lg` buton + örnek cümle yanında `sm` buton
+3. **FlashcardDeck** — kart lemması yanında `md` buton + progress bar yanında "🔊 auto" toggle (useEffect ile kart geçişinde otomatik seslendirir)
+4. **MatchGame** — EN tile seçildiğinde `speakText()` çağrısı → eşleştirirken telaffuzu duyarsın
+
+TypeScript clean, next build ✓ (11 route)
+
+---
+
+## [2026-05-23] feature | Personal OS — Gramer konu detay sayfası yeniden tasarım + 56 örnek güncelleme
+
+**Sayfa yeniden tasarımı** (`/english/topics/[slug]`):
+- Breadcrumb navigasyonu + hero section (başlık, CEFR badge, FSRS durum badge)
+- İstatistik satırı: tekrar sayısı, vadeli gün, son deneme doğruluğu
+- **📌 Türkçe'deki Yeri** — amber/sarı kartla öne çıkarılmış, ilk içerik bloğu
+- **📐 Yapı (Formül)** — "S + V / S + not + V / V + S?" formatı ayrıştırılıp ✅ Olumlu / ❌ Olumsuz / ❓ Soru satırlarına bölündü, renk kodlu
+- **✏️ Örnekler** — İngilizce büyük/kalın font, Türkçe altta küçük/gri; numaralı kartlar
+- **⚠️ Sık Yapılan Hatalar** — kırmızı bordered bölüm, her hata ayrı satır
+- **🏷 Kullanım Alanları** — subpattern pill badge'leri
+- Son denemeler: geçmiş tablo + doğru/yanlış renkli gösterim
+
+**Örnek güncelleme** (`scripts/update-topic-examples.ts`):
+- 56/56 konu güncellendi
+- Önceki örnekler: akademik/felsefi ("Descartes argues...", "Loss aversion has shaped...")
+- Yeni örnekler: kısa, günlük, anlaşılır ("She drinks coffee every morning.", "I called my mum yesterday.")
+- Her konu için 2 örnek, her zaman dilimi/yapı için tipik kullanım gösterildi
+
+---
+
+## [2026-05-23] feature | Personal OS — Anki flash kartlar + eşleştirme + gramer CEFR filtre
+
+**Flashcard sistemi** (`/english/vocabulary/study`):
+- Anki mantığı: ön yüz İngilizce tanım + örnek cümle, arka yüz Türkçe gizli
+- "Türkçeyi Gör" butonu zorunlu — önce İngilizce üzerinden kavramayı sağlar
+- 4 derecelendirme: Tekrar(1) / Zor(2) / İyi(3) / Kolay(4) → FSRS `rateVocabCard` action
+- Klavye kısayolları: Space=göster/İyi, 1-4=dereceler
+- Oturum özeti: breakdown by rating, "Tekrar" kartlarını yeniden çalışma
+- Streak için `sessions` tablosuna `kind="flashcard"` kayıt açılıyor
+
+**Eşleştirme oyunu** (`/english/vocabulary/match`):
+- 8 çift (İngilizce kelime ↔ Türkçe anlam), 16 karo grid
+- Yanlış eşleşme: kırmızı flash animasyonu, 600ms sonra deselect
+- Süre, hamle sayısı, doğruluk skoru
+- "Yeni Tur" ile yeniden başlama
+
+**Gramer konuları filtresi** (`/english` sayfası):
+- `EnglishTopics` client component — CEFR badge multi-select filtresi (A1-C2)
+- Grid / Liste görünüm toggle
+- Liste görünümü: kompakt satır (dot + başlık + strength bar + CEFR + durum + rep sayısı)
+
+**Yeni dosyalar:** FlashcardDeck.tsx, MatchGame.tsx, EnglishTopics.tsx, study/page.tsx, match/page.tsx
+**Yeni queries:** getVocabStudyQueue, getVocabMatchPairs
+**Yeni actions:** rateVocabCard, startStudySession, endStudySession
+
+---
+
+## [2026-05-23] feature | Personal OS — Vocabulary hub arama + filtre UI (H)
+
+`src/components/VocabFilter.tsx` oluşturuldu, `/english/vocabulary` sayfasına entegre edildi.
+
+**Eklenen özellikler:**
+- 🔍 **Arama çubuğu** — lemma'ya göre anlık client-side filtreleme
+- **Subtype sekmeleri** — Tümü / 📖 Kelimeler / 🧩 Chunks / 🔗 Phrasal Verbs
+- **Durum filtresi** — Tüm Durum / Görülmemiş / Öğreniliyor / Sürüyor
+- **CEFR badge filtresi** — A1–C2 + bilinmiyor (?), multi-select, aktif renk ile görsel
+- **🇹🇷 TR filtre** — sadece TR tanımı olan öğeleri göster (çevirisiz ~700 öğeyi izole etmek için)
+- **Kaynak dropdown** — atomic-habits / naval-almanack / paul-graham vb. 9 kaynak
+- **Sonuç sayacı** — "X öğe gösteriliyor / 1046 toplam"
+- Tüm filtreler sıfırlama düğmesi
+- Filtreler kombinlenebilir (AND mantığı)
+
+**Teknik:** Tamamen client-side (`useState` + `useMemo`), ekstra DB sorgusu yok, mevcut `getVocabulary()` çıktısı props olarak geçiliyor.
+Sayfalar: 2 dosya değişti (`vocabulary/page.tsx` → basitleşti, `VocabFilter.tsx` → yeni)
+
+---
+
+## [2026-05-22] ingest | Personal OS — Vault sources'tan toplu vocabulary ingest (1002 yeni öğe, 873 soru)
+
+`scripts/ingest-vocab-from-sources.ts` ile `wiki/sources/` altındaki tüm md dosyaları tarandı, iki ayrı vocabulary formatı parse edildi.
+
+**Parse edilen formatlar:**
+- **Pattern A** (literary/non-fiction chapter vocab — Atomic Habits, Crime and Punishment, Les Misérables, Don Quixote, Decameron, Thinking Fast Slow, Rich Dad Poor Dad):
+  ```
+  ### 📖 Vocabulary Part 1
+  **injury** *(noun)*
+  Physical damage to a person's body...
+  *"The ball hit him in the face..."*
+  ```
+- **Pattern B** (Naval Almanack + Paul Graham glossary):
+  ```
+  ## Glossary
+  - **specific knowledge** unique expertise built through curiosity | *kişiye özgü bilgi*
+  ```
+
+**Sonuçlar:**
+- 55 md dosyası tarandı
+- 1180 ham vocabulary entry parse edildi
+- 1010 unique slug (170 duplicate aynı kelime farklı kaynakta)
+- 8 zaten DB'de (önceki seed ile çakışma)
+- **1002 yeni item insert edildi**
+- **873 soru otomatik üretildi** (cloze + translation)
+
+**Subtype classifier (heuristic):**
+- Phrasal verb: multi-word + first word verb-like + içinde phrasal particle (up/down/in/out/on/off/over/into/through/along/across/by/back/away/around/about)
+- Chunk: multi-word + ilk kelime article veya prep (at the end of the day, in light of, by and large)
+- Word: tek kelime
+- Sonuç dağılım: 827 word + 162 chunk + 13 phrasal verb (Pattern A çoğu kelime ağırlıklı, beklenen)
+
+**Soru üretimi:**
+- Cloze: example cümlesinde lemma → `___`, 4 şık (3 distractor same-subtype'tan)
+- Translation: definition_en prompt + 4 TR şık (yalnız Pattern B'de TR var, ~150-200 entry)
+- Pattern A entries için TR yok → sadece cloze üretildi (~700 entry için 1 soru)
+- Pattern B entries için hem cloze hem translation (~150 için 2 soru)
+
+**DB son durumu:**
+- `items`: 56 grammar_topic + 843 vocab_word + 174 vocab_chunk + 29 phrasal_verb + 6 (philosophy seed) = **1108 item**
+- `questions`: 280 grammar + 947 vocab = **1227 soru**
+
+**Performans:**
+- `getVocabulary()` artık strength hesaplamadan döner (N+1 önleme), 1108 öğe için ~700ms
+- `/english/vocabulary` page load ~1.4s — Faz 3'te pagination/search filter eklenecek
+
+**Cross-source örnekleri:**
+- "injury", "recovery", "consistently" → Atomic Habits Ch01
+- "garret", "plaster", "frayed" → Crime and Punishment Ch01
+- "specific knowledge", "apprenticeship", "calling" → Naval 02
+- "Marius", "humble", "redemption" → Les Misérables (karakter ismi de geçmiş; lint'te elenmeli)
+
+**Bilinen kalite sorunları:**
+- Bazı parse'lar özel isim (Marius, Cosette) veya yer ismi olabilir — admin'de filtrelenmeli
+- Distractor kalitesi same-subtype rastgele, semantik benzerlik yok
+- TR olmayan ~700 vocab için sadece cloze sorusu var
+- 1108 item bir sayfada — performans için search filter şart
+
+**Sonraki adımlar:**
+- Search/filter UI vocabulary hub'da (CEFR + subtype + source + status)
+- Vocab admin sayfası (özel isimleri sil, TR ekle)
+- LLM ile TR çevirisi (Pattern A için)
+- Semantic distractor'lar (kategori bazlı pool)
+
+---
+
+## [2026-05-22] build | Personal OS — Vocabulary entegrasyonu (44 öğe, 74 soru, FSRS 0.90 retention)
+
+Kullanıcı talebi: "bağlamsal kelime, chunk ve phrasal verb öğrenme sistemini entegre et, hepsini Anki mantığıyla bağla."
+
+**Schema değişikliği yok** — `items` tablosu generic olduğu için yeni `type` değerleri eklemek yeterli oldu: `vocab_word`, `vocab_chunk`, `phrasal_verb`.
+
+**FSRS scheduler ikiye bölündü** (`src/lib/fsrs.ts`):
+- `schedulerGrammar` — request_retention = **0.85** (grammar tek-bir konsept, esnek)
+- `schedulerVocab` — request_retention = **0.90** (vocab single-fact, sıkı retention)
+- `schedulerForType(itemType)` helper, `submitAttempt` doğru scheduler'ı seçer
+- Aynı `reviews` tablosu hem grammar hem vocab için (item.type ile ayrılır)
+
+**Seed (`scripts/seed-vocabulary.ts`):**
+- **44 vocabulary item** (16 word + 12 chunk + 16 phrasal verb)
+- Kaynaklar: word-bank-master.md, Naval Almanack, Paul Graham, Compressed Galaxy, literary sources (Les Misérables, Crime and Punishment), klasik B1+ phrasal verbs ve chunks
+- Her item metadata: lemma, pos (part of speech), definition_en, definition_tr, example (BAĞLAM CÜMLESİ), source citation, related_grammar (cross-domain link to grammar topics)
+- CEFR dağılımı: A2-C1 dengeli
+- **Otomatik 2 soru/item üretildi** (toplam 74 soru):
+  - **Cloze** — example cümlesinde lemma → `___`, 4 şık (lemma + 3 same-subtype distractor)
+  - **Translation** — `lemma` + `definition_en` prompt, 4 TR şık (definition_tr + 3 same-subtype distractor)
+- Cross-link örneği: "give up", "look forward to" → `phrasal-verbs` grammar topic'iyle bağlı; "scarcity" → `countable-uncountable`
+
+**Yeni sayfalar:**
+- `/english/vocabulary` — hub: 3 tab (Phrasal Verbs · Kelimeler · Chunks), stat cards (due/sürüyor/öğreniliyor/görülmemiş), her item CEFR-renkli kart (lemma + TR tanım + state dot + rep count)
+- `/english/vocabulary/[slug]` — detay sayfası:
+  - Hero: lemma (büyük), type/pos/cefr badges, FSRS state
+  - Definition kartları (EN + TR side-by-side)
+  - **Bağlamda** kartı — accent-renkli, italic, kitap/makale referansı altında
+  - İlgili gramer chips (clickable linkler topic page'lere)
+  - **İnteraktif quiz inline** — aynı `ReviewSession` component, intro: lemma-spesifik mesaj
+  - Son denemeler listesi
+
+**Review batch güncellendi (`getReviewBatch`):**
+- ~60% grammar + ~40% vocab dengesi
+- Her havuzda: due > weak > unseen önceliği, item başına max 2 soru
+- Karışım shuffled — aynı tipte iki soru art arda gelmesin
+
+**`/english` zenginleşti:**
+- Üstte sağda "📖 Vocabulary" butonu (Bugünkü Review'in yanında)
+- Yeni satır: vocabulary havuzu özet kartı (count by type + due/unseen badges + "Hepsini gör →" linki)
+
+**Header nav** — "Life · English · **Vocab** · Review"
+
+**Build:** ✓ TypeScript hatasız. 7 dinamik route:
+- `/`, `/english`, `/english/review`, `/english/topics/[slug]`, `/english/topics/[slug]/admin`, `/english/vocabulary`, `/english/vocabulary/[slug]`
+
+**Smoke test:** Tüm vocab route'ları HTTP 200. Detay sayfasında "voracious", "Definition", "Bağlamda", "İlgili gramer", "Kelimeyi test et", "doymak bilmez" render ediliyor.
+
+**Pedagojik notlar:**
+- **Bağlamsal öğrenme** — her vocab item bir gerçek cümlede yaşıyor (kitap/makale citation ile), boş kelime kartı değil
+- **Cross-link** — vocab item'lar grammar topic'lere `related_grammar` ile bağlı (örn. "give up" → `phrasal-verbs`); gelecekte bu link `links` tablosuna taşınabilir
+- **Anki mantığı** — FSRS scheduler hem grammar hem vocab için aynı reviews tablosunda; vocab daha yüksek retention (%90) çünkü "give up = vazgeçmek" tek-bir-fact, unutmaya tahammülü düşük
+- **Source-as-context** — Naval Almanack'tan "voracious", Paul Graham'dan "junk/prestige" gibi öğeler kitap notlarıyla bağlı; review'da yaşıyor
+
+**Sonraki adımlar:**
+- Vocab admin CRUD (manuel yeni vocab ekleme, soru düzenleme — şu an seed üzerinden ekleniyor)
+- LLM-assisted distractor üretimi (mevcut distractor'lar same-subtype rastgele, çok güçlü değil)
+- Vault sources'tan toplu ingest (her kitap chapter'ında vocab listesi → DB)
+- "Save to bank" gibi runtime ekleme mekanizması (reading sırasında bilinmeyen kelime yakalama)
+
+---
+
+## [2026-05-22] build | Personal OS — Dashboard zenginleştirme (streak + heatmap + week summary)
+
+Üst dashboard'a motivasyon arttırıcı görsel veriler eklendi. Hem `/` (Life Layer) hem `/english` zenginleşti.
+
+**Yeni queries (`src/lib/queries.ts`):**
+- `activityDayKey(date)` — KR-007'deki **04:00 cutoff** uygulayan helper. Gece 02:00'da yapılan çalışma "önceki gün" sayılır.
+- `todayKey()`, `shiftDayKey(key, delta)` — gün anahtarı manipülasyonu
+- `getDailyActivity(days=90)` — son N gün için günlük session/attempt/correct/accuracy/duration. Boş günler 0 ile doldurulur (densified).
+- `getStreak(window=365)` — current streak (bugün veya dün aktiflik kabul), longest streak, todayActive, lastActiveDate
+- `getWeekSummary()` — son 7 gün: sessions, attempts, correct, accuracy, duration, uniqueTopics, newMasteries, daysActive
+
+**Yeni componentler:**
+- `ActivityHeatmap.tsx` — server component, SVG GitHub-vari grid (13 sütun × 7 satır = 91 gün). Activity level renk skalası: 0 (boş), 1 (1-3), 2 (4-9), 3 (10-19), 4 (20+). Hover'da `title` tooltip (tarih + attempt count + accuracy). Ay etiketleri sütun başında. Tema-aware (CSS variables ile).
+- `StreakBadge.tsx` — büyük rakam + flame emoji (≥7 🔥, ≥3 ✨, ≥1 ·), "rekor", son 7 günlük mini bar chart sağda
+- `WeekSummary.tsx` — 4 cell grid: oturum, soru (accuracy alt-satırda), süre (saniye→sa/dk format), konu (newMasteries alt-satırda)
+
+**Pages güncelleme:**
+- `src/app/page.tsx` (Life Layer):
+  - Üst: 2 kartlı row (StreakBadge + WeekSummary)
+  - Orta: tek kartlı 91-gün heatmap
+  - Alt: mevcut Domains grid
+  - Tüm sorgular `Promise.all` ile paralel
+- `src/app/english/page.tsx`:
+  - Üst row: StreakBadge (sol) + 4 pill (sağ 3 kolon, due/upcoming/weak/unseen)
+  - Sonrası eskisi gibi (CEFR-renkli kategori grid)
+
+**Build:** ✓ TypeScript hatasız, 5 dinamik route
+
+**Smoke test:** "Streak", "Bu hafta", "Aktivite — son", "gün aktif", "aktif gün" hepsi render. `/` ve `/english` HTTP 200.
+
+**Pedagojik not:** Heatmap = visible progress = motivasyon. CLAUDE.md'deki edge case #10'a (motivation collapse) doğrudan müdahale. Cold start için ilk 1-2 hafta heatmap dolmayacak — bu normal, baseline kuruluyor.
+
+---
+
+## [2026-05-22] build | Personal OS — Soru CRUD UI (/english/topics/[slug]/admin)
+
+Soruların manuel editlenmesi/eklenmesi/silinmesi için admin sayfası eklendi.
+
+**Yeni dosyalar:**
+- `src/components/QuestionAdmin.tsx` — client component, üç alt component:
+  - `QuestionRow` — read mode (prompt+answer+distractors+context görünür) + edit/pasifleştir/sil butonları
+  - `EditForm` — inline expand, tüm alanları güncelle
+  - `NewQuestionForm` — "+" butonu ile expand, yeni soru ekle
+  - Paylaşılan `QuestionFields` field set (kind switch'e göre dinamik: MC için 3 distractor input, TF için iki buton, fill-blank/transform için sadece answer)
+- `src/app/english/topics/[slug]/admin/page.tsx` — server component, topic info + QuestionAdmin
+
+**Server action değişiklikleri (`src/lib/actions.ts`):**
+- `createQuestion` artık `topicSlug` parametresi alıyor → `revalidatePath` ile o topic'in hem detay hem admin sayfasını yeniliyor
+- `updateQuestion` zenginleşti: kind, contextSentence, difficulty güncelleyebiliyor; distractors null da kabul ediyor (kind değişince temizlenir)
+- `deleteQuestion` artık **hard delete** (önceden soft idi, artık gerçekten siler). Aktif/pasif ayrı action.
+- `toggleQuestionActive` eklendi — pasifleştirme ayrı bir aksiyon
+
+**UX:**
+- Topic detay sayfasının sağ üstüne "⚙ Soruları yönet" linki eklendi
+- Admin sayfasında her soru kartı: read mode + üst sağda 3 buton (Düzenle / Pasif / Sil)
+- "Sil" iki adımlı (Sil → Sil! / İptal) — kazara silmeyi önler
+- "Pasif" soruyu DB'de tutar ama quiz'e dahil etmez (`questions.active = false`)
+- Yeni soru: en altta dashed border'lı "+ Yeni soru ekle" butonu, basınca form açılır
+- TF için cevap iki büyük buton (true/false), distractor otomatik (diğer değer)
+- MC için 3 distractor input zorunlu; fill-blank/transform için runtime'da üretilir (mevcut quiz mantığı)
+
+**Build durumu:** `next build` ✓. 5 dinamik route: `/`, `/english`, `/english/review`, `/english/topics/[slug]`, `/english/topics/[slug]/admin`
+
+**Smoke test:** Admin sayfası HTTP 200, "Soru Yönetimi", "Yeni soru ekle", "Pasifleştir", "MC için 3 distractor" hepsi render.
+
+**Not:** Dev server'ı yeniden başlatmak gerekti (eski background process düşmüş). Yeni process aynı port 3000'de.
+
+---
+
+## [2026-05-22] build | Personal OS — Topic interaktif quiz + tüm 56 konu seed (280 soru)
+
+Phase 2 sonrası iki büyük ekleme:
+
+**1) Kalan 46 konu için soru seed (230 yeni soru, toplam 280)** — `scripts/seed-questions-batch2.ts`. Her konuda 4 tip karışım (~2 fill_blank + 1 true_false + 1 multiple_choice + 1 transform). Distractor'lar yaygın Türk öğrenci hataları üzerine kurulu. Stative verb tuzakları (continuous tense'lerde "I am knowing", "He had been owning"), double comparative ("more taller"), indirect question word order ("Do you know what time is it?"), "despite + clause" hatası, mixed conditional ("If I would have known"), subjunctive ("demand that she returns"), phrasal verb separability ("picked up it"), "used to" vs "be used to + -ing", causative misinterpretation kapsanan başlıca pattern'ler.
+
+CEFR dağılımı: A1 ~16, A2 ~15, B1 ~15, B2 ~8, C1 ~4 (Avrupa Çerçevesi'ne yakın dağılım).
+
+**2) Topic detayında interaktif quiz** — Kullanıcı isteği: "her konu için altta görünen soru bankasını interaktif yap, gerçek bir test gibi, sadece çoktan seçmeli olsun, cevabı önceden gösterme."
+
+- Eski "Soru havuzu · 5" listesi (prompt + answer + distractor görünür) **kaldırıldı**
+- Yerine `ReviewSession` component'i topic'in tüm sorularını çoktan seçmeli formatında render ediyor
+- `src/lib/queries.ts` içine `getTopicQuizQuestions(itemId)` eklendi:
+  - Tüm aktif soruları çek
+  - Fill-blank ve transform sorularını MC'ye dönüştür
+  - Distractor üretimi: önce same-kind same-topic answer'larından (kind-aware pool), yetmezse other-kind same-topic, hâlâ yetmezse placeholder
+  - True/false ve mevcut MC sorular olduğu gibi
+  - Sonuç array shuffled
+- `ReviewSession` component'i parametrize edildi: `returnHref`, `returnLabel`, `homeHref`, `homeLabel`, `introTitle`, `introBody` props. Aynı component hem global review (`/english/review`) hem topic-specific quiz için kullanılıyor.
+- Topic sayfasında üst "Review başlat →" butonu kaldırıldı (artık quiz inline)
+- Recent attempts listesi alta taşındı
+
+**Smoke test:** Topic sayfasında "Konuyu test et · 5 soru", "Çoktan seçmeli", "Present Simple — hazır mısın?", "Başla" hepsi render ediliyor. Tüm 56 topic sayfası HTTP 200.
+
+**Sonraki adımlar:**
+- (B) Soru CRUD UI — edit/delete/add formu (admin akışı)
+- (C) Turso + Vercel deploy + Vercel Protection
+- (D) Philosophy domain'i aktif
+
+---
+
+## [2026-05-22] build | Personal OS — Phase 2 tamamlandı
+
+Phase 1 MVP'nin üstüne dört büyük katman geldi: tema toggle, FSRS scheduler entegrasyonu, soru havuzu (280 soru), aktif review flow, topic detay sayfası.
+
+**Yeni dosyalar (`~/Projects/personal-os/`):**
+- `src/components/ThemeProvider.tsx` — light/dark context + localStorage + prefers-color-scheme
+- `src/components/ThemeToggle.tsx` — header güneş/ay butonu
+- `src/components/ReviewSession.tsx` — 4 soru tipi için ayrı UI (fill-blank input, true/false 2 buton, multiple-choice 4 buton shuffled, transform textarea Cmd+Enter), intro/asking/feedback/done state machine
+- `src/lib/fsrs.ts` — ts-fsrs entegrasyonu, StoredCard JSON serialize/deserialize, autoRate (doğru→Good=3, yanlış→Again=1), Grade type-safety
+- `src/lib/actions.ts` — server actions: startReviewSession, endReviewSession, submitAttempt (attempt yaz + FSRS next() ile review state güncelle), CRUD scaffold
+- `src/app/english/topics/[slug]/page.tsx` — topic detay: metadata (TR bridge, formula, examples, common errors), tüm soru havuzu, son 10 deneme geçmişi
+- `scripts/seed-questions.ts` — ilk 10 konu (A1/A2 öncelikli) × 5 soru = 50
+- `scripts/seed-questions-batch2.ts` — kalan 46 konu × 5 soru = 230
+
+**Güncellenen:**
+- `src/app/globals.css` — Tailwind 4 `@custom-variant dark`, semantic CSS variables (background/foreground/surface/card/border/muted/accent/success/warning/danger) hem light hem dark için
+- `src/app/layout.tsx` — ThemeProvider wrapper, flash-prevention init script, ThemeToggle header'da
+- `src/app/page.tsx`, `src/app/english/page.tsx`, `src/app/english/review/page.tsx` — tüm hardcoded zinc renkleri semantic class'lara dönüştürüldü (bg-card, border-border, text-muted-strong, vb.)
+- `src/lib/queries.ts` — getReviewBatch (due > weak > unseen önceliği, topic başına max 2 soru, shuffle), getTopicBySlug, getEnglishDomainId
+- `src/db/client.ts` (env: `.env.local` → `.env` — dotenv default load)
+
+**Soru havuzu yapısı (280 toplam):**
+- 56 konu × 5 soru ortalama
+- Karışım her konuda: ~2 fill_blank + 1 true_false + 1 multiple_choice + 1 transform
+- Her soru: prompt, answer, distractors (MC için 3 hatalı şık), context_sentence (öğretici ipucu, yaygın hatalar TR/EN bilgiler), difficulty (1-5)
+- Distractor'lar yaygın Türk öğrenci hataları üzerine kurulu (örn. "more taller", "I am knowing", "where do you live" indirect'te)
+
+**FSRS akışı:**
+1. Review sayfası açıl → `getReviewBatch(20)` due topic'lerden 20 soru getir
+2. "Başla" → `startReviewSession()` session row yarat
+3. Her cevap → `submitAttempt({questionId, sessionId, userAnswer})`:
+   - normalize(answer) === normalize(expected) ile correct kontrol
+   - autoRate(correct) → Grade (Again/Good)
+   - mevcut `reviews.fsrsRaw` (Card state) yükle veya emptyStoredCard()
+   - `scheduler.next(card, now, grade)` ile yeni state
+   - reviews tablosunu upsert (stability×100, difficulty×10 int, fsrsRaw JSON)
+   - attempts tablosuna kayıt
+   - items.status backlog→active terfi
+4. Oturum sonu → `endReviewSession()` ended_at + duration + score (correct rate %)
+
+**Adreslenen edge case'ler:**
+- Stative verb traps in continuous tenses (Pres Perf Cont, Past Perf Cont, Future Cont, Future Perf Cont): "I am knowing" tipi soruda yakalanıyor
+- Double comparative ("more taller")
+- Indirect question word order ("Do you know what time is it?")
+- "Despite + clause" hatası ("Despite he was tired")
+- Mixed conditional ("If I would have known")
+- Subjunctive ("I demand that she returns")
+- Phrasal verb separability ("I picked up it")
+- Causative misinterpretation ("I had cut my hair" = self vs. by-someone)
+- "Used to" vs "Be used to + -ing"
+- Cefr coverage: A1 (16), A2 (15), B1 (15), B2 (8), C1 (4) — yaklaşık Avrupa Çerçeve dengeli
+
+**Tema sistemi:**
+- CSS variables: `--background`, `--foreground`, `--surface`, `--card`, `--card-hover`, `--muted`, `--muted-strong`, `--border`, `--border-strong`, `--accent`, `--accent-hover`, `--success`, `--warning`, `--danger`
+- `@theme inline` ile Tailwind utility class'larına dönüştürüldü: `bg-card`, `text-muted`, `border-border`, vb.
+- Flash önlemek için `<head>` içinde inline script — localStorage'tan oku, `.dark` class'ı early apply et
+- Tüm sayfalar tek seferde tema-aware
+
+**Build durumu:** `npx next build` ✓ TypeScript hatasız. 4 dinamik route: `/`, `/english`, `/english/review`, `/english/topics/[slug]`.
+
+**Smoke test sonuçları:**
+- Tüm route'lar HTTP 200
+- 280 soru DB'de (`SELECT COUNT(*) FROM questions` ⇒ 280)
+- Review batch: 20 soru hazır
+- Topic detay sayfası: subjunctive/inversion/phrasal-verbs hepsi 200
+
+**Açık konular (Faz 3'e):**
+- Soru CRUD UI (edit/delete/add formu — şu an sadece read-only listede görünüyor)
+- Turso'ya geçiş + Vercel deploy + Vercel Protection
+- Backup: günlük JSON export → GitHub push
+- Obsidian sync: `wiki/_db_snapshot/state.json` günlük dump
+- Philosophy domain'i aktif (filozof-kavram-eser üçgeni)
+- Multi-tenant placeholder (user_id schema'ya)
+
+---
+
+## [2026-05-22] system | Personal OS — Phase 1 MVP kuruldu
+
+Kullanıcı talebi üzerine Daily Engine v1'in halefi olacak **multi-domain Personal Intellectual OS** sistemi başlatıldı. Vault dışında ayrı Next.js + SQLite uygulaması olarak kuruldu (`~/Projects/personal-os/`).
+
+**Konuşma çerçevesi:** Kullanıcı, 56 gramer konusunun günlük takibinin yanında felsefe, okunan kitaplar, izlenen filmler, projeler — tüm entelektüel etkinliğini tek dashboard'dan takip etmek istiyor. Ana dashboard (Life Layer) + alt domain dashboard'ları + DB'ye Claude erişimi + Obsidian ile mantıksal köprü.
+
+**Kararlar (detay: [[personal-os-design-decisions]]):**
+- Eski Daily Engine v1 → migrate + emekli (topics.json + grammar-coverage.md verisi DB'ye taşındı)
+- Stack: Next.js 16 + Drizzle + libSQL (lokal SQLite şimdilik, Turso Faz 2'de) + Tailwind 4 + ts-fsrs
+- Auth: Vercel Protection (built-in password, Faz 2 deploy'da aktif)
+- Claude erişimi: sadece aggregate + metadata; ham içerik Claude'a girmez
+- Faz 1 domains: English + Philosophy
+- Konum: vault dışı (iCloud + node_modules çakışmasını önlemek için)
+
+**Yeni dosyalar (vault dışı):**
+- `~/Projects/personal-os/` — Next.js 16 + TypeScript + Tailwind 4 + App Router
+- `src/db/schema.ts` — 9 tablo (domains, items, sessions, questions, attempts, reviews, links, events, obsidian_refs)
+- `src/db/client.ts` — libSQL drizzle client
+- `src/lib/queries.ts` — domain stats, English topics, review queue
+- `src/app/page.tsx` — üst dashboard (Life Layer)
+- `src/app/english/page.tsx` — 56 topic gridview, CEFR-renkli, güç barı
+- `src/app/english/review/page.tsx` — bugünkü review iskelet
+- `scripts/migrate.ts`, `scripts/seed.ts` — DB setup
+- `drizzle/0000_init.sql` — ilk migration
+
+**Vault'a dokunan (sync için):**
+- `wiki/synthesis/personal-os-design-decisions.md` — 8 KR (Karar Kaydı), 15 edge case, faz planı, schema özet
+- `index.md` — yeni "Personal OS" başlığı eklendi
+- `log.md` — bu giriş
+
+**Seed sonucu (`npx tsx scripts/seed.ts`):**
+- 2 domain: English (id=1), Philosophy (id=2)
+- 56 grammar topic insert edildi
+- 16 mevcut session migrate edildi (grammar-coverage.md'den parse)
+- 16 review state'i (FSRS-ish, strength→state mapping)
+- 6 philosophy skeleton item
+
+**Adreslenen edge case'ler (15 adet, detay synthesis sayfasında):** soru ezberleme tuzağı · vocab-grammar farklı kadanslar · multi-domain burnout · cold start · Obsidian-DB drift · iCloud-git çarpışması · backup test edilmedi = backup yok · Vercel auth · Claude gizlilik · mastery tanımı · re-engagement · multi-tenant placeholder · soru kalitesi denetimi · streak cutoff · context sentence pool
+
+**Build durumu:** `next build` ✓ TypeScript hatasız, 3 dinamik sayfa (`/`, `/english`, `/english/review`)
+
+**Sonraki adım (Faz 2):** Her topic için 5 soru CRUD UI · FSRS scheduler attempt entegrasyonu · Turso'ya geçiş + Vercel deploy + Vercel Protection · günlük JSON backup → GitHub push
+
+**Açık sorular (Faz 2 öncesi):** Soru seed'i manuel mi LLM mi · streak veri modeli · philosophy ilk seed kapsamı · Obsidian sync yönü (tek/hybrid)
+
+---
+
+## [2026-05-21] build | Writing Ladder — Direkt Yaz, Kademeli Bırak (A1→B2)
+
+Kullanıcının talebi: "İngilizce direkt yazmamı sağlayacak, etkili yazma fikrini canlı tutacak, A1'den başlayan, kendi orijinal zihinsel etkinliğim %20-30'la başlayıp giderek artan, output merkezli, pedagojik, edge case'li bir uygulama."
+
+**Yeni dosyalar:**
+- `Artifacts/writing-ladder.html` (~104 KB, single file, ~3180 satır)
+- `wiki/artifacts/writing-ladder.md` — wiki kaydı
+
+**Mevcut yazma artifact'leriyle farkı:**
+- [[daily-writing-loop]] = mekanik taklit + ezberden yaz (drill)
+- [[writing-atelier-001-bloomsday]] = tek edebi senaryo (B1, Joyce atölyesi)
+- **writing-ladder** = kendi orijinal cümleni kur, A1→B2, kademeli scaffold
+
+**5 basamak:**
+
+| Lv | Adı | Yardım | Akış |
+|----|-----|--------|------|
+| L1 | Echo | %80 | TR cümle + tam EN model → kopyala, küçük değişiklikle uyarla |
+| L2 | Frame | %60 | TR + EN iskelet boşluklu → doldur |
+| L3 | Hint | %40 | TR + 3-5 anahtar kelime → cümleyi kur |
+| L4 | Sketch | %20 | Sadece TR → tam serbest |
+| L5 | Free | %0 | Sadece tema → tam serbest |
+
+**25 prompt** (A1: 10 · A2: 8 · B1: 5 · B2: 2) + Custom mod. Her prompt 5 satır taşır: `tr_lines` + `en_lines` + `frames` + `keywords`. Level'a göre otomatik scaffold render.
+
+**Yardım sistemleri:**
+- 💡 Word help — 110 kelimelik curated TR-EN seed sözlük (partial match)
+- 🔧 Pattern help — 20 gramer kalıbı (A1→B2), formula + örnek
+- 🎯 Starter sentences — seviyeye özel 10 başlangıç (40 toplam)
+- 🎤 Voice — Web Speech API (en-US), fallback otomatik gizleme
+
+**Mekanikler:**
+- Auto-fade (3 başarılı seans → level up önerisi)
+- Streak (2 gün toleransı, 3+ → sıfırla)
+- Heuristic check (AI yok, 13 klasik Türk öğrenci hata regex'i: `I am go`, `in home`, `more better`, `people is`, `everyone are`, vb.)
+- Recent sessions (son 14) + "Düzelt" butonu ile re-load (spaced retrieval)
+- 5 görsel tema (navy/forest/sunset/paper/midnight)
+
+**Edge case'ler (17 adet):** Blank page anxiety (stuck timer + starter), perfectionism (ugly draft), TR geri kayma (banned TR), zaman baskısı (timer info-only), kötü gün (1-cümle mode), AI praise inflation (objektif skor), voice fallback, spaced retrieval, pre-translation hint, level plateau, klasik hata regex, streak toleransı, mobile, Speech API check, localStorage corrupt, soft caps, network independence.
+
+**Pedagojik temel:** Krashen i+1, Vygotsky ZPD, Swain Output Hypothesis, Bruner Scaffolding, Schmidt Noticing, Krashen Affective Filter.
+
+**Klasman uyumu:** [[Interactive Reader Template]] ile kısmi uyum (sticky header + tema + kısayollar + toast + modal + localStorage + print + mobile). Sapma: TTS ve XP yerine streak + check; tab yerine sol panel + ana yazma.
+
+**Dokunulan dosyalar:** `Artifacts/writing-ladder.html` (yeni) · `wiki/artifacts/writing-ladder.md` (yeni) · `Artifacts/_dashboard.html` (Writing 3→4 dosya, Writing Ladder kartı en üste) · `index.md` (Writing kategorisi altına yeni satır, updated 2026-05-21) · `wiki/practice/_index.md` (L1 Production Cell altına araç linki) · `log.md` (bu giriş)
+
+**Backlog (v1.1→v2.0):** Vault'a .md export · 300+ kelime sözlüğü · spaced retrieval otomatizmi · pattern coaching · voice transcript analizi · meslek/akademik prompt setleri · custom prompt bankası · AI inline coaching.
+
+---
+
 ## [2026-05-21] build | Confusable Drill v2 + Collocation Heatmap v2 + Comparative Reader v2
 
 Üç yeni artifact oluşturuldu — v1 içeriklerinden farklı, yeni konular:
