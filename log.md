@@ -4,6 +4,109 @@ Append-only. Her giriş `## [YYYY-MM-DD] tip | başlık` formatında.
 
 ---
 
+## [2026-06-10] build | Felsefe Kurs Mikro-Uygulama Sistemi (çapraz vault çalışması)
+
+Özet: Philosophy vault'taki 16 ders serisi (felsefedersleri.com, 137+ ders) HTML mikro-uygulamalara derlendi. Yeni boru hattı: vault markdown (tek doğruluk kaynağı) → personal-os `npm run build-courses` → `Philosophy/Artifacts/courses/` (16 kurs HTML + manifest.json + bağımsız panel). Personal OS'e `/philosophy/dersler` sayfası eklendi (durum bazlı öğrenme kuyruğu: active/queued/backlog/done; kuyruk dosyası `wiki/dersler/kurs-durumu.json`). Quiz pilotu Önsokratik Dönem'de (3 ders × 4 soru). Kitaplar bölümü vault ile eşgüdümlendi: PDM vault'tan 84 kitap sync edildi (.env eksikti), kitap detayında okuma notu artık vault'tan canlı gösteriliyor + Obsidian deep-link. Detay: Philosophy vault log.md aynı tarihli giriş. Bu vault'ta içerik değişikliği yok.
+
+## [2026-06-10] lint | Personal OS devamlılık denetimi + yeniden yapılandırma
+
+Özet: "Sürekliliği sağlayamadım" şikâyeti üzerine Personal OS (`~/Documents/projects/personal-os/`) uçtan uca denetlendi. Teşhis: 18 günde 6 program günü; gün kilidi 5 zorunlu aşama istiyordu (4'ü placeholder); transform/translate soruları exact-match yüzünden son oturumlarda 0 doğru vermişti; 843 kelimenin 710'unda TR karşılık yoktu; 748 vocab MCQ çeldiricisi POS uyumsuzdu; 15 soruda cevap prompt içinde sızıyordu; due az olunca kuyruğa sınırsız yeni kelime doluyordu.
+
+Yapılan (kod + veri):
+- **Çekirdek Gün** (KR-009): ders+quiz → günü kilitle banner'ı; bonus aşamalar opsiyonel (TodaySession.tsx)
+- **Self-grade** (KR-010): transform/translate'te model cevapla karşılaştır + "Doğru saydım/Yanlıştı" (ReviewSession.tsx, submitAttempt'e selfCorrect)
+- **710 TR karşılık** dolduruldu (`scripts/fill-tr-definitions.ts` + `scripts/data/tr-definitions.json`)
+- **748 çeldirici** POS-eşleşmeli yenilendi (`scripts/regen-vocab-distractors.ts`, KR-011)
+- **15 sızıntılı prompt** yeniden yazıldı; mükerrer görünenler zaten deaktifti
+- **Günlük yeni kelime tavanı 8** + CEFR-öncelikli sıralama (KR-012)
+- Takvim-bazlı `computePosition` deprecated; "Gün X / 20" → 28 düzeltildi
+- `npx tsc --noEmit` + `next build` temiz; değişiklikler personal-os repo'sunda commit'lenmedi (kullanıcı onayı bekliyor)
+
+Dokunulan vault sayfaları: [[personal-os-design-decisions]] (§7 denetim + KR-009..013 + günlük protokol), index.md, log.md.
+
+Sonraki 3 soru: (1) Kelime başına 2-3 soru tipi ne zaman? (2) Review dağı otomatik freni (due>40) Faz 2'ye girsin mi? (3) Üretim aşaması L1-L5 lane'leri placeholder'dan gerçek bileşene ne zaman dönecek?
+
+---
+
+## [2026-06-08] practice A1-01 | Subject Pronouns — Değerlendirme
+
+Özet: A1 Ders 1 (Subject Pronouns + to be) tamamlandı ve değerlendirildi. Bölüm 1: 10/15, Bölüm 3: 10/12. Toplam 10 ayrı hata tespit edildi; 5 kategoride dağılıyor: preposition (at home), yazım (tired/funny/situation), anlam (friend≠brother, always≠already, You are fine≠Who are you), noktalama (soru işareti), article (a kind person). Durum: 🔁 Tekrar önerilir. `00 - İlerleme ve Referans.md` güncellendi; Hata Kütüphanesi oluşturuldu.
+
+---
+
+## [2026-06-04] ingest | Decameron Serisi — Day 1 Story 2–10 + Day 2 Story 1 (10 hikâye)
+
+Özet: Decameron serisine 10 yeni hikâye eklendi. Hepsi A2-B1 seviyesinde, aynı format (TR özet + EN hikâye bölümlere ayrılmış + 10-kelime EN-EN sözlük + ilişkili sayfalar). Toplam Decameron arşivi: 11 hikâye.
+
+**Eklenen dosyalar:**
+- `Decameron-Day01-Story02-Abraham.md` — Yahudi Abraham Roma'yı görür, Hristiyan olur
+- `Decameron-Day01-Story03-Three-Rings.md` — Saladin + Melchizedek; üç din, üç yüzük
+- `Decameron-Day01-Story04-The-Monk.md` — genç rahip, güzel kız, Abbot'un sırrı
+- `Decameron-Day01-Story05-Marchioness.md` — tavuk sofrasıyla Fransa Kralı'nı durduran Markiz
+- `Decameron-Day01-Story06-Inquisitor.md` — şarap iltifatı → sapkınlık suçlaması → ters köşe
+- `Decameron-Day01-Story07-Bergamino.md` — hikâye içinde hikâye; Can Grande'ye ayna tutmak
+- `Decameron-Day01-Story08-Ermino.md` — "Cömertliği çiz" diyerek cimriyi değiştiren tek cümle
+- `Decameron-Day01-Story09-King-of-Cyprus.md` — korkak kralı cesaretlendiren kadın
+- `Decameron-Day01-Story10-Master-Alberto.md` — pırasa metaforu; Gün 1'in kapanış hikâyesi
+- `Decameron-Day02-Story01-Martellino.md` — sakat taklidi, linç, kurtarış; Gün 2 açılışı (tema: Talih)
+
+**Güncellenen:** `index.md` — Decameron bölümü 11 hikâyeye genişletildi.
+
+**Seviye notu:** Tüm hikâyeler A2-B1 sınırında tutuldu. Kısa cümleler, Past Simple baskın, bağlam açıklayıcı. Türkçe özetler İngilizce bölümden önce geliyor (kullanıcı tercihi).
+
+---
+
+## [2026-05-23] feature | Personal OS — Program otomasyon sayfası
+
+Özet: 20 günlük çalışma programı Personal OS'a yazılım olarak gömüldü. Yeni rota `/english/program` — bugünün gününü otomatik hesaplar (cycle_start event'inden + takvim farkı mod 20), günün 3 gramer konusunu güç skorlarıyla birlikte gösterir, vocabulary/okuma/üretim bloklarını canlı linklerle açar. 20 günlük döngü grid'i hangi günün tamamlandığını/bugün olduğunu/beklediğini görsel olarak işaretler.
+
+**Mimari:**
+- `src/lib/program.ts` — ROTATION sabiti (20 gün × topic slugs + vocab + reading + lane), `computePosition()` günü hesaplar.
+- `events` tablosu kullanılarak iki yeni kind: `program_cycle_start` (en yeni = aktif tur başlangıcı) ve `program_day_complete` (her gün için 1 kayıt).
+- Yeni queries: `getProgramState()` → `{active, position, today, cycleDays[20], totalCompletedInCycle}`.
+- Yeni actions: `startProgramCycle`, `markDayComplete`, `undoDayComplete`, `resetProgram`.
+
+**UI:**
+- Bugün kartı: gün numarası + tur, 4 blok (B Gramer / C Vocab / D Okuma / E Üretim), her konu için link + güç skoru + bugün dokunuldu mu işareti, "✓ Bugünü tamamlandı işaretle" butonu.
+- 20 günlük grid: her gün için topic listesi mini-kartı, durum rengi (tamamlandı/bugün/bekliyor).
+- `/english` ana sayfasına "📅 Günlük Program" linki eklendi.
+
+**Yeni:** `src/app/english/program/page.tsx`, `src/components/ProgramControls.tsx`, `src/lib/program.ts`  
+**Güncellenen:** `src/lib/queries.ts`, `src/lib/actions.ts`, `src/app/english/page.tsx`
+
+---
+
+## [2026-05-23] query | Günlük çalışma programı oluşturuldu
+
+Özet: 20 günlük döngü programı oluşturuldu. 56 gramer konusu günlere dağıtıldı (gün 1-17 ve 19: 3 konu/gün; gün 18: 2 konu; gün 20: review). Her günde 4 blok: Açılış → Gramer → Vocabulary SRS → Okuma → Üretim (~75 dk toplam). Vocabulary aktiviteleri (Flashcard / Match Game / Confusable Drill / Translation Pendulum) gün numarasına göre döngüsel atandı. Okuma kaynakları 5 kategoriye ayrıldı (fiction, non-fiction, aphorism, Compressed Galaxy, serbest). Practice lane rotasyonu da günlere yerleştirildi (L1/L3/L5 ağırlıklı). 4 turda derinleşen spiral yaklaşım tanımlandı.
+
+**Yeni:** `wiki/synthesis/gunluk-calisma-programi.md`  
+**Güncellenen:** `index.md` (Synthesis bölümü)
+
+---
+
+## [2026-05-23] artifact | 4 pilot artifact — Çalışma Yöntemleri Analizi Önerilerinden v1
+
+[[calisma-yontemleri-analizi]]'nin "Bölüm 5 — Eklenebilecek Yeni Çalışma Yöntemleri" altındaki **Ö1, Ö2, Ö4, Ö7** önerileri için birer çalışan B1 HTML örneği üretildi. Hepsi tek-dosya, dark/light tema, localStorage, içerik vault kaynaklarından (Atomic Habits Ch1, Naval Almanack 1/4/5/6, Paul Graham — Life Is Short).
+
+**Yeni dosyalar:**
+- `Artifacts/listening-ladder.html` — Ö1: 3 hız × 3 dinleyiş (gist/detail/shadow); Atomic Habits 1% kuralı pasajı (95 kelime); Web Speech TTS + SpeechRecognition shadow
+- `Artifacts/translation-pendulum.html` — Ö2: EN→TR→(20s gecikme)→EN back-translation; word-level LCS diff; 6 Naval/PG aforizması; kayıp kelimeler defteri
+- `Artifacts/voice-journal.html` — Ö4: 2 dk monologue; live transcript; filler/tekrar tespiti; 14 prompt (daily rotation); streak + history
+- `Artifacts/prompt-bank.html` — Ö7: 60 constraint kart, 5 kategori (Grammar 15 / PV 15 / Topic 15 / Quick 10 / Combined 5); rastgele çekiliş + recent 10 yazı
+
+**Yeni wiki sayfaları:**
+- `wiki/artifacts/listening-ladder.md` · `wiki/artifacts/translation-pendulum.md` · `wiki/artifacts/voice-journal.md` · `wiki/artifacts/prompt-bank.md`
+
+**Güncellenen:** `index.md` Writing bölümüne 🧪 Pilot v1 başlığı eklendi (4 satır).
+
+**Açık konular:**
+- `_dashboard.html` kartları henüz eklenmedi (manuel ya da v2'de eklenecek)
+- Hiçbiri JSON bridge (`00_INBOX/`) yazmıyor — pilot v1 kapsamı dışı
+- Listening Ladder gerçek insan sesi değil, TTS fallback — Ö1'in tam çözümü için audio asset gerekli
+
+---
+
 ## [2026-05-23] feature | Personal OS — TTS seslendirme özelliği
 
 **Web Speech API entegrasyonu** — sıfır maliyet, API key yok, tarayıcı native.
@@ -1557,7 +1660,7 @@ Daha önce stub olarak oluşturulmuş 7 concept sayfasının yerini alan, tam ka
 - `index.md` — Writing bölümüne 1 satır + Artifacts sayacı 21→22, 28→29 dosya
 - `Artifacts/_dashboard.html` — Writing kategorisine yeni kart (en üstte ⭐ YENİ); sayaç 2→3
 
-**Vault entegrasyonu:** [[_index|Practice Hub]] L1 Production Cell'in interaktif aracı. [[writing-atelier-001-bloomsday]] (5-sekme atölye, geniş) ile sınıflama uyumu kısmi; sapma: bu drill aracı dar/disiplinli/her gün açılır. TTS ve XP/achievement bilinçli olarak çıkarıldı (saf yazma odağı).
+**Vault entegrasyonu:** [[Practice/Grammer Topics/_index|Practice Hub]] L1 Production Cell'in interaktif aracı. [[writing-atelier-001-bloomsday]] (5-sekme atölye, geniş) ile sınıflama uyumu kısmi; sapma: bu drill aracı dar/disiplinli/her gün açılır. TTS ve XP/achievement bilinçli olarak çıkarıldı (saf yazma odağı).
 
 **Edge case'ler:** 20+ senaryo uygulandı — paste/whitespace normalize, smart quote apostrof, fazla/eksik cümle Δ, tema değişiminde confirm modal, localStorage corrupt fallback, mobile responsive, print stylesheet, pazar portfolio reminder, 16 tema tamamlanma achievement, 2+ gün streak gap toast.
 
@@ -1627,3 +1730,36 @@ Lesson 01'in (havaalanı + Borough Market) doğrudan devamı: ertesi pazar gün�
 **Sonraki ders (Lesson 03 — Camden + Regent's Park) için planlanmış 8 yapı:** Second Conditional, Wish/If only, Passive Voice, Causative, Future Forms (will vs going to), Adverbs of Frequency, Order of Adjectives, Linking Words.
 
 **Spec uyum:** `untitled-micro-app-spec.json`'daki 49 seçili özelliğin tamamı veya muadili implemente edildi. Print-friendly `user_note: "sadece metin için"` notuna uyuldu — yazdırma yalnızca Story sekmesini sade biçimde çıkarır.
+
+## [2026-06-10] infrastructure | Panorama v2 — Komuta Merkezi + Bilişsel Gelişim Katmanı
+
+Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışması 04/08/12/15) ile personal-os arasındaki boşluk analizi yapıldı; panorama dashboard'u Komuta Merkezi olarak yeniden inşa edildi.
+
+**Bulgular:** Panorama statikti (10 sorgu tek Promise.all); bilişsel gelişim hiçbir göstergeye bağlı değildi; yüzey kuyruğu 294 kartla ölü durumdaydı; halka modeli kodda yoktu; Komuta Merkezi sadece redirect'ti.
+
+**Yapılanlar (personal-os repo):**
+- Panorama → ayarlardan aç/kapat + sırala edilebilen 10 widget; her widget ayrı Suspense ile bağımsız akıyor, kapalı widget'ın verisi hiç çekilmiyor (KR-014)
+- Bilişsel katman: haftalık kavrayış eğrisi + FSRS bellek sağlamlığı + halka hunisi (`queries-cognitive.ts`, KR-015)
+- `items.halka_stage` 0-7 (İRFAN §3) + `advanceHalka` action + events tarihçesi (KR-016, migration 0004 — lokale uygulandı, Turso bekliyor)
+- Yüzey triyajı: 30+ gün gecikmiş orta/düşük öncelikli kartlar tek tıkla arşiv (KR-017)
+- Döngü widget'ı: Oku→Düşün→Üret→Denetle dört ipi, en zayıf ip nudge'ı
+- Ufuklar widget'ı: 10yıl→tema→çeyrek→ay zinciri, ayarlardan düzenlenir
+- /komuta → /panorama redirect; ayarlara Panorama Widget'ları + Ufuklar bölümleri
+
+**Dokunulan sayfalar:** wiki/synthesis/personal-os-design-decisions.md (§8 KR-014..017), log.md.
+
+**Sonraki:** Turso'ya 0004 migration; session duration heartbeat; faculty_rollups → bülten pipeline; halka geçmişinden derinleşme hızı metriği.
+
+## [2026-06-10] infrastructure | Mabet + Sade Modül Dashboard'ları + Kuantum Domain'i
+
+"Çalışma mabedi" vizyonu: Obsidian vault = metin veritabanı, personal-os = tatbik ve takip katmanı. Üç yeni parça eklendi.
+
+**1. Kuantum modülü:** Quantum vault'u (38 not, 6 bölüm: Temeller/Algoritmalar/Programlama/Donanım/Ekosistem/Fırsatlar) quantum domain'i olarak seed edildi — 23 item + obsidian_refs (her item vault notuna bağlı). Qubit/Süperpozisyon/Dolanıklık aktif başlangıç. `scripts/seed-quantum.ts` (idempotent, Turso için yeniden çalıştırılabilir).
+
+**2. /d/[slug] — sade modül dashboard'u (jenerik):** Her domain için tek tip, tek ekran: 4 sayı (7g seans, 30g doğruluk, mastery, halka) + bölüm dağılımı + çalışma kuyruğu (halka ilerletme + "vault ↗" obsidian:// linki) + son üretimler. Yeni domain seed edilince kod değişmeden çalışır.
+
+**3. /mabet — ortak sonuç dashboard'u:** Üst şerit (seri, bugün, 7g süre, döngü 4-nokta) + modül tablosu (mastery bar, doğruluk, halka, üretim, son aktivite; soğuyan modül kırmızı). Panorama=komuta (canlı akış), Mabet=muhasebe (sonuç) ayrımı.
+
+**Ayarlar:** quantum + mabet modül listesine eklendi, kullanıcının görünür modüllerine işlendi. Panorama alan kartlarına Kuantum girdi.
+
+**Sonraki:** Turso'ya seed-quantum + 0004; kuantum sorular/quiz içeriği (KR-006 deseniyle); diğer vault'lar (Yazarlık alt bölümleri) için kategori seed'i.

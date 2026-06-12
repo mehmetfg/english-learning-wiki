@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Translation Pendulum — Naval / PG (B1)</title>
+<style>
+  :root {
+    --bg: #0e1117;
+    --panel: #161b22;
+    --panel-2: #1f2530;
+    --text: #e6edf3;
+    --muted: #8b95a5;
+    --accent: #d29922;
+    --accent-2: #ffc14d;
+    --ok: #2ea043;
+    --warn: #d29922;
+    --err: #f85149;
+    --border: #2d333b;
+  }
+  [data-theme="light"] {
+    --bg: #fbf8f1; --panel: #ffffff; --panel-2: #f3ede0;
+    --text: #1f1a13; --muted: #6b6356;
+    --accent: #b8860b; --accent-2: #8a6306;
+    --ok: #1a7f37; --warn: #9a6700; --err: #cf222e;
+    --border: #d9d2c3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in oklab, var(--panel) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  header h1 { margin: 0; font-size: 17px; }
+  header .meta { color: var(--muted); font-size: 12px; }
+  .topbtn {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  }
+  .topbtn:hover { border-color: var(--accent); }
+  main { max-width: 920px; margin: 0 auto; padding: 22px 18px 80px; }
+
+  .stepper { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .stepper button {
+    background: var(--panel-2); color: var(--muted); border: 1px solid var(--border);
+    width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-weight: 600;
+  }
+  .stepper button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .stepper button.done { color: var(--ok); border-color: var(--ok); }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px; margin-bottom: 16px;
+  }
+  .src {
+    font-size: 12px; color: var(--muted); margin-bottom: 8px; display: flex; gap: 8px; align-items: center;
+  }
+  .src .badge {
+    background: var(--panel-2); border: 1px solid var(--border); padding: 2px 8px;
+    border-radius: 999px; font-size: 11px; color: var(--accent-2);
+  }
+  .phase-title {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .phase-num {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff;
+    display: grid; place-items: center; font-weight: 700; font-size: 13px;
+  }
+  .phase-name { font-weight: 600; }
+  .phase-sub { color: var(--muted); font-size: 13px; margin-left: 6px; }
+
+  .quote-en { font-size: 19px; line-height: 1.7; padding: 12px 14px; background: var(--panel-2); border-radius: 10px; border-left: 3px solid var(--accent); }
+  .quote-tr { font-size: 17px; line-height: 1.7; padding: 12px 14px; background: var(--panel-2); border-radius: 10px; border-left: 3px solid var(--ok); color: var(--text); }
+  .hidden-text { filter: blur(7px); user-select: none; }
+
+  textarea {
+    width: 100%; min-height: 70px; padding: 10px 12px;
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 10px; font-family: inherit; font-size: 15px; resize: vertical;
+    margin-top: 10px;
+  }
+  textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+  .actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .actions button {
+    background: var(--accent); color: #fff; border: 0; padding: 8px 14px;
+    border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;
+  }
+  .actions button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .actions button.secondary { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+  .actions button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .actions button:hover:not(:disabled) { filter: brightness(1.08); }
+
+  .swing-arrow {
+    text-align: center; font-size: 22px; color: var(--accent); margin: 6px 0; opacity: 0.7;
+  }
+
+  .delay-bar {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; margin-top: 8px; font-size: 13px; color: var(--muted);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .delay-bar progress { flex: 1; height: 8px; }
+  .delay-bar button {
+    background: var(--accent); color: #fff; border: 0; padding: 6px 12px; border-radius: 8px;
+    cursor: pointer; font-size: 13px;
+  }
+  .delay-bar button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .diff-out {
+    margin-top: 10px; padding: 12px; border-radius: 10px; background: var(--panel-2);
+    border: 1px solid var(--border); font-size: 15px; line-height: 1.8;
+  }
+  .diff-out .same { color: var(--ok); }
+  .diff-out .miss { color: var(--err); text-decoration: line-through; }
+  .diff-out .extra { color: var(--warn); font-style: italic; }
+  .score-pill {
+    display: inline-block; padding: 3px 10px; border-radius: 999px; font-weight: 600;
+    background: var(--panel); border: 1px solid var(--border); margin-bottom: 6px;
+  }
+
+  .lost-register {
+    margin-top: 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px;
+  }
+  .lost-register h3 { margin: 0 0 8px 0; }
+  .lost-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lost-tag {
+    background: var(--panel-2); border: 1px solid var(--err); color: var(--err);
+    padding: 3px 9px; border-radius: 999px; font-size: 13px;
+  }
+  .small { color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 640px) {
+    .quote-en, .quote-tr { font-size: 16px; }
+    main { padding: 14px 12px 64px; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<header>
+  <div>
+    <h1>🔁 Translation Pendulum</h1>
+    <div class="meta">EN → TR → (gecikme) → EN — back-translation drill · B1</div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <button class="topbtn" id="themeBtn">☾</button>
+    <button class="topbtn" id="resetBtn" title="Bütün ilerlemeyi sıfırla">↻ Sıfırla</button>
+  </div>
+</header>
+
+<main>
+
+  <section class="card">
+    <div class="src">
+      <span class="badge">Felsefe</span>
+      <span>Üç adım: <b>(1)</b> EN cümleyi gör, TR'ye çevir &nbsp;→&nbsp; <b>(2)</b> kısa gecikme (cümle aklında çürüsün) &nbsp;→&nbsp; <b>(3)</b> sadece TR'den hafızadan EN'ye yeniden çevir. Word-level diff "ne kaybettiğini" gösterir.</span>
+    </div>
+    <div class="stepper" id="stepper"></div>
+    <div class="small">Bu örnekte 6 cümle var — kaynaklar: <i>Naval Almanack</i> & <i>Paul Graham</i> (B1 uyarlamalı).</div>
+  </section>
+
+  <section class="card" id="sentence-card">
+    <div class="src">
+      <span class="badge" id="srcBadge">—</span>
+      <span class="small" id="srcMeta">Cümle 1 / 6</span>
+    </div>
+
+    <!-- PHASE A -->
+    <div class="phase-title">
+      <div class="phase-num">A</div>
+      <div><span class="phase-name">EN → TR</span><span class="phase-sub">cümleyi gör · Türkçe'ye çevir</span></div>
+    </div>
+    <div class="quote-en" id="enText">—</div>
+    <textarea id="trInput" placeholder="Türkçe çevirini buraya yaz…"></textarea>
+    <div class="actions">
+      <button id="trSubmit">TR çeviriyi gönder</button>
+      <button class="ghost" id="showModelTR" disabled>Model TR'yi gör</button>
+    </div>
+    <div class="quote-tr" id="modelTrBox" style="display:none; margin-top:10px;"></div>
+
+    <!-- swing -->
+    <div class="swing-arrow">↕ gecikme — cümle aklında çürüsün</div>
+
+    <div class="delay-bar" id="delayBar">
+      <span id="delayLabel">Bekleme: 20 sn</span>
+      <progress id="delayProg" max="20" value="0"></progress>
+      <button id="skipDelay">Atla (test)</button>
+    </div>
+
+    <!-- PHASE B -->
+    <div class="phase-title" style="margin-top:18px;">
+      <div class="phase-num" style="background: var(--ok)">B</div>
+      <div><span class="phase-name">TR → EN (hafızadan)</span><span class="phase-sub">EN cümlesi gizli · TR'den geri yaz</span></div>
+    </div>
+    <div class="quote-tr" id="trShown">—</div>
+    <textarea id="enRecall" placeholder="Şimdi sadece TR'ye bakarak orijinal İngilizceyi yaz…" disabled></textarea>
+    <div class="actions">
+      <button id="enRecallSubmit" disabled>Karşılaştır</button>
+      <button class="secondary" id="nextBtn" disabled>Sonraki cümle →</button>
+    </div>
+
+    <div class="diff-out" id="diffOut" style="display:none;"></div>
+  </section>
+
+  <section class="lost-register">
+    <h3>📕 Kayıp Kelimeler Defteri</h3>
+    <div class="small" style="margin-bottom:8px;">Phase B'de atladığın / yanlış yazdığın kelimeler. Üç oturum üst üste düşen kelimeler vault'taki <i>errors/</i>'a yazılır (manuel).</div>
+    <div class="lost-list" id="lostList"><span class="small">Henüz boş.</span></div>
+  </section>
+
+</main>
+
+<script>
+const STATE_KEY = "translation_pendulum_v1__naval_pg";
+
+// ---------- DATA ----------
+const sentences = [
+  {
+    en: "Life is short. The days are full of small things that do not matter.",
+    tr: "Hayat kısa. Günler önemli olmayan küçük şeylerle dolu.",
+    src: "Paul Graham — Life Is Short (B1 uyarlama)"
+  },
+  {
+    en: "You will not get rich by selling your time. You must own a piece of something.",
+    tr: "Vaktini satarak zengin olamazsın. Bir şeyin parçasına sahip olmalısın.",
+    src: "Naval — How to Get Rich (B1 uyarlama)"
+  },
+  {
+    en: "Read what you love until you love to read.",
+    tr: "Sevdiğin şeyi oku, ta ki okumayı sevene kadar.",
+    src: "Naval — Reading & Learning"
+  },
+  {
+    en: "Avoid people who make you feel bad about yourself.",
+    tr: "Sana kendini kötü hissettiren insanlardan uzak dur.",
+    src: "Naval — Happiness (B1 uyarlama)"
+  },
+  {
+    en: "A calm mind is a strong mind.",
+    tr: "Sakin bir zihin güçlü bir zihindir.",
+    src: "Naval — Happiness"
+  },
+  {
+    en: "If you cannot decide, the answer is no.",
+    tr: "Karar veremiyorsan, cevap hayırdır.",
+    src: "Naval — Philosophy"
+  }
+];
+
+// ---------- STATE ----------
+const defaultState = {
+  current: 0,
+  results: {}, // idx -> { tr, en, score, missing[], extra[], phaseA: bool, phaseB: bool }
+  lost: {},    // word -> count
+};
+let state = loadState();
+function loadState() {
+  try { return Object.assign(structuredClone(defaultState), JSON.parse(localStorage.getItem(STATE_KEY)) || {}); }
+  catch { return structuredClone(defaultState); }
+}
+function saveState() { try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch {} }
+
+// ---------- THEME ----------
+const themeBtn = document.getElementById('themeBtn');
+const initialTheme = localStorage.getItem('translation_pendulum_theme') || 'dark';
+document.body.dataset.theme = initialTheme;
+themeBtn.textContent = initialTheme === 'dark' ? '☀' : '☾';
+themeBtn.addEventListener('click', () => {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = next;
+  themeBtn.textContent = next === 'dark' ? '☀' : '☾';
+  localStorage.setItem('translation_pendulum_theme', next);
+});
+
+// ---------- RESET ----------
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Bütün ilerlemeyi sıfırla?')) return;
+  localStorage.removeItem(STATE_KEY); location.reload();
+});
+
+// ---------- STEPPER ----------
+const stepperEl = document.getElementById('stepper');
+function renderStepper() {
+  stepperEl.innerHTML = "";
+  sentences.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.textContent = (i+1);
+    if (i === state.current) b.classList.add('active');
+    if (state.results[i]?.phaseB) b.classList.add('done');
+    b.addEventListener('click', () => { state.current = i; saveState(); renderAll(); });
+    stepperEl.appendChild(b);
+  });
+}
+
+// ---------- DELAY BAR ----------
+let delayTimer = null, delayLeft = 20;
+const delayBar = document.getElementById('delayBar');
+const delayLabel = document.getElementById('delayLabel');
+const delayProg = document.getElementById('delayProg');
+const skipDelay = document.getElementById('skipDelay');
+function startDelay() {
+  clearInterval(delayTimer);
+  delayLeft = 20;
+  delayProg.value = 0;
+  delayLabel.textContent = `Bekleme: ${delayLeft} sn`;
+  skipDelay.disabled = false;
+  delayTimer = setInterval(() => {
+    delayLeft--;
+    delayProg.value = 20 - delayLeft;
+    delayLabel.textContent = `Bekleme: ${delayLeft} sn`;
+    if (delayLeft <= 0) endDelay();
+  }, 1000);
+}
+function endDelay() {
+  clearInterval(delayTimer);
+  delayLabel.textContent = "Hazır — hafızadan EN yaz";
+  delayProg.value = 20;
+  document.getElementById('enRecall').disabled = false;
+  document.getElementById('enRecall').focus();
+  document.getElementById('enRecallSubmit').disabled = false;
+  skipDelay.disabled = true;
+}
+skipDelay.addEventListener('click', endDelay);
+
+// ---------- DIFF (token-level LCS) ----------
+function tokens(s) {
+  return s.toLowerCase().replace(/[^a-z0-9'\s]/g, ' ').split(/\s+/).filter(Boolean);
+}
+function lcsTable(a, b) {
+  const m = a.length, n = b.length;
+  const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] + 1 : Math.max(dp[i-1][j], dp[i][j-1]);
+  return dp;
+}
+function diffOriginalVsRecall(origStr, recallStr) {
+  const a = tokens(origStr), b = tokens(recallStr);
+  const dp = lcsTable(a, b);
+  const out = []; // {tok, type: 'same'|'miss'|'extra'}
+  let i = a.length, j = b.length;
+  // backtrack
+  while (i > 0 && j > 0) {
+    if (a[i-1] === b[j-1]) { out.unshift({tok: a[i-1], type: 'same'}); i--; j--; }
+    else if (dp[i-1][j] >= dp[i][j-1]) { out.unshift({tok: a[i-1], type: 'miss'}); i--; }
+    else { out.unshift({tok: b[j-1], type: 'extra'}); j--; }
+  }
+  while (i > 0) { out.unshift({tok: a[i-1], type: 'miss'}); i--; }
+  while (j > 0) { out.unshift({tok: b[j-1], type: 'extra'}); j--; }
+  const same = out.filter(o => o.type === 'same').length;
+  const miss = out.filter(o => o.type === 'miss').map(o => o.tok);
+  const extra = out.filter(o => o.type === 'extra').map(o => o.tok);
+  const score = Math.round((same / a.length) * 100);
+  return { tokens: out, score, miss, extra };
+}
+
+// ---------- RENDER ----------
+function renderAll() {
+  const idx = state.current;
+  const s = sentences[idx];
+  document.getElementById('srcBadge').textContent = "B1";
+  document.getElementById('srcMeta').textContent = `Cümle ${idx+1} / ${sentences.length} · ${s.src}`;
+
+  document.getElementById('enText').textContent = s.en;
+  document.getElementById('trShown').textContent = s.tr;
+
+  const r = state.results[idx] || {};
+  document.getElementById('trInput').value = r.tr || "";
+  document.getElementById('enRecall').value = r.en || "";
+
+  // Phase A done?
+  const modelBox = document.getElementById('modelTrBox');
+  if (r.phaseA) {
+    modelBox.style.display = 'block';
+    modelBox.textContent = "Model TR: " + s.tr;
+    document.getElementById('showModelTR').disabled = false;
+  } else {
+    modelBox.style.display = 'none';
+    document.getElementById('showModelTR').disabled = true;
+  }
+
+  // Phase B input lock
+  document.getElementById('enRecall').disabled = !r.phaseA || r.phaseB;
+  document.getElementById('enRecallSubmit').disabled = !r.phaseA || r.phaseB;
+
+  // Diff
+  const diffOut = document.getElementById('diffOut');
+  if (r.phaseB) {
+    const diff = diffOriginalVsRecall(s.en, r.en);
+    diffOut.style.display = 'block';
+    diffOut.innerHTML = `
+      <div class="score-pill">Skor: ${diff.score}%</div><br/>
+      ${diff.tokens.map(t => `<span class="${t.type}">${t.tok}</span>`).join(' ')}
+      <div class="small" style="margin-top:8px;">
+        Atlanan kelime: <b style="color: var(--err)">${diff.miss.length}</b> ·
+        Fazladan eklenen: <b style="color: var(--warn)">${diff.extra.length}</b>
+      </div>
+    `;
+    document.getElementById('nextBtn').disabled = false;
+  } else {
+    diffOut.style.display = 'none';
+    document.getElementById('nextBtn').disabled = true;
+  }
+
+  // EN hide/show on Phase B textarea
+  const enText = document.getElementById('enText');
+  if (r.phaseA && !r.phaseB) enText.classList.add('hidden-text');
+  else enText.classList.remove('hidden-text');
+
+  renderStepper();
+  renderLost();
+}
+
+function renderLost() {
+  const list = document.getElementById('lostList');
+  const entries = Object.entries(state.lost).sort((a,b) => b[1]-a[1]);
+  if (entries.length === 0) { list.innerHTML = '<span class="small">Henüz boş.</span>'; return; }
+  list.innerHTML = entries.map(([w, c]) => `<span class="lost-tag">${w} ×${c}</span>`).join('');
+}
+
+// ---------- HANDLERS ----------
+document.getElementById('trInput').addEventListener('input', (e) => {
+  const idx = state.current;
+  state.results[idx] = Object.assign({}, state.results[idx], { tr: e.target.value });
+  saveState();
+});
+document.getElementById('trSubmit').addEventListener('click', () => {
+  const idx = state.current;
+  const v = document.getElementById('trInput').value.trim();
+  if (v.length < 3) { alert('En az 3 karakter yaz.'); return; }
+  state.results[idx] = Object.assign({}, state.results[idx], { tr: v, phaseA: true });
+  saveState();
+  renderAll();
+  startDelay();
+});
+document.getElementById('showModelTR').addEventListener('click', () => {
+  const idx = state.current;
+  const modelBox = document.getElementById('modelTrBox');
+  modelBox.style.display = 'block';
+  modelBox.textContent = "Model TR: " + sentences[idx].tr;
+});
+document.getElementById('enRecall').addEventListener('input', (e) => {
+  const idx = state.current;
+  state.results[idx] = Object.assign({}, state.results[idx], { en: e.target.value });
+  saveState();
+});
+document.getElementById('enRecallSubmit').addEventListener('click', () => {
+  const idx = state.current;
+  const s = sentences[idx];
+  const v = document.getElementById('enRecall').value.trim();
+  if (v.length < 3) { alert('En az 3 karakter yaz.'); return; }
+  const diff = diffOriginalVsRecall(s.en, v);
+  // accumulate lost words
+  diff.miss.forEach(w => { if (w.length > 1) state.lost[w] = (state.lost[w] || 0) + 1; });
+  state.results[idx] = Object.assign({}, state.results[idx], {
+    en: v, phaseB: true, score: diff.score, missing: diff.miss, extra: diff.extra
+  });
+  saveState();
+  renderAll();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  if (state.current < sentences.length - 1) {
+    state.current++; saveState(); renderAll();
+    document.getElementById('delayBar').scrollIntoView({behavior:'smooth', block:'center'});
+  } else {
+    alert('Tüm cümleleri bitirdin! Sıfırla butonuyla yeni tur başlatabilirsin.');
+  }
+});
+
+// ---------- INIT ----------
+renderAll();
+</script>
+</body>
+</html>

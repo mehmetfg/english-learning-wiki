@@ -1,6 +1,6 @@
 ---
 title: English Learning Wiki — İçerik Dizini
-updated: 2026-05-22
+updated: 2026-05-23
 ---
 
 # English Learning Wiki — İçerik Dizini
@@ -11,15 +11,15 @@ Bu dosya tüm wiki içeriğinin haritasıdır. Her ingest ve güncelleme sonras�
 
 ## 🌐 Personal OS (2026-05-22 — yeni üst sistem)
 
-Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Projects/personal-os/`). Daily Engine v1'in halefi — multi-domain entelektüel takip sistemi. English + Philosophy ile başladı, sonraki fazlarda Reading + Films + Writing eklenecek.
+Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Documents/projects/personal-os/`, Vercel: personal-os-two-alpha). Daily Engine v1'in halefi — multi-domain entelektüel takip sistemi. English + Philosophy + Books + Writing + Finance domain'leri aktif.
 
 | Sayfa | Açıklama |
 |-------|----------|
-| [[personal-os-design-decisions]] | 🆕 Phase 1 MVP tasarım dökümanı — 8 KR, 15 edge case, faz planı, DB schema özeti |
+| [[personal-os-design-decisions]] | Phase 1 MVP tasarım dökümanı — 13 KR, denetim bulguları (§7), yeniden yapılandırılmış günlük protokol, faz planı, DB schema özeti |
 
 **Migrate edilen veri:** [[grammar-coverage]] (56 konu seed + 16 oturum durumu) · `Artifacts/_engine/topics.json` (56 konu zengin metadata)
 
-**Durum:** Phase 1 MVP kuruldu (lokal SQLite, 3 sayfa). Phase 2'de soru havuzu + FSRS scheduler + Turso + Vercel deploy.
+**Durum (2026-06-10 — devamlılık denetimi sonrası):** Soru havuzu (2.519 soru) + FSRS canlı. Süreklilik kırılması teşhis edildi ve yeniden yapılandırıldı: **Çekirdek Gün** (ders+quiz = gün tamam, gerisi bonus), serbest cevaplarda **self-grade**, 710 eksik TR sözlük karşılığı dolduruldu, 748 vocab MCQ çeldiricisi POS-eşleşmeli yenilendi, 15 cevap-sızdıran soru onarıldı, günlük yeni kelime tavanı (8) kondu. Detay: [[personal-os-design-decisions]] §7.
 
 ---
 
@@ -37,7 +37,7 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Projects/personal-os
 | [[vocab-srs]] | **Vocab SRS** — SM-2, word bank'tan beslenir, leech/young/mature |
 | [[implementation-notes]] | Faz 1 baş ucu defteri — kararlar, sapmalar, edge case'ler, açık sorular |
 
-**Tracking (data layer):** [[_index|wiki/tracking/_index]] · [[grammar-coverage]] · [[weak-topics]] · [[word-bank-master]] · [[srs-state]] · [[weekly-review]]
+**Tracking (data layer):** [[Practice/Grammer Topics/_index|wiki/tracking/_index]] · [[grammar-coverage]] · [[weak-topics]] · [[word-bank-master]] · [[srs-state]] · [[weekly-review]]
 **Köprü:** `00_INBOX/*.json` → Claude Code → `wiki/tracking/*.md` → `_archive/`
 
 ---
@@ -110,6 +110,17 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Projects/personal-os
 | [[comparative-reader-v2]] | 1 dosya | 🆕 (2026-05-21) Comparative Reader v2 — B1↔A2 uzun metin; Atomic Habits (7 çift) + Don Quixote Windmills (9 çift); chapter labels; ← → keyboard nav |
 | [[daily-writing-loop]] | 1 dosya | 🆕 Daily Writing Loop — günlük üretim döngüsü; TR referans → Box A (real-time kırmızı diff + placeholder hint) → Box B (hafızadan, hibrit TR preview) → Check (word-level LCS); 16 hazır tema + Custom mod; PV tracker + 30 PV bağımsız drill; 5 görsel tema; streak; L1 Production Cell'in interaktif aracı |
 | [[writing-ladder]] | 1 dosya | 🆕 (2026-05-21) **Writing Ladder** — direkt yaz, kademeli bırak; A1→B2; 5 basamak scaffold (L1 Echo %80 → L5 Free %0); 25 prompt + Custom; sentence-by-sentence yazma; word/pattern/starter/voice yardım; auto-fade; streak (2 gün toleransı); 17 edge case; heuristic check (13 klasik Türk hata regex'i); recent sessions + revise mode; 5 görsel tema |
+
+### 🧪 Pilot v1 — Çalışma Yöntemleri Analizi Önerilerinden (2026-05-23)
+
+[[calisma-yontemleri-analizi]] Ö1/Ö2/Ö4/Ö7 önerilerinin **birer çalışan örneği**. Hepsi B1, tek-dosya HTML, dark/light tema, localStorage, içerik vault'taki kaynaklardan damıtılmış (Atomic Habits, Naval Almanack, Paul Graham).
+
+| Sayfa | Dosyalar | Açıklama |
+|-------|----------|----------|
+| [[listening-ladder]] | 1 dosya | 🆕 **Ö1 örneği** — 3 hız (0.75×/1×/1.25×) × 3 dinleyiş (gist → detail → shadow); kademeli kilit; Atomic Habits 1% pasajı (95 kelime); Web Speech API TTS + SpeechRecognition shadow eşleşme |
+| [[translation-pendulum]] | 1 dosya | 🆕 **Ö2 örneği** — EN→TR→(20 sn gecikme)→EN back-translation; word-level LCS diff; kayıp kelimeler defteri; 6 Naval/PG aforizması B1 uyarlamalı |
+| [[voice-journal]] | 1 dosya | 🆕 **Ö4 örneği** — 2 dk monologue; Web Speech Recognition canlı transcript; filler/tekrar tespiti; 14 Naval/PG/Atomic Habits temalı prompt; daily rotation + streak + 14 günlük history |
+| [[prompt-bank]] | 1 dosya | 🆕 **Ö7 örneği** — 60 constraint kart × 5 kategori (Grammar/PV/Topic/Quick/Combined); rastgele çekiliş + son 8'den kaçınma; heuristic check; recent 10 yazı + geri yükle |
 
 ### 📚 Guides
 | Sayfa | Dosyalar | Açıklama |
@@ -278,7 +289,17 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Projects/personal-os
 ### 📖 Decameron — Genişletilmiş Okuma Serisi (A2/B1) · Boccaccio
 | Sayfa | Açıklama |
 |-------|----------|
-| [[Decameron-Day01-Story01-Ser-Ciappelletto]] | Day 1, Story 1: Ser Ciappelletto — TR özet + A2-B1 İngilizce tam anlatı + 10-kelime EN-EN sözlük; çerçeve hikâye (Floransa 1348 vebası, 10 genç) + Panfilo'nun ilk hikâyesi; sahte itiraf, ironi, din eleştirisi |
+| [[Decameron-Day01-Story01-Ser-Ciappelletto]] | Day 1, Story 1: Ser Ciappelletto — çerçeve hikâye (Floransa 1348 vebası) + sahte itiraf, ironi, din eleştirisi |
+| [[Decameron-Day01-Story02-Abraham]] | 🆕 Day 1, Story 2: Abraham the Jew — Roma'ya giden Yahudi dönüşümü; en güçlü argüman kendi zıttından gelir |
+| [[Decameron-Day01-Story03-Three-Rings]] | 🆕 Day 1, Story 3: The Three Rings — Saladin + Melchizedek; üç din, üç yüzük, en zarif iktidar yanıtı |
+| [[Decameron-Day01-Story04-The-Monk]] | 🆕 Day 1, Story 4: The Monk and the Girl — komedi; genç rahip vs. Abbot; bilen cezalandırılamaz |
+| [[Decameron-Day01-Story05-Marchioness]] | 🆕 Day 1, Story 5: The Marchioness and the Chicken Dinner — Fransa Kralı'nı bir sofrayla durduran kadın |
+| [[Decameron-Day01-Story06-Inquisitor]] | 🆕 Day 1, Story 6: The Inquisitor's Problem — şarap iltifatı, sapkınlık suçlaması, kilisenin kendi çelişkisiyle yüzleşmesi |
+| [[Decameron-Day01-Story07-Bergamino]] | 🆕 Day 1, Story 7: Bergamino and the Generous Lord — hikâye içinde hikâye; Can Grande'ye bir ayna |
+| [[Decameron-Day01-Story08-Ermino]] | 🆕 Day 1, Story 8: Ermino and the Painting of Generosity — tek kelimeyle değişen en zengin cimri |
+| [[Decameron-Day01-Story09-King-of-Cyprus]] | 🆕 Day 1, Story 9: The Lady and the King of Cyprus — bir kadının birkaç cümlesiyle korkak bir kralı cesaretlendirmesi |
+| [[Decameron-Day01-Story10-Master-Alberto]] | 🆕 Day 1, Story 10: Master Alberto and the Leeks — yaşlı doktor, pırasa metaforu, alay eden genç kadın susturulur |
+| [[Decameron-Day02-Story01-Martellino]] | 🆕 Day 2, Story 1: Martellino the Fake Cripple — sakat taklidi, kalabalık linç, şans ve kurtarılış; Gün 2 açılışı |
 
 ### 📖 Don Quixote — Genişletilmiş Okuma Serisi (A2/B1)
 | Sayfa | Açıklama |
@@ -356,10 +377,11 @@ TTS öncelikli, A2-B1 seviyesi, roman dışı yazı serisi. Felsefe, psikoloji, 
 
 ---
 
-## Synthesis (1 sayfa)
+## Synthesis (5 sayfa)
 
 | Sayfa | Açıklama |
 |-------|----------|
+| [[gunluk-calisma-programi\|Günlük Çalışma Programı]] | 🆕 20 günlük döngü — 56 gramer konusu rotasyonu · vocabulary bloğu · okuma & üretim şeması · haftalık hız göstergesi |
 | [[CEFR Curriculum Map]] | Tüm gramer konuları CEFR A1→C2 haritası; eksik konular ve öğrenme sırası |
 | [[Interactive Reader Template]] | ⭐ Interactive HTML reader klasmanı — tüm makale → çalışma sayfası dönüşümü için yeniden kullanılabilir standart (CSS/JS spec, 15 bölüm, 20+ edge case checklist) |
 | [[narrative-past-tenses-cluster]] | 🆕 5 yapı kümesi — Past Simple + Past Continuous + Past Perfect + Used to/Would + Time Adverbials; anlatı yazımı için minimum set; Writing Atelier serisinin referansı |
@@ -371,7 +393,7 @@ TTS öncelikli, A2-B1 seviyesi, roman dışı yazı serisi. Felsefe, psikoloji, 
 
 | Sayfa | Açıklama |
 |-------|----------|
-| [[_index\|Practice Hub]] | ⭐ 5-lane output sistemi merkezi — L1 cells, L2 shadow, L3 dialogues, L4 drills, L5 retrieval; haftalık şablon; tetikleme protokolleri |
+| [[Practice/Grammer Topics/_index\|Practice Hub]] | ⭐ 5-lane output sistemi merkezi — L1 cells, L2 shadow, L3 dialogues, L4 drills, L5 retrieval; haftalık şablon; tetikleme protokolleri |
 | [[errors/_index\|Error Constellation]] | Recurring hata pattern frekans takibi; boss battle / graduated / decay register |
 | [[portfolio/_index\|Portfolio Hub]] | Haftalık curated, polished works — pazar günleri ciladır |
 

@@ -4,7 +4,7 @@ type: synthesis
 tags: [personal-os, architecture, decisions, infrastructure]
 related: [[english-learning-engine-v1]], [[implementation-notes]], [[_index]]
 created: 2026-05-22
-updated: 2026-05-22
+updated: 2026-06-10
 ---
 
 # Personal OS — Design Decisions (Phase 1)
@@ -183,8 +183,126 @@ obsidian_refs    (id, item_id, vault_path, frontmatter_id, last_synced_at)
 
 ---
 
-## 7. Bağlantılar
+## 7. Denetim ve Yeniden Yapılandırma (2026-06-10)
+
+> Tetik: "Sürekliliği sağlayamadım" — 18 günde yalnızca 6 program günü tamamlandı,
+> son attempt'ler 0 doğru ile bitti (5 ve 8 Haziran), sonra kullanım durdu.
+
+**Not:** Proje konumu `~/Documents/projects/personal-os/` (bu dökümandaki eski `~/Projects/` yolu geçersiz). Vercel: `personal-os-two-alpha.vercel.app`.
+
+### 7a. Denetim Bulguları
+
+| # | Bulgu | Kanıt | Durum |
+|---|-------|-------|-------|
+| 1 | **Gün çok ağır** — 5 aşamanın (ders, quiz, okuma, oyun, üretim) 4'ü placeholder; gün kilidi hepsini istiyor | 18 günde 6 tamamlama | ✅ Çekirdek Gün (KR-009) |
+| 2 | **Serbest cevap = exact match** — transform/translate (281 soru) tek referans cevaba karşı notlanıyor; geçerli üretimler "yanlış" sayılıyor | Son oturumlar 0/2 doğru → bırakma anı | ✅ Self-grade (KR-010) |
+| 3 | **Sözlük TR'siz** — 843 kelimenin 710'unda `definition_tr` yok; flashcard'lar EN-only açılıyordu | DB taraması | ✅ 710/710 dolduruldu |
+| 4 | **Çeldirici kalitesi** — 748 vocab MCQ'da çeldiriciler rastgele: POS uyuşmazlığı yüzünden soru anlamı bilmeden eleme ile çözülüyordu | Örnek: adverb boşluğuna "swayed/reality/prime" | ✅ POS-eşleşmeli yeniden üretildi (KR-011) |
+| 5 | **Cevap sızıntısı** — 15 MCQ prompt'unda cevap kelimesi açıkça geçiyordu | SQL denetimi | ✅ 15 prompt yeniden yazıldı |
+| 6 | **Yeni kelime seli** — due az olduğunda kuyruk sınırsız yeni kelimeyle doluyordu; sırasız aktivasyon | `getVocabStudyQueue` | ✅ Günlük 8 tavan + sıralama (KR-012) |
+| 7 | Takvim-bazlı `computePosition` ölü kod olarak kafa karıştırıyordu (ilerleyiş zaten tamamlama-bazlı) | `program.ts` | ✅ Deprecated işaretlendi |
+| 8 | Kelime başına tek soru (720 kelime) — KR-006'nın gramer için çözdüğü ezber tuzağı vocab'da duruyor | DB taraması | ⬜ Faz 2 backlog |
+| 9 | Kaynak cümlelerde noktalama kayıpları ("behaviour good habits feel bad") | ingest script artığı | ⬜ Lint turunda |
+
+### 7b. Yeni Karar Kayıtları
+
+**KR-009 · Çekirdek Gün** — Gün tamamlama = **ders + quiz** (~15 dk). Okuma/oyun/üretim bonus; UI ders+quiz bitince "günü kilitle" teklif eder.
+*Why:* Devamlılık > kapsam. 5 zorunlu aşama all-or-nothing'di; yarım gün "hiç gün" sayılıyordu, suçluluk birikiyordu.
+
+**KR-010 · Serbest üretim self-grade** — transform/translate sorularında cevap gönderilince model cevap gösterilir, kullanıcı "Doğru saydım / Yanlıştı" ile kendisi notlar (Anki rasyoneli). FSRS bu nota göre ilerler.
+*Why:* Tek referans cevaba karşı exact-match, doğru üretimleri cezalandırıp motivasyonu kırıyordu; yanlış-negatifler FSRS state'ini de kirletiyordu.
+
+**KR-011 · Çeldirici politikası** — Vocab MCQ çeldiricisi aynı POS havuzundan gelir; cevapla ve prompt'taki kelimelerle çakışamaz. Script: `scripts/regen-vocab-distractors.ts` (yeniden çalıştırılabilir).
+*Why:* POS uyuşmazlığı soruyu gramer bulmacasına çevirir — kelime bilgisi ölçülmez.
+
+**KR-012 · Yeni kelime tavanı** — Günde en çok 8 yeni kelime kuyruğa girer; CEFR'i belli (küratörlü) kelimeler önce. Due kartlar her zaman önceliklidir.
+*Why:* Sınırsız yeni kelime "review dağı" büyütür; 133 kartlık vadesi geçmiş yığın bırakmanın ikinci ana sebebiydi.
+
+**KR-013 · Sözlük TR zorunlu** — Yeni vocab ingest'i `definition_tr` olmadan DB'ye giremez. Mevcut açık `scripts/fill-tr-definitions.ts` + `scripts/data/tr-definitions.json` ile kapatıldı.
+*Why:* TR karşılıksız flashcard B1 öğrenicide recall testi yapamaz, tanıma testine düşer.
+
+### 7c. Yeniden Yapılandırılmış Günlük Protokol
+
+```
+ÇEKİRDEK (her gün, ~15 dk — gün bunu bitirince kilitlenir):
+  1. Ders: günün 2 konusu (28-günlük rotasyon, tamamlama-bazlı — kaçan gün konu atlatmaz)
+  2. Quiz: review batch (gramer %60 / vocab %40, 7-oturum cooldown)
+
+BONUS (vakit varsa, sırasıyla):
+  3. Okuma (plan.reading kaynağı)
+  4. Mini-oyun (vocab match / confusable)
+  5. Üretim (L1-L5 lane'leri — transform sorularında artık self-grade var)
+
+HAFTALIK:
+  - Pazar: Portfolio curation (mevcut protokol)
+  - Review dağı 40 kartı aşarsa: o gün yeni kelime tavanı 0'a iner (manuel kural, Faz 2'de otomatikleşecek)
+```
+
+### 7d. Faz 2 Backlog'a Eklenenler
+
+- [ ] Kelime başına 2-3 soru tipi (meaning + fill-blank + reverse) — KR-006'nın vocab karşılığı
+- [ ] Kaynak cümle noktalama onarımı (ingest script'i düzelt + mevcut örnekleri lint'le)
+- [ ] Review dağı otomatik fren: due > 40 iken yeni kelime kapısı kapanır
+- [ ] Re-engagement: 3+ gün boşlukta "çekirdek gün 10 dakika" nudge'ı (KR'daki F4 maddesi öne çekildi)
+
+---
+
+## 8. Panorama v2 — Komuta Merkezi + Bilişsel Katman (2026-06-10)
+
+> Tetik: "Tüm gelişim/bilgi akışım tek yerden ilerlemeli; kavrayışımın arttığına
+> tık olabilmeliyim; panorama çok daha etkili ve değiştirilebilir olmalı."
+> Vault kaynakları: PDM `_Tasnif Çalışması/12 - Komuta Merkezi.md`, İRFAN Protokolü §3 (halka modeli).
+
+### 8a. Denetim Bulguları
+
+| # | Bulgu | Kanıt | Durum |
+|---|-------|-------|-------|
+| 1 | Panorama statikti — 10 sorgu tek `Promise.all`, kişiselleştirme yok, sadece felsefe roadmap'i gömülü | `panorama/page.tsx` (eski) | ✅ Widget mimarisi (KR-014) |
+| 2 | Bilişsel gelişim görünmüyordu — FSRS verisi (134 review, 147 attempt) hiçbir "kavrayış" göstergesine bağlanmamıştı | UI taraması | ✅ Bilişsel katman (KR-015) |
+| 3 | Halka modeli (İRFAN §3) kodda temsil edilmiyordu | şema taraması | ✅ `halka_stage` (KR-016) |
+| 4 | Yüzey kuyruğu ölüydü — 294 kart, hepsi pending, hepsi vadesi geçmiş; `/yedi-yeti`'de gömülü kalıyordu | DB taraması | ✅ Panorama kartları + triyaj (KR-017) |
+| 5 | Komuta Merkezi route'u `/`'a redirect'ti; vault'taki 4-panel tasarımın kod karşılığı yoktu | `komuta/page.tsx` | ✅ Panorama = Komuta Merkezi |
+| 6 | Session duration'ların çoğu NULL — zaman ölçümü kırık | DB taraması | ⬜ Backlog (heartbeat sayacı) |
+
+### 8b. Yeni Karar Kayıtları
+
+**KR-014 · Widget mimarisi** — Panorama, ayarlardan açılıp/kapanan ve sıralanabilen 10 widget'tan oluşur (`panorama.order` + `panorama.hidden` ayar blob'unda). Her widget kendi verisini çeken async server component; `<Suspense>` ile bağımsız akar. **Kapalı widget'ın verisi hiç çekilmez.**
+*Why:* Tek dev Promise.all en yavaş sorguya rehin kalıyordu; kişiselleştirme yoktu.
+
+**KR-015 · Kavrayış sinyali = davranış + bellek + pedagoji** — Üç katman: (1) haftalık quiz doğruluk eğrisi (davranışsal), (2) FSRS stability ortalaması = "bellek sağlamlığı" (otomatik), (3) halka hunisi (pedagojik, manuel). `queries-cognitive.ts`.
+*Why:* Tek metrik yanıltır; FSRS tek başına üretimi (te'lif) görmez, halka tek başına disiplin ister.
+
+**KR-016 · Halka aşaması items üzerinde** — `items.halka_stage` (0-7: sınır→damıt→mecz→tatbik→anlat→tekrar→te'lif) + `halka_updated_at`; tarihçe `events` (kind=`halka_advance`). Aşama ≥5 (anlat) → `os_dongu_kapali=true` otomatik. Migration: `drizzle/0004_halka_progress.sql` (+ idempotent `scripts/apply-0004-halka.ts`; **Turso'ya henüz uygulanmadı**).
+*Why:* "Anlatılmayan kavram sahipsiz halkadır" kuralı veri modelinde yaşamalı; ayrı tablo overkill.
+
+**KR-017 · Yüzey triyajı** — 30+ gün gecikmiş, yüksek-öncelik olmayan pending yüzeyler tek tıkla arşivlenir (`triageStaleSurfaces`). Panorama'da günde max 5 kart gösterilir; gerisi sayaçla `/yedi-yeti`'ye link.
+*Why:* 294 kartlık vadesi geçmiş yığın = İngilizce'deki "review dağı"nın (KR-012) yüzey karşılığı; yığın gösterilirse sistem yine bırakılır.
+
+### 8c. Yeni Widget Seti
+
+`bugun` (streak+seans+paralel ipler) · `ritim` (kalp-atış) · `dongu` (Oku→Düşün→Üret→Denetle, en zayıf ip nudge'ı) · `resurfacing` (due kartlar+triyaj) · `bilissel` (kavrayış eğrisi+halka hunisi+halka başlat) · `yeti` (7 yeti şeridi) · `fikir` (açık halkalar) · `okuma` · `alanlar` · `ufuklar` (10yıl→tema→çeyrek→ay, ayarlardan düzenlenir).
+
+### 8d. Mabet + Sade Dashboard Katmanı (aynı gün, ikinci tur)
+
+**KR-018 · Vault = metin veritabanı, personal-os = tatbik katmanı** — Uzun-form içerik Obsidian'da yaşar; uygulama yalnızca index + durum + ölçüm tutar (KR-004'ün genelleştirilmesi). Her item `obsidian_refs` ile vault notuna bağlanır; UI'dan `obsidian://open` ile tek tık vault'a iner.
+
+**KR-019 · Jenerik sade dashboard `/d/[slug]`** — Domain başına özel sayfa yazmak yerine tek jenerik sayfa: 4 sayı + bölümler + çalışma kuyruğu (halka ilerletme) + son üretimler. Yeni domain = sadece seed; kod değişmez.
+*Why:* Her yeni öğrenme alanı (kuantum gibi) için sayfa yazmak ölçeklenmez.
+
+**KR-020 · Mabet `/mabet` = ortak sonuç ekranı** — Panorama "komuta"dır (canlı akış, widget'lar); Mabet "muhasebe"dir (modül başına sonuç satırı: mastery, doğruluk, halka, üretim, son aktivite). İki ekran farklı soruya cevap verir: "şimdi ne yapayım?" vs "nerede duruyorum?".
+
+**Kuantum domain'i** — Quantum vault'undan 23 item seed edildi (`scripts/seed-quantum.ts`, idempotent); Temeller üçlüsü (Qubit, Süperpozisyon, Dolanıklık) aktif.
+
+### 8e. Backlog'a Eklenenler
+
+- [ ] Session duration heartbeat sayacı (bulgu #6)
+- [ ] `faculty_rollups` hesaplama → haftalık bülten pipeline'ına bağla
+- [ ] Halka aşama geçmişinden "derinleşme hızı" metriği (events.halka_advance)
+- [ ] Turso'ya 0004 migration (`DATABASE_URL=libsql://... npx tsx scripts/apply-0004-halka.ts`)
+
+## 9. Bağlantılar
 
 - Mevcut sistem: [[english-learning-engine-v1]], [[implementation-notes]]
-- Migrate edilen veri: [[grammar-coverage]], [[_index|wiki/tracking/_index]]
+- Migrate edilen veri: [[grammar-coverage]], [[Practice/Grammer Topics/_index|wiki/tracking/_index]]
 - Faz 2 öncesi reading: FSRS paper, Anki algorithm changelog 2023
+- Zihin yapısı kaynakları: PDM vault `🧭 İRFAN Operasyon Protokolü`, `_Tasnif Çalışması/04, 08, 12, 15`

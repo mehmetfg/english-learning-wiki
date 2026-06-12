@@ -187,7 +187,7 @@ key: "writing_ladder_v1"
 
 ## Vault'a Bağlantılar
 
-- L1 Production Cell aracı: [[_index|Practice Hub]] → kullanıcı cells'e manuel kopyalayabilir (Recent Sessions modal'dan)
+- L1 Production Cell aracı: [[Practice/Grammer Topics/_index|Practice Hub]] → kullanıcı cells'e manuel kopyalayabilir (Recent Sessions modal'dan)
 - Phrasal Verbs/Vocabulary entegrasyonu: WORD_SEED küçük tutuldu, [[Phrasal Verbs Hub]] ve [[Vocabulary Hub]]'a dolaylı köprü
 - Gramer kalıpları: PATTERNS listesi 20 kalıp, [[Present Simple]], [[Past Simple]], [[Conditionals Concept]], [[Reported Speech Concept]], [[Used To Would]] vb. ile köprü kurar
 - Sentez: prompt seçimi seviye-eşleşmeli, [[CEFR Curriculum Map]] ruhuyla uyum

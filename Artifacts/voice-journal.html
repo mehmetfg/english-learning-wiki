@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Voice Journal — 2-Minute Monologue (B1)</title>
+<style>
+  :root {
+    --bg: #0e1117;
+    --panel: #161b22;
+    --panel-2: #1f2530;
+    --text: #e6edf3;
+    --muted: #8b95a5;
+    --accent: #79c2ff;
+    --accent-2: #5aa9ff;
+    --ok: #2ea043;
+    --warn: #d29922;
+    --err: #f85149;
+    --border: #2d333b;
+  }
+  [data-theme="light"] {
+    --bg: #f7f8fa; --panel: #ffffff; --panel-2: #eef1f5;
+    --text: #1a1f29; --muted: #5b6573;
+    --accent: #0a66c2; --accent-2: #0a4f99;
+    --ok: #1a7f37; --warn: #9a6700; --err: #cf222e;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in oklab, var(--panel) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  header h1 { margin: 0; font-size: 17px; }
+  header .meta { color: var(--muted); font-size: 12px; }
+  .topbtn {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  }
+  .topbtn:hover { border-color: var(--accent); }
+  main { max-width: 900px; margin: 0 auto; padding: 22px 18px 80px; }
+
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px; margin-bottom: 16px;
+  }
+
+  .prompt-box {
+    background: linear-gradient(135deg, color-mix(in oklab, var(--accent) 12%, var(--panel)), var(--panel));
+    border: 1px solid var(--accent); border-radius: 14px;
+    padding: 22px; margin-bottom: 16px;
+  }
+  .prompt-day { font-size: 12px; color: var(--accent-2); letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 4px; }
+  .prompt-text { font-size: 20px; line-height: 1.5; font-weight: 600; }
+  .prompt-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .prompt-actions button {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  }
+  .prompt-actions button:hover { border-color: var(--accent); }
+
+  .recorder {
+    display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 20px;
+  }
+  .timer {
+    font-size: 48px; font-weight: 800; font-variant-numeric: tabular-nums;
+    color: var(--accent); letter-spacing: 2px;
+  }
+  .timer.warn { color: var(--warn); }
+  .timer.over { color: var(--err); }
+  .rec-bar {
+    height: 8px; width: 280px; max-width: 80%;
+    background: var(--panel-2); border-radius: 999px; overflow: hidden; border: 1px solid var(--border);
+  }
+  .rec-bar > span { display: block; height: 100%; background: var(--accent); width: 0%; transition: width 0.4s ease; }
+  .rec-controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .rec-controls button {
+    background: var(--accent); color: #fff; border: 0; padding: 10px 18px;
+    border-radius: 999px; cursor: pointer; font-weight: 600; font-size: 14px;
+  }
+  .rec-controls button.stop  { background: var(--err); }
+  .rec-controls button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .rec-controls button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .stats { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .stat {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; font-size: 13px; color: var(--muted);
+  }
+  .stat b { color: var(--text); font-size: 15px; }
+
+  .transcript {
+    margin-top: 8px; background: var(--bg); border: 1px dashed var(--border);
+    border-radius: 10px; padding: 12px; min-height: 110px; font-size: 15px; line-height: 1.7;
+  }
+  .transcript .interim { color: var(--muted); font-style: italic; }
+  .transcript .filler { background: color-mix(in oklab, var(--warn) 25%, transparent); border-radius: 4px; padding: 0 2px; }
+  .transcript .rep { background: color-mix(in oklab, var(--err) 20%, transparent); border-radius: 4px; padding: 0 2px; }
+
+  .annot {
+    margin-top: 12px; display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .annot .item {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; font-size: 13px;
+  }
+  .annot .item b { color: var(--accent-2); }
+
+  .history h3 { margin: 0 0 8px 0; }
+  .h-row {
+    display: grid; grid-template-columns: 90px 1fr 80px 90px;
+    gap: 8px; align-items: center; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px;
+    background: var(--panel-2); font-size: 13px;
+  }
+  .h-row .date { color: var(--muted); }
+  .h-row .prompt { color: var(--text); }
+  .h-row .wc { color: var(--accent-2); font-weight: 600; }
+  .h-row .open { color: var(--accent); cursor: pointer; }
+  .small { color: var(--muted); font-size: 12px; }
+  .pill { display: inline-block; padding: 3px 9px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  .pill.ok { color: var(--ok); border-color: var(--ok); }
+
+  details {
+    margin-top: 8px; background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 12px;
+  }
+  details summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+  details .body { margin-top: 8px; font-size: 14px; line-height: 1.7; }
+
+  @media (max-width: 640px) {
+    .h-row { grid-template-columns: 80px 1fr 60px; }
+    .h-row .open { display: none; }
+    main { padding: 14px 12px 64px; }
+    .prompt-text { font-size: 17px; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<header>
+  <div>
+    <h1>🎙️ Voice Journal</h1>
+    <div class="meta">2 dakika kesintisiz monologue — günde 1 prompt · B1</div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <button class="topbtn" id="themeBtn">☾</button>
+    <button class="topbtn" id="micCheck" title="Mikrofonu test et">🔊 Test</button>
+  </div>
+</header>
+
+<main>
+
+  <section class="prompt-box">
+    <div class="prompt-day" id="dayLabel">— · Prompt</div>
+    <div class="prompt-text" id="promptText">—</div>
+    <div class="prompt-actions">
+      <button id="nextPrompt">Başka prompt ↻</button>
+      <button id="streakInfo">🔥 Streak: <b id="streakNum">0</b></button>
+      <span class="pill" id="modeBadge">voice + text fallback</span>
+    </div>
+  </section>
+
+  <section class="card recorder">
+    <div class="timer" id="timer">02:00</div>
+    <div class="rec-bar"><span id="recBar"></span></div>
+    <div class="rec-controls">
+      <button id="startBtn">● Kayıt başlat</button>
+      <button id="stopBtn" class="stop" disabled>■ Durdur</button>
+      <button id="clearBtn" class="ghost">Temizle</button>
+      <button id="saveBtn" class="ghost" disabled>💾 Bugünün girişini kaydet</button>
+    </div>
+    <div class="stats">
+      <span class="stat">Kelime: <b id="wcStat">0</b></span>
+      <span class="stat">Hız: <b id="wpmStat">0</b> kelime/dk</span>
+      <span class="stat">Filler: <b id="fillerStat">0</b></span>
+      <span class="stat">Tekrar: <b id="repStat">0</b></span>
+    </div>
+    <div class="transcript" id="transcript" aria-live="polite">Mikrofon hazır olduğunda burada konuşman görünecek. Mikrofonsuz kullanım için: <i>kayıt yerine kâğıda yaz, sayıları manuel gir, kaydet.</i></div>
+    <div class="annot" id="annot" style="display:none;"></div>
+    <div class="small">İpucu: hata olsa da durma. <b>Filler</b> = "uh, um, ee, yani". <b>Tekrar</b> = aynı kelimenin yan yana iki kez geçmesi.</div>
+  </section>
+
+  <section class="card history">
+    <h3>📒 Önceki günler</h3>
+    <div id="historyList"><span class="small">Henüz giriş yok — bugün ilkini kaydet.</span></div>
+  </section>
+
+</main>
+
+<script>
+const STATE_KEY = "voice_journal_v1";
+
+// ---------- PROMPTS ----------
+const PROMPTS = [
+  "Talk about one small habit you want to build this month.",
+  "What did you learn today that you did not know yesterday?",
+  "Describe a person who changed how you think.",
+  "If you had one extra hour today, how would you spend it?",
+  "Tell me about a time you said no — and you were happy you said it.",
+  "Name something you used to believe but do not believe anymore.",
+  "Describe your perfect Sunday morning.",
+  "Talk about something you read recently and what you took from it.",
+  "What is a small problem in your daily life that you want to solve?",
+  "Describe a place that makes you feel calm.",
+  "Talk about a hobby you would like to try this year.",
+  "What is the best advice you have ever received?",
+  "Describe a moment when you felt proud of yourself.",
+  "If you could send one message to your past self, what would it be?"
+];
+
+// ---------- STATE ----------
+const defaultState = {
+  entries: [],          // {date, prompt, transcript, wc, wpm, filler, rep, durationSec}
+  streak: 0,
+  lastDate: null,
+  todayPromptIdx: null,
+};
+let state = loadState();
+
+function loadState() {
+  try { return Object.assign(structuredClone(defaultState), JSON.parse(localStorage.getItem(STATE_KEY)) || {}); }
+  catch { return structuredClone(defaultState); }
+}
+function saveState() { try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch {} }
+
+function todayStr() {
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+
+function pickTodayPrompt() {
+  // deterministic by day-of-year so same day → same prompt; user can override with "Başka prompt"
+  const d = new Date();
+  const start = new Date(d.getFullYear(), 0, 0);
+  const diff = d - start;
+  const doy = Math.floor(diff / 86400000);
+  return doy % PROMPTS.length;
+}
+
+if (state.todayPromptIdx === null) {
+  state.todayPromptIdx = pickTodayPrompt(); saveState();
+}
+
+// ---------- THEME ----------
+const themeBtn = document.getElementById('themeBtn');
+const initialTheme = localStorage.getItem('voice_journal_theme') || 'dark';
+document.body.dataset.theme = initialTheme;
+themeBtn.textContent = initialTheme === 'dark' ? '☀' : '☾';
+themeBtn.addEventListener('click', () => {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = next;
+  themeBtn.textContent = next === 'dark' ? '☀' : '☾';
+  localStorage.setItem('voice_journal_theme', next);
+});
+
+// ---------- RENDER PROMPT ----------
+function renderPrompt() {
+  document.getElementById('promptText').textContent = PROMPTS[state.todayPromptIdx];
+  const t = new Date();
+  const fmt = t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
+  document.getElementById('dayLabel').textContent = `${fmt} · Prompt #${state.todayPromptIdx+1}`;
+  document.getElementById('streakNum').textContent = state.streak;
+}
+document.getElementById('nextPrompt').addEventListener('click', () => {
+  state.todayPromptIdx = (state.todayPromptIdx + 1) % PROMPTS.length; saveState();
+  renderPrompt();
+});
+
+// ---------- TIMER ----------
+const TOTAL = 120;
+let remaining = TOTAL, timerId = null, startedAt = null;
+const timerEl = document.getElementById('timer');
+const recBar = document.getElementById('recBar');
+
+function formatTime(s) {
+  const m = Math.floor(s/60), sec = s % 60;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+function tickTimer() {
+  remaining--;
+  if (remaining <= 0) {
+    remaining = 0;
+    stopRecording(true);
+  }
+  timerEl.textContent = formatTime(remaining);
+  recBar.style.width = ((TOTAL - remaining) / TOTAL * 100) + '%';
+  if (remaining <= 30 && remaining > 0) timerEl.classList.add('warn');
+  if (remaining === 0) { timerEl.classList.remove('warn'); timerEl.classList.add('over'); }
+  // live stats
+  updateStats();
+}
+
+// ---------- SPEECH RECOGNITION ----------
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let recActive = false;
+let finalText = "", interimText = "";
+const transcriptEl = document.getElementById('transcript');
+
+if (SR) {
+  recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  recognition.onresult = (e) => {
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalText += " " + t;
+      else interim += " " + t;
+    }
+    interimText = interim;
+    renderTranscript();
+    updateStats();
+  };
+  recognition.onerror = (e) => {
+    // common: 'no-speech' is benign
+    if (e.error && e.error !== 'no-speech') {
+      console.warn(e.error);
+    }
+  };
+  recognition.onend = () => {
+    // auto-restart while we still have time and user hasn't stopped
+    if (recActive && remaining > 0) {
+      try { recognition.start(); } catch {}
+    }
+  };
+} else {
+  document.getElementById('modeBadge').textContent = "text fallback only";
+  transcriptEl.innerHTML = "Tarayıcın <b>SpeechRecognition</b> desteklemiyor. Aşağıda elle yazabilirsin:";
+  // fallback: append a textarea
+  const ta = document.createElement('textarea');
+  ta.placeholder = "Konuşmadan elle yazma (fallback)…";
+  ta.style.cssText = "width:100%; min-height:90px; margin-top:8px; padding:8px; border-radius:8px; background:var(--panel); color:var(--text); border:1px solid var(--border);";
+  ta.addEventListener('input', () => { finalText = ta.value; renderTranscript(); updateStats(); });
+  transcriptEl.appendChild(ta);
+}
+
+function renderTranscript() {
+  if (!SR) return; // fallback handled separately
+  const safe = (s) => s.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const annotated = annotateForDisplay(finalText.trim());
+  transcriptEl.innerHTML = annotated + (interimText ? ` <span class="interim">${safe(interimText)}</span>` : "");
+}
+
+const FILLERS = new Set(["uh","um","umm","uhh","er","ehh","eh","like","yani","ee","aa"]);
+function tokenize(s) {
+  return s.toLowerCase().replace(/[^a-z'\s]/g, ' ').split(/\s+/).filter(Boolean);
+}
+function annotateForDisplay(text) {
+  if (!text) return "";
+  const words = text.split(/\s+/);
+  let prev = "";
+  return words.map(w => {
+    const norm = w.toLowerCase().replace(/[^a-z']/g, '');
+    let cls = "";
+    if (FILLERS.has(norm)) cls = "filler";
+    else if (norm && norm === prev) cls = "rep";
+    prev = norm;
+    return cls ? `<span class="${cls}">${w}</span>` : w;
+  }).join(' ');
+}
+function computeStats(text) {
+  const toks = tokenize(text);
+  const wc = toks.length;
+  const duration = Math.max(1, TOTAL - remaining); // seconds spoken so far
+  const wpm = Math.round((wc / duration) * 60);
+  let filler = 0, rep = 0, prev = "";
+  for (const t of toks) {
+    if (FILLERS.has(t)) filler++;
+    if (t && t === prev) rep++;
+    prev = t;
+  }
+  return { wc, wpm, filler, rep, duration };
+}
+function updateStats() {
+  const text = (finalText + " " + interimText).trim();
+  const st = computeStats(text);
+  document.getElementById('wcStat').textContent = st.wc;
+  document.getElementById('wpmStat').textContent = st.wpm;
+  document.getElementById('fillerStat').textContent = st.filler;
+  document.getElementById('repStat').textContent = st.rep;
+}
+
+// ---------- CONTROLS ----------
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const saveBtn = document.getElementById('saveBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+function startRecording() {
+  remaining = TOTAL; finalText = ""; interimText = "";
+  timerEl.textContent = formatTime(remaining);
+  timerEl.classList.remove('warn','over');
+  recBar.style.width = "0%";
+  renderTranscript();
+  updateStats();
+  startedAt = Date.now();
+  startBtn.disabled = true; stopBtn.disabled = false; saveBtn.disabled = true;
+  document.getElementById('annot').style.display = "none";
+  timerId = setInterval(tickTimer, 1000);
+  if (recognition) {
+    try { recognition.start(); recActive = true; } catch {}
+  }
+}
+function stopRecording(timeUp=false) {
+  if (recognition && recActive) { recActive = false; try { recognition.stop(); } catch {} }
+  clearInterval(timerId); timerId = null;
+  startBtn.disabled = false; stopBtn.disabled = true; saveBtn.disabled = false;
+  showAnnotations(timeUp);
+}
+startBtn.addEventListener('click', startRecording);
+stopBtn.addEventListener('click', () => stopRecording(false));
+clearBtn.addEventListener('click', () => {
+  finalText = ""; interimText = ""; remaining = TOTAL;
+  timerEl.textContent = formatTime(TOTAL); timerEl.classList.remove('warn','over');
+  recBar.style.width = "0%";
+  renderTranscript(); updateStats();
+  document.getElementById('annot').style.display = "none";
+});
+
+function showAnnotations(timeUp) {
+  const text = finalText.trim();
+  const st = computeStats(text);
+  const tips = [];
+  if (st.wc < 80) tips.push("⚠️ 80 kelime altı — bir sonraki sefer daha az duraklamayı dene.");
+  if (st.wpm < 60) tips.push("⚠️ Akıcılık düşük (< 60 kelime/dk) — bir sonraki seferde tekrar nefes alıp devam et.");
+  if (st.filler > 5) tips.push(`⚠️ ${st.filler} filler kelime ("uh/um/like") — sessizlik filler'dan iyi.`);
+  if (st.rep > 3) tips.push(`⚠️ ${st.rep} ardışık tekrar — sözcük çeşitliliğini artır.`);
+  if (timeUp && st.wc >= 100 && st.filler <= 3) tips.push("✅ Solid run — 2 dakikayı kelime ekonomisiyle doldurdun.");
+  if (tips.length === 0) tips.push("✅ Annotated; düzenli kayıt iyi gidiyor.");
+  const a = document.getElementById('annot');
+  a.style.display = "flex";
+  a.innerHTML = tips.map(t => `<div class="item">${t}</div>`).join('');
+}
+
+// ---------- SAVE ----------
+saveBtn.addEventListener('click', () => {
+  const text = finalText.trim();
+  if (text.length < 30) {
+    if (!confirm("Çok kısa bir giriş — yine de kaydetmek ister misin?")) return;
+  }
+  const st = computeStats(text);
+  const today = todayStr();
+  // remove previous today entry to avoid duplicates
+  state.entries = state.entries.filter(e => e.date !== today);
+  state.entries.unshift({
+    date: today,
+    prompt: PROMPTS[state.todayPromptIdx],
+    transcript: text,
+    wc: st.wc, wpm: st.wpm, filler: st.filler, rep: st.rep,
+    durationSec: TOTAL - remaining
+  });
+  // streak
+  if (state.lastDate) {
+    const last = new Date(state.lastDate), now = new Date(today);
+    const diffDays = Math.round((now - last) / 86400000);
+    if (diffDays === 0) {/* same day, no change */}
+    else if (diffDays === 1) state.streak++;
+    else if (diffDays > 1) state.streak = 1;
+  } else state.streak = 1;
+  state.lastDate = today;
+  saveState();
+  renderPrompt();
+  renderHistory();
+  alert("Kaydedildi ✓ Streak: " + state.streak);
+});
+
+// ---------- HISTORY ----------
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (!state.entries.length) {
+    list.innerHTML = '<span class="small">Henüz giriş yok — bugün ilkini kaydet.</span>';
+    return;
+  }
+  list.innerHTML = "";
+  state.entries.slice(0, 14).forEach((e, i) => {
+    const row = document.createElement('div');
+    row.className = 'h-row';
+    row.innerHTML = `
+      <div class="date">${e.date}</div>
+      <div class="prompt" title="${e.prompt}">${e.prompt.slice(0, 50)}${e.prompt.length>50?'…':''}</div>
+      <div class="wc">${e.wc} w</div>
+      <div class="open">▶ Aç</div>
+    `;
+    row.querySelector('.open').addEventListener('click', () => {
+      const det = row.querySelector('.detail');
+      if (det) { det.remove(); return; }
+      const d = document.createElement('div');
+      d.className = 'detail';
+      d.style.gridColumn = "1 / -1";
+      d.innerHTML = `<details open>
+        <summary>Transkript ve sayılar</summary>
+        <div class="body">
+          <div class="small">Kelime: <b>${e.wc}</b> · Hız: <b>${e.wpm} w/dk</b> · Filler: <b>${e.filler}</b> · Tekrar: <b>${e.rep}</b></div>
+          <div style="margin-top:8px;">${e.transcript}</div>
+        </div>
+      </details>`;
+      row.appendChild(d);
+    });
+    list.appendChild(row);
+  });
+}
+
+// ---------- MIC TEST ----------
+document.getElementById('micCheck').addEventListener('click', async () => {
+  if (!SR) { alert("SR yok — fallback modda elle yazabilirsin."); return; }
+  try {
+    await navigator.mediaDevices.getUserMedia({ audio: true });
+    alert("Mikrofon izni ✓ — kayda başlayabilirsin.");
+  } catch (e) { alert("Mikrofon izni yok: " + e.message); }
+});
+
+// ---------- INIT ----------
+renderPrompt();
+renderHistory();
+updateStats();
+</script>
+</body>
+</html>

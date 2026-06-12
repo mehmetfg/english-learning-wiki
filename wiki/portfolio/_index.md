@@ -96,6 +96,6 @@ created: YYYY-MM-DD
 
 ## İlgili Sayfalar
 
-- [[_index|Practice Hub]] — pratik sistemi merkezi
+- [[wiki/portfolio/_index|Practice Hub]] — pratik sistemi merkezi
 - [[index]] — vault haritası
 - [[narrative-past-tenses-cluster]] — anlatı yapıları referansı

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Generative Prompt Bank — Constraint Lottery (B1)</title>
+<style>
+  :root {
+    --bg: #0e1117;
+    --panel: #161b22;
+    --panel-2: #1f2530;
+    --text: #e6edf3;
+    --muted: #8b95a5;
+    --accent: #b07cff;
+    --accent-2: #c899ff;
+    --ok: #2ea043;
+    --warn: #d29922;
+    --err: #f85149;
+    --border: #2d333b;
+  }
+  [data-theme="light"] {
+    --bg: #faf8ff; --panel: #ffffff; --panel-2: #f1ebff;
+    --text: #1a1320; --muted: #5e5470;
+    --accent: #6f3fc8; --accent-2: #4a26a3;
+    --ok: #1a7f37; --warn: #9a6700; --err: #cf222e;
+    --border: #ddd4ec;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.55;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in oklab, var(--panel) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  header h1 { margin: 0; font-size: 17px; }
+  header .meta { color: var(--muted); font-size: 12px; }
+  .topbtn {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 13px;
+  }
+  .topbtn:hover { border-color: var(--accent); }
+  main { max-width: 920px; margin: 0 auto; padding: 22px 18px 80px; }
+
+  .filter-row {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+  }
+  .filter-row button {
+    background: var(--panel-2); color: var(--muted); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px;
+  }
+  .filter-row button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .filter-row .count { margin-left: auto; color: var(--muted); font-size: 13px; align-self: center; }
+
+  .card-stage {
+    background: linear-gradient(160deg, color-mix(in oklab, var(--accent) 10%, var(--panel)), var(--panel));
+    border: 1px solid var(--accent); border-radius: 18px;
+    padding: 26px; min-height: 200px; margin-bottom: 18px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .card-head {
+    display: flex; gap: 10px; align-items: center; justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .card-num {
+    font-size: 13px; color: var(--accent-2); letter-spacing: 1px; text-transform: uppercase;
+  }
+  .cat-tag {
+    background: var(--panel); border: 1px solid var(--accent); color: var(--accent-2);
+    padding: 3px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+  }
+  .constraints { font-size: 18px; line-height: 1.6; font-weight: 600; }
+  .constraints .chip {
+    display: inline-block; background: var(--panel-2); border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 6px; margin: 2px; font-size: 16px; font-weight: 600;
+    color: var(--accent-2);
+  }
+  .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .card-actions button {
+    background: var(--accent); color: #fff; border: 0; padding: 8px 14px; border-radius: 8px;
+    cursor: pointer; font-weight: 600; font-size: 14px;
+  }
+  .card-actions button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .card-actions button.sec { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+  .card-actions button:hover { filter: brightness(1.08); }
+
+  .write-area { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 16px; }
+  .write-area .row { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; }
+  .write-area textarea {
+    width: 100%; min-height: 140px; padding: 12px;
+    background: var(--bg); color: var(--text); border: 1px solid var(--border);
+    border-radius: 10px; font-family: inherit; font-size: 15px; resize: vertical;
+  }
+  .write-area textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  .word-meter { font-size: 13px; color: var(--muted); }
+  .word-meter b { color: var(--text); }
+  .word-meter.over b { color: var(--warn); }
+  .word-meter.ok b { color: var(--ok); }
+
+  .check {
+    margin-top: 10px; padding: 10px 12px; border-radius: 10px;
+    background: var(--panel-2); border: 1px solid var(--border); font-size: 14px;
+  }
+  .check.ok { border-color: var(--ok); }
+  .check.warn { border-color: var(--warn); }
+  .check ul { margin: 6px 0 0 0; padding-left: 18px; }
+
+  .recent {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px; margin-bottom: 16px;
+  }
+  .recent h3 { margin: 0 0 10px 0; }
+  .recent .item {
+    display: grid; grid-template-columns: 100px 1fr 50px;
+    align-items: center; gap: 10px; padding: 8px 10px; font-size: 13px;
+    border-radius: 8px; border: 1px solid var(--border); margin-bottom: 6px;
+    background: var(--panel-2);
+  }
+  .recent .item .date { color: var(--muted); }
+  .recent .item .preview { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .recent .item .wc { color: var(--accent-2); font-weight: 700; text-align: right; }
+  .small { color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 640px) {
+    main { padding: 14px 12px 64px; }
+    .constraints { font-size: 16px; }
+    .recent .item { grid-template-columns: 90px 1fr 40px; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+
+<header>
+  <div>
+    <h1>🎰 Generative Prompt Bank</h1>
+    <div class="meta">60 constraint kartı · rastgele çek, yaz, kaydet · B1</div>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <button class="topbtn" id="themeBtn">☾</button>
+    <button class="topbtn" id="resetBtn" title="Tüm yazma geçmişini sıfırla">↻ Sıfırla</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="filter-row" id="filterRow">
+    <button data-cat="all" class="active">Tümü</button>
+    <button data-cat="grammar">⚙️ Grammar</button>
+    <button data-cat="pv">🔗 Phrasal Verbs</button>
+    <button data-cat="topic">💭 Topic</button>
+    <button data-cat="quick">⚡ Quick (≤50 kel.)</button>
+    <button data-cat="combo">🧩 Combined</button>
+    <span class="count" id="catCount"></span>
+  </div>
+
+  <section class="card-stage" id="cardStage">
+    <div class="card-head">
+      <span class="card-num" id="cardNum">CARD —</span>
+      <span class="cat-tag" id="cardCat">—</span>
+    </div>
+    <div class="constraints" id="cardText">"Bir kart çek" düğmesine bas — sana bir constraint setini rastgele dağıtacağım. Hedef: <i>yaratıcılığı sınırlandırılmış üretim</i>.</div>
+    <div class="card-actions">
+      <button id="drawBtn">🎲 Bir kart çek</button>
+      <button class="ghost" id="anotherBtn">↻ Başka kart</button>
+      <button class="sec" id="copyBtn">📋 Kopyala</button>
+    </div>
+  </section>
+
+  <section class="write-area">
+    <div class="row">
+      <div class="word-meter" id="wmeter">Kelime: <b>0</b> · Hedef: <b id="targetWc">—</b></div>
+      <div>
+        <button class="topbtn" id="checkBtn" title="Hedef kelime sayısı + chip kullanım kontrolü">✓ Kontrol et</button>
+        <button class="topbtn" id="saveBtn" title="Bu yazıyı kaydet">💾 Kaydet</button>
+      </div>
+    </div>
+    <textarea id="writing" placeholder="Kart çekildikten sonra İngilizce yazını buraya yaz…"></textarea>
+    <div class="check" id="check" style="display:none;"></div>
+  </section>
+
+  <section class="recent">
+    <h3>📚 Son yazılar (son 10)</h3>
+    <div id="recentList"><span class="small">Henüz yazı yok.</span></div>
+  </section>
+
+</main>
+
+<script>
+const STATE_KEY = "prompt_bank_v1";
+
+// ---------- CARDS ----------
+// Each card: { id, cat: grammar|pv|topic|quick|combo, text, chips[], target (~words) }
+const CARDS = [
+  // Grammar (15)
+  { id: "G01", cat:"grammar", target:80, chips:["Past Perfect ×2"], text:"Write 80 words about a moment that surprised you. Use Past Perfect at least twice." },
+  { id: "G02", cat:"grammar", target:60, chips:["Present Perfect","since","for"], text:"Write 60 words about your hobbies. Use Present Perfect with 'since' and 'for'." },
+  { id: "G03", cat:"grammar", target:50, chips:["2nd Conditional","If I were…"], text:"Write 50 words about your dream city. Use 'If I were…' at least once." },
+  { id: "G04", cat:"grammar", target:70, chips:["said","told","Reported Speech"], text:"Report what someone told you yesterday. Use 'said' and 'told' at least once each. 70 words." },
+  { id: "G05", cat:"grammar", target:80, chips:["used to ×3"], text:"Compare your past and present habits. Use 'used to' at least 3 times. 80 words." },
+  { id: "G06", cat:"grammar", target:70, chips:["Passive ×3"], text:"Describe a process (cooking, building, learning) using 3 passive sentences. 70 words." },
+  { id: "G07", cat:"grammar", target:60, chips:["should","must"], text:"Give 3 pieces of advice to a younger friend using 'should' and 'must'. 60 words." },
+  { id: "G08", cat:"grammar", target:70, chips:["going to","will"], text:"Use 'going to' for plans and 'will' for predictions. Write about next month. 70 words." },
+  { id: "G09", cat:"grammar", target:60, chips:["Past Continuous","when","while"], text:"Describe an interruption. Use Past Continuous + Past Simple with 'when' and 'while'. 60 words." },
+  { id: "G10", cat:"grammar", target:70, chips:["comparative","superlative"], text:"Compare 3 cities you know or want to visit. Use comparatives and one superlative. 70 words." },
+  { id: "G11", cat:"grammar", target:60, chips:["who","which","that"], text:"Describe 3 people using relative clauses ('who/which/that'). 60 words." },
+  { id: "G12", cat:"grammar", target:50, chips:["some","any","a few","much/many"], text:"Talk about your fridge using 'some/any/a few/much/many'. 50 words." },
+  { id: "G13", cat:"grammar", target:70, chips:["gerunds","infinitives"], text:"Use 5 different verbs followed by gerund or infinitive. 70 words." },
+  { id: "G14", cat:"grammar", target:50, chips:["1st Conditional"], text:"Make 3 predictions about tomorrow using First Conditional ('If…, will…'). 50 words." },
+  { id: "G15", cat:"grammar", target:60, chips:["question tags ×3"], text:"Write a short dialogue with 3 question tags. 60 words." },
+
+  // Phrasal Verbs (15)
+  { id: "P01", cat:"pv", target:60, chips:["come up with","put off","figure out"], text:"Write 60 words about a project. Use: come up with, put off, figure out." },
+  { id: "P02", cat:"pv", target:60, chips:["look forward to","get along with","run out of"], text:"Write 60 words about a friend. Use: look forward to, get along with, run out of." },
+  { id: "P03", cat:"pv", target:70, chips:["turn down","give up","take after"], text:"Write 70 words about a family member. Use: turn down, give up, take after." },
+  { id: "P04", cat:"pv", target:70, chips:["bring up","deal with","sort out"], text:"Write 70 words about a problem. Use: bring up, deal with, sort out." },
+  { id: "P05", cat:"pv", target:60, chips:["hold on","hang up","call back"], text:"Write 60 words about a phone call. Use: hold on, hang up, call back." },
+  { id: "P06", cat:"pv", target:60, chips:["cut down on","work out","end up"], text:"Write 60 words about a habit change. Use: cut down on, work out, end up." },
+  { id: "P07", cat:"pv", target:70, chips:["go through","get over","look back on"], text:"Write 70 words about a tough time. Use: go through, get over, look back on." },
+  { id: "P08", cat:"pv", target:60, chips:["pick up","drop off","get back"], text:"Write 60 words about your day. Use: pick up, drop off, get back." },
+  { id: "P09", cat:"pv", target:60, chips:["find out","point out","work out"], text:"Write 60 words about a discovery. Use: find out, point out, work out." },
+  { id: "P10", cat:"pv", target:60, chips:["break down","fix up","get rid of"], text:"Write 60 words about something old. Use: break down, fix up, get rid of." },
+  { id: "P11", cat:"pv", target:60, chips:["stand for","sign up","take part in"], text:"Write 60 words about an event. Use: stand for, sign up, take part in." },
+  { id: "P12", cat:"pv", target:60, chips:["keep up with","catch up on","fall behind"], text:"Write 60 words about studying. Use: keep up with, catch up on, fall behind." },
+  { id: "P13", cat:"pv", target:60, chips:["look up","write down","go over"], text:"Write 60 words about a new word. Use: look up, write down, go over." },
+  { id: "P14", cat:"pv", target:60, chips:["hand in","take off","set out"], text:"Write 60 words about a journey or deadline. Use: hand in, take off, set out." },
+  { id: "P15", cat:"pv", target:70, chips:["turn into","grow up","settle down"], text:"Write 70 words about change. Use: turn into, grow up, settle down." },
+
+  // Topic (15) — Naval / PG / Atomic Habits tone
+  { id: "T01", cat:"topic", target:80, chips:["habit"], text:"A small habit you started this year — what triggered it? 80 words." },
+  { id: "T02", cat:"topic", target:80, chips:["book"], text:"A book or article that changed how you think. 80 words." },
+  { id: "T03", cat:"topic", target:80, chips:["regret"], text:"A decision you regret. What would you do differently? 80 words." },
+  { id: "T04", cat:"topic", target:80, chips:["mastery"], text:"A skill you would like to master in 5 years. 80 words." },
+  { id: "T05", cat:"topic", target:80, chips:["money"], text:"Money: what is 'enough' for you? 80 words." },
+  { id: "T06", cat:"topic", target:80, chips:["advice"], text:"The best advice you ignored. 80 words." },
+  { id: "T07", cat:"topic", target:70, chips:["morning"], text:"Your perfect morning — describe step by step. 70 words." },
+  { id: "T08", cat:"topic", target:80, chips:["unsung hero"], text:"A person who never gets enough credit. 80 words." },
+  { id: "T09", cat:"topic", target:80, chips:["wealth"], text:"What does 'wealth' mean to you? 80 words." },
+  { id: "T10", cat:"topic", target:60, chips:["1% better"], text:"A 1% better thing you can do today. 60 words." },
+  { id: "T11", cat:"topic", target:60, chips:["free"], text:"Something free you love. 60 words." },
+  { id: "T12", cat:"topic", target:80, chips:["persistence"], text:"Why do you keep doing X (even when it is hard)? 80 words." },
+  { id: "T13", cat:"topic", target:80, chips:["risk"], text:"A risk you took that worked. 80 words." },
+  { id: "T14", cat:"topic", target:70, chips:["calm"], text:"Your version of a calm Sunday. 70 words." },
+  { id: "T15", cat:"topic", target:60, chips:["gratitude"], text:"Three things you are grateful for today. 60 words." },
+
+  // Quick (10)
+  { id: "Q01", cat:"quick", target:40, chips:["hard question"], text:"A yes/no question that has no easy answer — explain in 40 words." },
+  { id: "Q02", cat:"quick", target:30, chips:["meal"], text:"A meal in three sentences. 30 words." },
+  { id: "Q03", cat:"quick", target:40, chips:["weather, no clichés"], text:"Describe today's weather without using 'hot/cold/sunny/rainy'. 40 words." },
+  { id: "Q04", cat:"quick", target:40, chips:["window"], text:"The view from your window. 40 words." },
+  { id: "Q05", cat:"quick", target:40, chips:["small win"], text:"Your last small win. 40 words." },
+  { id: "Q06", cat:"quick", target:40, chips:["object"], text:"An object on your desk and why it matters. 40 words." },
+  { id: "Q07", cat:"quick", target:40, chips:["smell of home"], text:"Three things that smell like 'home'. 40 words." },
+  { id: "Q08", cat:"quick", target:30, chips:["sound"], text:"A sound you hear right now. 30 words." },
+  { id: "Q09", cat:"quick", target:30, chips:["battery"], text:"Your phone battery percentage and why. 30 words." },
+  { id: "Q10", cat:"quick", target:40, chips:["last text"], text:"Your last text message — rewrite it in your own words. 40 words." },
+
+  // Combined (5)
+  { id: "C01", cat:"combo", target:90, chips:["Past Perfect","come up with","figure out"], text:"Use Past Perfect + 'come up with' + 'figure out'. 90 words about a problem you solved." },
+  { id: "C02", cat:"combo", target:80, chips:["2nd Conditional","would rather","put off"], text:"Use 2nd Conditional + 'would rather' + 'put off'. 80 words about a hard choice." },
+  { id: "C03", cat:"combo", target:80, chips:["Present Perfect Continuous","keep up with"], text:"Use Present Perfect Continuous + 'keep up with'. 80 words about a habit." },
+  { id: "C04", cat:"combo", target:80, chips:["Reported Speech","point out","bring up"], text:"Use Reported Speech + 'point out' + 'bring up'. 80 words about an argument." },
+  { id: "C05", cat:"combo", target:80, chips:["Passive Voice","fix up","get rid of"], text:"Use Passive Voice + 'fix up' + 'get rid of'. 80 words about renovating something." }
+];
+
+const CAT_LABELS = { grammar: "Grammar", pv: "Phrasal Verbs", topic: "Topic", quick: "Quick", combo: "Combined" };
+
+// ---------- STATE ----------
+const defaultState = {
+  filter: "all",
+  currentId: null,
+  drawHistory: [],
+  recent: [], // {date, id, cat, text, content, wc}
+};
+let state = loadState();
+function loadState() {
+  try { return Object.assign(structuredClone(defaultState), JSON.parse(localStorage.getItem(STATE_KEY)) || {}); }
+  catch { return structuredClone(defaultState); }
+}
+function saveState() { try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch {} }
+
+// ---------- THEME ----------
+const themeBtn = document.getElementById('themeBtn');
+const initialTheme = localStorage.getItem('prompt_bank_theme') || 'dark';
+document.body.dataset.theme = initialTheme;
+themeBtn.textContent = initialTheme === 'dark' ? '☀' : '☾';
+themeBtn.addEventListener('click', () => {
+  const next = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = next;
+  themeBtn.textContent = next === 'dark' ? '☀' : '☾';
+  localStorage.setItem('prompt_bank_theme', next);
+});
+
+// ---------- RESET ----------
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (!confirm('Tüm yazma geçmişini sıfırla?')) return;
+  localStorage.removeItem(STATE_KEY); location.reload();
+});
+
+// ---------- FILTER ----------
+const filterRow = document.getElementById('filterRow');
+filterRow.addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-cat]');
+  if (!b) return;
+  state.filter = b.dataset.cat; saveState();
+  [...filterRow.querySelectorAll('button')].forEach(x => x.classList.toggle('active', x.dataset.cat === state.filter));
+  updateCount();
+});
+function poolForFilter() {
+  return state.filter === "all" ? CARDS : CARDS.filter(c => c.cat === state.filter);
+}
+function updateCount() {
+  document.getElementById('catCount').textContent = `${poolForFilter().length} kart`;
+  // restore active button state on load
+  [...filterRow.querySelectorAll('button')].forEach(x => x.classList.toggle('active', x.dataset.cat === state.filter));
+}
+
+// ---------- DRAW ----------
+function drawCard() {
+  const pool = poolForFilter();
+  if (!pool.length) return;
+  // try to avoid most-recently-drawn first
+  const recentIds = new Set(state.drawHistory.slice(-8));
+  let candidates = pool.filter(c => !recentIds.has(c.id));
+  if (candidates.length === 0) candidates = pool;
+  const pick = candidates[Math.floor(Math.random() * candidates.length)];
+  state.currentId = pick.id;
+  state.drawHistory.push(pick.id);
+  if (state.drawHistory.length > 30) state.drawHistory.shift();
+  saveState();
+  renderCard();
+}
+function renderCard() {
+  const card = CARDS.find(c => c.id === state.currentId);
+  if (!card) return;
+  document.getElementById('cardNum').textContent = `CARD ${card.id}`;
+  document.getElementById('cardCat').textContent = CAT_LABELS[card.cat];
+  const chipsHtml = card.chips.map(ch => `<span class="chip">${ch}</span>`).join(' ');
+  document.getElementById('cardText').innerHTML = card.text + '<br/><span style="font-size:14px; color: var(--muted); font-weight:400;">Zorunlu: ' + chipsHtml + '</span>';
+  document.getElementById('targetWc').textContent = `~${card.target} kelime`;
+  document.getElementById('check').style.display = 'none';
+  updateWordCount();
+}
+document.getElementById('drawBtn').addEventListener('click', drawCard);
+document.getElementById('anotherBtn').addEventListener('click', drawCard);
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const card = CARDS.find(c => c.id === state.currentId);
+  if (!card) return;
+  navigator.clipboard.writeText(`[${card.id}] ${card.text} (Required: ${card.chips.join(', ')})`)
+    .then(() => alert("Kart kopyalandı ✓"))
+    .catch(() => alert("Kopyalanamadı."));
+});
+
+// ---------- WRITE / WORD COUNT ----------
+const writing = document.getElementById('writing');
+writing.addEventListener('input', updateWordCount);
+function updateWordCount() {
+  const text = writing.value.trim();
+  const wc = text ? text.split(/\s+/).length : 0;
+  const card = CARDS.find(c => c.id === state.currentId);
+  const target = card ? card.target : 0;
+  const meter = document.getElementById('wmeter');
+  meter.classList.remove('ok','over');
+  if (target) {
+    if (wc >= target * 0.8 && wc <= target * 1.2) meter.classList.add('ok');
+    else if (wc > target * 1.2) meter.classList.add('over');
+  }
+  meter.innerHTML = `Kelime: <b>${wc}</b> · Hedef: <b>${target ? '~'+target : '—'}</b>`;
+}
+
+// ---------- CHECK ----------
+document.getElementById('checkBtn').addEventListener('click', () => {
+  const card = CARDS.find(c => c.id === state.currentId);
+  if (!card) { alert("Önce bir kart çek."); return; }
+  const text = writing.value.trim();
+  if (!text) { alert("Önce bir şey yaz."); return; }
+  const wc = text.split(/\s+/).length;
+  const lower = " " + text.toLowerCase() + " ";
+  const issues = [], wins = [];
+
+  // chip presence check (looser — substring match for PVs / phrases)
+  card.chips.forEach(ch => {
+    const phrase = ch.replace(/×\s*\d+/g,'').replace(/\s*\(.*\)\s*/g,'').trim().toLowerCase();
+    if (!phrase) return;
+    // structural tags (like "Past Perfect", "Passive Voice") — skip lexical match, just note
+    const structural = /^(past|present|future|1st|2nd|3rd|passive|reported|gerund|infinit|comparative|superlative|question tag|relative|some|any|much|many|few|will|going|should|must|conditional|tag|when|while|who|which|that|since|for)/i.test(phrase);
+    if (structural) return;
+    if (!lower.includes(" " + phrase) && !lower.includes(phrase + " ")) {
+      issues.push(`"${ch}" eksik — metnine yerleştir.`);
+    } else {
+      wins.push(`✓ "${ch}" geçti.`);
+    }
+  });
+
+  // target word-count check
+  if (wc < card.target * 0.7) issues.push(`Çok kısa: ${wc} kelime (hedef ~${card.target}). En az ${Math.round(card.target * 0.7)} kelime yaz.`);
+  else if (wc > card.target * 1.5) issues.push(`Uzun: ${wc} kelime (hedef ~${card.target}). Kısaltmayı dene.`);
+  else wins.push(`✓ Kelime sayısı hedefte (${wc}/${card.target}).`);
+
+  // basic sentence-end punctuation check
+  if (!/[.!?]\s*$/.test(text)) issues.push("Son cümlede nokta/işaret eksik.");
+
+  const cls = issues.length === 0 ? "ok" : "warn";
+  const out = document.getElementById('check');
+  out.className = "check " + cls;
+  out.style.display = 'block';
+  out.innerHTML = `
+    <div><b>${issues.length === 0 ? "Tüm zorunluluklar karşılandı." : "Bakılacak " + issues.length + " nokta:"}</b></div>
+    ${issues.length ? '<ul>' + issues.map(i => `<li>${i}</li>`).join('') + '</ul>' : ''}
+    ${wins.length ? '<div style="margin-top:6px; color: var(--ok);">' + wins.join(' · ') + '</div>' : ''}
+  `;
+});
+
+// ---------- SAVE ----------
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const card = CARDS.find(c => c.id === state.currentId);
+  if (!card) { alert("Önce kart çek."); return; }
+  const text = writing.value.trim();
+  if (!text) { alert("Önce yaz."); return; }
+  const wc = text.split(/\s+/).length;
+  state.recent.unshift({
+    date: new Date().toISOString().slice(0,10),
+    id: card.id, cat: card.cat, text: card.text, content: text, wc
+  });
+  if (state.recent.length > 10) state.recent.length = 10;
+  saveState();
+  renderRecent();
+  alert("Kaydedildi ✓");
+});
+
+// ---------- RECENT ----------
+function renderRecent() {
+  const el = document.getElementById('recentList');
+  if (!state.recent.length) { el.innerHTML = '<span class="small">Henüz yazı yok.</span>'; return; }
+  el.innerHTML = "";
+  state.recent.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.innerHTML = `
+      <span class="date">${r.date} · ${r.id}</span>
+      <span class="preview" title="${r.content.replace(/"/g,'&quot;')}">${r.content}</span>
+      <span class="wc">${r.wc}</span>
+    `;
+    div.style.cursor = 'pointer';
+    div.title = `${r.text}\n\n${r.content}`;
+    div.addEventListener('click', () => {
+      if (confirm("Bu yazıyı yazma alanına geri yükleyelim mi?")) {
+        state.currentId = r.id; saveState();
+        renderCard();
+        writing.value = r.content;
+        updateWordCount();
+      }
+    });
+    el.appendChild(div);
+  });
+}
+
+// ---------- INIT ----------
+updateCount();
+if (state.currentId && CARDS.find(c => c.id === state.currentId)) renderCard();
+renderRecent();
+updateWordCount();
+</script>
+</body>
+</html>
