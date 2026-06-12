@@ -103,7 +103,7 @@ mode: drill
 
 Claude Code bu JSON'u okuduğunda:
 - `error_freq` yüksek olanlar → [[errors/confusables]]'a yığılır
-- 3+ tekrar eden → [[_index|Practice Hub]] L4 "Boss Battle" tetiği
+- 3+ tekrar eden → [[Practice/Grammer Topics/_index|Practice Hub]] L4 "Boss Battle" tetiği
 - M2 Daily Engine'in `weak_topics`'ine otomatik enjekte (Faz 2)
 
 ---
@@ -125,5 +125,5 @@ Hedef: 100+ pair (her CEFR seviyesinden 20+). NotebookLM prompt:
 ## İlgili sayfalar
 
 - [[calisma-yontemleri-analizi]] — Ö3 önerisinin orijinal spec'i
-- [[_index|Practice Hub]] — L4 Error Drill lane bağlantısı
+- [[Practice/Grammer Topics/_index|Practice Hub]] — L4 Error Drill lane bağlantısı
 - [[Phrasal Verbs Hub]] — benzer takip-based liste mantığı

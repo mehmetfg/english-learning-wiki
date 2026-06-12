@@ -119,7 +119,7 @@ Soru geldiğinde:
 
 ## 8. Practice Akışı (Output-Centric 5-Lane System)
 
-Pratik talebi geldiğinde (üretim, drill, sohbet, retrieval). Ingest ve Query'e paralel üçüncü ana akış. Detay: [[_index|wiki/practice/_index.md]]
+Pratik talebi geldiğinde (üretim, drill, sohbet, retrieval). Ingest ve Query'e paralel üçüncü ana akış. Detay: [[Practice/Grammer Topics/_index|wiki/practice/_index.md]]
 
 **Beş Şerit:**
 

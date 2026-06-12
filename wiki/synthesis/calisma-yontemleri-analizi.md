@@ -120,7 +120,7 @@ Her bölümün omurgası:
 ---
 
 ### M6 — 5-Lane Practice System (Output Rotation)
-**Örnek:** [[_index|Practice Hub]] — L1 Cell, L2 Shadow, L3 Dialogue, L4 Drill, L5 Retrieval
+**Örnek:** [[Practice/Grammer Topics/_index|Practice Hub]] — L1 Cell, L2 Shadow, L3 Dialogue, L4 Drill, L5 Retrieval
 
 **Mantık:** Tek bir "yazma" yerine **5 farklı üretim modu** rotasyonu; her gün en az 1 lane.
 
@@ -282,7 +282,7 @@ Bu 8 sorunun cevabı varsa artifact "vault uyumlu" demektir.
 ## İlgili Sayfalar
 
 - [[english-learning-engine-v1]] — M2 sistem dokümantasyonu
-- [[_index|Practice Hub]] — M6 5-Lane System
+- [[Practice/Grammer Topics/_index|Practice Hub]] — M6 5-Lane System
 - [[Interactive Reader Template]] — M1 standart spec'i
 - [[daily-writing-loop]] — M4 detayları
 - [[writing-atelier-001-bloomsday]] — M3 örneği

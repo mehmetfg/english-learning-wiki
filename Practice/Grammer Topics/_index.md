@@ -57,6 +57,10 @@ Bu klasör vault'taki **üretim merkezli** pratik sisteminin merkezidir. Reading
 5. Hataları `errors/` altına frekans sayacıyla kaydet
 6. Output: `cells/YYYY-MM-DD.md` (frontmatter + source + targets + production + annotation)
 
+**İnteraktif araçlar (HTML):**
+- [[writing-ladder]] — 🆕 A1→B2, 5 basamak scaffold, kendi orijinal cümle (kullanıcı kademeli olarak özgürleşir). Başlangıç için ideal.
+- [[daily-writing-loop]] — taklit + ezberden yaz drill (mekanik ısınma). L1 öncesi "kas ısıtma" olarak kullanılabilir.
+
 ### L2 — Shadow Author
 **Tetik:** "Shadow Author" / "Style mimicking" / "X gibi yaz"
 **Akış:**

@@ -24,7 +24,7 @@ Kod öğrenirken **basit pilot uygulamalar** ile öğrendiğini tatbik etme yön
 
 [[writing-atelier-001-bloomsday]] gibi atölye artifact'ları **5 sekmeli zengin senaryolar** sunarken, Daily Writing Loop tam tersi: **dar, disiplinli, hızlı tekrar edilebilir**. Her gün açıp 15-20 dakikada bir tema bitirilir; haftada 5+ "Production Cell" üretmek için ideal.
 
-[[_index|Practice Hub]]'taki **L1 Production Cell** lane'inin interaktif HTML karşılığı. Atölye = senaryo; Loop = günlük rutin.
+[[Practice/Grammer Topics/_index|Practice Hub]]'taki **L1 Production Cell** lane'inin interaktif HTML karşılığı. Atölye = senaryo; Loop = günlük rutin.
 
 ---
 
@@ -193,7 +193,7 @@ key: "daily_writing_loop_v1"
 
 ## Vault'a Bağlantılar
 
-- L1 lane aracı: [[_index|Practice Hub]] → cells/ klasörüne çıktı yazımı uygulamadan değil, kullanıcıdan beklenir (HTML araç, vault'a yazmaz; sonuçlar kullanıcı tarafından log.md/cells'e taşınır)
+- L1 lane aracı: [[Practice/Grammer Topics/_index|Practice Hub]] → cells/ klasörüne çıktı yazımı uygulamadan değil, kullanıcıdan beklenir (HTML araç, vault'a yazmaz; sonuçlar kullanıcı tarafından log.md/cells'e taşınır)
 - PV havuzu ile uyum: [[Phrasal Verbs Hub]]'taki 200 PV'den bir alt küme (30) PV pool olarak gömülü
 - Tema gramerleri: her tema bir veya iki gramer yapısı hedefler — [[Past Simple]], [[Used To Would]], [[Present Perfect Continuous]], [[Conditionals Concept]], [[Reported Speech Concept]] vb.
 
