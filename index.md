@@ -332,6 +332,12 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Documents/projects/p
 | [[Rich-Dad-Poor-Dad-Series]] | Seri dizini — 10 chapter haritası, konu özetleri, ilerleme takibi |
 | [[Rich-Dad-Poor-Dad-Ch01-Two-Fathers]] | Chapter 1: Two Fathers — iki babanın hayat felsefeleri, para tuzağı, assets vs. liabilities, rat race; 8 bölüm, ~64 vocabulary, 5 gramer yapısı |
 
+### 📋 Kişisel Okuma Listeleri (İngilizce öğrenme dışı — referans/analiz)
+| Sayfa | Açıklama |
+|-------|----------|
+| [[Dücane Cündioğlu Kitap Önerileri]] | 🆕 (2026-09-02) 80+ madde, 11 kategori — Google Drive + sosyal medya derlemesi |
+| [[Dücane Cündioğlu Kitap Önerileri Analizi]] | 🆕 Eksik/fazla/fayda/niyet analizi — kadın yazar eksikliği, Aristoteles/İbn Haldun tekrarları, analitik felsefe & Doğu felsefesi boşluğu |
+
 ### 💡 Essays & Aphorisms — Sticky English / Wisdom Literature
 
 **The Almanack of Naval Ravikant** (7/7 ✅ tamamlandı)
