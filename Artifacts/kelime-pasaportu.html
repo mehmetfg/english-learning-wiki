@@ -1,0 +1,1150 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kelime Pasaportu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#E9EBEE; --surface:#FFFFFF; --surface-2:#F3F5F8;
+  --ink:#12161D; --muted:#626C7C; --faint:#8B94A3;
+  --rule:#CFD5DE; --rule-soft:#E1E6EC;
+  --accent:#1E3F72; --accent-soft:#DCE5F3; --on-accent:#FFFFFF;
+  --stamp:#8E2433; --stamp-soft:#F2DEE1;
+  --good:#2E6B4F; --good-soft:#DDEDE4;
+  --warn:#8A5B12;
+  --shadow:0 1px 2px rgba(18,22,29,.06), 0 8px 24px -16px rgba(18,22,29,.30);
+  --serif:"Spectral", Georgia, "Times New Roman", serif;
+  --sans:"Karla", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#10131A; --surface:#171B24; --surface-2:#1D222D;
+    --ink:#E6E9EF; --muted:#949DAD; --faint:#6D7789;
+    --rule:#2A3140; --rule-soft:#222836;
+    --accent:#8FB2E4; --accent-soft:#1B2739; --on-accent:#0E121A;
+    --stamp:#E0798A; --stamp-soft:#2E1D22;
+    --good:#7FC7A2; --good-soft:#16261F;
+    --warn:#D8A85A;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#10131A; --surface:#171B24; --surface-2:#1D222D;
+  --ink:#E6E9EF; --muted:#949DAD; --faint:#6D7789;
+  --rule:#2A3140; --rule-soft:#222836;
+  --accent:#8FB2E4; --accent-soft:#1B2739; --on-accent:#0E121A;
+  --stamp:#E0798A; --stamp-soft:#2E1D22;
+  --good:#7FC7A2; --good-soft:#16261F;
+  --warn:#D8A85A;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important}}
+
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px 72px}
+
+/* ---------- header ---------- */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  position:sticky; top:0; z-index:20;
+}
+.masthead-in{
+  max-width:1080px; margin:0 auto; padding:12px 20px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+}
+.brand{display:flex; align-items:baseline; gap:10px; margin-right:auto}
+.brand h1{
+  font-family:var(--serif); font-weight:700; font-size:20px; margin:0;
+  letter-spacing:-.01em;
+}
+.brand .quid{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--stamp);
+}
+.tabs{display:flex; gap:2px; flex-wrap:wrap}
+.tab{
+  background:none; border:1px solid transparent; border-radius:2px;
+  padding:6px 11px; cursor:pointer; color:var(--muted);
+  font-size:13.5px; font-weight:500;
+}
+.tab:hover{color:var(--ink); background:var(--surface-2)}
+.tab[aria-selected="true"]{
+  color:var(--accent); border-color:var(--rule);
+  background:var(--accent-soft); font-weight:700;
+}
+.icon-btn{
+  display:grid; place-items:center;
+  background:none; border:1px solid var(--rule); border-radius:2px;
+  width:32px; height:30px; cursor:pointer; color:var(--muted); font-size:14px;
+}
+.icon-btn:hover{color:var(--ink); border-color:var(--faint)}
+
+/* ---------- generic ---------- */
+.eyebrow{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--faint);
+}
+h2.section-title{
+  font-family:var(--serif); font-size:26px; font-weight:600;
+  margin:0; letter-spacing:-.015em; text-wrap:balance;
+}
+.lede{color:var(--muted); max-width:62ch; margin:6px 0 0}
+.sheet{
+  background:var(--surface); border:1px solid var(--rule);
+  box-shadow:var(--shadow); border-radius:3px;
+}
+.view{display:none}
+.view.active{display:block; animation:rise .28s ease-out}
+@keyframes rise{from{opacity:.4; transform:translateY(4px)} to{opacity:1; transform:none}}
+
+.btn{
+  background:var(--accent); color:var(--on-accent); border:1px solid var(--accent);
+  border-radius:2px; padding:9px 16px; cursor:pointer; font-weight:700; font-size:14px;
+}
+.btn:disabled{opacity:.4; cursor:not-allowed}
+.btn-ghost{
+  background:none; color:var(--ink); border:1px solid var(--rule);
+  border-radius:2px; padding:8px 14px; cursor:pointer; font-size:13.5px; font-weight:500;
+}
+.btn-ghost:hover{border-color:var(--faint); background:var(--surface-2)}
+.btn-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+
+/* ---------- atlas ---------- */
+.atlas-head{
+  display:flex; align-items:flex-end; gap:24px; flex-wrap:wrap;
+  padding:34px 0 18px;
+}
+.counters{display:flex; gap:0; border:1px solid var(--rule); border-radius:3px; background:var(--surface); overflow:hidden}
+.counter{padding:10px 18px; border-right:1px solid var(--rule-soft); min-width:96px}
+.counter:last-child{border-right:0}
+.counter .n{
+  font-family:var(--mono); font-size:24px; font-weight:600;
+  font-variant-numeric:tabular-nums; line-height:1.1; display:block;
+}
+.counter .k{font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint)}
+.counter.due .n{color:var(--stamp)}
+
+.scene-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(158px,1fr));
+  gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:3px; overflow:hidden;
+}
+.scene{
+  background:var(--surface); padding:14px 14px 12px; min-height:104px;
+  display:flex; flex-direction:column; gap:6px; cursor:pointer;
+  border:0; text-align:left; position:relative;
+}
+.scene:hover{background:var(--surface-2)}
+.scene .glyph{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; color:var(--accent)}
+.scene .name{font-family:var(--serif); font-size:16px; font-weight:600}
+.scene .en{font-size:12px; color:var(--faint); font-style:italic; margin-top:-4px}
+.pips{display:flex; flex-wrap:wrap; gap:3px; margin-top:auto}
+.pip{width:6px; height:6px; border-radius:50%; background:var(--accent); opacity:.75}
+.pip.due{background:var(--stamp); opacity:1}
+.scene .count{
+  position:absolute; top:12px; right:13px; font-family:var(--mono);
+  font-size:12px; color:var(--faint); font-variant-numeric:tabular-nums;
+}
+.scene.empty .name{color:var(--faint)}
+
+.horizon{
+  margin-top:26px; padding:16px 18px; border-left:3px solid var(--rule);
+  color:var(--muted); font-size:13.5px; max-width:70ch;
+}
+.horizon b{color:var(--ink); font-weight:700}
+
+/* ---------- passport form ---------- */
+.office{display:grid; grid-template-columns:196px 1fr; gap:0; margin-top:26px}
+@media (max-width:760px){.office{grid-template-columns:1fr}}
+.stamp-rail{
+  border:1px solid var(--rule); border-right:0; background:var(--surface-2);
+  padding:16px 14px; display:flex; flex-direction:column; gap:2px; border-radius:3px 0 0 3px;
+}
+@media (max-width:760px){
+  .stamp-rail{border-right:1px solid var(--rule); border-radius:3px 3px 0 0; flex-direction:row; overflow-x:auto; gap:8px}
+}
+.rail-label{margin-bottom:8px}
+@media (max-width:760px){.rail-label{display:none}}
+.stamp-item{
+  display:flex; align-items:center; gap:9px; padding:7px 6px; border-radius:2px;
+  background:none; border:0; cursor:pointer; text-align:left; width:100%;
+}
+@media (max-width:760px){.stamp-item{width:auto; white-space:nowrap}}
+.stamp-item:hover{background:var(--surface)}
+.stamp-item[aria-current="true"]{background:var(--surface); box-shadow:inset 2px 0 0 var(--accent)}
+.seal{
+  width:26px; height:26px; border-radius:50%; border:1.5px dashed var(--faint);
+  display:grid; place-items:center; flex:none;
+  font-family:var(--mono); font-size:11px; font-weight:600; color:var(--faint);
+}
+.stamp-item.done .seal{
+  border:1.5px solid var(--stamp); border-style:solid; color:var(--stamp);
+  background:var(--stamp-soft); transform:rotate(-7deg);
+}
+.stamp-item .sname{font-size:13px; font-weight:500; color:var(--muted)}
+.stamp-item.done .sname{color:var(--ink)}
+.stamp-item[aria-current="true"] .sname{color:var(--ink); font-weight:700}
+
+.form-sheet{
+  border:1px solid var(--rule); background:var(--surface); border-radius:0 3px 3px 0;
+  padding:22px 26px 26px; box-shadow:var(--shadow); min-height:420px;
+  display:flex; flex-direction:column;
+}
+@media (max-width:760px){.form-sheet{border-radius:0 0 3px 3px; padding:18px}}
+.form-head{border-bottom:1px solid var(--rule-soft); padding-bottom:12px; margin-bottom:18px}
+.form-head h3{font-family:var(--serif); font-size:21px; margin:4px 0 0; font-weight:600}
+.form-head p{margin:6px 0 0; color:var(--muted); font-size:13.5px; max-width:60ch}
+.field{display:flex; flex-direction:column; gap:5px; margin-bottom:14px}
+.field label{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint)}
+.field .hint{font-size:12.5px; color:var(--faint); font-style:italic}
+input[type="text"], textarea, select{
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:2px;
+  padding:9px 11px; width:100%; font-size:14.5px;
+}
+input[type="text"]:focus, textarea:focus{background:var(--surface)}
+textarea{resize:vertical; min-height:74px; line-height:1.55}
+.row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.row-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px}
+@media (max-width:620px){.row,.row-3{grid-template-columns:1fr}}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{
+  background:var(--surface-2); border:1px solid var(--rule); border-radius:2px;
+  padding:6px 12px; cursor:pointer; font-size:13px; color:var(--muted);
+}
+.chip:hover{border-color:var(--faint); color:var(--ink)}
+.chip[aria-pressed="true"]{
+  background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:700;
+}
+.gradient-line{
+  display:grid; grid-template-columns:1fr 24px 1fr 24px 1fr; align-items:center; gap:8px;
+}
+@media (max-width:620px){.gradient-line{grid-template-columns:1fr}}
+.arrow{text-align:center; color:var(--faint); font-family:var(--mono)}
+@media (max-width:620px){.arrow{display:none}}
+.form-foot{
+  margin-top:auto; padding-top:16px; border-top:1px solid var(--rule-soft);
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+}
+.form-foot .note{font-size:12.5px; color:var(--faint); margin-right:auto}
+.warnbox{
+  background:var(--stamp-soft); border-left:3px solid var(--stamp); color:var(--ink);
+  padding:9px 12px; font-size:13px; border-radius:2px; margin-bottom:12px;
+}
+.okbox{
+  background:var(--good-soft); border-left:3px solid var(--good); color:var(--ink);
+  padding:9px 12px; font-size:13px; border-radius:2px; margin-bottom:12px;
+}
+
+/* stamped overlay */
+.stamped{
+  text-align:center; padding:44px 20px;
+}
+.stamped .mark{
+  display:inline-block; border:3px double var(--stamp); color:var(--stamp);
+  font-family:var(--mono); font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+  padding:14px 24px; transform:rotate(-6deg); font-size:15px;
+  animation:thud .4s cubic-bezier(.2,1.4,.4,1);
+}
+@keyframes thud{0%{transform:rotate(-6deg) scale(2.4); opacity:0} 60%{opacity:1} 100%{transform:rotate(-6deg) scale(1); opacity:1}}
+.stamped h3{font-family:var(--serif); font-size:24px; margin:22px 0 6px}
+.stamped p{color:var(--muted); max-width:52ch; margin:0 auto 20px}
+
+/* ---------- patrol ---------- */
+.patrol{max-width:700px; margin:26px auto 0}
+.cue{
+  border:1px solid var(--rule); background:var(--surface); border-radius:3px;
+  box-shadow:var(--shadow); padding:26px 28px;
+}
+.cue-kind{
+  display:inline-block; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); background:var(--accent-soft);
+  padding:3px 9px; border-radius:2px;
+}
+.cue-body{font-family:var(--serif); font-size:20px; line-height:1.5; margin:16px 0 4px; text-wrap:balance}
+.cue-body .blank{
+  display:inline-block; min-width:88px; border-bottom:2px solid var(--stamp);
+  color:var(--stamp); font-family:var(--mono); font-size:16px; text-align:center;
+}
+.cue-meta{display:flex; gap:16px; flex-wrap:wrap; color:var(--muted); font-size:13px; margin-top:12px}
+.cue-meta span b{color:var(--ink); font-weight:600}
+.reveal{
+  margin-top:18px; padding-top:16px; border-top:1px dashed var(--rule);
+}
+.reveal .term{font-family:var(--serif); font-size:28px; font-weight:700; color:var(--accent)}
+.reveal .tr{color:var(--muted); font-size:14px}
+.reveal .schema{
+  margin-top:10px; padding:10px 12px; background:var(--surface-2);
+  border-left:3px solid var(--rule); font-size:14.5px; font-style:italic;
+}
+.grade-row{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:16px}
+@media (max-width:520px){.grade-row{grid-template-columns:1fr 1fr}}
+.grade{
+  border:1px solid var(--rule); background:var(--surface-2); border-radius:2px;
+  padding:10px 6px; cursor:pointer; text-align:center;
+}
+.grade:hover{border-color:var(--accent); background:var(--accent-soft)}
+.grade b{display:block; font-size:13.5px}
+.grade small{font-family:var(--mono); font-size:10px; color:var(--faint); letter-spacing:.06em}
+.empty-state{text-align:center; padding:56px 20px; color:var(--muted)}
+.empty-state h3{font-family:var(--serif); font-size:22px; color:var(--ink); margin:0 0 8px}
+
+/* ---------- ledger ---------- */
+.ledger-bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:22px 0 12px}
+.ledger-bar select{width:auto; min-width:150px}
+.table-scroll{overflow-x:auto; border:1px solid var(--rule); border-radius:3px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:720px; font-size:13.5px}
+th{
+  text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--faint); font-weight:500;
+  padding:10px 12px; border-bottom:1px solid var(--rule); white-space:nowrap;
+}
+td{padding:10px 12px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.term{font-family:var(--serif); font-weight:600; font-size:15px}
+td.term small{display:block; font-family:var(--sans); font-weight:400; font-size:12px; color:var(--muted)}
+.tag{
+  font-family:var(--mono); font-size:10.5px; padding:2px 7px; border-radius:2px;
+  background:var(--surface-2); border:1px solid var(--rule-soft); color:var(--muted); white-space:nowrap;
+}
+.tag.due{background:var(--stamp-soft); border-color:var(--stamp); color:var(--stamp)}
+.tag.ok{background:var(--good-soft); border-color:var(--good); color:var(--good)}
+.tag.seed{background:var(--accent-soft); border-color:var(--accent); color:var(--accent)}
+.linkish{background:none; border:0; color:var(--stamp); cursor:pointer; font-size:12.5px; padding:0; text-decoration:underline}
+
+/* ---------- method ---------- */
+.method{max-width:70ch; margin:26px 0 0}
+.method h3{font-family:var(--serif); font-size:19px; margin:26px 0 6px; font-weight:600}
+.method p{color:var(--muted); margin:0 0 12px}
+.method p b, .method li b{color:var(--ink)}
+.method ol, .method ul{color:var(--muted); padding-left:20px; margin:0 0 14px}
+.method li{margin-bottom:7px}
+.method .pull{
+  font-family:var(--serif); font-size:19px; font-style:italic; color:var(--ink);
+  border-left:3px solid var(--stamp); padding:4px 0 4px 16px; margin:20px 0;
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-in">
+    <div class="brand">
+      <h1>Kelime Pasaportu</h1>
+      <span class="quid">quid juris?</span>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Bölümler">
+      <button class="tab" role="tab" aria-selected="true" data-view="atlas">Atlas</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="office">Gümrük</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="patrol">Devriye</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="ledger">Defter</button>
+      <button class="tab" role="tab" aria-selected="false" data-view="method">Yöntem</button>
+    </nav>
+    <button class="icon-btn" id="themeBtn" title="Tema değiştir" aria-label="Tema değiştir"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ ATLAS ============ -->
+  <section class="view active" id="view-atlas">
+    <div class="atlas-head">
+      <div>
+        <div class="eyebrow">Duyusallığın formu — uzam</div>
+        <h2 class="section-title">Kelimelerin yaşadığı on iki yer</h2>
+        <p class="lede">Sahneler kelimelerden önce vardır. Yeni bir kelime listeye değil, buradaki bir yere gelir — yeri olmayan kelime deneyime giremez.</p>
+      </div>
+      <div class="counters" id="counters"></div>
+    </div>
+
+    <div class="scene-grid" id="sceneGrid"></div>
+
+    <div class="horizon" id="horizon"></div>
+  </section>
+
+  <!-- ============ OFFICE ============ -->
+  <section class="view" id="view-office">
+    <div style="padding-top:34px">
+      <div class="eyebrow">Transandantal dedüksiyon — hangi hakla?</div>
+      <h2 class="section-title">Gümrük</h2>
+      <p class="lede">Bir kelime beş mührü almadan deneyime giremez. Mühürler senin zihninin formları; kelime onlara uymak zorunda, sen kelimeye değil.</p>
+    </div>
+
+    <div class="office" id="officeWrap">
+      <aside class="stamp-rail">
+        <div class="eyebrow rail-label">Mühürler</div>
+        <div id="railItems"></div>
+      </aside>
+      <div class="form-sheet" id="formSheet"></div>
+    </div>
+  </section>
+
+  <!-- ============ PATROL ============ -->
+  <section class="view" id="view-patrol">
+    <div style="padding-top:34px">
+      <div class="eyebrow">Yeniden üretim sentezi</div>
+      <h2 class="section-title">Devriye</h2>
+      <p class="lede">Kelimeyi sormuyoruz. Formu veriyoruz, kelimeyi sen üretiyorsun — çünkü hatırlama, tanımanın değil, kurmanın işidir.</p>
+    </div>
+    <div class="patrol" id="patrolArea"></div>
+  </section>
+
+  <!-- ============ LEDGER ============ -->
+  <section class="view" id="view-ledger">
+    <div style="padding-top:34px">
+      <div class="eyebrow">Kayıt</div>
+      <h2 class="section-title">Defter</h2>
+      <p class="lede">Mühürlenmiş her kelimenin dosyası. Dışa aktar → <code>00_INBOX/</code> → Claude Code vault'a işler.</p>
+    </div>
+    <div class="ledger-bar">
+      <select id="filterScene" aria-label="Sahneye göre süz"></select>
+      <input type="text" id="filterText" placeholder="Kelime ara…" style="width:auto; min-width:180px" aria-label="Kelime ara">
+      <span style="margin-left:auto"></span>
+      <button class="btn-ghost" id="exportBtn">JSON dışa aktar</button>
+      <button class="btn-ghost" id="importBtn">İçe aktar</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+    <div class="table-scroll"><table id="ledgerTable"></table></div>
+  </section>
+
+  <!-- ============ METHOD ============ -->
+  <section class="view" id="view-method">
+    <div style="padding-top:34px">
+      <div class="eyebrow">Gerekçe</div>
+      <h2 class="section-title">Neden bu yöntem</h2>
+    </div>
+    <div class="method">
+      <p class="pull">Kelime öğrenmek acı verici, çünkü kelimeyi hazır bir form olmadan alıyoruz. Formsuz alınan şey deneyim değil, gürültüdür — ve gürültü ezberle tutulur. Ezber acıdır.</p>
+
+      <h3>Teşhis: acının beş kaynağı</h3>
+      <ol>
+        <li><b>Formsuz alım.</b> Liste hâlinde gelen kelimenin zihinde oturacağı yer yoktur; tek tutunma yolu tekrar zoruyla bastırmaktır.</li>
+        <li><b>Tekil öğrenme.</b> Anlam farksaldır: <i>angry</i>'nin anlamı <i>annoyed</i> ve <i>furious</i> ile arasındaki mesafedir. Tek başına öğrenilen kelime anlamsız kalır.</li>
+        <li><b>Tanıma–üretim uçurumu.</b> Kartta "biliyorum" demek tanımadır. Üretim gelince çöker; çöküş yılgınlık yapar.</li>
+        <li><b>Sonsuz ölçüt.</b> "Dilin tüm kelimeleri" ölçütüyle her gün başarısızsın. Ölçüt sonsuzsa çaba her zaman yetersizdir.</li>
+        <li><b>Yabancı deneyim.</b> Kelime başkasının hayatından örneklerle geliyor; senin zaman-uzamına hiç girmiyor.</li>
+      </ol>
+
+      <h3>İlke: form kelimeden önce gelir</h3>
+      <p>Uzam, zaman ve nedensellik dünyadan gelmez; deneyimi mümkün kılan formlardır. Aynısını sözcük dağarcığına uygulamak demek: <b>önce alım formlarını kur, sonra kelimeyi içeri al.</b> Kelime formlara uyacak biçimde işlenir — böylece hafızaya değil, deneyime girer.</p>
+      <p>Bu uygulamada beş form bir <b>gümrük kapısı</b> gibi çalışır. Kant'ın "dedüksiyon"u zaten hukuki bir terimdir: bir kavramın deneyime uygulanma <i>hakkını</i> sorar. Burada da her kelimeye aynı soruyu soruyoruz: <span style="font-family:var(--mono); color:var(--stamp)">quid juris?</span> — hangi hakla giriyorsun?</p>
+
+      <h3>Beş mühür</h3>
+      <ul>
+        <li><b>1 · Uzam.</b> Kelime on iki sabit sahneden birine ve orada somut bir ayrıntıya yerleşir. (Bilişsel karşılığı: mekânsal bellek + çift kodlama.)</li>
+        <li><b>2 · Zaman.</b> Günün bir anına ve bir görünüşe (an / süreç / tamamlanmış / tekrar) bağlanır. Yan ürün: tense'i kelimeyle birlikte çalışırsın.</li>
+        <li><b>3 · Derece.</b> Zayıf ← kelime → güçlü ekseni, bir de zıt. Kelime asla tek başına girmez. (Karşılığı: anlamsal ağ, ayırt edici kodlama.)</li>
+        <li><b>4 · Bağ.</b> Bir sebep, bir sonuç, iki eşdizim (collocation). Kelimenin kiminle gezdiğini bilmeden onu kullanamazsın.</li>
+        <li><b>5 · Kip.</b> Kayıt (resmî / nötr / samimi) ve kesinlik derecesi. Doğru kelimeyi yanlış kipte kullanmak, yanlış kelimeden daha çok ele verir.</li>
+      </ul>
+      <p><b>Şematizm.</b> Beş mühürden sonra tek bir şey kalır: kelimeyi içeren, <b>birinci tekil şahıs</b>, kendi hayatından bir cümle. Kant'ta şema, kavramı duyusala bağlayan üretim kuralıdır; burada da kelimenin senin deneyiminde nasıl üretileceğinin kuralıdır. Cümlede "I / my / me" zorunludur: <i>"Düşünüyorum" tüm tasavvurlarıma eşlik edebilmelidir.</i> Sana ait olamayan kelime, hiç sahip olmadığın kelimedir.</p>
+
+      <h3>Düzeltme: "tüm kelimelere hâkim olmak" bir hedef değil</h3>
+      <p>Burada seni düzeltmem gerekiyor, çünkü acının en büyük kaynağı bu cümle. Bir dilin <b>bütünü</b> hiçbir zaman deneyimde verilmez — sonsuz bir toplamdır, İngilizcede güncel 170.000+ madde vardır ve anadili konuşuru bunların ancak 15–20 bin kelime ailesini bilir. Kendi mantığınla söylersek: bütünlük, <b>kurucu</b> değil <b>düzenleyici</b> bir idedir. Ona ulaşılmaz; ona doğru çalışılır ve o çalışmaya yön verir.</p>
+      <p>Gerçek ufuk ise ölçülebilir:</p>
+      <ul>
+        <li><b>~800</b> kelime ailesi → sıradan metnin ~%75'i</li>
+        <li><b>~2.000</b> → ~%80–85 · günlük konuşmanın neredeyse tamamı</li>
+        <li><b>~5.000</b> → ~%95</li>
+        <li><b>~9.000</b> → ~%98 · sözlüksüz rahat okuma eşiği</li>
+      </ul>
+      <p>Günde <b>3 mühürlü kelime</b> = yılda ~1.100. Sekiz yılda 9.000. Ama asıl mesele şu: bu uygulama sana "9.000'de 47" demez. Sana <b>hangi sahnenin dolduğunu</b> gösterir — çünkü sonsuz bir paydaya bölünen ilerleme, ilerleme gibi hissettirmez.</p>
+
+      <h3>Günlük ritim (15 dakika)</h3>
+      <ol>
+        <li><b>3 dk · Devriye.</b> Vadesi gelen kelimeler formdan çağrılır.</li>
+        <li><b>9 dk · Gümrük.</b> Okuduğun metinden 3 kelime seç, beş mührü de bas.</li>
+        <li><b>3 dk · Atlas.</b> Bugün hangi sahne doldu, bak. Bitti.</li>
+      </ol>
+      <p>Kota düşük tutulur, çünkü sürekliliği hız değil <b>küçük ve bitirilebilir</b> gün sağlar. Mühürsüz kelime almak yasak; bu yasak yöntemin kendisidir.</p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+"use strict";
+/* ============================================================
+   Kelime Pasaportu — form-first vocabulary
+   Depo: localStorage 'apriori-vocab-v1'
+   ============================================================ */
+
+const SCENES = [
+  {id:"oda",      name:"Oda",          en:"my room",        glyph:"S·01"},
+  {id:"mutfak",   name:"Mutfak",       en:"the kitchen",    glyph:"S·02"},
+  {id:"masa",     name:"Masa & Ekran", en:"my desk",        glyph:"S·03"},
+  {id:"esik",     name:"Eşik & Kapı",  en:"the doorway",    glyph:"S·04"},
+  {id:"sokak",    name:"Sokak",        en:"the street",     glyph:"S·05"},
+  {id:"otobus",   name:"Otobüs",       en:"the bus",        glyph:"S·06"},
+  {id:"kafe",     name:"Kafe",         en:"the cafe",       glyph:"S·07"},
+  {id:"market",   name:"Market",       en:"the market",     glyph:"S·08"},
+  {id:"balkon",   name:"Balkon",       en:"the balcony",    glyph:"S·09"},
+  {id:"kitaplik", name:"Kitaplık",     en:"the bookshelf",  glyph:"S·10"},
+  {id:"yol",      name:"Yol & Bisiklet",en:"the road",      glyph:"S·11"},
+  {id:"yatak",    name:"Yatak",        en:"the bed",        glyph:"S·12"}
+];
+const TIMES   = ["sabah","öğle","akşam","gece"];
+const ASPECTS = ["an","süreç","tamamlanmış","tekrar"];
+const REGISTERS = ["resmî","nötr","samimi"];
+const CERTAINTIES = ["kesin","olası","zorunlu"];
+
+const FORMS = [
+  {key:"space",  n:"I",   name:"Uzam",   title:"Birinci mühür — Uzam",
+   sub:"Kelimeyi bir yere koy. Çeviri bir yer değildir; yer, gözünün önüne getirebildiğin somut bir sahnedir."},
+  {key:"time",   n:"II",  name:"Zaman",  title:"İkinci mühür — Zaman",
+   sub:"Günün hangi anına düşüyor ve nasıl akıyor? Bir anlık mı, süren mi, bitmiş mi, tekrarlayan mı?"},
+  {key:"degree", n:"III", name:"Derece", title:"Üçüncü mühür — Derece",
+   sub:"Kelime tek başına anlam taşımaz; komşularıyla arasındaki mesafe anlamdır. Zayıfını ve güçlüsünü yaz."},
+  {key:"bond",   n:"IV",  name:"Bağ",    title:"Dördüncü mühür — Bağ",
+   sub:"Sebebi ne, sonucu ne, kimlerle birlikte geziyor? Eşdizimi bilinmeyen kelime kullanılamaz."},
+  {key:"mode",   n:"V",   name:"Kip",    title:"Beşinci mühür — Kip",
+   sub:"Hangi ağızda söylenir, ne kadar kesinlik taşır? Yanlış kip, yanlış kelimeden daha çok ele verir."},
+  {key:"schema", n:"✕",   name:"Şema",   title:"Şematizm — kendi cümlen",
+   sub:"Beş form kuruldu. Şimdi kelimeyi kendi hayatından bir cümlede üret. Birinci tekil şahıs zorunlu."}
+];
+
+/* ---------- seed: vault kaynaklarından, tam mühürlü örnekler ---------- */
+const SEED = [
+  {term:"plateau", pos:"noun", tr:"yayla; ilerlemenin durduğu düzlük", source:"Atomic Habits Ch01",
+   scene:"masa", spaceDetail:"masadaki ilerleme çizelgesi haftalardır aynı yerde duruyor",
+   time:"akşam", aspect:"süreç",
+   weaker:"slowdown", stronger:"standstill", opposite:"breakthrough",
+   cause:"aynı çabayı sonuç görmeden sürdürmek", effect:"bırakma isteği",
+   coll:["hit a plateau","plateau of latent potential"],
+   register:"nötr", certainty:"olası",
+   schema:"I hit a plateau in my English after three months, but I kept the daily habit."},
+  {term:"cue", pos:"noun", tr:"tetikleyici işaret", source:"Atomic Habits Ch02",
+   scene:"esik", spaceDetail:"kapının yanındaki kancada asılı duran çanta",
+   time:"sabah", aspect:"an",
+   weaker:"hint", stronger:"trigger", opposite:"aftermath",
+   cause:"çevrede görünür bir nesne", effect:"otomatik istek",
+   coll:["a visual cue","cue the craving"],
+   register:"nötr", certainty:"kesin",
+   schema:"I leave my notebook on the desk as a cue, so I start writing without deciding."},
+  {term:"linger", pos:"verb", tr:"oyalanmak, geç ayrılmak, izi kalmak", source:"Les Misérables Ch07",
+   scene:"kafe", spaceDetail:"boşalmış fincanın yanında oturmaya devam ettiğim masa",
+   time:"akşam", aspect:"süreç",
+   weaker:"stay", stronger:"loiter", opposite:"rush off",
+   cause:"gitmek istememek", effect:"vaktin fark edilmeden akması",
+   coll:["linger over coffee","the smell lingered"],
+   register:"nötr", certainty:"olası",
+   schema:"I lingered in the cafe for an hour because I did not want to go home yet."},
+  {term:"blunt", pos:"adjective", tr:"kör (bıçak); dobra, kırıcı derecede açık", source:"Naval Almanack 04",
+   scene:"mutfak", spaceDetail:"ekmeği ezerek kesen kör bıçak",
+   time:"öğle", aspect:"an",
+   weaker:"direct", stronger:"brutal", opposite:"tactful",
+   cause:"nezaketi hıza tercih etmek", effect:"karşıdakinin alınması",
+   coll:["a blunt knife","to be blunt with someone"],
+   register:"samimi", certainty:"kesin",
+   schema:"I was too blunt with my friend yesterday, and I could see it in my face."},
+  {term:"threshold", pos:"noun", tr:"eşik; sınır değeri", source:"Thinking Fast and Slow Ch02",
+   scene:"esik", spaceDetail:"ayağımı takılan kapı eşiğinin tahtası",
+   time:"gece", aspect:"an",
+   weaker:"limit", stronger:"breaking point", opposite:"open field",
+   cause:"bir ölçünün belli bir değeri aşması", effect:"davranışın aniden değişmesi",
+   coll:["cross the threshold","a pain threshold"],
+   register:"resmî", certainty:"kesin",
+   schema:"I noticed my threshold for noise drops when I have not slept well."},
+  {term:"leverage", pos:"noun", tr:"kaldıraç; küçük çabayla büyük etki", source:"Naval Almanack 03",
+   scene:"masa", spaceDetail:"tek bir dosyanın yüzlerce kişiye açılan ekranı",
+   time:"sabah", aspect:"süreç",
+   weaker:"advantage", stronger:"compounding power", opposite:"drudgery",
+   cause:"kopyalanabilir bir iş üretmek", effect:"emeğin zamandan bağımsızlaşması",
+   coll:["gain leverage","leverage without permission"],
+   register:"resmî", certainty:"olası",
+   schema:"I want more leverage in my work, so I write things once and share them."},
+  {term:"restless", pos:"adjective", tr:"huzursuz, yerinde duramayan", source:"Crime and Punishment Ch01",
+   scene:"yatak", spaceDetail:"yorganı üç kez çeviren geceyarısı",
+   time:"gece", aspect:"süreç",
+   weaker:"uneasy", stronger:"agitated", opposite:"settled",
+   cause:"çözülmemiş bir düşünce", effect:"uykunun bölünmesi",
+   coll:["a restless night","grow restless"],
+   register:"nötr", certainty:"olası",
+   schema:"I get restless at night when I leave a problem unfinished on my desk."},
+  {term:"brittle", pos:"adjective", tr:"kırılgan, çat diye kırılan", source:"Decameron Day01",
+   scene:"kitaplik", spaceDetail:"sayfası parmakta çatlayan eski kitap",
+   time:"öğle", aspect:"an",
+   weaker:"fragile", stronger:"crumbling", opposite:"flexible",
+   cause:"kuruluk ve yaş", effect:"dokununca kırılma",
+   coll:["brittle pages","a brittle smile"],
+   register:"nötr", certainty:"kesin",
+   schema:"I opened a brittle old book on my shelf and a corner broke in my hand."},
+  {term:"ease", pos:"noun", tr:"rahatlık, kolaylık, zorlanmama hâli", source:"grammar-first-lesson-02",
+   scene:"balkon", spaceDetail:"omuzların düştüğü, akşamüstü balkon sandalyesi",
+   time:"akşam", aspect:"süreç",
+   weaker:"comfort", stronger:"serenity", opposite:"strain",
+   cause:"tanıdıklık ve baskının kalkması", effect:"doğal davranma",
+   coll:["at ease","with ease"],
+   register:"nötr", certainty:"olası",
+   schema:"I feel at ease on my balcony after the sun goes down."},
+  {term:"stubborn", pos:"adjective", tr:"inatçı; kolay çıkmayan", source:"Don Quixote Ch02",
+   scene:"yol", spaceDetail:"pedalı çevirmemek için direnen paslı zincir",
+   time:"sabah", aspect:"tekrar",
+   weaker:"firm", stronger:"obstinate", opposite:"yielding",
+   cause:"vazgeçmeyi kayıp saymak", effect:"gereksiz uzayan mücadele",
+   coll:["a stubborn stain","stubbornly refuse"],
+   register:"nötr", certainty:"kesin",
+   schema:"I am stubborn about my morning route, and my bike chain is stubborn too."}
+];
+
+/* ---------- store ---------- */
+const KEY = "apriori-vocab-v1";
+let S = load();
+
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+function addDays(iso, n){ const d=new Date(iso+"T00:00:00"); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function uid(){ return "w"+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+function load(){
+  let raw=null;
+  try{ raw = localStorage.getItem(KEY); }catch(e){ raw=null; }
+  if(raw){
+    try{ const p=JSON.parse(raw); if(p && Array.isArray(p.words)) return p; }catch(e){}
+  }
+  return {
+    words: SEED.map(seedToWord),
+    theme: null,
+    streak: {last:null, count:0},
+    quota: {date:todayISO(), done:0},
+    version: "apriori-vocab-1.0"
+  };
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){ /* private mode: sessiz geç */ }
+}
+function seedToWord(s){
+  return {
+    id: uid(), term:s.term, pos:s.pos, tr:s.tr, source:s.source||"",
+    space:{scene:s.scene, detail:s.spaceDetail},
+    time:{when:s.time, aspect:s.aspect},
+    degree:{weaker:s.weaker, stronger:s.stronger, opposite:s.opposite},
+    bond:{cause:s.cause, effect:s.effect, coll:s.coll},
+    mode:{register:s.register, certainty:s.certainty},
+    schema:s.schema,
+    seed:true,
+    created: todayISO(),
+    srs:{ef:2.5, interval:0, reps:0, lapses:0, due:todayISO()}
+  };
+}
+
+/* ---------- theme ---------- */
+const themeBtn = document.getElementById("themeBtn");
+function applyTheme(){
+  if(S.theme) document.documentElement.setAttribute("data-theme", S.theme);
+  else document.documentElement.removeAttribute("data-theme");
+}
+themeBtn.addEventListener("click", ()=>{
+  const cur = S.theme;
+  S.theme = cur === "dark" ? "light" : cur === "light" ? null : "dark";
+  applyTheme(); save();
+});
+applyTheme();
+
+/* ---------- tabs ---------- */
+const tabs = [...document.querySelectorAll(".tab")];
+function show(view){
+  tabs.forEach(t=>t.setAttribute("aria-selected", String(t.dataset.view===view)));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active", v.id==="view-"+view));
+  if(view==="atlas") renderAtlas();
+  if(view==="office") renderOffice();
+  if(view==="patrol") renderPatrol();
+  if(view==="ledger") renderLedger();
+  window.scrollTo({top:0, behavior:"auto"});
+}
+tabs.forEach(t=>t.addEventListener("click", ()=>show(t.dataset.view)));
+
+/* ---------- atlas ---------- */
+function dueWords(){ const t=todayISO(); return S.words.filter(w=>w.srs.due<=t); }
+function checkQuota(){
+  if(S.quota.date!==todayISO()){ S.quota={date:todayISO(), done:0}; save(); }
+}
+function renderAtlas(){
+  checkQuota();
+  const due = dueWords().length;
+  const filled = SCENES.filter(s=>S.words.some(w=>w.space.scene===s.id)).length;
+  document.getElementById("counters").innerHTML = `
+    <div class="counter"><span class="n">${S.words.length}</span><span class="k">mühürlü</span></div>
+    <div class="counter due"><span class="n">${due}</span><span class="k">devriye</span></div>
+    <div class="counter"><span class="n">${S.quota.done}<span style="color:var(--faint)">/3</span></span><span class="k">bugün</span></div>
+    <div class="counter"><span class="n">${S.streak.count}</span><span class="k">gün seri</span></div>`;
+
+  const t = todayISO();
+  document.getElementById("sceneGrid").innerHTML = SCENES.map(s=>{
+    const ws = S.words.filter(w=>w.space.scene===s.id);
+    const pips = ws.slice(0,24).map(w=>`<span class="pip${w.srs.due<=t?" due":""}" title="${esc(w.term)}"></span>`).join("");
+    return `<button class="scene${ws.length?"":" empty"}" data-scene="${s.id}">
+      <span class="count">${ws.length||""}</span>
+      <span class="glyph">${s.glyph}</span>
+      <span class="name">${s.name}</span>
+      <span class="en">${s.en}</span>
+      <span class="pips">${pips}</span>
+    </button>`;
+  }).join("");
+  document.querySelectorAll(".scene").forEach(b=>b.addEventListener("click", ()=>{
+    document.getElementById("filterScene").value = b.dataset.scene;
+    show("ledger");
+  }));
+
+  document.getElementById("horizon").innerHTML = `
+    <b>Ufuk, hedef değil.</b> Sayaç sana "9.000'de ${S.words.length}" demiyor — çünkü sonsuz paydaya bölünen ilerleme
+    ilerleme gibi hissettirmez. Dilin bütünü deneyimde asla verilmez; o <b>düzenleyici bir ide</b>dir, çalışmaya yön verir,
+    ölçüt olmaz. Ölçütün şu: ${filled}/12 sahne canlı, bugün ${S.quota.done}/3 mühür.
+    Günde 3 kelime yılda ~1.100 eder; sözlüksüz okuma eşiği olan ~9.000 kelime ailesi bu tempoda ulaşılabilir bir yerdedir.`;
+}
+
+/* ---------- office (passport wizard) ---------- */
+let step = 0;
+let draft = blankDraft();
+function blankDraft(){
+  return {
+    term:"", pos:"", tr:"", source:"",
+    space:{scene:"", detail:""},
+    time:{when:"", aspect:""},
+    degree:{weaker:"", stronger:"", opposite:""},
+    bond:{cause:"", effect:"", coll:["",""]},
+    mode:{register:"", certainty:""},
+    schema:""
+  };
+}
+function stepDone(i){
+  const d = draft;
+  switch(i){
+    case 0: return !!(d.term.trim() && d.tr.trim() && d.space.scene && d.space.detail.trim());
+    case 1: return !!(d.time.when && d.time.aspect);
+    case 2: return !!(d.degree.weaker.trim() && d.degree.stronger.trim());
+    case 3: return !!(d.bond.cause.trim() && d.bond.effect.trim() && d.bond.coll[0].trim());
+    case 4: return !!(d.mode.register && d.mode.certainty);
+    case 5: return schemaCheck(d).ok;
+    default: return false;
+  }
+}
+function schemaCheck(d){
+  const s = (d.schema||"").trim();
+  const term = (d.term||"").trim().toLowerCase();
+  if(!s) return {ok:false, msg:"Cümle boş."};
+  const words = s.split(/\s+/);
+  if(words.length < 6) return {ok:false, msg:"En az 6 kelime yaz — kısa cümle şema kurmaz."};
+  const low = " "+s.toLowerCase().replace(/[^\wçğıöşü' ]/g," ")+" ";
+  const stem = term.replace(/(e|y)$/,"");
+  if(!low.includes(" "+term+" ") && !low.includes(" "+stem)) {
+    return {ok:false, msg:`Cümlede "${d.term}" geçmiyor. Kelimenin kendisini kullan.`};
+  }
+  if(!/\b(i|my|me|mine|myself)\b/i.test(s)){
+    return {ok:false, msg:'Cümlede "I / my / me" yok. Sana ait olmayan kelime, sahip olmadığın kelimedir.'};
+  }
+  return {ok:true, msg:"Şema geçerli. Mühürlemeye hazır."};
+}
+function esc(x){ return String(x==null?"":x).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function renderOffice(){
+  checkQuota();
+  document.getElementById("railItems").innerHTML = FORMS.map((f,i)=>
+    `<button class="stamp-item${stepDone(i)?" done":""}" aria-current="${i===step}" data-step="${i}">
+       <span class="seal">${stepDone(i)?"✓":f.n}</span><span class="sname">${f.name}</span>
+     </button>`).join("");
+  document.querySelectorAll(".stamp-item").forEach(b=>b.addEventListener("click", ()=>{
+    step = +b.dataset.step; renderOffice();
+  }));
+  document.getElementById("formSheet").innerHTML = formHTML(step);
+  wireForm(step);
+}
+
+function chipRow(name, options, current){
+  return `<div class="chips" data-chips="${name}">` + options.map(o=>
+    `<button type="button" class="chip" aria-pressed="${o===current}" data-val="${esc(o)}">${esc(o)}</button>`).join("") + `</div>`;
+}
+
+function formHTML(i){
+  const f = FORMS[i], d = draft;
+  let body = "";
+  if(i===0){
+    body = `
+      <div class="row">
+        <div class="field"><label>Kelime (EN)</label>
+          <input type="text" id="f-term" value="${esc(d.term)}" placeholder="linger" autocomplete="off"></div>
+        <div class="field"><label>Tür</label>
+          <input type="text" id="f-pos" value="${esc(d.pos)}" placeholder="verb / noun / adjective" autocomplete="off"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Türkçe karşılık</label>
+          <input type="text" id="f-tr" value="${esc(d.tr)}" placeholder="oyalanmak, geç ayrılmak"></div>
+        <div class="field"><label>Kaynak (isteğe bağlı)</label>
+          <input type="text" id="f-source" value="${esc(d.source)}" placeholder="Les Misérables Ch07"></div>
+      </div>
+      <div class="field"><label>Sahne — kelime nereye yerleşiyor?</label>
+        ${chipRow("scene", SCENES.map(s=>s.name), (SCENES.find(s=>s.id===d.space.scene)||{}).name||"")}
+      </div>
+      <div class="field"><label>Somut ayrıntı</label>
+        <input type="text" id="f-detail" value="${esc(d.space.detail)}" placeholder="boşalmış fincanın yanında oturmaya devam ettiğim masa">
+        <span class="hint">Genel bir yer değil — o sahnede gözünle görebileceğin tek bir şey yaz.</span>
+      </div>`;
+  }
+  if(i===1){
+    body = `
+      <div class="field"><label>Günün anı</label>${chipRow("when", TIMES, d.time.when)}</div>
+      <div class="field"><label>Görünüş — nasıl akıyor?</label>${chipRow("aspect", ASPECTS, d.time.aspect)}
+        <span class="hint">an → Past Simple · süreç → Continuous · tamamlanmış → Perfect · tekrar → Present Simple / used to</span>
+      </div>`;
+  }
+  if(i===2){
+    body = `
+      <div class="field"><label>Derece ekseni</label>
+        <div class="gradient-line">
+          <input type="text" id="f-weaker" value="${esc(d.degree.weaker)}" placeholder="daha zayıfı">
+          <span class="arrow">→</span>
+          <input type="text" value="${esc(d.term)}" disabled style="text-align:center; font-weight:700">
+          <span class="arrow">→</span>
+          <input type="text" id="f-stronger" value="${esc(d.degree.stronger)}" placeholder="daha güçlüsü">
+        </div>
+        <span class="hint">Anlam farksaldır: kelime, komşularıyla arasındaki mesafedir.</span>
+      </div>
+      <div class="field"><label>Zıt (isteğe bağlı)</label>
+        <input type="text" id="f-opposite" value="${esc(d.degree.opposite)}" placeholder="rush off"></div>`;
+  }
+  if(i===3){
+    body = `
+      <div class="row">
+        <div class="field"><label>Sebebi ne?</label>
+          <input type="text" id="f-cause" value="${esc(d.bond.cause)}" placeholder="gitmek istememek"></div>
+        <div class="field"><label>Sonucu ne?</label>
+          <input type="text" id="f-effect" value="${esc(d.bond.effect)}" placeholder="vaktin fark edilmeden akması"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Eşdizim 1</label>
+          <input type="text" id="f-coll0" value="${esc(d.bond.coll[0])}" placeholder="linger over coffee"></div>
+        <div class="field"><label>Eşdizim 2</label>
+          <input type="text" id="f-coll1" value="${esc(d.bond.coll[1])}" placeholder="the smell lingered"></div>
+      </div>
+      <span class="hint">Eşdizim = kelimenin birlikte gezdiği kelimeler. Bunları bilmeden kelime "bilinmiş" olmaz.</span>`;
+  }
+  if(i===4){
+    body = `
+      <div class="field"><label>Kayıt — hangi ağızda?</label>${chipRow("register", REGISTERS, d.mode.register)}</div>
+      <div class="field"><label>Kesinlik derecesi</label>${chipRow("certainty", CERTAINTIES, d.mode.certainty)}
+        <span class="hint">kesin → is/does · olası → may/might/tend to · zorunlu → must/have to</span>
+      </div>`;
+  }
+  if(i===5){
+    const ck = schemaCheck(d);
+    const box = d.schema.trim() ? `<div class="${ck.ok?"okbox":"warnbox"}">${esc(ck.msg)}</div>` : "";
+    body = `
+      ${box}
+      <div class="field"><label>Şema cümlesi — birinci tekil şahıs</label>
+        <textarea id="f-schema" placeholder="I lingered in the cafe for an hour because I did not want to go home yet.">${esc(d.schema)}</textarea>
+        <span class="hint">Kurallar: kelimenin kendisi geçecek · "I / my / me" geçecek · en az 6 kelime.</span>
+      </div>
+      <div style="font-size:13px; color:var(--muted); border-left:3px solid var(--rule); padding-left:12px">
+        <b style="color:var(--ink)">Dosya özeti:</b>
+        ${esc(d.term)} · ${esc((SCENES.find(s=>s.id===d.space.scene)||{}).name||"—")} ·
+        ${esc(d.time.when)}/${esc(d.time.aspect)} ·
+        ${esc(d.degree.weaker)} → <b>${esc(d.term)}</b> → ${esc(d.degree.stronger)} ·
+        ${esc(d.mode.register)}/${esc(d.mode.certainty)}
+      </div>`;
+  }
+
+  const allDone = FORMS.every((_,k)=>stepDone(k));
+  return `
+    <div class="form-head">
+      <div class="eyebrow">Mühür ${f.n} / V</div>
+      <h3>${f.title}</h3>
+      <p>${f.sub}</p>
+    </div>
+    ${body}
+    <div class="form-foot">
+      <span class="note">${allDone ? "Beş mühür tamam — kelime girebilir." : `Eksik mühür: ${FORMS.filter((_,k)=>!stepDone(k)).map(x=>x.name).join(", ")}`}</span>
+      ${i>0?'<button class="btn-ghost" id="prevBtn">← Geri</button>':""}
+      ${i<5?'<button class="btn" id="nextBtn">İleri →</button>'
+           :`<button class="btn" id="sealBtn"${allDone?"":" disabled"}>Mühürle</button>`}
+    </div>`;
+}
+
+function wireForm(i){
+  const d = draft;
+  const bind = (id, fn)=>{ const el=document.getElementById(id); if(el) el.addEventListener("input", ()=>{ fn(el.value); refreshRail(); }); };
+  bind("f-term", v=>d.term=v); bind("f-pos", v=>d.pos=v); bind("f-tr", v=>d.tr=v); bind("f-source", v=>d.source=v);
+  bind("f-detail", v=>d.space.detail=v);
+  bind("f-weaker", v=>d.degree.weaker=v); bind("f-stronger", v=>d.degree.stronger=v); bind("f-opposite", v=>d.degree.opposite=v);
+  bind("f-cause", v=>d.bond.cause=v); bind("f-effect", v=>d.bond.effect=v);
+  bind("f-coll0", v=>d.bond.coll[0]=v); bind("f-coll1", v=>d.bond.coll[1]=v);
+
+  const sch = document.getElementById("f-schema");
+  if(sch){
+    let t=null;
+    sch.addEventListener("input", ()=>{
+      d.schema = sch.value;
+      clearTimeout(t);
+      t = setTimeout(()=>{ const pos=sch.selectionStart; renderOffice(); const el=document.getElementById("f-schema"); if(el){el.focus(); el.setSelectionRange(pos,pos);} }, 450);
+    });
+  }
+
+  document.querySelectorAll("[data-chips]").forEach(group=>{
+    const name = group.dataset.chips;
+    group.querySelectorAll(".chip").forEach(c=>c.addEventListener("click", ()=>{
+      const v = c.dataset.val;
+      if(name==="scene"){ const s=SCENES.find(x=>x.name===v); d.space.scene = s?s.id:""; }
+      if(name==="when") d.time.when = v;
+      if(name==="aspect") d.time.aspect = v;
+      if(name==="register") d.mode.register = v;
+      if(name==="certainty") d.mode.certainty = v;
+      group.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed", String(x===c)));
+      refreshRail();
+      const foot = document.querySelector(".form-foot .note");
+      const all = FORMS.every((_,k)=>stepDone(k));
+      if(foot) foot.textContent = all ? "Beş mühür tamam — kelime girebilir." : "Eksik mühür: " + FORMS.filter((_,k)=>!stepDone(k)).map(x=>x.name).join(", ");
+      const sb = document.getElementById("sealBtn"); if(sb) sb.disabled = !all;
+    }));
+  });
+
+  const nb=document.getElementById("nextBtn"); if(nb) nb.addEventListener("click", ()=>{ step=Math.min(5,step+1); renderOffice(); });
+  const pb=document.getElementById("prevBtn"); if(pb) pb.addEventListener("click", ()=>{ step=Math.max(0,step-1); renderOffice(); });
+  const sb=document.getElementById("sealBtn"); if(sb) sb.addEventListener("click", sealWord);
+}
+function refreshRail(){
+  document.querySelectorAll(".stamp-item").forEach((b,k)=>{
+    const done = stepDone(k);
+    b.classList.toggle("done", done);
+    b.querySelector(".seal").textContent = done ? "✓" : FORMS[k].n;
+  });
+}
+
+function sealWord(){
+  const d = draft;
+  const w = {
+    id: uid(), term:d.term.trim(), pos:d.pos.trim(), tr:d.tr.trim(), source:d.source.trim(),
+    space:{scene:d.space.scene, detail:d.space.detail.trim()},
+    time:{when:d.time.when, aspect:d.time.aspect},
+    degree:{weaker:d.degree.weaker.trim(), stronger:d.degree.stronger.trim(), opposite:d.degree.opposite.trim()},
+    bond:{cause:d.bond.cause.trim(), effect:d.bond.effect.trim(), coll:d.bond.coll.filter(c=>c.trim()).map(c=>c.trim())},
+    mode:{register:d.mode.register, certainty:d.mode.certainty},
+    schema:d.schema.trim(), seed:false, created:todayISO(),
+    srs:{ef:2.5, interval:1, reps:0, lapses:0, due:addDays(todayISO(),1)}
+  };
+  S.words.unshift(w);
+  checkQuota();
+  S.quota.done++;
+  const t = todayISO();
+  if(S.streak.last !== t){
+    S.streak.count = (S.streak.last === addDays(t,-1)) ? S.streak.count+1 : 1;
+    S.streak.last = t;
+  }
+  save();
+
+  const scene = SCENES.find(s=>s.id===w.space.scene);
+  document.getElementById("formSheet").innerHTML = `
+    <div class="stamped">
+      <div class="mark">Deneyime girdi</div>
+      <h3>${esc(w.term)}</h3>
+      <p>Artık <b>${esc(scene?scene.name:"")}</b> sahnesinde yaşıyor. Yarın devriyede formdan çağrılacak —
+      kelimeyi değil, formu soracağız.</p>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn" id="againBtn">Yeni kelime</button>
+        <button class="btn-ghost" id="toAtlas">Atlas'a dön</button>
+      </div>
+      <p style="margin-top:20px; font-size:13px">Bugünkü kota: <b>${S.quota.done}/3</b>${S.quota.done>=3?" — bugünlük yeter. Kota küçük olduğu için sürüyor.":""}</p>
+    </div>`;
+  draft = blankDraft(); step = 0;
+  document.querySelectorAll(".stamp-item").forEach((b,k)=>{
+    b.classList.remove("done");
+    b.setAttribute("aria-current", String(k===0));
+    b.querySelector(".seal").textContent = FORMS[k].n;
+  });
+  document.getElementById("againBtn").addEventListener("click", renderOffice);
+  document.getElementById("toAtlas").addEventListener("click", ()=>show("atlas"));
+}
+
+/* ---------- patrol (retrieval by form) ---------- */
+let current = null, revealed = false, cueKind = 0;
+const CUE_NAMES = ["Uzam çağrısı","Derece çağrısı","Bağ çağrısı","Kip çağrısı","Şema çağrısı"];
+
+function renderPatrol(){
+  const area = document.getElementById("patrolArea");
+  const due = dueWords();
+  if(!due.length){
+    const next = S.words.slice().sort((a,b)=>a.srs.due.localeCompare(b.srs.due))[0];
+    area.innerHTML = `<div class="empty-state">
+      <h3>Devriye bitti</h3>
+      <p>Bugün çağrılacak kelime kalmadı.${next?` Sıradaki: <b>${esc(next.srs.due)}</b>.`:""}</p>
+      <div class="btn-row" style="justify-content:center; margin-top:16px">
+        <button class="btn" id="goOffice">Gümrüğe geç</button>
+      </div></div>`;
+    document.getElementById("goOffice").addEventListener("click", ()=>show("office"));
+    return;
+  }
+  if(!current || !due.some(w=>w.id===current.id)){
+    current = due[Math.floor(Math.random()*due.length)];
+    cueKind = Math.floor(Math.random()*5);
+    revealed = false;
+  }
+  const w = current, scene = SCENES.find(s=>s.id===w.space.scene) || {name:"—"};
+  let bodyHTML = "", metaHTML = "";
+  const blank = `<span class="blank">?</span>`;
+
+  if(cueKind===0){
+    bodyHTML = `${esc(scene.name)} sahnesi — ${esc(w.space.detail)}. Buraya koyduğun kelime ${blank} idi.`;
+    metaHTML = `<span>Tür: <b>${esc(w.pos||"—")}</b></span><span>Zaman: <b>${esc(w.time.when)} / ${esc(w.time.aspect)}</b></span>`;
+  } else if(cueKind===1){
+    bodyHTML = `${esc(w.degree.weaker)} &nbsp;→&nbsp; ${blank} &nbsp;→&nbsp; ${esc(w.degree.stronger)}`;
+    metaHTML = `<span>Zıt: <b>${esc(w.degree.opposite||"—")}</b></span><span>Anlam: <b>${esc(w.tr)}</b></span>`;
+  } else if(cueKind===2){
+    const safe = w.term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const c = (w.bond.coll[0]||"").replace(new RegExp(safe,"ig"), "____");
+    bodyHTML = `Sebep: ${esc(w.bond.cause)} → Sonuç: ${esc(w.bond.effect)}.<br>Eşdizim: <i>${esc(c)}</i> → ${blank}`;
+    metaHTML = `<span>Sahne: <b>${esc(scene.name)}</b></span>`;
+  } else if(cueKind===3){
+    bodyHTML = `Kayıt <b>${esc(w.mode.register)}</b>, kesinlik <b>${esc(w.mode.certainty)}</b>, anlam “${esc(w.tr)}”. Hangi kelime? ${blank}`;
+    metaHTML = `<span>Sahne: <b>${esc(scene.name)}</b></span><span>Tür: <b>${esc(w.pos||"—")}</b></span>`;
+  } else {
+    bodyHTML = `Şema cümleni hafızandan yeniden kur — <b>${esc(w.term)}</b> geçecek, "I/my/me" geçecek.`;
+    metaHTML = `<span>Sahne: <b>${esc(scene.name)}</b></span><span>Anlam: <b>${esc(w.tr)}</b></span>`;
+  }
+
+  area.innerHTML = `
+    <div class="cue">
+      <span class="cue-kind">${CUE_NAMES[cueKind]}</span>
+      <div class="cue-body">${bodyHTML}</div>
+      <div class="cue-meta">${metaHTML}</div>
+      ${cueKind===4 ? `<div class="field" style="margin-top:14px"><textarea id="recallBox" placeholder="Cümleyi buraya yaz…"></textarea></div>` : ""}
+      ${revealed ? `
+        <div class="reveal">
+          <div class="term">${esc(w.term)}</div>
+          <div class="tr">${esc(w.pos)} · ${esc(w.tr)}${w.source?` · <i>${esc(w.source)}</i>`:""}</div>
+          <div class="schema">${esc(w.schema)}</div>
+          <div class="cue-meta" style="margin-top:10px">
+            <span>${esc(w.degree.weaker)} → <b>${esc(w.term)}</b> → ${esc(w.degree.stronger)}</span>
+            <span>${w.bond.coll.map(esc).join(" · ")}</span>
+          </div>
+          <div class="grade-row">
+            <button class="grade" data-q="0"><b>Yok</b><small>hiç gelmedi</small></button>
+            <button class="grade" data-q="1"><b>Zor</b><small>zorlandım</small></button>
+            <button class="grade" data-q="2"><b>Geldi</b><small>doğru kurdum</small></button>
+            <button class="grade" data-q="3"><b>Kolay</b><small>anında</small></button>
+          </div>
+          <p style="font-size:12.5px; color:var(--faint); margin:12px 0 0">Kendine dürüst not ver. Şişirilmiş "kolay", iki hafta sonra kaybolan kelimedir.</p>
+        </div>` : `
+        <div class="btn-row" style="margin-top:18px">
+          <button class="btn" id="revealBtn">Aç</button>
+          <span style="font-size:13px; color:var(--faint)">Kalan: ${due.length}</span>
+        </div>`}
+    </div>`;
+
+  const rb = document.getElementById("revealBtn");
+  if(rb) rb.addEventListener("click", ()=>{ revealed = true; renderPatrol(); });
+  document.querySelectorAll(".grade").forEach(g=>g.addEventListener("click", ()=>{
+    grade(current, +g.dataset.q);
+    current = null; revealed = false;
+    renderPatrol();
+  }));
+}
+
+function grade(w, q){
+  const s = w.srs;
+  if(q===0){ s.interval=1; s.ef=Math.max(1.3, s.ef-0.20); s.reps=0; s.lapses++; }
+  else{
+    if(s.reps===0) s.interval=1;
+    else if(s.reps===1) s.interval=6;
+    else s.interval = Math.max(1, Math.round(s.interval * (q===1?1.2 : q===2?s.ef : s.ef*1.3)));
+    if(q===1) s.ef=Math.max(1.3, s.ef-0.15);
+    if(q===3) s.ef=s.ef+0.10;
+    s.reps++;
+  }
+  s.due = addDays(todayISO(), s.interval);
+  save();
+}
+
+/* ---------- ledger ---------- */
+function renderLedger(){
+  const sel = document.getElementById("filterScene");
+  if(!sel.options.length){
+    sel.innerHTML = `<option value="">Tüm sahneler</option>` + SCENES.map(s=>`<option value="${s.id}">${s.name}</option>`).join("");
+    sel.addEventListener("change", renderLedger);
+    document.getElementById("filterText").addEventListener("input", renderLedger);
+  }
+  const fs = sel.value, ft = document.getElementById("filterText").value.trim().toLowerCase();
+  const t = todayISO();
+  const rows = S.words
+    .filter(w=>!fs || w.space.scene===fs)
+    .filter(w=>!ft || w.term.toLowerCase().includes(ft) || (w.tr||"").toLowerCase().includes(ft))
+    .sort((a,b)=>a.srs.due.localeCompare(b.srs.due));
+
+  document.getElementById("ledgerTable").innerHTML = `
+    <thead><tr>
+      <th>Kelime</th><th>Sahne</th><th>Derece</th><th>Kip</th><th>Şema</th><th>Vade</th><th></th>
+    </tr></thead>
+    <tbody>${rows.length ? rows.map(w=>{
+      const sc = SCENES.find(s=>s.id===w.space.scene) || {name:"—"};
+      const due = w.srs.due<=t;
+      return `<tr>
+        <td class="term">${esc(w.term)}<small>${esc(w.tr)}</small></td>
+        <td>${esc(sc.name)}<br><span class="tag">${esc(w.time.when)}·${esc(w.time.aspect)}</span></td>
+        <td style="font-size:12.5px; color:var(--muted)">${esc(w.degree.weaker)} → <b style="color:var(--ink)">${esc(w.term)}</b> → ${esc(w.degree.stronger)}</td>
+        <td><span class="tag">${esc(w.mode.register)}</span> <span class="tag">${esc(w.mode.certainty)}</span></td>
+        <td style="font-style:italic; max-width:280px">${esc(w.schema)}</td>
+        <td><span class="tag ${due?"due":"ok"}">${esc(w.srs.due)}</span>${w.seed?' <span class="tag seed">örnek</span>':""}</td>
+        <td><button class="linkish" data-del="${w.id}">sil</button></td>
+      </tr>`;
+    }).join("") : `<tr><td colspan="7" style="padding:30px; text-align:center; color:var(--muted)">Bu süzgeçte kelime yok.</td></tr>`}</tbody>`;
+
+  document.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click", ()=>{
+    const w = S.words.find(x=>x.id===b.dataset.del);
+    if(w && confirm(`"${w.term}" dosyası silinsin mi?`)){
+      S.words = S.words.filter(x=>x.id!==b.dataset.del); save(); renderLedger();
+    }
+  }));
+}
+
+document.getElementById("exportBtn").addEventListener("click", ()=>{
+  const payload = {
+    schema_version:"apriori-vocab-1.0", type:"vocab_passport",
+    session_id: todayISO()+"-kelime-pasaportu",
+    exported_at: new Date().toISOString(),
+    counts:{total:S.words.length, due:dueWords().length, scenes_live:SCENES.filter(s=>S.words.some(w=>w.space.scene===s.id)).length},
+    streak:S.streak,
+    words:S.words,
+    instructions_for_claude_code:"wiki/vocabulary/ altına sahne bazlı sayfalar olarak işle; her kelimenin 5 formu + şema cümlesi korunsun; word-bank-master.md ile birleştir."
+  };
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = todayISO()+"-kelime-pasaportu.json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+});
+document.getElementById("importBtn").addEventListener("click", ()=>document.getElementById("importFile").click());
+document.getElementById("importFile").addEventListener("change", e=>{
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const p = JSON.parse(r.result);
+      const incoming = Array.isArray(p.words) ? p.words : null;
+      if(!incoming) throw new Error("words dizisi yok");
+      const known = new Set(S.words.map(w=>w.term.toLowerCase()));
+      const added = incoming.filter(w=>w && w.term && !known.has(String(w.term).toLowerCase()));
+      S.words = added.concat(S.words); save(); renderLedger();
+      alert(`${added.length} yeni kelime eklendi (${incoming.length-added.length} tanesi zaten vardı).`);
+    }catch(err){
+      alert("Dosya okunamadı: "+err.message+". Bu uygulamanın dışa aktardığı JSON'u kullan.");
+    }
+    e.target.value = "";
+  };
+  r.readAsText(f);
+});
+
+/* ---------- boot ---------- */
+renderAtlas();
+</script>
+</body>
+</html>

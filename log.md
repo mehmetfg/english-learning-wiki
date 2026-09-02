@@ -1763,3 +1763,27 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 **Ayarlar:** quantum + mabet modül listesine eklendi, kullanıcının görünür modüllerine işlendi. Panorama alan kartlarına Kuantum girdi.
 
 **Sonraki:** Turso'ya seed-quantum + 0004; kuantum sorular/quiz içeriği (KR-006 deseniyle); diğer vault'lar (Yazarlık alt bölümleri) için kategori seed'i.
+
+## [2026-09-02] artifact | Kelime Pasaportu + A Priori Kelime Yöntemi
+
+**Soru:** "Deneyimi mümkün kılan önsel algı formları kelime öğrenimini nasıl biçimlendirir; kelime öğrenmeyi sancı olmaktan nasıl çıkarırım?" — kullanıcının kendi Kant okumasından (uzam/zaman/nedensellik = deneyimi kuran formlar) türeyen bir yöntem talebi + çalışan uygulama.
+
+**Yöntem (yeni synthesis):** `wiki/synthesis/apriori-kelime-yontemi.md`
+- Acının beş kaynağı teşhis edildi (formsuz alım · tekil öğrenme · tanıma-üretim uçurumu · sonsuz ölçüt · yabancı deneyim) ve her birine bir form karşılığı atandı.
+- **Beş mühür:** I Uzam (12 sabit sahne + somut ayrıntı) · II Zaman (günün anı + görünüş) · III Derece (zayıf←kelime→güçlü + zıt) · IV Bağ (sebep, sonuç, 2 eşdizim) · V Kip (kayıt + kesinlik).
+- **Şematizm:** beş mühürden sonra birinci tekil şahıs, kendi hayatından cümle. **Ben-testi** — cümlede `I/my/me` zorunlu.
+- **Düzeltme yapıldı:** "dilin tüm kelimelerine hâkim olmak" hedefi reddedildi ve kullanıcının kendi mantığı içinden düzeltildi — bütünlük *kurucu* değil *düzenleyici* idedir. Gerçek eşikler konuldu: 800/~%75 · 2.000/~%85 · 5.000/~%95 · **9.000/~%98 (sözlüksüz okuma)**. Günde 3 kelime = yılda ~1.100.
+- Günlük ritim 15 dk (3 devriye + 9 gümrük + 3 atlas); kota bilerek 3.
+- Sınırlar bölümü dürüst tutuldu: yavaş · her kelime mühür hak etmez · sahne doygunluğu riski · bileşim ölçülmemiş (30 gün ölçütü: devriyede ilk denemede üretim ≥ %70).
+
+**Uygulama:** `Artifacts/kelime-pasaportu.html` (tek dosya, vanilla JS, bağımlılıksız)
+- 5 sekme: **Atlas** (12 sahne ızgarası, vade pip'leri, ilerleme sahne-dolumu olarak — asla `n/9000`) · **Gümrük** (beş mühürlü pasaport sihirbazı, sol mühür rayı, damga animasyonu) · **Devriye** (5 çağrı tipi: uzam/derece/bağ/kip/şema — kelime hiç sorulmaz, form verilir) · **Defter** (süzgeç + JSON dışa/içe aktarma) · **Yöntem** (gerekçe metni).
+- Zorunlu kısıtlar: beş mühür dolmadan kayıt yok; şema cümlesi üç testten geçer (kelime geçecek · I/my/me geçecek · ≥6 kelime).
+- SM-2 sadeleştirilmiş takvim — [[vocab-srs]] ile aynı formül, iki araç aynı takvimi paylaşsın diye.
+- 10 tam mühürlü seed kelime vault kaynaklarından (Atomic Habits, Les Misérables, Naval, Thinking Fast and Slow, Crime and Punishment, Decameron, Don Quixote, Lesson 02) — uygulama boş kabuk açılmıyor.
+- JSON köprüsü `apriori-vocab-1.0` → `00_INBOX/` → `wiki/vocabulary/[sahne].md`.
+- Tasarım: belge estetiği (gümrük evrağı) — Prusya mavisi `#1E3F72` + oksit kırmızısı `#8E2433`; Spectral/Karla/IBM Plex Mono; sahne kodları `S·01…S·12` ikon değil kayıt numarası; üç temalı (açık/koyu/sistem).
+
+**Dokunulan sayfalar (7):** `wiki/synthesis/apriori-kelime-yontemi.md` (yeni) · `wiki/artifacts/kelime-pasaportu.md` (yeni) · `Artifacts/kelime-pasaportu.html` (yeni) · `Artifacts/_dashboard.html` (Vocabulary bölümüne kart + sayaçlar 82→83, 5→6) · `index.md` (Vocabulary + Synthesis tablolarına satır) · `wiki/artifacts/vocab-srs.md` (kardeş araç ayrım tablosu — çift yönlü bağ) · `wiki/synthesis/calisma-yontemleri-analizi.md` (M11 Form-Önce Kelime formatı eklendi — çift yönlü bağ) · `log.md`.
+
+**Sonraki:** Sahne başına 25 kelime eşiği + alt sahne bölme uyarısı · phrasal verb için ayrılabilirlik altıncı formu · JSON köprüsünden `wiki/vocabulary/[sahne].md` otomatik üretimi · L1 Production Cell'e "şu sahnedeki 5 kelimeyle yaz" constraint entegrasyonu.
