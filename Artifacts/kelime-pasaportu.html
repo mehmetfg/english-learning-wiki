@@ -1115,13 +1115,48 @@ document.getElementById("exportBtn").addEventListener("click", ()=>{
     words:S.words,
     instructions_for_claude_code:"wiki/vocabulary/ altına sahne bazlı sayfalar olarak işle; her kelimenin 5 formu + şema cümlesi korunsun; word-bank-master.md ile birleştir."
   };
-  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = todayISO()+"-kelime-pasaportu.json";
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  const text = JSON.stringify(payload,null,2);
+  const name = todayISO()+"-kelime-pasaportu.json";
+  // Dosya indirme her ortamda çalışmaz (gömülü görüntüleyiciler engeller) —
+  // her hâlükârda metni kopyalanabilir biçimde göster.
+  try{
+    const blob = new Blob([text], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  }catch(e){ /* indirme yoksa aşağıdaki panel yeter */ }
+  showExportPanel(name, text);
 });
+
+function showExportPanel(name, text){
+  let box = document.getElementById("exportPanel");
+  if(!box){
+    box = document.createElement("div");
+    box.id = "exportPanel";
+    box.className = "sheet";
+    box.style.cssText = "margin-top:16px; padding:16px 18px";
+    document.getElementById("view-ledger").appendChild(box);
+  }
+  box.innerHTML = `
+    <div class="eyebrow">Dışa aktarım · ${esc(name)}</div>
+    <p style="color:var(--muted); font-size:13px; margin:6px 0 10px">
+      İndirme başlamadıysa metni kopyalayıp <code>00_INBOX/${esc(name)}</code> olarak kaydet.</p>
+    <textarea id="exportText" readonly style="min-height:150px; font-family:var(--mono); font-size:12px">${esc(text)}</textarea>
+    <div class="btn-row" style="margin-top:10px">
+      <button class="btn" id="copyExport">Kopyala</button>
+      <button class="btn-ghost" id="closeExport">Kapat</button>
+      <span id="copyMsg" style="font-size:13px; color:var(--good)"></span>
+    </div>`;
+  document.getElementById("closeExport").addEventListener("click", ()=>box.remove());
+  document.getElementById("copyExport").addEventListener("click", async ()=>{
+    const ta = document.getElementById("exportText");
+    try{ await navigator.clipboard.writeText(text); }
+    catch(e){ ta.focus(); ta.select(); document.execCommand && document.execCommand("copy"); }
+    document.getElementById("copyMsg").textContent = "Kopyalandı.";
+  });
+  box.scrollIntoView({behavior:"smooth", block:"nearest"});
+}
 document.getElementById("importBtn").addEventListener("click", ()=>document.getElementById("importFile").click());
 document.getElementById("importFile").addEventListener("change", e=>{
   const f = e.target.files[0]; if(!f) return;
