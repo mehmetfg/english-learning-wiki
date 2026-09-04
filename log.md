@@ -4,6 +4,18 @@ Append-only. Her giriş `## [YYYY-MM-DD] tip | başlık` formatında.
 
 ---
 
+## [2026-09-04] build | English Grammar Docs — Laravel dokümantasyon formatında tam gramer referansı
+
+Özet: Kullanıcı isteği: laravel.com/docs sayfasının görsel tasarımı, navigasyon yapısı ve mobil responsive davranışı birebir taklit edilsin; içerik ise tüm İngilizce gramer konuları olsun, sadece doküman amaçlı (etkileşim/quiz yok).
+
+Üretilen: `Artifacts/english-grammar-docs.html` (tek dosya, ~215 KB) + Artifact yayını (https://claude.ai/code/artifact/ac14becb-df9e-462c-816a-2570975cb6fb).
+
+Kapsam: 60 sayfa (4 giriş + 56 gramer konusu), 13 nav kategorisi, 306 içerik bölümü, 354 örnek cümle (EN sol / TR sağ), 224 yanlış-doğru hata çifti. Nav taksonomisi doğrudan vault'un mevcut 56 concept sayfası gruplamasından alındı; seviyelendirme [[CEFR Curriculum Map]] ile hizalandı.
+
+Tasarım: sol sticky katlanabilir kategori menüsü + sağ "On this page" TOC (IntersectionObserver) + koyu kod blokları + Laravel kırmızısı (#f9322c) + Instrument Sans/JetBrains Mono. Hash routing (`#/present-perfect`), canlı arama filtresi, açık/koyu tema (localStorage), mobil hamburger drawer, klavye kısayolları (`/`, Esc, ←/→). Chromium ile masaüstü/koyu tema/mobil (390px) doğrulandı: JS hatası yok, yatay taşma yok.
+
+Dokunulan sayfalar (4): `wiki/artifacts/english-grammar-docs.md` (yeni kayıt), `Artifacts/_dashboard.html` (ref kategorisine kart), `index.md` (Grammar Reference bölümü), `log.md`.
+
 ## [2026-06-10] build | Felsefe Kurs Mikro-Uygulama Sistemi (çapraz vault çalışması)
 
 Özet: Philosophy vault'taki 16 ders serisi (felsefedersleri.com, 137+ ders) HTML mikro-uygulamalara derlendi. Yeni boru hattı: vault markdown (tek doğruluk kaynağı) → personal-os `npm run build-courses` → `Philosophy/Artifacts/courses/` (16 kurs HTML + manifest.json + bağımsız panel). Personal OS'e `/philosophy/dersler` sayfası eklendi (durum bazlı öğrenme kuyruğu: active/queued/backlog/done; kuyruk dosyası `wiki/dersler/kurs-durumu.json`). Quiz pilotu Önsokratik Dönem'de (3 ders × 4 soru). Kitaplar bölümü vault ile eşgüdümlendi: PDM vault'tan 84 kitap sync edildi (.env eksikti), kitap detayında okuma notu artık vault'tan canlı gösteriliyor + Obsidian deep-link. Detay: Philosophy vault log.md aynı tarihli giriş. Bu vault'ta içerik değişikliği yok.
