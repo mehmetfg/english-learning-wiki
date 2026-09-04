@@ -67,6 +67,7 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Documents/projects/p
 ### 📊 Grammar Reference
 | Sayfa | Dosyalar | Açıklama |
 |-------|----------|----------|
+| [[english-grammar-docs]] | 1 dosya | 🆕 **English Grammar Docs** — Laravel dokümantasyon düzeninde tam referans; 13 kategori / 60 sayfa / 56 gramer konusu; form tabloları, 354 örnek cümle (EN+TR), 224 yanlış-doğru çifti; canlı arama, koyu tema, mobil drawer, `/` + ok tuşu kısayolları |
 | [[English Grammar Diagram]] | 1 dosya | Genel gramer haritası |
 | [[Grammar Roadmap]] | 1 dosya | Gramer öğrenme yol haritası |
 | [[Grammar Explorer]] | 1 dosya | 11 yapı, renk kodlu interaktif keşif |
