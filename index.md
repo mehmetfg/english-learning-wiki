@@ -42,7 +42,18 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Documents/projects/p
 
 ---
 
-## Artifacts (82 dosya — 2026-05-20 itibariyle temizlenmiş)
+## 🜂 Form-First Katmanı (2026-09-02 — yeni okuma ekseni)
+
+Vault'un bütün concept sayfaları **konu-önce** düzenlidir (Present Perfect, Passive Voice…). Bu katman aynı bilgiyi **form-önce** yeniden indeksler: bir formun bütün işlevleri (dikey), bir işlevin bütün formları (yatay).
+
+| Sayfa | Açıklama |
+|-------|----------|
+| [[form-first-pattern-atlas]] | ⭐ **Pollakhōs İlkesi** — form-önce okumanın gerekçesi; 11 omurga; 13 işlev alanı; **Uzaklık Yasası** (V2 = geçmiş değil, uzaklık); Türkçeden gelen 7 kırılma noktası; çalışma protokolü |
+| [[pollakhos-atlas]] | 🆕 **Pollakhōs Atlası** (artifact) — 11 form × 82 işlev × 50 kesişim; 5 mod: Dikey omurga (bracket diyagramı) · Yatay alan · Kesişim matrisi · Uzaklık Yasası · Av (tanıma oyunu) |
+
+---
+
+## Artifacts (83 dosya — 2026-09-02 itibariyle)
 
 > **Klasör yapısı:** `Artifacts/` (82 İng. öğrenme dosyası) · `Artifacts/other/` (26 felsefe/kişisel/diğer) · `Artifacts/copy-list/` (6 duplicate)
 > Dashboard: `Artifacts/_dashboard.html` — 12 kategori, arama + filtre + dark mode
@@ -378,10 +389,11 @@ TTS öncelikli, A2-B1 seviyesi, roman dışı yazı serisi. Felsefe, psikoloji, 
 
 ---
 
-## Synthesis (5 sayfa)
+## Synthesis (6 sayfa)
 
 | Sayfa | Açıklama |
 |-------|----------|
+| [[form-first-pattern-atlas]] | 🆕 (2026-09-02) **Pollakhōs İlkesi** — konu-önce yerine form-önce indeks; 11 omurga (V3/HAVE/-ING/TO/WOULD/GET/THAT/-S/IT/AS/V2); Uzaklık Yasası tek çatı altında Conditionals + Wish + Reported Speech + Politeness'i birleştirir |
 | [[gunluk-calisma-programi\|Günlük Çalışma Programı]] | 🆕 20 günlük döngü — 56 gramer konusu rotasyonu · vocabulary bloğu · okuma & üretim şeması · haftalık hız göstergesi |
 | [[CEFR Curriculum Map]] | Tüm gramer konuları CEFR A1→C2 haritası; eksik konular ve öğrenme sırası |
 | [[Interactive Reader Template]] | ⭐ Interactive HTML reader klasmanı — tüm makale → çalışma sayfası dönüşümü için yeniden kullanılabilir standart (CSS/JS spec, 15 bölüm, 20+ edge case checklist) |

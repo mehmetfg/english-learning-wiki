@@ -1,0 +1,986 @@
+<title>Pollakhōs Atlası</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* ============ TOKENS — dark-first (tezhip: mürekkep + altın + lapis) ============ */
+:root{
+  --ink:#14131F;          /* zemin */
+  --ink-2:#1B1A28;        /* panel */
+  --ink-3:#232231;        /* yükseltilmiş yüzey */
+  --rule:#332F44;         /* çizgi */
+  --rule-soft:#282639;
+  --text:#E8E3D5;         /* parşömen (altına doğru eğilimli nötr) */
+  --text-2:#A9A290;
+  --text-3:#7B7666;
+  --gold:#C9A227;
+  --gold-soft:#8C6F1C;
+  --lapis:#6E8FD0;
+  --sage:#7FA87A;
+  --clay:#C4695A;
+  --mark-bg:rgba(201,162,39,.20);
+  --mark-line:rgba(201,162,39,.55);
+  --shadow:0 18px 40px -22px rgba(0,0,0,.85);
+  --f-time:#6E8FD0; --f-passive:#5FA6A0; --f-unreal:#A87FC4; --f-oblig:#C4805A;
+  --f-nominal:#C9A227; --f-modify:#7FA87A; --f-pack:#8189D6; --f-caus:#D0A050;
+  --f-focus:#C46A8A; --f-event:#BF8452; --f-poss:#9A9457; --f-deixis:#7E93A8;
+  --f-agree:#AE8AA6;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --ink:#DEDCD4; --ink-2:#EFEDE6; --ink-3:#F7F5EF;
+    --rule:#C2BEB0; --rule-soft:#D3CFC2;
+    --text:#1D1B26; --text-2:#57523F; --text-3:#807A66;
+    --gold:#8A6A10; --gold-soft:#B79B45;
+    --lapis:#2F4F8F; --sage:#3F6B45; --clay:#9B3F30;
+    --mark-bg:rgba(138,106,16,.16); --mark-line:rgba(138,106,16,.5);
+    --shadow:0 18px 38px -26px rgba(40,34,10,.55);
+    --f-time:#2F4F8F; --f-passive:#256B65; --f-unreal:#6B3F8C; --f-oblig:#8E4A22;
+    --f-nominal:#8A6A10; --f-modify:#3F6B45; --f-pack:#454DA0; --f-caus:#8A6320;
+    --f-focus:#93335A; --f-event:#8A4E1E; --f-poss:#5E5A1E; --f-deixis:#41586E;
+    --f-agree:#74436A;
+  }
+}
+:root[data-theme="light"]{
+  --ink:#DEDCD4; --ink-2:#EFEDE6; --ink-3:#F7F5EF;
+  --rule:#C2BEB0; --rule-soft:#D3CFC2;
+  --text:#1D1B26; --text-2:#57523F; --text-3:#807A66;
+  --gold:#8A6A10; --gold-soft:#B79B45;
+  --lapis:#2F4F8F; --sage:#3F6B45; --clay:#9B3F30;
+  --mark-bg:rgba(138,106,16,.16); --mark-line:rgba(138,106,16,.5);
+  --shadow:0 18px 38px -26px rgba(40,34,10,.55);
+  --f-time:#2F4F8F; --f-passive:#256B65; --f-unreal:#6B3F8C; --f-oblig:#8E4A22;
+  --f-nominal:#8A6A10; --f-modify:#3F6B45; --f-pack:#454DA0; --f-caus:#8A6320;
+  --f-focus:#93335A; --f-event:#8A4E1E; --f-poss:#5E5A1E; --f-deixis:#41586E;
+  --f-agree:#74436A;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ink); color:var(--text);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif;
+  font-size:15px; line-height:1.55; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1240px; margin:0 auto; padding:0 24px 96px}
+h1,h2,h3{text-wrap:balance; margin:0}
+mark{background:var(--mark-bg); color:inherit; box-shadow:inset 0 -2px 0 var(--mark-line); padding:0 2px; border-radius:2px}
+button{font:inherit; color:inherit; background:none; border:none; cursor:pointer}
+:focus-visible{outline:2px solid var(--gold); outline-offset:2px; border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+
+/* ============ HEADER ============ */
+.top{display:flex; align-items:flex-start; gap:24px; justify-content:space-between; padding:26px 0 0}
+.eyebrow{
+  font-family:"EB Garamond",Georgia,serif; font-size:19px; letter-spacing:.22em;
+  color:var(--gold); text-transform:none;
+}
+.eyebrow span{color:var(--text-3); letter-spacing:.06em; font-style:italic}
+h1{
+  font-family:"EB Garamond",Georgia,serif; font-weight:600;
+  font-size:clamp(34px,5vw,54px); line-height:1.04; letter-spacing:-.01em;
+  margin:6px 0 0;
+}
+h1 em{font-style:italic; color:var(--gold)}
+.thesis{
+  max-width:60ch; color:var(--text-2); margin-top:14px; font-size:16px;
+}
+.thesis b{color:var(--text); font-weight:600}
+.counts{display:flex; gap:0; margin-top:16px; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule)}
+.counts div{padding:9px 22px 9px 0; margin-right:22px; border-right:1px solid var(--rule-soft)}
+.counts div:last-child{border-right:none}
+.counts .n{font-family:"IBM Plex Mono",monospace; font-size:24px; color:var(--gold); font-variant-numeric:tabular-nums}
+.counts .l{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-3)}
+.themebtn{
+  border:1px solid var(--rule); border-radius:999px; padding:7px 14px; font-size:12px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--text-2); white-space:nowrap; flex:none;
+}
+.themebtn:hover{border-color:var(--gold); color:var(--gold)}
+
+/* ============ TABS ============ */
+nav.tabs{display:flex; flex-wrap:wrap; gap:2px; margin:24px 0 24px; border-bottom:1px solid var(--rule)}
+.tab{
+  padding:11px 18px; font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--text-3); border-bottom:2px solid transparent; margin-bottom:-1px; font-weight:500;
+}
+.tab:hover{color:var(--text)}
+.tab[aria-selected="true"]{color:var(--gold); border-bottom-color:var(--gold)}
+.tab .greek{font-family:"EB Garamond",serif; font-style:italic; text-transform:none; letter-spacing:0; color:var(--text-3); margin-left:7px; font-size:14px}
+.tab[aria-selected="true"] .greek{color:var(--gold-soft)}
+.panel[hidden]{display:none!important}
+
+/* ============ SPINE VIEW ============ */
+.spine-grid{display:grid; grid-template-columns:214px minmax(0,1fr) 336px; gap:0}
+.rail{border-right:1px solid var(--rule); padding-right:14px}
+.rail-h, .det-h{
+  font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--text-3);
+  padding-bottom:10px; border-bottom:1px solid var(--rule-soft); margin-bottom:8px;
+}
+.rail button{
+  display:flex; align-items:baseline; gap:10px; width:100%; text-align:left;
+  padding:9px 10px; border-radius:4px; color:var(--text-2);
+}
+.rail button:hover{background:var(--ink-2); color:var(--text)}
+.rail button[aria-current="true"]{background:var(--ink-3); color:var(--text)}
+.rail button[aria-current="true"] .g{color:var(--gold)}
+.rail .g{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:13px; color:var(--text-3); flex:none; width:44px}
+.rail .nm{font-size:13px; line-height:1.3}
+.rail .ct{margin-left:auto; font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--text-3)}
+
+.stage{padding:0 26px; min-width:0}
+.stage-head{display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:4px}
+.glyph{
+  font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:34px; color:var(--gold);
+  border:1px solid var(--gold-soft); border-radius:4px; padding:2px 12px; line-height:1.25;
+}
+.stage-head h2{font-family:"EB Garamond",serif; font-size:30px; font-weight:600}
+.stage-head .lat{color:var(--text-3); font-style:italic; font-family:"EB Garamond",serif; font-size:19px}
+.stage-note{color:var(--text-2); max-width:62ch; margin:10px 0 22px; font-size:14.5px}
+
+.fan{display:grid; grid-template-columns:26px minmax(0,1fr); gap:0}
+.brace{position:relative}
+.brace svg{position:absolute; inset:0; width:100%; height:100%; overflow:visible}
+.branches{display:flex; flex-direction:column; gap:6px}
+.branch{
+  display:grid; grid-template-columns:12px minmax(0,1fr); align-items:start; gap:0;
+  border:1px solid transparent; border-radius:5px;
+}
+.branch .tick{border-top:1px solid var(--rule); margin-top:19px; height:1px}
+.branch button{
+  display:block; width:100%; text-align:left; padding:9px 12px; border-radius:5px;
+  border:1px solid var(--rule-soft); background:var(--ink-2);
+  transition:border-color .15s, transform .15s, background .15s;
+}
+.branch button:hover{border-color:var(--gold-soft); transform:translateX(3px)}
+.branch button[aria-current="true"]{border-color:var(--gold); background:var(--ink-3)}
+.b-top{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.b-name{font-weight:600; font-size:14.5px}
+.b-tr{color:var(--text-2); font-size:13px}
+.b-pat{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--text-3); margin-top:3px}
+.chip{
+  display:inline-flex; align-items:center; gap:6px; font-size:11px; letter-spacing:.05em;
+  color:var(--text-2); border:1px solid var(--rule); border-radius:999px; padding:2px 9px 2px 7px;
+  white-space:nowrap;
+}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--dotc,var(--text-3)); flex:none}
+.chip.on{color:var(--text); border-color:var(--dotc)}
+
+/* detail */
+.det{border-left:1px solid var(--rule); padding-left:22px; align-self:start; position:sticky; top:16px}
+.det h3{font-family:"EB Garamond",serif; font-size:23px; font-weight:600; margin-bottom:2px}
+.det .trh{color:var(--text-2); font-size:14px; margin-bottom:14px}
+.pat{
+  font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--gold);
+  background:var(--ink-3); border:1px dashed var(--rule); border-radius:4px; padding:8px 10px; margin-bottom:14px;
+}
+.ex{font-family:"EB Garamond",serif; font-size:21px; line-height:1.45; margin-bottom:6px}
+.ex-tr{color:var(--text-2); font-size:13.5px; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--rule-soft)}
+.note{font-size:13.5px; color:var(--text-2); margin-bottom:16px}
+.note b{color:var(--text)}
+.xh{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-3); margin-bottom:8px}
+.xlinks{display:flex; flex-direction:column; gap:5px}
+.xlinks button{
+  text-align:left; font-size:13px; color:var(--text-2); padding:6px 9px; border-radius:4px;
+  border:1px solid var(--rule-soft); display:flex; gap:8px; align-items:baseline;
+}
+.xlinks button:hover{border-color:var(--gold-soft); color:var(--text)}
+.xlinks .xg{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--gold); flex:none; width:40px}
+
+/* ============ FIELD VIEW ============ */
+.fieldbar{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:26px}
+.fieldbar button{
+  border:1px solid var(--rule); border-radius:999px; padding:6px 13px 6px 10px; font-size:12.5px;
+  color:var(--text-2); display:flex; align-items:center; gap:7px;
+}
+.fieldbar button:hover{color:var(--text); border-color:var(--text-3)}
+.fieldbar button[aria-pressed="true"]{color:var(--text); border-color:var(--dotc); background:var(--ink-2)}
+.field-head{display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:34px; align-items:start; margin-bottom:26px}
+.field-head h2{font-family:"EB Garamond",serif; font-size:33px; font-weight:600}
+.field-head .en{font-style:italic; color:var(--text-3); font-family:"EB Garamond",serif; font-size:18px}
+.field-head p{color:var(--text-2); max-width:58ch; margin:10px 0 0}
+.field-tip{
+  border-left:2px solid var(--dotc); padding:2px 0 2px 14px; font-size:13.5px; color:var(--text-2);
+}
+.field-tip b{color:var(--text); display:block; font-size:11px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:5px; color:var(--text-3)}
+.hgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(268px,1fr)); gap:14px}
+.hcard{border:1px solid var(--rule-soft); border-radius:6px; padding:14px 15px; background:var(--ink-2)}
+.hcard .hg{
+  font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:13px; color:var(--gold);
+  display:flex; align-items:baseline; gap:9px; margin-bottom:10px;
+  padding-bottom:9px; border-bottom:1px solid var(--rule-soft);
+}
+.hcard .hg small{font-family:"Archivo",sans-serif; font-weight:500; color:var(--text-3); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase}
+.hitem{padding:8px 0; border-bottom:1px dotted var(--rule-soft)}
+.hitem:last-child{border-bottom:none; padding-bottom:0}
+.hitem .hn{font-size:13.5px; font-weight:600}
+.hitem .he{font-family:"EB Garamond",serif; font-size:17px; color:var(--text); margin-top:2px}
+.hitem .ht{font-size:12.5px; color:var(--text-3)}
+
+/* ============ MATRIX ============ */
+.mx-scroll{overflow-x:auto; border:1px solid var(--rule); border-radius:6px; background:var(--ink-2)}
+table.mx{border-collapse:collapse; width:100%; min-width:900px}
+table.mx th, table.mx td{border-right:1px solid var(--rule-soft); border-bottom:1px solid var(--rule-soft)}
+table.mx thead th{
+  font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-3);
+  font-weight:600; padding:12px 6px; vertical-align:bottom; text-align:center; line-height:1.25; width:66px;
+}
+table.mx thead th .fd{display:block; width:7px; height:7px; border-radius:50%; margin:0 auto 6px}
+table.mx tbody th{
+  text-align:left; padding:9px 12px; font-weight:600; font-size:13px; white-space:nowrap;
+  position:sticky; left:0; background:var(--ink-2); border-right:1px solid var(--rule);
+}
+table.mx tbody th span{font-family:"IBM Plex Mono",monospace; color:var(--gold); margin-right:9px}
+table.mx td{text-align:center; padding:0}
+table.mx td button{
+  width:100%; height:40px; font-family:"IBM Plex Mono",monospace; font-size:13px;
+  color:var(--text-3); font-variant-numeric:tabular-nums;
+}
+table.mx td.has button{color:var(--ink); background:var(--cellc); font-weight:600}
+:root[data-theme="light"] table.mx td.has button{color:#F7F5EF}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) table.mx td.has button{color:#F7F5EF}}
+table.mx td.has button:hover{filter:brightness(1.18)}
+table.mx tr:hover td{background:var(--ink-3)}
+table.mx td.sel button{box-shadow:inset 0 0 0 2px var(--gold)}
+.mx-out{margin-top:20px; min-height:80px}
+.mx-out .mo-h{font-family:"EB Garamond",serif; font-size:22px; margin-bottom:4px}
+.mx-out .mo-s{color:var(--text-3); font-size:13px; margin-bottom:14px}
+.mo-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px}
+.mo-card{border:1px solid var(--rule-soft); border-left:3px solid var(--dotc); border-radius:5px; padding:12px 14px; background:var(--ink-2)}
+.mo-card .mn{font-weight:600; font-size:13.5px}
+.mo-card .mp{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--text-3); margin:2px 0 6px}
+.mo-card .me{font-family:"EB Garamond",serif; font-size:18px}
+.mo-card .mt{font-size:12.5px; color:var(--text-2)}
+
+/* ============ DISTANCE ============ */
+.dist-grid{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:40px; align-items:start}
+.dist-stage{border:1px solid var(--rule); border-radius:8px; padding:26px 28px 30px; background:var(--ink-2); box-shadow:var(--shadow)}
+.meter{height:3px; background:var(--rule); border-radius:2px; position:relative; margin:26px 0 8px}
+.meter i{position:absolute; left:0; top:0; bottom:0; background:var(--gold); border-radius:2px; transition:width .45s cubic-bezier(.4,0,.2,1)}
+.meter-lab{display:flex; justify-content:space-between; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-3)}
+.dsent{font-family:"EB Garamond",serif; font-size:clamp(24px,3.4vw,34px); line-height:1.35; min-height:2.7em; margin:6px 0 0}
+.dtr{color:var(--text-2); font-size:15px; margin-top:10px; min-height:3em}
+.dsteps{display:flex; gap:6px; flex-wrap:wrap; margin-top:24px}
+.dsteps button{
+  border:1px solid var(--rule); border-radius:4px; padding:8px 12px; font-size:12.5px; color:var(--text-2);
+}
+.dsteps button[aria-pressed="true"]{border-color:var(--gold); color:var(--gold); background:var(--ink-3)}
+.dside h3{font-family:"EB Garamond",serif; font-size:25px; margin-bottom:10px}
+.dside p{color:var(--text-2); font-size:14px}
+.dlaw{border:1px dashed var(--gold-soft); border-radius:6px; padding:16px 18px; margin:18px 0; background:var(--ink-2)}
+.dlaw .dl-h{font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--text-3); margin-bottom:8px}
+.dlaw .dl-b{font-family:"EB Garamond",serif; font-size:20px; line-height:1.35}
+.dlist{display:flex; flex-direction:column; gap:10px; margin-top:6px}
+.dlist div{font-size:13.5px; color:var(--text-2); padding-left:14px; border-left:1px solid var(--rule)}
+.dlist b{color:var(--text)}
+
+/* ============ HUNT ============ */
+.hunt{display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:40px; align-items:start}
+.qcard{border:1px solid var(--rule); border-radius:8px; background:var(--ink-2); padding:28px 30px 26px; box-shadow:var(--shadow)}
+.qmeta{display:flex; justify-content:space-between; align-items:center; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-3); margin-bottom:16px}
+.qsent{font-family:"EB Garamond",serif; font-size:clamp(23px,3.2vw,31px); line-height:1.4; margin-bottom:6px}
+.qask{color:var(--text-3); font-size:13px; margin-bottom:20px}
+.opts{display:flex; flex-direction:column; gap:8px}
+.opts button{
+  text-align:left; border:1px solid var(--rule); border-radius:5px; padding:11px 14px; font-size:14px;
+  display:flex; gap:11px; align-items:baseline; transition:border-color .15s, background .15s;
+}
+.opts button:hover:not(:disabled){border-color:var(--gold-soft); background:var(--ink-3)}
+.opts button:disabled{cursor:default}
+.opts .k{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--text-3); flex:none}
+.opts .otr{color:var(--text-3); font-size:12.5px}
+.opts button.right{border-color:var(--sage); background:color-mix(in srgb, var(--sage) 14%, transparent)}
+.opts button.wrong{border-color:var(--clay); background:color-mix(in srgb, var(--clay) 14%, transparent)}
+.verdict{margin-top:18px; padding-top:16px; border-top:1px solid var(--rule-soft); font-size:14px; color:var(--text-2)}
+.verdict b{color:var(--text)}
+.verdict .vt{font-weight:600; margin-bottom:4px; display:block}
+.verdict .vt.ok{color:var(--sage)} .verdict .vt.no{color:var(--clay)}
+.nextbtn{margin-top:16px; border:1px solid var(--gold); color:var(--gold); border-radius:4px; padding:9px 20px; font-size:13px; letter-spacing:.08em; text-transform:uppercase}
+.nextbtn:hover{background:var(--gold); color:var(--ink)}
+.score{border:1px solid var(--rule); border-radius:8px; padding:18px 20px}
+.score .sr{display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px dotted var(--rule-soft); font-size:13px; color:var(--text-2)}
+.score .sr:last-child{border-bottom:none}
+.score .sr b{font-family:"IBM Plex Mono",monospace; color:var(--text); font-size:15px; font-variant-numeric:tabular-nums}
+.misses{margin-top:18px}
+.misses .mh{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--text-3); margin-bottom:8px}
+.misses div{font-size:12.5px; color:var(--text-2); padding:5px 0; border-bottom:1px dotted var(--rule-soft)}
+.misses b{color:var(--clay)}
+
+footer{margin-top:70px; padding-top:22px; border-top:1px solid var(--rule); color:var(--text-3); font-size:12.5px; display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap}
+footer .gk{font-family:"EB Garamond",serif; font-style:italic; font-size:15px}
+
+@media (max-width:1080px){
+  .spine-grid{grid-template-columns:190px minmax(0,1fr)}
+  .det{grid-column:1/-1; border-left:none; border-top:1px solid var(--rule); padding-left:0; padding-top:20px; margin-top:24px; position:static}
+  .stage{padding-right:0}
+  .dist-grid,.hunt,.field-head{grid-template-columns:minmax(0,1fr); gap:26px}
+}
+@media (max-width:720px){
+  .wrap{padding:0 16px 70px}
+  .spine-grid{grid-template-columns:minmax(0,1fr)}
+  .rail{border-right:none; border-bottom:1px solid var(--rule); padding-right:0; padding-bottom:14px; margin-bottom:20px;
+        display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:2px}
+  .rail-h{grid-column:1/-1}
+  .stage{padding:0}
+  .counts{flex-wrap:wrap}
+}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div>
+    <div class="eyebrow">ΠΟΛΛΑΧΩΣ ΛΕΓΕΤΑΙ <span>— çok şekilde söylenir</span></div>
+    <h1>Bir form,<br>çok <em>söyleniş</em></h1>
+    <p class="thesis">Aristoteles varlığı tek bir anlamda değil, <b>çok şekilde</b> ele alır. İngilizce de öyle: <b>V3</b> tek bir “geçmiş zaman” değil; <b>have</b> tek bir “sahip olmak” değil. Bu atlas konuları değil <b>formları</b> merkeze alır — bir formu dikey olarak bütün işlevlerine, bir işlevi yatay olarak bütün formlarına açar.</p>
+    <div class="counts" id="counts"></div>
+  </div>
+  <button class="themebtn" id="themebtn" type="button">Tema</button>
+</header>
+
+<nav class="tabs" role="tablist" id="tabs">
+  <button class="tab" role="tab" data-tab="spine" aria-selected="true">Dikey — Omurga<span class="greek">kathetos</span></button>
+  <button class="tab" role="tab" data-tab="field" aria-selected="false">Yatay — Alan<span class="greek">horizōn</span></button>
+  <button class="tab" role="tab" data-tab="matrix" aria-selected="false">Kesişim<span class="greek">tomē</span></button>
+  <button class="tab" role="tab" data-tab="dist" aria-selected="false">Uzaklık Yasası<span class="greek">apostasis</span></button>
+  <button class="tab" role="tab" data-tab="hunt" aria-selected="false">Av<span class="greek">thēra</span></button>
+</nav>
+
+<!-- ================= SPINE ================= -->
+<section class="panel" id="p-spine" role="tabpanel">
+  <div class="spine-grid">
+    <div class="rail">
+      <div class="rail-h">Omurgalar · 11 form</div>
+      <div id="railList"></div>
+    </div>
+    <div class="stage">
+      <div class="stage-head" id="stageHead"></div>
+      <p class="stage-note" id="stageNote"></p>
+      <div class="fan">
+        <div class="brace" id="brace">
+          <svg viewBox="0 0 24 100" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M22 1 C13 1 17 18 6 50 C17 82 13 99 22 99" fill="none"
+                  stroke="var(--gold-soft)" stroke-width="1.2" vector-effect="non-scaling-stroke"/>
+          </svg>
+        </div>
+        <div class="branches" id="branches"></div>
+      </div>
+    </div>
+    <aside class="det">
+      <div class="det-h">Dal · ayrıntı</div>
+      <div id="detail"></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= FIELD ================= -->
+<section class="panel" id="p-field" role="tabpanel" hidden>
+  <div class="fieldbar" id="fieldbar"></div>
+  <div class="field-head" id="fieldHead"></div>
+  <div class="hgrid" id="fieldGrid"></div>
+</section>
+
+<!-- ================= MATRIX ================= -->
+<section class="panel" id="p-matrix" role="tabpanel" hidden>
+  <p class="stage-note" style="max-width:66ch;margin-top:0">Satırlar form, sütunlar işlev alanı. Dolu bir hücre şunu söyler: <b>bu form bu işi de yapar.</b> Bir satırı soldan sağa okumak dikey okumadır (bir formun çok söylenişi); bir sütunu yukarıdan aşağı okumak yatay okumadır (bir işin çok formu). Hücreye tıkla.</p>
+  <div class="mx-scroll"><table class="mx" id="mxTable"></table></div>
+  <div class="mx-out" id="mxOut"></div>
+</section>
+
+<!-- ================= DISTANCE ================= -->
+<section class="panel" id="p-dist" role="tabpanel" hidden>
+  <div class="dist-grid">
+    <div>
+      <div class="dist-stage">
+        <div class="meter-lab"><span>şimdi · burada · gerçek</span><span>uzak · farazi · kibar</span></div>
+        <div class="meter"><i id="meterFill" style="width:12%"></i></div>
+        <p class="dsent" id="dSent"></p>
+        <p class="dtr" id="dTr"></p>
+        <div class="dsteps" id="dSteps"></div>
+      </div>
+      <div class="dlaw">
+        <div class="dl-h">Tek yasa, beş görünüş</div>
+        <div class="dl-b">İngilizcede geçmiş biçim (V2 / would / could) <b>her zaman geçmiş zaman demek değildir</b>; “buradan uzak” demektir. Uzaklık zamanda, gerçeklikte ya da nezakette olabilir.</div>
+      </div>
+    </div>
+    <aside class="dside">
+      <h3>Neden tek yasa?</h3>
+      <p>Ders kitapları bunları beş ayrı konu olarak öğretir: Past Simple, Second Conditional, Wish, Reported Speech, Polite Requests. Aslında hepsi tek bir jestin tekrarıdır — <b>bir adım geri çekilmek</b>. Bunu bir kez gördüğünde beş kural ezberlemeyi bırakırsın.</p>
+      <div class="dlist" id="dList"></div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= HUNT ================= -->
+<section class="panel" id="p-hunt" role="tabpanel" hidden>
+  <div class="hunt">
+    <div>
+      <div class="qcard" id="qcard"></div>
+    </div>
+    <aside>
+      <div class="score" id="scoreBox"></div>
+      <div class="misses" id="missBox"></div>
+    </aside>
+  </div>
+</section>
+
+<footer>
+  <span class="gk">τὸ ὂν λέγεται πολλαχῶς — Aristoteles, <i>Metafizik</i> Γ.2</span>
+  <span>English Learning Wiki · form-önce örüntü atlası</span>
+</footer>
+</div>
+
+<script>
+/* ==================== VERİ ==================== */
+const FIELDS=[
+ {id:"time",tr:"Zaman & Görünüş",en:"Tense & Aspect",c:"var(--f-time)",d:"Eylemin zaman çizgisindeki yeri ve tamamlanmışlığı. İngilizcenin en kalabalık işlev alanı — ve en çok formu paylaşan alan."},
+ {id:"passive",tr:"Fail Gizleme",en:"Voice",c:"var(--f-passive)",d:"Eylemi yapanı sahneden çekmek. Türkçede tek bir ek (-il/-in) yapar; İngilizcede en az dört farklı yol vardır."},
+ {id:"unreal",tr:"Gerçek-dışılık & Nezaket",en:"Distance",c:"var(--f-unreal)",d:"Söylenen şeyin gerçek olmadığını ya da doğrudan söylenmediğini işaretlemek. Uzaklık Yasası'nın alanı."},
+ {id:"oblig",tr:"Zorunluluk & İrade",en:"Modality",c:"var(--f-oblig)",d:"Bir şeyin yapılması gerekiyor mu, isteniyor mu, bekleniyor mu? Kaynağın kim olduğu (dış kural mı, iç karar mı) form seçimini belirler."},
+ {id:"nominal",tr:"İsimleştirme",en:"Nominalisation",c:"var(--f-nominal)",d:"Bir eylemi alıp cümlenin öznesi ya da nesnesi yapmak — yani fiili isim gibi kullanmak."},
+ {id:"modify",tr:"Niteleme",en:"Modification",c:"var(--f-modify)",d:"Bir ismi ya da cümleyi tarif etmek, daraltmak, sıfat işi gördürmek."},
+ {id:"pack",tr:"Paketleme",en:"Subordination",c:"var(--f-pack)",d:"Bir cümleyi başka bir cümlenin içine sokmak. B1'den B2'ye geçişin gerçek eşiği budur."},
+ {id:"caus",tr:"Ettirgenlik",en:"Causation",c:"var(--f-caus)",d:"İşi kendin yapmıyorsun; yaptırıyorsun, sağlıyorsun ya da başına geliyor."},
+ {id:"focus",tr:"Odak & Vurgu",en:"Focus",c:"var(--f-focus)",d:"Cümlenin hangi parçasının önemli olduğunu yapıyla göstermek — sesle değil, dizilişle."},
+ {id:"event",tr:"Olay & Deneyim",en:"Light-verb event",c:"var(--f-event)",d:"Fiilin anlamını boşaltıp olayı isme yükleme (have a look) ya da bir duruma geçişi anlatma (get tired)."},
+ {id:"poss",tr:"Sahiplik & İlişki",en:"Possession",c:"var(--f-poss)",d:"Kimin nesi, neyin parçası, kime ait — mülkiyetten akrabalığa kadar."},
+ {id:"deixis",tr:"İşaret & Gönderim",en:"Deixis",c:"var(--f-deixis)",d:"Konuşma anından bir yeri, bir şeyi, bir yönü göstermek. Bazen de hiçbir şeyi göstermemek (boş özne)."},
+ {id:"agree",tr:"Sayı & Uyum",en:"Agreement",c:"var(--f-agree)",d:"Tek mi çok mu, kim yapıyor — dilbilgisel uyum. Türk öğrencinin en sessiz ama en sık hatası burada."}
+];
+const F=Object.fromEntries(FIELDS.map(f=>[f.id,f]));
+
+const SPINES=[
+{id:"v3",glyph:"V3",name:"Past Participle",lat:"üçüncü hâl",
+ note:"Okulda “üçüncü hâl” denip geçilir. Oysa V3 tek başına bir zaman değildir — <b>zamansız bir bitmişlik/edilgenlik damgasıdır</b>. Onu kimin taşıdığına bakarsın: have taşıyorsa zaman, be taşıyorsa edilgenlik, isim taşıyorsa sıfat olur.",
+ senses:[
+  {n:"Perfect Aspect",tr:"Bitmişlik",f:"time",p:"have / has / had + V3",
+   ex:"She *has finished* the report.",exTr:"Raporu bitirdi — ve şimdi elimizde bitmiş bir rapor var.",
+   note:"Burada V3 zamanı değil <b>tamamlanmışlığı</b> taşır. Zamanı taşıyan have/has/had'dir. V3 hiç değişmez; onun için “üçüncü hâl geçmiş zamandır” cümlesi yanlıştır."},
+  {n:"Passive Voice",tr:"Edilgen çatı",f:"passive",p:"be + V3",
+   ex:"The report *was finished* last night.",exTr:"Rapor dün gece bitirildi (kimin bitirdiği önemsiz).",
+   note:"Aynı V3, bu kez <b>be</b>'nin sırtında. Formu değişmedi, işi değişti. Türk öğrencinin klasik hatası: <i>was finish</i> ya da <i>has been finish</i> — taşıyıcı değişse de V3 asla V1'e dönmez."},
+  {n:"Adjectival Participle",tr:"Sıfat-ortaç",f:"modify",p:"a + V3 + noun / be + V3(duygu)",
+   ex:"I'm *interested* in a *finished* product.",exTr:"Bitmiş bir ürünle ilgileniyorum.",
+   note:"V3 doğrudan sıfat olur: <i>broken window, bored student</i>. Kural: <b>-ed sende olan duygu, -ing o şeyin özelliği</b>. <i>I am bored</i> (sıkıldım) ≠ <i>I am boring</i> (sıkıcıyım)."},
+  {n:"Reduced Relative",tr:"Kısaltılmış ilgi cümlesi",f:"modify",p:"noun + V3 (… which/that was silinir)",
+   ex:"The report *written* in 2019 is still valid.",exTr:"2019'da yazılmış olan rapor hâlâ geçerli.",
+   note:"<i>The report which was written</i> → <b>which was</b> düşer, geriye V3 kalır. Akademik İngilizcenin yoğunluğu buradan gelir: bir cümlelik bilgiyi tek kelimeye sıkıştırır."},
+  {n:"Participle Clause",tr:"Ortaç cümlesi",f:"pack",p:"V3 …, + ana cümle",
+   ex:"*Written* in haste, the letter had three mistakes.",exTr:"Aceleyle yazıldığı için mektupta üç hata vardı.",
+   note:"Cümlenin başına atılan V3, edilgen bir yan cümlenin tamamını paketler. <b>Şart:</b> ana cümlenin öznesiyle aynı özneyi anlatmalı — yoksa “dangling participle” hatası olur."},
+  {n:"Causative",tr:"Ettirgen",f:"caus",p:"have / get + nesne + V3",
+   ex:"I *had* my report *checked* by an editor.",exTr:"Raporumu bir editöre kontrol ettirdim.",
+   note:"Türkçedeki <b>-tır/-dir</b> ekinin karşılığı. Nesne ile V3 arasındaki mesafe önemlidir: <i>I checked my report</i> (ben kontrol ettim) ≠ <i>I had my report checked</i> (başkasına kontrol ettirdim)."},
+  {n:"Perfect Infinitive",tr:"Geçmişe bakan modal",f:"unreal",p:"modal + have + V3",
+   ex:"You *should have finished* it yesterday.",exTr:"Dün bitirmiş olmalıydın (ama bitirmedin).",
+   note:"Modal + have + V3 daima <b>gerçekleşmemiş geçmişi</b> ya da <b>geçmişe dair tahmini</b> taşır: <i>must have</i> (kesin öyleydi), <i>can't have</i> (imkânsız), <i>could have</i> (olabilirdi), <i>should have</i> (pişmanlık)."},
+  {n:"Third Conditional",tr:"Üçüncü tip koşul",f:"unreal",p:"If + had + V3, … would have + V3",
+   ex:"If I *had finished* it, I *would have slept*.",exTr:"Bitirseydim uyumuş olacaktım (ama bitirmedim, uyumadım).",
+   note:"Burada V3 iki kere görünür ve ikisi de <b>gerçekleşmemiş</b> bir dünyayı işaretler. Aynı yapı <i>I wish I had finished</i> ve <i>If only I had known</i>'da da çalışır."},
+  {n:"Get-Passive",tr:"Başına gelen edilgen",f:"passive",p:"get + V3",
+   ex:"He *got fired* last week.",exTr:"Geçen hafta kovuldu (aniden, başına geldi).",
+   note:"be + V3 nötrdür; <b>get + V3 ise ani, istenmedik ya da kişiye çarpan</b> olayları anlatır ve konuşma dilinde çok yaygındır: <i>get married, get hurt, get caught, get paid</i>."},
+  {n:"Passive Gerund & Infinitive",tr:"Edilgen mastar/ortaç",f:"nominal",p:"being + V3 / to be + V3 / need + V-ing",
+   ex:"He hates *being interrupted*; the door needs *painting*.",exTr:"Sözünün kesilmesinden nefret eder; kapının boyanması gerek.",
+   note:"Edilgenlik isimleşince de kaybolmaz. <i>need + V-ing</i> gizli edilgendir: <i>needs painting = needs to be painted</i>."}
+ ]},
+
+{id:"have",glyph:"HAVE",name:"HAVE",lat:"sahip olmak?",
+ note:"Sözlük “sahip olmak” der ve öğrenci ömrü boyunca bu tek anlamla dolaşır. Oysa <b>have</b> İngilizcenin en çok iş yapan üç fiilinden biridir: zaman kurar, zorunluluk yükler, iş yaptırır, olay üretir. “Sahip olmak” onun en <b>az</b> ilginç işidir.",
+ senses:[
+  {n:"Possession",tr:"Sahiplik",f:"poss",p:"have (got) + isim",
+   ex:"I *have* two brothers and a headache.",exTr:"İki kardeşim ve bir baş ağrım var.",
+   note:"Dikkat: “sahiplik” İngilizcede mülkten ibaret değil — akrabalık, hastalık, özellik, hepsi have ile gelir. <i>have got</i> İngiliz konuşma dilidir ve <b>yalnızca</b> bu anlamda kullanılabilir."},
+  {n:"Perfect Auxiliary",tr:"Yardımcı fiil",f:"time",p:"have / has / had + V3",
+   ex:"I *have* seen that film three times.",exTr:"O filmi üç kere gördüm (deneyim, şimdiye bağlı).",
+   note:"Burada have'in <b>hiçbir anlamı yoktur</b>; sadece zaman taşır. Bu yüzden soruda öne geçer: <i>Have you seen…?</i> — sahiplik have'i ise do ister: <i>Do you have…?</i>"},
+  {n:"Have to — Obligation",tr:"Dış zorunluluk",f:"oblig",p:"have to + V1",
+   ex:"I *have to* wear a tie at work.",exTr:"İşte kravat takmak zorundayım (kural böyle).",
+   note:"<b>must</b> içeriden gelir (ben istiyorum), <b>have to</b> dışarıdan (kural, patron, kanun). Olumsuzu ise tamamen ayrışır: <i>mustn't</i> = yasak, <i>don't have to</i> = gerek yok."},
+  {n:"Causative — have sth done",tr:"İş yaptırma",f:"caus",p:"have + nesne + V3",
+   ex:"I *had* the car *repaired* yesterday.",exTr:"Arabayı dün tamir ettirdim.",
+   note:"Sen yapmıyorsun, para verip yaptırıyorsun. <i>I repaired the car</i> demek elini yağa soktun demektir — hikâyeni değiştirir."},
+  {n:"Causative — have sb do",tr:"Birine yaptırma",f:"caus",p:"have + kişi + V1 (to yok!)",
+   ex:"I'll *have* the waiter *bring* more water.",exTr:"Garsona su getirtirim.",
+   note:"Kişiye emrediyorsan <b>to düşer</b>: <i>have him do</i>. Aynı işi get yaparsa to geri gelir: <i>get him to do</i>. Bu ikisini karıştırmak en sık ettirgenlik hatasıdır."},
+  {n:"Light-verb Event",tr:"Olay üreten have",f:"event",p:"have + a + olay ismi",
+   ex:"Let's *have* a look, then *have* a coffee.",exTr:"Bir bakalım, sonra bir kahve içelim.",
+   note:"Have burada anlamını isme devreder: <i>have a shower / a rest / a try / a chat / a good time / trouble / difficulty</i>. Doğal İngilizcenin bel kemiği — ve “sahip olmak” çevirisiyle asla bulunamaz."},
+  {n:"Have sb doing",tr:"Bir durum sürdürtme",f:"caus",p:"have + kişi + V-ing",
+   ex:"He *had* the whole room *laughing*.",exTr:"Bütün odayı güldürdü (ve gülüyor tuttu).",
+   note:"V3 biten bir işi, V-ing <b>süren bir durumu</b> yaptırır. Karşılaştır: <i>have the engine repaired</i> (tamir ettir) / <i>have the engine running</i> (çalışır hâlde tut)."},
+  {n:"Refusal to permit",tr:"İzin vermeme",f:"oblig",p:"won't have + kişi + V-ing",
+   ex:"I *won't have* you *talking* to me like that.",exTr:"Benimle bu şekilde konuşmana izin vermem.",
+   note:"Sert, otoriter bir kalıp — ebeveyn ve patron İngilizcesi. Zorunluluk alanının en duygusal ucu."},
+  {n:"Had better",tr:"Uyarı içeren tavsiye",f:"oblig",p:"had better + V1",
+   ex:"You'*d better* leave now.",exTr:"Şimdi gitsen iyi olur (yoksa kötü bir şey olacak).",
+   note:"<b>had</b> geçmiş değildir — uzaklık yasasının izi. Ve <i>better to</i> değil, <b>better + V1</b>. Olumsuzu: <i>had better not go</i>."}
+ ]},
+
+{id:"ing",glyph:"-ING",name:"-ING Form",lat:"tek ek, dört kimlik",
+ note:"<b>-ing</b> bir zaman eki değil, bir <b>kimlik değiştirici</b>dir. Aynı ek fiili sürdürür, ismi doğurur, sıfata çevirir ve koca bir yan cümleyi tek kelimeye paketler. “-ing gördün mü şimdiki zamandır” cezasından kurtulmak bu sayfadan geçer.",
+ senses:[
+  {n:"Progressive Aspect",tr:"Süregelenlik",f:"time",p:"be + V-ing",
+   ex:"She *is writing* her thesis this year.",exTr:"Bu yıl tezini yazıyor (bitmedi, sürüyor).",
+   note:"Sadece “şu an” değil — <b>geçici ve bitmemiş</b> demek. <i>I live in Ankara</i> (kalıcı) / <i>I'm living in Ankara</i> (şimdilik)."},
+  {n:"Gerund — subject / object",tr:"İsimleşmiş fiil",f:"nominal",p:"V-ing + fiil / fiil + V-ing",
+   ex:"*Swimming* keeps me sane; I enjoy *reading*.",exTr:"Yüzmek beni ayakta tutuyor; okumaktan keyif alırım.",
+   note:"Fiil özne ya da nesne olacaksa isimleşmek zorundadır. Türkçedeki <b>-mek/-ma</b> mastarının karşılığı. <i>To swim is good</i> da mümkündür ama gerund daha doğaldır."},
+  {n:"After preposition",tr:"Edattan sonra",f:"nominal",p:"prep + V-ing",
+   ex:"I'm good *at* remember*ing* faces and look forward *to* meet*ing* you.",exTr:"Yüz hatırlamada iyiyimdir ve sizinle tanışmayı iple çekiyorum.",
+   note:"<b>Altın kural: edattan sonra daima -ing.</b> Tuzak <i>to</i>'dur — <i>look forward to</i>, <i>be used to</i>, <i>object to</i> içindeki to mastar değil edattır: <i>looking forward to see</i> ✗ / <i>to seeing</i> ✓."},
+  {n:"Participle Clause",tr:"Ortaç cümlesi",f:"pack",p:"V-ing …, + ana cümle",
+   ex:"*Walking* home, I saw the fire.",exTr:"Eve yürürken yangını gördüm.",
+   note:"<i>While I was walking home</i> → 4 kelime tek kelimeye indi. Sebep de anlatır: <i>Feeling tired, she left early.</i> Yazıda akıcılığın en ucuz kaynağıdır."},
+  {n:"Reduced Relative",tr:"Kısaltılmış ilgi cümlesi",f:"modify",p:"noun + V-ing",
+   ex:"The man *sitting* by the window is my uncle.",exTr:"Pencerenin yanında oturan adam amcam.",
+   note:"<i>who is sitting</i> → <i>sitting</i>. V3 versiyonu edilgendir (<i>the letter written</i>), V-ing versiyonu etkendir (<i>the man writing</i>). Fark tam olarak burada."},
+  {n:"Adjective",tr:"Sıfat",f:"modify",p:"V-ing + noun",
+   ex:"It was an *exciting* but *tiring* week.",exTr:"Heyecan verici ama yorucu bir haftaydı.",
+   note:"-ing sıfat <b>kaynağı</b> tarif eder, -ed sıfat <b>yaşayanı</b>. <i>The film was boring, so I was bored.</i> Bu çifti bir kez oturtan bir daha şaşırmaz."},
+  {n:"Deverbal Noun",tr:"Tam isim",f:"nominal",p:"the + V-ing (+ of)",
+   ex:"The *building* is new; the *meeting* starts at ten.",exTr:"Bina yeni; toplantı onda başlıyor.",
+   note:"Bazı -ing'ler artık fiil değildir, sözlükte isim olarak yaşarlar: <i>building, meeting, feeling, warning, opening</i>. Çoğul bile alırlar — bu, gerund'un yapamadığı şeydir."},
+  {n:"Perception & retention",tr:"Algı ve sürdürme fiilleri",f:"event",p:"see / hear / keep / find + nesne + V-ing",
+   ex:"I *saw* him *crossing* the road; don't *keep* me *waiting*.",exTr:"Onu karşıdan karşıya geçerken gördüm; beni bekletme.",
+   note:"<b>V-ing = eylemin ortası, V1 = eylemin tamamı.</b> <i>I saw him cross</i> (baştan sona gördüm) ≠ <i>I saw him crossing</i> (bir ânına şahit oldum)."},
+  {n:"Activity go + -ing",tr:"Etkinlik kalıbı",f:"event",p:"go + V-ing",
+   ex:"We went *shopping* and then went *swimming*.",exTr:"Alışverişe gittik, sonra yüzmeye gittik.",
+   note:"Boş zaman etkinlikleri için sabit kalıp: <i>go running / fishing / hiking / camping</i>. <i>go to shopping</i> ✗ — araya to girmez."}
+ ]},
+
+{id:"to",glyph:"TO",name:"TO",lat:"iki farklı kelime",
+ note:"Ekranda tek kelime görünür ama aslında <b>iki ayrı TO</b> vardır: yön gösteren <b>edat</b> ve fiili mastara çeviren <b>işaretçi</b>. Türk öğrencinin en pahalı hatası ikisini karıştırmaktır: edat olan to'dan sonra -ing gelir, işaretçi olan to'dan sonra V1.",
+ senses:[
+  {n:"Direction",tr:"Yön edatı",f:"deixis",p:"to + yer",
+   ex:"I go *to* work at eight.",exTr:"Sekizde işe giderim.",
+   note:"Yön var, varış var. <i>home</i>, <i>here</i>, <i>there</i> ise to almaz: <i>go home</i> ✓ / <i>go to home</i> ✗."},
+  {n:"Recipient",tr:"Alıcı",f:"poss",p:"give / send / explain + şey + to + kişi",
+   ex:"Explain it *to* me and give the book *to* her.",exTr:"Bana açıkla ve kitabı ona ver.",
+   note:"Bazı fiiller to'suz ikili nesne alabilir (<i>give me the book</i>), bazıları asla: <i>explain me</i> ✗ / <i>explain to me</i> ✓. Aynısı <i>say, describe, suggest</i> için de geçerli."},
+  {n:"Infinitive marker",tr:"Mastar işaretçisi",f:"nominal",p:"fiil + to + V1",
+   ex:"I want *to* learn and decided *to* start today.",exTr:"Öğrenmek istiyorum ve bugün başlamaya karar verdim.",
+   note:"Burada to'nun anlamı yok, görevi var: fiili isimleştirir. Hangi fiilin to, hangisinin -ing istediği <b>listedir</b>, mantık değil — ama bir ipucu var: geleceğe bakan fiiller (want, hope, plan, decide) to sever."},
+  {n:"Purpose",tr:"Amaç",f:"pack",p:"… to + V1 (= in order to)",
+   ex:"I came *to* help you.",exTr:"Sana yardım etmek için geldim.",
+   note:"“Niçin?” sorusunun cevabı. <i>for</i> ile karıştırılır: <b>for + isim</b>, <b>to + fiil</b>. <i>I came for help</i> ✓ / <i>I came for to help</i> ✗ / <i>I came for helping</i> ✗."},
+  {n:"Adjective + to",tr:"Sıfat tamamlayıcısı",f:"modify",p:"be + sıfat + to + V1",
+   ex:"I'm *happy to* see you; it's *easy to* use.",exTr:"Seni gördüğüme sevindim; kullanması kolay.",
+   note:"Duygu ve değerlendirme sıfatları to ile tamamlanır: <i>glad, sorry, ready, willing, difficult, dangerous</i>."},
+  {n:"Too / enough + to",tr:"Yeterlilik ölçüsü",f:"modify",p:"too + sıfat + to / sıfat + enough + to",
+   ex:"He was *too* tired *to* walk, but old *enough to* decide.",exTr:"Yürüyemeyecek kadar yorgundu ama karar verecek kadar büyüktü.",
+   note:"Sıra kritik: <b>too</b> sıfattan önce, <b>enough</b> sıfattan sonra ama isimden önce (<i>enough money</i>). <i>too much tired</i> ✗."},
+  {n:"be to — arrangement",tr:"Resmî düzenleme",f:"time",p:"be + to + V1",
+   ex:"The minister *is to* visit Ankara on Friday.",exTr:"Bakan cuma günü Ankara'yı ziyaret edecek.",
+   note:"Haber diliidir: resmî plan, emir ya da kader. <i>You are to report at nine</i> = emir. Gelecek alanının en az bilinen formu."},
+  {n:"to as preposition (trap)",tr:"Edat olan TO — tuzak",f:"nominal",p:"used to / look forward to / be used to + V-ing",
+   ex:"I'm *used to* get*ting* up early, but I *used to* sleep late.",exTr:"Erken kalkmaya alışkınım, ama eskiden geç uyurdum.",
+   note:"Aynı satırda iki farklı TO: <b>be used to</b> (alışkın olmak, edat → -ing) ve <b>used to</b> (eskiden yapardım, işaretçi → V1). Bu ayrımı yapan öğrenci B1'i geçmiş sayılır."}
+ ]},
+
+{id:"would",glyph:"WOULD",name:"WOULD",lat:"will'in gölgesi değil",
+ note:"“Would = -ecekti/-erdi” çevirisi yedi ayrı işi tek çuvala tıkar. Would aslında <b>gerçekten bir adım geri çekilmiş will</b>'dir: geçmişteki alışkanlık da, hayalî sonuç da, kibar rica da aynı geri çekilmenin sonucudur.",
+ senses:[
+  {n:"Unreal result",tr:"Hayalî sonuç",f:"unreal",p:"If + V2, … would + V1",
+   ex:"If I had time, I *would* learn Greek.",exTr:"Vaktim olsa Yunanca öğrenirdim (yok).",
+   note:"İkinci tip koşulun sonuç yarısı. <b>If cümlesinin içine would girmez</b> — <i>If I would have time</i> ✗ Türk öğrencinin en görünür hatalarından."},
+  {n:"Past habit",tr:"Geçmiş alışkanlık",f:"time",p:"would + V1 (tekrarlı eylem)",
+   ex:"Every summer we *would* sit on the balcony for hours.",exTr:"Her yaz saatlerce balkonda otururduk.",
+   note:"<i>used to</i> ile eşdeğer görünür ama <b>would durumları anlatamaz</b>: <i>I used to have a car</i> ✓ / <i>I would have a car</i> ✗. Would yalnızca tekrarlanan <b>eylemler</b> için."},
+  {n:"Future in the past",tr:"Geçmişteki gelecek",f:"time",p:"said / knew (that) … would + V1",
+   ex:"He said he *would* come at six.",exTr:"Altıda geleceğini söyledi.",
+   note:"Dolaylı anlatımda will → would. Bu bir “geçmiş” değil, <b>geçmiş bir andan bakılan gelecektir</b>. Zaman çizgisi kaymıştır, gerçeklik değil."},
+  {n:"Polite request",tr:"Kibar rica",f:"unreal",p:"Would you … ? / I would like",
+   ex:"*Would* you mind opening the window? I *would* like a coffee.",exTr:"Pencereyi açar mısınız? Bir kahve istiyorum.",
+   note:"Uzaklık = nezaket. <i>Will you</i> emre yakındır, <i>would you</i> yumuşaktır. <i>I want</i> kaba, <i>I would like</i> medenidir. Aynı gramerin sosyal yüzü."},
+  {n:"Willingness & refusal",tr:"İrade ve direnç",f:"oblig",p:"wouldn't + V1",
+   ex:"The car *wouldn't* start this morning.",exTr:"Araba bu sabah bir türlü çalışmadı.",
+   note:"Cansız nesnelere bile irade yükler — “inat etti” anlamı taşır. <i>He wouldn't listen</i> = dinlemeye yanaşmadı (dinleyemedi değil)."},
+  {n:"wish + would",tr:"Şikâyet ve sabırsızlık",f:"unreal",p:"I wish + kişi + would + V1",
+   ex:"I *wish* you *would* stop interrupting me.",exTr:"Keşke sözümü kesmeyi bıraksan.",
+   note:"Kural: <b>kendinle ilgili wish + would kullanılmaz</b> (<i>I wish I would</i> ✗). Bu kalıp başkasının davranışından duyulan rahatsızlığı taşır."},
+  {n:"would rather",tr:"Tercih",f:"unreal",p:"would rather + V1 / + kişi + V2",
+   ex:"I'*d rather* stay in. I'*d rather* you *didn't* smoke.",exTr:"Evde kalmayı tercih ederim. Sigara içmemeni tercih ederim.",
+   note:"Özne aynıysa V1, değişiyorsa <b>V2</b> — ve bu V2 geçmiş değildir, uzaklıktır. Uzaklık Yasası'nın en şaşırtıcı köşesi."}
+ ]},
+
+{id:"get",glyph:"GET",name:"GET",lat:"İngilizcenin joker fiili",
+ note:"Anadili konuşurlarının cümle başına en çok düşürdüğü fiil. Türk öğrenci ise onu neredeyse hiç kullanmaz, çünkü sözlük “almak” der ve iş orada biter. Oysa get bir <b>geçiş fiilidir</b>: bir durumdan başka bir duruma taşır.",
+ senses:[
+  {n:"Obtain / receive",tr:"Elde etme",f:"poss",p:"get + isim",
+   ex:"I *got* a letter and *got* a new job.",exTr:"Bir mektup aldım ve yeni bir iş buldum.",
+   note:"Sözlük anlamı — ve get'in <b>en dar</b> işi. Buradan öteye geçmeyen öğrenci get'in %80'ini kaybeder."},
+  {n:"Become",tr:"Duruma geçiş",f:"event",p:"get + sıfat",
+   ex:"It's *getting* dark and I'm *getting* tired.",exTr:"Hava kararıyor ve yoruluyorum.",
+   note:"<b>be = durum, get = geçiş.</b> <i>I am cold</i> (üşüyorum) / <i>I'm getting cold</i> (üşümeye başlıyorum). Türkçedeki “-laşmak / -maya başlamak”."},
+  {n:"Arrive",tr:"Varış",f:"deixis",p:"get to + yer",
+   ex:"What time did you *get* home?",exTr:"Eve saat kaçta vardın?",
+   note:"<i>arrive at/in</i>'in günlük hâli. <i>get home / get there / get here</i> — to yok; diğer yerlerde <i>get to the office</i>."},
+  {n:"Get-passive",tr:"Edilgen",f:"passive",p:"get + V3",
+   ex:"They *got* married in May and he *got* promoted in June.",exTr:"Mayısta evlendiler, haziranda terfi etti.",
+   note:"be-passive resmî, get-passive canlıdır ve <b>olayın kişiye çarpmasını</b> vurgular. Konuşma dilinde be-passive'den daha sık duyulur."},
+  {n:"Causative — get sth done",tr:"Yaptırma",f:"caus",p:"get + nesne + V3",
+   ex:"I need to *get* my hair *cut*.",exTr:"Saçımı kestirmem lazım.",
+   note:"have ile aynı işi yapar ama daha gündelik ve genelde <b>uğraş gerektiren</b> işler için. <i>I cut my hair</i> demek kendi kestin demektir."},
+  {n:"Causative — get sb to do",tr:"İkna ederek yaptırma",f:"caus",p:"get + kişi + to + V1",
+   ex:"I *got* my brother *to* help me.",exTr:"Kardeşimi bana yardım etmeye ikna ettim.",
+   note:"have emreder, <b>get ikna eder</b> — ve to'yu geri getirir. <i>have him do</i> / <i>get him to do</i>."},
+  {n:"Get + object + -ing",tr:"Çalıştırma / başlatma",f:"caus",p:"get + nesne + V-ing",
+   ex:"Let's *get* the engine *running*.",exTr:"Hadi motoru çalıştıralım.",
+   note:"Bir süreci başlatmak ve sürdürmek. <i>get the ball rolling</i> = işi başlatmak — deyim hâline gelmiş hâli."},
+  {n:"get used to",tr:"Alışma süreci",f:"time",p:"get used to + V-ing",
+   ex:"I'm slowly *getting used to* work*ing* nights.",exTr:"Gece çalışmaya yavaş yavaş alışıyorum.",
+   note:"Üçlüyü ayır: <b>used to + V1</b> (eskiden), <b>be used to + -ing</b> (alışkınım), <b>get used to + -ing</b> (alışıyorum). Aynı üç kelime, üç ayrı zaman ilişkisi."}
+ ]},
+
+{id:"that",glyph:"THAT",name:"THAT",lat:"işaret mi, tutkal mı?",
+ note:"That kelimesinin iki hayatı vardır: <b>parmakla gösteren</b> that ve <b>iki cümleyi yapıştıran</b> that. İkincisi çoğu zaman görünmez bile — silindiğinde cümle bozulmaz. Bir kelimenin silinebilir olması, onun taşıdığı işin ne kadar soyut olduğunu gösterir.",
+ senses:[
+  {n:"Demonstrative",tr:"İşaret sıfatı/zamiri",f:"deixis",p:"that / those + isim",
+   ex:"*That* book on *that* shelf is mine.",exTr:"Şu raftaki şu kitap benim.",
+   note:"Uzaklık gösterir: this/these yakın, that/those uzak. Zamanda da: <i>those days</i> (o günler). Tek vurgulanan hâlde <b>okunur</b> hâli budur."},
+  {n:"Relative pronoun",tr:"İlgi zamiri",f:"modify",p:"isim + that + fiil",
+   ex:"The book *that* changed my mind was short.",exTr:"Fikrimi değiştiren kitap kısaydı.",
+   note:"who/which yerine geçebilir — ama <b>yalnızca defining (tanımlayan) cümlelerde</b>. Virgüllü non-defining cümlede that yasaktır: <i>My brother, that lives in Bursa</i> ✗ → <i>who</i> ✓."},
+  {n:"Complementiser",tr:"İsim cümlesi bağlacı",f:"pack",p:"fiil + (that) + cümle",
+   ex:"I think *that* he's right; she said *that* she'd come.",exTr:"Bence haklı; geleceğini söyledi.",
+   note:"Burada that'in <b>hiçbir anlamı yoktur</b>, sadece koca bir cümleyi nesne konumuna sokar. Konuşma dilinde çoğu zaman düşer: <i>I think he's right.</i>"},
+  {n:"the fact that",tr:"Cümleyi isimleştirme",f:"nominal",p:"the fact / idea / news + that + cümle",
+   ex:"*The fact that* nobody noticed surprised me.",exTr:"Kimsenin fark etmemiş olması beni şaşırttı.",
+   note:"Bir cümlenin tamamı özne olacaksa isim gibi paketlenmelidir. Akademik yazının en işlek yapısı: <i>the idea that, the possibility that, the assumption that</i>."},
+  {n:"so / such … that",tr:"Sonuç bağlacı",f:"pack",p:"so + sıfat + that / such + a + isim + that",
+   ex:"It was *so* cold *that* the pipes froze.",exTr:"O kadar soğuktu ki borular dondu.",
+   note:"<b>so + sıfat/zarf</b>, <b>such + isim öbeği</b>: <i>so cold</i> / <i>such a cold night</i>. Türkçedeki “o kadar … ki” kalıbı."},
+  {n:"Degree adverb (informal)",tr:"Derece zarfı",f:"focus",p:"not (all) that + sıfat",
+   ex:"It's not *that* difficult, honestly.",exTr:"O kadar da zor değil aslında.",
+   note:"Konuşma dilinde that = “o kadar”. Yalnızca olumsuz ve soru cümlelerinde doğal durur."}
+ ]},
+
+{id:"s",glyph:"-S",name:"Sondaki -S",lat:"tek harf, beş görev",
+ note:"Atlasın en küçük ve en sinsi omurgası. Türkçede bu beş işi beş ayrı ek yapar; İngilizcede <b>tek bir harf</b> yapar. Bu yüzden Türk öğrencinin hatası burada duyulmaz bile — ama anadili konuşuru her seferinde duyar.",
+ senses:[
+  {n:"Plural",tr:"Çoğul",f:"agree",p:"isim + -s",
+   ex:"Two book*s*, three box*es*, five knive*s*.",exTr:"İki kitap, üç kutu, beş bıçak.",
+   note:"Türkçede sayı varsa çoğul eki düşer (<i>iki kitap</i>), İngilizcede <b>düşmez</b>: <i>two book</i> ✗. Bu, Türkçenin doğrudan araya girdiği bir hatadır."},
+  {n:"Third person singular",tr:"Geniş zaman -s'i",f:"agree",p:"he / she / it + fiil + -s",
+   ex:"She work*s* here; it depend*s* on you.",exTr:"O burada çalışır; sana bağlı.",
+   note:"Fiildeki -s <b>çoğulun tam tersini</b> söyler: tekil özne. İsimde -s = çok, fiilde -s = tek. Bu ters simetri hatanın kaynağıdır."},
+  {n:"Possessive 's",tr:"İyelik",f:"poss",p:"isim + 's / s'",
+   ex:"My brother*'s* car and my parent*s'* house.",exTr:"Kardeşimin arabası ve ailemin evi.",
+   note:"Kesme işaretinin yeri sahibin sayısını söyler: <i>the boy's</i> (bir çocuk) / <i>the boys'</i> (çocuklar). Cansız nesnelerde genelde <b>of</b> tercih edilir: <i>the roof of the house</i>."},
+  {n:"Contracted is",tr:"is kısalması",f:"time",p:"özne + 's = is",
+   ex:"He'*s* writing now.",exTr:"Şu anda yazıyor.",
+   note:"Ardından <b>V-ing ya da sıfat</b> geliyorsa 's = is."},
+  {n:"Contracted has",tr:"has kısalması",f:"time",p:"özne + 's = has",
+   ex:"He'*s* written three books.",exTr:"Üç kitap yazdı.",
+   note:"Ardından <b>V3</b> geliyorsa 's = has. Yukarıdaki cümleyle yan yana koy: <i>He's writing</i> / <i>He's written</i> — tek harf, iki zaman. Ayırt etmenin tek yolu sonraki kelimedir."}
+ ]},
+
+{id:"it",glyph:"IT",name:"IT",lat:"bazen hiçbir şey",
+ note:"Türkçe öznesiz cümle kurabilir: “Yağmur yağıyor.” İngilizce kuramaz — <b>özne kutusu boş kalamaz</b>. İşte <b>it</b>'in asıl işi budur: çoğu zaman hiçbir şeyi göstermez, sadece boş kutuyu doldurur. Türk öğrencinin “is raining” hatası tam olarak bu kutuyu görmemekten doğar.",
+ senses:[
+  {n:"Referring pronoun",tr:"Gönderen zamir",f:"deixis",p:"it = daha önce geçen şey",
+   ex:"I bought a lamp but *it* doesn't work.",exTr:"Bir lamba aldım ama çalışmıyor.",
+   note:"Tek gerçek “anlamlı” it budur — geri gönderim yapar."},
+  {n:"Dummy subject",tr:"Boş özne",f:"deixis",p:"It + be + hava/zaman/mesafe",
+   ex:"*It's* raining, *it's* five o'clock, *it's* ten kilometres.",exTr:"Yağmur yağıyor, saat beş, on kilometre.",
+   note:"Burada it hiçbir şeydir; İngilizce dilbilgisi öznesiz cümleye izin vermediği için oradadır. <i>Is raining</i> ✗."},
+  {n:"Anticipatory subject",tr:"Ön-özne",f:"pack",p:"It + be + sıfat + to / that …",
+   ex:"*It's* important *to* rest. *It's* strange *that* he left.",exTr:"Dinlenmek önemlidir. Gitmiş olması tuhaf.",
+   note:"Ağır özneyi cümlenin sonuna atar: <i>To rest is important</i> yerine <i>It's important to rest</i>. İngilizcenin ritim kuralı: <b>ağır olan sona</b>."},
+  {n:"Cleft focus",tr:"Yarık cümle",f:"focus",p:"It + be + odak + who / that",
+   ex:"*It was* Ayşe *who* called, not Mert.",exTr:"Arayan Ayşe'ydi, Mert değil.",
+   note:"Türkçe vurguyu sesle ve sözcük sırasıyla yapar; İngilizce <b>ayrı bir yapı kurar</b>. Yazıda vurgu yapmanın en temiz yolu budur."},
+  {n:"it takes",tr:"Süre/gereksinim kalıbı",f:"event",p:"It takes + (kişi) + süre + to + V1",
+   ex:"*It takes* me an hour *to* get to work.",exTr:"İşe gitmem bir saat sürüyor.",
+   note:"Sabit kalıp. <i>My work takes one hour to go</i> ✗ gibi çeviri hataları çok yaygındır."},
+  {n:"Object it",tr:"Ön-nesne",f:"pack",p:"fiil + it + sıfat + to / that …",
+   ex:"I find *it* hard *to* believe.",exTr:"Buna inanmakta zorlanıyorum.",
+   note:"Özne için yapılan şeyin nesne hâli: <i>I find to believe hard</i> ✗ → <i>I find it hard to believe</i> ✓. <i>make it clear that…</i> aynı kalıptır."}
+ ]},
+
+{id:"as",glyph:"AS",name:"AS",lat:"altı bağ, tek kelime",
+ note:"<b>As</b> İngilizcenin en çok yönlü bağlaçlarından biridir: karşılaştırır, zamanlar, gerekçelendirir, rol atar. Anlamı cümledeki komşularından okunur — kelimenin kendisinde değil. Bağlam okumanın en iyi antrenman alanı.",
+ senses:[
+  {n:"as … as",tr:"Eşitlik karşılaştırması",f:"modify",p:"as + sıfat/zarf + as",
+   ex:"She's *as* tall *as* her brother.",exTr:"Kardeşi kadar uzun.",
+   note:"Olumsuzda <i>not as/so … as</i>. Miktar için: <i>as much as, as many as</i>. Türkçedeki “-kadar”."},
+  {n:"Simultaneous time",tr:"Eşzamanlılık",f:"pack",p:"as + cümle (… iken)",
+   ex:"*As* I was leaving, the phone rang.",exTr:"Tam çıkarken telefon çaldı.",
+   note:"<i>while</i>'a yakın ama as <b>iki eylemin birlikte gelişmesini</b> vurgular: <i>As he got older, he got quieter.</i>"},
+  {n:"Reason",tr:"Sebep",f:"pack",p:"as + cümle (… olduğu için)",
+   ex:"*As* it was late, we took a taxi.",exTr:"Geç olduğu için taksiye bindik.",
+   note:"<i>because</i>'tan daha resmî ve daha zayıf bir sebep bağıdır — dinleyicinin zaten bildiği sebepler için kullanılır. Genelde cümle başında durur."},
+  {n:"Role / capacity",tr:"Sıfat, rol",f:"modify",p:"as + a + isim",
+   ex:"*As* a teacher, I see this every day. She works *as* an editor.",exTr:"Bir öğretmen olarak bunu her gün görürüm. Editör olarak çalışıyor.",
+   note:"<b>as = gerçekten o</b>, <b>like = ona benzer</b>. <i>She works as a teacher</i> (öğretmendir) ≠ <i>She works like a teacher</i> (öğretmen gibi çalışır ama değildir)."},
+  {n:"Manner",tr:"Tarz",f:"pack",p:"as + cümle (… gibi)",
+   ex:"Do *as* I say, not *as* I do.",exTr:"Dediğimi yap, yaptığımı değil.",
+   note:"Resmî yazıda <i>like</i> yerine as tercih edilir: <i>As I said earlier…</i>"},
+  {n:"as if / as though",tr:"Sanki",f:"unreal",p:"as if + V2 (gerçek dışı)",
+   ex:"He talks *as if* he *knew* everything.",exTr:"Sanki her şeyi biliyormuş gibi konuşuyor (bilmiyor).",
+   note:"Buradaki V2 geçmiş değildir — Uzaklık Yasası. <i>as if he knows</i> (belki biliyordur) / <i>as if he knew</i> (kesinlikle bilmiyor)."},
+  {n:"as long as / as far as",tr:"Koşul ve sınırlama",f:"pack",p:"as long as + cümle",
+   ex:"*As long as* you're careful, it's safe. *As far as* I know, he left.",exTr:"Dikkatli olduğun sürece güvenli. Bildiğim kadarıyla gitti.",
+   note:"İkili kalıplar tek kelimeymiş gibi öğrenilmeli: <i>as soon as, as well as, so as to</i>."}
+ ]},
+
+{id:"v2",glyph:"V2",name:"Geçmiş Biçim",lat:"= uzaklık, zaman değil",
+ note:"Atlasın taç yapısı. Okulda “ikinci hâl = geçmiş zaman” denir. Ama <b>V2 kullanan cümlelerin büyük bölümü geçmişten söz etmez</b>: hayalden, dilekten, nezaketten söz eder. Ortak payda tektir — <b>konuşma anından bir adım geri çekilmek</b>. Ayrıntı için <i>Uzaklık Yasası</i> sekmesine geç.",
+ senses:[
+  {n:"Real past time",tr:"Gerçek geçmiş",f:"time",p:"V2 + geçmiş zaman zarfı",
+   ex:"I *went* to Izmir last summer.",exTr:"Geçen yaz İzmir'e gittim.",
+   note:"V2'nin “sözlük” işi. Bitmiş, kopmuş, şimdiyle bağı olmayan zaman. Ayırt edici işaret: <i>yesterday, last week, in 2019, ago</i>."},
+  {n:"Unreal present",tr:"Gerçek dışı şimdi",f:"unreal",p:"If + V2, … would + V1",
+   ex:"If I *knew* her number, I'd call her.",exTr:"Numarasını bilsem arardım (bilmiyorum).",
+   note:"Cümle <b>şimdiden</b> söz eder ama biçim geçmiştir. Zamanda değil <b>gerçeklikte</b> uzaklık. <i>were</i> özel bir kalıntıdır: <i>If I were you…</i>"},
+  {n:"wish / if only",tr:"Dilek ve pişmanlık",f:"unreal",p:"I wish + V2 (şimdi) / had + V3 (geçmiş)",
+   ex:"I *wish* I *had* more time.",exTr:"Keşke daha çok vaktim olsa.",
+   note:"Bir adım geri = şimdiki dilek; iki adım geri (had + V3) = geçmiş pişmanlık. Uzaklık ölçülebilir bir şeydir."},
+  {n:"it's time / would rather",tr:"Beklenti kalıpları",f:"unreal",p:"It's time + kişi + V2",
+   ex:"It's time you *went* to bed.",exTr:"Yatma vaktin geldi (hâlâ yatmadın).",
+   note:"Yatmadı, yani gerçek değil — bu yüzden V2. <i>I'd rather you didn't</i> aynı mantıkta çalışır."},
+  {n:"as if / as though",tr:"Sanki",f:"unreal",p:"as if + V2",
+   ex:"She acts *as if* she *owned* the place.",exTr:"Burası kendisininmiş gibi davranıyor.",
+   note:"Sahibi değil — yani gerçek dışı — yani V2. Formu görünce anlamı çıkarabilirsin."},
+  {n:"Politeness distance",tr:"Nezaket uzaklığı",f:"unreal",p:"Could / Did you want / I wondered if …",
+   ex:"I *wondered* if you *could* help me.",exTr:"Acaba bana yardım edebilir misiniz?",
+   note:"Geçmiş biçim, isteği <b>şu andan uzaklaştırarak</b> baskıyı azaltır. <i>Can you</i> → <i>Could you</i> → <i>I wondered if you could</i>: mesafe arttıkça nezaket artar."},
+  {n:"Backshift",tr:"Dolaylı anlatım kayması",f:"pack",p:"said (that) + bir adım geri",
+   ex:"“I *am* tired” → He said he *was* tired.",exTr:"“Yorgunum” → Yorgun olduğunu söyledi.",
+   note:"Aktarma anı geçmişte olduğu için tüm cümle bir adım geri kayar. Yine aynı jest: <b>bir adım geri</b>."}
+ ]}
+];
+
+/* Uzaklık Yasası adımları */
+const DIST=[
+ {k:"Gerçek geçmiş",w:12,s:"I *went* to the meeting.",t:"Toplantıya gittim. — Uzaklık <b>zamanda</b>: olay bitti, kopmuş.",f:"time"},
+ {k:"Dolaylı anlatım",w:32,s:"He said he *went* every week.",t:"Her hafta gittiğini söyledi. — Uzaklık <b>aktarımda</b>: söz başkasının ağzından, bir adım geri kaymış.",f:"pack"},
+ {k:"Hayalî şimdi",w:56,s:"If I *went* now, I'd miss lunch.",t:"Şimdi gitsem öğle yemeğini kaçırırdım. — Uzaklık <b>gerçeklikte</b>: cümle şimdiden söz ediyor, gitmiyorum.",f:"unreal"},
+ {k:"Dilek",w:76,s:"I wish I *went* to the gym more often.",t:"Keşke spora daha sık gitsem. — Uzaklık <b>arzuda</b>: olmasını istediğim ama olmayan şey.",f:"unreal"},
+ {k:"Nezaket",w:96,s:"I *wondered* if you *could* go instead of me.",t:"Acaba benim yerime gidebilir misiniz? — Uzaklık <b>sosyal</b>: rica şimdiden uzaklaştırılıp baskısı alınmış.",f:"unreal"}
+];
+const DLIST=[
+ ["Bir adım geri","V1 → V2 · <i>go → went</i>. Şimdiki gerçek dışılık ve nezaket."],
+ ["İki adım geri","V2 → had + V3 · <i>went → had gone</i>. Geçmiş pişmanlık ve 3. tip koşul."],
+ ["Modal'ın geri adımı","can → could, will → would, may → might. Aynı jest, kip üzerinde."],
+ ["Donmuş kalıntı","<i>If I <b>were</b> you</i> — subjunctive'in İngilizcede hayatta kalan son izi."]
+];
+
+/* ==================== YARDIMCILAR ==================== */
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const mk=s=>esc(s).replace(/\*([^*]+)\*/g,"<mark>$1</mark>");
+const plain=s=>s.replace(/\*/g,"");
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+const SP=Object.fromEntries(SPINES.map(s=>[s.id,s]));
+SPINES.forEach(sp=>sp.senses.forEach((se,i)=>{se.sid=sp.id;se.idx=i;se.key=sp.id+":"+i}));
+const ALL=SPINES.flatMap(s=>s.senses);
+
+/* ==================== SAYAÇLAR ==================== */
+$("#counts").innerHTML=[
+  [SPINES.length,"omurga"],[ALL.length,"ayrı işlev"],[FIELDS.length,"işlev alanı"],
+  [new Set(ALL.map(s=>s.sid+s.f)).size,"kesişim"]
+].map(([n,l])=>`<div><div class="n">${n}</div><div class="l">${l}</div></div>`).join("");
+
+/* ==================== SEKME ==================== */
+const panels={spine:"#p-spine",field:"#p-field",matrix:"#p-matrix",dist:"#p-dist",hunt:"#p-hunt"};
+function showTab(id){
+  document.querySelectorAll("#tabs .tab").forEach(t=>t.setAttribute("aria-selected",String(t.dataset.tab===id)));
+  Object.entries(panels).forEach(([k,sel])=>{$(sel).hidden=k!==id});
+  store.set("pk_tab",id);
+}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest(".tab"); if(b) showTab(b.dataset.tab);});
+
+/* ==================== TEMA ==================== */
+$("#themebtn").addEventListener("click",()=>{
+  const cur=document.documentElement.getAttribute("data-theme");
+  const sysDark=window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const next=cur? (cur==="dark"?"light":"dark") : (sysDark?"light":"dark");
+  document.documentElement.setAttribute("data-theme",next);
+  store.set("pk_theme",next);
+});
+(function(){const t=store.get("pk_theme",null); if(t) document.documentElement.setAttribute("data-theme",t);})();
+
+/* ==================== DİKEY: OMURGA ==================== */
+let curSpine=SPINES[0].id, curSense=0;
+function chip(fid,on){const f=F[fid];return `<span class="chip${on?" on":""}" style="--dotc:${f.c}"><i class="dot" style="background:${f.c}"></i>${f.tr}</span>`}
+
+$("#railList").innerHTML=SPINES.map(s=>
+ `<button type="button" data-sp="${s.id}"><span class="g">${s.glyph}</span><span class="nm">${s.name}</span><span class="ct">${s.senses.length}</span></button>`).join("");
+$("#railList").addEventListener("click",e=>{const b=e.target.closest("button"); if(b) selSpine(b.dataset.sp,0);});
+
+function selSpine(id,idx){
+  curSpine=id; curSense=idx||0;
+  const sp=SP[id];
+  document.querySelectorAll("#railList button").forEach(b=>b.setAttribute("aria-current",String(b.dataset.sp===id)));
+  $("#stageHead").innerHTML=`<span class="glyph">${sp.glyph}</span><h2>${sp.name}</h2><span class="lat">${sp.lat}</span>`;
+  $("#stageNote").innerHTML=sp.note;
+  $("#branches").innerHTML=sp.senses.map((s,i)=>
+    `<div class="branch"><div class="tick"></div>
+      <button type="button" data-i="${i}">
+        <div class="b-top"><span class="b-name">${s.n}</span><span class="b-tr">${s.tr}</span>${chip(s.f)}</div>
+        <div class="b-pat">${esc(s.p)}</div>
+      </button></div>`).join("");
+  selSense(curSense);
+}
+$("#branches").addEventListener("click",e=>{const b=e.target.closest("button[data-i]"); if(b) selSense(+b.dataset.i);});
+
+function selSense(i){
+  curSense=i;
+  const sp=SP[curSpine], s=sp.senses[i];
+  document.querySelectorAll("#branches button").forEach(b=>b.setAttribute("aria-current",String(+b.dataset.i===i)));
+  const sibs=ALL.filter(x=>x.f===s.f && x.sid!==s.sid);
+  $("#detail").innerHTML=`
+    <h3>${s.n}</h3><div class="trh">${s.tr} ${chip(s.f,true)}</div>
+    <div class="pat">${esc(s.p)}</div>
+    <p class="ex">${mk(s.ex)}</p><p class="ex-tr">${s.exTr}</p>
+    <p class="note">${s.note}</p>
+    <div class="xh">Yatay bağ — aynı işi yapan başka formlar</div>
+    <div class="xlinks">${sibs.length?sibs.map(x=>
+      `<button type="button" data-go="${x.key}"><span class="xg">${SP[x.sid].glyph}</span><span>${x.n} · <span style="color:var(--text-3)">${x.tr}</span></span></button>`).join("")
+      :'<span style="color:var(--text-3);font-size:13px">Bu işi bu atlasta yalnızca bu form yapıyor.</span>'}</div>`;
+}
+$("#detail").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-go]"); if(!b) return;
+  const [sid,i]=b.dataset.go.split(":"); selSpine(sid,+i);
+  document.querySelector(".stage").scrollIntoView({behavior:"smooth",block:"nearest"});
+});
+
+/* ==================== YATAY: ALAN ==================== */
+let curField=FIELDS[0].id;
+$("#fieldbar").innerHTML=FIELDS.map(f=>{
+  const n=ALL.filter(s=>s.f===f.id).length;
+  return `<button type="button" data-f="${f.id}" style="--dotc:${f.c}"><i class="dot" style="background:${f.c}"></i>${f.tr}<span style="color:var(--text-3);font-family:IBM Plex Mono,monospace;font-size:11px">${n}</span></button>`;
+}).join("");
+$("#fieldbar").addEventListener("click",e=>{const b=e.target.closest("button"); if(b) selField(b.dataset.f);});
+
+const FIELDTIP={
+ time:"Aynı zaman ilişkisi have, be, would, -s ve V2 tarafından paylaşılır. Zamanı taşıyan şey fiilin kendisi değil, <b>yardımcısıdır</b>.",
+ passive:"be + V3 nötr, get + V3 duygusaldır, need + V-ing gizlidir. Türkçenin tek -il ekine karşı üç ayrı ton.",
+ unreal:"Bu alandaki her form aslında bir <b>geri adımdır</b>. Uzaklık Yasası sekmesi bu alanın tamamını tek şemaya indirger.",
+ oblig:"Kaynağı sor: kural mı (have to), inanç mı (must), tavsiye mi (should), tehdit mi (had better)?",
+ nominal:"Fiili isim yapmanın üç yolu: -ing, to + V1, ve <i>the fact that</i> paketi. Hangisinin geleceği çoğu zaman <b>önceki kelimenin</b> işidir.",
+ modify:"İsmi tarif etmenin yolu ya sıfat, ya ortaç, ya da kısaltılmış ilgi cümlesidir — üçü de aynı boşluğu doldurur.",
+ pack:"B1'i B2'den ayıran tek şey: cümleyi cümlenin içine sokabilmek. Bu alandaki formlar bunu yapar.",
+ caus:"have emreder, get ikna eder, make zorlar, let izin verir. Aralarındaki fark <b>güç ilişkisidir</b>, gramer değil.",
+ focus:"İngilizce vurguyu sesle değil <b>yapıyla</b> yapar. Türkçeden gelen öğrenci bu alanı en geç fark eder.",
+ event:"Fiilin anlamını isme devretmek (have a look) doğal İngilizcenin sırrıdır; kelime kelime çeviriyle asla bulunmaz.",
+ poss:"'s, of, have, get ve to — beşi de bir ilişki kurar ama hangisinin kullanılacağı sahibin canlı olup olmadığına bakar.",
+ deixis:"Bir yeri göstermek ile hiçbir şey göstermemek (boş özne) aynı kelimelerle yapılır. It ve to burada iki yüzlüdür.",
+ agree:"Tek harf iki zıt şey söyler: isimde -s çoğul, fiilde -s tekil. Sessiz ama en sık hata."
+};
+function selField(id){
+  curField=id;
+  const f=F[id];
+  document.querySelectorAll("#fieldbar button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.f===id)));
+  $("#fieldHead").innerHTML=`
+    <div><h2>${f.tr} <span class="en">${f.en}</span></h2><p>${f.d}</p></div>
+    <div class="field-tip" style="--dotc:${f.c}"><b>Yatay okuma</b>${FIELDTIP[id]}</div>`;
+  const byS=SPINES.map(sp=>({sp,items:sp.senses.filter(s=>s.f===id)})).filter(x=>x.items.length);
+  $("#fieldGrid").innerHTML=byS.map(({sp,items})=>`
+    <div class="hcard">
+      <div class="hg">${sp.glyph}<small>${sp.name}</small></div>
+      ${items.map(s=>`<div class="hitem">
+        <div class="hn">${s.n} <span style="color:var(--text-3);font-weight:400">· ${s.tr}</span></div>
+        <div class="he">${mk(s.ex)}</div><div class="ht">${s.exTr}</div></div>`).join("")}
+    </div>`).join("");
+}
+
+/* ==================== KESİŞİM ==================== */
+(function(){
+  const head=`<thead><tr><th style="text-align:left;padding-left:12px;width:auto">Form ╲ İşlev</th>${
+    FIELDS.map(f=>`<th><span class="fd" style="background:${f.c}"></span>${f.tr.replace(" & ","<br>& ")}</th>`).join("")}</tr></thead>`;
+  const body=`<tbody>${SPINES.map(sp=>`<tr><th><span>${sp.glyph}</span>${sp.name}</th>${
+    FIELDS.map(f=>{
+      const n=sp.senses.filter(s=>s.f===f.id).length;
+      return n? `<td class="has" style="--cellc:${f.c}"><button type="button" data-c="${sp.id}|${f.id}">${n}</button></td>`
+              : `<td><button type="button" data-c="" aria-label="boş">·</button></td>`;
+    }).join("")}</tr>`).join("")}</tbody>`;
+  $("#mxTable").innerHTML=head+body;
+})();
+$("#mxTable").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-c]"); if(!b||!b.dataset.c) return;
+  document.querySelectorAll("#mxTable td").forEach(td=>td.classList.remove("sel"));
+  b.closest("td").classList.add("sel");
+  const [sid,fid]=b.dataset.c.split("|"), sp=SP[sid], f=F[fid];
+  const items=sp.senses.filter(s=>s.f===fid);
+  $("#mxOut").innerHTML=`<div class="mo-h">${sp.glyph} <span style="color:var(--text-3)">×</span> ${f.tr}</div>
+    <div class="mo-s">${sp.name} formu, ${f.en} alanında ${items.length} ayrı iş yapıyor.</div>
+    <div class="mo-list">${items.map(s=>`<div class="mo-card" style="--dotc:${f.c}">
+      <div class="mn">${s.n} · <span style="color:var(--text-3);font-weight:400">${s.tr}</span></div>
+      <div class="mp">${esc(s.p)}</div><div class="me">${mk(s.ex)}</div><div class="mt">${s.exTr}</div></div>`).join("")}</div>`;
+  $("#mxOut").scrollIntoView({behavior:"smooth",block:"nearest"});
+});
+$("#mxOut").innerHTML='<div class="mo-s">Bir hücre seç — o formun o alanda yaptığı bütün işler burada açılır.</div>';
+
+/* ==================== UZAKLIK ==================== */
+let dStep=0;
+$("#dSteps").innerHTML=DIST.map((d,i)=>`<button type="button" data-d="${i}">${i+1}. ${d.k}</button>`).join("");
+$("#dList").innerHTML=DLIST.map(([a,b])=>`<div><b>${a}</b> — ${b}</div>`).join("");
+function setD(i){
+  dStep=i; const d=DIST[i];
+  $("#meterFill").style.width=d.w+"%";
+  $("#dSent").innerHTML=mk(d.s);
+  $("#dTr").innerHTML=d.t;
+  document.querySelectorAll("#dSteps button").forEach((b,j)=>b.setAttribute("aria-pressed",String(j===i)));
+}
+$("#dSteps").addEventListener("click",e=>{const b=e.target.closest("button"); if(b) setD(+b.dataset.d);});
+setD(0);
+
+/* ==================== AV (oyun) ==================== */
+const HKEY="pk_best";
+let round=[],qi=0,score=0,streak=0,best=store.get(HKEY,0),misses=[];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function newRound(){
+  const pool=ALL.filter(s=>SP[s.sid].senses.length>=4);
+  round=shuffle(pool).slice(0,10); qi=0; score=0; streak=0; misses=[];
+  renderQ();
+}
+function renderQ(){
+  if(qi>=round.length){
+    if(score>best){best=score; store.set(HKEY,best);}
+    $("#qcard").innerHTML=`<div class="qmeta"><span>Tur bitti</span></div>
+      <p class="qsent">${score} / ${round.length}</p>
+      <p class="qask">${score===round.length?"Kusursuz. Yeni bir tur, yeni formlar.":score>=7?"Sağlam. Kaçırdıklarını aşağıdan omurgaya dönüp oku.":"Formu değil işlevi arıyoruz — kaçırdıklarını Dikey sekmesinde tekrar oku."}</p>
+      <button class="nextbtn" id="again" type="button">Yeni tur</button>`;
+    $("#again").onclick=newRound; drawScore(); return;
+  }
+  const s=round[qi], sp=SP[s.sid];
+  const opts=shuffle([s,...shuffle(sp.senses.filter(x=>x!==s)).slice(0,3)]);
+  $("#qcard").innerHTML=`
+    <div class="qmeta"><span>Soru ${qi+1} / ${round.length}</span><span>${sp.glyph} omurgası</span></div>
+    <p class="qsent">${mk(s.ex)}</p>
+    <p class="qask">İşaretli <b>${sp.glyph}</b> burada hangi işi yapıyor?</p>
+    <div class="opts">${opts.map((o,i)=>
+      `<button type="button" data-k="${o.key}"><span class="k">${"ABCD"[i]}</span><span>${o.n}<br><span class="otr">${o.tr}</span></span></button>`).join("")}</div>
+    <div id="verdict"></div>`;
+  drawScore();
+}
+$("#qcard").addEventListener("click",e=>{
+  const b=e.target.closest(".opts button"); if(!b) return;
+  const s=round[qi], right=b.dataset.k===s.key;
+  document.querySelectorAll(".opts button").forEach(x=>{
+    x.disabled=true;
+    if(x.dataset.k===s.key) x.classList.add("right");
+    else if(x===b) x.classList.add("wrong");
+  });
+  if(right){score++;streak++} else {streak=0; misses.push(s)}
+  $("#verdict").innerHTML=`<div class="verdict">
+    <span class="vt ${right?"ok":"no"}">${right?"Doğru — "+s.n:"Doğrusu: "+s.n+" · "+s.tr}</span>
+    ${s.exTr}<br><br>${s.note}
+    <br><button class="nextbtn" id="next" type="button">${qi+1<round.length?"Sıradaki":"Sonuç"}</button></div>`;
+  $("#next").onclick=()=>{qi++;renderQ()};
+  drawScore();
+});
+function drawScore(){
+  $("#scoreBox").innerHTML=[["Doğru",score],["Seri",streak],["En iyi",best],["Soru",Math.min(qi+1,round.length)+"/"+round.length]]
+    .map(([l,v])=>`<div class="sr"><span>${l}</span><b>${v}</b></div>`).join("");
+  $("#missBox").innerHTML=misses.length?`<div class="mh">Kaçırdıkların</div>${
+    misses.map(m=>`<div><b>${SP[m.sid].glyph}</b> — ${m.n} · ${m.tr}</div>`).join("")}`:"";
+}
+newRound();
+
+/* ==================== BAŞLAT ==================== */
+selSpine("v3",0); selField("time"); showTab(store.get("pk_tab","spine"));
+</script>

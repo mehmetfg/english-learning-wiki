@@ -1775,3 +1775,26 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 **Ayarlar:** quantum + mabet modül listesine eklendi, kullanıcının görünür modüllerine işlendi. Panorama alan kartlarına Kuantum girdi.
 
 **Sonraki:** Turso'ya seed-quantum + 0004; kuantum sorular/quiz içeriği (KR-006 deseniyle); diğer vault'lar (Yazarlık alt bölümleri) için kategori seed'i.
+
+## [2026-09-02] synthesis | Pollakhōs Atlası — form-önce örüntü katmanı
+
+Vault'a yeni bir **okuma ekseni** eklendi. Şimdiye kadar bütün içerik konu-önce (topic-first) düzenliydi: Present Perfect, Passive Voice, Causative… Bu düzen öğretmek için iyi, **tanımak** için kötü — çünkü öğrenci metinde konu görmez, form görür.
+
+**İlke (Aristoteles, Metafizik Γ.2 — τὸ ὂν λέγεται πολλαχῶς):** Bir form çok şekilde söylenir. V3 tek bir "geçmiş zaman" değil, 10 ayrı iş yapar; have 9, -ing 9, -s 5.
+
+**İki eksen:** Dikey = bir form kaç iş yapar. Yatay = bir işi kaç form yapar. Kalıcılık kesişimden doğar.
+
+**Merkezî bulgu — Uzaklık Yasası:** Geçmiş biçim (V2/would/could) "geçmiş zaman" değil "buradan uzak" demektir; uzaklık zamanda, gerçeklikte veya nezakette olur. Bu tek yasa şu beş ayrı konuyu birleştirir: Past Simple + Second Conditional + Wish/If only + Reported Speech backshift + Polite Requests.
+
+**Kapsam:** 11 omurga · 82 ayrı işlev (her biri kalıp + EN örnek + TR karşılık + hata notu) · 13 işlev alanı · 50 dolu kesişim.
+
+**Artifact — 5 mod:** Dikey omurga (Ramist bracket diyagramı + yatay bağ linkleri) · Yatay alan · 11×13 kesişim matrisi · Uzaklık Yasası (5 adımlı interaktif ölçek) · Av (10 soruluk tanıma oyunu, skor/seri/en iyi, kaçırılanlar listesi). Tek dosya HTML, kütüphanesiz; dikey/yatay/matris/quiz **aynı veri kaynağından** üretiliyor, bu yüzden çelişemezler.
+
+**Dokunulan sayfalar (5):**
+- `Artifacts/pollakhos-atlas.html` (yeni)
+- `wiki/synthesis/form-first-pattern-atlas.md` (yeni — ilke sayfası)
+- `wiki/artifacts/pollakhos-atlas.md` (yeni — artifact kaydı)
+- `index.md` (yeni "Form-First Katmanı" bölümü + Synthesis 5→6)
+- `log.md`
+
+**Sonraki:** Av modunun kaçırdığı dalları `00_INBOX/` JSON köprüsüyle Error Constellation'a bağlamak. İkinci parti omurga adayları: MAKE · THERE · -ED · ONE · SO · EVER. Ayrıca `Artifacts/_dashboard.html` kartı eklenecek.
