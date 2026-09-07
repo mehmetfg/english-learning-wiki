@@ -1,6 +1,6 @@
 ---
 title: English Learning Wiki — İçerik Dizini
-updated: 2026-05-23
+updated: 2026-09-02
 ---
 
 # English Learning Wiki — İçerik Dizini
@@ -90,6 +90,7 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Documents/projects/p
 ### 📖 Vocabulary
 | Sayfa | Dosyalar | Açıklama |
 |-------|----------|----------|
+| [[kelime-pasaportu]] | 1 dosya | 🆕 (2026-09-02) **Kelime Pasaportu** — form-önce kelime sistemi; 5 mühür (uzam·zaman·derece·bağ·kip) + şematizm; 12 sabit sahne atlası; Devriye'de kelime değil form sorulur; şema cümlesinde Ben-testi (I/my/me zorunlu); günlük kota 3; SM-2 takvimi; JSON köprüsü `apriori-vocab-1.0`. Yöntem: [[apriori-kelime-yontemi]] |
 | [[Living Room Vocabulary]] | 1 dosya | Oturma odası tema kelime |
 
 ### 📝 Practice & Tracking
@@ -387,6 +388,7 @@ TTS öncelikli, A2-B1 seviyesi, roman dışı yazı serisi. Felsefe, psikoloji, 
 | [[Interactive Reader Template]] | ⭐ Interactive HTML reader klasmanı — tüm makale → çalışma sayfası dönüşümü için yeniden kullanılabilir standart (CSS/JS spec, 15 bölüm, 20+ edge case checklist) |
 | [[narrative-past-tenses-cluster]] | 🆕 5 yapı kümesi — Past Simple + Past Continuous + Past Perfect + Used to/Would + Time Adverbials; anlatı yazımı için minimum set; Writing Atelier serisinin referansı |
 | [[calisma-yontemleri-analizi]] | 🆕 (2026-05-20) Artifact'lardan çıkarılan 10 çalışma formatı kataloğu; 9 ortak prensip; en iyi format seçimi; 7 yeni format önerisi |
+| [[apriori-kelime-yontemi]] | 🆕 (2026-09-02) **A Priori Kelime Yöntemi** — kelime acısının 5 kaynağı ve her birinin form karşılığı; beş mühür; şematizm ve Ben-testi; "tüm kelimelere hâkim olmak" düzeltmesi (düzenleyici ide + 800/2.000/5.000/9.000 eşikleri); 15 dk günlük ritim; sınırlar ve dürüst maliyet. Uygulaması: [[kelime-pasaportu]] |
 
 ---
 

@@ -2,7 +2,7 @@
 title: Vocab SRS
 type: artifact
 tags: [engine, srs, anki, vocabulary, phrasal-verbs, chunks]
-related: [[english-learning-engine-v1]], [[word-bank-master|wiki/tracking/word-bank-master]]
+related: [[english-learning-engine-v1]], [[word-bank-master|wiki/tracking/word-bank-master]], [[kelime-pasaportu]], [[apriori-kelime-yontemi]]
 created: 2026-05-18
 updated: 2026-05-18
 ---
@@ -65,3 +65,18 @@ Bir kart `status: leech` olursa Claude Code'a manuel olarak:
 dedirtebilirsin. Bu metin yeni bir source olarak vault'a girer, bağlam tekrarı sağlanır.
 
 İlgili: [[implementation-notes]], [[word-bank-master|word-bank tracking]]
+
+---
+
+## Kardeş araç: [[kelime-pasaportu]] (2026-09-02)
+
+Aynı SM-2 formülünü paylaşır, yerini almaz. Ayrım:
+
+| | vocab-srs | [[kelime-pasaportu]] |
+|---|---|---|
+| Girdi | word bank'tan otomatik | elle, beş mühürle |
+| Soru | kelime → anlam (**tanıma**) | form → kelime (**üretim**) |
+| Hız | çok kelime, hızlı | az kelime, derin |
+| Rolü | geniş pasif dağarcık | çekirdek aktif dağarcık |
+
+**Kural:** Pasif hacim burada kalsın; aktif üretime girmesini istediğin kelimeler pasaporta alınsın. Gerekçe: [[apriori-kelime-yontemi]].

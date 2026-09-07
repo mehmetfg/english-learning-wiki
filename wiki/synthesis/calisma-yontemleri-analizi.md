@@ -2,7 +2,7 @@
 title: Çalışma Yöntemleri Analizi — Artifact'lardan Çıkarılan Pedagojik Mantık
 type: synthesis
 tags: [methodology, study-methods, artifacts-analysis, pedagogy, output-system]
-related: [[english-learning-engine-v1]], [[_index|Practice Hub]], [[Interactive Reader Template]], [[daily-writing-loop]], [[writing-atelier-001-bloomsday]], [[vocab-srs]]
+related: [[english-learning-engine-v1]], [[_index|Practice Hub]], [[Interactive Reader Template]], [[daily-writing-loop]], [[writing-atelier-001-bloomsday]], [[vocab-srs]], [[apriori-kelime-yontemi]], [[kelime-pasaportu]]
 created: 2026-05-20
 updated: 2026-05-20
 ---
@@ -287,3 +287,15 @@ Bu 8 sorunun cevabı varsa artifact "vault uyumlu" demektir.
 - [[daily-writing-loop]] — M4 detayları
 - [[writing-atelier-001-bloomsday]] — M3 örneği
 - [[CEFR Curriculum Map]] — M9 referans haritası
+
+---
+
+## Ek — M11 · Form-Önce Kelime (2026-09-02)
+
+Kataloğa sonradan eklenen onbirinci format: [[apriori-kelime-yontemi]], uygulaması [[kelime-pasaportu]].
+
+**Mantık:** Diğer on format *içeriği* farklı filtrelerden geçirir; bu format **alım formunu** içerikten önce kurar. Kelime, beş önsel form (uzam · zaman · derece · bağ · kip) ve bir şematizm adımı olmadan kaydedilemez.
+
+**Neyi kapatıyor:** Katalogdaki hiçbir format kelime öğrenmenin iki temel sorununu ele almıyordu — kelimenin *tekil* öğrenilmesi (anlam farksaldır) ve kelimenin *kullanıcının kendi zaman-uzamına* hiç girmemesi. M11 bu ikisini zorunlu kısıt hâline getirir.
+
+**Vault felsefesiyle uyum:** *Constraint > Freedom* ilkesinin en sıkı uygulaması — beş mühür tamamlanmadan kayıt açılmaz.
