@@ -1,6 +1,6 @@
 import AVFoundation
 
-/// Metin → dfki → (gerekirse) perdeyi bozmadan hızlandırma → ses gücü dengeleme.
+/// Metin → dfki → netlik EQ + perde + perdeyi bozmadan hızlandırma → ses gücü dengeleme.
 enum Pipeline {
     static func render(text: String, rate: Float) -> [Float] {
         guard !text.isEmpty else { return [] }
@@ -8,9 +8,8 @@ enum Pipeline {
         let modelSpeed = min(target, Config.maxModelSpeed)
 
         var audio = DfkiEngine.shared.synthesize(text, speed: modelSpeed)
-        let stretch = target / modelSpeed
-        if stretch > 1.01, let stretched = TimeStretch.apply(audio, rate: stretch) {
-            audio = stretched
+        if let processed = Effects.apply(audio, rate: target / modelSpeed) {
+            audio = processed
         }
         Loudness.level(&audio)
         return audio
@@ -46,18 +45,22 @@ final class DfkiEngine {
     }
 }
 
-enum TimeStretch {
-    /// AVAudioUnitTimePitch ile çevrimdışı hızlandırma; perde korunur.
+enum Effects {
+    /// Çevrimdışı zincir: netlik EQ → perde kaydırma + hızlandırma (AVAudioUnitTimePitch).
     static func apply(_ input: [Float], rate: Float) -> [Float]? {
         guard !input.isEmpty,
               let format = AVAudioFormat(standardFormatWithSampleRate: Config.sampleRate, channels: 1) else { return nil }
         let engine = AVAudioEngine()
         let player = AVAudioPlayerNode()
+        let eq = clarityEQ()
         let timePitch = AVAudioUnitTimePitch()
-        timePitch.rate = rate
+        timePitch.rate = max(rate, 1)
+        timePitch.pitch = Config.pitchCents
         engine.attach(player)
+        engine.attach(eq)
         engine.attach(timePitch)
-        engine.connect(player, to: timePitch, format: format)
+        engine.connect(player, to: eq, format: format)
+        engine.connect(eq, to: timePitch, format: format)
         engine.connect(timePitch, to: engine.mainMixerNode, format: format)
 
         let padded = input + [Float](repeating: 0, count: Int(Config.sampleRate * 0.1))
@@ -74,7 +77,7 @@ enum TimeStretch {
         player.scheduleBuffer(source)
         player.play()
 
-        let expected = Int(Float(input.count) / rate)
+        let expected = Int(Float(input.count) / max(rate, 1))
         guard let chunk = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat, frameCapacity: 4096) else { return nil }
         var output: [Float] = []
         output.reserveCapacity(expected)
@@ -85,6 +88,21 @@ enum TimeStretch {
         }
         engine.stop()
         return output.isEmpty ? nil : output
+    }
+}
+
+extension Effects {
+    /// Boğukluğu azaltır, ünsüzleri öne çıkarır (Config'teki bantlar).
+    static func clarityEQ() -> AVAudioUnitEQ {
+        let eq = AVAudioUnitEQ(numberOfBands: Config.eqBands.count)
+        for (band, setting) in zip(eq.bands, Config.eqBands) {
+            band.filterType = setting.type
+            band.frequency = setting.frequency
+            band.bandwidth = setting.octaves
+            band.gain = setting.gain
+            band.bypass = false
+        }
+        return eq
     }
 }
 

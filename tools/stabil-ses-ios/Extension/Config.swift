@@ -1,4 +1,4 @@
-import Foundation
+import AVFoundation
 
 /// Sesin karakterini belirleyen ayarlar. Değiştirip yeniden derle.
 enum Config {
@@ -20,6 +20,17 @@ enum Config {
     /// Uygulamanın gönderdiği hız bu çarpanla ölçeklenir. Voice Dream'deki
     /// hız beklenenden yavaş/hızlı gelirse buradan ayarla.
     static let speedMultiplier: Float = 1.0
+
+    /// Perde kaydırma (cent; 100 = 1 yarım ton). Örnek C: -150 (kalın), D: +100 (ince).
+    static let pitchCents: Float = 0
+
+    /// Netlik EQ: 90 Hz altını kes, 350 Hz boğukluğu −3 dB, 3 kHz ünsüz netliği +4 dB, 6.5 kHz hava +1.5 dB.
+    static let eqBands: [(type: AVAudioUnitEQFilterType, frequency: Float, octaves: Float, gain: Float)] = [
+        (.highPass, 90, 0.5, 0),
+        (.parametric, 350, 1, -3),
+        (.parametric, 3000, 1, 4),
+        (.parametric, 6500, 1.5, 1.5),
+    ]
 
     /// Ses gücü dengeleme: hedef seviye ve kompresör.
     static let targetRMS: Float = 0.1

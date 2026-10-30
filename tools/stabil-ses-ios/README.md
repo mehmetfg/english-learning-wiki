@@ -14,9 +14,11 @@ dar tonlama aralığı (~7 yarım ton), duraklamasız akış, sabit ses gücü, 
 | `noiseScale` | 0.2 (varsayılan 0.667) | Tonlama rastgeleliği düşük → düz, sabit ses |
 | `noiseScaleW` | 0.1 (varsayılan 0.8) | Hece süresi rastgeleliği düşük → düzenli ritim |
 | `silenceScale` | 0.1 | Cümle arası sessizlik kısa → kesintisiz akış |
-| `maxModelSpeed` | 2.0 | Model bu hızın üstüne zorlanmaz; fazlası perdeyi bozmadan zaman esnetmeyle yapılır |
+| `maxModelSpeed` | 1.3 | Model bu hızın üstüne zorlanmaz; fazlası perdeyi bozmadan zaman esnetmeyle yapılır |
 | `speedMultiplier` | 1.0 | Voice Dream hızı beklenenden farklı gelirse buradan ayarlanır |
 | Kompresör + hedef seviye | −24 dB, 4:1 | Cümleden cümleye aynı ses gücü |
+| `eqBands` | 350 Hz −3 dB, 3 kHz +4 dB | Boğukluk azalır, ünsüzler netleşir |
+| `pitchCents` | 0 | Perde: −150 daha kalın, +100 daha ince |
 
 ## Kurulum (Mac M1 + iPhone)
 
