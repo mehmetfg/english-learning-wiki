@@ -15,7 +15,8 @@ enum Config {
 
     /// Modelin kendi başına temiz kaldığı en yüksek hız. Üstü, perdeyi
     /// bozmadan zaman esnetmeyle (time-stretch) karşılanır.
-    static let maxModelSpeed: Float = 2.0
+    /// 2.0'da model kısa heceleri yutuyordu (cihaz testi); 1.0 ≈ 139, 1.3 ≈ 164 kelime/dk.
+    static let maxModelSpeed: Float = 1.3
     /// Uygulamanın gönderdiği hız bu çarpanla ölçeklenir. Voice Dream'deki
     /// hız beklenenden yavaş/hızlı gelirse buradan ayarla.
     static let speedMultiplier: Float = 1.0
