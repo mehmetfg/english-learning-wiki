@@ -1775,3 +1775,9 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 **Ayarlar:** quantum + mabet modül listesine eklendi, kullanıcının görünür modüllerine işlendi. Panorama alan kartlarına Kuantum girdi.
 
 **Sonraki:** Turso'ya seed-quantum + 0004; kuantum sorular/quiz içeriği (KR-006 deseniyle); diğer vault'lar (Yazarlık alt bölümleri) için kategori seed'i.
+
+## [2026-10-30] infrastructure | Stabil Ses — iPhone Türkçe sistem sesi (tools/stabil-ses-ios)
+
+Yıllardır Voice Dream'de dinlenen Yelda kaydı ölçüldü (F0 ~160 Hz, tonlama aralığı 6,7 yarım ton, >0,25 sn duraklama yok, 330 kelime/dk). Apple gelişmiş sesleri ve Cem hızda dağıldığı için Piper Türkçe erkek sesleri denendi; kullanıcı **dfki**'yi seçti. dfki'yi stabil ayarlarla (noise 0.2/0.1, kısa sessizlik, kompresör, model hız tavanı + perdeyi koruyan hızlandırma) iPhone sistem sesi olarak kuran Xcode projesi `tools/stabil-ses-ios/` altına eklendi. Mac'te `setup.sh` ile kurulum; henüz cihazda derlenip test edilmedi.
+
+**Sonraki:** Mac'te derleme, Voice Dream'de 330 kelime/dk stabilite testi, gerekirse `Config.swift` ince ayarı.
