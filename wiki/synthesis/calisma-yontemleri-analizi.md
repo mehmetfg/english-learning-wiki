@@ -2,7 +2,7 @@
 title: Çalışma Yöntemleri Analizi — Artifact'lardan Çıkarılan Pedagojik Mantık
 type: synthesis
 tags: [methodology, study-methods, artifacts-analysis, pedagogy, output-system]
-related: [[english-learning-engine-v1]], [[_index|Practice Hub]], [[Interactive Reader Template]], [[daily-writing-loop]], [[writing-atelier-001-bloomsday]], [[vocab-srs]]
+related: [[english-learning-engine-v1]], [[_index|Practice Hub]], [[Interactive Reader Template]], [[daily-writing-loop]], [[writing-atelier-001-bloomsday]], [[vocab-srs]], [[blueprint-recall-method]]
 created: 2026-05-20
 updated: 2026-05-20
 ---
@@ -259,6 +259,11 @@ Vault'ta **eksik** veya **eklenmesi yüksek getirili** gördüğüm formatlar:
 ### Ö7 — Generative Prompt Bank (Constraint Lottery)
 **Boşluk:** Kullanıcı her gün "bugün ne yazayım" sürtünmesiyle karşılaşabilir.
 **Format:** 200 constraint kart (örn. "Bu 5 PV'yi kullan, geçmişten bir an anlat, 80 kelime, 2 cümlede Past Perfect zorunlu"). Rastgele çek, M4 Loop'a feed et.
+
+---
+
+### Ö8 — Blueprint Recall Method (2026-10-30)
+Kör hatırla → iskelet kur → İngilizce doldur → ertesi gün yeniden çiz. Detay: [[blueprint-recall-method]]
 
 ---
 

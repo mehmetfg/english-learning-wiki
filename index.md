@@ -1,6 +1,6 @@
 ---
 title: English Learning Wiki — İçerik Dizini
-updated: 2026-05-23
+updated: 2026-10-30
 ---
 
 # English Learning Wiki — İçerik Dizini
@@ -378,7 +378,7 @@ TTS öncelikli, A2-B1 seviyesi, roman dışı yazı serisi. Felsefe, psikoloji, 
 
 ---
 
-## Synthesis (5 sayfa)
+## Synthesis (6 sayfa)
 
 | Sayfa | Açıklama |
 |-------|----------|
@@ -386,7 +386,8 @@ TTS öncelikli, A2-B1 seviyesi, roman dışı yazı serisi. Felsefe, psikoloji, 
 | [[CEFR Curriculum Map]] | Tüm gramer konuları CEFR A1→C2 haritası; eksik konular ve öğrenme sırası |
 | [[Interactive Reader Template]] | ⭐ Interactive HTML reader klasmanı — tüm makale → çalışma sayfası dönüşümü için yeniden kullanılabilir standart (CSS/JS spec, 15 bölüm, 20+ edge case checklist) |
 | [[narrative-past-tenses-cluster]] | 🆕 5 yapı kümesi — Past Simple + Past Continuous + Past Perfect + Used to/Would + Time Adverbials; anlatı yazımı için minimum set; Writing Atelier serisinin referansı |
-| [[calisma-yontemleri-analizi]] | 🆕 (2026-05-20) Artifact'lardan çıkarılan 10 çalışma formatı kataloğu; 9 ortak prensip; en iyi format seçimi; 7 yeni format önerisi |
+| [[blueprint-recall-method]] | 🆕 (2026-10-30) **Blueprint Recall Method** — Kör Hatırla → İskelet (Claim Map / Event Web) → İngilizce Doldur → Ertesi gün yeniden çiz; gün sonu mütalaası; pilot öneri |
+| [[calisma-yontemleri-analizi]] | (2026-05-20) Artifact'lardan çıkarılan 10 çalışma formatı kataloğu; 9 ortak prensip; en iyi format seçimi; 7 yeni format önerisi |
 
 ---
 

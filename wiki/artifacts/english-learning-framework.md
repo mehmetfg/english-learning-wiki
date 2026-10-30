@@ -31,6 +31,7 @@ updated: 2026-04-16
 - [[Grammar Roadmap]] — gramer sütununun görsel versiyonu
 - [[English Mastery Hub]] — daha navigasyon odaklı alternatif
 - [[GrammarPath Tracker]] — ilerleme takibi için tamamlayıcı
+- [[blueprint-recall-method]] — aynı "önce çerçeve" mantığının oturum düzeyindeki hali (kör hatırla → iskelet → doldur)
 
 ## Notlar
 

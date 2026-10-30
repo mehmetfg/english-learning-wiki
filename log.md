@@ -1775,3 +1775,6 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 **Ayarlar:** quantum + mabet modül listesine eklendi, kullanıcının görünür modüllerine işlendi. Panorama alan kartlarına Kuantum girdi.
 
 **Sonraki:** Turso'ya seed-quantum + 0004; kuantum sorular/quiz içeriği (KR-006 deseniyle); diğer vault'lar (Yazarlık alt bölümleri) için kategori seed'i.
+
+## [2026-10-30] query | Blueprint Recall Method — kör hatırlama + iskelet yöntemi
+Özet: Kullanıcı, proje geliştirmedeki "önce blueprint, sonra detay" yaklaşımını öğrenmeye uygulama fikrini getirdi (1. aşama: bakmadan hatırlama; 2. aşama: olay ağını İngilizce kurup cümlelerle doldurma). Yöntem 4 aşamalı protokole dönüştürüldü (Encode → Blind Recall + Check → Blueprint → Fill → Redraw), bilimsel zemini (retrieval practice, generation effect, dual coding, scaffolding) eklendi, kademeli devir (S1-S3) ve iki örnek (Hobbes/Locke/Hume Claim Map; gün sonu Event Web) yazıldı. İsim düzeltmesi: John Locke; *Leviathan* Hobbes'un kitabı. Yeni sayfa: wiki/synthesis/blueprint-recall-method.md. Güncellenen: index.md, calisma-yontemleri-analizi.md (Ö8), english-learning-framework.md. Durum: pilot onayı bekliyor (CLAUDE.md'ye işlenmedi).
