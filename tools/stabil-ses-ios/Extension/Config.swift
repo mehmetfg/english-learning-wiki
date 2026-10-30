@@ -23,9 +23,9 @@ enum Config {
 
     /// Virgülde Piper sesi yukarı kaldırıp "yarım kalmışlık" veriyor; kaldırınca akış bütünleşir.
     static let removeCommas = true
-    /// Cümle sonu işareti. "!" ölçümde daha tutarlı ve kesin düşüşle kapattı
-    /// (ort. −4,6 yarım ton; "." ile ilk cümle yükselerek bitiyordu).
-    static let sentenceEnding = "!"
+    /// Cümle sonu işareti. Dinleme testinde "." seçildi (ort. −3,9 yarım ton düşüş).
+    /// Kapanış yetersiz gelirse "!" dene (ort. −4,6, daha tutarlı).
+    static let sentenceEnding = "."
 
     /// Perde kaydırma (cent; 100 = 1 yarım ton). Örnek C: -150 (kalın), D: +100 (ince).
     static let pitchCents: Float = 0
