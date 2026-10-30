@@ -70,6 +70,7 @@ enum Effects {
         let timePitch = AVAudioUnitTimePitch()
         timePitch.rate = max(rate, 1)
         timePitch.pitch = Config.pitchCents
+        timePitch.overlap = Config.timePitchOverlap
         engine.attach(player)
         engine.attach(eq)
         engine.attach(timePitch)

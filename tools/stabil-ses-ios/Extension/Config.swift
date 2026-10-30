@@ -15,8 +15,11 @@ enum Config {
 
     /// Modelin kendi başına temiz kaldığı en yüksek hız. Üstü, perdeyi
     /// bozmadan zaman esnetmeyle (time-stretch) karşılanır.
-    /// 2.0'da model kısa heceleri yutuyordu (cihaz testi); 1.0 ≈ 139, 1.3 ≈ 164 kelime/dk.
-    static let maxModelSpeed: Float = 1.3
+    /// 2.0'da model kısa heceleri yutuyordu (cihaz testi); 1.0 ≈ 139, 1.3 ≈ 164, 1.6 ≈ 208 kelime/dk.
+    /// 1.5: heceler tam, esnetme oranı daha küçük (cihazda daha stabil).
+    static let maxModelSpeed: Float = 1.5
+    /// AVAudioUnitTimePitch kalitesi (3–32, varsayılan 8). Yüksek = daha az titreme/metaliklik.
+    static let timePitchOverlap: Float = 32
     /// Uygulamanın gönderdiği hız bu çarpanla ölçeklenir. Voice Dream'deki
     /// hız beklenenden yavaş/hızlı gelirse buradan ayarla.
     static let speedMultiplier: Float = 1.0
