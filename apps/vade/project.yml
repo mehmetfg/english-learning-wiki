@@ -1,0 +1,39 @@
+name: Vade
+options:
+  bundleIdPrefix: com.mehmetfg
+  deploymentTarget:
+    iOS: "26.0"
+    macOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+targets:
+  Vade:
+    type: application
+    supportedDestinations: [iOS, macOS]
+    sources:
+      - path: Vade
+        excludes:
+          - "**/*.entitlements"
+    info:
+      path: Vade/Info.plist
+      properties:
+        CFBundleDisplayName: Vade
+        CFBundleDevelopmentRegion: tr
+        LSApplicationCategoryType: public.app-category.productivity
+        NSCameraUsageDescription: Sözleşme ve garanti belgelerini taramak için kamera kullanılır.
+        NSPhotoLibraryUsageDescription: Belge fotoğraflarını içe aktarmak için fotoğraf arşivine erişilir.
+        UILaunchScreen: {}
+        UIBackgroundModes: [remote-notification]
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mehmetfg.vade
+        CODE_SIGN_STYLE: Automatic
+        "CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]": Vade/Support/Vade-iOS.entitlements
+        "CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]": Vade/Support/Vade-iOS.entitlements
+        "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": Vade/Support/Vade-macOS.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
