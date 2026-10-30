@@ -7,12 +7,26 @@ enum Pipeline {
         let target = max(0.5, rate * Config.speedMultiplier)
         let modelSpeed = min(target, Config.maxModelSpeed)
 
-        var audio = DfkiEngine.shared.synthesize(text, speed: modelSpeed)
+        var audio = DfkiEngine.shared.synthesize(Prosody.prepare(text), speed: modelSpeed)
         if let processed = Effects.apply(audio, rate: target / modelSpeed) {
             audio = processed
         }
         Loudness.level(&audio)
         return audio
+    }
+}
+
+/// Okumanın kararlılığı için metin düzeyinde hazırlık.
+enum Prosody {
+    static func prepare(_ text: String) -> String {
+        var t = text
+        if Config.removeCommas {
+            t = t.replacingOccurrences(of: #"\s*[,;:]\s*"#, with: " ", options: .regularExpression)
+        }
+        // Cümle sonu (., ?, …) → kararlı kapanış; ondalık sayılara (3.5) dokunmaz.
+        t = t.replacingOccurrences(of: #"[.?!…]+(?=\s|$)"#, with: Config.sentenceEnding, options: .regularExpression)
+        if let last = t.last, !".!?".contains(last) { t += Config.sentenceEnding }
+        return t
     }
 }
 
