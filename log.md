@@ -1775,3 +1775,10 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 **Ayarlar:** quantum + mabet modül listesine eklendi, kullanıcının görünür modüllerine işlendi. Panorama alan kartlarına Kuantum girdi.
 
 **Sonraki:** Turso'ya seed-quantum + 0004; kuantum sorular/quiz içeriği (KR-006 deseniyle); diğer vault'lar (Yazarlık alt bölümleri) için kategori seed'i.
+
+## [2026-10-30] project | Vade: sözleşme, sigorta ve garanti takip uygulaması (pilot)
+
+Wiki dışı kişisel proje; kod `apps/vade/` altında. SwiftUI ile iPhone + Mac (tek kod tabanı), SwiftData + CloudKit ile iCloud senkronu. Belge tarama (VisionKit), cihaz üstü OCR (Vision, Türkçe), cihaz üstü yapay zekâ ile şart çıkarımı (Apple Foundation Models) ve kural tabanlı yedek çıkarıcı. Türler: mobil hat, internet, abonelik, kira, kasko, trafik, konut/DASK, sağlık, cihaz garantisi. Bitiş hatırlatmaları, ödeme geçmişi, özet panosu. Henüz derlenmedi; ilk Xcode derlemesi bekleniyor. Wiki sayfasına dokunulmadı.
+
+## [2026-10-31] project | Vade: ana ekran (dashboard), ikon ve hazır Xcode projesi
+Wiki dışı proje (`apps/vade/`). Hazır `Vade.xcodeproj` (ücretsiz Apple hesabıyla kurulabilir), uygulama ikonu, açılışta gelen analiz ana ekranı (sıradaki bitiş, metrikler, dikkat gerektirenler, 90 günlük takvim, maliyet grafiği), kural tabanlı analiz motoru ve profesyonel arayüz düzenlemesi. CI: iOS/macOS derleme, 19 birim testi, simülatör ekran görüntüleri. Wiki sayfasına dokunulmadı.
