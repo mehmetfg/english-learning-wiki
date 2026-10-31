@@ -118,7 +118,10 @@ enum HeuristicExtractor {
         }
         if category.group != .contract { result.lastPaidAmount = result.amount }
 
-        result.provider = knownProviders.first { lowerText.contains($0.lowercased(with: turkish)) } ?? ""
+        // Kelime sınırıyla ara: "HP" veya "Apple" başka kelimelerin içinde geçince eşleşmesin.
+        result.provider = knownProviders.first { name in
+            !lowerText.regexMatches(#"\b"# + NSRegularExpression.escapedPattern(for: name.lowercased(with: turkish)) + #"\b"#).isEmpty
+        } ?? ""
         result.identifier = identifier(in: text, category: category)
 
         if lowerText.contains("otomatik olarak yenilen") || lowerText.contains("kendiliğinden yenilen") {

@@ -1,0 +1,32 @@
+name: Vade (iOS + macOS)
+
+on:
+  push:
+    paths:
+      - "apps/vade/**"
+      - ".github/workflows/vade.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: vade-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: macos-26
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: apps/vade
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate project
+        run: xcodegen generate
+      - name: Xcode version
+        run: xcodebuild -version
+      - name: Unit tests (macOS)
+        run: xcodebuild test -project Vade.xcodeproj -scheme Vade -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO -quiet
+      - name: Build (iOS Simulator)
+        run: xcodebuild build -project Vade.xcodeproj -scheme Vade -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO -quiet

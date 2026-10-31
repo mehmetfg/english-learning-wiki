@@ -37,3 +37,25 @@ targets:
         "CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]": Vade/Support/Vade-iOS.entitlements
         "CODE_SIGN_ENTITLEMENTS[sdk=macosx*]": Vade/Support/Vade-macOS.entitlements
         ENABLE_HARDENED_RUNTIME: YES
+  VadeTests:
+    type: bundle.unit-test
+    platform: macOS
+    # Uygulamaya bağlanmadan (host'suz) çalışır: çıkarıcı kaynakları doğrudan derlenir,
+    # böylece imzasız CI ortamında iCloud/CloudKit gerektirmez.
+    sources:
+      - path: VadeTests
+      - path: Vade/Models
+      - path: Vade/Services/HeuristicExtractor.swift
+      - path: Vade/Services/DocumentAnalyzer.swift
+      - path: Vade/Services/OnDeviceModelAnalyzer.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mehmetfg.vade.tests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Vade:
+    build:
+      targets:
+        Vade: all
+    test:
+      targets: [VadeTests]
