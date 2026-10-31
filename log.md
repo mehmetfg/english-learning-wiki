@@ -1775,3 +1775,6 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 **Ayarlar:** quantum + mabet modül listesine eklendi, kullanıcının görünür modüllerine işlendi. Panorama alan kartlarına Kuantum girdi.
 
 **Sonraki:** Turso'ya seed-quantum + 0004; kuantum sorular/quiz içeriği (KR-006 deseniyle); diğer vault'lar (Yazarlık alt bölümleri) için kategori seed'i.
+
+## [2026-10-31] ingest | Üç kitap projesi: Paranın Aklı (devam ediyor)
+Özet: Vault dışı bir yan proje olarak `books/` klasörü açıldı. TTS için işaretsiz düz metin kaynaklardan kapaklı, içindekili EPUB 3 üreten `books/build_epub.py` yazıldı. Birinci kitap "Paranın Aklı" için giriş ve 9 bölüm (para, faiz, enflasyon, risk, piyasalar, değer yatırımcılığı, portföy teorisi, davranışsal finans, krizler) yazıldı; yaklaşık 22 bin kelime. Kalite öncelikli karar verildi (kullanıcı talebi): sayfa hedefi, kalite pahasına şişirilmeyecek. Felsefe ve fizik kitapları henüz başlamadı. Wiki sayfalarına dokunulmadı.
