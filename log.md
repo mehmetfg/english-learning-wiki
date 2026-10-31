@@ -1778,3 +1778,6 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 
 ## [2026-10-31] ingest | Üç kitap projesi: Paranın Aklı (devam ediyor)
 Özet: Vault dışı bir yan proje olarak `books/` klasörü açıldı. TTS için işaretsiz düz metin kaynaklardan kapaklı, içindekili EPUB 3 üreten `books/build_epub.py` yazıldı. Birinci kitap "Paranın Aklı" için giriş ve 9 bölüm (para, faiz, enflasyon, risk, piyasalar, değer yatırımcılığı, portföy teorisi, davranışsal finans, krizler) yazıldı; yaklaşık 22 bin kelime. Kalite öncelikli karar verildi (kullanıcı talebi): sayfa hedefi, kalite pahasına şişirilmeyecek. Felsefe ve fizik kitapları henüz başlamadı. Wiki sayfalarına dokunulmadı.
+
+## [2026-10-31] ingest | Kitap sırası değişti: fizik → felsefe → finans
+Özet: Kullanıcı talebiyle sıra tersine çevrildi. Finans kitabı (Paranın Aklı) giriş + 12 bölümde duraklatıldı (merkez bankaları, finansal tablolar, kişisel finans eklendi; kalan: borç/kaldıraç, servet/eşitsizlik, anlam/etik, genel özet). Şimdi üçüncü kitap "Einstein'dan Sonra Evren" yazılıyor. Kaynaksız alıntılar doğrulanamadığı için metinden çıkarıldı.
