@@ -1781,3 +1781,6 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 
 ## [2026-10-31] ingest | Kitap sırası değişti: fizik → felsefe → finans
 Özet: Kullanıcı talebiyle sıra tersine çevrildi. Finans kitabı (Paranın Aklı) giriş + 12 bölümde duraklatıldı (merkez bankaları, finansal tablolar, kişisel finans eklendi; kalan: borç/kaldıraç, servet/eşitsizlik, anlam/etik, genel özet). Şimdi üçüncü kitap "Einstein'dan Sonra Evren" yazılıyor. Kaynaksız alıntılar doğrulanamadığı için metinden çıkarıldı.
+
+## [2026-10-31] ingest | Einstein'dan Sonra Evren tamamlandı (ilk sürüm)
+Özet: Fizik kitabı Aristoteles'ten başlayacak şekilde yeniden kuruldu (kullanıcı talebi). Giriş + 16 bölüm + genel özet + okuma önerileri; yaklaşık 25 bin kelime. Yazım sırasında bulunan olgusal hatalar (Planck'ın yaşı, bölüm başlığı tarihi, kaynaksız alıntılar) düzeltildi. Sıradaki: felsefe kitabı; finans kitabı en sona bırakıldı (13 bölümde duraklatıldı).
