@@ -1,6 +1,6 @@
 ---
 title: English Learning Wiki — İçerik Dizini
-updated: 2026-10-30
+updated: 2026-10-31
 ---
 
 # English Learning Wiki — İçerik Dizini
@@ -122,6 +122,7 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Documents/projects/p
 | [[translation-pendulum]] | 1 dosya | 🆕 **Ö2 örneği** — EN→TR→(20 sn gecikme)→EN back-translation; word-level LCS diff; kayıp kelimeler defteri; 6 Naval/PG aforizması B1 uyarlamalı |
 | [[voice-journal]] | 1 dosya | 🆕 **Ö4 örneği** — 2 dk monologue; Web Speech Recognition canlı transcript; filler/tekrar tespiti; 14 Naval/PG/Atomic Habits temalı prompt; daily rotation + streak + 14 günlük history |
 | [[prompt-bank]] | 1 dosya | 🆕 **Ö7 örneği** — 60 constraint kart × 5 kategori (Grammar/PV/Topic/Quick/Combined); rastgele çekiliş + son 8'den kaçınma; heuristic check; recent 10 yazı + geri yükle |
+| [[blueprint-recall-board]] | 1 dosya | 🆕 (2026-10-31) **Ö8 örneği** — [[blueprint-recall-method]] test aracı; 5 sheet (Encode → Blind Recall → Check → Blueprint → Fill) + 1/3/7 gün Redraw; recall %, delta, S1→S3 scaffold; Hobbes/Locke/Hume + Kadıköy örnekleri |
 
 ### 📚 Guides
 | Sayfa | Dosyalar | Açıklama |

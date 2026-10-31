@@ -2,9 +2,9 @@
 title: Blueprint Recall Method — Kör Hatırla, İskelet Kur, Doldur
 type: synthesis
 tags: [methodology, retrieval-practice, active-recall, blueprint, concept-mapping, daily-review, output-system]
-related: [[calisma-yontemleri-analizi]], [[English Learning Framework]], [[Practice/Grammer Topics/_index|Practice Hub]], [[writing-ladder]], [[daily-writing-loop]], [[narrative-past-tenses-cluster]]
+related: [[calisma-yontemleri-analizi]], [[English Learning Framework]], [[Practice/Grammer Topics/_index|Practice Hub]], [[writing-ladder]], [[daily-writing-loop]], [[narrative-past-tenses-cluster]], [[blueprint-recall-board]]
 created: 2026-10-30
-updated: 2026-10-30
+updated: 2026-10-31
 ---
 
 # Blueprint Recall Method (BRM)
@@ -127,7 +127,7 @@ Kontrol: Past Simple ✅ · Past Continuous (*while I was trying*) ✅ · Past P
 2. **Yeni günlük ritüel — "Day Blueprint" (gün sonu mütalaası, 15 dk):** Günün tüm öğrenmeleri (İngilizce + felsefe + kitap) tek Event Web / Claim Map'te; Fill aşaması İngilizce.
 3. **Çıktı dosyası:** `wiki/practice/blueprints/YYYY-MM-DD.md` (frontmatter + recall skoru + delta + iskelet + fill).
 4. **Metrik:** Recall % ve Delta her oturumda zorunlu (praise inflation yok).
-5. **Araç (opsiyonel, pilot sonrası):** Bakmadan çizme → kaynakla üst üste bindirip fark gösteren bir HTML artifact (Blueprint Recall Board).
+5. **Araç:** [[blueprint-recall-board]] (2026-10-31) — protokolün tamamını adım adım uygulayan HTML test aracı.
 
 > Durum: **Öneri / pilot bekliyor.** CLAUDE.md'ye işlenmesi kullanıcı onayından sonra.
 

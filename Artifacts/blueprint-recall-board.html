@@ -1,0 +1,906 @@
+<meta charset="utf-8">
+<title>Blueprint Recall Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a drafting table. Each step is one "sheet" with an architectural title block; the work area sits on faint grid paper. */
+:root {
+  --paper: #f2f5f8;
+  --sheet: #ffffff;
+  --ink: #13243a;
+  --muted: #5a6b7f;
+  --line: #c9d5e2;
+  --grid: rgba(31, 95, 168, 0.07);
+  --accent: #1f5fa8;
+  --accent-ink: #ffffff;
+  --accent-soft: #e3edf8;
+  --ok: #2e7d4f;
+  --ok-soft: #e2f2e8;
+  --warn: #a8690f;
+  --warn-soft: #fbefd9;
+  --bad: #b23a3a;
+  --bad-soft: #f8e1e1;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0c1a29; --sheet: #112438; --ink: #dce7f2; --muted: #93a7bd; --line: #24405e;
+    --grid: rgba(127, 184, 255, 0.06); --accent: #7fb8ff; --accent-ink: #0c1a29; --accent-soft: #173452;
+    --ok: #6fcf97; --ok-soft: #133a28; --warn: #f0b85a; --warn-soft: #3a2c12; --bad: #f08a8a; --bad-soft: #3d1a1d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0c1a29; --sheet: #112438; --ink: #dce7f2; --muted: #93a7bd; --line: #24405e;
+  --grid: rgba(127, 184, 255, 0.06); --accent: #7fb8ff; --accent-ink: #0c1a29; --accent-soft: #173452;
+  --ok: #6fcf97; --ok-soft: #133a28; --warn: #f0b85a; --warn-soft: #3a2c12; --bad: #f08a8a; --bad-soft: #3d1a1d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-block: 20px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; letter-spacing: 0.01em; text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.2rem; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.label { font-family: var(--f-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); }
+
+/* Title block (drawing header) */
+.titleblock {
+  display: grid; grid-template-columns: 1fr auto; gap: 0; border: 1.5px solid var(--ink); background: var(--sheet); margin-bottom: 18px;
+}
+.tb-main { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tb-cells { display: grid; grid-template-columns: repeat(3, auto); border-left: 1.5px solid var(--ink); }
+.tb-cell { padding: 8px 12px; border-left: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 76px; }
+.tb-cell:first-child { border-left: 0; }
+.tb-cell b { font-family: var(--f-mono); font-weight: 500; font-size: 0.95rem; }
+.tb-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+@media (max-width: 680px) {
+  .titleblock { grid-template-columns: 1fr; }
+  .tb-cells { border-left: 0; border-top: 1.5px solid var(--ink); }
+}
+
+/* Sheet */
+.sheet { background: var(--sheet); border: 1px solid var(--line); padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.stepdot { font-family: var(--f-mono); font-size: 0.75rem; padding: 3px 8px; border: 1px solid var(--line); color: var(--muted); }
+.stepdot.on { border-color: var(--accent); color: var(--accent); font-weight: 500; }
+.stepdot.done { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 760px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+.grid2 > *, .grid3 > * { min-width: 0; }
+
+button, .btn {
+  font: inherit; font-size: 0.92rem; cursor: pointer; border: 1px solid var(--line); background: var(--sheet); color: var(--ink);
+  padding: 8px 14px; border-radius: 3px; display: inline-flex; align-items: center; gap: 6px;
+}
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button.ghost { background: transparent; }
+button.danger { color: var(--bad); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.row.end { justify-content: flex-end; }
+.row.between { justify-content: space-between; }
+
+input[type="text"], textarea, select {
+  font: inherit; width: 100%; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 3px; padding: 8px 10px;
+}
+textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.hint { font-size: 0.8rem; color: var(--muted); }
+
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 12px; font-size: 0.9rem; }
+.note.warn { border-color: var(--warn); background: var(--warn-soft); }
+.note.bad { border-color: var(--bad); background: var(--bad-soft); }
+.note.ok { border-color: var(--ok); background: var(--ok-soft); }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 760px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+.stat { border: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 2px; background: var(--sheet); }
+.stat b { font-family: var(--f-display); font-size: 2rem; font-weight: 600; line-height: 1; }
+
+.pill { font-family: var(--f-mono); font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
+.pill.ok { color: var(--ok); } .pill.warn { color: var(--warn); } .pill.bad { color: var(--bad); } .pill.acc { color: var(--accent); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+td.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* Source / reading */
+.source { font-family: var(--f-body); font-size: 1.02rem; line-height: 1.75; max-width: 68ch; white-space: pre-wrap; }
+.covered { border: 1px dashed var(--line); padding: 28px; text-align: center; color: var(--muted); font-family: var(--f-mono); font-size: 0.85rem; }
+
+.timer { font-family: var(--f-mono); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.timer.over { color: var(--warn); }
+
+/* Key points check */
+.kp { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 10px; border: 1px solid var(--line); }
+.kp + .kp { margin-top: -1px; }
+.kp-state { font-family: var(--f-mono); font-size: 0.78rem; width: 112px; justify-content: center; }
+.kp-state.s2 { background: var(--ok-soft); color: var(--ok); border-color: var(--ok); }
+.kp-state.s1 { background: var(--warn-soft); color: var(--warn); border-color: var(--warn); }
+.kp-state.s0 { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
+.kp-text { min-width: 0; }
+.kp-auto { font-size: 0.75rem; color: var(--muted); font-family: var(--f-mono); }
+
+.score-big { font-family: var(--f-display); font-size: 3.4rem; font-weight: 700; line-height: 1; }
+.bar { height: 8px; background: var(--line); position: relative; }
+.bar > i { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
+
+/* Blueprint drawing */
+.templates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+@media (max-width: 760px) { .templates { grid-template-columns: repeat(2, 1fr); } }
+.tpl { text-align: left; flex-direction: column; align-items: flex-start; gap: 3px; padding: 12px; }
+.tpl.sel { border: 2px solid var(--accent); background: var(--accent-soft); padding: 11px; }
+.tpl b { font-family: var(--f-display); font-size: 1.1rem; font-weight: 600; }
+.tpl span { font-size: 0.8rem; color: var(--muted); }
+
+.groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.group { border: 1.5px solid var(--ink); background: var(--sheet); display: flex; flex-direction: column; min-width: 0; }
+.group-head { border-bottom: 1.5px solid var(--ink); padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.group-head input { font-family: var(--f-display); font-size: 1.15rem; font-weight: 600; background: transparent; border: 0; padding: 2px 0; }
+.group-body { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+.node { display: flex; flex-direction: column; gap: 3px; }
+.node .label input { font-family: var(--f-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 6px; }
+.node-arrow { text-align: center; color: var(--accent); font-family: var(--f-mono); font-size: 0.8rem; line-height: 1; }
+.wordwarn { font-size: 0.72rem; color: var(--warn); font-family: var(--f-mono); }
+
+.edges { display: flex; flex-direction: column; gap: 8px; }
+.edge { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: center; }
+@media (max-width: 560px) { .edge { grid-template-columns: 1fr 1fr; } }
+.edge-view { font-family: var(--f-mono); font-size: 0.9rem; }
+.edge-view .rel { color: var(--accent); }
+
+/* Fill */
+.fill-item { border: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.fill-key { font-family: var(--f-mono); font-size: 0.82rem; color: var(--accent); }
+.annot { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.annot button { padding: 4px 10px; font-size: 0.82rem; }
+.annot button.on-ok { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.annot button.on-warn { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+.annot button.on-bad { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-size: 0.82rem; padding: 5px 10px; border: 1px solid var(--line); border-radius: 99px; background: var(--sheet); }
+.chip.sel { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.chip.met { border-color: var(--ok); color: var(--ok); background: var(--ok-soft); }
+.chip.miss { border-color: var(--bad); color: var(--bad); }
+
+/* Redraw compare */
+.cmp { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.cmp > * { min-width: 0; }
+
+.spark { width: 100%; height: 90px; display: block; }
+.empty { padding: 20px; border: 1px dashed var(--line); color: var(--muted); text-align: center; }
+.copybox { font-family: var(--f-mono); font-size: 0.8rem; min-height: 160px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 3px; font-size: 0.9rem; z-index: 20; }
+@media (prefers-reduced-motion: no-preference) { .sheet { animation: rise 0.25s ease-out; } @keyframes rise { from { transform: translateY(4px); } to { transform: none; } } }
+</style>
+
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+  const KEY = "brm.v1";
+  const OFFSETS = [1, 3, 7];
+
+  // ---------- Templates ----------
+  const TEMPLATES = {
+    claim: {
+      name: "Claim Map", tr: "İddia haritası", for: "Düşünürler, fikirler, tartışmalar", multi: true, groupLabel: "Thinker",
+      fields: [
+        { k: "claim", l: "Main claim", h: "Ana iddia: tek cümlelik özü, 3-6 kelime", ex: "war of all against all" },
+        { k: "reason", l: "Reason", h: "Gerekçe: neden böyle düşünüyor?", ex: "everyone wants safety, power" },
+        { k: "against", l: "Opposes", h: "Karşı çıktığı kişi / fikir", ex: "natural rights view" },
+        { k: "result", l: "Result", h: "Sonuç / önerdiği çözüm", ex: "absolute sovereign" }
+      ]
+    },
+    event: {
+      name: "Event Web", tr: "Olay ağı", for: "Hikâye, gün sonu, olay", multi: false,
+      fields: [
+        { k: "who", l: "Who", h: "Kim?", ex: "Elif, bookshop owner" },
+        { k: "where", l: "Where", h: "Nerede?", ex: "Kadıköy, ferry, bookshop" },
+        { k: "when", l: "When", h: "Ne zaman?", ex: "last Tuesday, heavy rain" },
+        { k: "what1", l: "What happened 1", h: "İlk olay", ex: "forgot umbrella, ran inside" },
+        { k: "what2", l: "What happened 2", h: "İkinci olay", ex: "owner reading Leviathan, tea" },
+        { k: "why", l: "Why", h: "Neden?", ex: "rain, no umbrella" },
+        { k: "result", l: "Result", h: "Sonuç", ex: "missed ferry, new book, new friend" }
+      ]
+    },
+    formuse: {
+      name: "Form-Use Tree", tr: "Biçim-kullanım ağacı", for: "Gramer konusu", multi: false,
+      fields: [
+        { k: "form", l: "Form", h: "Yapının formülü", ex: "had + V3" },
+        { k: "use1", l: "Use 1", h: "Birinci kullanım", ex: "earlier past action" },
+        { k: "use2", l: "Use 2", h: "İkinci kullanım", ex: "reported speech backshift" },
+        { k: "use3", l: "Use 3", h: "Üçüncü kullanım", ex: "third conditional" },
+        { k: "signal", l: "Signal words", h: "Sinyal kelimeler", ex: "before, by the time, already" },
+        { k: "error", l: "Typical error", h: "Tipik hata", ex: "using it with no second past event" }
+      ]
+    },
+    argument: {
+      name: "Argument Skeleton", tr: "Argüman iskeleti", for: "Makale, deneme, görüş yazısı", multi: false,
+      fields: [
+        { k: "thesis", l: "Thesis", h: "Tez: yazarın ana fikri", ex: "small habits compound" },
+        { k: "s1", l: "Support 1", h: "Birinci destek", ex: "1% better daily = 37x" },
+        { k: "s2", l: "Support 2", h: "İkinci destek", ex: "systems beat goals" },
+        { k: "s3", l: "Support 3", h: "Üçüncü destek", ex: "identity drives behaviour" },
+        { k: "counter", l: "Counter-view", h: "Karşı görüş", ex: "results feel slow" },
+        { k: "reply", l: "Response", h: "Karşı görüşe cevap", ex: "plateau of latent potential" }
+      ]
+    }
+  };
+  const RELS = [
+    { v: "opposes", tr: "karşı çıkar" }, { v: "develops", tr: "geliştirir" },
+    { v: "influences", tr: "etkiler" }, { v: "causes", tr: "neden olur" }, { v: "answers", tr: "cevap verir" }
+  ];
+
+  // ---------- Constraints (Fill step) ----------
+  const CONSTRAINTS = [
+    { id: "ps", name: "Past Simple", tr: "Geçmiş zaman", re: /\b(\w{2,}ed|was|were|went|said|made|took|saw|thought|believed|gave|left|ran|began|became|wrote|told|knew|found|got|came|felt|kept|lost|met|paid|put|sat|spoke|stood|understood|won|forgot|bought|brought)\b/i },
+    { id: "pc", name: "Past Continuous", tr: "was/were + -ing", re: /\b(was|were)\s+(\w+ing)\b/i },
+    { id: "pp", name: "Past Perfect", tr: "had + V3", re: /\bhad\s+(already\s+|never\s+|just\s+)?(\w{2,}ed|been|gone|done|seen|forgotten|written|taken|given|made|known|built|left|lost|found|said|told|broken|become|begun|thought|bought|met|read|run|eaten|spoken)\b/i },
+    { id: "contrast", name: "Contrast connector", tr: "however / whereas / although", re: /\b(however|whereas|although|even though|on the other hand|in contrast|while)\b/i },
+    { id: "cause", name: "Cause / result", tr: "because / so / therefore", re: /\b(because|since|so|therefore|as a result|due to|that is why)\b/i },
+    { id: "report", name: "Reporting verb", tr: "argued / claimed / believed", re: /\b(argued|claimed|believed|stated|insisted|suggested|maintained|denied|rejected)\b/i },
+    { id: "relative", name: "Relative clause", tr: "who / which / whose", re: /\b(who|which|whose|whom)\b/i }
+  ];
+
+  // ---------- Samples ----------
+  const SAMPLES = [
+    {
+      id: "hobbes", title: "State of Nature: Hobbes, Locke, Hume", template: "claim", level: "B1",
+      groups: ["Hobbes", "Locke", "Hume"],
+      text: "In the seventeenth century, English thinkers asked a simple question: what would life be like without any government? Thomas Hobbes called this situation the \"state of nature\". In his book Leviathan (1651), he argued that people in the state of nature would always fight, because everyone wanted safety and power. Life there would be \"nasty, brutish and short\". For Hobbes, the only solution was a strong ruler with absolute power.\n\nJohn Locke disagreed. He believed that even in the state of nature, people followed a natural law, and they had natural rights: life, liberty and property. People created governments by consent, to protect these rights. If a government broke this agreement, the people had the right to change it.\n\nAbout a century later, David Hume criticised both of them. He said that the \"original contract\" was a story that never really happened. In his view, people obeyed governments mostly because of habit and because obedience was useful, not because of a promise.",
+      points: [
+        { t: "Ortak soru: hükümet olmasa hayat nasıl olurdu? (state of nature)", kw: "state nature government without" },
+        { t: "Hobbes'un kitabı: Leviathan (1651)", kw: "hobbes leviathan 1651" },
+        { t: "Hobbes: herkes savaşır; hayat \"nasty, brutish and short\"", kw: "fight war nasty brutish short savaş" },
+        { t: "Hobbes'un çözümü: mutlak güce sahip güçlü hükümdar", kw: "absolute ruler power strong mutlak hükümdar" },
+        { t: "Locke: doğal hukuk ve doğal haklar (life, liberty, property)", kw: "locke natural rights life liberty property doğal hak" },
+        { t: "Locke: hükümet rızayla kurulur; anlaşmayı bozarsa halk değiştirebilir", kw: "consent agreement change right rıza değiştir" },
+        { t: "Hume: ilk sözleşme bir hikâye; itaat alışkanlık ve faydadan gelir", kw: "hume contract story habit useful alışkanlık fayda" }
+      ]
+    },
+    {
+      id: "kadikoy", title: "A Rainy Tuesday in Kadıköy", template: "event", level: "B1",
+      text: "Last Tuesday, Elif was walking to the ferry in Kadıköy when it started to rain heavily. She had forgotten her umbrella at home, so she ran into a small bookshop to wait. Inside, the old owner was reading a copy of Leviathan. They started talking about philosophy, and he made her a cup of tea. When the rain stopped an hour later, she had missed her ferry, but she left the shop with a new book and a new friend.",
+      points: [
+        { t: "Kim: Elif (ve kitapçının yaşlı sahibi)", kw: "elif owner" },
+        { t: "Ne zaman / nerede: geçen salı, Kadıköy, vapura yürürken", kw: "tuesday kadıköy ferry walking salı vapur" },
+        { t: "Sağanak yağmur başladı", kw: "rain heavily yağmur" },
+        { t: "Şemsiyesini evde unutmuştu, küçük bir kitapçıya girdi", kw: "umbrella forgotten bookshop şemsiye kitapçı" },
+        { t: "Sahibi Leviathan okuyordu; felsefe konuştular, çay yaptı", kw: "leviathan philosophy tea felsefe çay" },
+        { t: "Sonuç: vapuru kaçırdı ama yeni kitap ve yeni arkadaşla çıktı", kw: "missed ferry book friend kaçırdı arkadaş" }
+      ]
+    }
+  ];
+
+  // ---------- Storage ----------
+  function load() {
+    try { const raw = localStorage.getItem(KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+    return { sessions: [], draft: null };
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
+  let db = load();
+  if (!Array.isArray(db.sessions)) db.sessions = [];
+
+  const ui = { view: "home", redrawId: null, viewId: null, timer: null, confirmDel: null, revealSource: false };
+
+  // ---------- Helpers ----------
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const today = () => { const d = new Date(); return ymd(d); };
+  function ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function addDays(s, n) { const [y, m, d] = s.split("-").map(Number); return ymd(new Date(y, m - 1, d + n)); }
+  function dayDiff(a, b) { const p = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d).getTime(); }; return Math.round((p(b) - p(a)) / 86400000); }
+  const pct = (x) => Math.round(x * 100) + "%";
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2200); }
+  function lower(s) { return String(s || "").toLowerCase().replace(/\u0307/g, ""); }
+  const STOP = new Set("the a an and or of to in on at for with by from is are was were be been it its this that these those as but not ve ile bir bu şu da de ki için gibi olan çok daha".split(" "));
+  function tokens(s) { return lower(s).split(/[^a-zçğıöşü0-9]+/i).filter((w) => w.length >= 3 && !STOP.has(w)); }
+  // Matches a word in the text even with Turkish suffixes or English endings (shared 5-letter stem).
+  function hasToken(textTokens, w) {
+    const stem = w.slice(0, Math.min(5, w.length));
+    return textTokens.some((t) => t === w || (stem.length >= 4 && t.startsWith(stem)) || (t.length >= 4 && w.startsWith(t.slice(0, 5))));
+  }
+  function overlap(source, attempt) {
+    const want = Array.from(new Set(tokens(source)));
+    if (!want.length) return 0;
+    const got = tokens(attempt);
+    return want.filter((w) => hasToken(got, w)).length / want.length;
+  }
+  function wordCount(s) { return String(s || "").trim().split(/\s+/).filter(Boolean).length; }
+
+  // Scaffold level: 3 sessions in a row with recall >= 70% moves you up one level.
+  function levelInfo() {
+    let lvl = 1, streak = 0;
+    db.sessions.slice().sort((a, b) => (a.created < b.created ? -1 : 1)).forEach((s) => {
+      if (s.recallScore >= 0.7) streak++; else streak = 0;
+      if (streak >= 3 && lvl < 3) { lvl++; streak = 0; }
+    });
+    return { lvl, streak };
+  }
+  const LEVELS = {
+    1: { name: "S1 Full Scaffold", tr: "Tam iskele: düğüm adları, ipuçları ve örnekler görünür" },
+    2: { name: "S2 Half Scaffold", tr: "Yarım iskele: sadece düğüm adları görünür" },
+    3: { name: "S3 Blank Page", tr: "Boş sayfa: düğümleri sen adlandırırsın" }
+  };
+
+  function dueRedraws() {
+    const t = today();
+    return db.sessions.filter((s) => {
+      const n = (s.redraws || []).length;
+      return n < OFFSETS.length && dayDiff(addDays(s.created, OFFSETS[n]), t) >= 0;
+    });
+  }
+  function nextDue(s) { const n = (s.redraws || []).length; return n < OFFSETS.length ? addDays(s.created, OFFSETS[n]) : null; }
+
+  function newDraft(sample) {
+    const lvl = levelInfo().lvl;
+    const d = {
+      id: uid(), created: today(), step: 0, level: lvl,
+      title: sample ? sample.title : "", sampleId: sample ? sample.id : null,
+      text: sample ? sample.text : "", points: sample ? sample.points.map((p) => ({ t: p.t, kw: p.kw })) : [],
+      pointsRaw: "", readSeconds: 0,
+      dump: "", recallSeconds: 0, marks: [], missedNote: "", recallScore: null,
+      template: sample && lvl < 3 ? sample.template : null, groups: [], edges: [],
+      sentences: {}, annot: {}, errNote: {}, constraints: ["ps", "contrast"],
+      redraws: []
+    };
+    if (d.template) d.groups = makeGroups(d.template, sample && sample.groups && lvl === 1 ? sample.groups : null);
+    return d;
+  }
+  function makeGroups(tplId, names) {
+    const tpl = TEMPLATES[tplId];
+    const mk = (name) => ({ name: name || "", fields: tpl.fields.map((f) => ({ k: f.k, l: f.l, v: "", custom: "" })) });
+    if (tpl.multi) return (names && names.length ? names : ["", ""]).map(mk);
+    return [mk(tpl.name)];
+  }
+
+  // ---------- Timer ----------
+  function startTimer(elId, field, limitSec) {
+    stopTimer();
+    const started = Date.now() - (db.draft[field] || 0) * 1000;
+    const tick = () => {
+      const sec = Math.floor((Date.now() - started) / 1000);
+      db.draft[field] = sec;
+      const el = document.getElementById(elId);
+      if (!el) return stopTimer();
+      const left = limitSec == null ? sec : limitSec - sec;
+      const v = Math.abs(left);
+      el.textContent = (left < 0 ? "+" : "") + Math.floor(v / 60) + ":" + String(v % 60).padStart(2, "0");
+      el.classList.toggle("over", limitSec != null && left < 0);
+    };
+    tick();
+    ui.timer = setInterval(tick, 1000);
+  }
+  function stopTimer() { if (ui.timer) clearInterval(ui.timer); ui.timer = null; }
+
+  // ---------- Render ----------
+  function render() {
+    stopTimer();
+    const app = $("#app");
+    let html = header();
+    if (ui.view === "home") html += viewHome();
+    else if (ui.view === "session") html += viewSession();
+    else if (ui.view === "redraw") html += viewRedraw();
+    else if (ui.view === "detail") html += viewDetail();
+    app.innerHTML = html;
+    afterRender();
+  }
+
+  function header() {
+    const L = levelInfo();
+    const sheet = ui.view === "session" && db.draft ? "0" + (db.draft.step + 1) + "/05" : ui.view === "redraw" ? "R" : "00";
+    return `
+    <header class="titleblock">
+      <div class="tb-main">
+        <span class="label">Blueprint Recall Method · Kör hatırla, iskelet kur, doldur</span>
+        <h1>Blueprint Recall Board</h1>
+        <div class="tb-actions">
+          <button data-act="home" class="ghost">Masa</button>
+          <button data-act="theme" class="ghost" aria-label="Temayı değiştir">Tema</button>
+        </div>
+      </div>
+      <div class="tb-cells">
+        <div class="tb-cell"><span class="label">Sheet</span><b>${sheet}</b></div>
+        <div class="tb-cell"><span class="label">Level</span><b>S${L.lvl}</b></div>
+        <div class="tb-cell"><span class="label">Date</span><b>${today().slice(5)}</b></div>
+      </div>
+    </header>`;
+  }
+
+  function spark() {
+    const s = db.sessions.slice().sort((a, b) => (a.created < b.created ? -1 : 1)).slice(-14);
+    if (s.length < 2) return `<p class="muted small">Grafik için en az 2 oturum gerekli.</p>`;
+    const W = 600, H = 90, pad = 18, bw = (W - pad * 2) / s.length;
+    let bars = "";
+    s.forEach((x, i) => {
+      const h = Math.max(2, (H - pad * 2) * x.recallScore);
+      const col = x.recallScore >= 0.7 ? "var(--ok)" : x.recallScore >= 0.5 ? "var(--warn)" : "var(--bad)";
+      bars += `<rect x="${pad + i * bw + 3}" y="${H - pad - h}" width="${Math.max(4, bw - 6)}" height="${h}" fill="${col}"></rect>`;
+    });
+    const y70 = H - pad - (H - pad * 2) * 0.7;
+    return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Son oturumların hatırlama skorları">
+      <line x1="${pad}" x2="${W - pad}" y1="${y70}" y2="${y70}" stroke="var(--accent)" stroke-dasharray="4 4" stroke-width="1" fill="none"></line>
+      <text x="${W - pad}" y="${y70 - 4}" text-anchor="end" font-size="10" fill="var(--muted)" font-family="IBM Plex Mono, monospace">70%</text>
+      ${bars}</svg>`;
+  }
+
+  function viewHome() {
+    const L = levelInfo();
+    const due = dueRedraws();
+    const sess = db.sessions.slice().sort((a, b) => (a.created < b.created ? 1 : -1));
+    const last5 = sess.slice(0, 5);
+    const avg = last5.length ? last5.reduce((a, s) => a + s.recallScore, 0) / last5.length : null;
+    const sampleCards = SAMPLES.map((s) => `
+      <button class="tpl" data-act="start" data-sample="${s.id}">
+        <span class="label">Örnek metin · ${s.level} · ${TEMPLATES[s.template].name}</span>
+        <b>${esc(s.title)}</b>
+        <span>${s.points.length} ana unsur gizli; kontrol aşamasında açılır.</span>
+      </button>`).join("");
+    return `
+    ${db.draft ? `<div class="note warn row between"><span>Yarım kalmış bir oturum var: <b>${esc(db.draft.title || "Başlıksız")}</b>, sheet ${db.draft.step + 1}/5.</span>
+      <span class="row"><button data-act="resume" class="primary">Devam et</button><button data-act="discard" class="danger">Sil</button></span></div>` : ""}
+    <section class="sheet">
+      <div class="sheet-head"><h2>Bugünkü test</h2><span class="label">5 sheet · 25-30 dk</span></div>
+      <p class="muted">Önce bir kez oku, sonra kaynağı kapat ve bakmadan hatırla. Hatırladıklarını iskelete dök, iskeleti İngilizce cümlelerle doldur. 1, 3 ve 7 gün sonra iskeleti yeniden çiz.</p>
+      <div class="grid3">
+        ${sampleCards}
+        <button class="tpl" data-act="start" data-sample="">
+          <span class="label">Kendi kaynağın · gün sonu mütalaası</span>
+          <b>Kendi metnim / günüm</b>
+          <span>Metni yapıştır, ana unsurları yaz. Gün sonu için metin alanını boş bırakabilirsin.</span>
+        </button>
+      </div>
+    </section>
+    <div style="height:16px"></div>
+    <section class="stats">
+      <div class="stat"><span class="label">Scaffold level</span><b>S${L.lvl}</b><span class="small muted">${L.lvl < 3 ? `S${L.lvl + 1} için ${L.streak}/3 oturum ≥ %70` : "En üst seviye"}</span></div>
+      <div class="stat"><span class="label">Oturum</span><b>${db.sessions.length}</b><span class="small muted">toplam kayıt</span></div>
+      <div class="stat"><span class="label">Ort. recall (son 5)</span><b>${avg == null ? "–" : pct(avg)}</b><span class="small muted">hatırlama oranı</span></div>
+      <div class="stat"><span class="label">Bugün yeniden çiz</span><b>${due.length}</b><span class="small muted">vadesi gelen iskelet</span></div>
+    </section>
+    <div style="height:16px"></div>
+    <section class="sheet">
+      <div class="sheet-head"><h2>Yeniden çizim sırası</h2><span class="label">Redraw · 1 / 3 / 7 gün</span></div>
+      ${due.length ? due.map((s) => `<div class="row between"><span><b>${esc(s.title)}</b> <span class="muted small">· ${s.created} · ${(s.redraws || []).length + 1}. çizim</span></span><button class="primary" data-act="redraw" data-id="${s.id}">Bakmadan çiz</button></div>`).join("") : `<div class="empty">Bugün vadesi gelen iskelet yok. Yeni bir test bitirince ertesi gün burada görünür.</div>`}
+    </section>
+    <div style="height:16px"></div>
+    <section class="sheet">
+      <div class="sheet-head"><h2>Kayıt defteri</h2><span class="label">Recall trend · son 14</span></div>
+      ${spark()}
+      ${sess.length ? `<div class="table-wrap"><table>
+        <thead><tr><th>Tarih</th><th>Başlık</th><th>Şablon</th><th>Recall</th><th>Redraw</th><th>Hata</th><th></th></tr></thead>
+        <tbody>${sess.map((s) => {
+          const last = (s.redraws || []).slice(-1)[0];
+          const errs = Object.values(s.annot || {}).filter((v) => v === "bad").length;
+          return `<tr>
+            <td class="num">${s.created}</td><td>${esc(s.title)}</td><td>${s.template ? TEMPLATES[s.template].name : "–"}</td>
+            <td class="num"><span class="pill ${s.recallScore >= 0.7 ? "ok" : s.recallScore >= 0.5 ? "warn" : "bad"}">${pct(s.recallScore)}</span></td>
+            <td class="num">${last ? pct(last.score) + ` (${s.redraws.length}/3)` : nextDue(s) ? "→ " + nextDue(s).slice(5) : "–"}</td>
+            <td class="num">${errs}</td>
+            <td><span class="row"><button data-act="detail" data-id="${s.id}">Aç</button>${ui.confirmDel === s.id ? `<button class="danger" data-act="del-yes" data-id="${s.id}">Eminim, sil</button><button data-act="del-no">Vazgeç</button>` : `<button class="ghost danger" data-act="del" data-id="${s.id}">Sil</button>`}</span></td>
+          </tr>`; }).join("")}</tbody></table></div>` : `<div class="empty">Henüz kayıt yok. Yukarıdaki örneklerden biriyle ilk testini yap.</div>`}
+    </section>`;
+  }
+
+  function stepsBar(step) {
+    const names = ["Encode", "Blind Recall", "Check", "Blueprint", "Fill"];
+    return `<div class="steps">${names.map((n, i) => `<span class="stepdot ${i === step ? "on" : i < step ? "done" : ""}">${String(i + 1).padStart(2, "0")} ${n}</span>`).join("")}</div>`;
+  }
+
+  function viewSession() {
+    const d = db.draft;
+    if (!d) { ui.view = "home"; return viewHome(); }
+    const views = [stepEncode, stepRecall, stepCheck, stepBlueprint, stepFill];
+    return `<section class="sheet">${stepsBar(d.step)}${views[d.step](d)}</section>`;
+  }
+
+  // Sheet 01: Encode
+  function stepEncode(d) {
+    const isSample = !!d.sampleId;
+    return `
+    <div class="sheet-head"><h2>01 · Niyetli okuma</h2><span class="label">Encode · bir kez oku</span></div>
+    <div class="note">Bu metni <b>bir kez</b>, "birazdan bakmadan anlatacağım" niyetiyle oku. Altını çizme, not alma. Hazır olunca kaynak kapanacak.</div>
+    ${isSample ? `
+      <div class="row between"><h3>${esc(d.title)}</h3><span class="row"><span class="label">Okuma süresi</span><span class="timer" id="t-read">0:00</span></span></div>
+      <div class="source">${esc(d.text)}</div>
+      <p class="hint">Bu örnekte ${d.points.length} ana unsur var. Kontrol aşamasına kadar gizli kalacaklar.</p>
+    ` : `
+      <div class="field"><label class="label" for="in-title">Başlık</label><input type="text" id="in-title" value="${esc(d.title)}" placeholder="Örn. Hume on causation · ya da: 30 Ekim gün sonu"></div>
+      <div class="field"><label class="label" for="in-text">Kaynak metin (isteğe bağlı)</label>
+        <textarea id="in-text" rows="7" placeholder="Okuduğun metni buraya yapıştır. Gün sonu mütalaası yapıyorsan boş bırak.">${esc(d.text)}</textarea></div>
+      <div class="field"><label class="label" for="in-points">Ana unsurlar · her satıra bir tane (en az 3)</label>
+        <textarea id="in-points" rows="5" placeholder="Hume: causation = habit&#10;Impressions vs ideas&#10;Problem of induction">${esc(d.pointsRaw)}</textarea>
+        <span class="hint">Skor bu listeye göre hesaplanır. Gün sonunda: bugün öğrenmen gereken 3-7 şeyi yaz. Bir arkadaşın yazarsa daha da iyi, çünkü sen görmemiş olursun.</span></div>
+    `}
+    <div class="row end"><button data-act="cancel" class="ghost">Vazgeç</button><button class="primary" data-act="to-recall">Hazırım, kaynağı kapat</button></div>`;
+  }
+
+  // Sheet 02: Blind recall
+  function stepRecall(d) {
+    return `
+    <div class="sheet-head"><h2>02 · Kör hatırlama</h2><span class="label">Blind recall · brain dump · 3 dk</span></div>
+    <div class="covered">KAYNAK KAPALI · ${esc(d.title || "Başlıksız")}</div>
+    <div class="row between"><span class="muted small">Aklında kalan her şeyi sırasız yaz. Türkçe ya da İngilizce olabilir. Eksik olması normal, uydurma.</span>
+      <span class="row"><span class="label">Kalan</span><span class="timer" id="t-recall">3:00</span></span></div>
+    <textarea id="in-dump" rows="10" placeholder="Hobbes... Leviathan... state of nature... herkes birbirine karşı...">${esc(d.dump)}</textarea>
+    <div class="row between"><span class="hint mono" id="dump-wc">${wordCount(d.dump)} kelime</span>
+      <span class="row"><button data-act="back" class="ghost">Geri</button><button class="primary" data-act="to-check">Bitti, kontrol et</button></span></div>`;
+  }
+
+  // Sheet 03: Check against source
+  function stepCheck(d) {
+    if (!d.marks.length) {
+      d.marks = d.points.map((p) => {
+        const o = overlap(p.kw || p.t, d.dump);
+        return o >= 0.5 ? 2 : o >= 0.25 ? 1 : 0;
+      });
+      d.auto = d.marks.slice();
+    }
+    const score = d.marks.reduce((a, m) => a + m / 2, 0) / d.points.length;
+    d.recallScore = score;
+    const prev = db.sessions.slice().sort((a, b) => (a.created < b.created ? 1 : -1))[0];
+    const delta = prev ? Math.round((score - prev.recallScore) * 100) : null;
+    const stateLbl = ["✗ Unuttum", "~ Kısmen", "✓ Hatırladım"];
+    return `
+    <div class="sheet-head"><h2>03 · Kontrol</h2><span class="label">Check · geri bildirimsiz hatırlama, hatanın provasıdır</span></div>
+    <div class="grid2">
+      <div class="field"><span class="label">Senin hatırladığın</span><div class="source small" style="border:1px solid var(--line);padding:10px;max-height:300px;overflow:auto">${esc(d.dump) || '<span class="muted">Boş bıraktın.</span>'}</div></div>
+      <div class="field"><span class="label">Kaynak</span>${d.text ? `<div class="source small" style="border:1px solid var(--line);padding:10px;max-height:300px;overflow:auto">${esc(d.text)}</div>` : `<div class="empty">Kaynak metin yok. Ana unsur listesine göre karşılaştır.</div>`}</div>
+    </div>
+    <div class="field"><span class="label">Ana unsurlar · otomatik eşleşme önerisi verir; son karar senin (tıklayınca değişir)</span>
+      <div>${d.points.map((p, i) => `
+        <div class="kp"><button class="kp-state s${d.marks[i]}" data-act="mark" data-i="${i}">${stateLbl[d.marks[i]]}</button>
+          <div class="kp-text">${esc(p.t)}${d.auto && d.auto[i] !== d.marks[i] ? `<div class="kp-auto">otomatik öneri: ${stateLbl[d.auto[i]]}</div>` : ""}</div></div>`).join("")}</div></div>
+    <div class="grid2">
+      <div class="field"><span class="label">Recall skoru</span>
+        <div class="row"><span class="score-big">${pct(score)}</span><span class="small muted">${d.marks.filter((m) => m === 2).length} tam · ${d.marks.filter((m) => m === 1).length} kısmen · ${d.marks.filter((m) => m === 0).length} unutuldu${delta != null ? `<br>Önceki oturuma göre: <b class="mono">${delta >= 0 ? "+" : ""}${delta} puan</b>` : ""}</span></div>
+        <div class="bar"><i style="width:${Math.round(score * 100)}%"></i></div>
+        <p class="hint">${score >= 0.7 ? "Güçlü bir hatırlama. Unuttuklarına iskelette özel yer aç." : score >= 0.5 ? "Orta. Unutulan unsurlar iskeletin en önemli düğümleri olsun." : "Düşük, ama asıl öğrenme burada başlıyor: unuttuklarını şimdi iskelete yazarken sabitliyorsun."}</p></div>
+      <div class="field"><label class="label" for="in-missed">Eksiklerim · farklı renkle not al</label>
+        <textarea id="in-missed" rows="5" placeholder="Neyi kaçırdım, neyi yanlış hatırladım?">${esc(d.missedNote)}</textarea></div>
+    </div>
+    <div class="row end"><button data-act="back" class="ghost">Geri</button><button class="primary" data-act="to-blueprint">İskelete geç</button></div>`;
+  }
+
+  // Sheet 04: Blueprint
+  function stepBlueprint(d) {
+    const lvl = d.level;
+    const tplCards = Object.entries(TEMPLATES).map(([id, t]) => `
+      <button class="tpl ${d.template === id ? "sel" : ""}" data-act="tpl" data-tpl="${id}"><b>${t.name}</b><span>${t.tr} · ${t.for}</span></button>`).join("");
+    let body = "";
+    if (d.template) {
+      const tpl = TEMPLATES[d.template];
+      body = `
+      <div class="groups">${d.groups.map((g, gi) => `
+        <div class="group">
+          <div class="group-head">
+            ${tpl.multi ? `<input type="text" id="g-${gi}" data-g="${gi}" class="g-name" value="${esc(g.name)}" placeholder="${lvl === 1 ? "Thinker adı" : ""}" aria-label="Grup adı">` : `<h3>${esc(tpl.name)}</h3>`}
+            ${tpl.multi && d.groups.length > 1 ? `<button class="ghost small" data-act="del-group" data-g="${gi}" aria-label="Kaldır">×</button>` : ""}
+          </div>
+          <div class="group-body">${g.fields.map((f, fi) => {
+            const def = tpl.fields[fi];
+            const wc = wordCount(f.v);
+            return `${fi ? '<div class="node-arrow">↓</div>' : ""}<div class="node">
+              ${lvl === 3 ? `<span class="label"><input type="text" id="c-${gi}-${fi}" class="f-custom" data-g="${gi}" data-f="${fi}" value="${esc(f.custom)}" placeholder="düğüm adı"></span>` : `<span class="label">${esc(def.l)}</span>`}
+              <input type="text" id="f-${gi}-${fi}" class="f-val" data-g="${gi}" data-f="${fi}" value="${esc(f.v)}" placeholder="${lvl === 1 ? esc(def.ex) : ""}">
+              ${lvl === 1 ? `<span class="hint">${esc(def.h)}</span>` : ""}
+              <span class="wordwarn" id="ww-${gi}-${fi}">${wc > 6 ? wc + " kelime: cümle değil, anahtar kelime yaz" : ""}</span>
+            </div>`; }).join("")}</div>
+        </div>`).join("")}</div>
+      ${tpl.multi ? `<div class="row"><button data-act="add-group">+ Thinker ekle</button></div>
+        <div class="field"><span class="label">İlişkiler · etiketli oklar</span>
+          <div class="edges">${d.edges.map((e, ei) => `
+            <div class="edge">
+              <select id="e-from-${ei}" class="e-sel" data-e="${ei}" data-k="from">${d.groups.map((g, gi) => `<option value="${gi}" ${+e.from === gi ? "selected" : ""}>${esc(g.name || "Thinker " + (gi + 1))}</option>`).join("")}</select>
+              <select id="e-rel-${ei}" class="e-sel" data-e="${ei}" data-k="rel">${RELS.map((r) => `<option value="${r.v}" ${e.rel === r.v ? "selected" : ""}>${r.v} (${r.tr})</option>`).join("")}</select>
+              <select id="e-to-${ei}" class="e-sel" data-e="${ei}" data-k="to">${d.groups.map((g, gi) => `<option value="${gi}" ${+e.to === gi ? "selected" : ""}>${esc(g.name || "Thinker " + (gi + 1))}</option>`).join("")}</select>
+              <button class="ghost" data-act="del-edge" data-e="${ei}" aria-label="Oku sil">×</button>
+            </div>`).join("")}
+          </div>
+          <div class="row"><button data-act="add-edge">+ Ok ekle</button></div>
+          ${d.edges.length ? `<div class="edge-view">${d.edges.map((e) => `${esc(d.groups[e.from] ? d.groups[e.from].name || "?" : "?")} <span class="rel">—${e.rel}→</span> ${esc(d.groups[e.to] ? d.groups[e.to].name || "?" : "?")}`).join("<br>")}</div>` : ""}
+        </div>` : ""}`;
+    }
+    return `
+    <div class="sheet-head"><h2>04 · İskelet</h2><span class="label">Blueprint · ${LEVELS[lvl].name}</span></div>
+    <div class="note">${LEVELS[lvl].tr}. Düğümlere <b>İngilizce anahtar kelime</b> yaz, cümle değil. Kaynağa bakma; unuttuklarını kontrol aşamasında gördün, şimdi hafızadan yerleştir.</div>
+    ${lvl === 3 || !d.template ? `<div class="templates">${tplCards}</div>` : `<div class="row between"><span class="small muted">Şablon: <b>${TEMPLATES[d.template].name}</b> (${TEMPLATES[d.template].tr})</span><button class="ghost small" data-act="tpl-change">Şablonu değiştir</button></div>`}
+    ${ui.tplPick ? `<div class="templates">${tplCards}</div>` : ""}
+    ${body}
+    <div class="row end"><button data-act="back" class="ghost">Geri</button><button class="primary" data-act="to-fill" ${d.template ? "" : "disabled"}>Doldurmaya geç</button></div>`;
+  }
+
+  function filledNodes(d) {
+    const out = [];
+    d.groups.forEach((g, gi) => g.fields.forEach((f, fi) => {
+      if (f.v.trim()) out.push({ key: gi + "-" + fi, group: g.name, label: d.level === 3 ? f.custom || "node" : f.l, v: f.v });
+    }));
+    return out;
+  }
+
+  // Sheet 05: Fill in English
+  function stepFill(d) {
+    const nodes = filledNodes(d);
+    const all = Object.values(d.sentences).join(" \n ");
+    const chips = CONSTRAINTS.map((c) => {
+      const on = d.constraints.includes(c.id);
+      const met = on && c.re.test(all);
+      return `<button class="chip ${on ? (met ? "met" : "miss") : ""}" data-act="cons" data-c="${c.id}" title="${esc(c.tr)}">${on ? (met ? "✓ " : "○ ") : ""}${c.name}</button>`;
+    }).join("");
+    const errs = Object.values(d.annot).filter((v) => v === "bad").length;
+    return `
+    <div class="sheet-head"><h2>05 · Doldur</h2><span class="label">Fill · her düğüm için 1-2 İngilizce cümle</span></div>
+    <div class="field"><span class="label">Kısıtlar · seç, sonra cümlelerinde kullan (yeşil = kullanıldı)</span><div class="chips">${chips}</div>
+      <span class="hint">Kısıt, özgür yazmaktan daha çok öğretir. Hedef hatasızlık değil, yapıyı kullanmaya zorlanmak.</span></div>
+    ${nodes.length ? nodes.map((n) => `
+      <div class="fill-item">
+        <span class="fill-key">${n.group ? esc(n.group) + " · " : ""}${esc(n.label)}: ${esc(n.v)}</span>
+        <textarea id="s-${n.key}" class="s-in" data-k="${n.key}" rows="2" placeholder="Write one or two sentences in English...">${esc(d.sentences[n.key] || "")}</textarea>
+        <div class="annot"><span class="label">Öz değerlendirme</span>
+          <button class="${d.annot[n.key] === "ok" ? "on-ok" : ""}" data-act="annot" data-k="${n.key}" data-v="ok">✓ Doğru</button>
+          <button class="${d.annot[n.key] === "warn" ? "on-warn" : ""}" data-act="annot" data-k="${n.key}" data-v="warn">~ Güçlendirilebilir</button>
+          <button class="${d.annot[n.key] === "bad" ? "on-bad" : ""}" data-act="annot" data-k="${n.key}" data-v="bad">✗ Hata var</button>
+        </div>
+        ${d.annot[n.key] === "bad" ? `<input type="text" id="err-${n.key}" class="err-in" data-k="${n.key}" value="${esc(d.errNote[n.key] || "")}" placeholder="Hata deseni, örn. had + V2 (had went)">` : ""}
+      </div>`).join("") : `<div class="empty">İskelette dolu düğüm yok. Geri dönüp en az bir düğüm doldur.</div>`}
+    <div class="row between"><span class="small muted mono">${wordCount(all)} kelime · ${errs} hata işaretli</span>
+      <span class="row"><button data-act="back" class="ghost">Geri</button><button class="primary" data-act="finish" ${nodes.length ? "" : "disabled"}>Kaydet ve bitir</button></span></div>`;
+  }
+
+  // ---------- Detail ----------
+  function sessionMarkdown(s) {
+    const cons = CONSTRAINTS.filter((c) => s.constraints.includes(c.id));
+    const all = Object.values(s.sentences).join(" ");
+    const errs = Object.entries(s.annot).filter(([, v]) => v === "bad");
+    let md = `## [${s.created}] practice BRM | ${s.title}\n`;
+    md += `Özet: Recall ${pct(s.recallScore)} (${s.marks.filter((m) => m === 2).length}/${s.points.length} tam). Şablon: ${s.template ? TEMPLATES[s.template].name : "-"}, level S${s.level}. `;
+    md += `Kısıtlar: ${cons.map((c) => c.name + (c.re.test(all) ? " ✓" : " ✗")).join(", ")}. Hata: ${errs.length}`;
+    if (errs.length) md += ` (${errs.map(([k]) => s.errNote[k] || "not yok").join("; ")})`;
+    md += `.\n`;
+    const missed = s.points.filter((p, i) => s.marks[i] < 2).map((p) => p.t);
+    if (missed.length) md += `Unutulan/kısmen: ${missed.join(" · ")}\n`;
+    if ((s.redraws || []).length) md += `Redraw: ${s.redraws.map((r) => r.date + " " + pct(r.score)).join(", ")}\n`;
+    md += `\n### Fill\n` + filledNodes(s).map((n) => `- **${n.group ? n.group + " · " : ""}${n.label}** (${n.v}): ${s.sentences[n.key] || "-"}`).join("\n") + "\n";
+    return md;
+  }
+
+  function viewDetail() {
+    const s = db.sessions.find((x) => x.id === ui.viewId);
+    if (!s) { ui.view = "home"; return viewHome(); }
+    return `
+    <section class="sheet">
+      <div class="sheet-head"><h2>${esc(s.title)}</h2><span class="label">${s.created} · S${s.level}</span></div>
+      <div class="stats">
+        <div class="stat"><span class="label">Recall</span><b>${pct(s.recallScore)}</b></div>
+        <div class="stat"><span class="label">Şablon</span><b style="font-size:1.3rem">${s.template ? TEMPLATES[s.template].name : "–"}</b></div>
+        <div class="stat"><span class="label">Redraw</span><b>${(s.redraws || []).length}/3</b><span class="small muted">${nextDue(s) ? "sonraki: " + nextDue(s) : "tamamlandı"}</span></div>
+        <div class="stat"><span class="label">Hata</span><b>${Object.values(s.annot).filter((v) => v === "bad").length}</b></div>
+      </div>
+      ${s.missedNote ? `<div class="note warn"><b>Eksiklerim:</b> ${esc(s.missedNote)}</div>` : ""}
+      <div class="field"><label class="label" for="md-out">Wiki / log.md için kayıt · kopyala ve bana yapıştır</label>
+        <textarea id="md-out" class="copybox" readonly>${esc(sessionMarkdown(s))}</textarea></div>
+      <div class="row end"><button data-act="copy-md">Kopyala</button><button data-act="home" class="primary">Masaya dön</button></div>
+    </section>`;
+  }
+
+  // ---------- Redraw ----------
+  function viewRedraw() {
+    const s = db.sessions.find((x) => x.id === ui.redrawId);
+    if (!s) { ui.view = "home"; return viewHome(); }
+    const r = ui.redraw;
+    const tpl = TEMPLATES[s.template];
+    if (!r.done) {
+      return `
+      <section class="sheet">
+        <div class="sheet-head"><h2>Yeniden çiz · ${esc(s.title)}</h2><span class="label">Redraw ${(s.redraws || []).length + 1}/3 · bakmadan</span></div>
+        <div class="note">İskeletin sadece düğüm adları burada. Değerleri hafızadan yaz, sonra orijinalle karşılaştır.</div>
+        <div class="groups">${s.groups.map((g, gi) => `
+          <div class="group"><div class="group-head"><h3>${tpl.multi ? esc(g.name || "Grup " + (gi + 1)) : esc(tpl.name)}</h3></div>
+          <div class="group-body">${g.fields.map((f, fi) => f.v.trim() ? `<div class="node"><span class="label">${esc(s.level === 3 ? f.custom || "node" : f.l)}</span>
+            <input type="text" id="r-${gi}-${fi}" class="r-val" data-k="${gi}-${fi}" value="${esc(r.vals[gi + "-" + fi] || "")}"></div>` : "").join("")}</div></div>`).join("")}</div>
+        <div class="row end"><button data-act="home" class="ghost">Vazgeç</button><button class="primary" data-act="redraw-check">Karşılaştır</button></div>
+      </section>`;
+    }
+    const prev = (s.redraws || []).length ? s.redraws[s.redraws.length - 1].score : s.recallScore;
+    const delta = Math.round((r.score - prev) * 100);
+    return `
+    <section class="sheet">
+      <div class="sheet-head"><h2>Karşılaştırma · ${esc(s.title)}</h2><span class="label">Redraw sonucu</span></div>
+      <div class="row"><span class="score-big">${pct(r.score)}</span><span class="muted">Önceki ölçüme göre <b class="mono">${delta >= 0 ? "+" : ""}${delta} puan</b>. Kırmızı düğümler yarının odak noktası.</span></div>
+      <div>${r.rows.map((x) => `<div class="cmp"><div><span class="label">${esc(x.label)}</span><div>${esc(x.got) || '<span class="muted">boş</span>'}</div></div>
+        <div><span class="label">Orijinal</span><div>${esc(x.want)}</div></div><span class="pill ${x.ok ? "ok" : "bad"}">${x.ok ? "✓" : "✗"}</span></div>`).join("")}</div>
+      <div class="row end"><button class="primary" data-act="redraw-save">Kaydet</button></div>
+    </section>`;
+  }
+
+  // ---------- Events ----------
+  function afterRender() {
+    const d = db.draft;
+    if (ui.view === "session" && d) {
+      if (d.step === 0 && d.sampleId) startTimer("t-read", "readSeconds", null);
+      if (d.step === 1) { startTimer("t-recall", "recallSeconds", 180); const t = $("#in-dump"); if (t && !t.value) t.focus(); }
+    }
+  }
+
+  function readInputs() {
+    const d = db.draft;
+    if (!d || ui.view !== "session") return;
+    if (d.step === 0 && !d.sampleId) {
+      d.title = ($("#in-title") || {}).value || "";
+      d.text = ($("#in-text") || {}).value || "";
+      d.pointsRaw = ($("#in-points") || {}).value || "";
+    }
+    if (d.step === 1) d.dump = ($("#in-dump") || {}).value || "";
+    if (d.step === 2) d.missedNote = ($("#in-missed") || {}).value || "";
+  }
+
+  document.addEventListener("input", (e) => {
+    const t = e.target, d = db.draft;
+    if (t.id === "in-dump" && d) { d.dump = t.value; const w = $("#dump-wc"); if (w) w.textContent = wordCount(t.value) + " kelime"; }
+    if (t.classList.contains("f-val") && d) {
+      d.groups[t.dataset.g].fields[t.dataset.f].v = t.value;
+      const wc = wordCount(t.value), ww = document.getElementById("ww-" + t.dataset.g + "-" + t.dataset.f);
+      if (ww) ww.textContent = wc > 6 ? wc + " kelime: cümle değil, anahtar kelime yaz" : "";
+    }
+    if (t.classList.contains("f-custom") && d) { d.groups[t.dataset.g].fields[t.dataset.f].custom = t.value; }
+    if (t.classList.contains("g-name") && d) { d.groups[t.dataset.g].name = t.value; }
+    if (t.classList.contains("s-in") && d) { d.sentences[t.dataset.k] = t.value; paintChips(d); }
+    if (t.classList.contains("err-in") && d) { d.errNote[t.dataset.k] = t.value; }
+    if (t.classList.contains("r-val") && ui.redraw) { ui.redraw.vals[t.dataset.k] = t.value; }
+    readInputs();
+    save();
+  });
+  document.addEventListener("change", (e) => {
+    const t = e.target, d = db.draft;
+    if (t.classList.contains("e-sel") && d) { d.edges[t.dataset.e][t.dataset.k] = t.dataset.k === "rel" ? t.value : +t.value; save(); render(); }
+  });
+  // Updates constraint chips in place while typing, so no re-render steals focus or a pending click.
+  function paintChips(d) {
+    const all = Object.values(d.sentences).join(" \n ");
+    document.querySelectorAll(".chip[data-c]").forEach((el) => {
+      const c = CONSTRAINTS.find((x) => x.id === el.dataset.c);
+      const on = d.constraints.includes(c.id), met = on && c.re.test(all);
+      el.className = "chip " + (on ? (met ? "met" : "miss") : "");
+      el.textContent = (on ? (met ? "✓ " : "○ ") : "") + c.name;
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-act]");
+    if (!b) return;
+    const act = b.dataset.act, d = db.draft;
+    const before = ui.view + ":" + (db.draft ? db.draft.step : "");
+    readInputs();
+    switch (act) {
+      case "home": ui.view = "home"; ui.tplPick = false; break;
+      case "theme": {
+        const r = document.documentElement, cur = r.getAttribute("data-theme");
+        const dark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.setAttribute("data-theme", dark ? "light" : "dark");
+        try { localStorage.setItem(KEY + ".theme", dark ? "light" : "dark"); } catch (err) {}
+        return;
+      }
+      case "start": {
+        const sample = SAMPLES.find((s) => s.id === b.dataset.sample) || null;
+        db.draft = newDraft(sample); ui.view = "session"; break;
+      }
+      case "resume": ui.view = "session"; break;
+      case "discard": db.draft = null; break;
+      case "cancel": db.draft = null; ui.view = "home"; break;
+      case "back": if (d && d.step > 0) { d.step--; if (d.step === 1) d.marks = []; } break;
+      case "to-recall": {
+        if (!d.sampleId) {
+          d.points = d.pointsRaw.split("\n").map((x) => x.trim()).filter(Boolean).map((x) => ({ t: x, kw: x }));
+          if (!d.title.trim()) { toast("Bir başlık yaz."); return; }
+          if (d.points.length < 3) { toast("En az 3 ana unsur yaz, skor bunlara göre hesaplanır."); return; }
+        }
+        d.step = 1; break;
+      }
+      case "to-check":
+        if (!d.dump.trim()) { toast("Önce hatırladığın en az bir şeyi yaz."); return; }
+        d.marks = []; d.step = 2; break;
+      case "mark": { const i = +b.dataset.i; d.marks[i] = (d.marks[i] + 2) % 3; break; }
+      case "to-blueprint": d.step = 3; break;
+      case "tpl-change": ui.tplPick = !ui.tplPick; break;
+      case "tpl": {
+        const id = b.dataset.tpl;
+        if (d.template !== id) {
+          const sample = SAMPLES.find((s) => s.id === d.sampleId);
+          d.template = id; d.edges = [];
+          d.groups = makeGroups(id, sample && sample.template === id && d.level === 1 ? sample.groups : null);
+        }
+        ui.tplPick = false; break;
+      }
+      case "add-group": d.groups.push({ name: "", fields: TEMPLATES[d.template].fields.map((f) => ({ k: f.k, l: f.l, v: "", custom: "" })) }); break;
+      case "del-group": {
+        const gi = +b.dataset.g;
+        d.groups.splice(gi, 1);
+        d.edges = d.edges.filter((x) => x.from !== gi && x.to !== gi).map((x) => ({ ...x, from: x.from > gi ? x.from - 1 : x.from, to: x.to > gi ? x.to - 1 : x.to }));
+        break;
+      }
+      case "add-edge": d.edges.push({ from: 0, to: Math.min(1, d.groups.length - 1), rel: "opposes" }); break;
+      case "del-edge": d.edges.splice(+b.dataset.e, 1); break;
+      case "to-fill":
+        if (!filledNodes(d).length) { toast("En az bir düğümü doldur."); return; }
+        d.step = 4; break;
+      case "cons": { const c = b.dataset.c; d.constraints = d.constraints.includes(c) ? d.constraints.filter((x) => x !== c) : d.constraints.concat(c); break; }
+      case "annot": { const k = b.dataset.k; d.annot[k] = d.annot[k] === b.dataset.v ? undefined : b.dataset.v; break; }
+      case "finish": {
+        const unrated = filledNodes(d).filter((n) => (d.sentences[n.key] || "").trim() && !d.annot[n.key]).length;
+        if (filledNodes(d).every((n) => !(d.sentences[n.key] || "").trim())) { toast("En az bir İngilizce cümle yaz."); return; }
+        if (unrated) { toast(unrated + " cümleyi henüz değerlendirmedin. Her cümleye ✓ ~ ✗ ver."); return; }
+        const s = Object.assign({}, d); delete s.step; delete s.auto;
+        db.sessions.push(s); db.draft = null; ui.viewId = s.id; ui.view = "detail";
+        toast("Kaydedildi. İlk yeniden çizim: " + addDays(s.created, 1));
+        break;
+      }
+      case "detail": ui.viewId = b.dataset.id; ui.view = "detail"; break;
+      case "del": ui.confirmDel = b.dataset.id; break;
+      case "del-no": ui.confirmDel = null; break;
+      case "del-yes": db.sessions = db.sessions.filter((s) => s.id !== b.dataset.id); ui.confirmDel = null; break;
+      case "copy-md": {
+        const ta = $("#md-out");
+        const fallback = () => { ta.focus(); ta.select(); toast("Metin seçildi, kopyalamak için Ctrl/Cmd + C."); };
+        try { navigator.clipboard.writeText(ta.value).then(() => toast("Kopyalandı."), fallback); } catch (err) { fallback(); }
+        return;
+      }
+      case "redraw": ui.redrawId = b.dataset.id; ui.redraw = { vals: {}, done: false }; ui.view = "redraw"; break;
+      case "redraw-check": {
+        const s = db.sessions.find((x) => x.id === ui.redrawId);
+        const rows = [];
+        s.groups.forEach((g, gi) => g.fields.forEach((f, fi) => {
+          if (!f.v.trim()) return;
+          const k = gi + "-" + fi, got = ui.redraw.vals[k] || "";
+          const o = overlap(f.v, got);
+          rows.push({ label: (g.name && TEMPLATES[s.template].multi ? g.name + " · " : "") + (s.level === 3 ? f.custom || "node" : f.l), want: f.v, got, ok: o >= 0.5 });
+        }));
+        ui.redraw.rows = rows;
+        ui.redraw.score = rows.length ? rows.filter((x) => x.ok).length / rows.length : 0;
+        ui.redraw.done = true; break;
+      }
+      case "redraw-save": {
+        const s = db.sessions.find((x) => x.id === ui.redrawId);
+        s.redraws = (s.redraws || []).concat({ date: today(), score: ui.redraw.score, missed: ui.redraw.rows.filter((x) => !x.ok).map((x) => x.label) });
+        ui.view = "home"; toast("Yeniden çizim kaydedildi."); break;
+      }
+    }
+    save();
+    render();
+    if (before !== ui.view + ":" + (db.draft ? db.draft.step : "")) window.scrollTo({ top: 0 });
+  });
+
+  try { const th = localStorage.getItem(KEY + ".theme"); if (th) document.documentElement.setAttribute("data-theme", th); } catch (e) {}
+  render();
+})();
+</script>
