@@ -22,26 +22,27 @@ mode: tool
 |---|---|---|
 | 01 | Encode | Metin bir kez okunur, okuma süresi sayılır. Örneklerde ana unsurlar gizli. |
 | 02 | Blind Recall | Kaynak kapanır; 3 dk geri sayımlı brain dump (zihin boşaltma). |
-| 03 | Check | Yazdığın ile kaynak yan yana; ana unsurlar otomatik eşleşme önerisiyle ✓ / ~ / ✗ işaretlenir; recall % + önceki oturuma göre delta; "eksiklerim" notu. |
-| 04 | Blueprint | 4 şablon: Claim Map, Event Web, Form-Use Tree, Argument Skeleton. Düğümlere İngilizce anahtar kelime; 6+ kelimede uyarı. Claim Map'te etiketli oklar (opposes, develops...). |
-| 05 | Fill | Her düğüm için İngilizce cümle; 7 kısıt (Past Simple, Past Continuous, Past Perfect, contrast, cause, reporting verb, relative clause) canlı algılanır; her cümle ✓ / ~ / ✗ öz değerlendirme. |
-| R | Redraw | 1, 3 ve 7 gün sonra iskelet bakmadan yeniden doldurulur; orijinalle karşılaştırılır, delta kaydedilir. |
+| 03 | Check | Yazdığın ile kaynak yan yana; ana unsurlar ✓ / ~ / ✗; recall % + delta; "eksiklerim" notu. |
+| 04 | **Draw** | Gerçek çizim tuvali (canvas). 4 diyagram tipi: **Mind Map**, **Flowchart**, **Entity Map** (varlık-ilişki), **Free Canvas**. Araçlar: fikir (elips), kutu, karar (eşkenar dörtgen), başla/bitir, varlık (başlık + attribute satırları), not, **Bağla** (etiketli ok: opposes, causes, has, yes/no, 1 : N…), **Kalem** (serbest çizim). Sürükle, boyutlandır, renk ver, "+ Bağlı düğüm", kaydır/yakınlaştır. |
+| 05 | Fill | Haritadaki her şekil **ve her ok** için İngilizce cümle (ok cümleleri ilişki kurmayı çalıştırır); 7 kısıt canlı algılanır; ✓ / ~ / ✗ öz değerlendirme. |
+| R | Redraw | 1, 3 ve 7 gün sonra harita tuvale bakmadan yeniden çizilir; şekil ve ok eşleşmesiyle puanlanır, iki harita yan yana gösterilir. |
 
 ## Kademeli devir (scaffold)
-- **S1**: düğüm adları + ipuçları + örnekler
-- **S2**: sadece düğüm adları
-- **S3**: boş sayfa; şablonu ve düğüm adlarını kullanıcı belirler
+- **S1**: şekiller ve oklar yerleşik, içleri boş (ipucu yazılarıyla). Redraw'da yapı yerinde, yazılar boş.
+- **S2**: sadece merkez şekil hazır. Redraw boş tuvalde.
+- **S3**: boş tuval; diyagram tipini kullanıcı seçer.
 - Geçiş kuralı: üst üste 3 oturum recall ≥ %70.
 
 ## Hazır içerik
-- *State of Nature: Hobbes, Locke, Hume* (B1, Claim Map, 7 gizli ana unsur)
-- *A Rainy Tuesday in Kadıköy* (B1, Event Web, 6 gizli ana unsur; [[narrative-past-tenses-cluster]] pratiği)
+- *State of Nature: Hobbes, Locke, Hume* (B1, Entity Map, 7 gizli ana unsur)
+- *A Rainy Tuesday in Kadıköy* (B1, Mind Map, 6 gizli ana unsur; [[narrative-past-tenses-cluster]] pratiği)
 - *Kendi metnim / günüm*: metin + ana unsurlar kullanıcıdan; gün sonu mütalaası için metin boş bırakılabilir.
 
 ## Wiki köprüsü
-Oturum sonunda `log.md` formatında Markdown kaydı üretilir (recall, kısıtlar, hata desenleri, unutulanlar, fill cümleleri). Kopyalanıp Claude'a yapıştırılır → `wiki/practice/` ve `errors/` güncellenir.
+Oturum sonunda `log.md` formatında Markdown kaydı üretilir (recall, kısıtlar, hata desenleri, unutulanlar, fill cümleleri). Harita **Mermaid** kodu olarak eklenir; Obsidian'a yapıştırınca diyagram olarak çizilir. Kopyalanıp Claude'a yapıştırılır → `wiki/practice/` ve `errors/` güncellenir.
 
 ## Bilinen sınırlar
 - Otomatik eşleşme kelime/kök örtüşmesine dayanır; anlamı ölçmez. Son karar kullanıcının.
 - Kısıt algılama regex tabanlı; yanlış pozitif olabilir (örn. "while" zaman anlamında da contrast sayılır).
+- Redraw puanı şekil yazılarının kelime örtüşmesine ve okların aynı şekilleri bağlamasına bakar; yerleşim (konum) puanlanmaz.
 - Veri tarayıcıya özel (localStorage); cihazlar arası taşınmaz.
