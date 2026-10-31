@@ -35,5 +35,10 @@ jobs:
           cat summary.json
           # Hiç test çalışmadıysa yeşil görünmesin.
           python3 -c "import json,sys; s=json.load(open('summary.json')); n=s.get('totalTestCount',0); print('Toplam test:', n, '| Geçen:', s.get('passedTests'), '| Başarısız:', s.get('failedTests')); sys.exit(0 if n > 0 and s.get('failedTests',0) == 0 else 1)"
+      - name: Local (free account) spec generates without iCloud entitlements
+        run: |
+          xcodegen generate --spec project-local.yml
+          xcodebuild -project Vade.xcodeproj -target Vade -sdk iphoneos -showBuildSettings | grep 'CODE_SIGN_ENTITLEMENTS = Vade/Support/Vade-iOS-Local.entitlements'
+          xcodegen generate
       - name: Build (iOS Simulator)
         run: xcodebuild build -project Vade.xcodeproj -scheme Vade -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO -quiet

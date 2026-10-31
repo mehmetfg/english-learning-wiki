@@ -45,27 +45,42 @@ Vade/
 
 ## Kurulum (Mac'te)
 
-Gereksinimler: Xcode 26+, iOS 26 / macOS 26, Apple ID (ücretsiz hesapla kendi cihazına kurulum mümkündür; iCloud senkronu için ücretli Apple Developer Program gerekir).
+Gereksinimler: Xcode 26+, iPhone'da iOS 26, Mac'te macOS 26, bir Apple ID.
+
+**1. Projeyi indir** (repo özel olduğu için GitHub hesabınla giriş istenir):
 
 ```bash
-brew install xcodegen
+git clone -b claude/dreamy-lovelace-orfs99 https://github.com/mehmetfg/english-learning-wiki.git
 ```
+
+**2. Projeyi oluştur ve Xcode'da aç:**
 
 ```bash
-cd apps/vade && xcodegen generate && open Vade.xcodeproj
+cd english-learning-wiki/apps/vade && ./setup.sh
 ```
 
-Xcode'da:
-1. **Signing & Capabilities** → Team olarak kendi hesabını seç. Gerekirse `com.mehmetfg.vade` paket kimliğini değiştir.
-2. **iCloud** yeteneğinde CloudKit konteyneri `iCloud.com.mehmetfg.vade` olmalı (kimliği değiştirdiysen `Vade/Support/*.entitlements` dosyalarını da güncelle).
-3. Hedef cihaz olarak iPhone'unu seç → Run. Sonra hedefi **My Mac** yapıp tekrar Run.
-4. iCloud kullanılamazsa uygulama otomatik olarak yerel (senkronsuz) depoya düşer.
+`./setup.sh` ücretsiz Apple hesabıyla çalışan **yerel** sürümü üretir (veriler cihazda kalır, iCloud senkronu yok). Ücretli Apple Developer hesabın varsa `./setup.sh --icloud` ile iPhone ↔ Mac senkronlu sürümü üret.
+
+**3. Xcode'da imzala:** Sol üstte **Vade** projesi → **Vade** hedefi → **Signing & Capabilities** → **Team** olarak kendi Apple ID'ni seç (listede yoksa: Xcode → Settings → Accounts → + ile ekle). "Bundle identifier kullanılıyor" hatası çıkarsa `com.mehmetfg.vade` kimliğini `com.mehmetfg.vade2` gibi değiştir.
+
+**4. iPhone'a kur:**
+1. iPhone'u kabloyla Mac'e bağla, iPhone'da "Bu bilgisayara güven" de.
+2. iPhone'da **Ayarlar → Gizlilik ve Güvenlik → Geliştirici Modu**'nu aç (telefon yeniden başlar).
+3. Xcode'da üstteki hedef cihaz menüsünden iPhone'unu seç → ▶︎ (Run).
+4. Ücretsiz hesapta ilk açılışta "Güvenilmeyen geliştirici" uyarısı çıkar: **Ayarlar → Genel → VPN ve Cihaz Yönetimi** → kendi Apple ID'ne dokun → **Güven**.
+
+**5. Mac'e kur:** Hedef cihazı **My Mac** yap → ▶︎.
+
+> Ücretsiz hesapla kurulan uygulama **7 gün** sonra açılmaz; Xcode'dan tekrar ▶︎ ile kurman yeter (veriler silinmez). Ücretli hesapta bu süre 1 yıldır.
+
+> `setup.sh` her çalıştığında proje yeniden üretilir ve Team seçimi sıfırlanır; sadece kod güncellemesi çektiğinde tekrar çalıştır.
 
 > Not: Apple Intelligence'ın Türkçe desteği cihaz ve sürüme bağlıdır. Desteklenmiyorsa uygulama kural tabanlı çıkarımla çalışmaya devam eder; sadece özet ve madde açıklamaları daha sade olur.
 
 ## Bilinen sınırlar (pilot)
 
-- Kod Linux ortamında yazıldı ve **henüz derlenmedi**. İlk açılışta Xcode'un göstereceği küçük derleme hataları olabilir.
+- Kod GitHub Actions'ta (Xcode 26.6) iOS Simulator ve macOS için derleniyor, çıkarıcı birim testleri geçiyor; gerçek cihazda kamera, Apple Intelligence ve iCloud henüz denenmedi.
+- Apple Intelligence yalnızca destekleyen iPhone'larda (iPhone 15 Pro ve sonrası) ve açıksa çalışır; diğerlerinde kural tabanlı çıkarım kullanılır.
 - Mac'te doğrudan kamera taraması yok. Continuity Camera veya iPhone'da tarayıp senkronla.
 - Bildirimler cihaz başınadır. Her cihaz kendi hatırlatmalarını kurar (bu bilinçli bir tercih).
 
