@@ -124,6 +124,11 @@ struct HeuristicExtractorTests {
         #expect(HeuristicExtractor.findDates(in: "32.13.2026 ve 01.01.1850").isEmpty)
     }
 
+    @Test func turkishUppercase() {
+        #expect("Bitiş".upperTR == "BİTİŞ")
+        #expect("31 ekim cumartesi".upperTR == "31 EKİM CUMARTESİ")
+    }
+
     @Test func condenserRespectsLimit() {
         let long = (1...500).map { "Satır \($0): cayma bedeli 100 TL" }.joined(separator: "\n")
         let condensed = TextCondenser.condense(long, category: .internet, limit: 3000)

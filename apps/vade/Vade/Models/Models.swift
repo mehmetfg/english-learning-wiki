@@ -151,6 +151,11 @@ extension Double {
     }
 }
 
+extension String {
+    /// Türkçe kurallarıyla büyük harf: "i" → "İ" (standart uppercased() "I" yapar).
+    var upperTR: String { uppercased(with: Locale(identifier: "tr_TR")) }
+}
+
 extension Date {
     var shortText: String {
         formatted(.dateTime.day().month(.wide).year().locale(Locale(identifier: "tr_TR")))

@@ -63,9 +63,9 @@ struct CategoryIcon: View {
     }
 }
 
-/// İkondaki halka: kalan sürenin oranı kadar dolu.
+/// İkondaki halka: geçen sürenin oranı kadar dolu; bitiş yaklaştıkça kapanır.
 struct CountdownRing: View {
-    let remaining: Double
+    let progress: Double
     var color: Color = .vadeAmber
     var track: Color = .secondary.opacity(0.2)
     var lineWidth: CGFloat = 8
@@ -74,7 +74,7 @@ struct CountdownRing: View {
         ZStack {
             Circle().stroke(track, lineWidth: lineWidth)
             Circle()
-                .trim(from: 0, to: max(0.02, min(1, remaining)))
+                .trim(from: 0, to: max(0.02, min(1, progress)))
                 .stroke(color, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
         }

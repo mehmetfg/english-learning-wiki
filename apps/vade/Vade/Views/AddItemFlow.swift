@@ -79,7 +79,7 @@ struct CategoryPicker: View {
             VStack(alignment: .leading, spacing: 20) {
                 ForEach(ItemGroup.allCases) { group in
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(group.title.uppercased())
+                        Text(group.title.upperTR)
                             .font(.caption.weight(.bold))
                             .tracking(0.8)
                             .foregroundStyle(.secondary)

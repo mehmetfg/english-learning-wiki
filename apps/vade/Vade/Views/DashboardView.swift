@@ -48,7 +48,10 @@ struct DashboardView: View {
             .frame(maxWidth: .infinity)
         }
         .background(Color.dashboardBackground)
-        .navigationTitle("Ana Sayfa")
+        .navigationTitle("Vade")
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button { showingAdd = true } label: { Label("Belge ekle", systemImage: "plus") }
@@ -61,7 +64,7 @@ struct DashboardView: View {
 
     private func greeting(_ summary: PortfolioSummary) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(Date.now.formatted(.dateTime.weekday(.wide).day().month(.wide).locale(Locale(identifier: "tr_TR"))).uppercased())
+            Text(Date.now.formatted(.dateTime.weekday(.wide).day().month(.wide).locale(Locale(identifier: "tr_TR"))).upperTR)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             Text(greetingText).font(.largeTitle.bold())
@@ -251,7 +254,7 @@ struct NextUpCard: View {
             }
             Spacer(minLength: 0)
             ZStack {
-                CountdownRing(remaining: 1 - (item.elapsedFraction ?? 0), color: .vadeAmber, track: .white.opacity(0.2), lineWidth: 10)
+                CountdownRing(progress: item.elapsedFraction ?? 0, color: .vadeAmber, track: .white.opacity(0.2), lineWidth: 10)
                 VStack(spacing: -2) {
                     Text(item.countdown.value).font(.system(size: 30, weight: .bold, design: .rounded))
                     Text(item.countdown.caption).font(.caption2.weight(.medium)).opacity(0.8)
@@ -330,7 +333,7 @@ struct TimelineRow: View {
             if let end = item.endDate {
                 VStack(spacing: 0) {
                     Text(end.formatted(.dateTime.day())).font(.system(.title3, design: .rounded).bold())
-                    Text(end.formatted(.dateTime.month(.abbreviated).locale(Locale(identifier: "tr_TR"))).uppercased())
+                    Text(end.formatted(.dateTime.month(.abbreviated).locale(Locale(identifier: "tr_TR"))).upperTR)
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.secondary)
                 }

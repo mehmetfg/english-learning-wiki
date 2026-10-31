@@ -90,6 +90,10 @@ struct ItemDetailView: View {
             }
         }
         .navigationTitle(item.title)
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        .listSectionSpacing(.compact)
+        #endif
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 Button("Düzenle") { editing = true }
@@ -161,7 +165,7 @@ struct DetailHeader: View {
                 }
                 Spacer(minLength: 0)
                 ZStack {
-                    CountdownRing(remaining: 1 - (item.elapsedFraction ?? 0), color: .white, track: .white.opacity(0.25), lineWidth: 9)
+                    CountdownRing(progress: item.elapsedFraction ?? 0, color: .white, track: .white.opacity(0.25), lineWidth: 9)
                     VStack(spacing: -2) {
                         Text(item.countdown.value).font(.system(size: 26, weight: .bold, design: .rounded))
                         Text(item.countdown.caption).font(.caption2.weight(.medium)).opacity(0.85)
@@ -200,7 +204,7 @@ struct DetailHeader: View {
 
     private func dateColumn(_ title: String, _ date: Date?, alignment: HorizontalAlignment) -> some View {
         VStack(alignment: alignment, spacing: 2) {
-            Text(title.uppercased()).font(.caption2.weight(.bold)).tracking(0.6).foregroundStyle(.white.opacity(0.7))
+            Text(title.upperTR).font(.caption2.weight(.bold)).tracking(0.6).foregroundStyle(.white.opacity(0.7))
             Text(date?.shortText ?? "—").font(.subheadline.weight(.semibold)).foregroundStyle(.white)
         }
     }
