@@ -1,0 +1,1268 @@
+<meta charset="utf-8">
+<title>Blueprint Recall Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a drafting table. Each step is one "sheet" with an architectural title block; the work area sits on faint grid paper. */
+:root {
+  --paper: #f2f5f8;
+  --sheet: #ffffff;
+  --ink: #13243a;
+  --muted: #5a6b7f;
+  --line: #c9d5e2;
+  --grid: rgba(31, 95, 168, 0.07);
+  --accent: #1f5fa8;
+  --accent-ink: #ffffff;
+  --accent-soft: #e3edf8;
+  --ok: #2e7d4f;
+  --ok-soft: #e2f2e8;
+  --warn: #a8690f;
+  --warn-soft: #fbefd9;
+  --bad: #b23a3a;
+  --bad-soft: #f8e1e1;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0c1a29; --sheet: #112438; --ink: #dce7f2; --muted: #93a7bd; --line: #24405e;
+    --grid: rgba(127, 184, 255, 0.06); --accent: #7fb8ff; --accent-ink: #0c1a29; --accent-soft: #173452;
+    --ok: #6fcf97; --ok-soft: #133a28; --warn: #f0b85a; --warn-soft: #3a2c12; --bad: #f08a8a; --bad-soft: #3d1a1d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0c1a29; --sheet: #112438; --ink: #dce7f2; --muted: #93a7bd; --line: #24405e;
+  --grid: rgba(127, 184, 255, 0.06); --accent: #7fb8ff; --accent-ink: #0c1a29; --accent-soft: #173452;
+  --ok: #6fcf97; --ok-soft: #133a28; --warn: #f0b85a; --warn-soft: #3a2c12; --bad: #f08a8a; --bad-soft: #3d1a1d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.wrap {
+  max-width: 1080px; margin: 0 auto;
+  padding-block: 20px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; letter-spacing: 0.01em; text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.2rem; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.label { font-family: var(--f-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); }
+
+/* Title block (drawing header) */
+.titleblock {
+  display: grid; grid-template-columns: 1fr auto; gap: 0; border: 1.5px solid var(--ink); background: var(--sheet); margin-bottom: 18px;
+}
+.tb-main { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tb-cells { display: grid; grid-template-columns: repeat(3, auto); border-left: 1.5px solid var(--ink); }
+.tb-cell { padding: 8px 12px; border-left: 1px solid var(--line); display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 76px; }
+.tb-cell:first-child { border-left: 0; }
+.tb-cell b { font-family: var(--f-mono); font-weight: 500; font-size: 0.95rem; }
+.tb-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+@media (max-width: 680px) {
+  .titleblock { grid-template-columns: 1fr; }
+  .tb-cells { border-left: 0; border-top: 1.5px solid var(--ink); }
+}
+
+/* Sheet */
+.sheet { background: var(--sheet); border: 1px solid var(--line); padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 1px dashed var(--line); padding-bottom: 10px; }
+.steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.stepdot { font-family: var(--f-mono); font-size: 0.75rem; padding: 3px 8px; border: 1px solid var(--line); color: var(--muted); }
+.stepdot.on { border-color: var(--accent); color: var(--accent); font-weight: 500; }
+.stepdot.done { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+@media (max-width: 760px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+.grid2 > *, .grid3 > * { min-width: 0; }
+
+button, .btn {
+  font: inherit; font-size: 0.92rem; cursor: pointer; border: 1px solid var(--line); background: var(--sheet); color: var(--ink);
+  padding: 8px 14px; border-radius: 3px; display: inline-flex; align-items: center; gap: 6px;
+}
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button.ghost { background: transparent; }
+button.danger { color: var(--bad); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.row.end { justify-content: flex-end; }
+.row.between { justify-content: space-between; }
+
+input[type="text"], textarea, select {
+  font: inherit; width: 100%; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 3px; padding: 8px 10px;
+}
+textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.hint { font-size: 0.8rem; color: var(--muted); }
+
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 12px; font-size: 0.9rem; }
+.note.warn { border-color: var(--warn); background: var(--warn-soft); }
+.note.bad { border-color: var(--bad); background: var(--bad-soft); }
+.note.ok { border-color: var(--ok); background: var(--ok-soft); }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+@media (max-width: 760px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+.stat { border: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 2px; background: var(--sheet); }
+.stat b { font-family: var(--f-display); font-size: 2rem; font-weight: 600; line-height: 1; }
+
+.pill { font-family: var(--f-mono); font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
+.pill.ok { color: var(--ok); } .pill.warn { color: var(--warn); } .pill.bad { color: var(--bad); } .pill.acc { color: var(--accent); }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+td.num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* Source / reading */
+.source { font-family: var(--f-body); font-size: 1.02rem; line-height: 1.75; max-width: 68ch; white-space: pre-wrap; }
+.covered { border: 1px dashed var(--line); padding: 28px; text-align: center; color: var(--muted); font-family: var(--f-mono); font-size: 0.85rem; }
+
+.timer { font-family: var(--f-mono); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+.timer.over { color: var(--warn); }
+
+/* Key points check */
+.kp { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 10px; border: 1px solid var(--line); }
+.kp + .kp { margin-top: -1px; }
+.kp-state { font-family: var(--f-mono); font-size: 0.78rem; width: 112px; justify-content: center; }
+.kp-state.s2 { background: var(--ok-soft); color: var(--ok); border-color: var(--ok); }
+.kp-state.s1 { background: var(--warn-soft); color: var(--warn); border-color: var(--warn); }
+.kp-state.s0 { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
+.kp-text { min-width: 0; }
+.kp-auto { font-size: 0.75rem; color: var(--muted); font-family: var(--f-mono); }
+
+.score-big { font-family: var(--f-display); font-size: 3.4rem; font-weight: 700; line-height: 1; }
+.bar { height: 8px; background: var(--line); position: relative; }
+.bar > i { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
+
+/* Diagram types */
+.templates { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+@media (max-width: 760px) { .templates { grid-template-columns: repeat(2, 1fr); } }
+.tpl { text-align: left; flex-direction: column; align-items: flex-start; gap: 3px; padding: 12px; }
+.tpl.sel { border: 2px solid var(--accent); background: var(--accent-soft); padding: 11px; }
+.tpl b { font-family: var(--f-display); font-size: 1.1rem; font-weight: 600; }
+.tpl span { font-size: 0.8rem; color: var(--muted); }
+.tpl svg { width: 100%; height: 54px; display: block; }
+
+/* Drawing editor */
+.ed { display: flex; flex-direction: column; gap: 8px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; border: 1.5px solid var(--ink); background: var(--sheet); padding: 6px; }
+.toolbar .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
+.toolbar button { padding: 6px 9px; font-size: 0.84rem; border-color: transparent; background: transparent; }
+.toolbar button.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.toolbar button svg { width: 18px; height: 18px; display: block; }
+.toolbar .tool-lbl { display: inline; }
+@media (max-width: 560px) { .toolbar .tool-lbl { display: none; } }
+.canvas { width: 100%; height: 62vh; min-height: 360px; max-height: 660px; display: block; touch-action: none; border: 1px solid var(--line); background: var(--sheet); user-select: none; -webkit-user-select: none; }
+.canvas.t-select { cursor: default; } .canvas.t-pan { cursor: grab; } .canvas.t-pen { cursor: crosshair; } .canvas.t-shape, .canvas.t-link { cursor: copy; }
+.panel { border: 1px solid var(--line); background: var(--sheet); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.panel .row { gap: 6px; }
+.swatch { width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 2px solid var(--line); }
+.swatch.on { outline: 2px solid var(--ink); outline-offset: 2px; }
+.thumb { width: 100%; height: 260px; display: block; border: 1px solid var(--line); background: var(--sheet); }
+
+/* SVG content (shared by editor and read-only thumbnails) */
+.bgfill { fill: var(--sheet); }
+.gridline { stroke: var(--grid); stroke-width: 1; fill: none; }
+.sh { fill: var(--sheet); stroke: var(--ink); stroke-width: 1.6; }
+.sh.c1 { fill: var(--accent-soft); stroke: var(--accent); }
+.sh.c2 { fill: var(--ok-soft); stroke: var(--ok); }
+.sh.c3 { fill: var(--warn-soft); stroke: var(--warn); }
+.sh.c4 { fill: var(--bad-soft); stroke: var(--bad); }
+.sh.note { stroke-dasharray: 5 3; }
+.sh-head { stroke: var(--ink); stroke-width: 1.2; }
+.sh-t { fill: var(--ink); font-family: var(--f-body); font-size: 14px; }
+.sh-t.b { font-weight: 600; }
+.sh-t.hint { fill: var(--muted); font-style: italic; }
+.link-src .sh { stroke: var(--accent); stroke-width: 3.2; }
+.ln { stroke: var(--ink); stroke-width: 1.6; fill: none; }
+.ln.dash { stroke-dasharray: 7 5; }
+.ln.sel { stroke: var(--accent); stroke-width: 2.6; }
+.ln-hit { stroke: transparent; stroke-width: 18; fill: none; cursor: pointer; }
+.ln-bg { fill: var(--sheet); }
+.ln-t { fill: var(--accent); font-family: var(--f-mono); font-size: 12px; font-weight: 500; }
+.ln-t.hint { fill: var(--muted); font-style: italic; }
+.arrowhead { fill: var(--ink); }
+.pen { stroke: var(--accent); stroke-width: 2.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.pen.sel { stroke: var(--bad); }
+.sel-box { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.handle { fill: var(--accent); cursor: nwse-resize; }
+
+/* Fill */
+.fill-item { border: 1px solid var(--line); padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.fill-key { font-family: var(--f-mono); font-size: 0.82rem; color: var(--accent); }
+.annot { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.annot button { padding: 4px 10px; font-size: 0.82rem; }
+.annot button.on-ok { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.annot button.on-warn { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+.annot button.on-bad { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { font-size: 0.82rem; padding: 5px 10px; border: 1px solid var(--line); border-radius: 99px; background: var(--sheet); }
+.chip.sel { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.chip.met { border-color: var(--ok); color: var(--ok); background: var(--ok-soft); }
+.chip.miss { border-color: var(--bad); color: var(--bad); }
+
+/* Redraw compare */
+.cmp { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.cmp > * { min-width: 0; }
+
+.spark { width: 100%; height: 90px; display: block; }
+.empty { padding: 20px; border: 1px dashed var(--line); color: var(--muted); text-align: center; }
+.copybox { font-family: var(--f-mono); font-size: 0.8rem; min-height: 160px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--paper); padding: 8px 14px; border-radius: 3px; font-size: 0.9rem; z-index: 20; }
+@media (prefers-reduced-motion: no-preference) { .sheet { animation: rise 0.25s ease-out; } @keyframes rise { from { transform: translateY(4px); } to { transform: none; } } }
+</style>
+
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+  const KEY = "brm.v2";
+  const OFFSETS = [1, 3, 7];
+
+  // ---------- Diagram types ----------
+  const DTYPES = {
+    mind: { name: "Mind Map", tr: "Zihin haritası", for: "Bir merkez, dallanan fikirler", def: "ellipse" },
+    flow: { name: "Flowchart", tr: "Akış diyagramı", for: "Süreç, olay sırası, karar", def: "rect" },
+    entity: { name: "Entity Map", tr: "Varlık-ilişki haritası", for: "Düşünürler, kavramlar, özellikleri", def: "entity" },
+    free: { name: "Free Canvas", tr: "Serbest tuval", for: "Kendi düzenin, kalemle çizim", def: "rect" }
+  };
+  const SHAPES = {
+    rect: { name: "Box", tr: "Kutu", w: 160, h: 64 },
+    ellipse: { name: "Ellipse", tr: "Fikir", w: 170, h: 74 },
+    diamond: { name: "Decision", tr: "Karar", w: 160, h: 104 },
+    pill: { name: "Start/End", tr: "Başla/Bitir", w: 130, h: 50 },
+    entity: { name: "Entity", tr: "Varlık", w: 210, h: 90 },
+    note: { name: "Note", tr: "Not", w: 170, h: 74 }
+  };
+  const SWATCH = [["var(--sheet)", "var(--ink)"], ["var(--accent-soft)", "var(--accent)"], ["var(--ok-soft)", "var(--ok)"], ["var(--warn-soft)", "var(--warn)"], ["var(--bad-soft)", "var(--bad)"]];
+  const QUICK_LABELS = ["opposes", "develops", "causes", "influences", "answers", "yes", "no", "then", "1 : N", "has"];
+
+  // ---------- Constraints (Fill step) ----------
+  const CONSTRAINTS = [
+    { id: "ps", name: "Past Simple", tr: "Geçmiş zaman", re: /\b(\w{2,}ed|was|were|went|said|made|took|saw|thought|believed|gave|left|ran|began|became|wrote|told|knew|found|got|came|felt|kept|lost|met|paid|put|sat|spoke|stood|understood|won|forgot|bought|brought)\b/i },
+    { id: "pc", name: "Past Continuous", tr: "was/were + -ing", re: /\b(was|were)\s+(\w+ing)\b/i },
+    { id: "pp", name: "Past Perfect", tr: "had + V3", re: /\bhad\s+(already\s+|never\s+|just\s+)?(\w{2,}ed|been|gone|done|seen|forgotten|written|taken|given|made|known|built|left|lost|found|said|told|broken|become|begun|thought|bought|met|read|run|eaten|spoken)\b/i },
+    { id: "contrast", name: "Contrast connector", tr: "however / whereas / although", re: /\b(however|whereas|although|even though|on the other hand|in contrast|while)\b/i },
+    { id: "cause", name: "Cause / result", tr: "because / so / therefore", re: /\b(because|since|so|therefore|as a result|due to|that is why)\b/i },
+    { id: "report", name: "Reporting verb", tr: "argued / claimed / believed", re: /\b(argued|claimed|believed|stated|insisted|suggested|maintained|denied|rejected)\b/i },
+    { id: "relative", name: "Relative clause", tr: "who / which / whose", re: /\b(who|which|whose|whom)\b/i }
+  ];
+
+  // ---------- Samples ----------
+  const SAMPLES = [
+    {
+      id: "hobbes", title: "State of Nature: Hobbes, Locke, Hume", dtype: "entity", level: "B1",
+      text: "In the seventeenth century, English thinkers asked a simple question: what would life be like without any government? Thomas Hobbes called this situation the \"state of nature\". In his book Leviathan (1651), he argued that people in the state of nature would always fight, because everyone wanted safety and power. Life there would be \"nasty, brutish and short\". For Hobbes, the only solution was a strong ruler with absolute power.\n\nJohn Locke disagreed. He believed that even in the state of nature, people followed a natural law, and they had natural rights: life, liberty and property. People created governments by consent, to protect these rights. If a government broke this agreement, the people had the right to change it.\n\nAbout a century later, David Hume criticised both of them. He said that the \"original contract\" was a story that never really happened. In his view, people obeyed governments mostly because of habit and because obedience was useful, not because of a promise.",
+      points: [
+        { t: "Ortak soru: hükümet olmasa hayat nasıl olurdu? (state of nature)", kw: "state nature government without" },
+        { t: "Hobbes'un kitabı: Leviathan (1651)", kw: "hobbes leviathan 1651" },
+        { t: "Hobbes: herkes savaşır; hayat \"nasty, brutish and short\"", kw: "fight war nasty brutish short savaş" },
+        { t: "Hobbes'un çözümü: mutlak güce sahip güçlü hükümdar", kw: "absolute ruler power strong mutlak hükümdar" },
+        { t: "Locke: doğal hukuk ve doğal haklar (life, liberty, property)", kw: "locke natural rights life liberty property doğal hak" },
+        { t: "Locke: hükümet rızayla kurulur; anlaşmayı bozarsa halk değiştirebilir", kw: "consent agreement change right rıza değiştir" },
+        { t: "Hume: ilk sözleşme bir hikâye; itaat alışkanlık ve faydadan gelir", kw: "hume contract story habit useful alışkanlık fayda" }
+      ]
+    },
+    {
+      id: "kadikoy", title: "A Rainy Tuesday in Kadıköy", dtype: "mind", level: "B1",
+      text: "Last Tuesday, Elif was walking to the ferry in Kadıköy when it started to rain heavily. She had forgotten her umbrella at home, so she ran into a small bookshop to wait. Inside, the old owner was reading a copy of Leviathan. They started talking about philosophy, and he made her a cup of tea. When the rain stopped an hour later, she had missed her ferry, but she left the shop with a new book and a new friend.",
+      points: [
+        { t: "Kim: Elif (ve kitapçının yaşlı sahibi)", kw: "elif owner" },
+        { t: "Ne zaman / nerede: geçen salı, Kadıköy, vapura yürürken", kw: "tuesday kadıköy ferry walking salı vapur" },
+        { t: "Sağanak yağmur başladı", kw: "rain heavily yağmur" },
+        { t: "Şemsiyesini evde unutmuştu, küçük bir kitapçıya girdi", kw: "umbrella forgotten bookshop şemsiye kitapçı" },
+        { t: "Sahibi Leviathan okuyordu; felsefe konuştular, çay yaptı", kw: "leviathan philosophy tea felsefe çay" },
+        { t: "Sonuç: vapuru kaçırdı ama yeni kitap ve yeni arkadaşla çıktı", kw: "missed ferry book friend kaçırdı arkadaş" }
+      ]
+    }
+  ];
+
+  // ---------- Storage ----------
+  function load() {
+    try { const raw = localStorage.getItem(KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+    return { sessions: [], draft: null };
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
+  let db = load();
+  if (!Array.isArray(db.sessions)) db.sessions = [];
+
+  const ui = { view: "home", redrawId: null, viewId: null, timer: null, confirmDel: null, typePick: false, confirmType: null };
+
+  // ---------- Helpers ----------
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const today = () => ymd(new Date());
+  function ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function addDays(s, n) { const [y, m, d] = s.split("-").map(Number); return ymd(new Date(y, m - 1, d + n)); }
+  function dayDiff(a, b) { const p = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d).getTime(); }; return Math.round((p(b) - p(a)) / 86400000); }
+  const pct = (x) => Math.round(x * 100) + "%";
+  const uid = () => Math.random().toString(36).slice(2, 10);
+  const rnd = (n) => Math.round(n);
+  function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2400); }
+  function lower(s) { return String(s || "").toLowerCase().replace(/̇/g, ""); }
+  const STOP = new Set("the a an and or of to in on at for with by from is are was were be been it its this that these those as but not ve ile bir bu şu da de ki için gibi olan çok daha".split(" "));
+  function tokens(s) { return lower(s).split(/[^a-zçğıöşü0-9]+/i).filter((w) => w.length >= 3 && !STOP.has(w)); }
+  // Matches a word even with Turkish suffixes or English endings (shared 5-letter stem).
+  function hasToken(textTokens, w) {
+    const stem = w.slice(0, Math.min(5, w.length));
+    return textTokens.some((t) => t === w || (stem.length >= 4 && t.startsWith(stem)) || (t.length >= 4 && w.startsWith(t.slice(0, 5))));
+  }
+  function overlap(source, attempt) {
+    const want = Array.from(new Set(tokens(source)));
+    if (!want.length) return 0;
+    const got = tokens(attempt);
+    return want.filter((w) => hasToken(got, w)).length / want.length;
+  }
+  function wordCount(s) { return String(s || "").trim().split(/\s+/).filter(Boolean).length; }
+  const oneLine = (s) => String(s || "").replace(/\s*\n\s*/g, " · ").trim();
+
+  // Scaffold level: 3 sessions in a row with recall >= 70% moves you up one level.
+  function levelInfo() {
+    let lvl = 1, streak = 0;
+    db.sessions.slice().sort((a, b) => (a.created < b.created ? -1 : 1)).forEach((s) => {
+      if (s.recallScore >= 0.7) streak++; else streak = 0;
+      if (streak >= 3 && lvl < 3) { lvl++; streak = 0; }
+    });
+    return { lvl, streak };
+  }
+  const LEVELS = {
+    1: { name: "S1 Full Scaffold", tr: "Tam iskele: şekiller yerleşik, içleri boş. Sen doldurur, ilişkileri oklarla kurarsın." },
+    2: { name: "S2 Half Scaffold", tr: "Yarım iskele: sadece merkez şekil hazır. Gerisini sen çizersin." },
+    3: { name: "S3 Blank Page", tr: "Boş tuval: diyagram tipini ve bütün şekilleri sen seçersin." }
+  };
+
+  function dueRedraws() {
+    const t = today();
+    return db.sessions.filter((s) => {
+      const n = (s.redraws || []).length;
+      return s.diagram && n < OFFSETS.length && dayDiff(addDays(s.created, OFFSETS[n]), t) >= 0;
+    });
+  }
+  function nextDue(s) { const n = (s.redraws || []).length; return n < OFFSETS.length ? addDays(s.created, OFFSETS[n]) : null; }
+
+  // ---------- Diagram model ----------
+  function emptyDiagram(type) { return { type, shapes: [], links: [], strokes: [], vb: { x: 0, y: 0, w: 1000, h: 640 } }; }
+  function mkShape(type, cx, cy, hint) {
+    const d = SHAPES[type];
+    return { id: uid(), type, x: rnd(cx - d.w / 2), y: rnd(cy - d.h / 2), w: d.w, h: d.h, text: "", hint: hint || "", c: type === "note" ? 3 : 0 };
+  }
+  function mkLink(a, b, hint) { return { id: uid(), from: a.id, to: b.id, label: "", hint: hint || "", dash: false }; }
+
+  function seedDiagram(type, level, sampleId) {
+    const g = emptyDiagram(type);
+    const add = (t, cx, cy, hint, w) => { const s = mkShape(t, cx, cy, hint); if (w) { s.x = rnd(cx - w / 2); s.w = w; } g.shapes.push(s); return s; };
+    const link = (a, b, hint) => g.links.push(mkLink(a, b, hint));
+    if (level === 3) return g;
+    if (type === "mind") {
+      const center = add("ellipse", 500, 320, sampleId === "kadikoy" ? "Elif's Tuesday" : "Main topic", 200);
+      if (level === 1) {
+        const hints = sampleId === "kadikoy" ? ["Who", "Where", "When", "What happened", "Why", "Result"] : ["Idea 1", "Idea 2", "Idea 3", "Idea 4"];
+        hints.forEach((h, i) => {
+          const a = -Math.PI / 2 + (i * 2 * Math.PI) / hints.length;
+          link(center, add("ellipse", 500 + Math.cos(a) * 330, 320 + Math.sin(a) * 215, h));
+        });
+      }
+    } else if (type === "entity") {
+      if (sampleId === "hobbes" && level === 1) {
+        const q = add("rect", 500, 540, "Shared question", 240);
+        ["Hobbes", "Locke", "Hume"].forEach((n, i) => {
+          const e = add("entity", 160 + i * 340, 150, n + "\nclaim\nreason\nsolution", 240);
+          e.h = 130;
+          link(e, q, "answers");
+        });
+      } else {
+        const a = add("entity", 280, 300, "Entity\nattribute\nattribute");
+        if (level === 1) link(a, add("entity", 720, 300, "Entity\nattribute\nattribute"), "relation");
+      }
+    } else if (type === "flow") {
+      const st = add("pill", 90, 320, "Start");
+      if (level === 1) {
+        const p1 = add("rect", 280, 320, "Step 1"), dc = add("diamond", 480, 320, "Decision?");
+        const p2 = add("rect", 690, 320, "Step 2"), alt = add("rect", 480, 500, "Otherwise"), en = add("pill", 890, 320, "End");
+        link(st, p1); link(p1, dc); link(dc, p2, "yes"); link(dc, alt, "no"); link(p2, en); link(alt, en);
+      }
+    } else if (type === "free" && level === 1) {
+      add("rect", 500, 320, "Start here");
+    }
+    return g;
+  }
+
+  // Wraps text into lines that fit roughly `maxChars` characters.
+  function wrap(text, maxChars) {
+    const out = [];
+    String(text).split("\n").forEach((para) => {
+      let line = "";
+      para.split(/\s+/).filter(Boolean).forEach((w) => {
+        if (!line) line = w;
+        else if ((line + " " + w).length <= maxChars) line += " " + w;
+        else { out.push(line); line = w; }
+        while (line.length > maxChars + 4) { out.push(line.slice(0, maxChars)); line = line.slice(maxChars); }
+      });
+      out.push(line);
+    });
+    return out;
+  }
+  // Effective lines and height of a shape (the box grows to fit its text).
+  function layout(s) {
+    const raw = s.text || s.hint || "";
+    const hint = !s.text;
+    if (s.type === "entity") {
+      const parts = raw.split("\n");
+      const max = Math.max(6, Math.floor((s.w - 16) / 7.6));
+      const head = wrap(parts[0] || "", max).slice(0, 2);
+      const attrs = parts.slice(1).flatMap((p) => wrap(p, max));
+      const hh = 12 + head.length * 18;
+      return { hint, head, attrs, hh, h: Math.max(s.h, hh + attrs.length * 18 + 12) };
+    }
+    const factor = s.type === "ellipse" ? 0.72 : s.type === "diamond" ? 0.55 : 1;
+    const max = Math.max(5, Math.floor((s.w * factor - 14) / 7.6));
+    const lines = raw ? wrap(raw, max) : [];
+    const pad = s.type === "diamond" ? 46 : s.type === "ellipse" ? 30 : 18;
+    return { hint, lines, h: Math.max(s.h, lines.length * 18 + pad) };
+  }
+  // Point where the line from the shape's centre toward (tx, ty) leaves the shape outline.
+  function edgePoint(s, h, tx, ty) {
+    const cx = s.x + s.w / 2, cy = s.y + h / 2, dx = tx - cx, dy = ty - cy;
+    if (!dx && !dy) return [cx, cy];
+    const rx = s.w / 2, ry = h / 2;
+    let t;
+    if (s.type === "ellipse") t = 1 / Math.sqrt((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry));
+    else if (s.type === "diamond") t = 1 / (Math.abs(dx) / rx + Math.abs(dy) / ry);
+    else t = Math.min(rx / Math.abs(dx || 1e-9), ry / Math.abs(dy || 1e-9));
+    return [cx + dx * t, cy + dy * t];
+  }
+  function shapeSvg(s, o) {
+    const L = layout(s), h = L.h, cx = s.x + s.w / 2, cy = s.y + h / 2;
+    const cls = "sh c" + (s.c || 0) + (s.type === "note" ? " note" : "");
+    let body = "";
+    if (s.type === "rect" || s.type === "note") body = `<rect class="${cls}" x="${s.x}" y="${s.y}" width="${s.w}" height="${h}" rx="4"></rect>`;
+    else if (s.type === "pill") body = `<rect class="${cls}" x="${s.x}" y="${s.y}" width="${s.w}" height="${h}" rx="${h / 2}"></rect>`;
+    else if (s.type === "ellipse") body = `<ellipse class="${cls}" cx="${cx}" cy="${cy}" rx="${s.w / 2}" ry="${h / 2}"></ellipse>`;
+    else if (s.type === "diamond") body = `<polygon class="${cls}" points="${cx},${s.y} ${s.x + s.w},${cy} ${cx},${s.y + h} ${s.x},${cy}"></polygon>`;
+    else if (s.type === "entity") body = `<rect class="${cls}" x="${s.x}" y="${s.y}" width="${s.w}" height="${h}" rx="2"></rect><line class="sh-head" x1="${s.x}" x2="${s.x + s.w}" y1="${s.y + L.hh}" y2="${s.y + L.hh}"></line>`;
+    let text = "";
+    const hc = L.hint ? " hint" : "";
+    if (s.type === "entity") {
+      text = `<text class="sh-t b${hc}" text-anchor="middle">${L.head.map((ln, i) => `<tspan x="${cx}" y="${s.y + 21 + i * 18}">${esc(ln)}</tspan>`).join("")}</text>`;
+      text += `<text class="sh-t${hc}">${L.attrs.map((ln, i) => `<tspan x="${s.x + 10}" y="${s.y + L.hh + 20 + i * 18}">${esc(ln)}</tspan>`).join("")}</text>`;
+    } else if (L.lines.length) {
+      const y0 = cy - ((L.lines.length - 1) * 18) / 2 + 5;
+      text = `<text class="sh-t${hc}${s.type === "pill" ? " b" : ""}" text-anchor="middle">${L.lines.map((ln, i) => `<tspan x="${cx}" y="${y0 + i * 18}">${esc(ln)}</tspan>`).join("")}</text>`;
+    }
+    let sel = "";
+    if (o.sel && o.sel.k === "s" && o.sel.id === s.id) {
+      sel = `<rect class="sel-box" x="${s.x - 5}" y="${s.y - 5}" width="${s.w + 10}" height="${h + 10}"></rect>
+        <rect class="handle" data-handle="${s.id}" x="${s.x + s.w - 4}" y="${s.y + h - 4}" width="14" height="14"></rect>`;
+    }
+    return `<g data-sid="${s.id}" class="${o.linkFrom === s.id ? "link-src" : ""}">${body}${text}</g>${sel}`;
+  }
+  function svgInner(g, o) {
+    o = o || {};
+    const byId = {}; g.shapes.forEach((s) => (byId[s.id] = s));
+    let out = `<defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"></path></marker>
+      <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path class="gridline" d="M24 0 L0 0 0 24"></path></pattern></defs>
+      <rect class="bgfill" x="-20000" y="-20000" width="40000" height="40000"></rect>
+      <rect x="-20000" y="-20000" width="40000" height="40000" fill="url(#grid)"></rect>`;
+    g.strokes.forEach((p) => {
+      const d = p.pts.map((q, i) => (i ? "L" : "M") + q[0] + " " + q[1]).join(" ");
+      const on = o.sel && o.sel.k === "p" && o.sel.id === p.id;
+      out += `<path class="pen${on ? " sel" : ""}" d="${d}"></path>${o.editable ? `<path class="ln-hit" data-stroke="${p.id}" d="${d}"></path>` : ""}`;
+    });
+    g.links.forEach((l) => {
+      const a = byId[l.from], b = byId[l.to];
+      if (!a || !b) return;
+      const ha = layout(a).h, hb = layout(b).h;
+      const [x1, y1] = edgePoint(a, ha, b.x + b.w / 2, b.y + hb / 2);
+      const [x2, y2] = edgePoint(b, hb, a.x + a.w / 2, a.y + ha / 2);
+      const on = o.sel && o.sel.k === "l" && o.sel.id === l.id;
+      out += `<path class="ln${l.dash ? " dash" : ""}${on ? " sel" : ""}" d="M${x1} ${y1} L${x2} ${y2}" marker-end="url(#arr)"></path>`;
+      if (o.editable) out += `<path class="ln-hit" data-lid="${l.id}" d="M${x1} ${y1} L${x2} ${y2}"></path>`;
+      const lab = l.label || l.hint;
+      if (lab) {
+        const mx = (x1 + x2) / 2, my = (y1 + y2) / 2, w = lab.length * 7.4 + 10;
+        out += `<g ${o.editable ? `data-lid="${l.id}"` : ""}><rect class="ln-bg" x="${mx - w / 2}" y="${my - 10}" width="${w}" height="20" rx="3"></rect>
+          <text class="ln-t${l.label ? "" : " hint"}" x="${mx}" y="${my + 4}" text-anchor="middle">${esc(lab)}</text></g>`;
+      }
+    });
+    g.shapes.forEach((s) => (out += shapeSvg(s, o)));
+    return out;
+  }
+  function bbox(g) {
+    let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+    g.shapes.forEach((s) => { const h = layout(s).h; x1 = Math.min(x1, s.x); y1 = Math.min(y1, s.y); x2 = Math.max(x2, s.x + s.w); y2 = Math.max(y2, s.y + h); });
+    g.strokes.forEach((p) => p.pts.forEach(([x, y]) => { x1 = Math.min(x1, x); y1 = Math.min(y1, y); x2 = Math.max(x2, x); y2 = Math.max(y2, y); }));
+    if (x1 === Infinity) return { x: 0, y: 0, w: 1000, h: 640 };
+    const p = 40;
+    return { x: x1 - p, y: y1 - p, w: x2 - x1 + p * 2, h: y2 - y1 + p * 2 };
+  }
+  function thumb(g, label) {
+    const b = bbox(g);
+    return `<svg class="thumb" viewBox="${b.x} ${b.y} ${b.w} ${b.h}" role="img" aria-label="${esc(label || "Diyagram")}">${svgInner(g, {})}</svg>`;
+  }
+  function typeIcon(t) {
+    const s = 'class="sh" style="stroke-width:1.4"';
+    if (t === "mind") return `<svg viewBox="0 0 120 54"><path class="ln" d="M60 27 L18 10 M60 27 L18 44 M60 27 L102 10 M60 27 L102 44"></path><ellipse ${s} cx="60" cy="27" rx="20" ry="11"></ellipse><ellipse ${s} cx="16" cy="10" rx="12" ry="7"></ellipse><ellipse ${s} cx="16" cy="44" rx="12" ry="7"></ellipse><ellipse ${s} cx="104" cy="10" rx="12" ry="7"></ellipse><ellipse ${s} cx="104" cy="44" rx="12" ry="7"></ellipse></svg>`;
+    if (t === "flow") return `<svg viewBox="0 0 120 54"><path class="ln" d="M26 27 H44 M76 27 H94"></path><rect ${s} x="2" y="19" width="24" height="16" rx="8"></rect><polygon ${s} points="60,11 76,27 60,43 44,27"></polygon><rect ${s} x="94" y="19" width="24" height="16"></rect></svg>`;
+    if (t === "entity") return `<svg viewBox="0 0 120 54"><path class="ln" d="M44 27 H76"></path><rect ${s} x="4" y="6" width="40" height="42"></rect><line class="sh-head" x1="4" x2="44" y1="17" y2="17"></line><rect ${s} x="76" y="6" width="40" height="42"></rect><line class="sh-head" x1="76" x2="116" y1="17" y2="17"></line></svg>`;
+    return `<svg viewBox="0 0 120 54"><path class="pen" d="M8 40 C 25 8, 40 50, 58 22 S 92 10, 112 34"></path><rect ${s} x="70" y="30" width="34" height="18"></rect></svg>`;
+  }
+  const TOOL_ICONS = {
+    select: '<path class="ln" d="M5 3 L5 16 L9 12 L12 18 L14 17 L11 11 L16 11 Z" style="fill:currentColor;stroke:none"></path>',
+    pan: '<path class="ln" style="stroke:currentColor" d="M10 2 V18 M2 10 H18 M10 2 L7 5 M10 2 L13 5 M10 18 L7 15 M10 18 L13 15 M2 10 L5 7 M2 10 L5 13 M18 10 L15 7 M18 10 L15 13"></path>',
+    rect: '<rect x="2" y="5" width="16" height="10" rx="1" style="fill:none;stroke:currentColor;stroke-width:1.6"></rect>',
+    ellipse: '<ellipse cx="10" cy="10" rx="8" ry="5.5" style="fill:none;stroke:currentColor;stroke-width:1.6"></ellipse>',
+    diamond: '<polygon points="10,2 18,10 10,18 2,10" style="fill:none;stroke:currentColor;stroke-width:1.6"></polygon>',
+    pill: '<rect x="2" y="6" width="16" height="8" rx="4" style="fill:none;stroke:currentColor;stroke-width:1.6"></rect>',
+    entity: '<rect x="3" y="3" width="14" height="14" style="fill:none;stroke:currentColor;stroke-width:1.6"></rect><line x1="3" x2="17" y1="7.5" y2="7.5" style="stroke:currentColor;stroke-width:1.4"></line>',
+    note: '<path d="M3 3 H17 V13 L13 17 H3 Z M13 17 V13 H17" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-dasharray:3 2"></path>',
+    link: '<path d="M3 15 L15 5 M15 5 L10 5.5 M15 5 L14.5 10" style="fill:none;stroke:currentColor;stroke-width:1.7"></path><circle cx="3" cy="15" r="2" style="fill:currentColor"></circle>',
+    pen: '<path d="M3 17 L4 13 L14 3 L17 6 L7 16 Z" style="fill:none;stroke:currentColor;stroke-width:1.5"></path>'
+  };
+  const TOOLS = [
+    ["select", "Seç"], ["pan", "Kaydır"], null,
+    ["ellipse", "Fikir"], ["rect", "Kutu"], ["diamond", "Karar"], ["pill", "Başla/Bitir"], ["entity", "Varlık"], ["note", "Not"], null,
+    ["link", "Bağla"], ["pen", "Kalem"]
+  ];
+
+  // ---------- Drawing editor ----------
+  function Editor(root, g, opts) {
+    const st = { sel: null, tool: "select", linkFrom: null, drag: null, last: null };
+    root.innerHTML = `<div class="ed">
+      <div class="toolbar" role="toolbar" aria-label="Çizim araçları">
+        ${TOOLS.map((t) => (t ? `<button type="button" data-tool="${t[0]}" title="${t[1]}" aria-label="${t[1]}"><svg viewBox="0 0 20 20">${TOOL_ICONS[t[0]]}</svg><span class="tool-lbl">${t[1]}</span></button>` : '<span class="sep"></span>')).join("")}
+        <span class="sep"></span>
+        <button type="button" data-zoom="in" aria-label="Yakınlaştır">+</button><button type="button" data-zoom="out" aria-label="Uzaklaştır">−</button><button type="button" data-zoom="fit">Sığdır</button>
+      </div>
+      <svg class="canvas t-select" aria-label="Çizim tuvali"></svg>
+      <div class="panel"></div></div>`;
+    const svg = root.querySelector("svg.canvas"), panel = root.querySelector(".panel");
+    const find = (id) => g.shapes.find((s) => s.id === id);
+    const changed = () => opts.onChange && opts.onChange();
+
+    function draw() {
+      const v = g.vb;
+      svg.setAttribute("viewBox", `${v.x} ${v.y} ${v.w} ${v.h}`);
+      svg.innerHTML = svgInner(g, { sel: st.sel, linkFrom: st.linkFrom, editable: true });
+    }
+    function paintTools() {
+      root.querySelectorAll("[data-tool]").forEach((b) => b.classList.toggle("on", b.dataset.tool === st.tool));
+      svg.setAttribute("class", "canvas t-" + (SHAPES[st.tool] ? "shape" : st.tool));
+    }
+    function toPt(e) {
+      const p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
+      return p.matrixTransform(svg.getScreenCTM().inverse());
+    }
+    function addChild() {
+      const p = find(st.sel.id); if (!p) return;
+      const kids = g.links.filter((l) => l.from === p.id).length;
+      const a = -Math.PI / 3 + kids * (Math.PI / 4);
+      const type = g.type === "mind" ? "ellipse" : g.type === "entity" ? "entity" : "rect";
+      const ph = layout(p).h;
+      const c = mkShape(type, p.x + p.w / 2 + Math.cos(a) * 260, p.y + ph / 2 + Math.sin(a) * 170);
+      g.shapes.push(c); g.links.push(mkLink(p, c));
+      st.sel = { k: "s", id: c.id }; changed(); draw(); renderPanel(true);
+    }
+    function del() {
+      if (!st.sel) return;
+      const { k, id } = st.sel;
+      if (k === "s") { g.shapes = g.shapes.filter((s) => s.id !== id); g.links = g.links.filter((l) => l.from !== id && l.to !== id); }
+      if (k === "l") g.links = g.links.filter((l) => l.id !== id);
+      if (k === "p") g.strokes = g.strokes.filter((p) => p.id !== id);
+      st.sel = null; changed(); draw(); renderPanel();
+    }
+    function renderPanel(focus) {
+      const sel = st.sel;
+      if (!sel) {
+        const tips = {
+          select: "Şekle dokun: seç ve sürükle. Sağ alt köşedeki kareyle boyutlandır. Boş alanı sürükleyerek tuvali kaydır.",
+          pan: "Tuvali sürükleyerek kaydır. Yakınlaştırmak için + / − kullan.",
+          link: st.linkFrom ? "Şimdi hedef şekle dokun." : "Önce okun çıkacağı şekle, sonra hedef şekle dokun.",
+          pen: "Serbest çiz: altını çiz, grupla, yuvarlak içine al."
+        };
+        panel.innerHTML = `<span class="hint">${SHAPES[st.tool] ? `Tuvalde bir yere dokun, oraya ${SHAPES[st.tool].tr.toLowerCase()} (${SHAPES[st.tool].name}) yerleşsin.` : tips[st.tool] || ""}</span>`;
+        return;
+      }
+      if (sel.k === "s") {
+        const s = find(sel.id); if (!s) { st.sel = null; return renderPanel(); }
+        panel.innerHTML = `
+          <label class="label" for="ed-text">${SHAPES[s.type].tr} (${SHAPES[s.type].name})${s.type === "entity" ? " · ilk satır ad, sonraki satırlar özellik (attribute)" : ""}</label>
+          <textarea id="ed-text" rows="${s.type === "entity" ? 4 : 2}" placeholder="${esc(s.hint ? s.hint.replace(/\n/g, " / ") : "İngilizce anahtar kelime yaz")}">${esc(s.text)}</textarea>
+          <div class="row between">
+            <span class="row">${[0, 1, 2, 3, 4].map((c) => `<button type="button" class="swatch ${(s.c || 0) === c ? "on" : ""}" data-color="${c}" aria-label="Renk ${c + 1}" style="background:${SWATCH[c][0]};border-color:${SWATCH[c][1]}"></button>`).join("")}</span>
+            <span class="row">
+              <select id="ed-type" aria-label="Şekil tipi">${Object.entries(SHAPES).map(([k, v]) => `<option value="${k}" ${k === s.type ? "selected" : ""}>${v.tr}</option>`).join("")}</select>
+              <button type="button" data-ed="child">+ Bağlı düğüm</button>
+              <button type="button" class="danger" data-ed="del">Sil</button>
+            </span>
+          </div>`;
+        const ta = panel.querySelector("#ed-text");
+        ta.addEventListener("input", () => { s.text = ta.value; draw(); changed(); });
+        panel.querySelector("#ed-type").addEventListener("change", (e) => { s.type = e.target.value; const d = SHAPES[s.type]; s.w = Math.max(s.w, d.w * 0.8); draw(); changed(); renderPanel(); });
+        if (focus) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+      } else if (sel.k === "l") {
+        const l = g.links.find((x) => x.id === sel.id); if (!l) { st.sel = null; return renderPanel(); }
+        panel.innerHTML = `
+          <label class="label" for="ed-label">Ok etiketi · ilişkinin adı</label>
+          <input type="text" id="ed-label" value="${esc(l.label)}" placeholder="${esc(l.hint || "opposes, causes, has...")}">
+          <div class="chips">${QUICK_LABELS.map((q) => `<button type="button" class="chip ${l.label === q ? "sel" : ""}" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+          <div class="row end"><button type="button" data-ed="dash">${l.dash ? "Düz çizgi" : "Kesikli çizgi"}</button><button type="button" data-ed="flip">Yönü çevir</button><button type="button" class="danger" data-ed="del">Sil</button></div>`;
+        const inp = panel.querySelector("#ed-label");
+        inp.addEventListener("input", () => { l.label = inp.value; draw(); changed(); });
+        if (focus) inp.focus();
+      } else {
+        panel.innerHTML = `<div class="row between"><span class="hint">Kalem çizgisi seçildi.</span><button type="button" class="danger" data-ed="del">Sil</button></div>`;
+      }
+    }
+
+    root.addEventListener("click", (e) => {
+      const t = e.target.closest("[data-tool],[data-zoom],[data-ed],[data-q],[data-color]");
+      if (!t) return;
+      if (t.dataset.tool) { st.tool = t.dataset.tool; st.linkFrom = null; if (st.tool !== "select") st.sel = null; paintTools(); draw(); renderPanel(); return; }
+      if (t.dataset.zoom) {
+        const v = g.vb;
+        if (t.dataset.zoom === "fit") { const b = bbox(g); g.vb = b; }
+        else { const f = t.dataset.zoom === "in" ? 0.8 : 1.25; const nw = v.w * f, nh = v.h * f; g.vb = { x: v.x + (v.w - nw) / 2, y: v.y + (v.h - nh) / 2, w: nw, h: nh }; }
+        draw(); changed(); return;
+      }
+      if (t.dataset.q) { const l = g.links.find((x) => st.sel && x.id === st.sel.id); if (l) { l.label = t.dataset.q; draw(); changed(); renderPanel(); } return; }
+      if (t.dataset.color) { const s = st.sel && find(st.sel.id); if (s) { s.c = +t.dataset.color; draw(); changed(); renderPanel(); } return; }
+      const act = t.dataset.ed;
+      if (act === "del") del();
+      if (act === "child") addChild();
+      if (act === "dash" || act === "flip") {
+        const l = g.links.find((x) => x.id === st.sel.id);
+        if (act === "dash") l.dash = !l.dash; else { const f = l.from; l.from = l.to; l.to = f; }
+        draw(); changed(); renderPanel();
+      }
+    });
+
+    svg.addEventListener("pointerdown", (e) => {
+      const pt = toPt(e);
+      const hd = e.target.closest("[data-handle]"), sg = e.target.closest("[data-sid]"), lk = e.target.closest("[data-lid]"), sk = e.target.closest("[data-stroke]");
+      const tool = st.tool;
+      if (tool === "link") {
+        if (sg) {
+          const id = sg.dataset.sid;
+          if (!st.linkFrom) st.linkFrom = id;
+          else if (st.linkFrom !== id) {
+            const l = { id: uid(), from: st.linkFrom, to: id, label: "", hint: "", dash: false };
+            g.links.push(l); st.linkFrom = null; st.sel = { k: "l", id: l.id }; changed(); draw(); renderPanel(true); return;
+          }
+        } else st.linkFrom = null;
+        draw(); renderPanel(); return;
+      }
+      if (SHAPES[tool]) {
+        const s = mkShape(tool, pt.x, pt.y);
+        g.shapes.push(s); st.sel = { k: "s", id: s.id }; st.tool = "select";
+        paintTools(); changed(); draw(); renderPanel(true); return;
+      }
+      if (tool === "pen") {
+        const p = { id: uid(), pts: [[rnd(pt.x), rnd(pt.y)]] };
+        g.strokes.push(p); st.drag = { kind: "pen", p };
+      } else if (tool === "pan") {
+        st.drag = { kind: "pan", sx: e.clientX, sy: e.clientY, vb: Object.assign({}, g.vb) };
+      } else if (hd) {
+        const s = find(hd.dataset.handle);
+        st.drag = { kind: "resize", s, sx: pt.x, sy: pt.y, w: s.w, h: layout(s).h };
+      } else if (sg) {
+        const s = find(sg.dataset.sid), now = Date.now();
+        const dbl = st.last && st.last.id === s.id && now - st.last.t < 350;
+        st.last = { id: s.id, t: now };
+        st.sel = { k: "s", id: s.id };
+        g.shapes.splice(g.shapes.indexOf(s), 1); g.shapes.push(s);
+        st.drag = { kind: "move", s, dx: pt.x - s.x, dy: pt.y - s.y };
+        renderPanel(dbl);
+      } else if (lk) { st.sel = { k: "l", id: lk.dataset.lid }; renderPanel(); }
+      else if (sk) { st.sel = { k: "p", id: sk.dataset.stroke }; renderPanel(); }
+      else {
+        st.sel = null; renderPanel();
+        st.drag = { kind: "pan", sx: e.clientX, sy: e.clientY, vb: Object.assign({}, g.vb) };
+      }
+      try { svg.setPointerCapture(e.pointerId); } catch (err) {}
+      draw();
+    });
+    svg.addEventListener("pointermove", (e) => {
+      const d = st.drag; if (!d) return;
+      if (d.kind === "pan") {
+        const k = 1 / svg.getScreenCTM().a;
+        g.vb = Object.assign({}, d.vb, { x: d.vb.x - (e.clientX - d.sx) * k, y: d.vb.y - (e.clientY - d.sy) * k });
+      } else {
+        const pt = toPt(e);
+        if (d.kind === "move") { d.s.x = rnd(pt.x - d.dx); d.s.y = rnd(pt.y - d.dy); }
+        if (d.kind === "resize") { d.s.w = Math.max(70, rnd(d.w + pt.x - d.sx)); d.s.h = Math.max(36, rnd(d.h + pt.y - d.sy)); }
+        if (d.kind === "pen") { const q = d.p.pts[d.p.pts.length - 1]; if (Math.hypot(pt.x - q[0], pt.y - q[1]) > 3) d.p.pts.push([rnd(pt.x), rnd(pt.y)]); }
+      }
+      draw();
+    });
+    const end = () => {
+      const d = st.drag; if (!d) return;
+      if (d.kind === "pen" && d.p.pts.length < 2) g.strokes = g.strokes.filter((p) => p !== d.p);
+      st.drag = null; changed(); draw();
+    };
+    svg.addEventListener("pointerup", end);
+    svg.addEventListener("pointercancel", end);
+    const onKey = (e) => {
+      if (!root.isConnected) return document.removeEventListener("keydown", onKey);
+      const a = document.activeElement;
+      if (a && /INPUT|TEXTAREA|SELECT/.test(a.tagName)) return;
+      if ((e.key === "Delete" || e.key === "Backspace") && st.sel) { e.preventDefault(); del(); }
+      if (e.key === "Escape") { st.sel = null; st.linkFrom = null; draw(); renderPanel(); }
+    };
+    document.addEventListener("keydown", onKey);
+
+    paintTools(); draw(); renderPanel();
+  }
+
+  // ---------- Draft ----------
+  function newDraft(sample) {
+    const lvl = levelInfo().lvl;
+    const d = {
+      id: uid(), created: today(), step: 0, level: lvl,
+      title: sample ? sample.title : "", sampleId: sample ? sample.id : null,
+      text: sample ? sample.text : "", points: sample ? sample.points.map((p) => ({ t: p.t, kw: p.kw })) : [],
+      pointsRaw: "", readSeconds: 0,
+      dump: "", recallSeconds: 0, marks: [], missedNote: "", recallScore: null,
+      diagram: null, sentences: {}, annot: {}, errNote: {}, constraints: ["ps", "contrast"], redraws: []
+    };
+    if (sample && lvl < 3) d.diagram = seedDiagram(sample.dtype, lvl, sample.id);
+    return d;
+  }
+
+  // ---------- Timer ----------
+  function startTimer(elId, field, limitSec) {
+    stopTimer();
+    const started = Date.now() - (db.draft[field] || 0) * 1000;
+    const tick = () => {
+      const sec = Math.floor((Date.now() - started) / 1000);
+      db.draft[field] = sec;
+      const el = document.getElementById(elId);
+      if (!el) return stopTimer();
+      const left = limitSec == null ? sec : limitSec - sec;
+      const v = Math.abs(left);
+      el.textContent = (left < 0 ? "+" : "") + Math.floor(v / 60) + ":" + String(v % 60).padStart(2, "0");
+      el.classList.toggle("over", limitSec != null && left < 0);
+    };
+    tick();
+    ui.timer = setInterval(tick, 1000);
+  }
+  function stopTimer() { if (ui.timer) clearInterval(ui.timer); ui.timer = null; }
+
+  // ---------- Render ----------
+  function render() {
+    stopTimer();
+    let html = header();
+    if (ui.view === "home") html += viewHome();
+    else if (ui.view === "session") html += viewSession();
+    else if (ui.view === "redraw") html += viewRedraw();
+    else if (ui.view === "detail") html += viewDetail();
+    $("#app").innerHTML = html;
+    afterRender();
+  }
+
+  function header() {
+    const L = levelInfo();
+    const sheet = ui.view === "session" && db.draft ? "0" + (db.draft.step + 1) + "/05" : ui.view === "redraw" ? "R" : "00";
+    return `
+    <header class="titleblock">
+      <div class="tb-main">
+        <span class="label">Blueprint Recall Method · Kör hatırla, çiz, doldur</span>
+        <h1>Blueprint Recall Board</h1>
+        <div class="tb-actions">
+          <button data-act="home" class="ghost">Masa</button>
+          <button data-act="theme" class="ghost" aria-label="Temayı değiştir">Tema</button>
+        </div>
+      </div>
+      <div class="tb-cells">
+        <div class="tb-cell"><span class="label">Sheet</span><b>${sheet}</b></div>
+        <div class="tb-cell"><span class="label">Level</span><b>S${L.lvl}</b></div>
+        <div class="tb-cell"><span class="label">Date</span><b>${today().slice(5)}</b></div>
+      </div>
+    </header>`;
+  }
+
+  function spark() {
+    const s = db.sessions.slice().sort((a, b) => (a.created < b.created ? -1 : 1)).slice(-14);
+    if (s.length < 2) return `<p class="muted small">Grafik için en az 2 oturum gerekli.</p>`;
+    const W = 600, H = 90, pad = 18, bw = (W - pad * 2) / s.length;
+    let bars = "";
+    s.forEach((x, i) => {
+      const h = Math.max(2, (H - pad * 2) * x.recallScore);
+      const col = x.recallScore >= 0.7 ? "var(--ok)" : x.recallScore >= 0.5 ? "var(--warn)" : "var(--bad)";
+      bars += `<rect x="${pad + i * bw + 3}" y="${H - pad - h}" width="${Math.max(4, bw - 6)}" height="${h}" style="fill:${col}"></rect>`;
+    });
+    const y70 = H - pad - (H - pad * 2) * 0.7;
+    return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Son oturumların hatırlama skorları">
+      <line x1="${pad}" x2="${W - pad}" y1="${y70}" y2="${y70}" style="stroke:var(--accent)" stroke-dasharray="4 4" stroke-width="1"></line>
+      <text x="${W - pad}" y="${y70 - 4}" text-anchor="end" font-size="10" style="fill:var(--muted)" font-family="IBM Plex Mono, monospace">70%</text>
+      ${bars}</svg>`;
+  }
+
+  function viewHome() {
+    const L = levelInfo();
+    const due = dueRedraws();
+    const sess = db.sessions.slice().sort((a, b) => (a.created < b.created ? 1 : -1));
+    const last5 = sess.slice(0, 5);
+    const avg = last5.length ? last5.reduce((a, s) => a + s.recallScore, 0) / last5.length : null;
+    const sampleCards = SAMPLES.map((s) => `
+      <button class="tpl" data-act="start" data-sample="${s.id}">
+        ${typeIcon(s.dtype)}
+        <span class="label">Örnek metin · ${s.level} · ${DTYPES[s.dtype].name}</span>
+        <b>${esc(s.title)}</b>
+        <span>${s.points.length} ana unsur gizli; kontrol aşamasında açılır.</span>
+      </button>`).join("");
+    return `
+    ${db.draft ? `<div class="note warn row between"><span>Yarım kalmış bir oturum var: <b>${esc(db.draft.title || "Başlıksız")}</b>, sheet ${db.draft.step + 1}/5.</span>
+      <span class="row"><button data-act="resume" class="primary">Devam et</button><button data-act="discard" class="danger">Sil</button></span></div>` : ""}
+    <section class="sheet">
+      <div class="sheet-head"><h2>Bugünkü test</h2><span class="label">5 sheet · 25-30 dk</span></div>
+      <p class="muted">Önce bir kez oku, sonra kaynağı kapat ve bakmadan hatırla. Hatırladıklarını tuvale <b>çiz</b>: mind map, flowchart ya da entity haritası. Çizimi İngilizce cümlelerle doldur. 1, 3 ve 7 gün sonra aynı haritayı boş tuvale yeniden çiz.</p>
+      <div class="grid3">
+        ${sampleCards}
+        <button class="tpl" data-act="start" data-sample="">
+          ${typeIcon("free")}
+          <span class="label">Kendi kaynağın · gün sonu mütalaası</span>
+          <b>Kendi metnim / günüm</b>
+          <span>Metni yapıştır, ana unsurları yaz. Gün sonu için metin alanını boş bırakabilirsin.</span>
+        </button>
+      </div>
+    </section>
+    <div style="height:16px"></div>
+    <section class="stats">
+      <div class="stat"><span class="label">Scaffold level</span><b>S${L.lvl}</b><span class="small muted">${L.lvl < 3 ? `S${L.lvl + 1} için ${L.streak}/3 oturum ≥ %70` : "En üst seviye"}</span></div>
+      <div class="stat"><span class="label">Oturum</span><b>${db.sessions.length}</b><span class="small muted">toplam kayıt</span></div>
+      <div class="stat"><span class="label">Ort. recall (son 5)</span><b>${avg == null ? "–" : pct(avg)}</b><span class="small muted">hatırlama oranı</span></div>
+      <div class="stat"><span class="label">Bugün yeniden çiz</span><b>${due.length}</b><span class="small muted">vadesi gelen harita</span></div>
+    </section>
+    <div style="height:16px"></div>
+    <section class="sheet">
+      <div class="sheet-head"><h2>Yeniden çizim sırası</h2><span class="label">Redraw · 1 / 3 / 7 gün</span></div>
+      ${due.length ? due.map((s) => `<div class="row between"><span><b>${esc(s.title)}</b> <span class="muted small">· ${s.created} · ${(s.redraws || []).length + 1}. çizim</span></span><button class="primary" data-act="redraw" data-id="${s.id}">Bakmadan çiz</button></div>`).join("") : `<div class="empty">Bugün vadesi gelen harita yok. Yeni bir test bitirince ertesi gün burada görünür.</div>`}
+    </section>
+    <div style="height:16px"></div>
+    <section class="sheet">
+      <div class="sheet-head"><h2>Kayıt defteri</h2><span class="label">Recall trend · son 14</span></div>
+      ${spark()}
+      ${sess.length ? `<div class="table-wrap"><table>
+        <thead><tr><th>Tarih</th><th>Başlık</th><th>Diyagram</th><th>Recall</th><th>Redraw</th><th>Hata</th><th></th></tr></thead>
+        <tbody>${sess.map((s) => {
+          const last = (s.redraws || []).slice(-1)[0];
+          const errs = Object.values(s.annot || {}).filter((v) => v === "bad").length;
+          return `<tr>
+            <td class="num">${s.created}</td><td>${esc(s.title)}</td><td>${s.diagram ? DTYPES[s.diagram.type].name : "–"}</td>
+            <td class="num"><span class="pill ${s.recallScore >= 0.7 ? "ok" : s.recallScore >= 0.5 ? "warn" : "bad"}">${pct(s.recallScore)}</span></td>
+            <td class="num">${last ? pct(last.score) + ` (${s.redraws.length}/3)` : nextDue(s) ? "→ " + nextDue(s).slice(5) : "–"}</td>
+            <td class="num">${errs}</td>
+            <td><span class="row"><button data-act="detail" data-id="${s.id}">Aç</button>${ui.confirmDel === s.id ? `<button class="danger" data-act="del-yes" data-id="${s.id}">Eminim, sil</button><button data-act="del-no">Vazgeç</button>` : `<button class="ghost danger" data-act="del" data-id="${s.id}">Sil</button>`}</span></td>
+          </tr>`; }).join("")}</tbody></table></div>` : `<div class="empty">Henüz kayıt yok. Yukarıdaki örneklerden biriyle ilk testini yap.</div>`}
+    </section>`;
+  }
+
+  function stepsBar(step) {
+    const names = ["Encode", "Blind Recall", "Check", "Draw", "Fill"];
+    return `<div class="steps">${names.map((n, i) => `<span class="stepdot ${i === step ? "on" : i < step ? "done" : ""}">${String(i + 1).padStart(2, "0")} ${n}</span>`).join("")}</div>`;
+  }
+
+  function viewSession() {
+    const d = db.draft;
+    if (!d) { ui.view = "home"; return viewHome(); }
+    const views = [stepEncode, stepRecall, stepCheck, stepDraw, stepFill];
+    return `<section class="sheet">${stepsBar(d.step)}${views[d.step](d)}</section>`;
+  }
+
+  // Sheet 01: Encode
+  function stepEncode(d) {
+    return `
+    <div class="sheet-head"><h2>01 · Niyetli okuma</h2><span class="label">Encode · bir kez oku</span></div>
+    <div class="note">Bu metni <b>bir kez</b>, "birazdan bakmadan anlatacağım" niyetiyle oku. Altını çizme, not alma. Hazır olunca kaynak kapanacak.</div>
+    ${d.sampleId ? `
+      <div class="row between"><h3>${esc(d.title)}</h3><span class="row"><span class="label">Okuma süresi</span><span class="timer" id="t-read">0:00</span></span></div>
+      <div class="source">${esc(d.text)}</div>
+      <p class="hint">Bu örnekte ${d.points.length} ana unsur var. Kontrol aşamasına kadar gizli kalacaklar.</p>
+    ` : `
+      <div class="field"><label class="label" for="in-title">Başlık</label><input type="text" id="in-title" value="${esc(d.title)}" placeholder="Örn. Hume on causation · ya da: 30 Ekim gün sonu"></div>
+      <div class="field"><label class="label" for="in-text">Kaynak metin (isteğe bağlı)</label>
+        <textarea id="in-text" rows="7" placeholder="Okuduğun metni buraya yapıştır. Gün sonu mütalaası yapıyorsan boş bırak.">${esc(d.text)}</textarea></div>
+      <div class="field"><label class="label" for="in-points">Ana unsurlar · her satıra bir tane (en az 3)</label>
+        <textarea id="in-points" rows="5" placeholder="Hume: causation = habit&#10;Impressions vs ideas&#10;Problem of induction">${esc(d.pointsRaw)}</textarea>
+        <span class="hint">Skor bu listeye göre hesaplanır. Gün sonunda: bugün öğrenmen gereken 3-7 şeyi yaz.</span></div>
+    `}
+    <div class="row end"><button data-act="cancel" class="ghost">Vazgeç</button><button class="primary" data-act="to-recall">Hazırım, kaynağı kapat</button></div>`;
+  }
+
+  // Sheet 02: Blind recall
+  function stepRecall(d) {
+    return `
+    <div class="sheet-head"><h2>02 · Kör hatırlama</h2><span class="label">Blind recall · brain dump · 3 dk</span></div>
+    <div class="covered">KAYNAK KAPALI · ${esc(d.title || "Başlıksız")}</div>
+    <div class="row between"><span class="muted small">Aklında kalan her şeyi sırasız yaz. Türkçe ya da İngilizce olabilir. Eksik olması normal, uydurma.</span>
+      <span class="row"><span class="label">Kalan</span><span class="timer" id="t-recall">3:00</span></span></div>
+    <textarea id="in-dump" rows="10" placeholder="Hobbes... Leviathan... state of nature... herkes birbirine karşı...">${esc(d.dump)}</textarea>
+    <div class="row between"><span class="hint mono" id="dump-wc">${wordCount(d.dump)} kelime</span>
+      <span class="row"><button data-act="back" class="ghost">Geri</button><button class="primary" data-act="to-check">Bitti, kontrol et</button></span></div>`;
+  }
+
+  // Sheet 03: Check against source
+  function stepCheck(d) {
+    if (!d.marks.length) {
+      d.marks = d.points.map((p) => { const o = overlap(p.kw || p.t, d.dump); return o >= 0.5 ? 2 : o >= 0.25 ? 1 : 0; });
+      d.auto = d.marks.slice();
+    }
+    const score = d.marks.reduce((a, m) => a + m / 2, 0) / d.points.length;
+    d.recallScore = score;
+    const prev = db.sessions.slice().sort((a, b) => (a.created < b.created ? 1 : -1))[0];
+    const delta = prev ? Math.round((score - prev.recallScore) * 100) : null;
+    const stateLbl = ["✗ Unuttum", "~ Kısmen", "✓ Hatırladım"];
+    return `
+    <div class="sheet-head"><h2>03 · Kontrol</h2><span class="label">Check · geri bildirimsiz hatırlama, hatanın provasıdır</span></div>
+    <div class="grid2">
+      <div class="field"><span class="label">Senin hatırladığın</span><div class="source small" style="border:1px solid var(--line);padding:10px;max-height:300px;overflow:auto">${esc(d.dump) || '<span class="muted">Boş bıraktın.</span>'}</div></div>
+      <div class="field"><span class="label">Kaynak</span>${d.text ? `<div class="source small" style="border:1px solid var(--line);padding:10px;max-height:300px;overflow:auto">${esc(d.text)}</div>` : `<div class="empty">Kaynak metin yok. Ana unsur listesine göre karşılaştır.</div>`}</div>
+    </div>
+    <div class="field"><span class="label">Ana unsurlar · otomatik eşleşme öneri verir; son karar senin (tıklayınca değişir)</span>
+      <div>${d.points.map((p, i) => `
+        <div class="kp"><button class="kp-state s${d.marks[i]}" data-act="mark" data-i="${i}">${stateLbl[d.marks[i]]}</button>
+          <div class="kp-text">${esc(p.t)}${d.auto && d.auto[i] !== d.marks[i] ? `<div class="kp-auto">otomatik öneri: ${stateLbl[d.auto[i]]}</div>` : ""}</div></div>`).join("")}</div></div>
+    <div class="grid2">
+      <div class="field"><span class="label">Recall skoru</span>
+        <div class="row"><span class="score-big">${pct(score)}</span><span class="small muted">${d.marks.filter((m) => m === 2).length} tam · ${d.marks.filter((m) => m === 1).length} kısmen · ${d.marks.filter((m) => m === 0).length} unutuldu${delta != null ? `<br>Önceki oturuma göre: <b class="mono">${delta >= 0 ? "+" : ""}${delta} puan</b>` : ""}</span></div>
+        <div class="bar"><i style="width:${Math.round(score * 100)}%"></i></div>
+        <p class="hint">${score >= 0.7 ? "Güçlü bir hatırlama. Unuttuklarına haritada özel yer aç, kırmızıyla işaretle." : score >= 0.5 ? "Orta. Unutulan unsurlar haritanın en görünür düğümleri olsun." : "Düşük, ama asıl öğrenme burada başlıyor: unuttuklarını şimdi çizerek sabitliyorsun."}</p></div>
+      <div class="field"><label class="label" for="in-missed">Eksiklerim · farklı renkle not al</label>
+        <textarea id="in-missed" rows="5" placeholder="Neyi kaçırdım, neyi yanlış hatırladım?">${esc(d.missedNote)}</textarea></div>
+    </div>
+    <div class="row end"><button data-act="back" class="ghost">Geri</button><button class="primary" data-act="to-draw">Çizime geç</button></div>`;
+  }
+
+  // Sheet 04: Draw
+  function typeCards(selected) {
+    return `<div class="templates">${Object.entries(DTYPES).map(([id, t]) => `
+      <button class="tpl ${selected === id ? "sel" : ""}" data-act="dtype" data-t="${id}">${typeIcon(id)}<b>${t.name}</b><span>${t.tr} · ${t.for}</span></button>`).join("")}</div>`;
+  }
+  function stepDraw(d) {
+    const g = d.diagram;
+    return `
+    <div class="sheet-head"><h2>04 · Çiz</h2><span class="label">Draw · ${LEVELS[d.level].name}</span></div>
+    <div class="note">${LEVELS[d.level].tr} Şekillerin içine <b>İngilizce anahtar kelime</b> yaz, cümle değil. Okların üstüne ilişkinin adını yaz: <i>opposes</i> (karşı çıkar), <i>causes</i> (neden olur), <i>has</i> (sahiptir). Kaynağa bakma.</div>
+    ${!g || ui.typePick ? `<span class="label">Diyagram tipi seç</span>${typeCards(g && g.type)}` : `<div class="row between"><span class="small muted">Diyagram: <b>${DTYPES[g.type].name}</b> (${DTYPES[g.type].tr})</span><button class="ghost small" data-act="type-change">Tipi değiştir</button></div>`}
+    ${ui.confirmType ? `<div class="note warn row between"><span>Tipi değiştirmek mevcut çizimi siler.</span><span class="row"><button class="danger" data-act="type-yes">Sil ve değiştir</button><button data-act="type-no">Vazgeç</button></span></div>` : ""}
+    ${g ? `<div id="editor"></div>` : ""}
+    <div class="row end"><button data-act="back" class="ghost">Geri</button><button class="primary" data-act="to-fill" ${g ? "" : "disabled"}>Doldurmaya geç</button></div>`;
+  }
+
+  // Items to write sentences about: every shape with text, and every arrow between two named shapes.
+  function fillItems(g) {
+    if (!g) return [];
+    const byId = {}; g.shapes.forEach((s) => (byId[s.id] = s));
+    const items = g.shapes.filter((s) => s.text.trim()).map((s) => ({ key: "s:" + s.id, kind: SHAPES[s.type].name, v: oneLine(s.text) }));
+    g.links.forEach((l) => {
+      const a = byId[l.from], b = byId[l.to];
+      if (a && b && a.text.trim() && b.text.trim()) items.push({ key: "l:" + l.id, kind: "Link", v: `${oneLine(a.text).split(" · ")[0]} —${l.label || "→"}→ ${oneLine(b.text).split(" · ")[0]}` });
+    });
+    return items;
+  }
+
+  // Sheet 05: Fill in English
+  function stepFill(d) {
+    const items = fillItems(d.diagram);
+    const all = Object.values(d.sentences).join(" \n ");
+    const chips = CONSTRAINTS.map((c) => {
+      const on = d.constraints.includes(c.id), met = on && c.re.test(all);
+      return `<button class="chip ${on ? (met ? "met" : "miss") : ""}" data-act="cons" data-c="${c.id}" title="${esc(c.tr)}">${on ? (met ? "✓ " : "○ ") : ""}${c.name}</button>`;
+    }).join("");
+    const errs = Object.values(d.annot).filter((v) => v === "bad").length;
+    return `
+    <div class="sheet-head"><h2>05 · Doldur</h2><span class="label">Fill · her şekil ve ok için 1-2 İngilizce cümle</span></div>
+    <div class="grid2">
+      <div class="field"><span class="label">Senin haritan</span>${thumb(d.diagram, "Çizdiğin harita")}</div>
+      <div class="field"><span class="label">Kısıtlar · seç, sonra cümlelerinde kullan (yeşil = kullanıldı)</span><div class="chips">${chips}</div>
+        <span class="hint">Kısıt, özgür yazmaktan daha çok öğretir. Hedef hatasızlık değil, yapıyı kullanmaya zorlanmak. Ok cümleleri ilişki kurmayı çalıştırır: <i>Locke opposed Hobbes because...</i></span></div>
+    </div>
+    ${items.length ? items.map((n) => `
+      <div class="fill-item">
+        <span class="fill-key">${esc(n.kind)} · ${esc(n.v)}</span>
+        <textarea id="s-${n.key.replace(":", "-")}" class="s-in" data-k="${n.key}" rows="2" placeholder="Write one or two sentences in English...">${esc(d.sentences[n.key] || "")}</textarea>
+        <div class="annot"><span class="label">Öz değerlendirme</span>
+          <button class="${d.annot[n.key] === "ok" ? "on-ok" : ""}" data-act="annot" data-k="${n.key}" data-v="ok">✓ Doğru</button>
+          <button class="${d.annot[n.key] === "warn" ? "on-warn" : ""}" data-act="annot" data-k="${n.key}" data-v="warn">~ Güçlendirilebilir</button>
+          <button class="${d.annot[n.key] === "bad" ? "on-bad" : ""}" data-act="annot" data-k="${n.key}" data-v="bad">✗ Hata var</button>
+        </div>
+        ${d.annot[n.key] === "bad" ? `<input type="text" id="err-${n.key.replace(":", "-")}" class="err-in" data-k="${n.key}" value="${esc(d.errNote[n.key] || "")}" placeholder="Hata deseni, örn. had + V2 (had went)">` : ""}
+      </div>`).join("") : `<div class="empty">Haritada yazı içeren şekil yok. Geri dönüp şekillerin içini doldur.</div>`}
+    <div class="row between"><span class="small muted mono">${wordCount(all)} kelime · ${errs} hata işaretli</span>
+      <span class="row"><button data-act="back" class="ghost">Geri</button><button class="primary" data-act="finish" ${items.length ? "" : "disabled"}>Kaydet ve bitir</button></span></div>`;
+  }
+
+  // ---------- Export ----------
+  function mermaid(g) {
+    const named = g ? g.shapes.filter((s) => s.text.trim()) : [];
+    if (!named.length) return "";
+    const ids = {}; named.forEach((s, i) => (ids[s.id] = "n" + (i + 1)));
+    const q = (t) => '"' + String(t || " ").replace(/"/g, "'").replace(/\n/g, "<br>") + '"';
+    const wrapShape = { rect: ["[", "]"], ellipse: ["([", "])"], diamond: ["{", "}"], pill: ["([", "])"], entity: ["[", "]"], note: [">", "]"] };
+    let m = "flowchart LR\n";
+    named.forEach((s) => { const w = wrapShape[s.type]; m += `  ${ids[s.id]}${w[0]}${q(s.text)}${w[1]}\n`; });
+    g.links.forEach((l) => {
+      if (!ids[l.from] || !ids[l.to]) return;
+      const lab = l.label ? `|${l.label.replace(/[|"]/g, "")}|` : "";
+      m += `  ${ids[l.from]} ${l.dash ? "-.->" : "-->"}${lab} ${ids[l.to]}\n`;
+    });
+    return m;
+  }
+  function sessionMarkdown(s) {
+    const cons = CONSTRAINTS.filter((c) => s.constraints.includes(c.id));
+    const all = Object.values(s.sentences).join(" ");
+    const errs = Object.entries(s.annot).filter(([, v]) => v === "bad");
+    let md = `## [${s.created}] practice BRM | ${s.title}\n`;
+    md += `Özet: Recall ${pct(s.recallScore)} (${s.marks.filter((m) => m === 2).length}/${s.points.length} tam). Diyagram: ${s.diagram ? DTYPES[s.diagram.type].name : "-"} (${s.diagram ? s.diagram.shapes.length : 0} şekil, ${s.diagram ? s.diagram.links.length : 0} ok), level S${s.level}. `;
+    md += `Kısıtlar: ${cons.map((c) => c.name + (c.re.test(all) ? " ✓" : " ✗")).join(", ")}. Hata: ${errs.length}`;
+    if (errs.length) md += ` (${errs.map(([k]) => s.errNote[k] || "not yok").join("; ")})`;
+    md += `.\n`;
+    const missed = s.points.filter((p, i) => s.marks[i] < 2).map((p) => p.t);
+    if (missed.length) md += `Unutulan/kısmen: ${missed.join(" · ")}\n`;
+    if ((s.redraws || []).length) md += `Redraw: ${s.redraws.map((r) => r.date + " " + pct(r.score)).join(", ")}\n`;
+    md += `\n### Harita\n\`\`\`mermaid\n${mermaid(s.diagram)}\`\`\`\n`;
+    md += `\n### Fill\n` + fillItems(s.diagram).map((n) => `- **${n.v}**: ${s.sentences[n.key] || "-"}`).join("\n") + "\n";
+    return md;
+  }
+
+  function viewDetail() {
+    const s = db.sessions.find((x) => x.id === ui.viewId);
+    if (!s) { ui.view = "home"; return viewHome(); }
+    return `
+    <section class="sheet">
+      <div class="sheet-head"><h2>${esc(s.title)}</h2><span class="label">${s.created} · S${s.level}</span></div>
+      <div class="stats">
+        <div class="stat"><span class="label">Recall</span><b>${pct(s.recallScore)}</b></div>
+        <div class="stat"><span class="label">Diyagram</span><b style="font-size:1.3rem">${s.diagram ? DTYPES[s.diagram.type].name : "–"}</b><span class="small muted">${s.diagram ? s.diagram.shapes.length + " şekil · " + s.diagram.links.length + " ok" : ""}</span></div>
+        <div class="stat"><span class="label">Redraw</span><b>${(s.redraws || []).length}/3</b><span class="small muted">${nextDue(s) ? "sonraki: " + nextDue(s) : "tamamlandı"}</span></div>
+        <div class="stat"><span class="label">Hata</span><b>${Object.values(s.annot).filter((v) => v === "bad").length}</b></div>
+      </div>
+      ${s.diagram ? thumb(s.diagram, "Kaydedilen harita") : ""}
+      ${s.missedNote ? `<div class="note warn"><b>Eksiklerim:</b> ${esc(s.missedNote)}</div>` : ""}
+      <div class="field"><label class="label" for="md-out">Wiki / log.md için kayıt · harita Mermaid olarak Obsidian'da çizilir · kopyala ve bana yapıştır</label>
+        <textarea id="md-out" class="copybox" readonly>${esc(sessionMarkdown(s))}</textarea></div>
+      <div class="row end"><button data-act="copy-md">Kopyala</button><button data-act="home" class="primary">Masaya dön</button></div>
+    </section>`;
+  }
+
+  // ---------- Redraw ----------
+  // S1 keeps the shapes and arrows in place with empty text; S2 and S3 start from a blank canvas.
+  function redrawSeed(s) {
+    const g = emptyDiagram(s.diagram.type);
+    g.vb = Object.assign({}, s.diagram.vb);
+    if (s.level === 1) {
+      const map = {};
+      s.diagram.shapes.filter((o) => o.text.trim()).forEach((o) => { const c = Object.assign({}, o, { id: uid(), text: "", hint: "?" , c: 0 }); map[o.id] = c.id; g.shapes.push(c); });
+      s.diagram.links.forEach((l) => { if (map[l.from] && map[l.to]) g.links.push({ id: uid(), from: map[l.from], to: map[l.to], label: "", hint: l.label ? "?" : "", dash: l.dash }); });
+    }
+    return g;
+  }
+  function compareDiagrams(orig, mine) {
+    const map = {}, rows = [];
+    const named = orig.shapes.filter((s) => s.text.trim());
+    named.forEach((o) => {
+      let best = null, bo = 0;
+      mine.shapes.forEach((m) => { const v = overlap(o.text, m.text); if (v > bo) { bo = v; best = m; } });
+      const ok = bo >= 0.5;
+      if (ok) map[o.id] = best.id;
+      rows.push({ kind: "Şekil", want: oneLine(o.text), got: best && bo > 0 ? oneLine(best.text) : "", ok });
+    });
+    const byId = {}; orig.shapes.forEach((s) => (byId[s.id] = s));
+    orig.links.forEach((l) => {
+      const a = byId[l.from], b = byId[l.to];
+      if (!a || !b || !a.text.trim() || !b.text.trim()) return;
+      const fa = map[l.from], fb = map[l.to];
+      const hit = fa && fb && mine.links.find((x) => ((x.from === fa && x.to === fb) || (x.from === fb && x.to === fa)) && (!l.label || overlap(l.label, x.label) >= 0.5));
+      const name = (t) => oneLine(t).split(" · ")[0];
+      rows.push({ kind: "Ok", want: `${name(a.text)} —${l.label || "→"}→ ${name(b.text)}`, got: hit ? (hit.label || "bağlandı") : "", ok: !!hit });
+    });
+    return { rows, score: rows.length ? rows.filter((r) => r.ok).length / rows.length : 0 };
+  }
+
+  function viewRedraw() {
+    const s = db.sessions.find((x) => x.id === ui.redrawId);
+    if (!s || !s.diagram) { ui.view = "home"; return viewHome(); }
+    const r = ui.redraw;
+    if (!r.done) {
+      return `
+      <section class="sheet">
+        <div class="sheet-head"><h2>Yeniden çiz · ${esc(s.title)}</h2><span class="label">Redraw ${(s.redraws || []).length + 1}/3 · ${DTYPES[s.diagram.type].name}</span></div>
+        <div class="note">${s.level === 1 ? "Şekiller ve oklar yerinde, içleri boş. Hafızadan doldur." : "Boş tuval. Aynı haritayı hafızadan baştan çiz: şekiller, yazılar ve etiketli oklar."} Bitince orijinalle karşılaştır.</div>
+        <div id="editor"></div>
+        <div class="row end"><button data-act="home" class="ghost">Vazgeç</button><button class="primary" data-act="redraw-check">Karşılaştır</button></div>
+      </section>`;
+    }
+    const prev = (s.redraws || []).length ? s.redraws[s.redraws.length - 1].score : s.recallScore;
+    const delta = Math.round((r.score - prev) * 100);
+    return `
+    <section class="sheet">
+      <div class="sheet-head"><h2>Karşılaştırma · ${esc(s.title)}</h2><span class="label">Redraw sonucu</span></div>
+      <div class="row"><span class="score-big">${pct(r.score)}</span><span class="muted">Önceki ölçüme göre <b class="mono">${delta >= 0 ? "+" : ""}${delta} puan</b>. Kırmızılar yarının odak noktası.</span></div>
+      <div class="grid2">
+        <div class="field"><span class="label">Senin çizimin</span>${thumb(r.g, "Yeniden çizimin")}</div>
+        <div class="field"><span class="label">Orijinal</span>${thumb(s.diagram, "Orijinal harita")}</div>
+      </div>
+      <div>${r.rows.map((x) => `<div class="cmp"><div><span class="label">${x.kind} · orijinal</span><div>${esc(x.want)}</div></div>
+        <div><span class="label">Senin</span><div>${esc(x.got) || '<span class="muted">yok</span>'}</div></div><span class="pill ${x.ok ? "ok" : "bad"}">${x.ok ? "✓" : "✗"}</span></div>`).join("")}</div>
+      <div class="row end"><button class="primary" data-act="redraw-save">Kaydet</button></div>
+    </section>`;
+  }
+
+  // ---------- Events ----------
+  function afterRender() {
+    const d = db.draft;
+    if (ui.view === "session" && d) {
+      if (d.step === 0 && d.sampleId) startTimer("t-read", "readSeconds", null);
+      if (d.step === 1) { startTimer("t-recall", "recallSeconds", 180); const t = $("#in-dump"); if (t && !t.value) t.focus(); }
+      if (d.step === 3 && d.diagram && $("#editor")) Editor($("#editor"), d.diagram, { onChange: save });
+    }
+    if (ui.view === "redraw" && ui.redraw && !ui.redraw.done && $("#editor")) Editor($("#editor"), ui.redraw.g, {});
+  }
+
+  function readInputs() {
+    const d = db.draft;
+    if (!d || ui.view !== "session") return;
+    if (d.step === 0 && !d.sampleId) {
+      d.title = ($("#in-title") || {}).value || "";
+      d.text = ($("#in-text") || {}).value || "";
+      d.pointsRaw = ($("#in-points") || {}).value || "";
+    }
+    if (d.step === 1) d.dump = ($("#in-dump") || {}).value || "";
+    if (d.step === 2) d.missedNote = ($("#in-missed") || {}).value || "";
+  }
+
+  document.addEventListener("input", (e) => {
+    const t = e.target, d = db.draft;
+    if (t.id === "in-dump" && d) { d.dump = t.value; const w = $("#dump-wc"); if (w) w.textContent = wordCount(t.value) + " kelime"; }
+    if (t.classList.contains("s-in") && d) { d.sentences[t.dataset.k] = t.value; paintChips(d); }
+    if (t.classList.contains("err-in") && d) { d.errNote[t.dataset.k] = t.value; }
+    readInputs();
+    save();
+  });
+  // Updates constraint chips in place while typing, so no re-render steals focus or a pending click.
+  function paintChips(d) {
+    const all = Object.values(d.sentences).join(" \n ");
+    document.querySelectorAll(".chip[data-c]").forEach((el) => {
+      const c = CONSTRAINTS.find((x) => x.id === el.dataset.c);
+      const on = d.constraints.includes(c.id), met = on && c.re.test(all);
+      el.className = "chip " + (on ? (met ? "met" : "miss") : "");
+      el.textContent = (on ? (met ? "✓ " : "○ ") : "") + c.name;
+    });
+  }
+
+  function hasContent(g) { return g && (g.shapes.some((s) => s.text.trim()) || g.strokes.length || g.links.some((l) => l.label)); }
+
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-act]");
+    if (!b) return;
+    const act = b.dataset.act, d = db.draft;
+    const before = ui.view + ":" + (db.draft ? db.draft.step : "");
+    readInputs();
+    switch (act) {
+      case "home": ui.view = "home"; ui.typePick = false; ui.confirmType = null; break;
+      case "theme": {
+        const r = document.documentElement, cur = r.getAttribute("data-theme");
+        const dark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        r.setAttribute("data-theme", dark ? "light" : "dark");
+        try { localStorage.setItem(KEY + ".theme", dark ? "light" : "dark"); } catch (err) {}
+        return;
+      }
+      case "start": {
+        const sample = SAMPLES.find((s) => s.id === b.dataset.sample) || null;
+        db.draft = newDraft(sample); ui.view = "session"; break;
+      }
+      case "resume": ui.view = "session"; break;
+      case "discard": db.draft = null; break;
+      case "cancel": db.draft = null; ui.view = "home"; break;
+      case "back": if (d && d.step > 0) { d.step--; if (d.step === 1) d.marks = []; ui.typePick = false; ui.confirmType = null; } break;
+      case "to-recall": {
+        if (!d.sampleId) {
+          d.points = d.pointsRaw.split("\n").map((x) => x.trim()).filter(Boolean).map((x) => ({ t: x, kw: x }));
+          if (!d.title.trim()) { toast("Bir başlık yaz."); return; }
+          if (d.points.length < 3) { toast("En az 3 ana unsur yaz, skor bunlara göre hesaplanır."); return; }
+        }
+        d.step = 1; break;
+      }
+      case "to-check":
+        if (!d.dump.trim()) { toast("Önce hatırladığın en az bir şeyi yaz."); return; }
+        d.marks = []; d.step = 2; break;
+      case "mark": { const i = +b.dataset.i; d.marks[i] = (d.marks[i] + 2) % 3; break; }
+      case "to-draw": d.step = 3; break;
+      case "type-change": ui.typePick = !ui.typePick; ui.confirmType = null; break;
+      case "dtype": {
+        const t = b.dataset.t;
+        if (d.diagram && d.diagram.type === t) { ui.typePick = false; break; }
+        if (hasContent(d.diagram)) { ui.confirmType = t; break; }
+        d.diagram = seedDiagram(t, d.level, d.sampleId); ui.typePick = false; break;
+      }
+      case "type-yes": d.diagram = seedDiagram(ui.confirmType, d.level, d.sampleId); ui.confirmType = null; ui.typePick = false; break;
+      case "type-no": ui.confirmType = null; break;
+      case "to-fill":
+        if (!fillItems(d.diagram).length) { toast("En az bir şeklin içine yazı yaz."); return; }
+        d.step = 4; break;
+      case "cons": { const c = b.dataset.c; d.constraints = d.constraints.includes(c) ? d.constraints.filter((x) => x !== c) : d.constraints.concat(c); break; }
+      case "annot": { const k = b.dataset.k; d.annot[k] = d.annot[k] === b.dataset.v ? undefined : b.dataset.v; break; }
+      case "finish": {
+        const items = fillItems(d.diagram);
+        if (items.every((n) => !(d.sentences[n.key] || "").trim())) { toast("En az bir İngilizce cümle yaz."); return; }
+        const unrated = items.filter((n) => (d.sentences[n.key] || "").trim() && !d.annot[n.key]).length;
+        if (unrated) { toast(unrated + " cümleyi henüz değerlendirmedin. Her cümleye ✓ ~ ✗ ver."); return; }
+        const s = Object.assign({}, d); delete s.step; delete s.auto;
+        db.sessions.push(s); db.draft = null; ui.viewId = s.id; ui.view = "detail";
+        toast("Kaydedildi. İlk yeniden çizim: " + addDays(s.created, 1));
+        break;
+      }
+      case "detail": ui.viewId = b.dataset.id; ui.view = "detail"; break;
+      case "del": ui.confirmDel = b.dataset.id; break;
+      case "del-no": ui.confirmDel = null; break;
+      case "del-yes": db.sessions = db.sessions.filter((s) => s.id !== b.dataset.id); ui.confirmDel = null; break;
+      case "copy-md": {
+        const ta = $("#md-out");
+        const fallback = () => { ta.focus(); ta.select(); toast("Metin seçildi, kopyalamak için Ctrl/Cmd + C."); };
+        try { navigator.clipboard.writeText(ta.value).then(() => toast("Kopyalandı."), fallback); } catch (err) { fallback(); }
+        return;
+      }
+      case "redraw": {
+        const s = db.sessions.find((x) => x.id === b.dataset.id);
+        ui.redrawId = s.id; ui.redraw = { g: redrawSeed(s), done: false }; ui.view = "redraw"; break;
+      }
+      case "redraw-check": {
+        const s = db.sessions.find((x) => x.id === ui.redrawId);
+        Object.assign(ui.redraw, compareDiagrams(s.diagram, ui.redraw.g), { done: true }); break;
+      }
+      case "redraw-save": {
+        const s = db.sessions.find((x) => x.id === ui.redrawId);
+        s.redraws = (s.redraws || []).concat({ date: today(), score: ui.redraw.score, diagram: ui.redraw.g, missed: ui.redraw.rows.filter((x) => !x.ok).map((x) => x.want) });
+        ui.view = "home"; toast("Yeniden çizim kaydedildi."); break;
+      }
+    }
+    save();
+    render();
+    if (before !== ui.view + ":" + (db.draft ? db.draft.step : "")) window.scrollTo({ top: 0 });
+  });
+
+  try { const th = localStorage.getItem(KEY + ".theme"); if (th) document.documentElement.setAttribute("data-theme", th); } catch (e) {}
+  render();
+})();
+</script>

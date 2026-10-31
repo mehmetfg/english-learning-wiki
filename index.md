@@ -1,6 +1,6 @@
 ---
 title: English Learning Wiki — İçerik Dizini
-updated: 2026-05-23
+updated: 2026-10-31
 ---
 
 # English Learning Wiki — İçerik Dizini
@@ -122,6 +122,7 @@ Vault dışında ayrı bir Next.js + SQLite uygulaması (`~/Documents/projects/p
 | [[translation-pendulum]] | 1 dosya | 🆕 **Ö2 örneği** — EN→TR→(20 sn gecikme)→EN back-translation; word-level LCS diff; kayıp kelimeler defteri; 6 Naval/PG aforizması B1 uyarlamalı |
 | [[voice-journal]] | 1 dosya | 🆕 **Ö4 örneği** — 2 dk monologue; Web Speech Recognition canlı transcript; filler/tekrar tespiti; 14 Naval/PG/Atomic Habits temalı prompt; daily rotation + streak + 14 günlük history |
 | [[prompt-bank]] | 1 dosya | 🆕 **Ö7 örneği** — 60 constraint kart × 5 kategori (Grammar/PV/Topic/Quick/Combined); rastgele çekiliş + son 8'den kaçınma; heuristic check; recent 10 yazı + geri yükle |
+| [[blueprint-recall-board]] | 1 dosya | 🆕 (2026-10-31) **Ö8 örneği** — [[blueprint-recall-method]] test aracı; 5 sheet (Encode → Blind Recall → Check → **Draw**: mind map / flowchart / entity çizim tuvali → Fill) + 1/3/7 gün tuvale Redraw; Mermaid çıktı; recall %, delta, S1→S3 scaffold; Hobbes/Locke/Hume + Kadıköy örnekleri |
 
 ### 📚 Guides
 | Sayfa | Dosyalar | Açıklama |
@@ -378,7 +379,7 @@ TTS öncelikli, A2-B1 seviyesi, roman dışı yazı serisi. Felsefe, psikoloji, 
 
 ---
 
-## Synthesis (5 sayfa)
+## Synthesis (6 sayfa)
 
 | Sayfa | Açıklama |
 |-------|----------|
@@ -386,7 +387,8 @@ TTS öncelikli, A2-B1 seviyesi, roman dışı yazı serisi. Felsefe, psikoloji, 
 | [[CEFR Curriculum Map]] | Tüm gramer konuları CEFR A1→C2 haritası; eksik konular ve öğrenme sırası |
 | [[Interactive Reader Template]] | ⭐ Interactive HTML reader klasmanı — tüm makale → çalışma sayfası dönüşümü için yeniden kullanılabilir standart (CSS/JS spec, 15 bölüm, 20+ edge case checklist) |
 | [[narrative-past-tenses-cluster]] | 🆕 5 yapı kümesi — Past Simple + Past Continuous + Past Perfect + Used to/Would + Time Adverbials; anlatı yazımı için minimum set; Writing Atelier serisinin referansı |
-| [[calisma-yontemleri-analizi]] | 🆕 (2026-05-20) Artifact'lardan çıkarılan 10 çalışma formatı kataloğu; 9 ortak prensip; en iyi format seçimi; 7 yeni format önerisi |
+| [[blueprint-recall-method]] | 🆕 (2026-10-30) **Blueprint Recall Method** — Kör Hatırla → İskelet (Claim Map / Event Web) → İngilizce Doldur → Ertesi gün yeniden çiz; gün sonu mütalaası; pilot öneri |
+| [[calisma-yontemleri-analizi]] | (2026-05-20) Artifact'lardan çıkarılan 10 çalışma formatı kataloğu; 9 ortak prensip; en iyi format seçimi; 7 yeni format önerisi |
 
 ---
 
