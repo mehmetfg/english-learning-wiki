@@ -1784,3 +1784,6 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 
 ## [2026-10-31] ingest | Einstein'dan Sonra Evren tamamlandı (ilk sürüm)
 Özet: Fizik kitabı Aristoteles'ten başlayacak şekilde yeniden kuruldu (kullanıcı talebi). Giriş + 16 bölüm + genel özet + okuma önerileri; yaklaşık 25 bin kelime. Yazım sırasında bulunan olgusal hatalar (Planck'ın yaşı, bölüm başlığı tarihi, kaynaksız alıntılar) düzeltildi. Sıradaki: felsefe kitabı; finans kitabı en sona bırakıldı (13 bölümde duraklatıldı).
+
+## [2026-10-31] ingest | Çağdaş Düşüncenin Haritası tamamlandı (ilk sürüm)
+Özet: Felsefe kitabı yazıldı: giriş + 12 bölüm + genel özet ve okuma önerileri, yaklaşık 23 bin kelime. Kullanıcı tercihleri: zihin felsefesi, etik ve eleştirel kuram öncelikli, postyapısalcılık ek; Kant ve Hegel okunmuş varsayımıyla yüksek düzey; yalnızca Batı geleneği. Yazım sırasında bulunan olgusal hatalar (Moore'un makale adı, Frege'nin ek notu, Eichmann duruşma tarihi, Williams'ın örnek sayıları vb.) düzeltildi. Finans kitabı hâlâ 13 bölümde duraklatılmış durumda.
