@@ -19,6 +19,9 @@ Kişisel kullanım için iPhone ve Mac uygulaması. Telefon hattı, internet ve 
 ## Mimari
 
 ```
+Vade.xcodeproj                     # Hazır Xcode projesi (çift tıkla, aç)
+project.yml                        # Sadece CI testleri için (XcodeGen)
+VadeTests/                         # Türkçe çıkarıcı birim testleri
 Vade/
 ├── App/VadeApp.swift              # Giriş noktası, SwiftData + CloudKit konteyneri
 ├── Models/
@@ -45,23 +48,17 @@ Vade/
 
 ## Kurulum (Mac'te)
 
-Gereksinimler: Xcode 26+, iPhone'da iOS 26, Mac'te macOS 26, bir Apple ID.
+Gereksinimler: Xcode 26+, iPhone'da iOS 26, Mac'te macOS 26, bir Apple ID. Ek araç gerekmez.
 
-**1. Projeyi indir** (repo özel olduğu için GitHub hesabınla giriş istenir):
+**1. Projeyi indir:** GitHub'da `claude/dreamy-lovelace-orfs99` dalını ZIP olarak indir ya da:
 
 ```bash
 git clone -b claude/dreamy-lovelace-orfs99 https://github.com/mehmetfg/english-learning-wiki.git
 ```
 
-**2. Projeyi oluştur ve Xcode'da aç:**
+**2. Aç:** `apps/vade/Vade.xcodeproj` dosyasına çift tıkla.
 
-```bash
-cd english-learning-wiki/apps/vade && ./setup.sh
-```
-
-`./setup.sh` ücretsiz Apple hesabıyla çalışan **yerel** sürümü üretir (veriler cihazda kalır, iCloud senkronu yok). Ücretli Apple Developer hesabın varsa `./setup.sh --icloud` ile iPhone ↔ Mac senkronlu sürümü üret.
-
-**3. Xcode'da imzala:** Sol üstte **Vade** projesi → **Vade** hedefi → **Signing & Capabilities** → **Team** olarak kendi Apple ID'ni seç (listede yoksa: Xcode → Settings → Accounts → + ile ekle). "Bundle identifier kullanılıyor" hatası çıkarsa `com.mehmetfg.vade` kimliğini `com.mehmetfg.vade2` gibi değiştir.
+**3. İmzala:** Soldaki **Vade** projesi → **Vade** hedefi → **Signing & Capabilities** → **Team** olarak kendi Apple ID'ni seç (listede yoksa: Xcode → Settings → Accounts → + ile ekle). "Bundle identifier kullanılıyor" hatası çıkarsa `com.mehmetfg.vade` kimliğini `com.mehmetfg.vade2` gibi değiştir.
 
 **4. iPhone'a kur:**
 1. iPhone'u kabloyla Mac'e bağla, iPhone'da "Bu bilgisayara güven" de.
@@ -73,7 +70,16 @@ cd english-learning-wiki/apps/vade && ./setup.sh
 
 > Ücretsiz hesapla kurulan uygulama **7 gün** sonra açılmaz; Xcode'dan tekrar ▶︎ ile kurman yeter (veriler silinmez). Ücretli hesapta bu süre 1 yıldır.
 
-> `setup.sh` her çalıştığında proje yeniden üretilir ve Team seçimi sıfırlanır; sadece kod güncellemesi çektiğinde tekrar çalıştır.
+### iCloud senkronunu açmak (ücretli Apple Developer hesabı gerekir)
+
+Hazır proje ücretsiz hesapla imzalanabilsin diye iCloud'suz gelir; veriler her cihazda ayrı tutulur. Senkron için Xcode'da **Vade** hedefi → **Build Settings** → `Code Signing Entitlements` satırını şöyle değiştir:
+
+| Platform | Değer |
+|---|---|
+| iOS (Any iOS SDK) | `Vade/Support/Vade-iOS.entitlements` |
+| macOS (Any macOS SDK) | `Vade/Support/Vade-macOS.entitlements` |
+
+Sonra **Signing & Capabilities** sekmesinde **+ Capability → Background Modes → Remote notifications** ekle. Kod değişikliği gerekmez; uygulama iCloud'u otomatik kullanır.
 
 > Not: Apple Intelligence'ın Türkçe desteği cihaz ve sürüme bağlıdır. Desteklenmiyorsa uygulama kural tabanlı çıkarımla çalışmaya devam eder; sadece özet ve madde açıklamaları daha sade olur.
 
