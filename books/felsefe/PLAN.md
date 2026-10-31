@@ -1,0 +1,1 @@
+Plan (kaynak klasörü, EPUB'a girmez): 00 giriş · 01 Hegel sonrası · 02 dilsel dönüş · 03 fenomenoloji · 04-05 zihin felsefesi · 06-07 etik ve adalet · 08-09 eleştirel kuram · 10-11 yapısalcılık ve postyapısalcılık · 12 çağdaş tartışmalar · 13 genel özet ve okuma önerileri.
