@@ -61,7 +61,7 @@ def mac_icon(background):
     return canvas.resize((1024, 1024), Image.LANCZOS)
 
 
-def main(out, color="teal"):
+def main(out, color="navy"):
     out = Path(out)
     out.mkdir(parents=True, exist_ok=True)
     background = COLORS[color]
