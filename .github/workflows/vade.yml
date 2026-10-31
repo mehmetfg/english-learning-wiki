@@ -44,3 +44,64 @@ jobs:
           cat summary.json
           # Hiç test çalışmadıysa yeşil görünmesin.
           python3 -c "import json,sys; s=json.load(open('summary.json')); n=s.get('totalTestCount',0); print('Toplam test:', n, '| Geçen:', s.get('passedTests'), '| Başarısız:', s.get('failedTests')); sys.exit(0 if n > 0 and s.get('failedTests',0) == 0 else 1)"
+
+  # Örnek verili simülatör ekran görüntüleri: arayüz değişikliklerini gözle kontrol etmek için
+  # apps/vade/Design/screenshots altına işlenir ([skip ci] ile, döngü oluşturmaz).
+  screenshots:
+    runs-on: macos-26
+    timeout-minutes: 30
+    if: github.ref != 'refs/heads/master'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Pick an iPhone simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          devices = json.load(sys.stdin)['devices']
+          phones = [d for runtime, ds in sorted(devices.items()) if 'iOS' in runtime for d in ds if d['name'].startswith('iPhone')]
+          preferred = [d for d in phones if 'Pro' in d['name'] and 'Max' not in d['name']] or phones
+          print(preferred[-1]['udid'])")
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+          xcrun simctl list devices | grep "$UDID"
+      - name: Build for simulator
+        working-directory: apps/vade
+        run: xcodebuild build -project Vade.xcodeproj -scheme Vade -destination "id=$UDID" -derivedDataPath "$RUNNER_TEMP/dd" CODE_SIGNING_ALLOWED=NO -quiet
+      - name: Capture screens
+        run: |
+          set -x
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
+          xcrun simctl install "$UDID" "$RUNNER_TEMP/dd/Build/Products/Debug-iphonesimulator/Vade.app"
+          mkdir -p shots
+          shoot() {
+            name=$1; shift
+            xcrun simctl terminate "$UDID" com.mehmetfg.vade || true
+            xcrun simctl launch "$UDID" com.mehmetfg.vade -VadeDemo "$@"
+            sleep 8
+            xcrun simctl io "$UDID" screenshot "shots/$name.png"
+          }
+          xcrun simctl ui "$UDID" appearance light
+          shoot 1-ana-sayfa
+          shoot 2-detay -VadeDemoDetail
+          shoot 3-belge-ekle -VadeDemoAdd
+          xcrun simctl ui "$UDID" appearance dark
+          shoot 4-ana-sayfa-koyu
+          shoot 5-detay-koyu -VadeDemoDetail
+          for f in shots/*.png; do sips -Z 1100 -s format jpeg -s formatOptions 75 "$f" --out "${f%.png}.jpg" >/dev/null; done
+          ls -la shots
+      - name: Commit screenshots
+        if: github.event_name == 'push'
+        run: |
+          dest=apps/vade/Design/screenshots
+          mkdir -p "$dest"
+          rm -f "$dest"/*.jpg
+          cp shots/*.jpg "$dest"/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$dest"
+          if git diff --cached --quiet; then echo "Değişiklik yok"; exit 0; fi
+          git commit -m "Vade: update simulator screenshots [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "Dal ilerlemiş; ekran görüntüleri bir sonraki çalışmada güncellenecek."

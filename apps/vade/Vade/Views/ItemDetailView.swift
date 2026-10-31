@@ -13,24 +13,21 @@ struct ItemDetailView: View {
 
     var body: some View {
         List {
-            Section { header }
+            Section { DetailHeader(item: item) }
+                .bareListRow()
 
-            Section("Bilgiler") {
-                LabeledContent("Tür", value: item.category.title)
-                if !item.provider.isEmpty { LabeledContent("Şirket", value: item.provider) }
-                if !item.identifier.isEmpty { LabeledContent(item.category.identifierLabel, value: item.identifier) }
-                if let start = item.startDate { LabeledContent("Başlangıç", value: start.shortText) }
-                if let end = item.endDate { LabeledContent("Bitiş", value: end.shortText) }
-                if item.amount > 0 {
-                    LabeledContent(item.category.amountLabel, value: "\(item.amount.currencyText(item.currency)) · \(item.period.title)")
-                }
-                if item.autoRenews {
-                    LabeledContent("Otomatik yenileme", value: item.cancellationDeadline.map { "Son iptal: \($0.shortText)" } ?? "Evet")
-                }
-                if !item.penaltyNote.isEmpty {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(item.category.penaltyLabel).font(.caption).foregroundStyle(.secondary)
-                        Text(item.penaltyNote)
+            Section { facts }
+                .bareListRow()
+
+            if !item.penaltyNote.isEmpty {
+                Section {
+                    Label {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(item.category.penaltyLabel).font(.subheadline.weight(.semibold))
+                            Text(item.penaltyNote).font(.subheadline).foregroundStyle(.secondary)
+                        }
+                    } icon: {
+                        Image(systemName: "exclamationmark.shield.fill").foregroundStyle(.red)
                     }
                 }
             }
@@ -117,27 +114,115 @@ struct ItemDetailView: View {
         }
     }
 
-    private var header: some View {
-        HStack(spacing: 16) {
-            Image(systemName: item.category.symbol)
-                .font(.largeTitle)
-                .foregroundStyle(item.status.color)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(countdownText).font(.title2.bold())
-                if let end = item.endDate {
-                    Text("Bitiş: \(end.shortText)").foregroundStyle(.secondary)
+    private var facts: some View {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+            if item.amount > 0 {
+                FactTile(title: item.category.amountLabel, value: item.amount.currencyText(item.currency),
+                         detail: item.period.title, symbol: "turkishlirasign.circle.fill", tint: .indigo)
+            }
+            if let last = item.lastPayment {
+                FactTile(title: "En son ödenen", value: last.amount.currencyText(item.currency),
+                         detail: last.date.shortText, symbol: "checkmark.circle.fill", tint: .green)
+            }
+            if !item.identifier.isEmpty {
+                FactTile(title: item.category.identifierLabel, value: item.identifier,
+                         detail: item.provider, symbol: "number.circle.fill", tint: .vadeTeal)
+            } else if !item.provider.isEmpty {
+                FactTile(title: "Şirket", value: item.provider, detail: item.category.title,
+                         symbol: "building.2.fill", tint: .vadeTeal)
+            }
+            if item.autoRenews {
+                FactTile(title: "Otomatik yenileme", value: item.cancellationDeadline?.shortText ?? "Açık",
+                         detail: item.cancellationDeadline == nil ? "" : "son iptal günü",
+                         symbol: "arrow.triangle.2.circlepath.circle.fill", tint: .vadeAmber)
+            }
+        }
+    }
+}
+
+/// Kategori renginde başlık kartı: geri sayım halkası, tarih aralığı ve süre çubuğu.
+struct DetailHeader: View {
+    let item: TrackedItem
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 16) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Label(item.category.title, systemImage: item.category.symbol)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.85))
+                    Text(item.title)
+                        .font(.title2.bold())
+                        .foregroundStyle(.white)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if !item.provider.isEmpty {
+                        Text(item.provider).font(.subheadline).foregroundStyle(.white.opacity(0.8))
+                    }
+                }
+                Spacer(minLength: 0)
+                ZStack {
+                    CountdownRing(remaining: 1 - (item.elapsedFraction ?? 0), color: .white, track: .white.opacity(0.25), lineWidth: 9)
+                    VStack(spacing: -2) {
+                        Text(item.countdown.value).font(.system(size: 26, weight: .bold, design: .rounded))
+                        Text(item.countdown.caption).font(.caption2.weight(.medium)).opacity(0.85)
+                    }
+                    .foregroundStyle(.white)
+                }
+                .frame(width: 92, height: 92)
+            }
+
+            if item.startDate != nil || item.endDate != nil {
+                VStack(spacing: 8) {
+                    if let elapsed = item.elapsedFraction {
+                        GeometryReader { proxy in
+                            ZStack(alignment: .leading) {
+                                Capsule().fill(.white.opacity(0.25))
+                                Capsule().fill(.white).frame(width: max(8, proxy.size.width * elapsed))
+                            }
+                        }
+                        .frame(height: 6)
+                    }
+                    HStack {
+                        dateColumn("Başlangıç", item.startDate, alignment: .leading)
+                        Spacer()
+                        dateColumn("Bitiş", item.endDate, alignment: .trailing)
+                    }
                 }
             }
-            Spacer()
         }
-        .padding(.vertical, 6)
+        .padding(20)
+        .background(
+            LinearGradient(colors: [item.category.color, item.category.color.mix(with: .vadeNavy, by: 0.55)],
+                           startPoint: .topLeading, endPoint: .bottomTrailing),
+            in: RoundedRectangle(cornerRadius: 24, style: .continuous)
+        )
     }
 
-    private var countdownText: String {
-        guard let days = item.daysLeft else { return "Bitiş tarihi yok" }
-        if days < 0 { return "\(-days) gün önce bitti" }
-        if days == 0 { return "Bugün bitiyor" }
-        return "\(days) gün kaldı"
+    private func dateColumn(_ title: String, _ date: Date?, alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: 2) {
+            Text(title.uppercased()).font(.caption2.weight(.bold)).tracking(0.6).foregroundStyle(.white.opacity(0.7))
+            Text(date?.shortText ?? "—").font(.subheadline.weight(.semibold)).foregroundStyle(.white)
+        }
+    }
+}
+
+struct FactTile: View {
+    let title: String
+    let value: String
+    let detail: String
+    let symbol: String
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Image(systemName: symbol).font(.title3).foregroundStyle(tint)
+            Text(title).font(.caption).foregroundStyle(.secondary)
+            Text(value).font(.headline).lineLimit(1).minimumScaleFactor(0.7)
+            if !detail.isEmpty {
+                Text(detail).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            }
+        }
+        .card(padding: 14)
     }
 }
 
@@ -145,13 +230,21 @@ struct ClauseRow: View {
     let clause: Clause
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Image(systemName: clause.importance.symbol).foregroundStyle(clause.importance.color)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(clause.title).font(.subheadline.weight(.semibold))
+        HStack(alignment: .top, spacing: 12) {
+            RoundedRectangle(cornerRadius: 2, style: .continuous)
+                .fill(clause.importance.color)
+                .frame(width: 4)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(clause.title).font(.subheadline.weight(.semibold))
+                    Spacer(minLength: 8)
+                    Pill(text: clause.importance.title, color: clause.importance.color)
+                }
                 Text(clause.detail).font(.subheadline).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .padding(.vertical, 2)
     }
 }
 

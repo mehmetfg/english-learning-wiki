@@ -5,6 +5,13 @@ import SwiftData
 struct VadeApp: App {
     let container: ModelContainer = {
         let schema = Schema([TrackedItem.self, Clause.self, Payment.self, StoredDocument.self])
+        if DemoData.isEnabled {
+            // Ekran görüntüleri ve deneme için: gerçek veriye dokunmayan bellek içi depo.
+            let memory = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            let container = try! ModelContainer(for: schema, configurations: memory)
+            DemoData.seed(container)
+            return container
+        }
         do {
             // iCloud açıksa iPhone ve Mac aynı özel CloudKit veritabanını paylaşır.
             let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
@@ -18,7 +25,7 @@ struct VadeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .task { await ReminderScheduler.requestAuthorization() }
+                .task { if !DemoData.isEnabled { await ReminderScheduler.requestAuthorization() } }
                 .environment(\.locale, Locale(identifier: "tr_TR"))
         }
         .modelContainer(container)

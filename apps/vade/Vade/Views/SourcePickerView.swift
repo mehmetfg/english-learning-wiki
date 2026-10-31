@@ -107,7 +107,11 @@ struct SourceRow: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            Image(systemName: symbol).font(.title2).foregroundStyle(.tint).frame(width: 36)
+            Image(systemName: symbol)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 40, height: 40)
+                .background(LinearGradient.vadeBrand, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.headline)
                 Text(subtitle).font(.subheadline).foregroundStyle(.secondary)

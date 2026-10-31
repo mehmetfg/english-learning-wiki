@@ -204,8 +204,8 @@ enum ItemStatus {
     var color: Color {
         switch self {
         case .noDate: .secondary
-        case .active: .green
-        case .soon: .orange
+        case .active: .vadeTeal
+        case .soon: .vadeAmber
         case .critical: .red
         case .expired: .gray
         }

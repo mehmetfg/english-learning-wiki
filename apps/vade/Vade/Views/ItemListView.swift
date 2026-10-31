@@ -25,11 +25,6 @@ struct ItemListView: View {
 
     var body: some View {
         List(selection: $selection) {
-            if filter == .upcoming || filter == .all {
-                Section {
-                    SummaryHeader(items: items.filter { !$0.isArchived })
-                }
-            }
             Section {
                 ForEach(filtered) { item in
                     NavigationLink(value: item) { ItemRow(item: item) }
@@ -69,73 +64,30 @@ struct ItemRow: View {
     let item: TrackedItem
 
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: item.category.symbol)
-                .font(.title3)
-                .foregroundStyle(item.status.color)
-                .frame(width: 32)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.title).font(.headline).lineLimit(1)
+        HStack(spacing: 14) {
+            CategoryIcon(category: item.category, size: 42)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.title).font(.body.weight(.semibold)).lineLimit(1)
                 Text([item.provider, item.identifier].filter { !$0.isEmpty }.joined(separator: " · "))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                if let elapsed = item.elapsedFraction {
+                    ProgressView(value: elapsed)
+                        .tint(item.status.color)
+                        .padding(.top, 2)
+                }
             }
-            Spacer()
-            StatusBadge(item: item)
+            Spacer(minLength: 8)
+            VStack(alignment: .trailing, spacing: 0) {
+                Text(item.countdown.value)
+                    .font(.system(.title3, design: .rounded).weight(.bold))
+                    .foregroundStyle(item.status.color)
+                Text(item.countdown.caption)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
-        .padding(.vertical, 2)
-    }
-}
-
-struct StatusBadge: View {
-    let item: TrackedItem
-
-    var body: some View {
-        Text(text)
-            .font(.caption.weight(.semibold))
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(item.status.color.opacity(0.15), in: Capsule())
-            .foregroundStyle(item.status.color)
-    }
-
-    private var text: String {
-        guard let days = item.daysLeft else { return "Süresiz" }
-        if days < 0 { return "Bitti" }
-        if days == 0 { return "Bugün" }
-        if days > 365 { return "\(days / 365) yıl+" }
-        return "\(days) gün"
-    }
-}
-
-struct SummaryHeader: View {
-    let items: [TrackedItem]
-
-    private var expiringSoon: Int { items.filter { (0...30).contains($0.daysLeft ?? -1) }.count }
-    private var monthlySubscriptions: Double {
-        items.filter { $0.category.group == .contract }.reduce(0) { $0 + $1.monthlyCost }
-    }
-    private var yearlyInsurance: Double {
-        items.filter { $0.category.group == .insurance }.reduce(0) { $0 + $1.monthlyCost * 12 }
-    }
-
-    var body: some View {
-        HStack(spacing: 12) {
-            tile("30 gün içinde", "\(expiringSoon)", expiringSoon > 0 ? .orange : .green)
-            tile("Aylık abonelik", monthlySubscriptions.currencyText(), .blue)
-            tile("Yıllık sigorta", yearlyInsurance.currencyText(), .purple)
-        }
-        .listRowInsets(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
-    }
-
-    private func tile(_ title: String, _ value: String, _ color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(.caption).foregroundStyle(.secondary)
-            Text(value).font(.headline).foregroundStyle(color).minimumScaleFactor(0.6).lineLimit(1)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(10)
-        .background(color.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+        .padding(.vertical, 6)
     }
 }

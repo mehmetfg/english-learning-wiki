@@ -79,17 +79,23 @@ struct CategoryPicker: View {
             VStack(alignment: .leading, spacing: 20) {
                 ForEach(ItemGroup.allCases) { group in
                     VStack(alignment: .leading, spacing: 10) {
-                        Label(group.title, systemImage: group.symbol).font(.headline)
+                        Text(group.title.uppercased())
+                            .font(.caption.weight(.bold))
+                            .tracking(0.8)
+                            .foregroundStyle(.secondary)
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 140), spacing: 10)], spacing: 10) {
                             ForEach(ItemCategory.allCases.filter { $0.group == group }) { category in
                                 Button { onSelect(category) } label: {
-                                    VStack(spacing: 8) {
-                                        Image(systemName: category.symbol).font(.title2)
-                                        Text(category.title).font(.subheadline).multilineTextAlignment(.center)
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        CategoryIcon(category: category, size: 38)
+                                        Text(category.title)
+                                            .font(.subheadline.weight(.semibold))
+                                            .foregroundStyle(.primary)
+                                            .lineLimit(2)
+                                            .multilineTextAlignment(.leading)
                                     }
-                                    .frame(maxWidth: .infinity, minHeight: 80)
-                                    .padding(8)
-                                    .background(.tint.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+                                    .frame(maxWidth: .infinity, minHeight: 92, alignment: .topLeading)
+                                    .card(padding: 14)
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -99,6 +105,7 @@ struct CategoryPicker: View {
             }
             .padding()
         }
+        .background(Color.dashboardBackground)
     }
 }
 
