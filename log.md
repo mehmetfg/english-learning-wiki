@@ -1775,3 +1775,15 @@ Vault'taki zihin yapısı dokümanları (İRFAN halka modeli, _Tasnif Çalışma
 **Ayarlar:** quantum + mabet modül listesine eklendi, kullanıcının görünür modüllerine işlendi. Panorama alan kartlarına Kuantum girdi.
 
 **Sonraki:** Turso'ya seed-quantum + 0004; kuantum sorular/quiz içeriği (KR-006 deseniyle); diğer vault'lar (Yazarlık alt bölümleri) için kategori seed'i.
+
+## [2026-10-31] ingest | Üç kitap projesi: Paranın Aklı (devam ediyor)
+Özet: Vault dışı bir yan proje olarak `books/` klasörü açıldı. TTS için işaretsiz düz metin kaynaklardan kapaklı, içindekili EPUB 3 üreten `books/build_epub.py` yazıldı. Birinci kitap "Paranın Aklı" için giriş ve 9 bölüm (para, faiz, enflasyon, risk, piyasalar, değer yatırımcılığı, portföy teorisi, davranışsal finans, krizler) yazıldı; yaklaşık 22 bin kelime. Kalite öncelikli karar verildi (kullanıcı talebi): sayfa hedefi, kalite pahasına şişirilmeyecek. Felsefe ve fizik kitapları henüz başlamadı. Wiki sayfalarına dokunulmadı.
+
+## [2026-10-31] ingest | Kitap sırası değişti: fizik → felsefe → finans
+Özet: Kullanıcı talebiyle sıra tersine çevrildi. Finans kitabı (Paranın Aklı) giriş + 12 bölümde duraklatıldı (merkez bankaları, finansal tablolar, kişisel finans eklendi; kalan: borç/kaldıraç, servet/eşitsizlik, anlam/etik, genel özet). Şimdi üçüncü kitap "Einstein'dan Sonra Evren" yazılıyor. Kaynaksız alıntılar doğrulanamadığı için metinden çıkarıldı.
+
+## [2026-10-31] ingest | Einstein'dan Sonra Evren tamamlandı (ilk sürüm)
+Özet: Fizik kitabı Aristoteles'ten başlayacak şekilde yeniden kuruldu (kullanıcı talebi). Giriş + 16 bölüm + genel özet + okuma önerileri; yaklaşık 25 bin kelime. Yazım sırasında bulunan olgusal hatalar (Planck'ın yaşı, bölüm başlığı tarihi, kaynaksız alıntılar) düzeltildi. Sıradaki: felsefe kitabı; finans kitabı en sona bırakıldı (13 bölümde duraklatıldı).
+
+## [2026-10-31] ingest | Çağdaş Düşüncenin Haritası tamamlandı (ilk sürüm)
+Özet: Felsefe kitabı yazıldı: giriş + 12 bölüm + genel özet ve okuma önerileri, yaklaşık 23 bin kelime. Kullanıcı tercihleri: zihin felsefesi, etik ve eleştirel kuram öncelikli, postyapısalcılık ek; Kant ve Hegel okunmuş varsayımıyla yüksek düzey; yalnızca Batı geleneği. Yazım sırasında bulunan olgusal hatalar (Moore'un makale adı, Frege'nin ek notu, Eichmann duruşma tarihi, Williams'ın örnek sayıları vb.) düzeltildi. Finans kitabı hâlâ 13 bölümde duraklatılmış durumda.
