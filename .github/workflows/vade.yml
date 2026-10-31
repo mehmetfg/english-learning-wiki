@@ -19,7 +19,7 @@ jobs:
       run:
         working-directory: apps/vade
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate project
@@ -27,6 +27,13 @@ jobs:
       - name: Xcode version
         run: xcodebuild -version
       - name: Unit tests (macOS)
-        run: xcodebuild test -project Vade.xcodeproj -scheme Vade -destination 'platform=macOS' CODE_SIGNING_ALLOWED=NO -quiet
+        run: xcodebuild test -project Vade.xcodeproj -scheme Vade -destination 'platform=macOS,arch=arm64' -resultBundlePath TestResults.xcresult CODE_SIGNING_ALLOWED=NO -quiet
+      - name: Test summary
+        if: always()
+        run: |
+          xcrun xcresulttool get test-results summary --path TestResults.xcresult --compact > summary.json
+          cat summary.json
+          # Hiç test çalışmadıysa yeşil görünmesin.
+          python3 -c "import json,sys; s=json.load(open('summary.json')); n=s.get('totalTestCount',0); print('Toplam test:', n, '| Geçen:', s.get('passedTests'), '| Başarısız:', s.get('failedTests')); sys.exit(0 if n > 0 and s.get('failedTests',0) == 0 else 1)"
       - name: Build (iOS Simulator)
         run: xcodebuild build -project Vade.xcodeproj -scheme Vade -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO -quiet
